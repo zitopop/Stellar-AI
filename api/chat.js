@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   }
 
   if (!apiKey) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;sk-ant-api03-Se-xr5NjRiwjoY9Qh6xGzobJhXONmiydoODkeaaMw9Lqn9QIFQtPeOlJHP2Yi-3XZ1OwIT6e5-AuLDnM4L3A-G4244wAA 
+  const apiKey = process.env.ANTHROPIC_API_KEY;
     console.error('ERROR:  not found');
     return res.status(500).json({ error: 'API key not configured' });
   }
