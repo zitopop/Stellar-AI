@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <!-- Input -->
+    <!-- Input Bar -->
     <div class="border-t border-zinc-800 p-4 bg-[#0a0c10]">
       <div class="max-w-[820px] mx-auto">
         <div class="flex items-end gap-2 bg-zinc-900 border border-zinc-700 focus-within:border-[#d4af37]/40 transition-colors rounded-3xl p-2">
@@ -111,13 +111,13 @@
     </div>
   </div>
 
-  <!-- Plans Modal -->
+  <!-- Plans Modal with Descriptions (scroll down to see full details) -->
   <div id="plans-modal" onclick="if (event.target.id === 'plans-modal') hidePlansModal()"
        class="hidden fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6">
     <div onclick="event.stopImmediatePropagation()" 
-         class="bg-[#0a0c10] border border-zinc-700 rounded-3xl max-w-md w-full p-8">
+         class="bg-[#0a0c10] border border-zinc-700 rounded-3xl max-w-md w-full max-h-[85vh] overflow-y-auto p-8">
       
-      <div class="flex justify-between items-center mb-6">
+      <div class="flex justify-between items-center mb-6 sticky top-0 bg-[#0a0c10] pb-4">
         <div>
           <div class="font-semibold text-2xl">Choose your plan</div>
           <div class="text-sm text-zinc-400">Built for serious work</div>
@@ -125,40 +125,71 @@
         <button onclick="hidePlansModal()" class="text-zinc-400 hover:text-white text-2xl">×</button>
       </div>
 
-      <div class="space-y-3">
-        <div class="border border-zinc-600 rounded-2xl p-5">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="font-semibold text-lg">Lite</div>
-              <div class="text-sm text-zinc-400">For regular use</div>
-            </div>
-            <div class="text-right">
-              <div class="font-semibold text-2xl">£10</div>
-              <div class="text-xs text-zinc-400">/month</div>
-            </div>
+      <!-- Lite Plan -->
+      <div class="border border-zinc-600 rounded-2xl p-5 mb-4">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="font-semibold text-lg">Lite</div>
+            <div class="text-sm text-zinc-400">For regular use</div>
           </div>
-          <button onclick="createCheckout('lite')" 
-                  class="mt-5 w-full py-3 bg-white text-[#0a0c10] rounded-2xl font-semibold hover:bg-zinc-100 transition-all">
-            Choose Lite - £10/mo
-          </button>
+          <div class="text-right">
+            <div class="font-semibold text-2xl">£10</div>
+            <div class="text-xs text-zinc-400">/month</div>
+          </div>
         </div>
+        
+        <div class="text-sm text-zinc-300 mb-4">
+          Perfect if you use AI regularly but don’t need unlimited access. 
+          Great for students, freelancers, and side projects.
+        </div>
+        
+        <ul class="space-y-1.5 text-sm mb-4">
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Generous monthly message limit</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Access to Smart model</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Basic exports (copy & PDF)</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Clean, private conversations</li>
+        </ul>
+        
+        <button onclick="createCheckout('lite')" 
+                class="w-full py-3 bg-white text-[#0a0c10] rounded-2xl font-semibold hover:bg-zinc-100 transition-all">
+          Choose Lite - £10/mo
+        </button>
+      </div>
 
-        <div class="border border-[#d4af37] bg-[#d4af37]/5 rounded-2xl p-5">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="font-semibold text-lg">Executive</div>
-              <div class="text-sm text-zinc-400">For founders & leaders</div>
-            </div>
-            <div class="text-right">
-              <div class="font-semibold text-2xl">£99</div>
-              <div class="text-xs text-zinc-400">/month</div>
-            </div>
+      <!-- Executive Plan -->
+      <div class="border border-[#d4af37] bg-[#d4af37]/5 rounded-2xl p-5 mb-4">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="font-semibold text-lg">Executive</div>
+            <div class="text-sm text-zinc-400">For founders & leaders</div>
           </div>
-          <button onclick="createCheckout('executive')" 
-                  class="mt-5 w-full py-3 bg-[#d4af37] text-[#0a0c10] rounded-2xl font-semibold hover:bg-[#c5a26f] transition-all">
-            Choose Executive - £99/mo
-          </button>
+          <div class="text-right">
+            <div class="font-semibold text-2xl">£99</div>
+            <div class="text-xs text-zinc-400">/month</div>
+          </div>
         </div>
+        
+        <div class="text-sm text-zinc-300 mb-4">
+          Built for people who run real businesses. Unlimited usage, 
+          access to the strongest models, and professional features that save serious time.
+        </div>
+        
+        <ul class="space-y-1.5 text-sm mb-4">
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> <strong>Unlimited</strong> conversations</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> All models including <strong>Ultra</strong></li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Private workspaces</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Professional PDF exports & reporting</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Priority support</li>
+        </ul>
+        
+        <button onclick="createCheckout('executive')" 
+                class="w-full py-3 bg-[#d4af37] text-[#0a0c10] rounded-2xl font-semibold hover:bg-[#c5a26f] transition-all">
+          Choose Executive - £99/mo
+        </button>
+      </div>
+
+      <div class="text-center text-xs text-zinc-500 mt-4">
+        Scroll up for plan comparison • Cancel anytime
       </div>
     </div>
   </div>
@@ -175,12 +206,8 @@
       localStorage.setItem("stellar_chats", JSON.stringify(chats));
     }
 
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("hidden");
-    }
-    function closeSidebar() {
-      document.getElementById("sidebar").classList.add("hidden");
-    }
+    function toggleSidebar() { document.getElementById("sidebar").classList.toggle("hidden"); }
+    function closeSidebar() { document.getElementById("sidebar").classList.add("hidden"); }
 
     function renderChatList() {
       const container = document.getElementById("chat-list");
@@ -272,7 +299,6 @@
       addUserMessage(text);
       input.value = "";
 
-      // Placeholder AI response (until backend is connected)
       setTimeout(() => {
         addAIMessage("Thanks for your message. Real AI responses will work once the backend is deployed.");
       }, 600);
@@ -290,7 +316,7 @@
     }
 
     function createCheckout(plan) {
-      alert("Payments ready! Deploy the backend files to enable real Stripe checkout.");
+      alert("Payments ready! Deploy the backend files to enable real Stripe checkout for £10 and £99 plans.");
     }
 
     function showPlansModal() {
@@ -303,14 +329,13 @@
     }
 
     function init() {
-      console.log("%c[Stellar] App loaded - you can type now", "color:#d4af37");
+      console.log("%c[Stellar] App loaded - typing works + scrollable plans with descriptions", "color:#d4af37");
       renderChatList();
       if (chats.length > 0) {
         loadChat(chats[0].id);
       } else {
         newChat();
       }
-      // Auto-focus the input
       setTimeout(() => {
         document.getElementById("input").focus();
       }, 100);
