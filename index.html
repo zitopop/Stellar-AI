@@ -18,6 +18,8 @@
     .message { animation: fadeIn 0.2s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .code-block { background: #111113; border: 1px solid #27272a; border-radius: 12px; }
+    .sidebar-item { transition: all 0.1s ease; }
+    .sidebar-item:hover { background-color: #18181b; transform: translateX(3px); }
   </style>
 </head>
 <body class="bg-[#0a0c10] text-zinc-200">
@@ -69,7 +71,7 @@
       </div>
     </div>
 
-    <!-- Input -->
+    <!-- Input Bar -->
     <div class="border-t border-zinc-800 p-4 bg-[#0a0c10]">
       <div class="max-w-[820px] mx-auto">
         <div class="flex items-end gap-2 bg-zinc-900 border border-zinc-700 focus-within:border-[#d4af37]/40 transition-colors rounded-3xl p-2">
@@ -92,28 +94,33 @@
     </div>
   </div>
 
-  <!-- Sidebar -->
+  <!-- IMPROVED SIDEBAR -->
   <div id="sidebar" onclick="if (event.target.id === 'sidebar') closeSidebar()"
        class="hidden fixed inset-0 bg-black/70 z-50">
     <div onclick="event.stopImmediatePropagation()" 
          class="w-80 bg-[#0a0c10] border-r border-zinc-800 h-full flex flex-col">
       
+      <!-- Sidebar Header -->
       <div class="p-5 border-b border-zinc-800">
         <div class="flex items-center justify-between mb-4">
-          <div class="font-semibold text-lg">Conversations</div>
+          <div>
+            <div class="font-semibold text-lg">Conversations</div>
+            <div class="text-xs text-zinc-500" id="chat-count">0 chats</div>
+          </div>
           <button onclick="closeSidebar()" class="text-zinc-400 hover:text-white p-1">
             <i class="fa-solid fa-times text-xl"></i>
           </button>
         </div>
         
         <button onclick="newChat(); closeSidebar()" 
-                class="w-full flex items-center justify-center gap-2 bg-white hover:bg-zinc-100 text-[#0a0c10] py-3 rounded-2xl font-semibold text-sm transition-all">
+                class="w-full flex items-center justify-center gap-2 bg-white hover:bg-zinc-100 text-[#0a0c10] py-3 rounded-2xl font-semibold text-sm transition-all active:scale-[0.985]">
           <i class="fa-solid fa-plus"></i>
           <span>New conversation</span>
         </button>
       </div>
 
-      <div class="flex-1 overflow-y-auto p-3 chat-scroll" id="chat-list"></div>
+      <!-- Chat List -->
+      <div class="flex-1 overflow-y-auto p-2 chat-scroll" id="chat-list"></div>
     </div>
   </div>
 
@@ -144,7 +151,7 @@
           </div>
         </div>
         <div class="text-sm text-zinc-300 mb-4">
-          Perfect for regular use and side projects. Good limits at an affordable price.
+          Perfect for regular personal use and side projects. Good message limits without the premium price.
         </div>
         <ul class="space-y-1.5 text-sm mb-4">
           <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Generous monthly message limit</li>
@@ -214,26 +221,41 @@
     let chats = JSON.parse(localStorage.getItem("stellar_chats") || "[]");
     let currentChatId = null;
 
-    function saveChats() {
-      localStorage.setItem("stellar_chats", JSON.stringify(chats));
+    function updateChatCount() {
+      const countEl = document.getElementById("chat-count");
+      if (countEl) countEl.textContent = `${chats.length} chat${chats.length !== 1 ? 's' : ''}`;
     }
 
-    function toggleSidebar() { document.getElementById("sidebar").classList.toggle("hidden"); }
-    function closeSidebar() { document.getElementById("sidebar").classList.add("hidden"); }
+    function saveChats() {
+      localStorage.setItem("stellar_chats", JSON.stringify(chats));
+      updateChatCount();
+    }
+
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("hidden");
+    }
+
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.add("hidden");
+    }
 
     function renderChatList() {
       const container = document.getElementById("chat-list");
       container.innerHTML = "";
+      updateChatCount();
+
       if (chats.length === 0) {
         container.innerHTML = `<div class="px-4 py-8 text-center text-sm text-zinc-500">No conversations yet</div>`;
         return;
       }
+
       chats.forEach((chat, index) => {
         const div = document.createElement("div");
-        div.className = `sidebar-item px-3 py-3 rounded-2xl text-sm cursor-pointer flex justify-between items-center mb-1 ${chat.id === currentChatId ? 'bg-zinc-800' : ''}`;
+        div.className = `sidebar-item group px-3 py-3 mx-1 my-0.5 rounded-2xl text-sm cursor-pointer flex justify-between items-center ${chat.id === currentChatId ? 'bg-zinc-800' : ''}`;
         div.innerHTML = `
           <div class="truncate pr-2">${chat.title || "New conversation"}</div>
-          <button onclick="event.stopImmediatePropagation(); deleteChat('${chat.id}', ${index})" class="text-zinc-500 hover:text-red-400 p-1">
+          <button onclick="event.stopImmediatePropagation(); deleteChat('${chat.id}', ${index})" 
+                  class="text-zinc-500 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <i class="fa-solid fa-trash text-xs"></i>
           </button>
         `;
@@ -246,18 +268,26 @@
       currentChatId = Date.now().toString();
       messages = [];
       document.getElementById("chat").innerHTML = "";
-      document.getElementById("welcome").style.display = "flex";
+
+      const welcome = document.getElementById("welcome");
+      if (welcome) welcome.style.display = "flex";
+
       closeSidebar();
     }
 
     function loadChat(id) {
       const chat = chats.find(c => c.id === id);
       if (!chat) return;
+
       currentChatId = id;
       messages = chat.messages || [];
+
       const chatContainer = document.getElementById("chat");
       chatContainer.innerHTML = "";
-      document.getElementById("welcome").style.display = "none";
+
+      const welcome = document.getElementById("welcome");
+      if (welcome) welcome.style.display = "none";
+
       messages.forEach(msg => {
         if (msg.role === "user") addUserMessage(msg.content, false);
         else addAIMessage(msg.content, false);
@@ -285,12 +315,15 @@
     }
 
     function addUserMessage(text, save = true) {
-      document.getElementById("welcome").style.display = "none";
+      const welcome = document.getElementById("welcome");
+      if (welcome) welcome.style.display = "none";
+
       const div = document.createElement("div");
       div.className = "message max-w-[820px] mx-auto flex justify-end mb-4";
       div.innerHTML = `<div class="max-w-[75%] bg-zinc-800 px-5 py-3.5 rounded-3xl text-[15px]">${text}</div>`;
       document.getElementById("chat").appendChild(div);
       document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+
       if (save) { messages.push({ role: "user", content: text }); saveCurrentChat(); }
     }
 
@@ -300,6 +333,7 @@
       div.innerHTML = `<div class="max-w-[82%] prose prose-invert text-[15px]">${html}</div>`;
       document.getElementById("chat").appendChild(div);
       document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+
       if (save) { messages.push({ role: "assistant", content: html }); saveCurrentChat(); }
     }
 
@@ -346,7 +380,7 @@
     }
 
     function init() {
-      console.log("%c[Stellar] Full optimized package loaded", "color:#d4af37");
+      console.log("%c[Stellar] Improved sidebar + fixed newChat error", "color:#d4af37");
       renderChatList();
       if (chats.length > 0) {
         loadChat(chats[0].id);
@@ -354,7 +388,8 @@
         newChat();
       }
       setTimeout(() => {
-        document.getElementById("input").focus();
+        const input = document.getElementById("input");
+        if (input) input.focus();
       }, 100);
     }
 
