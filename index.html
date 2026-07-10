@@ -111,7 +111,7 @@
     </div>
   </div>
 
-  <!-- Plans Modal with Descriptions (scroll down to see full details) -->
+  <!-- Plans Modal with Enterprise + Descriptions -->
   <div id="plans-modal" onclick="if (event.target.id === 'plans-modal') hidePlansModal()"
        class="hidden fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6">
     <div onclick="event.stopImmediatePropagation()" 
@@ -125,7 +125,7 @@
         <button onclick="hidePlansModal()" class="text-zinc-400 hover:text-white text-2xl">×</button>
       </div>
 
-      <!-- Lite Plan -->
+      <!-- Lite -->
       <div class="border border-zinc-600 rounded-2xl p-5 mb-4">
         <div class="flex justify-between items-start mb-3">
           <div>
@@ -137,26 +137,21 @@
             <div class="text-xs text-zinc-400">/month</div>
           </div>
         </div>
-        
         <div class="text-sm text-zinc-300 mb-4">
-          Perfect if you use AI regularly but don’t need unlimited access. 
-          Great for students, freelancers, and side projects.
+          Perfect for regular personal or side-project use. Good message limits and clean experience without the premium price.
         </div>
-        
         <ul class="space-y-1.5 text-sm mb-4">
           <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Generous monthly message limit</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Access to Smart model</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Basic exports (copy & PDF)</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Clean, private conversations</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Smart model access</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Basic exports</li>
         </ul>
-        
         <button onclick="createCheckout('lite')" 
                 class="w-full py-3 bg-white text-[#0a0c10] rounded-2xl font-semibold hover:bg-zinc-100 transition-all">
           Choose Lite - £10/mo
         </button>
       </div>
 
-      <!-- Executive Plan -->
+      <!-- Executive -->
       <div class="border border-[#d4af37] bg-[#d4af37]/5 rounded-2xl p-5 mb-4">
         <div class="flex justify-between items-start mb-3">
           <div>
@@ -168,28 +163,50 @@
             <div class="text-xs text-zinc-400">/month</div>
           </div>
         </div>
-        
         <div class="text-sm text-zinc-300 mb-4">
-          Built for people who run real businesses. Unlimited usage, 
-          access to the strongest models, and professional features that save serious time.
+          Built for serious founders and professionals who need unlimited access and the strongest models. Saves hours every week.
         </div>
-        
         <ul class="space-y-1.5 text-sm mb-4">
           <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> <strong>Unlimited</strong> conversations</li>
           <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> All models including <strong>Ultra</strong></li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Private workspaces</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Professional PDF exports & reporting</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Private workspaces + PDF exports</li>
           <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Priority support</li>
         </ul>
-        
         <button onclick="createCheckout('executive')" 
                 class="w-full py-3 bg-[#d4af37] text-[#0a0c10] rounded-2xl font-semibold hover:bg-[#c5a26f] transition-all">
           Choose Executive - £99/mo
         </button>
       </div>
 
-      <div class="text-center text-xs text-zinc-500 mt-4">
-        Scroll up for plan comparison • Cancel anytime
+      <!-- Enterprise -->
+      <div class="border border-zinc-600 rounded-2xl p-5">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="font-semibold text-lg">Enterprise</div>
+            <div class="text-sm text-zinc-400">For teams & organizations</div>
+          </div>
+          <div class="text-right">
+            <div class="font-semibold text-xl">Custom</div>
+          </div>
+        </div>
+        <div class="text-sm text-zinc-300 mb-4">
+          Designed for companies and teams. Get dedicated infrastructure, advanced security, team management, and custom integrations.
+        </div>
+        <ul class="space-y-1.5 text-sm mb-4">
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Everything in Executive</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Team workspaces & admin controls</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> SSO, advanced security & compliance</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Dedicated support & custom integrations</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Custom pricing & SLAs</li>
+        </ul>
+        <button onclick="selectPlan('enterprise')" 
+                class="w-full py-3 border border-zinc-600 hover:bg-zinc-800 rounded-2xl font-medium transition-all">
+          Contact sales for custom pricing
+        </button>
+      </div>
+
+      <div class="text-center text-xs text-zinc-500 mt-6">
+        Scroll up to compare plans • Cancel anytime
       </div>
     </div>
   </div>
@@ -316,7 +333,7 @@
     }
 
     function createCheckout(plan) {
-      alert("Payments ready! Deploy the backend files to enable real Stripe checkout for £10 and £99 plans.");
+      alert("Payments ready! Deploy the backend files to enable real Stripe checkout.");
     }
 
     function showPlansModal() {
@@ -328,8 +345,13 @@
       document.getElementById("plans-modal").classList.add("hidden");
     }
 
+    function selectPlan(plan) {
+      alert("Enterprise plans are custom. Our team will contact you shortly.");
+      hidePlansModal();
+    }
+
     function init() {
-      console.log("%c[Stellar] App loaded - typing works + scrollable plans with descriptions", "color:#d4af37");
+      console.log("%c[Stellar] Enterprise plan added with Custom pricing", "color:#d4af37");
       renderChatList();
       if (chats.length > 0) {
         loadChat(chats[0].id);
