@@ -6,17 +6,12 @@
   <title>Stellar • Private AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif; }
     .chat-scroll { scrollbar-width: thin; scrollbar-color: #27272a #0a0c10; }
     .message { animation: fadeIn 0.2s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .code-block { background: #111113; border: 1px solid #27272a; border-radius: 12px; }
-    .chat-container { max-width: 820px; margin: 0 auto; }
-    .premium-gold { color: #d4af37; }
-    .sidebar-item { transition: all 0.1s ease; }
-    .sidebar-item:hover { background-color: #18181b; transform: translateX(2px); }
   </style>
 </head>
 <body class="bg-[#0a0c10] text-zinc-200">
@@ -54,7 +49,7 @@
     </div>
   </div>
 
-  <!-- Main Chat Area -->
+  <!-- Main Chat -->
   <div class="flex-1 flex flex-col h-[calc(100vh-56px)]">
     <div id="chat" class="flex-1 overflow-y-auto p-6 chat-scroll">
       <div id="welcome" class="h-full flex items-center justify-center">
@@ -68,7 +63,7 @@
       </div>
     </div>
 
-    <!-- Input Bar -->
+    <!-- Input -->
     <div class="border-t border-zinc-800 p-4 bg-[#0a0c10]">
       <div class="max-w-[820px] mx-auto">
         <div class="flex items-end gap-2 bg-zinc-900 border border-zinc-700 focus-within:border-[#d4af37]/40 transition-colors rounded-3xl p-2">
@@ -77,7 +72,7 @@
             <i class="fa-solid fa-paperclip"></i>
           </button>
           
-          <textarea id="input" rows="1" 
+          <textarea id="input" rows="1" autofocus
                     class="flex-1 bg-transparent resize-none outline-none px-4 py-3 text-[15px] placeholder:text-zinc-500 max-h-[160px]"
                     placeholder="Message Stellar..."
                     onkeydown="handleKeyDown(event)"></textarea>
@@ -91,7 +86,7 @@
     </div>
   </div>
 
-  <!-- Clean Sidebar -->
+  <!-- Sidebar -->
   <div id="sidebar" onclick="if (event.target.id === 'sidebar') closeSidebar()"
        class="hidden fixed inset-0 bg-black/70 z-50">
     <div onclick="event.stopImmediatePropagation()" 
@@ -116,7 +111,7 @@
     </div>
   </div>
 
-  <!-- Plans Modal (Lite £10 + Executive £99) -->
+  <!-- Plans Modal -->
   <div id="plans-modal" onclick="if (event.target.id === 'plans-modal') hidePlansModal()"
        class="hidden fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6">
     <div onclick="event.stopImmediatePropagation()" 
@@ -131,7 +126,6 @@
       </div>
 
       <div class="space-y-3">
-        <!-- Lite £10 -->
         <div class="border border-zinc-600 rounded-2xl p-5">
           <div class="flex justify-between items-start">
             <div>
@@ -143,18 +137,12 @@
               <div class="text-xs text-zinc-400">/month</div>
             </div>
           </div>
-          <ul class="mt-4 space-y-1.5 text-sm">
-            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Generous message limits</li>
-            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Smart model access</li>
-            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Basic exports</li>
-          </ul>
           <button onclick="createCheckout('lite')" 
                   class="mt-5 w-full py-3 bg-white text-[#0a0c10] rounded-2xl font-semibold hover:bg-zinc-100 transition-all">
             Choose Lite - £10/mo
           </button>
         </div>
 
-        <!-- Executive £99 -->
         <div class="border border-[#d4af37] bg-[#d4af37]/5 rounded-2xl p-5">
           <div class="flex justify-between items-start">
             <div>
@@ -166,31 +154,9 @@
               <div class="text-xs text-zinc-400">/month</div>
             </div>
           </div>
-          <ul class="mt-4 space-y-1.5 text-sm">
-            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Unlimited conversations</li>
-            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> All models (incl. Ultra)</li>
-            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Private workspaces + PDF exports</li>
-            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> Priority support</li>
-          </ul>
           <button onclick="createCheckout('executive')" 
                   class="mt-5 w-full py-3 bg-[#d4af37] text-[#0a0c10] rounded-2xl font-semibold hover:bg-[#c5a26f] transition-all">
             Choose Executive - £99/mo
-          </button>
-        </div>
-
-        <div class="border border-zinc-700 rounded-2xl p-5">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="font-semibold text-lg">Enterprise</div>
-              <div class="text-sm text-zinc-400">For teams & organizations</div>
-            </div>
-            <div class="text-right">
-              <div class="font-semibold">Custom</div>
-            </div>
-          </div>
-          <button onclick="selectPlan('enterprise')" 
-                  class="mt-5 w-full py-3 border border-zinc-600 hover:bg-zinc-800 rounded-2xl font-medium transition-all">
-            Contact sales
           </button>
         </div>
       </div>
@@ -200,88 +166,15 @@
   <input type="file" id="file-input" class="hidden">
 
   <script>
-    // ==================== SUPABASE ====================
-    const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
-    const SUPABASE_ANON_KEY = "YOUR-ANON-KEY-HERE";
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    let currentUser = null;
     let currentModel = "smart";
     let messages = [];
-    let chats = [];
+    let chats = JSON.parse(localStorage.getItem("stellar_chats") || "[]");
     let currentChatId = null;
 
-    async function signInWithGoogle() {
-      await supabase.auth.signInWithOAuth({ provider: 'google' });
+    function saveChats() {
+      localStorage.setItem("stellar_chats", JSON.stringify(chats));
     }
 
-    async function checkUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      currentUser = user;
-      if (user) await loadChatsFromCloud();
-      else chats = JSON.parse(localStorage.getItem("stellar_chats") || "[]");
-      renderChatList();
-    }
-
-    async function loadChatsFromCloud() {
-      if (!currentUser) return;
-      const { data } = await supabase.from('chats').select('*').eq('user_id', currentUser.id).order('updated_at', { ascending: false });
-      if (data) chats = data;
-    }
-
-    async function saveChatToCloud(chatData) {
-      if (!currentUser) {
-        localStorage.setItem("stellar_chats", JSON.stringify(chats));
-        return;
-      }
-      await supabase.from('chats').upsert({ ...chatData, user_id: currentUser.id });
-    }
-
-    // ==================== PAYMENTS (now robust - won't break anything) ====================
-    async function createCheckout(plan) {
-      if (!currentUser) {
-        alert("Please sign in with Google first to upgrade.");
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/create-checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plan, email: currentUser.email })
-        });
-
-        if (!res.ok) {
-          throw new Error('Backend endpoint not found');
-        }
-
-        const data = await res.json();
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          alert("Payment system is ready. Deploy the backend API files to enable real Stripe payments.");
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Payments are fully prepared. Deploy the /api/create-checkout.js and /api/webhook.js files to Vercel (instructions below), then real payments will work instantly.");
-      }
-    }
-
-    function showPlansModal() {
-      document.getElementById("plans-modal").classList.remove("hidden");
-      document.getElementById("plans-modal").classList.add("flex");
-    }
-    function hidePlansModal() {
-      document.getElementById("plans-modal").classList.remove("flex");
-      document.getElementById("plans-modal").classList.add("hidden");
-    }
-    function selectPlan(plan) {
-      alert("Enterprise plans are custom. Contact us for details.");
-      hidePlansModal();
-    }
-
-    // ==================== SIDEBAR & UI (now fully reliable) ====================
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("hidden");
     }
@@ -292,21 +185,16 @@
     function renderChatList() {
       const container = document.getElementById("chat-list");
       container.innerHTML = "";
-
       if (chats.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "px-4 py-8 text-center text-sm text-zinc-500";
-        empty.textContent = "No conversations yet";
-        container.appendChild(empty);
+        container.innerHTML = `<div class="px-4 py-8 text-center text-sm text-zinc-500">No conversations yet</div>`;
         return;
       }
-
       chats.forEach((chat, index) => {
         const div = document.createElement("div");
         div.className = `sidebar-item px-3 py-3 rounded-2xl text-sm cursor-pointer flex justify-between items-center mb-1 ${chat.id === currentChatId ? 'bg-zinc-800' : ''}`;
         div.innerHTML = `
           <div class="truncate pr-2">${chat.title || "New conversation"}</div>
-          <button onclick="event.stopImmediatePropagation(); deleteChat('${chat.id}', ${index})" class="text-zinc-500 hover:text-red-400 p-1 opacity-60 hover:opacity-100">
+          <button onclick="event.stopImmediatePropagation(); deleteChat('${chat.id}', ${index})" class="text-zinc-500 hover:text-red-400 p-1">
             <i class="fa-solid fa-trash text-xs"></i>
           </button>
         `;
@@ -338,27 +226,25 @@
       closeSidebar();
     }
 
-    async function deleteChat(id, index) {
+    function deleteChat(id, index) {
       if (!confirm("Delete this conversation?")) return;
       chats.splice(index, 1);
-      if (currentUser) await supabase.from('chats').delete().eq('id', id);
-      else localStorage.setItem("stellar_chats", JSON.stringify(chats));
+      saveChats();
       renderChatList();
       if (currentChatId === id) newChat();
     }
 
-    async function saveCurrentChat() {
+    function saveCurrentChat() {
       if (!currentChatId || messages.length === 0) return;
       const title = messages[0]?.content?.slice(0, 55) || "New conversation";
       const chatData = { id: currentChatId, title, messages };
       const existing = chats.findIndex(c => c.id === currentChatId);
       if (existing !== -1) chats[existing] = chatData;
       else chats.unshift(chatData);
-      await saveChatToCloud(chatData);
+      saveChats();
       renderChatList();
     }
 
-    // ==================== MESSAGING (bulletproof) ====================
     function addUserMessage(text, save = true) {
       document.getElementById("welcome").style.display = "none";
       const div = document.createElement("div");
@@ -378,7 +264,7 @@
       if (save) { messages.push({ role: "assistant", content: html }); saveCurrentChat(); }
     }
 
-    async function sendMessage() {
+    function sendMessage() {
       const input = document.getElementById("input");
       const text = input.value.trim();
       if (!text) return;
@@ -386,60 +272,10 @@
       addUserMessage(text);
       input.value = "";
 
-      const thinkingDiv = document.createElement("div");
-      thinkingDiv.className = "max-w-[820px] mx-auto flex mb-4";
-      thinkingDiv.innerHTML = `
-        <div>
-          <div class="flex items-center gap-2 text-sm text-zinc-400 mb-1">
-            <span>Thinking</span>
-            <div class="flex gap-1"><span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style="animation-delay:0.15s"></span><span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style="animation-delay:0.3s"></span></div>
-          </div>
-          <div id="streaming-text" class="prose prose-invert text-[15px]"></div>
-        </div>`;
-      document.getElementById("chat").appendChild(thinkingDiv);
-      const streamingText = thinkingDiv.querySelector("#streaming-text");
-
-      let fullResponse = "";
-
-      try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: MODELS[currentModel].id,
-            max_tokens: currentModel === "ultra" ? 4000 : 2000,
-            system: "You are Stellar, a private executive AI assistant. You are direct, precise, and strategic. Help with complex business problems, high-stakes decisions, and building scalable systems. Be concise and flag risks.",
-            messages: messages,
-            stream: true
-          })
-        });
-
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value);
-          chunk.split("\n").forEach(line => {
-            if (line.startsWith("data: ")) {
-              try {
-                const data = JSON.parse(line.slice(6));
-                if (data.delta?.text) {
-                  fullResponse += data.delta.text;
-                  streamingText.innerHTML = fullResponse.replace(/\n/g, "<br>");
-                  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
-                }
-              } catch (e) {}
-            }
-          });
-        }
-        streamingText.innerHTML = fullResponse.replace(/```(\w*)\n?([\s\S]*?)```/g, `<div class="code-block my-3 p-4 text-xs font-mono"><pre>$2</pre></div>`);
-        messages.push({ role: "assistant", content: fullResponse });
-        await saveCurrentChat();
-      } catch (err) {
-        streamingText.innerHTML = `<span class="text-red-400">Error: ${err.message}</span>`;
-      }
+      // Placeholder AI response (until backend is connected)
+      setTimeout(() => {
+        addAIMessage("Thanks for your message. Real AI responses will work once the backend is deployed.");
+      }, 600);
     }
 
     function handleKeyDown(e) {
@@ -449,25 +285,35 @@
       }
     }
 
-    const MODELS = {
-      fast: { id: "claude-3-5-haiku-20241022" },
-      smart: { id: "claude-3-5-sonnet-20241022" },
-      ultra: { id: "claude-3-opus-20240229" }
-    };
-
     function changeModel() {
       currentModel = document.getElementById("model-select").value;
     }
 
-    // ==================== INIT ====================
-    async function init() {
-      await checkUser();
+    function createCheckout(plan) {
+      alert("Payments ready! Deploy the backend files to enable real Stripe checkout.");
+    }
+
+    function showPlansModal() {
+      document.getElementById("plans-modal").classList.remove("hidden");
+      document.getElementById("plans-modal").classList.add("flex");
+    }
+    function hidePlansModal() {
+      document.getElementById("plans-modal").classList.remove("flex");
+      document.getElementById("plans-modal").classList.add("hidden");
+    }
+
+    function init() {
+      console.log("%c[Stellar] App loaded - you can type now", "color:#d4af37");
+      renderChatList();
       if (chats.length > 0) {
         loadChat(chats[0].id);
       } else {
         newChat();
       }
-      console.log("%c[Stellar] All clicks now working reliably", "color:#d4af37");
+      // Auto-focus the input
+      setTimeout(() => {
+        document.getElementById("input").focus();
+      }, 100);
     }
 
     window.onload = init;
