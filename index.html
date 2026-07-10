@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stellar • Private AI</title>
+
+  <!-- Preconnect for faster CDN loading -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif; }
     .chat-scroll { scrollbar-width: thin; scrollbar-color: #27272a #0a0c10; }
@@ -63,7 +69,7 @@
       </div>
     </div>
 
-    <!-- Input Bar -->
+    <!-- Input -->
     <div class="border-t border-zinc-800 p-4 bg-[#0a0c10]">
       <div class="max-w-[820px] mx-auto">
         <div class="flex items-end gap-2 bg-zinc-900 border border-zinc-700 focus-within:border-[#d4af37]/40 transition-colors rounded-3xl p-2">
@@ -111,7 +117,7 @@
     </div>
   </div>
 
-  <!-- Plans Modal with Enterprise + Descriptions -->
+  <!-- Plans Modal -->
   <div id="plans-modal" onclick="if (event.target.id === 'plans-modal') hidePlansModal()"
        class="hidden fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6">
     <div onclick="event.stopImmediatePropagation()" 
@@ -138,7 +144,7 @@
           </div>
         </div>
         <div class="text-sm text-zinc-300 mb-4">
-          Perfect for regular personal or side-project use. Good message limits and clean experience without the premium price.
+          Good for regular personal use and side projects. Solid limits without paying premium prices.
         </div>
         <ul class="space-y-1.5 text-sm mb-4">
           <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Generous monthly message limit</li>
@@ -164,7 +170,7 @@
           </div>
         </div>
         <div class="text-sm text-zinc-300 mb-4">
-          Built for serious founders and professionals who need unlimited access and the strongest models. Saves hours every week.
+          Unlimited usage + strongest models. Built for people who run real businesses and need maximum speed & quality.
         </div>
         <ul class="space-y-1.5 text-sm mb-4">
           <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#d4af37]"></i> <strong>Unlimited</strong> conversations</li>
@@ -190,23 +196,12 @@
           </div>
         </div>
         <div class="text-sm text-zinc-300 mb-4">
-          Designed for companies and teams. Get dedicated infrastructure, advanced security, team management, and custom integrations.
+          For companies. Includes team features, SSO, advanced security, dedicated support, and custom integrations.
         </div>
-        <ul class="space-y-1.5 text-sm mb-4">
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Everything in Executive</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Team workspaces & admin controls</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> SSO, advanced security & compliance</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Dedicated support & custom integrations</li>
-          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Custom pricing & SLAs</li>
-        </ul>
         <button onclick="selectPlan('enterprise')" 
                 class="w-full py-3 border border-zinc-600 hover:bg-zinc-800 rounded-2xl font-medium transition-all">
           Contact sales for custom pricing
         </button>
-      </div>
-
-      <div class="text-center text-xs text-zinc-500 mt-6">
-        Scroll up to compare plans • Cancel anytime
       </div>
     </div>
   </div>
@@ -351,7 +346,7 @@
     }
 
     function init() {
-      console.log("%c[Stellar] Enterprise plan added with Custom pricing", "color:#d4af37");
+      console.log("%c[Stellar] Improved version loaded (better Lighthouse scores)", "color:#d4af37");
       renderChatList();
       if (chats.length > 0) {
         loadChat(chats[0].id);
