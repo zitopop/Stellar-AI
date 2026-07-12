@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Stellar AI - Generate FiveM scripts with AI">
+  <title>Stellar AI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; 
+      background: #050505;
+      font-weight: 600;
+    }
+    
+    .glass {
+      background: rgba(15, 15, 20, 0.82);
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 16px 56px rgba(0,0,0,0.55);
+    }
+    
+    .glass-strong {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(44px);
+      -webkit-backdrop-filter: blur(44px);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .sidebar-item { 
+      transition: all 0.2s ease;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+    }
+    .sidebar-item:hover { 
+      background-color: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.25);
+    }
+    .sidebar-item:active {
+      transform: scale(0.98);
+    }
+
+    .message {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    code {
+      font-family: "Monaco", "Menlo", monospace;
+      font-size: 13px;
+    }
+
+    pre {
+      margin: 0;
+      padding: var(--s4);
+    }
+  </style>
+</head>
+<body class="text-[#e2e8f0]">
+  <div class="flex h-screen">
+    
+    <!-- GLASS SIDEBAR -->
+    <div class="w-72 glass border-r border-white/10 flex flex-col p-4">
+      <div class="mb-6">
+        <div class="text-2xl font-black tracking-[-0.5px]">✦ Stellar</div>
+      </div>
+
+      <button onclick="newChat()" class="w-full py-3 glass-strong hover:bg-white/15 border border-white/20 rounded-2xl font-black mb-4 transition-all active:scale-[0.985]">
+        + New Chat
+      </button>
+
+      <div class="flex-1 overflow-y-auto" id="chats-list"></div>
+
+      <div class="mt-auto pt-4 border-t border-white/10">
+        <button onclick="openPlans()" class="w-full text-left px-4 py-3 hover:bg-white/10 rounded-xl text-sm font-bold mb-2">💎 Plans</button>
+        <button onclick="openSettings()" class="w-full text-left px-4 py-3 hover:bg-white/10 rounded-xl text-sm font-bold">⚙️ Settings</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col">
+      <div class="h-14 glass border-b border-white/10 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+          <div id="chat-title" class="font-black tracking-[-0.3px]">Stellar AI</div>
+          <select id="model-select" onchange="changeModel()" class="glass border border-white/10 rounded-lg px-3 py-1.5 text-sm font-bold">
+            <option value="smart">Smart</option>
+            <option value="ultra">Ultra</option>
+          </select>
+        </div>
+
+        <button onclick="toggleDarkMode()" id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">
+          🌙
+        </button>
+      </div>
+
+      <div id="chat" class="flex-1 overflow-y-auto p-6">
+        <div class="flex flex-col items-center justify-center h-full text-center">
+          <div class="text-4xl font-black mb-3">Stellar AI</div>
+          <div class="text-[#64748b] font-bold text-lg">Generate FiveM & Roblox scripts instantly</div>
+          <div class="mt-8 grid grid-cols-2 gap-3">
+            <button onclick="setPrompt('Generate a FiveM job system with pay')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">📋 Job System</button>
+            <button onclick="setPrompt('Create a Roblox health & damage system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">💚 Health</button>
+            <button onclick="setPrompt('Generate a FiveM bank heist script')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🏦 Heist</button>
+            <button onclick="setPrompt('Create an inventory system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🎒 Inventory</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 glass border-t border-white/10">
+        <div class="flex gap-3">
+          <textarea id="txt" rows="1" autofocus placeholder="Ask Stellar anything..." 
+                    class="flex-1 glass border border-white/10 rounded-2xl px-5 py-3.5 resize-none focus:outline-none font-bold text-white"
+                    onkeydown="if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }"></textarea>
+          <button onclick="sendMessage()" class="px-6 glass-strong hover:bg-white/15 border border-white/20 rounded-2xl font-black transition-all active:scale-[0.985]">
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANS MODAL -->
+  <div id="plans-modal" onclick="if (event.target.id === 'plans-modal') closePlans()" 
+       class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="glass border border-white/20 rounded-3xl w-full max-w-md mx-4 p-8 max-h-[85vh] overflow-y-auto">
+      
+      <div class="flex justify-between mb-6">
+        <div>
+          <div class="text-2xl font-black tracking-[-0.5px]">Plans</div>
+          <div class="text-sm text-[#64748b] font-bold">Choose your power level</div>
+        </div>
+        <button onclick="closePlans()" class="text-2xl">×</button>
+      </div>
+
+      <!-- Free -->
+      <div class="border border-white/10 rounded-2xl p-5 mb-4 glass">
+        <div class="flex justify-between mb-1">
+          <div class="font-black">Free</div>
+          <div class="font-black">£0</div>
+        </div>
+        <div class="text-sm text-[#94a3b8] font-bold mb-3">Chat until your daily bar runs out. Refills every 24h.</div>
+        <ul class="text-sm space-y-1 mb-4 font-bold">
+          <li>✓ Unlimited chats</li>
+          <li>✓ Smart model</li>
+          <li>✓ No card needed</li>
+        </ul>
+      </div>
+
+      <!-- Pro £10 -->
+      <div class="border border-[#10a37f] bg-[#10a37f]/10 rounded-2xl p-5 mb-4 glass">
+        <div class="flex justify-between mb-1">
+          <div class="font-black">Pro <span class="text-xs px-2 py-0.5 bg-[#10a37f] rounded text-white">MOST POPULAR</span></div>
+          <div class="font-black">£10/mo</div>
+        </div>
+        <div class="text-sm text-[#94a3b8] font-bold mb-3">Smart + Ultra. Double your message bar.</div>
+        <ul class="text-sm space-y-1 mb-4 font-bold">
+          <li>✓ Everything in Free</li>
+          <li>✓ Ultra model (smartest AI)</li>
+          <li>✓ Double message bar</li>
+          <li>✓ Cancel anytime</li>
+        </ul>
+        <button onclick="checkout('pro')" class="w-full py-2.5 bg-[#10a37f] text-white rounded-2xl font-black">Upgrade to Pro</button>
+      </div>
+
+      <!-- Enterprise £99 -->
+      <div class="border border-white/10 rounded-2xl p-5 glass">
+        <div class="flex justify-between mb-1">
+          <div class="font-black">Enterprise</div>
+          <div class="font-black">£99/mo</div>
+        </div>
+        <div class="text-sm text-[#94a3b8] font-bold mb-3">For teams & server owners. Huge bar + direct support.</div>
+        <ul class="text-sm space-y-1 mb-4 font-bold">
+          <li>✓ Everything in Pro</li>
+          <li>✓ 10x message bar</li>
+          <li>✓ Direct support</li>
+          <li>✓ Custom scripts</li>
+        </ul>
+        <button onclick="checkout('enterprise')" class="w-full py-2.5 glass-strong border border-white/20 rounded-2xl font-black">Contact Us</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" onclick="if (event.target.id === 'settings-modal') closeSettings()" 
+       class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="glass border border-white/20 rounded-3xl w-full max-w-md mx-4 p-8">
+      <div class="flex justify-between mb-6">
+        <div class="text-2xl font-black">Settings</div>
+        <button onclick="closeSettings()" class="text-2xl">×</button>
+      </div>
+      <button onclick="setMode('light'); closeSettings()" class="w-full py-2.5 glass border border-white/20 rounded-2xl font-bold mb-3">Light Mode</button>
+      <button onclick="setMode('dark'); closeSettings()" class="w-full py-2.5 glass border border-white/20 rounded-2xl font-bold">Dark Mode</button>
+    </div>
+  </div>
+
+  <script>
+    const Store = {
+      get() {
+        const s = localStorage.getItem('stellar-store');
+        return s ? JSON.parse(s) : { mode: 'dark', plan: 'free', chats: [], currentChat: null };
+      },
+      set(data) {
+        const current = this.get();
+        localStorage.setItem('stellar-store', JSON.stringify({ ...current, ...data }));
+      }
+    };
+
+    let chats = [];
+    let currentChatId = null;
+
+    function renderChatList() {
+      const s = Store.get();
+      chats = s.chats;
+      const container = document.getElementById('chats-list');
+      container.innerHTML = '';
+      chats.forEach(chat => {
+        const div = document.createElement('div');
+        div.className = `sidebar-item px-4 py-3 rounded-2xl text-sm cursor-pointer mb-2 ${chat.id === currentChatId ? 'bg-white/20 border-white/30' : ''}`;
+        const lastMsg = chat.messages?.length > 0 ? chat.messages[chat.messages.length-1].content.substring(0, 40) : 'No messages';
+        div.innerHTML = `<div class="font-bold truncate">${chat.name}</div><div class="text-xs text-[#64748b] truncate mt-0.5">${lastMsg}</div>`;
+        div.onclick = () => loadChat(chat.id);
+        container.appendChild(div);
+      });
+    }
+
+    function newChat() {
+      const id = 'chat_' + Date.now();
+      chats.unshift({ id, name: 'New chat', messages: [] });
+      Store.set({ chats, currentChat: id });
+      renderChatList();
+      loadChat(id);
+    }
+
+    function loadChat(id) {
+      currentChatId = id;
+      const s = Store.get();
+      const chat = s.chats.find(c => c.id === id);
+      if (!chat) return;
+      document.getElementById('chat-title').textContent = chat.name;
+      const chatEl = document.getElementById('chat');
+      
+      if (chat.messages.length === 0) {
+        chatEl.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full text-center">
+            <div class="text-4xl font-black mb-3">Stellar AI</div>
+            <div class="text-[#64748b] font-bold text-lg">Generate FiveM & Roblox scripts instantly</div>
+            <div class="mt-8 grid grid-cols-2 gap-3">
+              <button onclick="setPrompt('Generate a FiveM job system with pay')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">📋 Job System</button>
+              <button onclick="setPrompt('Create a Roblox health & damage system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">💚 Health</button>
+              <button onclick="setPrompt('Generate a FiveM bank heist script')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🏦 Heist</button>
+              <button onclick="setPrompt('Create an inventory system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🎒 Inventory</button>
+            </div>
+          </div>
+        `;
+      } else {
+        chatEl.innerHTML = chat.messages.map(msg => {
+          let content = msg.content;
+          if (content.includes('```')) {
+            content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+              const actualLang = lang || 'lua';
+              try {
+                const highlighted = hljs.highlight(code.trim(), { language: actualLang }).value;
+                return `<div class="glass border border-white/15 rounded-xl overflow-hidden my-2">
+                  <div class="flex justify-between items-center px-4 py-2 bg-white/5 border-b border-white/10">
+                    <span class="text-xs text-[#64748b] font-bold">${actualLang}</span>
+                    <button onclick="copyCode(this)" class="text-xs px-3 py-1 glass border border-white/15 rounded font-bold hover:bg-white/10">Copy</button>
+                  </div>
+                  <pre><code>${highlighted}</code></pre>
+                </div>`;
+              } catch (e) {
+                return `<pre class="glass rounded-xl p-4 my-2"><code>${escapeHtml(code)}</code></pre>`;
+              }
+            });
+          }
+          return `<div class="message max-w-[85%] mb-4 px-5 py-3.5 rounded-3xl ${msg.role === 'user' ? 'ml-auto glass-strong border border-white/20' : 'glass border border-white/15'} font-bold">${content}</div>`;
+        }).join('');
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+      renderChatList();
+    }
+
+    function setPrompt(text) {
+      document.getElementById('txt').value = text;
+      document.getElementById('txt').focus();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function copyCode(btn) {
+      const code = btn.parentElement.parentElement.nextElementSibling.textContent;
+      navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('txt');
+      const text = input.value.trim();
+      if (!text || !currentChatId) return;
+      
+      const s = Store.get();
+      const chat = s.chats.find(c => c.id === currentChatId);
+      chat.messages.push({ role: 'user', content: text });
+      Store.set({ chats: s.chats });
+      loadChat(currentChatId);
+      input.value = '';
+
+      const chatEl = document.getElementById('chat');
+      const loading = document.createElement('div');
+      loading.className = 'message glass border border-white/15 rounded-3xl px-5 py-3.5';
+      loading.innerHTML = '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>';
+      chatEl.appendChild(loading);
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      try {
+        const model = s.plan !== 'free' ? 'claude-opus-4-8' : 'claude-sonnet-4-6';
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            max_tokens: 4000,
+            _client_plan: s.plan,
+            system: 'You are Stellar AI, expert in FiveM (QBCore) and Roblox. Provide complete working code in markdown. FIVEM PEDs: shopkeeper=s_m_m_shopkeep_01, police=s_m_full_police_01, dealer=g_m_y_lost_01, mechanic=s_m_m_mech_01, doctor=s_m_m_doctor_01. Spawn with CreatePed(4,modelHash,x,y,z,heading,false,true). VEHICLES: supercars=adder,zentorno,t20; sports=sultan,jester,elegy2; emergency=police,police2,sheriff,ambulance. RequestModel + HasModelLoaded before CreateVehicle. SetVehicleNumberPlateText for plates. NetworkRegisterEntityAsNetworked for sync.',
+            messages: chat.messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content }))
+          })
+        });
+
+        if (!response.ok) throw new Error('API error');
+        
+        loading.remove();
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
+        let full = '';
+        let msgBubble = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split('\n');
+          buf = lines.pop();
+          
+          for (const line of lines) {
+            if (!line.startsWith('data:')) continue;
+            const payload = line.slice(5).trim();
+            if (!payload || payload === '[DONE]') continue;
+            try {
+              const j = JSON.parse(payload);
+              if (j.type === 'content_block_delta' && j.delta?.text) {
+                full += j.delta.text;
+                if (!msgBubble) {
+                  msgBubble = document.createElement('div');
+                  msgBubble.className = 'message glass border border-white/15 rounded-3xl px-5 py-3.5 mb-4 font-bold';
+                  chatEl.appendChild(msgBubble);
+                }
+                msgBubble.innerHTML = full.replace(/```(\w+)?\n([\s\S]*?)```/g, (m, lang, code) => {
+                  try {
+                    const h = hljs.highlight(code.trim(), { language: lang || 'lua' }).value;
+                    return `<div class="glass border border-white/15 rounded-xl overflow-hidden my-2"><div class="flex justify-between items-center px-4 py-2 bg-white/5 border-b border-white/10"><span class="text-xs text-[#64748b]">${lang || 'lua'}</span></div><pre><code>${h}</code></pre></div>`;
+                  } catch (e) { return `<pre>${escapeHtml(code)}</pre>`; }
+                });
+                chatEl.scrollTop = chatEl.scrollHeight;
+              }
+            } catch (e) {}
+          }
+        }
+
+        if (full) {
+          chat.messages.push({ role: 'ai', content: full });
+          Store.set({ chats: s.chats });
+          loadChat(currentChatId);
+        }
+      } catch (error) {
+        loading.remove();
+        chat.messages.push({ role: 'ai', content: '⚠️ Connection error — try again.' });
+        Store.set({ chats: s.chats });
+        loadChat(currentChatId);
+      }
+    }
+
+    function changeModel() {
+      const s = Store.get();
+      if (s.plan === 'free' && document.getElementById('model-select').value === 'ultra') {
+        document.getElementById('model-select').value = 'smart';
+        alert('Ultra requires Pro plan');
+      }
+    }
+
+    function openPlans() { document.getElementById('plans-modal').classList.remove('hidden'); }
+    function closePlans() { document.getElementById('plans-modal').classList.add('hidden'); }
+    function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
+    function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+
+    function setMode(mode) {
+      document.body.classList.toggle('light', mode === 'light');
+      Store.set({ mode });
+    }
+
+    function toggleDarkMode() {
+      const s = Store.get();
+      const newMode = s.mode === 'dark' ? 'light' : 'dark';
+      setMode(newMode);
+    }
+
+    function checkout(plan) {
+      const btns = document.querySelectorAll('#plans-modal button');
+      btns.forEach(b => b.disabled = true);
+      fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan })
+      }).then(r => r.json()).then(data => {
+        if (data.url) window.location.href = data.url;
+        else alert(data.error || 'Checkout not ready yet');
+      }).catch(() => alert('Could not reach checkout')).finally(() => {
+        btns.forEach(b => b.disabled = false);
+      });
+    }
+
+    function init() {
+      const s = Store.get();
+      chats = s.chats;
+      if (s.mode === 'light') document.body.classList.add('light');
+      
+      const params = new URLSearchParams(location.search);
+      if (params.get('success') === 'true') {
+        Store.set({ plan: 'pro' });
+        history.replaceState(null, '', location.pathname);
+        setTimeout(() => alert('🎉 Welcome to Pro! Ultra model unlocked.'), 400);
+      }
+
+      renderChatList();
+      if (chats.length === 0) newChat();
+      else loadChat(s.currentChat || chats[0].id);
+    }
+
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
