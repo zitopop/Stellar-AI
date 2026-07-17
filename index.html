@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Stellar AI - Generate FiveM scripts with AI">
+  <meta name="theme-color" content="#060309">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stellar AI">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  <title>Stellar AI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    /* Baked-in styles — no CDN, no warning */
+    *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}
+    button,input,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0;background-color:transparent}
+    button{cursor:pointer}
+    @keyframes twspin{to{transform:rotate(360deg)}}
+    .fixed{position:fixed}
+    .inset-0{inset:0}
+    .z-50{z-index:50}
+    .flex{display:flex}
+    .grid{display:grid}
+    .hidden{display:none}
+    .flex-col{flex-direction:column}
+    .flex-1{flex:1 1 0%}
+    .items-center{align-items:center}
+    .justify-center{justify-content:center}
+    .justify-between{justify-content:space-between}
+    .grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .gap-1{gap:.25rem}
+    .gap-2{gap:.5rem}
+    .gap-3{gap:.75rem}
+    .gap-4{gap:1rem}
+    .w-full{width:100%}
+    .w-72{width:18rem}
+    .w-10{width:2.5rem}
+    .w-4{width:1rem}
+    .h-screen{height:100vh}
+    .h-full{height:100%}
+    .h-14{height:3.5rem}
+    .h-10{height:2.5rem}
+    .h-4{height:1rem}
+    .min-w-0{min-width:0}
+    .max-w-md{max-width:28rem}
+    .max-w-\[85\%\]{max-width:85%}
+    .max-h-\[85vh\]{max-height:85vh}
+    .mx-4{margin-left:1rem;margin-right:1rem}
+    .ml-auto{margin-left:auto}
+    .mt-auto{margin-top:auto}
+    .mt-0\.5{margin-top:.125rem}
+    .mt-4{margin-top:1rem}
+    .mt-8{margin-top:2rem}
+    .mb-1{margin-bottom:.25rem}
+    .mb-2{margin-bottom:.5rem}
+    .mb-3{margin-bottom:.75rem}
+    .mb-4{margin-bottom:1rem}
+    .mb-6{margin-bottom:1.5rem}
+    .my-2{margin-top:.5rem;margin-bottom:.5rem}
+    .p-4{padding:1rem}
+    .p-5{padding:1.25rem}
+    .p-6{padding:1.5rem}
+    .p-8{padding:2rem}
+    .px-1\.5{padding-left:.375rem;padding-right:.375rem}
+    .px-2{padding-left:.5rem;padding-right:.5rem}
+    .px-3{padding-left:.75rem;padding-right:.75rem}
+    .px-4{padding-left:1rem;padding-right:1rem}
+    .px-5{padding-left:1.25rem;padding-right:1.25rem}
+    .px-6{padding-left:1.5rem;padding-right:1.5rem}
+    .py-0\.5{padding-top:.125rem;padding-bottom:.125rem}
+    .py-1{padding-top:.25rem;padding-bottom:.25rem}
+    .py-1\.5{padding-top:.375rem;padding-bottom:.375rem}
+    .py-2{padding-top:.5rem;padding-bottom:.5rem}
+    .py-2\.5{padding-top:.625rem;padding-bottom:.625rem}
+    .py-3{padding-top:.75rem;padding-bottom:.75rem}
+    .py-3\.5{padding-top:.875rem;padding-bottom:.875rem}
+    .pt-4{padding-top:1rem}
+    .text-left{text-align:left}
+    .text-center{text-align:center}
+    .text-xs{font-size:.75rem;line-height:1rem}
+    .text-sm{font-size:.875rem;line-height:1.25rem}
+    .text-lg{font-size:1.125rem;line-height:1.75rem}
+    .text-xl{font-size:1.25rem;line-height:1.75rem}
+    .text-2xl{font-size:1.5rem;line-height:2rem}
+    .text-4xl{font-size:2.25rem;line-height:2.5rem}
+    .font-bold{font-weight:700}
+    .font-black{font-weight:900}
+    .tracking-\[-0\.5px\]{letter-spacing:-0.5px}
+    .tracking-\[-0\.3px\]{letter-spacing:-0.3px}
+    .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .whitespace-pre-wrap{white-space:pre-wrap}
+    .text-white{color:#fff}
+    .text-red-300{color:#fca5a5}
+    .text-\[\#e2e8f0\]{color:#e2e8f0}
+    .text-\[\#64748b\]{color:#64748b}
+    .text-\[\#94a3b8\]{color:#94a3b8}
+    .bg-black\/60{background-color:rgba(0,0,0,.6)}
+    .bg-white\/5{background-color:rgba(255,255,255,.05)}
+    .bg-white\/20{background-color:rgba(255,255,255,.2)}
+    .bg-\[\#10a37f\]{background-color:#10a37f}
+    .bg-\[\#10a37f\]\/10{background-color:rgba(16,163,127,.1)}
+    .border{border-width:1px}
+    .border-2{border-width:2px}
+    .border-t{border-top-width:1px}
+    .border-b{border-bottom-width:1px}
+    .border-r{border-right-width:1px}
+    .border-white\/10{border-color:rgba(255,255,255,.1)}
+    .border-white\/15{border-color:rgba(255,255,255,.15)}
+    .border-white\/20{border-color:rgba(255,255,255,.2)}
+    .border-white\/30{border-color:rgba(255,255,255,.3)}
+    .border-\[\#10a37f\]{border-color:#10a37f}
+    .border-red-400\/40{border-color:rgba(248,113,113,.4)}
+    .border-t-white{border-top-color:#fff}
+    .rounded{border-radius:.25rem}
+    .rounded-lg{border-radius:.5rem}
+    .rounded-xl{border-radius:.75rem}
+    .rounded-2xl{border-radius:1rem}
+    .rounded-3xl{border-radius:1.5rem}
+    .rounded-full{border-radius:9999px}
+    .overflow-hidden{overflow:hidden}
+    .overflow-y-auto{overflow-y:auto}
+    .cursor-pointer{cursor:pointer}
+    .resize-none{resize:none}
+    .opacity-70{opacity:.7}
+    .transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}
+    .transition-colors{transition-property:color,background-color,border-color;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}
+    .animate-spin{animation:twspin 1s linear infinite}
+    .space-y-1>*+*{margin-top:.25rem}
+    .space-y-5>*+*{margin-top:1.25rem}
+    .placeholder-\[\#64748b\]::placeholder{color:#64748b}
+    .focus\:outline-none:focus{outline:none}
+    .focus\:border-white\/30:focus{border-color:rgba(255,255,255,.3)}
+    .hover\:bg-white\/10:hover{background-color:rgba(255,255,255,.1)}
+    .hover\:bg-white\/15:hover{background-color:rgba(255,255,255,.15)}
+    .hover\:border-white\/30:hover{border-color:rgba(255,255,255,.3)}
+    .hover\:bg-red-400\/10:hover{background-color:rgba(248,113,113,.1)}
+    .active\:scale-\[0\.985\]:active{transform:scale(.985)}
+    .relative{position:relative}
+    .absolute{position:absolute}
+    .right-0{right:0}
+    .mt-2{margin-top:.5rem}
+    .w-64{width:16rem}
+    .text-\[\#10a37f\]{color:#10a37f}
+    .max-w-4xl{max-width:56rem}
+  </style>
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; 
+      background-color: #060309;
+      background-image:
+        radial-gradient(ellipse 90% 60% at 50% -15%, rgba(124,58,237,0.10), transparent 60%);
+      font-weight: 600;
+    }
+    
+    .glass {
+      background: rgba(15, 15, 20, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    }
+    
+    .glass-strong {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    /* PERFORMANCE: no expensive blur on chat bubbles or code blocks */
+    .message, .message .glass, .message.glass-strong {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    .message.glass, .message .glass { background: rgba(16,16,22,0.92); }
+    .message.glass-strong { background: rgba(255,255,255,0.10); }
+
+    .sidebar-item { 
+      transition: all 0.2s ease;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+    }
+    .sidebar-item:hover { 
+      background-color: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.25);
+    }
+    .sidebar-item:active {
+      transform: scale(0.98);
+    }
+
+    .message {
+      font-size: 14px;
+      line-height: 1.65;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    code {
+      font-family: "Monaco", "Menlo", monospace;
+      font-size: 13px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 16px;
+      overflow-x: auto;
+    }
+
+    /* MOBILE SIDEBAR */
+    #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 40; }
+    #overlay.open { display: block; }
+    .menu-btn-mobile { display: flex; }
+    @media (max-width: 767px) {
+      .menu-btn-mobile { display: flex; }
+      #sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+        width: 82%; max-width: 300px;
+        transform: translateX(-105%);
+        transition: transform 0.28s ease;
+      }
+      #sidebar.open { transform: translateX(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #sidebar { transition: none; }
+    }
+
+    /* IPHONE POLISH */
+    * { -webkit-tap-highlight-color: transparent; }
+    button, select { touch-action: manipulation; }
+    body { overscroll-behavior-y: none; }
+    div.h-screen { height: 100vh; height: 100dvh; }
+    #chat { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    #sidebar { padding-top: calc(1rem + env(safe-area-inset-top)); padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
+    div.input-area { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+    @media (max-width: 767px) {
+      input, textarea, select { font-size: 16px !important; }
+      div.input-area { padding: 12px 12px calc(12px + env(safe-area-inset-bottom)) 12px; }
+      div.topbar { padding-left: 12px; padding-right: 12px; }
+      #chat { padding: 16px; }
+      #chat-title { max-width: 30vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .topbar .gap-4 { gap: .5rem; }
+    }
+
+    /* LIGHT MODE — Stellar Clean (Manus-style) */
+    body.light { background: #f7f7f8; background-image: none; color: #18181b; }
+    body.light [class*="border-white"] { border-color: rgba(0,0,0,0.1) !important; }
+    body.light [class*="bg-white/"] { background-color: rgba(0,0,0,0.04) !important; }
+    body.light .text-white { color: #18181b; }
+    body.light [class*="bg-[#10a37f]"] { color: #ffffff !important; }
+    body.light .text-\[\#94a3b8\] { color: #52606d; }
+    body.light .glass {
+      background: rgba(255,255,255,0.94);
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+    body.light .glass-strong {
+      background: #ffffff;
+      border-color: rgba(0,0,0,0.12);
+    }
+    body.light .sidebar-item { background: #ffffff; border-color: rgba(0,0,0,0.08) !important; }
+    body.light .sidebar-item:hover { background-color: #f1f1f3; }
+    body.light .message.glass { background: #ffffff; border-color: rgba(0,0,0,0.1) !important; color: #18181b; }
+    body.light .message.glass-strong {
+      background: rgba(16,163,127,0.10) !important;
+      border-color: rgba(16,163,127,0.35) !important;
+      color: #0b3f33;
+    }
+    body.light .message .glass { background: #1b1b1f !important; border-color: rgba(0,0,0,0.25) !important; color: #e6e6e6; }
+    body.light .message .glass [class*="bg-white/"] { background-color: rgba(255,255,255,0.06) !important; }
+    body.light #overlay { background: rgba(0,0,0,0.35); }
+    body.light .primary-btn {
+      background: #18181b !important;
+      color: #ffffff !important;
+      border-color: #18181b !important;
+    }
+    body.light .primary-btn:hover { background: #2a2a2e !important; }
+
+    /* SIDEBAR GLOW-UP */
+    .brand-star { color: #10a37f; text-shadow: 0 0 18px rgba(16,163,127,0.55); }
+    .chats-label { font-size: 11px; font-weight: 900; letter-spacing: 2px; color: #64748b; text-transform: uppercase; margin: 2px 4px 8px; }
+    .sidebar-item.active { border-left: 3px solid #10a37f !important; background: rgba(16,163,127,0.12) !important; border-color: rgba(16,163,127,0.35) !important; }
+    body.light .sidebar-item.active { background: rgba(16,163,127,0.08) !important; }
+
+    /* POSH HOVER-REVEAL ACTIONS */
+    .chat-actions { opacity: 0.65; transition: opacity 0.15s ease; }
+    @media (hover: hover) {
+      .chat-actions { opacity: 0; }
+      .sidebar-item:hover .chat-actions { opacity: 1; }
+    }
+
+    /* COLLAPSIBLE SIDEBAR (desktop) */
+    @media (min-width: 768px) {
+      #sidebar { transition: margin-left 0.25s ease; }
+      #sidebar.collapsed { margin-left: -18rem; }
+    }
+
+    /* PURPLE PLANS EXPERIENCE */
+    #plans-modal, #settings-modal { background: rgba(12,7,22,0.72); }
+    #plans-modal > div {
+      background:
+        radial-gradient(ellipse 120% 50% at 50% -10%, rgba(124,58,237,0.16), transparent 55%),
+        rgba(13,9,20,0.96);
+      border-color: rgba(139,92,246,0.3);
+      box-shadow: none;
+    }
+    body.light #plans-modal > div {
+      background: #ffffff;
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+
+    /* PLANS — BOLD, CENTERED, SIMPLE, NO SCROLLING */
+    .plans-card { display: flex; flex-direction: column; overflow: hidden; overscroll-behavior: contain; }
+    .plans-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex: none; }
+    .plans-grid { display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0; overflow: hidden; }
+    .plan-card { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 5px; padding: 12px 14px; border-radius: 20px; overflow: hidden; }
+    .plan-num { font-size: 10px; font-weight: 900; letter-spacing: 3px; color: rgba(139,92,246,0.9); }
+    body.light .plan-num { color: #7c3aed; }
+    .plan-name { font-weight: 900; font-size: 20px; letter-spacing: -0.5px; line-height: 1.1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .plan-badge { font-size: 9px; font-weight: 900; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 999px; background: #10a37f; color: #fff; white-space: nowrap; }
+    .plan-price { font-weight: 900; font-size: 22px; letter-spacing: -0.5px; line-height: 1; }
+    .plan-price span { font-size: 12px; font-weight: 800; color: #94a3b8; letter-spacing: 0; }
+    .plan-card.lite .plan-price { color: #10a37f; }
+    .plan-desc { font-size: 13px; font-weight: 800; color: #94a3b8; line-height: 1.4; }
+    .plan-feats { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; font-weight: 800; color: #cbd5e1; line-height: 1.35; }
+    body.light .plan-desc { color: #6b7280; }
+    body.light .plan-feats { color: #374151; }
+    .plan-btn { width: 100%; padding: 11px 0; border-radius: 14px; font-weight: 900; font-size: 14px; margin-top: 4px; flex: none; }
+    @media (max-width: 767px) {
+      #plans-modal { align-items: stretch; }
+      .plans-card { width: 100%; max-width: none; margin: 0; border-radius: 0; border: none; height: 100dvh; max-height: 100dvh; padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom)); }
+      .plans-head { position: relative; justify-content: center; text-align: center; }
+      .plans-head button { position: absolute; right: 0; top: -2px; }
+      .plan-desc { display: none; }
+    }
+    @media (min-width: 768px) {
+      .plans-card { max-height: calc(100dvh - 48px); }
+      .plans-grid { flex-direction: row; align-items: stretch; overflow: visible; }
+      .plan-card { justify-content: flex-start; padding: 26px 20px; gap: 8px; }
+      .plan-name { font-size: 22px; }
+      .plan-price { font-size: 26px; }
+      .plan-btn { margin-top: auto; }
+    }
+    /* PLANS POSH PASS — purple text, bigger */
+    .plan-name { color: #b79cff; font-size: 22px; }
+    body.light .plan-name { color: #7c3aed; }
+    .plan-price { font-size: 24px; }
+    .plan-feats { font-size: 13px; }
+    .plan-feats div::first-letter { color: #a78bfa; }
+    body.light .plan-feats div::first-letter { color: #7c3aed; }
+    @media (min-width: 768px) {
+      .plan-name { font-size: 24px; }
+      .plan-price { font-size: 28px; }
+    }
+    @media (max-width: 767px) and (max-height: 760px) {
+      .plan-name { font-size: 19px; }
+      .plan-price { font-size: 21px; }
+      .plan-feats { font-size: 12px; }
+      .plan-card { gap: 3px; padding: 9px 12px; }
+    }
+    @media (max-height: 480px) { .plans-grid { overflow-y: auto; } }
+    @media (min-width: 768px) and (max-width: 919px) {
+      .plan-card { padding: 10px 8px; min-width: 0; }
+      .plan-feats div { font-size: 12px; }
+    }
+    .composer-foot { display: flex; justify-content: flex-end; margin-top: 8px; }
+    .menu-up { bottom: 100%; top: auto; margin-bottom: 8px; }
+    @keyframes star-think {
+      0%   { transform: rotate(0deg) scale(1); opacity: .85; }
+      50%  { transform: rotate(180deg) scale(1.3); opacity: 1; }
+      100% { transform: rotate(360deg) scale(1); opacity: .85; }
+    }
+    .think-star { display: inline-block; color: #10a37f; font-size: 20px; line-height: 1;
+      animation: star-think 1.4s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(16, 163, 127, .8)); }
+    @keyframes text-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .think-text { font-weight: 800; font-size: 14px;
+      background: linear-gradient(90deg, rgba(255,255,255,.35) 25%, #ffffff 50%, rgba(255,255,255,.35) 75%);
+      background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: text-shimmer 1.6s linear infinite; }
+    body.light .think-text {
+      background: linear-gradient(90deg, rgba(15,23,42,.35) 25%, #0f172a 50%, rgba(15,23,42,.35) 75%);
+      background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .logo-working { display: inline-block; animation: star-think 1.4s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(16, 163, 127, .8)); }
+    /* compact & calm */
+    #chat { max-width: 780px; width: 100%; margin-left: auto; margin-right: auto; }
+    .input-area > .flex, .input-area .composer-foot { max-width: 780px; margin-left: auto; margin-right: auto; }
+    .message { padding: 10px 14px !important; border-radius: 16px !important; font-weight: 500; }
+    .input-area textarea { padding: 10px 14px !important; font-size: 14px !important; }
+    .input-area #send-btn { padding-left: 18px !important; padding-right: 18px !important; font-size: 14px !important; }
+    body:not(.light) .glass, body:not(.light) .glass-strong { border-color: rgba(255,255,255,0.06) !important; }
+    body:not(.light) {
+      background-image:
+        radial-gradient(1.5px 1.5px at 22% 18%, rgba(255,255,255,0.35), transparent 100%),
+        radial-gradient(1px 1px at 68% 9%, rgba(255,255,255,0.28), transparent 100%),
+        radial-gradient(1.2px 1.2px at 84% 32%, rgba(255,255,255,0.22), transparent 100%),
+        radial-gradient(1px 1px at 12% 55%, rgba(255,255,255,0.18), transparent 100%),
+        radial-gradient(1.4px 1.4px at 45% 78%, rgba(255,255,255,0.20), transparent 100%),
+        radial-gradient(1px 1px at 90% 85%, rgba(255,255,255,0.16), transparent 100%),
+        radial-gradient(ellipse 90% 55% at 50% -18%, rgba(124,58,237,0.16), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 110% 110%, rgba(16,163,127,0.10), transparent 60%),
+        radial-gradient(ellipse 60% 45% at -10% 80%, rgba(167,139,250,0.08), transparent 60%);
+    }
+    #send-btn { background: linear-gradient(180deg, rgba(124,58,237,0.30), rgba(124,58,237,0.14)) !important; border-color: rgba(139,92,246,0.45) !important; }
+    #send-btn:hover { background: linear-gradient(180deg, rgba(124,58,237,0.42), rgba(124,58,237,0.20)) !important; }
+    body.light #send-btn { background: #7c3aed !important; border-color: #7c3aed !important; color: #ffffff; }
+    /* posh sidebar */
+    .brand-title { font-size: 22px; font-weight: 900; letter-spacing: -0.3px; }
+    .brand-grad { background: linear-gradient(135deg, #ffffff 0%, #cdbcff 55%, #8b5cf6 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent; }
+    body.light .brand-grad { background: linear-gradient(135deg, #1e1b2e 0%, #5b21b6 70%, #7c3aed 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent; }
+    body:not(.light) #sidebar { background: linear-gradient(180deg, rgba(13,9,20,0.92), rgba(7,4,12,0.92)); }
+    .side-new { padding: 11px; border-radius: 14px; font-weight: 800; font-size: 14px; letter-spacing: .01em;
+      background: linear-gradient(180deg, rgba(124,58,237,0.24), rgba(124,58,237,0.10));
+      border: 1px solid rgba(139,92,246,0.35); color: #fff; }
+    .side-new:hover { background: linear-gradient(180deg, rgba(124,58,237,0.34), rgba(124,58,237,0.16)); }
+    body.light .side-new { background: #ede9fe; border-color: #c4b5fd; color: #5b21b6; }
+    #search { background: rgba(255,255,255,0.04) !important; border-color: rgba(255,255,255,0.08) !important; font-weight: 600 !important; }
+    body.light #search { background: rgba(0,0,0,0.03) !important; border-color: rgba(0,0,0,0.08) !important; }
+    .chats-label { font-size: 10.5px !important; letter-spacing: .16em !important; text-transform: uppercase !important;
+      color: rgba(139,92,246,0.85) !important; font-weight: 800 !important; }
+    body.light .chats-label { color: #7c3aed !important; }
+    .side-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .side-act { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px;
+      border-radius: 14px; border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.03);
+      font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #a7a7bd; }
+    .side-act .ico { font-size: 16px; }
+    .side-act:hover { background: rgba(255,255,255,0.08); color: #ffffff; }
+    body.light .side-act { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); color: #6b7280; }
+    body.light .side-act:hover { background: rgba(0,0,0,0.05); color: #111; }
+    /* purchase celebration */
+    .thanks-card { animation: thanks-pop .45s cubic-bezier(.2,1.4,.4,1); }
+    @keyframes thanks-pop { 0% { transform: scale(.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .thanks-star { font-size: 44px; color: #10a37f; filter: drop-shadow(0 0 14px rgba(16,163,127,.8));
+      margin-bottom: 10px; animation: star-think 1.4s ease-in-out infinite; display: inline-block; }
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+    /* allowance meter */
+    .composer-foot { justify-content: flex-end; align-items: center; gap: 10px; }
+    .composer-foot > .relative { flex: none; }
+    .limit-actions { display: flex; flex-direction: column; gap: 8px; }
+    .set-usage-val { display: flex; align-items: center; gap: 8px; }
+    .set-meter { width: 96px; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.12); overflow: hidden; flex: none; }
+    body.light .set-meter { background: rgba(0,0,0,0.12); }
+    .set-meter-fill { height: 100%; border-radius: 99px; background: #10a37f; transition: width .3s, background .3s; }
+    .set-meter-fill.mid { background: #f59e0b; }
+    .set-meter-fill.low { background: #ef4444; }
+    /* top-up picker */
+    .topup-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .topup-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px;
+      border-radius: 14px; border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04); }
+    .topup-chip:hover { background: rgba(124,58,237,0.18); border-color: rgba(139,92,246,0.4); }
+    .topup-chip .tq { font-weight: 900; font-size: 17px; }
+    .topup-chip .tp { font-weight: 800; font-size: 11px; color: #8b8b9e; }
+    body.light .topup-chip { border-color: rgba(0,0,0,0.1); background: rgba(0,0,0,0.03); }
+    .topup-custom { padding: 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+    body.light .topup-custom { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
+    #topup-range { width: 100%; accent-color: #8b5cf6; }
+
+    /* SETTINGS — POSH LABELLED ROWS, BIG & BOLD */
+    .set-label { font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: rgba(139,92,246,0.9); margin: 18px 2px 8px; }
+    body.light .set-label { color: #7c3aed; }
+    .set-group { border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; background: rgba(255,255,255,0.03); overflow: hidden; }
+    body.light .set-group { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
+    .set-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 16px; }
+    .set-item + .set-item { border-top: 1px solid rgba(255,255,255,0.08); }
+    body.light .set-item + .set-item { border-top-color: rgba(0,0,0,0.06); }
+    .set-key { font-size: 14px; font-weight: 800; color: #94a3b8; flex: none; }
+    body.light .set-key { color: #6b7280; }
+    .set-val { font-size: 15px; font-weight: 900; text-align: right; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .set-val.dim { color: #64748b; font-weight: 700; }
+    .set-click { cursor: pointer; }
+    .set-chev { color: rgba(139,92,246,0.9); }
+    .set-ava-wrap { display: flex; justify-content: center; margin: 2px 0 14px; }
+    .set-avatar { width: 60px; height: 60px; border-radius: 999px; background: rgba(124,58,237,0.25); border: 1px solid rgba(139,92,246,0.5); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; }
+    body.light .set-avatar { background: #ede9fe; border-color: #c4b5fd; color: #6d28d9; }
+    .seg-wrap { display: flex; gap: 8px; }
+    .seg { padding: 9px 16px; border-radius: 12px; font-weight: 900; font-size: 13px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); }
+    .seg.on { border-color: #10a37f; background: rgba(16,163,127,0.15); }
+    body.light .seg { border-color: rgba(0,0,0,0.1); background: rgba(0,0,0,0.02); }
+    body.light .seg.on { border-color: #10a37f; background: rgba(16,163,127,0.1); }
+    .set-card { display: flex; flex-direction: column; overflow: hidden; }
+    .set-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+    @media (max-width: 767px) {
+      #settings-modal { align-items: stretch; }
+      .set-card { width: 100%; max-width: none; margin: 0; border-radius: 0; border: none; height: 100dvh; max-height: 100dvh; padding: calc(16px + env(safe-area-inset-top)) 16px calc(12px + env(safe-area-inset-bottom)); }
+    }
+    @media (min-width: 768px) {
+      .set-card { max-width: 34rem; max-height: calc(100dvh - 48px); }
+    }
+  </style>
+</head>
+<body class="text-[#e2e8f0]">
+  <div class="flex h-screen">
+    
+    <!-- GLASS SIDEBAR -->
+    <div id="sidebar" class="w-72 glass border-r border-white/10 flex flex-col p-4">
+      <div class="mb-6">
+        <div class="brand-title"><span class="brand-star" id="logo-star">✦</span> <span class="brand-grad">Stellar AI</span></div>
+      </div>
+
+      <button onclick="newChat()" class="side-new w-full mb-4 transition-all active:scale-[0.985]">
+        + New Chat
+      </button>
+
+      <input id="search" oninput="renderChatList()" placeholder="&#128269; Search chats" class="w-full mb-4 bg-white/5 border border-white/15 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none focus:border-white/30 text-white placeholder-[#64748b]">
+
+      <div class="chats-label">Chats</div>
+      <div class="flex-1 overflow-y-auto" id="chats-list"></div>
+
+      <div class="mt-auto pt-4 border-t border-white/10 side-foot">
+        <button onclick="openPlans()" class="side-act"><span class="ico">💎</span>Plans</button>
+        <button onclick="toggleDarkMode()" class="side-act"><span class="ico">🌙</span>Theme</button>
+        <button onclick="location.href='/terms.html'" class="side-act"><span class="ico">📜</span>Terms</button>
+        <button onclick="openSettings()" class="side-act"><span class="ico">⚙️</span>Settings</button>
+      </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col">
+      <div class="topbar h-14 glass border-b border-white/10 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+          <button onclick="toggleSidebar()" class="menu-btn-mobile w-10 h-10 items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">☰</button>
+          <button onclick="newChat()" title="New chat" class="w-10 h-10 flex items-center justify-center rounded-xl text-xl font-black hover:bg-white/10 transition-colors">+</button>
+          <div id="chat-title" class="font-black tracking-[-0.3px]">Stellar AI</div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button onclick="toggleDarkMode()" id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">
+            🌙
+          </button>
+        </div>
+      </div>
+
+      <div id="chat" class="flex-1 overflow-y-auto p-6">
+        <div class="flex flex-col items-center justify-center h-full text-center">
+          <div class="text-4xl font-black mb-3">Stellar AI</div>
+          <div class="text-[#64748b] font-bold text-lg">Generate FiveM & Roblox scripts instantly</div>
+          <div class="mt-8 grid grid-cols-2 gap-3">
+            <button onclick="setPrompt('Generate a FiveM job system with pay')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">📋 Job System</button>
+            <button onclick="setPrompt('Create a Roblox health & damage system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">💚 Health</button>
+            <button onclick="setPrompt('Generate a FiveM bank heist script')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🏦 Heist</button>
+            <button onclick="setPrompt('Create an inventory system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🎒 Inventory</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-area p-6 glass border-t border-white/10">
+        <div class="flex gap-3">
+          <textarea id="txt" rows="1" autofocus placeholder="Ask Stellar anything..." 
+                    class="flex-1 glass border border-white/10 rounded-2xl px-5 py-3.5 resize-none focus:outline-none font-bold text-white"
+                    onkeydown="if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if (!currentAbort) sendMessage(); }"></textarea>
+          <button id="send-btn" onclick="stopOrSend()" class="primary-btn px-6 glass-strong hover:bg-white/15 border border-white/20 rounded-2xl font-black transition-all active:scale-[0.985]">
+            Send
+          </button>
+        </div>
+        <div class="composer-foot">
+          <div class="relative">
+            <button id="model-btn" onclick="toggleModelMenu(event)" class="glass border border-white/10 rounded-lg px-3 py-1.5 text-sm font-bold">⭐ Star ▾</button>
+            <div id="model-menu" class="hidden menu-up absolute right-0 w-64 glass border border-white/20 rounded-2xl px-2 py-2 z-50">
+              <button onclick="pickModel('fabie')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-black text-sm">✨ Spark</div>
+                  <div class="text-xs text-[#64748b] font-bold">Instant — quick questions &amp; small jobs</div>
+                </div>
+                <div id="fabie-check" class="font-black text-sm text-[#10a37f]">✓</div>
+              </button>
+              <button onclick="pickModel('smart')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-black text-sm">⭐ Star</div>
+                  <div class="text-xs text-[#64748b] font-bold">Everyday scripts — fast &amp; reliable</div>
+                </div>
+                <div id="smart-check" class="font-black text-sm text-[#10a37f]">✓</div>
+              </button>
+              <button onclick="pickModel('ultra')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-black text-sm">🚀 Nova <span class="text-xs px-2 py-0.5 bg-[#10a37f] rounded text-white">PRO</span></div>
+                  <div id="ultra-desc" class="text-xs text-[#64748b] font-bold">Most powerful — big complex systems</div>
+                </div>
+                <div id="ultra-check" class="font-black text-sm text-[#10a37f]">✓</div>
+              </button>
+              <div class="border-t border-white/10 mt-2"></div>
+              <button onclick="document.getElementById('model-menu').classList.add('hidden'); openPlans()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 font-black text-sm">⭐ See all plans</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANS MODAL -->
+  <div id="plans-modal" onclick="if (event.target.id === 'plans-modal') closePlans()" 
+       class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="plans-card glass border border-white/20 rounded-3xl w-full max-w-4xl mx-4 p-8">
+      
+      <div class="plans-head">
+        <div>
+          <div class="text-2xl font-black tracking-[-0.5px]">Plans</div>
+          <div class="text-sm text-[#64748b] font-bold">Choose your power level</div>
+        </div>
+        <button onclick="closePlans()" class="text-2xl">×</button>
+      </div>
+
+      <div class="plans-grid">
+
+      <!-- Free -->
+      <div class="plan-card border border-white/10 glass">
+        <div class="plan-num">01</div>
+        <div class="plan-name">Free</div>
+        <div class="plan-price">£0</div>
+        <div class="plan-desc">Chat until your daily bar runs out. Refills every 24h.</div>
+        <div class="plan-feats">
+          <div>✓ Unlimited conversations</div>
+          <div>✓ Spark and Star models</div>
+          <div>✓ An allowance refreshed every 6 hours</div>
+          <div>✓ No card required</div>
+        </div>
+      </div>
+
+      <!-- Lite £10 -->
+      <div class="plan-card lite border border-[#10a37f] bg-[#10a37f]/10 glass">
+        <div class="plan-num">02</div>
+        <div class="plan-name">Lite <span class="plan-badge">MOST POPULAR</span></div>
+        <div class="plan-price">£10<span>/mo</span></div>
+        <div class="plan-desc">For regular script makers. 5x your daily bar.</div>
+        <div class="plan-feats">
+          <div>✓ A 5× larger allowance, every 6 hours</div>
+          <div>✓ Spark and Star models</div>
+          <div>✓ Unlimited conversations</div>
+          <div>✓ Cancel anytime</div>
+        </div>
+        <button onclick="checkout('lite')" class="plan-btn bg-[#10a37f] text-white">Get Lite</button>
+      </div>
+
+      <!-- Pro £30 -->
+      <div class="plan-card border border-white/10 glass">
+        <div class="plan-num">03</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">£30<span>/mo</span></div>
+        <div class="plan-desc">The full power of Stellar. Nova unlocked.</div>
+        <div class="plan-feats">
+          <div>✓ Nova — our most capable model</div>
+          <div>✓ All three models unlocked</div>
+          <div>✓ A 10× allowance, every 6 hours</div>
+          <div>✓ Cancel anytime</div>
+        </div>
+        <button onclick="checkout('pro')" class="plan-btn glass-strong border border-white/20">Go Pro</button>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" onclick="if (event.target.id === 'settings-modal') closeSettings()" 
+       class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="set-card glass border border-white/20 rounded-3xl w-full max-w-md mx-4 p-8">
+      <div class="flex justify-between mb-6">
+        <div class="text-2xl font-black">Settings</div>
+        <button onclick="closeSettings()" class="text-2xl">×</button>
+      </div>
+
+      <div class="set-body">
+      <div class="set-ava-wrap"><div class="set-avatar" id="set-avatar">S</div></div>
+
+      <div class="set-label">Account</div>
+      <div class="set-group">
+        <div class="set-item set-click" onclick="editName()">
+          <div class="set-key">Name</div>
+          <div class="set-val" id="set-name">Add your name</div>
+        </div>
+        <div class="set-item set-click" onclick="editEmail()">
+          <div class="set-key">Email</div>
+          <div class="set-val" id="set-email">Add your email</div>
+        </div>
+      </div>
+
+      <div class="set-label">Plan</div>
+      <div class="set-group">
+        <div class="set-item">
+          <div class="set-key">Plan</div>
+          <div class="set-val" id="set-plan">Free</div>
+        </div>
+        <div class="set-item">
+          <div class="set-key">Includes</div>
+          <div class="set-val dim" id="set-plan-desc">6h allowance · Spark + Star</div>
+        </div>
+        <div class="set-item set-click" onclick="closeSettings(); openPlans()">
+          <div class="set-key">Upgrade</div>
+          <div class="set-val set-chev">See all plans →</div>
+        </div>
+      </div>
+
+      <div class="set-label">Usage</div>
+      <div class="set-group">
+        <div class="set-item">
+          <div class="set-key">Usage</div>
+          <div class="set-val set-usage-val">
+            <div class="set-meter"><div id="set-meter-fill" class="set-meter-fill" style="width:100%"></div></div>
+            <span id="set-usage-pct">100%</span>
+          </div>
+        </div>
+        <div class="set-item">
+          <div class="set-key">Resets in</div>
+          <div class="set-val" id="set-usage-reset">6h 0m</div>
+        </div>
+        <div class="set-item" id="set-usage-wallet-row" style="display:none">
+          <div class="set-key">Top-up balance</div>
+          <div class="set-val" id="set-usage-wallet">0 messages</div>
+        </div>
+        <div class="set-item set-click" id="set-usage-action" onclick="closeSettings(); openPlans()">
+          <div class="set-key" id="set-usage-action-key">Upgrade</div>
+          <div class="set-val set-chev">Open →</div>
+        </div>
+      </div>
+
+      <div class="set-label">Appearance</div>
+      <div class="set-group">
+        <div class="set-item">
+          <div class="set-key">Theme</div>
+          <div class="seg-wrap">
+            <button id="seg-dark" class="seg" onclick="setMode('dark'); refreshSettings()">🌙 Dark</button>
+            <button id="seg-light" class="seg" onclick="setMode('light'); refreshSettings()">☀️ Light</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="set-label">Support</div>
+      <div class="set-group">
+        <div class="set-item">
+          <div class="set-key">Contact</div>
+          <div class="set-val">trystellarai.com</div>
+        </div>
+        <div class="set-item set-click" onclick="location.href='/terms.html'">
+          <div class="set-key">Terms &amp; Privacy</div>
+          <div class="set-val set-chev">Open →</div>
+        </div>
+      </div>
+
+      <button onclick="clearAllChats()" class="w-full py-2.5 border border-red-400/40 text-red-300 rounded-2xl font-bold mt-4 hover:bg-red-400/10">🗑️ Clear all chats</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP MODAL -->
+  <!-- THANK YOU MODAL -->
+  <div id="thanks-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="glass border border-white/20 rounded-3xl w-full max-w-sm mx-4 p-8 text-center thanks-card">
+      <div class="thanks-star">✦</div>
+      <div class="text-2xl font-black mb-2">Thank you for your purchase</div>
+      <div id="thanks-sub" class="text-sm font-bold text-[#94a3b8] mb-6"></div>
+      <button onclick="closeThanks()" class="side-new w-full">Continue</button>
+    </div>
+  </div>
+
+  <!-- ALLOWANCE LIMIT MODAL -->
+  <div id="limit-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="glass border border-white/20 rounded-3xl w-full max-w-sm mx-4 p-8 text-center thanks-card">
+      <div class="text-2xl font-black mb-2">Allowance used</div>
+      <div id="limit-sub" class="text-sm font-bold text-[#94a3b8] mb-6"></div>
+      <div class="limit-actions" id="limit-actions"></div>
+    </div>
+  </div>
+
+  <!-- TOP-UP PICKER MODAL -->
+  <div id="topup-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="glass border border-white/20 rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card">
+      <div class="text-2xl font-black mb-1">Top up messages</div>
+      <div class="text-sm font-bold text-[#94a3b8] mb-5">Pick a pack or set your own amount.</div>
+      <div class="topup-grid mb-4">
+        <button onclick="buyTopup(10)" class="topup-chip"><span class="tq">10</span><span class="tp">£0.50</span></button>
+        <button onclick="buyTopup(25)" class="topup-chip"><span class="tq">25</span><span class="tp">£0.75</span></button>
+        <button onclick="buyTopup(50)" class="topup-chip"><span class="tq">50</span><span class="tp">£1.50</span></button>
+        <button onclick="buyTopup(100)" class="topup-chip"><span class="tq">100</span><span class="tp">£3.00</span></button>
+      </div>
+      <div class="topup-custom">
+        <div class="text-xs font-black uppercase tracking-widest text-[#8b8b9e] mb-2">Custom</div>
+        <input type="range" id="topup-range" min="10" max="100" step="5" value="40" oninput="setTopupQty(this.value)">
+        <div id="topup-live" class="text-sm font-black mt-2">40 messages · £1.20</div>
+      </div>
+      <button id="topup-buy" onclick="buyTopup(document.getElementById('topup-range').value)" class="side-new w-full mt-4">Buy 40 messages — £1.20</button>
+      <button onclick="closeTopup()" class="plan-btn glass border border-white/15 w-full mt-2">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    const Store = {
+      get() {
+        const s = localStorage.getItem('stellar-store');
+        return s ? JSON.parse(s) : { mode: 'dark', plan: 'free', chats: [], currentChat: null };
+      },
+      set(data) {
+        const current = this.get();
+        localStorage.setItem('stellar-store', JSON.stringify({ ...current, ...data }));
+      }
+    };
+
+    let chats = [];
+    let currentChatId = null;
+
+    function renderChatList() {
+      const s = Store.get();
+      chats = s.chats;
+      const q = (document.getElementById('search')?.value || '').toLowerCase();
+      const container = document.getElementById('chats-list');
+      container.innerHTML = '';
+      const sorted = [...chats].sort((a, b) => (b.pinned === true) - (a.pinned === true));
+      sorted.forEach(chat => {
+        if (q && !(chat.name || '').toLowerCase().includes(q)) return;
+        const div = document.createElement('div');
+        div.className = `sidebar-item px-4 py-3 rounded-2xl text-sm cursor-pointer mb-2 ${chat.id === currentChatId ? 'active bg-white/20 border-white/30' : ''}`;
+        const lastMsg = chat.messages?.length > 0 ? chat.messages[chat.messages.length-1].content.substring(0, 40) : 'No messages';
+        div.innerHTML = `
+          <div class="flex justify-between items-center gap-2">
+            <div class="flex-1 min-w-0">
+              <div class="font-bold truncate">${chat.pinned ? '📌 ' : ''}${escapeHtml(chat.name)}</div>
+              <div class="text-xs text-[#64748b] truncate mt-0.5">${escapeHtml(lastMsg)}</div>
+            </div>
+            <div class="chat-actions flex gap-1">
+              <button onclick="event.stopPropagation(); togglePin('${chat.id}')" title="Pin" class="px-1.5 py-0.5 text-xs hover:bg-white/15 rounded">📌</button>
+              <button onclick="event.stopPropagation(); renameChat('${chat.id}')" title="Rename" class="px-1.5 py-0.5 text-xs hover:bg-white/15 rounded">✏️</button>
+              <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" title="Delete" class="px-1.5 py-0.5 text-xs hover:bg-white/15 rounded">🗑️</button>
+            </div>
+          </div>`;
+        div.onclick = () => loadChat(chat.id);
+        container.appendChild(div);
+      });
+    }
+
+    function togglePin(id) {
+      const s = Store.get();
+      const chat = s.chats.find(c => c.id === id);
+      if (!chat) return;
+      chat.pinned = !chat.pinned;
+      Store.set({ chats: s.chats });
+      renderChatList();
+    }
+
+    function renameChat(id) {
+      const s = Store.get();
+      const chat = s.chats.find(c => c.id === id);
+      if (!chat) return;
+      const newName = prompt('Rename chat:', chat.name);
+      if (newName && newName.trim()) {
+        chat.name = newName.trim().substring(0, 40);
+        Store.set({ chats: s.chats });
+        renderChatList();
+        if (currentChatId === id) document.getElementById('chat-title').textContent = chat.name;
+      }
+    }
+
+    function deleteChat(id) {
+      if (!confirm('Delete this chat?')) return;
+      const s = Store.get();
+      const remaining = s.chats.filter(c => c.id !== id);
+      Store.set({ chats: remaining });
+      chats = remaining;
+      if (currentChatId === id) {
+        if (remaining.length) loadChat(remaining[0].id);
+        else newChat();
+      } else {
+        renderChatList();
+      }
+    }
+
+    function clearAllChats() {
+      if (!confirm('Delete ALL chats? This cannot be undone.')) return;
+      Store.set({ chats: [], currentChat: null });
+      chats = [];
+      closeSettings();
+      newChat();
+    }
+
+    function toggleSidebar() {
+      const sb = document.getElementById('sidebar');
+      if (window.innerWidth >= 768) {
+        sb.classList.toggle('collapsed');
+      } else {
+        sb.classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('open');
+      }
+    }
+
+    function closeThanks() { document.getElementById('thanks-modal').classList.add('hidden'); }
+    function fireConfetti() {
+      const c = document.createElement('canvas');
+      c.id = 'confetti-canvas';
+      c.width = innerWidth; c.height = innerHeight;
+      document.body.appendChild(c);
+      const ctx = c.getContext('2d');
+      const cols = ['#8b5cf6', '#cdbcff', '#10a37f', '#ffffff', '#a78bfa'];
+      const bits = Array.from({ length: 140 }, () => ({
+        x: Math.random() * c.width,
+        y: -20 - Math.random() * c.height * 0.5,
+        w: 6 + Math.random() * 6,
+        h: 8 + Math.random() * 8,
+        vy: 2.2 + Math.random() * 3.2,
+        vx: -1.2 + Math.random() * 2.4,
+        rot: Math.random() * Math.PI,
+        vr: -0.12 + Math.random() * 0.24,
+        col: cols[Math.floor(Math.random() * cols.length)]
+      }));
+      const t0 = Date.now();
+      (function tick() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        for (const b of bits) {
+          b.x += b.vx; b.y += b.vy; b.rot += b.vr;
+          ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.rot);
+          ctx.fillStyle = b.col; ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+          ctx.restore();
+        }
+        if (Date.now() - t0 < 3200) requestAnimationFrame(tick);
+        else c.remove();
+      })();
+    }
+
+    // 6-hour allowance engine
+    const WINDOW_MS = 6 * 60 * 60 * 1000;
+    const BASE_ALLOWANCE = { free: 20, lite: 100, pro: 200 };
+    function getUsage() {
+      const s = Store.get();
+      let u = s.usage || { used: 0, windowStart: Date.now(), wallet: 0 };
+      if (Date.now() - u.windowStart >= WINDOW_MS) {
+        u = { used: 0, windowStart: Date.now(), wallet: u.wallet || 0 };
+        Store.set({ usage: u });
+      }
+      return u;
+    }
+    function allowanceFor() { const p = Store.get().plan || 'free'; return BASE_ALLOWANCE[p] || BASE_ALLOWANCE.free; }
+    function remainingMsgs() { const u = getUsage(); return Math.max(0, allowanceFor() - u.used) + (u.wallet || 0); }
+    function consumeMsg() {
+      const u = getUsage();
+      if (u.used < allowanceFor()) u.used += 1;
+      else if (u.wallet > 0) u.wallet -= 1;
+      Store.set({ usage: u });
+      renderMeter();
+    }
+    function refillTimeStr() {
+      const u = getUsage();
+      const left = Math.max(0, u.windowStart + WINDOW_MS - Date.now());
+      const h = Math.floor(left / 3600000), m = Math.ceil((left % 3600000) / 60000);
+      return h > 0 ? h + 'h ' + m + 'm' : m + 'm';
+    }
+    function renderMeter() {
+      const u = getUsage();
+      const allow = allowanceFor();
+      const pct = Math.min(100, Math.round(u.used / allow * 100));
+      const sfill = document.getElementById('set-meter-fill');
+      if (sfill) {
+        sfill.style.width = pct + '%';
+        sfill.classList.toggle('mid', pct > 60 && pct < 90);
+        sfill.classList.toggle('low', pct >= 90);
+      }
+      const sp = document.getElementById('set-usage-pct');
+      if (sp) {
+        sp.textContent = pct + '%';
+        document.getElementById('set-usage-reset').textContent = refillTimeStr();
+        const wr = document.getElementById('set-usage-wallet-row');
+        wr.style.display = (u.wallet > 0) ? '' : 'none';
+        document.getElementById('set-usage-wallet').textContent = (u.wallet || 0) + ' messages';
+        const plan = Store.get().plan || 'free';
+        const act = document.getElementById('set-usage-action');
+        const key = document.getElementById('set-usage-action-key');
+        if (plan === 'free') {
+          act.style.display = 'none';
+        } else {
+          act.style.display = '';
+          key.textContent = 'Buy top-up';
+          act.onclick = () => { closeSettings(); openTopup(); };
+        }
+      }
+    }
+    function showLimit() {
+      const plan = Store.get().plan || 'free';
+      document.getElementById('limit-sub').textContent = 'Your allowance refreshes in ' + refillTimeStr() + '.';
+      const acts = document.getElementById('limit-actions');
+      if (plan === 'free') {
+        acts.innerHTML = '<button onclick="closeLimit(); openPlans()" class="side-new w-full">Upgrade for a bigger allowance</button>' +
+          '<button onclick="closeLimit()" class="plan-btn glass border border-white/15">I will wait</button>';
+      } else {
+        acts.innerHTML = '<button onclick="closeLimit(); openTopup()" class="side-new w-full">Top up messages →</button>' +
+          '<button onclick="closeLimit()" class="plan-btn glass border border-white/15">I will wait</button>';
+      }
+      document.getElementById('limit-modal').classList.remove('hidden');
+    }
+    function closeLimit() { document.getElementById('limit-modal').classList.add('hidden'); }
+    function topupPricePence(n) { return Math.max(50, n * 3); }
+    function topupPriceStr(n) { return '£' + (topupPricePence(n) / 100).toFixed(2); }
+    function openTopup() {
+      const plan = Store.get().plan || 'free';
+      if (plan === 'free') { openPlans(); return; }
+      setTopupQty(document.getElementById('topup-range').value);
+      document.getElementById('topup-modal').classList.remove('hidden');
+    }
+    function closeTopup() { document.getElementById('topup-modal').classList.add('hidden'); }
+    function setTopupQty(n) {
+      n = parseInt(n, 10);
+      document.getElementById('topup-live').textContent = n + ' messages · ' + topupPriceStr(n);
+      document.getElementById('topup-buy').textContent = 'Buy ' + n + ' messages — ' + topupPriceStr(n);
+    }
+    function buyTopup(qty) {
+      qty = Math.max(10, Math.min(100, parseInt(qty, 10) || 10));
+      closeTopup();
+      fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: 'topup', qty })
+      }).then(r => r.json()).then(data => {
+        if (data.url) window.location.href = data.url;
+        else alert(data.error || 'Checkout not ready yet');
+      }).catch(() => alert('Could not reach checkout'));
+    }
+    setInterval(renderMeter, 30000);
+
+    function newChat() {
+      const id = 'chat_' + Date.now();
+      chats.unshift({ id, name: 'New chat', messages: [] });
+      Store.set({ chats, currentChat: id });
+      renderChatList();
+      loadChat(id);
+    }
+
+    function loadChat(id) {
+      currentChatId = id;
+      const s = Store.get();
+      const chat = s.chats.find(c => c.id === id);
+      if (!chat) return;
+      document.getElementById('chat-title').textContent = chat.name;
+      const chatEl = document.getElementById('chat');
+      
+      if (chat.messages.length === 0) {
+        chatEl.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full text-center">
+            <div class="text-4xl font-black mb-3">Stellar AI</div>
+            <div class="text-[#64748b] font-bold text-lg">Generate FiveM & Roblox scripts instantly</div>
+            <div class="mt-8 grid grid-cols-2 gap-3">
+              <button onclick="setPrompt('Generate a FiveM job system with pay')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">📋 Job System</button>
+              <button onclick="setPrompt('Create a Roblox health & damage system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">💚 Health</button>
+              <button onclick="setPrompt('Generate a FiveM bank heist script')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🏦 Heist</button>
+              <button onclick="setPrompt('Create an inventory system')" class="px-4 py-2 glass border border-white/15 rounded-xl text-sm font-bold hover:border-white/30">🎒 Inventory</button>
+            </div>
+          </div>
+        `;
+      } else {
+        chatEl.innerHTML = chat.messages.map(msg => {
+          let content = msg.content;
+          if (content.includes('```')) {
+            content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+              const actualLang = lang || 'lua';
+              try {
+                const highlighted = hljs.highlight(code.trim(), { language: actualLang }).value;
+                return `<div class="glass border border-white/15 rounded-xl overflow-hidden my-2">
+                  <div class="flex justify-between items-center px-4 py-2 bg-white/5 border-b border-white/10">
+                    <span class="text-xs text-[#64748b] font-bold">${actualLang}</span>
+                    <button onclick="copyCode(this)" class="text-xs px-3 py-1 glass border border-white/15 rounded font-bold hover:bg-white/10">Copy</button>
+                  </div>
+                  <pre><code>${highlighted}</code></pre>
+                </div>`;
+              } catch (e) {
+                return `<pre class="glass rounded-xl p-4 my-2"><code>${escapeHtml(code)}</code></pre>`;
+              }
+            });
+          }
+          return `<div class="message max-w-[85%] mb-4 px-5 py-3.5 rounded-3xl ${msg.role === 'user' ? 'ml-auto glass-strong border border-white/20' : 'glass border border-white/15'} font-bold">${content}</div>`;
+        }).join('');
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+      renderChatList();
+    }
+
+    function setPrompt(text) {
+      document.getElementById('txt').value = text;
+      document.getElementById('txt').focus();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function copyCode(btn) {
+      const code = btn.parentElement.parentElement.nextElementSibling.textContent;
+      navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    }
+
+    let currentAbort = null;
+    function stopOrSend() {
+      if (currentAbort) { currentAbort.abort(); return; }
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      if (currentAbort) return;
+      if (remainingMsgs() <= 0) { showLimit(); return; }
+      consumeMsg();
+      const input = document.getElementById('txt');
+      const text = input.value.trim();
+      if (!text || !currentChatId) return;
+      
+      const s = Store.get();
+      const chat = s.chats.find(c => c.id === currentChatId);
+      chat.messages.push({ role: 'user', content: text });
+      if (chat.name === 'New chat') {
+        chat.name = text.substring(0, 28) + (text.length > 28 ? '…' : '');
+        document.getElementById('chat-title').textContent = chat.name;
+      }
+      Store.set({ chats: s.chats });
+      loadChat(currentChatId);
+      input.value = '';
+      input.style.height = 'auto';
+
+      const chatEl = document.getElementById('chat');
+      const loading = document.createElement('div');
+      loading.className = 'message glass border border-white/15 rounded-3xl px-5 py-3.5 flex items-center gap-3';
+      loading.innerHTML = '<span class="think-star">✦</span><span class="think-text">Stellar is thinking…</span>';
+      chatEl.appendChild(loading);
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      let full = '';
+      currentAbort = new AbortController();
+      document.getElementById('send-btn').textContent = '◼ Stop';
+      document.getElementById('logo-star').classList.add('logo-working');
+      try {
+        const modelMap = { fabie: 'claude-haiku-4-5', smart: 'claude-sonnet-4-6', ultra: 'claude-opus-4-8' };
+        const picked = (s.model === 'ultra' && s.plan !== 'pro') ? 'smart' : (s.model || 'smart');
+        const model = modelMap[picked] || modelMap.smart;
+        const response = await fetch('/api/chat', {
+          signal: currentAbort.signal,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            max_tokens: 4000,
+            _client_plan: s.plan,
+            system: 'You are Stellar AI, created and built by Tobi, the founder of Stellar AI. If anyone asks who made you, who created you, or who built you, answer briefly and simply, like: Tobi made me. Keep that answer short and do not add descriptions or promotion to it. Maintain a professional, clear and businesslike tone at all times. Be direct and practical. Do not use jokes or slang. You are an expert in FiveM (QBCore) and Roblox. Provide complete working code in markdown. FIVEM PEDs: shopkeeper=s_m_m_shopkeep_01, police=s_m_full_police_01, dealer=g_m_y_lost_01, mechanic=s_m_m_mech_01, doctor=s_m_m_doctor_01. Spawn with CreatePed(4,modelHash,x,y,z,heading,false,true). VEHICLES: supercars=adder,zentorno,t20; sports=sultan,jester,elegy2; emergency=police,police2,sheriff,ambulance. RequestModel + HasModelLoaded before CreateVehicle. SetVehicleNumberPlateText for plates. NetworkRegisterEntityAsNetworked for sync.',
+            messages: chat.messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content }))
+          })
+        });
+
+        if (!response.ok) throw new Error('API error');
+        
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error || ('Server error ' + response.status));
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
+        let msgBubble = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split('\n');
+          buf = lines.pop();
+          
+          for (const line of lines) {
+            if (!line.startsWith('data:')) continue;
+            const payload = line.slice(5).trim();
+            if (!payload || payload === '[DONE]') continue;
+            try {
+              const j = JSON.parse(payload);
+              if (j.type === 'content_block_delta' && j.delta?.text) {
+                full += j.delta.text;
+                if (!msgBubble) {
+                  loading.remove();
+                  msgBubble = document.createElement('div');
+                  msgBubble.className = 'message glass border border-white/15 rounded-3xl px-5 py-3.5 mb-4 font-bold whitespace-pre-wrap';
+                  chatEl.appendChild(msgBubble);
+                }
+                msgBubble.textContent = full;
+                chatEl.scrollTop = chatEl.scrollHeight;
+              }
+            } catch (e) {}
+          }
+        }
+
+        if (full) {
+          chat.messages.push({ role: 'ai', content: full });
+          Store.set({ chats: s.chats });
+          loadChat(currentChatId);
+        }
+      } catch (error) {
+        loading.remove();
+        if (error.name === 'AbortError') {
+          if (full) {
+            chat.messages.push({ role: 'ai', content: full });
+            Store.set({ chats: s.chats });
+          }
+          loadChat(currentChatId);
+        } else {
+          const msg = (error && error.message && !/failed to fetch|load failed|networkerror/i.test(error.message))
+            ? error.message : 'Connection error — try again.';
+          chat.messages.push({ role: 'ai', content: '⚠️ ' + msg });
+          Store.set({ chats: s.chats });
+          loadChat(currentChatId);
+        }
+      } finally {
+        currentAbort = null;
+        loading.remove();
+        document.getElementById('send-btn').textContent = 'Send';
+        document.getElementById('logo-star').classList.remove('logo-working');
+      }
+    }
+
+    function refreshModelMenu() {
+      const s = Store.get();
+      const pro = s.plan === 'pro';
+      const cur = (s.model === 'ultra' && !pro) ? 'smart' : (s.model || 'smart');
+      document.getElementById('ultra-desc').textContent = pro ? 'Most powerful — big complex systems' : '🔒 Unlocks with Pro — £30/mo';
+      document.getElementById('fabie-check').style.visibility = cur === 'fabie' ? 'visible' : 'hidden';
+      document.getElementById('smart-check').style.visibility = cur === 'smart' ? 'visible' : 'hidden';
+      document.getElementById('ultra-check').style.visibility = cur === 'ultra' ? 'visible' : 'hidden';
+    }
+
+    function toggleModelMenu(e) {
+      e.stopPropagation();
+      refreshModelMenu();
+      document.getElementById('model-menu').classList.toggle('hidden');
+    }
+
+    function pickModel(m) {
+      const s = Store.get();
+      document.getElementById('model-menu').classList.add('hidden');
+      if (m === 'ultra' && s.plan !== 'pro') {
+        openPlans();
+        return;
+      }
+      Store.set({ model: m });
+      const labels = { fabie: '✨ Spark ▾', smart: '⭐ Star ▾', ultra: '🚀 Nova ▾' };
+      document.getElementById('model-btn').innerHTML = labels[m] || labels.smart;
+    }
+
+    document.addEventListener('click', () => {
+      const mm = document.getElementById('model-menu');
+      if (mm) mm.classList.add('hidden');
+    });
+
+    function openPlans() { document.getElementById('plans-modal').classList.remove('hidden'); }
+    function closePlans() { document.getElementById('plans-modal').classList.add('hidden'); }
+    function openSettings() {
+      refreshSettings();
+      document.getElementById('settings-modal').classList.remove('hidden');
+    }
+    function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+    function refreshSettings() {
+      const s = Store.get();
+      const name = s.name || '';
+      const email = s.email || '';
+      const nameEl = document.getElementById('set-name');
+      nameEl.textContent = name || 'Add your name';
+      nameEl.classList.toggle('dim', !name);
+      const emailEl = document.getElementById('set-email');
+      emailEl.textContent = email || 'Add your email';
+      emailEl.classList.toggle('dim', !email);
+      document.getElementById('set-avatar').textContent = (name.trim() || 'S').charAt(0).toUpperCase();
+      const plans = { free: ['Free', '6h allowance · Spark + Star'], lite: ['Lite', '5× 6h allowance · Spark + Star'], pro: ['Pro', 'All 3 models · 10× 6h allowance'] };
+      const p = plans[s.plan] || plans.free;
+      document.getElementById('set-plan').textContent = p[0];
+      document.getElementById('set-plan-desc').textContent = p[1];
+      const light = document.body.classList.contains('light');
+      document.getElementById('seg-dark').classList.toggle('on', !light);
+      document.getElementById('seg-light').classList.toggle('on', light);
+    }
+    function editName() {
+      const s = Store.get();
+      const name = prompt('Your name:', s.name || '');
+      if (name === null) return;
+      Store.set({ name: name.trim().substring(0, 40) });
+      refreshSettings();
+    }
+    function editEmail() {
+      const s = Store.get();
+      const email = prompt('Your email:', s.email || '');
+      if (email === null) return;
+      Store.set({ email: email.trim().substring(0, 60) });
+      refreshSettings();
+    }
+
+    function setMode(mode) {
+      document.body.classList.toggle('light', mode === 'light');
+      const t = document.getElementById('theme-toggle');
+      if (t) t.textContent = mode === 'light' ? '☀️' : '🌙';
+      Store.set({ mode });
+    }
+
+    function toggleDarkMode() {
+      const s = Store.get();
+      const newMode = s.mode === 'dark' ? 'light' : 'dark';
+      setMode(newMode);
+    }
+
+    function checkout(plan) {
+      const btns = document.querySelectorAll('#plans-modal button');
+      btns.forEach(b => b.disabled = true);
+      fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan })
+      }).then(r => r.json()).then(data => {
+        if (data.url) window.location.href = data.url;
+        else alert(data.error || 'Checkout not ready yet');
+      }).catch(() => alert('Could not reach checkout')).finally(() => {
+        btns.forEach(b => b.disabled = false);
+      });
+    }
+
+    function init() {
+      const s = Store.get();
+      chats = s.chats;
+      setMode(s.mode || 'dark');
+      const mLabels = { fabie: '✨ Spark ▾', smart: '⭐ Star ▾', ultra: '🚀 Nova ▾' };
+      const mCur = (s.model === 'ultra' && s.plan !== 'pro') ? 'smart' : (s.model || 'smart');
+      document.getElementById('model-btn').innerHTML = mLabels[mCur] || mLabels.smart;
+      
+      const params = new URLSearchParams(location.search);
+      if (params.get('success') === 'true') {
+        const boughtPlan = params.get('plan');
+        if (boughtPlan === 'topup') {
+          const qty = Math.max(10, Math.min(100, parseInt(params.get('qty'), 10) || 100));
+          const u = getUsage(); u.wallet = (u.wallet || 0) + qty; Store.set({ usage: u });
+        } else {
+          const paidPlan = boughtPlan === 'pro' ? 'pro' : 'lite';
+          Store.set({ plan: paidPlan });
+        }
+        history.replaceState(null, '', location.pathname);
+        setTimeout(() => {
+          document.getElementById('thanks-sub').textContent = boughtPlan === 'topup'
+            ? (Math.max(10, Math.min(100, parseInt(params.get('qty'), 10) || 100))) + ' extra messages have been added to your account.'
+            : boughtPlan === 'pro'
+              ? 'Welcome to Pro. Nova is now unlocked, with a 10× allowance.'
+              : 'Welcome to Lite. Your allowance is now 5× larger.';
+          document.getElementById('thanks-modal').classList.remove('hidden');
+          fireConfetti();
+        }, 400);
+      }
+
+      renderMeter();
+      renderChatList();
+      if (chats.length === 0) newChat();
+      else loadChat(s.currentChat || chats[0].id);
+    }
+
+    // iPhone polish: box grows as you type, keyboard keeps it in view
+    const txtEl = document.getElementById('txt');
+    txtEl.addEventListener('input', () => {
+      txtEl.style.height = 'auto';
+      txtEl.style.height = Math.min(txtEl.scrollHeight, 120) + 'px';
+    });
+    txtEl.addEventListener('focus', () => {
+      setTimeout(() => txtEl.scrollIntoView({ block: 'nearest' }), 300);
+    });
+
+    window.addEventListener('load', init);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js').catch(function(){}); }
+  </script>
+</body>
+</html>
