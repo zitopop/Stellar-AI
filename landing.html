@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Stellar AI — describe what you want in plain English, get complete working FiveM (QBCore) and Roblox scripts in seconds.">
+  <meta name="theme-color" content="#050505">
+  <title>Stellar AI — Scripts for your server, written in seconds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #050505;
+      --ink: #ececf1;
+      --slate: #98a0ae;
+      --green: #10a37f;
+      --line: rgba(255,255,255,0.12);
+      --line-strong: rgba(255,255,255,0.22);
+      --glass: rgba(15,15,20,0.72);
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--void);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-weight: 600;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* ambient glow */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(700px 420px at 78% -8%, rgba(16,163,127,0.14), transparent 62%),
+        radial-gradient(620px 420px at 8% 32%, rgba(124,143,255,0.08), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+    h1, h2 { font-family: "Space Grotesk", -apple-system, sans-serif; letter-spacing: -0.02em; }
+    .mono { font-family: "JetBrains Mono", Menlo, monospace; }
+
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 8px; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(5,5,5,0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-in { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+    .wordmark { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 18px; text-decoration: none; }
+    .wordmark span { color: var(--green); }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 22px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 15px;
+      text-decoration: none;
+      border: 1px solid var(--line-strong);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--green); border-color: var(--green); color: #fff; }
+    .btn-primary:hover { background: #0e9271; }
+    .btn-ghost { background: rgba(255,255,255,0.06); color: var(--ink); }
+    .btn-ghost:hover { border-color: var(--line-strong); background: rgba(255,255,255,0.1); }
+    .btn-small { padding: 9px 16px; font-size: 14px; }
+
+    /* HERO */
+    .hero { padding: 72px 0 56px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
+    .eyebrow { color: var(--green); font-size: 12px; letter-spacing: 0.14em; font-weight: 600; margin-bottom: 16px; }
+    .hero h1 { font-size: clamp(34px, 5vw, 54px); line-height: 1.05; margin: 0 0 18px; font-weight: 700; }
+    .hero p { color: var(--slate); font-size: 17px; max-width: 46ch; margin: 0 0 26px; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .trust { margin-top: 16px; color: var(--slate); font-size: 13px; }
+
+    /* DEMO CARD (signature) */
+    .demo {
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--line-strong);
+      border-radius: 20px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+      overflow: hidden;
+    }
+    .demo-head {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--slate);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px rgba(16,163,127,0.9); }
+    .demo-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    .bubble-user {
+      align-self: flex-end;
+      max-width: 88%;
+      background: rgba(16,163,127,0.16);
+      border: 1px solid rgba(16,163,127,0.45);
+      border-radius: 16px 16px 4px 16px;
+      padding: 11px 15px;
+      font-size: 14px;
+    }
+    .bubble-ai {
+      align-self: flex-start;
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: 16px 16px 16px 4px;
+      overflow: hidden;
+    }
+    .file-tab {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px; color: var(--slate);
+      background: rgba(255,255,255,0.03);
+    }
+    .copy-chip { border: 1px solid var(--line); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--ink); }
+    .code { padding: 14px 16px; font-size: 12.5px; line-height: 1.7; overflow-x: auto; white-space: pre; color: #e6e6e6; }
+    .code .c { color: #6b7280; }
+    .code .s { color: #7ec9a0; }
+    .code .k { color: #9aa8ff; }
+
+    .line { opacity: 0; transform: translateY(6px); animation: rise .45s ease forwards; }
+    .line:nth-child(1) { animation-delay: .15s; }
+    .line:nth-child(2) { animation-delay: .55s; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+    .code span.row { display: block; opacity: 0; animation: rise .3s ease forwards; }
+    @media (prefers-reduced-motion: reduce) {
+      .line, .code span.row { animation: none !important; opacity: 1 !important; transform: none !important; }
+    }
+
+    /* SECTIONS */
+    section { padding: 64px 0; }
+    .sec-head { margin-bottom: 36px; }
+    .sec-head h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 0 0 8px; font-weight: 700; }
+    .sec-head p { color: var(--slate); margin: 0; }
+
+    /* STEPS */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .step {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px;
+    }
+    .step .num { color: var(--green); font-size: 13px; font-weight: 600; }
+    .step h3 { margin: 10px 0 8px; font-size: 18px; font-weight: 800; }
+    .step p { margin: 0; color: var(--slate); font-size: 14px; }
+
+    /* PLANS */
+    .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; }
+    .plan {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .plan.pop { border: 2px solid var(--green); box-shadow: 0 18px 60px rgba(16,163,127,0.14); }
+    .plan-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+    .plan h3 { margin: 0; font-size: 18px; font-weight: 800; }
+    .price { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 20px; }
+    .price small { color: var(--slate); font-size: 12px; font-weight: 600; }
+    .badge { display: inline-block; background: var(--green); color: #fff; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; border-radius: 6px; padding: 3px 8px; margin-bottom: 10px; }
+    .plan ul { list-style: none; margin: 14px 0 20px; padding: 0; color: var(--slate); font-size: 14px; }
+    .plan li { padding: 4px 0; }
+    .plan li::before { content: "✓  "; color: var(--green); font-weight: 800; }
+    .plan .btn { width: 100%; text-align: center; }
+
+    /* FINAL CTA */
+    .final {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--line-strong);
+      border-radius: 22px;
+      padding: 44px 24px;
+      text-align: center;
+    }
+    .final h2 { font-size: clamp(24px, 3.2vw, 32px); margin: 0 0 18px; font-weight: 700; }
+
+    footer { border-top: 1px solid var(--line); padding: 28px 0 44px; color: var(--slate); font-size: 13px; }
+    .foot-in { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    footer a { color: var(--slate); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; padding: 48px 0 40px; gap: 32px; }
+      .steps, .plans { grid-template-columns: 1fr; }
+      section { padding: 48px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="wrap nav-in">
+      <a class="wordmark" href="#"><span>✦</span> Stellar AI</a>
+      <a class="btn btn-primary btn-small" href="https://trystellarai.com">Open the app</a>
+    </div>
+  </nav>
+
+  <header class="wrap hero">
+    <div>
+      <div class="eyebrow mono">FOR FIVEM (QBCORE) &amp; ROBLOX DEVS</div>
+      <h1>Scripts for your server, written in seconds.</h1>
+      <p>Describe what you want in plain English. Stellar writes complete, working code you can paste straight into your server — with the right ped models, events and install notes.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://trystellarai.com">Try Stellar free</a>
+        <a class="btn btn-ghost" href="#plans">See plans</a>
+      </div>
+      <div class="trust mono">Free to start · No card needed</div>
+    </div>
+
+    <div class="demo" aria-label="Example of Stellar AI generating a FiveM script">
+      <div class="demo-head mono"><span class="dot"></span> Stellar AI — live demo</div>
+      <div class="demo-body">
+        <div class="bubble-user line">Make a shop NPC that sells burgers for $50</div>
+        <div class="bubble-ai line">
+          <div class="file-tab mono"><span>burger_shop.lua</span><span class="copy-chip">Copy</span></div>
+          <div class="code mono"><span class="row" style="animation-delay:.9s"><span class="c">-- Stellar AI · client script</span></span><span class="row" style="animation-delay:1.05s"><span class="k">local</span> shopPed = `s_m_m_shopkeep_01`</span><span class="row" style="animation-delay:1.2s"></span><span class="row" style="animation-delay:1.35s">CreateThread(<span class="k">function</span>()</span><span class="row" style="animation-delay:1.5s">  RequestModel(shopPed)</span><span class="row" style="animation-delay:1.65s">  <span class="k">while not</span> HasModelLoaded(shopPed) <span class="k">do</span> Wait(0) <span class="k">end</span></span><span class="row" style="animation-delay:1.8s">  <span class="k">local</span> ped = CreatePed(4, shopPed, -1195.3, -894.8, 13.9, 33.0, <span class="k">false</span>, <span class="k">true</span>)</span><span class="row" style="animation-delay:1.95s">  FreezeEntityPosition(ped, <span class="k">true</span>)</span><span class="row" style="animation-delay:2.1s">  SetEntityInvincible(ped, <span class="k">true</span>)</span><span class="row" style="animation-delay:2.25s"><span class="k">end</span>)</span><span class="row" style="animation-delay:2.4s"></span><span class="row" style="animation-delay:2.55s">RegisterNetEvent(<span class="s">'stellar:buyBurger'</span>, <span class="k">function</span>()</span><span class="row" style="animation-delay:2.7s">  TriggerServerEvent(<span class="s">'stellar:pay'</span>, 50)</span><span class="row" style="animation-delay:2.85s"><span class="k">end</span>)</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="wrap" id="how">
+    <div class="sec-head">
+      <h2>How it works</h2>
+      <p>Three steps. No coding needed.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num mono">01</div>
+        <h3>Describe it</h3>
+        <p>"A bank heist with a 10-minute cooldown." That's the whole prompt.</p>
+      </div>
+      <div class="step">
+        <div class="num mono">02</div>
+        <h3>Stellar writes it</h3>
+        <p>Complete Lua with the right ped models, events and install notes — where every file goes.</p>
+      </div>
+      <div class="step">
+        <div class="num mono">03</div>
+        <h3>Drop it in</h3>
+        <p>Copy it into your resources folder and restart your server. It runs.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="plans">
+    <div class="sec-head">
+      <h2>Plans</h2>
+      <p>Start free. Upgrade when your server needs more.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-top"><h3>Free</h3><div class="price">£0</div></div>
+        <ul>
+          <li>8 messages every 6 hours</li>
+          <li>Fast everyday replies</li>
+          <li>Spark + Star models — instant answers & everyday scripts</li>
+          <li>No card needed</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://trystellarai.com">Start free</a>
+      </div>
+      <div class="plan pop">
+        <span class="badge">MOST POPULAR</span>
+        <div class="plan-top"><h3>Lite</h3><div class="price">£10<small>/mo</small></div></div>
+        <ul>
+          <li>Spark + Star models</li>
+          <li>12× larger allowance, every 6 hours</li>
+          <li>Longer, more complete scripts</li>
+          <li>Higher speed limits when busy</li>
+          <li>Top-ups any time</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <a class="btn btn-primary" href="https://trystellarai.com">Get Lite</a>
+      </div>
+      <div class="plan">
+        <div class="plan-top"><h3>Pro</h3><div class="price">£30<small>/mo</small></div></div>
+        <ul>
+          <li>All 3 AI models</li>
+          <li>Nova — the smartest model, on every chat</li>
+          <li>25× larger allowance, every 6 hours</li>
+          <li>Full systems in one go</li>
+          <li>Highest speed limits</li>
+          <li>Top-ups any time</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://trystellarai.com">Go Pro</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="final">
+      <h2>Your first script is 30 seconds away.</h2>
+      <a class="btn btn-primary" href="https://trystellarai.com">Open Stellar AI</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot-in">
+      <div>© 2026 Stellar AI</div>
+      <div>
+        <a href="/terms.html">Terms</a> ·
+        <a href="https://www.tiktok.com/@stellaraiapp">TikTok</a> ·
+        <a href="https://www.instagram.com/stellaraiapp">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
