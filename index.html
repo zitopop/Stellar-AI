@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Stellar AI — FiveM Script Generator | Write QBCore Scripts With AI</title>
+  <meta name="description" content="Stellar AI — the AI script generator built for FiveM QBCore server owners. Write police jobs, drug systems, heists and more from plain English. Free to start, no coding needed.">
+  <meta name="keywords" content="fivem scripts, qbcore scripts, fivem script generator, ai script writer, qbcore police job, fivem lua, free fivem scripts, fivem drug system, fivem heist script, roblox scripts">
+  <meta property="og:title" content="Stellar AI — FiveM Script Generator">
+  <meta property="og:description" content="The AI built for FiveM server owners. Describe what you want, get complete QBCore scripts instantly. Free to start.">
+  <meta property="og:image" content="https://trystellarai.com/icon-512.png">
+  <meta property="og:url" content="https://trystellarai.com">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Stellar AI">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Stellar AI — FiveM Script Generator">
+  <meta name="twitter:description" content="The AI built for FiveM server owners. Write QBCore scripts from plain English. Free to start.">
+  <meta name="twitter:image" content="https://trystellarai.com/icon-512.png">
+  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <link rel="canonical" href="https://trystellarai.com">
+  <link rel="icon" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.45);--green:#10a37f;--gold:#fbbf24;}
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.6;min-height:100vh;}
+    a{color:inherit;text-decoration:none;}
+
+    /* NAV */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-weight:900;font-size:17px;letter-spacing:-0.3px;}
+    .nav-logo span{color:var(--green);}
+    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;transition:opacity 0.2s;}
+    .nav-cta:hover{opacity:0.85;}
+
+    /* HERO */
+    .hero{text-align:center;padding:90px 24px 60px;max-width:780px;margin:0 auto;}
+    .hero-tag{font-size:11px;font-weight:800;letter-spacing:0.18em;color:var(--muted);text-transform:uppercase;margin-bottom:20px;}
+    .hero h1{font-size:clamp(36px,6vw,62px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:20px;}
+    .hero h1 span{color:var(--green);}
+    .hero p{font-size:17px;color:var(--muted);max-width:560px;margin:0 auto 32px;line-height:1.6;}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .btn-primary{background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;transition:opacity 0.2s;}
+    .btn-primary:hover{opacity:0.85;}
+    .btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:700;font-size:15px;padding:13px 28px;border-radius:10px;transition:all 0.2s;}
+    .btn-secondary:hover{border-color:var(--green);}
+    .hero-sub{font-size:12px;color:var(--muted);margin-top:14px;}
+
+    /* FEATURES */
+    .section{padding:60px 24px;max-width:900px;margin:0 auto;}
+    .section-label{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;text-align:center;margin-bottom:32px;}
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;}
+    .feat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 16px;text-align:center;transition:border-color 0.2s;}
+    .feat-card:hover{border-color:rgba(16,163,127,0.4);}
+    .feat-icon{font-size:28px;margin-bottom:10px;}
+    .feat-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:4px;}
+    .feat-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+
+    /* VS SECTION */
+    .vs-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:700px;margin:0 auto 60px;text-align:center;}
+    .vs-title{font-size:14px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:20px;}
+    .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:left;}
+    .vs-col h3{font-size:13px;font-weight:900;margin-bottom:12px;}
+    .vs-col.bad h3{color:#e74c3c;}
+    .vs-col.good h3{color:var(--green);}
+    .vs-item{font-size:12px;color:var(--muted);margin-bottom:7px;display:flex;gap:8px;}
+    .vs-item span:first-child{flex:none;}
+
+    /* STEPS */
+    .steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:24px;}
+    .step-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px 20px;}
+    .step-num{width:32px;height:32px;background:var(--green);color:#000;border-radius:50%;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+    .step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:6px;}
+    .step-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+    /* PLANS */
+    .plans-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:24px;}
+    .plan-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 20px;position:relative;}
+    .plan-card.featured{border-color:rgba(16,163,127,0.5);background:rgba(16,163,127,0.05);}
+    .plan-card.pro-card{border-color:rgba(251,191,36,0.4);background:rgba(251,191,36,0.04);}
+    .plan-badge{display:inline-block;font-size:9px;font-weight:900;letter-spacing:0.1em;padding:3px 9px;border-radius:99px;background:var(--green);color:#000;margin-bottom:10px;}
+    .plan-badge.gold{background:linear-gradient(90deg,#f59e0b,#d97706);color:#000;}
+    .plan-name{font-size:20px;font-weight:900;margin-bottom:4px;}
+    .plan-name.green{color:var(--green);}
+    .plan-name.gold{color:var(--gold);}
+    .plan-price{font-size:32px;font-weight:900;letter-spacing:-1px;margin:12px 0 4px;}
+    .plan-per{font-size:12px;color:var(--muted);}
+    .plan-btn{display:block;width:100%;padding:11px;border-radius:9px;font-size:13px;font-weight:800;text-align:center;margin-top:16px;transition:opacity 0.2s;}
+    .plan-btn:hover{opacity:0.85;}
+    .plan-btn.free{background:var(--surface);border:1px solid var(--border);color:var(--muted);}
+    .plan-btn.plus{background:var(--green);color:#000;}
+    .plan-btn.pro{background:linear-gradient(90deg,#f59e0b,#d97706);color:#000;}
+    .plan-feats{margin-top:16px;border-top:1px solid var(--border);padding-top:14px;}
+    .plan-feat{font-size:12px;color:var(--muted);margin-bottom:7px;display:flex;gap:8px;}
+    .plan-feat .tick{color:var(--green);flex:none;}
+    .plan-feat .star{color:var(--gold);flex:none;}
+
+    /* CTA */
+    .cta-section{text-align:center;padding:70px 24px;background:linear-gradient(180deg,transparent,rgba(16,163,127,0.05));}
+    .cta-section h2{font-size:clamp(26px,4vw,42px);font-weight:900;letter-spacing:-1px;margin-bottom:16px;}
+    .cta-section p{font-size:15px;color:var(--muted);margin-bottom:28px;}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-copy{font-size:12px;color:var(--muted);}
+    .footer-links{display:flex;gap:16px;}
+    .footer-links a{font-size:12px;color:var(--muted);transition:color 0.2s;}
+    .footer-links a:hover{color:#fff;}
+
+    @media(max-width:600px){
+      nav{padding:14px 20px;}
+      .hero{padding:60px 20px 40px;}
+      .vs-grid{grid-template-columns:1fr;}
+      footer{flex-direction:column;align-items:flex-start;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">✦ Stellar <span>AI</span></a>
+  <a href="/app" class="nav-cta">Try free →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">For FiveM · QBCore · ESX · Roblox</div>
+  <h1>The AI built for <span>FiveM</span> server owners.</h1>
+  <p>Describe what you want in plain English. Stellar knows QBCore exports, ped models and vehicle hashes out of the box — no prompting required. Complete Lua scripts with fxmanifest, ready to drop in.</p>
+  <div class="hero-btns">
+    <a href="/app" class="btn-primary">Try Stellar free</a>
+    <a href="#plans" class="btn-secondary">See plans</a>
+  </div>
+  <div class="hero-sub">Free to start · No card needed</div>
+</section>
+
+<div class="section">
+  <div class="section-label">What you can build</div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🚔</div>
+      <div class="feat-title">Police Job</div>
+      <div class="feat-desc">Arrests, cuffs, MDT, jail system</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💊</div>
+      <div class="feat-title">Drug System</div>
+      <div class="feat-desc">Grow, cook and sell with hidden spots</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🏦</div>
+      <div class="feat-title">Bank Heist</div>
+      <div class="feat-desc">Full robbery with police alerts</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🏠</div>
+      <div class="feat-title">Housing</div>
+      <div class="feat-desc">Buy and own properties</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">👥</div>
+      <div class="feat-title">Gang System</div>
+      <div class="feat-desc">Turf wars, income, members</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🚕</div>
+      <div class="feat-title">Taxi Job</div>
+      <div class="feat-desc">Full job with fares and GPS</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🎰</div>
+      <div class="feat-title">Casino</div>
+      <div class="feat-desc">Slots, coinflip, dice betting</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🎮</div>
+      <div class="feat-title">Roblox too</div>
+      <div class="feat-desc">DataStores, GUIs, game systems</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="vs-section">
+    <div class="vs-title">Why not just use ChatGPT or Ender?</div>
+    <div class="vs-grid">
+      <div class="vs-col bad">
+        <h3>❌ Generic AI / Form builders</h3>
+        <div class="vs-item"><span>·</span><span>Doesn't know QBCore exports</span></div>
+        <div class="vs-item"><span>·</span><span>You explain the framework every time</span></div>
+        <div class="vs-item"><span>·</span><span>One file at a time, no fxmanifest</span></div>
+        <div class="vs-item"><span>·</span><span>$35-72 per script on paid sites</span></div>
+      </div>
+      <div class="vs-col good">
+        <h3>✅ Stellar AI</h3>
+        <div class="vs-item"><span>·</span><span>Knows QBCore, ESX, ped models, hashes</span></div>
+        <div class="vs-item"><span>·</span><span>Just describe it, Stellar figures the rest</span></div>
+        <div class="vs-item"><span>·</span><span>All 4 files in one go, ready to drop in</span></div>
+        <div class="vs-item"><span>·</span><span>Unlimited scripts from £10/month</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-label">From idea to running script in under 60 seconds</div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div class="step-title">Describe it</div>
+      <div class="step-desc">"QBCore drug system, weed and coke, hidden spots, police alert." That's the whole prompt.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div class="step-title">Stellar writes it</div>
+      <div class="step-desc">Complete Lua with ped models, events, and install notes — fxmanifest, client, server, config.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div class="step-title">Drop it in</div>
+      <div class="step-desc">Paste the folder into your resources, add ensure to server.cfg, restart. It runs.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="plans">
+  <div class="section-label">Start free. Upgrade when your server needs more.</div>
+  <div class="plans-wrap">
+    <div class="plan-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">£0</div>
+      <div class="plan-per">forever</div>
+      <a href="/app" class="plan-btn free">Start free</a>
+      <div class="plan-feats">
+        <div class="plan-feat"><span class="tick">✓</span><span>£1 free credit to start</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>Spark, Star and Comet models</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>Full scripts with fxmanifest</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>No card required</span></div>
+      </div>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-badge">MOST POPULAR</div>
+      <div class="plan-name green">Plus</div>
+      <div class="plan-price">£10</div>
+      <div class="plan-per">/month</div>
+      <a href="/app" class="plan-btn plus">Get Plus</a>
+      <div class="plan-feats">
+        <div class="plan-feat"><span class="tick">✓</span><span>10× more usage than Free</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>Longer scripts, full game systems</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>Priority access, no waiting</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>Cancel anytime</span></div>
+      </div>
+    </div>
+    <div class="plan-card pro-card">
+      <div class="plan-badge gold">⭐ BEST VALUE</div>
+      <div class="plan-name gold">Pro</div>
+      <div class="plan-price">£30</div>
+      <div class="plan-per">/month</div>
+      <a href="/app" class="plan-btn pro">Get Pro ⭐</a>
+      <div class="plan-feats">
+        <div class="plan-feat"><span class="star">★</span><span>🚀 Nova — our strongest model</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>40× more usage than Free</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>Complete games in one reply</span></div>
+        <div class="plan-feat"><span class="tick">✓</span><span>Cancel anytime</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>Your first QBCore script is 30 seconds away.</h2>
+  <p>Free to start. No card needed. Works with QBCore, ESX and Roblox.</p>
+  <a href="/app" class="btn-primary" style="display:inline-block;font-size:16px;padding:14px 32px;">Open Stellar AI →</a>
+</div>
+
+<footer>
+  <div class="footer-copy">© 2026 Stellar AI</div>
+  <div class="footer-links">
+    <a href="/terms.html">Terms</a>
+    <a href="https://www.tiktok.com/@stellaraiapp">TikTok</a>
+    <a href="https://www.instagram.com/stellaraiapp">Instagram</a>
+    <a href="https://discord.gg/e6uRAV9HGA">Discord</a>
+  </div>
+</footer>
+
+</body>
+</html>
