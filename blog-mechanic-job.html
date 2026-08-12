@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Add a Mechanic Job to Your QBCore FiveM Server — Stellar AI</title>
+  <meta name="description" content="Install a QBCore mechanic job on your FiveM server. Vehicle repair, upgrades, impound and job menu explained step by step.">
+  <meta name="keywords" content="qbcore mechanic job, fivem mechanic script, mechanic job fivem install, qbcore garage script, fivem repair script">
+  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-mechanic-job">
+  <link rel="icon" href="/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
+    a{color:inherit;text-decoration:none;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
+    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
+    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
+    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
+    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
+    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
+    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
+    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
+    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
+    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
+    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
+    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
+    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
+    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-copy{font-size:12px;color:var(--muted);}
+    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
+  </style>
+</head>
+<body>
+<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
+<div class="container">
+  <div class="blog-tag">FiveM Guide</div>
+  <h1>How to Add a Mechanic Job to Your QBCore FiveM Server</h1>
+  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
+  <p class="blog-intro">A mechanic job adds a whole new dimension to your FiveM roleplay server. Players can repair vehicles, perform upgrades, tow cars and run their own garage business. This guide walks you through setting one up on QBCore.</p>
+
+  <h2>What a mechanic job includes</h2>
+  <p>A complete mechanic job typically has vehicle repair with a progress bar, upgrades menu for performance and cosmetics, an impound system for police vehicles, and job management so players can clock in and out. The best ones also include a working garage stash.</p>
+
+  <h2>Step 1 — Generate your mechanic script</h2>
+  <div class="tip-box">
+    <strong>Try this prompt in Stellar AI:</strong>
+    <p style="margin-top:8px;">"QBCore mechanic job with F6 menu, vehicle repair using repair kits, upgrade menu for engine and turbo, impound system for storing vehicles, job stash and duty toggle. Include fxmanifest, client.lua, server.lua and config.lua"</p>
+  </div>
+
+  <h2>Step 2 — Add to your server</h2>
+  <div class="code-block">resources/
+└── qb-mechanicjob/
+    ├── fxmanifest.lua
+    ├── client.lua
+    ├── server.lua
+    └── config.lua</div>
+
+  <h2>Step 3 — Add items to QBCore shared</h2>
+  <p>Mechanic jobs use repair kit items. Add these to qb-core/shared/items.lua</p>
+  <div class="code-block">['repairkit'] = {name='repairkit', label='Repair Kit', weight=500, type='item', 
+  image='repairkit.png', unique=false, useable=true, shouldClose=true, 
+  description='Used to repair vehicles'},</div>
+
+  <h2>Step 4 — Add job to QBCore shared jobs</h2>
+  <p>Add the mechanic job to qb-core/shared/jobs.lua</p>
+  <div class="code-block">['mechanic'] = {
+    label = 'Mechanic',
+    defaultDuty = false,
+    offDutyPay = false,
+    grades = {
+        ['0'] = { name = 'Trainee', payment = 50 },
+        ['1'] = { name = 'Mechanic', payment = 100 },
+        ['2'] = { name = 'Senior Mechanic', payment = 150 },
+        ['3'] = { name = 'Manager', payment = 200 },
+    },
+},</div>
+
+  <h2>Step 5 — Add to server.cfg and test</h2>
+  <div class="code-block">ensure qb-core
+ensure qb-mechanicjob</div>
+  <p>Set yourself as a mechanic with /setjob mechanic 2 and press F6 to open the menu.</p>
+
+  <div class="cta-box">
+    <h3>Generate your mechanic job in seconds</h3>
+    <p>Describe exactly what you want and Stellar AI writes all the files — repair system, upgrade menu, impound, job stash — ready to drop in.</p>
+    <a href="/app" class="cta-btn">Generate my mechanic job →</a>
+  </div>
+</div>
+<footer>
+  <div class="footer-copy">© 2026 Stellar AI</div>
+  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
+</footer>
+</body>
+</html>

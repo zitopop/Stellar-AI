@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Install ox_lib on Your QBCore FiveM Server — Stellar AI</title>
+  <meta name="description" content="Step by step guide to installing ox_lib on QBCore FiveM. Get menus, progress bars, notifications and callbacks working on your server.">
+  <meta name="keywords" content="ox_lib install fivem, ox_lib qbcore, how to install ox_lib, fivem ox_lib tutorial, ox_lib setup guide">
+  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <link rel="canonical" href="https://trystellarai.com/blog/install-oxlib-qbcore">
+  <link rel="icon" href="/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
+    a{color:inherit;text-decoration:none;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
+    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
+    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
+    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
+    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
+    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
+    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
+    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
+    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
+    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
+    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
+    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
+    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
+    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-copy{font-size:12px;color:var(--muted);}
+    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
+  </style>
+</head>
+<body>
+<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
+<div class="container">
+  <div class="blog-tag">FiveM Guide</div>
+  <h1>How to Install ox_lib on Your QBCore FiveM Server</h1>
+  <div class="blog-meta">August 2026 · 4 min read · Stellar AI</div>
+  <p class="blog-intro">ox_lib is one of the most useful resources for QBCore servers — it gives you clean context menus, progress bars, notifications, callbacks and more. This guide shows you how to install it and start using it in your scripts.</p>
+
+  <h2>What is ox_lib?</h2>
+  <p>ox_lib is a shared library resource that gives FiveM scripts access to a standardised set of UI components and utilities. Instead of every script building its own menus and notifications, they all use ox_lib — which means a consistent look across your whole server.</p>
+  <p>Common features include context menus, radial menus, progress bars, input dialogs, notifications, and server-side callbacks.</p>
+
+  <h2>Step 1 — Download ox_lib</h2>
+  <p>Go to the ox_lib GitHub releases page and download the latest release zip. The resource is called <strong style="color:#fff;">ox_lib</strong> and the zip will contain the compiled files ready to use.</p>
+  <div class="tip-box">
+    <strong>Download from:</strong>
+    <p style="margin-top:8px;">github.com/overextended/ox_lib/releases — always use the latest release, not the source code zip.</p>
+  </div>
+
+  <h2>Step 2 — Add to your server</h2>
+  <p>Extract the zip and upload the ox_lib folder to your resources directory.</p>
+  <div class="code-block">resources/
+└── ox_lib/
+    ├── fxmanifest.lua
+    ├── init.lua
+    └── (other files)</div>
+
+  <h2>Step 3 — Add to server.cfg</h2>
+  <p>ox_lib must load before any resource that uses it. Add it near the top of your server.cfg, before qb-core if possible.</p>
+  <div class="code-block">ensure ox_lib
+ensure qb-core</div>
+
+  <h2>Step 4 — Use it in your scripts</h2>
+  <p>Once installed, any script can use ox_lib features without importing anything. Here are the most common ones 👇</p>
+
+  <h3>Notifications</h3>
+  <div class="code-block">lib.notify({
+    title = 'Police Department',
+    description = 'You are now on duty',
+    type = 'success', -- success, error, inform, warning
+})</div>
+
+  <h3>Progress bar</h3>
+  <div class="code-block">lib.progressBar({
+    duration = 5000,
+    label = 'Searching...',
+    useWhileDead = false,
+    canCancel = true,
+    disable = { move = true, car = true },
+})</div>
+
+  <h3>Context menu</h3>
+  <div class="code-block">lib.registerContext({
+    id = 'my_menu',
+    title = 'My Menu',
+    options = {
+        { title = 'Option 1', onSelect = function() end },
+        { title = 'Option 2', onSelect = function() end },
+    }
+})
+lib.showContext('my_menu')</div>
+
+  <h2>Common issues</h2>
+  <h3>lib is nil</h3>
+  <p>ox_lib isn't loading before your script. Make sure ensure ox_lib comes before your resource in server.cfg.</p>
+
+  <h3>Context menu not showing</h3>
+  <p>Check you're calling lib.showContext after lib.registerContext — both are required.</p>
+
+  <div class="cta-box">
+    <h3>Generate ox_lib scripts automatically</h3>
+    <p>Stellar AI knows ox_lib out of the box. Describe your script and it uses lib.notify, lib.progressBar and lib.registerContext correctly without you having to remember the syntax.</p>
+    <a href="/app" class="cta-btn">Try Stellar AI free →</a>
+  </div>
+</div>
+<footer>
+  <div class="footer-copy">© 2026 Stellar AI</div>
+  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
+</footer>
+</body>
+</html>
