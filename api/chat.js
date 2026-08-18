@@ -1,18 +1,11 @@
 // api/chat.js — Stellar AI
 // Streams Anthropic Messages API responses with server-side plan enforcement.
-import { readSession } from './_auth.js';
+import { isOwnerEmail, readSession } from './_auth.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
-
-const OWNER_EMAILS = new Set([
-  'deadlyfox10@gmail.com',
-  'zitopops@gmail.com',
-  'tobi@trystellarai.com',
-  'support@chromecruiser.com',
-]);
 
 // Keep customer-facing names separate from Anthropic API IDs.
 // These IDs are valid current/legacy Claude API IDs; do not send display names upstream.
@@ -70,7 +63,7 @@ function setCors(req, res) {
   const origin = req.headers.origin || '';
   res.setHeader('Access-Control-Allow-Origin', isAllowedOrigin(origin) ? origin : DOMAIN);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Vary', 'Origin');
 }
 
@@ -104,7 +97,7 @@ async function kvSet(key, value, seconds) {
 async function getPlanFromServer(email) {
   if (!email) return 'free';
   const normalizedEmail = String(email).toLowerCase().trim();
-  if (OWNER_EMAILS.has(normalizedEmail)) return 'owner';
+  if (isOwnerEmail(normalizedEmail)) return 'owner';
   const user = await kvGet(`stellar:user:${normalizedEmail}`);
   return user && PLAN_LIMITS[user.plan] ? user.plan : 'free';
 }

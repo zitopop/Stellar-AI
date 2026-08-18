@@ -15,6 +15,14 @@ function sign(encodedPayload) {
   return crypto.createHmac('sha256', signingSecret()).update(encodedPayload).digest('base64url');
 }
 
+export function isOwnerEmail(email) {
+  const allowed = String(process.env.OWNER_EMAILS || process.env.OWNER_EMAIL || '')
+    .split(/[\s,;]+/)
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+  return allowed.includes(String(email || '').trim().toLowerCase());
+}
+
 export function createSession(email) {
   const secret = signingSecret();
   if (!secret) throw new Error('AUTH_SESSION_SECRET is not configured.');

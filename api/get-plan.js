@@ -1,5 +1,5 @@
 // api/get-plan.js — retrieves the signed-in user's plan and wallet
-import { requireSession } from './_auth.js';
+import { isOwnerEmail, requireSession } from './_auth.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -33,7 +33,8 @@ export default async function handler(req, res) {
     const result = (await response.json()).result;
     const user = result ? JSON.parse(result) : {};
     return res.status(200).json({
-      plan: user.plan === 'lite' || user.plan === 'pro' ? user.plan : 'free',
+      plan: isOwnerEmail(session.email) ? 'pro' : (user.plan === 'lite' || user.plan === 'pro' ? user.plan : 'free'),
+      owner: isOwnerEmail(session.email),
       walletPence: Math.max(0, Number(user.walletPence) || 0),
       updatedAt: user.updatedAt || null,
     });

@@ -3558,21 +3558,10 @@
       }
       return u;
     }
-    // Account plan lookup (no visible owner status)
-    function accountHash(str) {
-      let h = 5381;
-      const salted = 'stellar-owner-9' + String(str).trim().toLowerCase();
-      for (let i = 0; i < salted.length; i++) h = ((h * 33) ^ salted.charCodeAt(i)) >>> 0;
-      return h.toString(36);
-    }
-    const STAFF_EMAIL_HASH = '1iuelqk';
+    // Owner access is determined only by the signed server response, never by browser data.
     function isOwner() { return Store.get().owner === true; }
     function checkOwnerEmail() {
-      const u = Store.get().user;
-      if (!u || !u.email) { Store.set({ owner: false }); return; }
-      const match = accountHash(u.email) === STAFF_EMAIL_HASH;
-      Store.set({ owner: match });
-      if (match) Store.set({ plan: 'pro' });
+      if (!Store.get().user?.email) Store.set({ owner: false });
     }
     async function giftCredit(email, pence) {
       const secret = Store.get().ownerKey || '';
@@ -4812,7 +4801,7 @@
       }
     }
     async function completeSignIn(user, sessionToken = '') {
-      if (sessionToken) Store.set({ session: sessionToken });
+      if (sessionToken) Store.set({ session: sessionToken, owner: false });
       // Restore this user's saved data if they've signed in before
       if (user && user.email) {
         const key = 'stellar-user-' + user.email;
@@ -4904,7 +4893,7 @@
       try {
         const r = await fetch('/api/get-plan', { headers: apiHeaders(false) });
         const d = await r.json();
-        if (d && d.plan) Store.set({ plan: d.plan });
+        if (d && d.plan) Store.set({ plan: d.plan, owner: d.owner === true });
         checkOwnerEmail();
         if (d && typeof d.walletPence === 'number') {
           const usage = getUsage();
