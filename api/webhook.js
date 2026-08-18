@@ -48,6 +48,24 @@ async function kvSet(key, value, seconds) {
   }
 }
 
+async function kvIncrement(key, amount = 1) {
+  if (!KV_URL || !KV_TOKEN) return false;
+  try {
+    const response = await fetch(`${KV_URL}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['INCRBY', key, Math.max(0, Math.round(Number(amount) || 0))]]),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+function conversionKey(name, date = new Date()) {
+  return `stellar:conversion:${date.toISOString().slice(0, 10)}:${name}`;
+}
+
 function eventKey(eventId) {
   return `stellar:stripe-event:${eventId}`;
 }
@@ -88,6 +106,11 @@ export default async function handler(req, res) {
               stripeCustomerId: session.customer || existing.stripeCustomerId,
               updatedAt: Date.now(),
             });
+            await Promise.all([
+              kvIncrement(conversionKey('checkout-completed')),
+              kvIncrement(conversionKey('topup-completed')),
+              kvIncrement(conversionKey('revenue-pence'), Number(session.amount_total || amount)),
+            ]);
           }
         } else {
           const plan = normalisePlan(checkoutPlan);
@@ -100,6 +123,11 @@ export default async function handler(req, res) {
               stripeSubscriptionId: session.subscription || existing.stripeSubscriptionId,
               updatedAt: Date.now(),
             });
+            await Promise.all([
+              kvIncrement(conversionKey('checkout-completed')),
+              kvIncrement(conversionKey('subscription-completed')),
+              kvIncrement(conversionKey('revenue-pence'), Number(session.amount_total || 0)),
+            ]);
           } else {
             console.error('Stripe checkout completed with an unknown plan', checkoutPlan, session.id);
           }
