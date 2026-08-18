@@ -1,82 +1,93 @@
-// api/create-checkout.js — Stripe checkout for plans + topups
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin?.includes('trystellarai.com') ? req.headers.origin : 'https://trystellarai.com');
+// api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
+import { requireSession } from './_auth.js';
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  const allowed = /^https:\/\/(?:[a-z0-9-]+\.)?trystellarai\.com$/i.test(origin)
+    || /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin)
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+  res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://trystellarai.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Vary', 'Origin');
+}
 
-  const { plan, email, amount, qty } = req.body || {};
-  if (!plan || !email) return res.status(400).json({ error: 'Missing plan or email' });
+function topupBonus(pence) {
+  if (pence >= 5000) return Math.round(pence * 0.20);
+  if (pence >= 2000) return Math.round(pence * 0.15);
+  if (pence >= 1000) return Math.round(pence * 0.10);
+  if (pence >= 500) return Math.round(pence * 0.05);
+  return 0;
+}
 
-  const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
-  if (!STRIPE_SECRET) return res.status(500).json({ error: 'Stripe not configured' });
+export default async function handler(req, res) {
+  setCors(req, res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
+
+  const sessionUser = requireSession(req, res);
+  if (!sessionUser) return;
+  const { plan, amount, qty } = req.body || {};
+  if (!plan) return res.status(400).json({ error: 'Choose a plan before continuing.' });
+
+  const stripeSecret = process.env.STRIPE_SECRET_KEY;
+  if (!stripeSecret) return res.status(500).json({ error: 'Stripe is not configured.' });
 
   try {
-    const stripe = await import('stripe').then(m => m.default(STRIPE_SECRET));
+    const Stripe = (await import('stripe')).default;
+    const stripe = new Stripe(stripeSecret);
 
-    // ── TOPUP (one-time payment) ──────────────────────────────
     if (plan === 'topup') {
       const pence = Math.round(Number(amount || qty) || 0);
       if (pence < 50 || pence > 20000) {
-        return res.status(400).json({ error: 'Top-up amount must be between 50p and £200' });
+        return res.status(400).json({ error: 'Top-up amount must be between 50p and £200.' });
       }
 
-      // Bonus credit tiers
-      let bonus = 0;
-      if (pence >= 500)  bonus = Math.round(pence * 0.05);   // 5% bonus for £5+
-      if (pence >= 1000) bonus = Math.round(pence * 0.10);   // 10% bonus for £10+
-      if (pence >= 2000) bonus = Math.round(pence * 0.15);   // 15% bonus for £20+
-      if (pence >= 5000) bonus = Math.round(pence * 0.20);   // 20% bonus for £50+
-
-      const session = await stripe.checkout.sessions.create({
+      const bonus = topupBonus(pence);
+      const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
-        customer_email: email,
+        customer_email: sessionUser.email,
         line_items: [{
           price_data: {
             currency: 'gbp',
             unit_amount: pence,
             product_data: {
-              name: `Stellar AI Credit — £${(pence/100).toFixed(2)}${bonus > 0 ? ` + £${(bonus/100).toFixed(2)} bonus` : ''}`,
-              description: 'Spend when your plan allowance runs out. Never expires.',
+              name: `Stellar AI Credit — £${(pence / 100).toFixed(2)}${bonus ? ` + £${(bonus / 100).toFixed(2)} bonus` : ''}`,
+              description: 'Credit never expires and is applied after plan allowance.',
             },
           },
           quantity: 1,
         }],
         success_url: 'https://trystellarai.com/app?payment=success',
-        cancel_url:  'https://trystellarai.com/app?payment=cancelled',
-        metadata: { email, plan: 'topup', amount: pence, qty: pence, bonus },
+        cancel_url: 'https://trystellarai.com/app?payment=cancelled',
+        metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
       });
-
-      return res.status(200).json({ url: session.url });
+      return res.status(200).json({ url: checkout.url });
     }
 
-    // ── SUBSCRIPTION PLANS ────────────────────────────────────
-    const priceMap = {
-      'lite':        process.env.STRIPE_PRICE_ID_LITE,
-      'pro':         process.env.STRIPE_PRICE_ID_PRO,
+    const prices = {
+      lite: process.env.STRIPE_PRICE_ID_LITE,
+      pro: process.env.STRIPE_PRICE_ID_PRO,
       'lite-annual': process.env.STRIPE_PRICE_ID_LITE_ANNUAL,
-      'pro-annual':  process.env.STRIPE_PRICE_ID_PRO_ANNUAL,
+      'pro-annual': process.env.STRIPE_PRICE_ID_PRO_ANNUAL,
     };
+    const price = prices[plan];
+    if (!price) return res.status(400).json({ error: 'That plan is not available.' });
 
-    const priceId = priceMap[plan];
-    if (!priceId) return res.status(400).json({ error: `Unknown plan: ${plan}` });
-
-    const session = await stripe.checkout.sessions.create({
+    const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
-      customer_email: email,
-      line_items: [{ price: priceId, quantity: 1 }],
+      customer_email: sessionUser.email,
+      line_items: [{ price, quantity: 1 }],
       success_url: 'https://trystellarai.com/app?payment=success',
-      cancel_url:  'https://trystellarai.com/app?payment=cancelled',
-      metadata: { email, plan },
+      cancel_url: 'https://trystellarai.com/app?payment=cancelled',
+      metadata: { email: sessionUser.email, plan },
     });
 
-    return res.status(200).json({ url: session.url });
-
-  } catch (err) {
-    console.error('Stripe error:', err);
-    return res.status(500).json({ error: err.message || 'Stripe error' });
+    return res.status(200).json({ url: checkout.url });
+  } catch (error) {
+    console.error('Stripe checkout error', error?.message || error);
+    return res.status(500).json({ error: 'Could not start checkout. Please try again.' });
   }
 }

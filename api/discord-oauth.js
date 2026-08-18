@@ -1,95 +1,86 @@
-// api/discord-oauth.js — handles both Discord OAuth redirect and callback
-// Add to Vercel env vars: DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET
-// DISCORD_REDIRECT_URI = https://trystellarai.com/api/discord-oauth
+// api/discord-oauth.js — Discord OAuth callback with signed Stellar session
+import { createSession } from './_auth.js';
+
+function fragment(values) {
+  return new URLSearchParams(values).toString();
+}
 
 export default async function handler(req, res) {
-  const DISCORD_CLIENT_ID     = process.env.DISCORD_CLIENT_ID;
-  const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-  const REDIRECT_URI          = process.env.DISCORD_REDIRECT_URI || 'https://trystellarai.com/api/discord-oauth';
-  const KV_URL                = process.env.KV_REST_API_URL;
-  const KV_TOKEN              = process.env.KV_REST_API_TOKEN;
-
+  const clientId = process.env.DISCORD_CLIENT_ID;
+  const clientSecret = process.env.DISCORD_CLIENT_SECRET;
+  const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://trystellarai.com/api/discord-oauth';
+  const kvUrl = process.env.KV_REST_API_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN;
   const { code, error } = req.query;
 
-  // Step 1: No code yet — redirect to Discord
   if (!code && !error) {
-    if (!DISCORD_CLIENT_ID) return res.status(500).json({ error: 'Discord not configured' });
+    if (!clientId) return res.status(500).json({ error: 'Discord is not configured.' });
     const params = new URLSearchParams({
-      client_id: DISCORD_CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
+      client_id: clientId,
+      redirect_uri: redirectUri,
       response_type: 'code',
       scope: 'identify email',
     });
     return res.redirect(`https://discord.com/oauth2/authorize?${params}`);
   }
 
-  // Step 2: Error from Discord
   if (error) return res.redirect('/app?auth_error=discord_cancelled');
+  if (!clientId || !clientSecret || !kvUrl || !kvToken) return res.redirect('/app?auth_error=discord_not_configured');
 
-  // Step 3: Exchange code for token
   try {
-    const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
+    const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        client_id: DISCORD_CLIENT_ID,
-        client_secret: DISCORD_CLIENT_SECRET,
+        client_id: clientId,
+        client_secret: clientSecret,
         grant_type: 'authorization_code',
         code,
-        redirect_uri: REDIRECT_URI,
+        redirect_uri: redirectUri,
       }),
     });
-    const tokenData = await tokenRes.json();
-    if (!tokenData.access_token) return res.redirect('/app?auth_error=discord_token_failed');
+    const token = await tokenResponse.json();
+    if (!token.access_token) return res.redirect('/app?auth_error=discord_token_failed');
 
-    // Get user info
-    const userRes = await fetch('https://discord.com/api/users/@me', {
-      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    const profileResponse = await fetch('https://discord.com/api/users/@me', {
+      headers: { Authorization: `Bearer ${token.access_token}` },
     });
-    const user = await userRes.json();
-    if (!user.email) return res.redirect('/app?auth_error=discord_no_email');
+    const profile = await profileResponse.json();
+    const email = String(profile.email || '').toLowerCase().trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return res.redirect('/app?auth_error=discord_no_email');
 
-    const em = user.email.toLowerCase().trim();
-    const kvKey = 'stellar:auth:' + em;
+    const authKey = `stellar:auth:${email}`;
+    const userKey = `stellar:user:${email}`;
+    const storedResponse = await fetch(`${kvUrl}/get/${encodeURIComponent(authKey)}`, {
+      headers: { Authorization: `Bearer ${kvToken}` },
+    });
+    const storedResult = (await storedResponse.json()).result;
 
-    // Check/create user in KV
-    const getRes  = await fetch(`${KV_URL}/get/${encodeURIComponent(kvKey)}`, { headers: { Authorization: `Bearer ${KV_TOKEN}` } });
-    const getData = await getRes.json();
-    const existing = getData.result ? JSON.parse(getData.result) : null;
-
-    if (!existing) {
-      const record = { discord: true, discordId: user.id, discordUsername: user.username, createdAt: Date.now() };
-      // Add £1 welcome credit for new Discord signups
-      const userKey = 'stellar:user:' + em;
-      const userRecord = { plan: 'free', walletPence: 100, welcomeCreditGiven: true, welcomeCreditAt: Date.now(), createdAt: Date.now() };
-      await fetch(`${KV_URL}/pipeline`, {
+    if (!storedResult) {
+      const now = Date.now();
+      const authRecord = { discord: true, discordId: profile.id, discordUsername: profile.username, createdAt: now };
+      const userRecord = { plan: 'free', walletPence: 100, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord' };
+      const write = await fetch(`${kvUrl}/pipeline`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
+        headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify([
-          ['SET', kvKey, JSON.stringify(record)],
-          ['SET', userKey, JSON.stringify(userRecord)]
+          ['SET', authKey, JSON.stringify(authRecord)],
+          ['SET', userKey, JSON.stringify(userRecord)],
         ]),
       });
-      // Welcome email
-      try {
-        await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            from: 'Stellar AI <support@trystellarai.com>',
-            to: [em],
-            subject: 'Welcome to Stellar AI 🐢',
-            html: `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:32px;background:#050505;color:#fff;"><div style="font-size:20px;font-weight:900;margin-bottom:24px;">✦ Stellar AI</div><h1 style="font-size:22px;margin-bottom:12px;">Welcome, ${user.username} 🐢</h1><p style="color:rgba(255,255,255,0.6);margin-bottom:24px;">You have got <strong style="color:#10a37f;">£1 free credit</strong> ready. Start generating QBCore scripts now.</p><a href="https://trystellarai.com/app" style="display:block;background:#10a37f;color:#000;font-weight:800;text-align:center;padding:14px;border-radius:10px;text-decoration:none;">Open Stellar AI</a></div>`,
-          }),
-        });
-      } catch(e) {}
+      if (!write.ok) throw new Error('Account creation failed');
     }
 
-    const encoded = Buffer.from(em).toString('base64');
-    res.redirect(`/app?discord_login=${encoded}&discord_user=${encodeURIComponent(user.username)}`);
-
+    const session = createSession(email);
+    const name = String(profile.global_name || profile.username || email.split('@')[0]).slice(0, 100);
+    const fragmentValue = fragment({
+      discord_session: session,
+      discord_login: Buffer.from(email).toString('base64url'),
+      discord_user: name,
+    });
+    return res.redirect(`/app#${fragmentValue}`);
   } catch (err) {
-    console.error('Discord OAuth error:', err);
-    res.redirect('/app?auth_error=discord_failed');
+    console.error('Discord OAuth error', err?.message || err);
+    return res.redirect('/app?auth_error=discord_failed');
   }
 }

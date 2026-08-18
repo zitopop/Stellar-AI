@@ -2407,6 +2407,140 @@
     }
     .message { animation: msg-in .32s cubic-bezier(.2,.8,.2,1); }
     @media (prefers-reduced-motion: reduce) { .message { animation: none; } }
+
+    /* FINAL RESPONSIVE + ACCESSIBILITY OVERRIDES */
+    #chat .message { width: fit-content; min-width: 0; }
+    #chat .message.msg-user {
+      margin-left: auto !important;
+      margin-right: 0 !important;
+      background: linear-gradient(135deg, #7c3aed, #5b21b6) !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(196,181,253,.48) !important;
+      border-bottom-right-radius: 7px !important;
+      box-shadow: 0 10px 24px rgba(76,29,149,.22);
+    }
+    #chat .message.msg-user strong,
+    #chat .message.msg-user a { color: #ffffff !important; }
+    #chat .message.msg-ai {
+      margin-right: auto !important;
+      margin-left: 0 !important;
+      border-bottom-left-radius: 7px !important;
+    }
+    body.light #chat .message.msg-user {
+      background: linear-gradient(135deg, #6d28d9, #4c1d95) !important;
+      color: #ffffff !important;
+      border-color: #6d28d9 !important;
+    }
+
+    /* Inline colour on the plans panel is normalized in light theme for readable contrast. */
+    body.light #plans-modal { background: rgba(15,23,42,.28) !important; }
+    body.light #plans-modal > div { background: #ffffff !important; color: #111827 !important; }
+    body.light #plans-modal [style*="rgba(255,255,255"] { color: #4b5563 !important; }
+    body.light #plans-modal [style*="color:#fff"] { color: #111827 !important; }
+    body.light #plans-modal [style*="color:rgba(255,255,255,0.25)"],
+    body.light #plans-modal [style*="color:rgba(255,255,255,0.35)"],
+    body.light #plans-modal [style*="color:rgba(255,255,255,0.4)"] { color: #6b7280 !important; }
+    body.light #plans-modal #plan-btn-lite,
+    body.light #plans-modal #plan-btn-pro { color: #111827 !important; }
+    body.light #plans-modal #plan-btn-lite-annual { color: #047857 !important; }
+    body.light #plans-modal #plan-btn-pro-annual { color: #92400e !important; }
+
+    #plans-modal > div { color: #f8fafc; }
+    #plans-modal > div > div:first-child > button { flex: none; }
+    #plans-grid-inner > div { min-width: 0; }
+
+    @media (max-width: 767px) {
+      #chat { padding: 16px 12px !important; }
+      #chat .message { max-width: 92% !important; padding: 12px 14px !important; font-size: 14px !important; line-height: 1.65 !important; }
+      .input-area { padding: 10px 12px calc(12px + env(safe-area-inset-bottom)) !important; }
+      .composer-foot { min-width: 0; gap: 6px !important; }
+      .foot-right { min-width: 0; gap: 6px !important; }
+      .ws-toggle, .model-pill, .credits-btn { height: 36px !important; padding: 0 10px !important; font-size: 12px !important; }
+      #model-menu { position: fixed !important; right: 12px !important; bottom: calc(72px + env(safe-area-inset-bottom)) !important; width: min(320px, calc(100vw - 24px)) !important; max-height: 58dvh !important; }
+
+      #plans-modal,
+      #settings-modal,
+      #usage-modal,
+      #owner-modal,
+      #redeem-modal,
+      #topup-modal,
+      #thanks-modal,
+      #limit-modal { align-items: flex-end !important; padding: 0 !important; }
+      #plans-modal > div,
+      #settings-modal > div,
+      #usage-modal > div,
+      #owner-modal > div,
+      #redeem-modal > div,
+      #topup-modal > div,
+      #thanks-modal > div,
+      #limit-modal > div {
+        position: fixed !important;
+        inset: auto 0 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        max-height: min(88dvh, 760px) !important;
+        margin: 0 !important;
+        padding: 18px 16px calc(20px + env(safe-area-inset-bottom)) !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 22px 22px 0 0 !important;
+        border-bottom: 0 !important;
+      }
+      #plans-modal > div::before,
+      #settings-modal > div::before,
+      #usage-modal > div::before,
+      #owner-modal > div::before,
+      #redeem-modal > div::before,
+      #topup-modal > div::before,
+      #thanks-modal > div::before,
+      #limit-modal > div::before {
+        content: '';
+        display: block;
+        width: 36px;
+        height: 4px;
+        border-radius: 99px;
+        margin: 0 auto 14px;
+        background: rgba(148,163,184,.5);
+      }
+      #plans-modal > div { padding-top: 14px !important; }
+      #plans-grid-inner {
+        display: flex !important;
+        grid-template-columns: none !important;
+        width: auto !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        scroll-snap-type: x mandatory !important;
+        gap: 12px !important;
+        margin: 0 -16px 16px !important;
+        padding: 4px 16px 12px !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      #plans-grid-inner::-webkit-scrollbar { display: none; }
+      #plans-grid-inner > div {
+        flex: 0 0 min(82vw, 340px) !important;
+        scroll-snap-align: start !important;
+        padding: 20px !important;
+        min-height: 420px;
+      }
+      #plans-modal > div > div:first-child { margin-bottom: 18px !important; }
+      #plans-modal > div > div:first-child > button {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 50% !important;
+        font-size: 23px !important;
+      }
+      body.light #plans-modal > div::before,
+      body.light #settings-modal > div::before,
+      body.light #usage-modal > div::before,
+      body.light #owner-modal > div::before,
+      body.light #redeem-modal > div::before,
+      body.light #topup-modal > div::before,
+      body.light #thanks-modal > div::before,
+      body.light #limit-modal > div::before { background: rgba(71,85,105,.35); }
+    }
   </style>
 <script type="application/ld+json">
 {
@@ -2672,7 +2806,7 @@
           <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;">Choose your plan</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Upgrade any time · Cancel any time · Billed in GBP</div>
         </div>
-        <button onclick="closePlans()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:36px;height:36px;font-size:18px;cursor:pointer;color:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;">×</button>
+        <button onclick="closePlans()" class="modal-x" aria-label="Close plans">×</button>
       </div>
 
       <!-- Plan cards grid -->
@@ -3211,6 +3345,13 @@
       }
     };
 
+    function apiHeaders(json = true) {
+      const headers = json ? { 'Content-Type': 'application/json' } : {};
+      const session = Store.get().session;
+      if (session) headers.Authorization = 'Bearer ' + session;
+      return headers;
+    }
+
     let chats = [];
     let currentChatId = null;
 
@@ -3434,47 +3575,56 @@
       if (match) Store.set({ plan: 'pro' });
     }
     async function giftCredit(email, pence) {
+      const secret = Store.get().ownerKey || '';
+      if (!secret) return { ok: false, msg: 'Set your Owner Key first.' };
       try {
-        const r = await fetch('/api/save-plan', {
+        const r = await fetch('/api/grant', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, walletPence: pence })
+          headers: apiHeaders(),
+          body: JSON.stringify({ action: 'addCredit', email, amount: pence / 100, secret })
         });
-        if (r.ok) return { ok: true };
-        let msg = 'Server said no (' + r.status + ')';
-        try { const d = await r.json(); if (d && d.error) msg = d.error; } catch {}
-        return { ok: false, msg: msg };
-      } catch (e) {
-        return { ok: false, msg: 'Could not reach the server. Are you on trystellarai.com?' };
+        const data = await r.json();
+        return r.ok && data.ok ? { ok: true, walletPence: data.walletPence } : { ok: false, msg: data.error || 'Could not add credit.' };
+      } catch {
+        return { ok: false, msg: 'Could not reach the account service.' };
       }
     }
-    function makeGiftCode(pence) {
-      const serial = Math.random().toString(36).slice(2, 8).toUpperCase();
-      const sig = accountHash('gift' + serial + pence).slice(0, 4).toUpperCase();
-      return 'STELLAR-' + serial + '-' + pence + '-' + sig;
-    }
-    function redeemGiftCode(raw) {
-      const code = String(raw).trim().toUpperCase();
-      const m = code.match(/^STELLAR-([A-Z0-9]{6})-(\d{1,6})-([A-Z0-9]{4})$/);
-      if (!m) return { ok: false, msg: 'That code is not valid.' };
-      const serial = m[1], pence = parseInt(m[2], 10), sig = m[3];
-      if (accountHash('gift' + serial + pence).slice(0, 4).toUpperCase() !== sig) return { ok: false, msg: 'That code is not valid.' };
-      const used = Store.get().usedCodes || [];
-      if (used.includes(code)) return { ok: false, msg: 'That code has already been used.' };
-      const usage = getUsage();
-      usage.promoBalance = (usage.promoBalance || 0) + pence;
-      Store.set({ usage, usedCodes: used.concat([code]) });
-      renderMeter(); refreshSettings();
-      // Save to server so balance persists on reload
-      const u2 = Store.get().user;
-      if (u2 && u2.email) {
-        fetch('/api/auth', {
+    async function createGiftCode(pence) {
+      const secret = Store.get().ownerKey || '';
+      if (!secret) return { ok: false, msg: 'Set your Owner Key first.' };
+      try {
+        const r = await fetch('/api/grant', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'redeemCode', email: u2.email, password: 'n/a', pence, code })
-        }).catch(() => {});
+          headers: apiHeaders(),
+          body: JSON.stringify({ action: 'createCode', codeAmount: pence, secret })
+        });
+        const data = await r.json();
+        return r.ok && data.ok ? { ok: true, code: data.code, amount: data.amount } : { ok: false, msg: data.error || 'Could not create a code.' };
+      } catch {
+        return { ok: false, msg: 'Could not reach the account service.' };
       }
-      return { ok: true, msg: '🎁 ' + money(pence) + ' added to your account!' };
+    }
+    async function redeemGiftCode(raw) {
+      const user = Store.get().user;
+      const code = String(raw).trim().toUpperCase();
+      if (!user?.email) return { ok: false, msg: 'Sign in before redeeming a code.' };
+      if (!code) return { ok: false, msg: 'Enter a gift code.' };
+      try {
+        const r = await fetch('/api/auth', {
+          method: 'POST',
+          headers: apiHeaders(),
+          body: JSON.stringify({ action: 'redeemCode', email: user.email, code })
+        });
+        const data = await r.json();
+        if (!r.ok || !data.ok) return { ok: false, msg: data.error || 'Could not redeem that code.' };
+        const usage = getUsage();
+        usage.balance = data.walletPence;
+        Store.set({ usage });
+        renderMeter(); refreshSettings();
+        return { ok: true, msg: money(data.amount) + ' added to your account.' };
+      } catch {
+        return { ok: false, msg: 'Could not reach the account service.' };
+      }
     }
     let lastMadeCode = '';
     function openOwner() {
@@ -3600,7 +3750,7 @@
   try {
     const r = await fetch('/api/broadcast', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({ subject, body, secret: Store.get().ownerKey || '' })
     });
     const d = await r.json();
@@ -3609,10 +3759,12 @@
   } catch(e) { msg.textContent = 'Error sending'; msg.style.color='#e74c3c'; }
 }
 
-function genCode(pence) {
-      lastMadeCode = makeGiftCode(pence);
+    async function genCode(pence) {
+      const result = await createGiftCode(pence);
+      if (!result.ok) { alert(result.msg); return; }
+      lastMadeCode = result.code;
       copyText(lastMadeCode);
-      document.getElementById('code-out-label').textContent = 'Code worth ' + money(pence) + ' · copied ✓';
+      document.getElementById('code-out-label').textContent = 'Code worth ' + money(result.amount) + ' · copied ✓';
       document.getElementById('code-out-value').textContent = lastMadeCode;
       document.getElementById('code-out').classList.remove('hidden');
     }
@@ -3624,22 +3776,26 @@ function genCode(pence) {
     }
     function openRedeem() { document.getElementById('redeem-modal').classList.remove('hidden'); }
     function closeRedeem() { document.getElementById('redeem-modal').classList.add('hidden'); }
-    function doRedeem() {
+    async function doRedeem() {
       const inp = document.getElementById('redeem-input');
-      const res = redeemGiftCode(inp.value);
       const out = document.getElementById('redeem-msg');
-      out.textContent = res.msg;
-      out.className = 'redeem-msg ' + (res.ok ? 'good' : 'bad');
-      if (res.ok) { inp.value = ''; }
+      out.textContent = 'Redeeming…';
+      out.className = 'redeem-msg';
+      const result = await redeemGiftCode(inp.value);
+      out.textContent = result.msg;
+      out.className = 'redeem-msg ' + (result.ok ? 'good' : 'bad');
+      if (result.ok) inp.value = '';
     }
     function tryCodeCommand(text) {
       const m = String(text).trim().match(/^makecode\s+([\d.]+)$/i);
       if (!m || !isOwner()) return false;
       const pence = Math.round(parseFloat(m[1]) * 100);
       if (!pence || pence < 1) { alert('Amount not valid.'); return true; }
-      const code = makeGiftCode(pence);
-      copyText(code);
-      alert('🎟️ Gift code for ' + money(pence) + ':\n\n' + code + '\n\nCopied to your clipboard.');
+      createGiftCode(pence).then(result => {
+        if (!result.ok) { alert(result.msg); return; }
+        copyText(result.code);
+        alert('Gift code for ' + money(result.amount) + ':\n\n' + result.code + '\n\nCopied to your clipboard.');
+      });
       return true;
     }
     function tryGiftCommand(text) {
@@ -3811,8 +3967,8 @@ function genCode(pence) {
       const restore = () => { if (btn) { btn.disabled = false; btn.textContent = label; } };
       fetch('/api/create-checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: 'topup', qty, email: (Store.get().user || {}).email || '' })
+        headers: apiHeaders(),
+        body: JSON.stringify({ plan: 'topup', qty })
       }).then(r => r.json()).then(data => {
         if (data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
         restore();
@@ -4203,27 +4359,10 @@ function genCode(pence) {
       alert('✅ ' + amount + ' credits added.');
       return true;
     }
-    function needsImage(text) {
-      const t = String(text).toLowerCase();
-      // Never treat code requests as image requests
-      if (/\b(script|code|lua|fxmanifest|qbcore|esx|function|resource)\b/.test(t)) return false;
-      const noun = /\b(image|picture|photo|logo|banner|artwork|art|poster|thumbnail|loading ?screen|wallpaper|icon|avatar|pfp|profile picture|splash|cover|graphic|drawing|illustration|mockup)\b/.test(t);
-      if (!noun) return false;
-      // Any of these phrasings count as asking for one
-      return /\b(make|create|generate|draw|design|give me|do|render|produce|need|want|can you)\b/.test(t)
-        || /^(an?|some)\b/.test(t.trim());
-    }
-    async function generateImage(prompt) {
-      const s = Store.get();
-      const planForImg = (s.plan === 'pro' || isOwner()) ? 'max' : (s.plan || 'free');
-      const r = await fetch('/api/generate-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, plan: planForImg })
-      });
-      const d = await r.json();
-      if (!r.ok || !d.url) throw new Error(d.error || 'Could not generate image.');
-      return d.url;
+    function needsImage() {
+      // Image generation is intentionally disabled until a production image provider is configured.
+      // Keeping requests in the normal chat path is safer than calling a route that does not exist.
+      return false;
     }
     function needsSearch(text) {
       const t = String(text).toLowerCase();
@@ -4423,9 +4562,18 @@ function genCode(pence) {
       }, 3500);
       currentAbort = new AbortController();
       document.getElementById('send-btn').textContent = '◼ Stop';
-      if (tryCreditsCommand(text)) { document.getElementById('txt').value = ''; return; }
-      if (tryGiftCommand(text)) { document.getElementById('txt').value = ''; return; }
-      if (tryCodeCommand(text)) { document.getElementById('txt').value = ''; return; }
+      if (tryCreditsCommand(text) || tryGiftCommand(text) || tryCodeCommand(text)) {
+        clearInterval(autoScroll);
+        clearInterval(stepTimer);
+        loading.remove();
+        chatEl.removeEventListener('wheel', pauseAutoScroll);
+        chatEl.removeEventListener('touchmove', pauseAutoScroll);
+        currentAbort = null;
+        sendLock = false;
+        document.getElementById('send-btn').textContent = 'Send';
+        document.getElementById('logo-star').classList.remove('logo-working');
+        return;
+      }
       consumeMsg();
       if (pastedBlock) {
         text = text + '\n\n--- pasted content ---\n' + pastedBlock;
@@ -4443,8 +4591,12 @@ function genCode(pence) {
           Store.set({ chats: s.chats });
         }
         clearInterval(stepTimer);
+        clearInterval(autoScroll);
+        chatEl.removeEventListener('wheel', pauseAutoScroll);
+        chatEl.removeEventListener('touchmove', pauseAutoScroll);
         loading.remove();
         currentAbort = null;
+        sendLock = false;
         document.getElementById('send-btn').textContent = 'Send';
         document.getElementById('logo-star').classList.remove('logo-working');
         loadChat(currentChatId);
@@ -4452,26 +4604,29 @@ function genCode(pence) {
       }
       if (wantsSearch) {
         setThinking('🔍', 'Searching the web…');
-        searchContext = await runWebSearch(cleanSearchQuery(text));
+        try {
+          searchContext = await runWebSearch(cleanSearchQuery(text));
+        } catch {
+          // A search outage should not strand a normal chat request on the loading state.
+          searchContext = null;
+        }
       }
       document.getElementById('logo-star').classList.add('logo-working');
       try {
-        const modelMap = { fabie: 'claude-haiku-4-5', smart: 'claude-sonnet-4-6', comet: 'claude-opus-4-6', ultra: 'claude-opus-4-8' };
-        const isPaid = s.plan === 'lite' || s.plan === 'pro' || isOwner();
         let picked = s.model || 'smart';
         if (picked === 'ultra' && !(s.plan === 'pro' || isOwner())) picked = 'smart';
-        const model = modelMap[picked] || modelMap.smart;
+        // Send the product alias. api/chat.js owns the current Anthropic model IDs.
+        const model = picked;
         const response = await fetch('/api/chat', {
           signal: currentAbort.signal,
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: apiHeaders(),
           body: JSON.stringify({
             model,
             image: uploadedImage || null,
             max_tokens: isGuest() ? GUEST_MAX_TOKENS
               : (({ free: 6000, lite: 12000, pro: 16000 })[s.plan || 'free'] || 6000),
-            _client_plan: s.plan,
-            system: (searchContext ? ('Use these current web search results to help answer, and mention the source links where useful:\n\n' + searchContext + '\n\n') : '') + 'You are Stellar, a specialist script-writing tool for FiveM and Roblox servers. You also fix and improve broken or incomplete scripts when the user pastes them. You were built by a developer and are not powered by any publicly known AI model. If asked, say you are Stellar, a purpose-built scripting engine, and nothing more. TONE: Concise and direct, like a senior developer. No waffle, no padding. Sound like a tool, not a chatbot. FIVEM EXPERTISE: QBCore exports, GetPlayerData, GetPlayer, CreateCallback, GetSharedObject with GetCoreObject fallback, RegisterNetEvent, TriggerServerEvent, TriggerClientEvent. ox_lib: lib.registerContext, lib.showContext, lib.addKeybind, lib.progressBar, lib.notify. ESX: ESX.GetPlayerData, TriggerServerCallback. Standalone: Citizen.CreateThread, RegisterCommand. Always include fxmanifest.lua with fx_version cerulean, game gta5, lua54 yes. Always use IF NOT EXISTS for SQL. ROBLOX: ServerScriptService, StarterPlayerScripts, ReplicatedStorage, DataStoreService, RemoteEvents, TweenService. Game Passes via UserOwnsGamePassAsync, Developer Products via PromptProductPurchase. Always verify purchases server-side. DELIVERY: Complete package in one response. Every file in its own code block with filename on line 1. After all code: one-line setup guide. Never cut off mid-script. ERRORS: One sentence diagnosis then the fix. STYLE: Never use emojis in your responses. No emoji characters anywhere — not in explanations, not in code comments, not in setup guides. Plain text only. IDENTITY: You are Stellar. A scripting tool. Not Claude, not GPT, not any AI model. Always write the complete script in one response. Never ask the user to say CONTINUE or any other word to get more code. If the script is long, write all files completely without stopping. Never truncate or cut off mid-script under any circumstances. QUALITY: Write code that works first try. Think about edge cases: what if the player dies, disconnects, or triggers it twice. Handle those without being asked. Never use functions that do not exist. Never leave placeholder comments. Write the actual logic. NARRATE: Before writing code, say what you are about to build in 1-2 sentences. After all code, summarise what you built. ROBLOX GAMES: When building a game, deliver every system needed. An obby needs: checkpoints, kill parts, platforms, leaderboard, and win screen. A fighting game needs: weapons, health, rounds, lobby, and respawning. Never deliver half a game. KEEP CODE SHORT. Write the shortest script that does the job properly. Do not pad it out. No unnecessary comments explaining obvious lines, no unused variables, no config tables for things that will never change, no defensive checks for situations that cannot happen, no example or placeholder functions the user did not ask for. A 30 line script that works beats a 120 line one that does the same thing. Only add length when the feature genuinely needs it. If a request is simple, the answer should be simple. Comment only where the code is not obvious, and keep those comments to one line. WHAT YOU CAN DO: You are not a text-only assistant. You have real tools available and you should never claim you cannot do these things. You can search the live web for current information, and when search results are supplied above, use them and cite the source links. You can generate images when someone asks for a logo, banner, loading screen, thumbnail, wallpaper, icon, artwork or similar; if someone asks for an image, tell them to phrase it clearly such as create a logo of a wolf and it will be produced. You can read code, files and long text that the user pastes in, and analyse or fix it. Users can talk to you using the microphone button instead of typing. Every script you produce becomes a downloadable file with a filename, timestamp, copy button and download button in their Files panel. If someone asks what you can do, answer with these real capabilities: write and fix code for any game or engine, search the web, generate images, read pasted files and code, and produce downloadable script files. Be accurate about your limits too: you cannot run or test code on their server, you cannot access their computer or files unless they paste them, and you cannot see their game while it is running. You are an expert in FiveM (QBCore) and Roblox, and you can build for any game or engine. Provide complete working code in markdown. ANY GAME: FiveM and Roblox are your specialties and where you are strongest, but you can also write scripts, mods, plugins and tools for any other game or engine when asked, for example Minecraft (Java plugins, Bukkit/Spigot/Paper, Fabric/Forge mods, Bedrock add-ons), Unity (C#), Unreal (C++ or Blueprints described in text), Godot (GDScript), GTA V single-player (ScriptHookV / .NET), Rust/Garry’s Mod (Lua), Discord bots for game servers, and general game logic in any language. When the game or engine is stated, use its real APIs, correct language, and the patterns that platform actually uses — never invent functions. If you are not fully certain an API exists for a less common game, say so plainly and give your best working version rather than guessing with false confidence. If the user has not said which game or engine, ask once which one, unless it is obvious from context. Apply the exact same rigour to every platform: complete code, filename comment, edge cases handled, install steps, and a self-check before finishing. ALWAYS begin every code block with a first-line comment giving the filename, using the correct comment style for that language: for Lua use -- filename.lua, for JavaScript use // filename.js, for C# use // filename.cs, for Java use // filename.java, for Python use # filename.py, for JSON use no comment. Choose a clear, lowercase, descriptive filename with the right extension, for example -- bank_heist.lua or -- fxmanifest.lua. Never omit this filename line. FIVEM PEDs: shopkeeper=mp_m_shopkeep_01, police=s_m_y_cop_01, sheriff=s_m_y_sheriff_01, dealer=g_m_y_lost_01, mechanic=s_m_y_xmech_01, doctor=s_m_m_doctor_01, security=s_m_m_security_01, paramedic=s_m_m_paramedic_01. ALWAYS spawn peds this way: RequestModel(hash), then while not HasModelLoaded(hash) do Wait(10) end, then CreatePed(4,hash,x,y,z,heading,false,true), then SetEntityInvincible(ped,true), SetBlockingOfNonTemporaryEvents(ped,true), FreezeEntityPosition(ped,true), then SetModelAsNoLongerNeeded(hash). Never call CreatePed before the model has loaded. VEHICLES: supercars=adder,zentorno,t20; sports=sultan,jester,elegy2; emergency=police,police2,sheriff,ambulance. RequestModel + HasModelLoaded before CreateVehicle. SetVehicleNumberPlateText for plates. NetworkRegisterEntityAsNetworked for sync.',
+            system: (searchContext ? ('Use these current web search results to help answer, and mention the source links where useful:\n\n' + searchContext + '\n\n') : '') + 'You are Stellar, a specialist script-writing tool for FiveM and Roblox servers. You also fix and improve broken or incomplete scripts when the user pastes them. You were built by a developer and are not powered by any publicly known AI model. If asked, say you are Stellar, a purpose-built scripting engine, and nothing more. TONE: Concise and direct, like a senior developer. No waffle, no padding. Sound like a tool, not a chatbot. FIVEM EXPERTISE: QBCore exports, GetPlayerData, GetPlayer, CreateCallback, GetSharedObject with GetCoreObject fallback, RegisterNetEvent, TriggerServerEvent, TriggerClientEvent. ox_lib: lib.registerContext, lib.showContext, lib.addKeybind, lib.progressBar, lib.notify. ESX: ESX.GetPlayerData, TriggerServerCallback. Standalone: Citizen.CreateThread, RegisterCommand. Always include fxmanifest.lua with fx_version cerulean, game gta5, lua54 yes. Always use IF NOT EXISTS for SQL. ROBLOX: ServerScriptService, StarterPlayerScripts, ReplicatedStorage, DataStoreService, RemoteEvents, TweenService. Game Passes via UserOwnsGamePassAsync, Developer Products via PromptProductPurchase. Always verify purchases server-side. DELIVERY: Complete package in one response. Every file in its own code block with filename on line 1. After all code: one-line setup guide. Never cut off mid-script. ERRORS: One sentence diagnosis then the fix. STYLE: Never use emojis in your responses. No emoji characters anywhere — not in explanations, not in code comments, not in setup guides. Plain text only. IDENTITY: You are Stellar. A scripting tool. Not Claude, not GPT, not any AI model. Always write the complete script in one response. Never ask the user to say CONTINUE or any other word to get more code. If the script is long, write all files completely without stopping. Never truncate or cut off mid-script under any circumstances. QUALITY: Write code that works first try. Think about edge cases: what if the player dies, disconnects, or triggers it twice. Handle those without being asked. Never use functions that do not exist. Never leave placeholder comments. Write the actual logic. NARRATE: Before writing code, say what you are about to build in 1-2 sentences. After all code, summarise what you built. ROBLOX GAMES: When building a game, deliver every system needed. An obby needs: checkpoints, kill parts, platforms, leaderboard, and win screen. A fighting game needs: weapons, health, rounds, lobby, and respawning. Never deliver half a game. KEEP CODE SHORT. Write the shortest script that does the job properly. Do not pad it out. No unnecessary comments explaining obvious lines, no unused variables, no config tables for things that will never change, no defensive checks for situations that cannot happen, no example or placeholder functions the user did not ask for. A 30 line script that works beats a 120 line one that does the same thing. Only add length when the feature genuinely needs it. If a request is simple, the answer should be simple. Comment only where the code is not obvious, and keep those comments to one line. WHAT YOU CAN DO: You are not a text-only assistant. You have real tools available and you should never claim you cannot do these things. You can search the live web for current information, and when search results are supplied above, use them and cite the source links. Image generation is not enabled in this version. If someone asks for an image, offer a detailed art prompt or asset brief they can use in their preferred image tool instead. You can read code, files and long text that the user pastes in, and analyse or fix it. Users can talk to you using the microphone button instead of typing. Every script you produce becomes a downloadable file with a filename, timestamp, copy button and download button in their Files panel. If someone asks what you can do, answer with these real capabilities: write and fix code for any game or engine, search the web, read pasted files and code, and produce downloadable script files. Be accurate about your limits too: you cannot run or test code on their server, you cannot access their computer or files unless they paste them, and you cannot see their game while it is running. You are an expert in FiveM (QBCore) and Roblox, and you can build for any game or engine. Provide complete working code in markdown. ANY GAME: FiveM and Roblox are your specialties and where you are strongest, but you can also write scripts, mods, plugins and tools for any other game or engine when asked, for example Minecraft (Java plugins, Bukkit/Spigot/Paper, Fabric/Forge mods, Bedrock add-ons), Unity (C#), Unreal (C++ or Blueprints described in text), Godot (GDScript), GTA V single-player (ScriptHookV / .NET), Rust/Garry’s Mod (Lua), Discord bots for game servers, and general game logic in any language. When the game or engine is stated, use its real APIs, correct language, and the patterns that platform actually uses — never invent functions. If you are not fully certain an API exists for a less common game, say so plainly and give your best working version rather than guessing with false confidence. If the user has not said which game or engine, ask once which one, unless it is obvious from context. Apply the exact same rigour to every platform: complete code, filename comment, edge cases handled, install steps, and a self-check before finishing. ALWAYS begin every code block with a first-line comment giving the filename, using the correct comment style for that language: for Lua use -- filename.lua, for JavaScript use // filename.js, for C# use // filename.cs, for Java use // filename.java, for Python use # filename.py, for JSON use no comment. Choose a clear, lowercase, descriptive filename with the right extension, for example -- bank_heist.lua or -- fxmanifest.lua. Never omit this filename line. FIVEM PEDs: shopkeeper=mp_m_shopkeep_01, police=s_m_y_cop_01, sheriff=s_m_y_sheriff_01, dealer=g_m_y_lost_01, mechanic=s_m_y_xmech_01, doctor=s_m_m_doctor_01, security=s_m_m_security_01, paramedic=s_m_m_paramedic_01. ALWAYS spawn peds this way: RequestModel(hash), then while not HasModelLoaded(hash) do Wait(10) end, then CreatePed(4,hash,x,y,z,heading,false,true), then SetEntityInvincible(ped,true), SetBlockingOfNonTemporaryEvents(ped,true), FreezeEntityPosition(ped,true), then SetModelAsNoLongerNeeded(hash). Never call CreatePed before the model has loaded. VEHICLES: supercars=adder,zentorno,t20; sports=sultan,jester,elegy2; emergency=police,police2,sheriff,ambulance. RequestModel + HasModelLoaded before CreateVehicle. SetVehicleNumberPlateText for plates. NetworkRegisterEntityAsNetworked for sync.',
             messages: chat.messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content }))
           })
         });
@@ -4480,9 +4635,11 @@ function genCode(pence) {
           const err = await response.json().catch(() => ({}));
           throw new Error(err.error || ('Server error ' + response.status));
         }
+        if (!response.body) throw new Error('The AI service returned an empty response. Please try again.');
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buf = '';
+        let streamError = '';
         let msgBubble = null;
 
         while (true) {
@@ -4498,6 +4655,10 @@ function genCode(pence) {
             if (!payload || payload === '[DONE]') continue;
             try {
               const j = JSON.parse(payload);
+              if (j.type === 'error') {
+                streamError = j.error?.message || 'The AI service returned an error.';
+                continue;
+              }
               if (j.type === 'content_block_delta' && j.delta?.text) {
                 full += j.delta.text;
                 if (streamStatus) {
@@ -4532,6 +4693,7 @@ function genCode(pence) {
         }
 
         clearInterval(autoScroll);
+        if (!full) throw new Error(streamError || 'The AI service returned no text. Please try again.');
         if (full) {
           chargeForReply(full);
           chat.messages.push({ role: 'ai', content: full, t: Date.now() });
@@ -4560,6 +4722,9 @@ function genCode(pence) {
         }
       } finally {
         clearInterval(stepTimer);
+        clearInterval(autoScroll);
+        chatEl.removeEventListener('wheel', pauseAutoScroll);
+        chatEl.removeEventListener('touchmove', pauseAutoScroll);
         if (streamStatus) streamStatus.remove();
         currentAbort = null;
         sendLock = false;
@@ -4633,11 +4798,21 @@ function genCode(pence) {
     }
 
     async function handleGoogleSignIn(response) {
-      const info = decodeJwt(response.credential);
-      if (!info || !info.email) return;
-      completeSignIn({ email: info.email, name: info.name || info.given_name || info.email.split('@')[0], picture: info.picture || '' });
+      try {
+        const r = await fetch('/api/auth', {
+          method: 'POST',
+          headers: apiHeaders(),
+          body: JSON.stringify({ action: 'googleLogin', credential: response.credential })
+        });
+        const data = await r.json();
+        if (!r.ok || !data.ok || !data.session || !data.user) throw new Error(data.error || 'Google sign-in failed.');
+        completeSignIn(data.user, data.session);
+      } catch (error) {
+        alert(error.message || 'Google sign-in failed. Please try again.');
+      }
     }
-    async function completeSignIn(user) {
+    async function completeSignIn(user, sessionToken = '') {
+      if (sessionToken) Store.set({ session: sessionToken });
       // Restore this user's saved data if they've signed in before
       if (user && user.email) {
         const key = 'stellar-user-' + user.email;
@@ -4656,21 +4831,12 @@ function genCode(pence) {
             renderChatList();
           } else {
             Store.set({ user });
-            // New Google user — give £1 welcome credit
-            try {
-              fetch('/api/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'googleCredit', email: user.email, password: 'google-oauth' })
-              }).then(r => r.json()).then(d => {
-                if (d.credited) console.log('[Stellar] £1 welcome credit given to', user.email);
-              }).catch(() => {});
-            } catch {}
+            // Welcome credit is now issued only after server-verified sign-in.
           }
         } catch { Store.set({ user }); }
         // Load chats from server (works on any device)
         try {
-          const serverChats = await loadChatsFromServer(user.email);
+          const serverChats = await loadChatsFromServer();
           if (serverChats && serverChats.length > 0) {
             const local = Store.get().chats || [];
             // Merge: prefer server chats, keep any local-only ones
@@ -4721,7 +4887,7 @@ function genCode(pence) {
           msg.textContent = '';
           document.getElementById(p + '-pass').value = '';
           const nice = email.split('@')[0].replace(/[._-]+/g, ' ').trim();
-          completeSignIn({ email: d.email, name: nice.charAt(0).toUpperCase() + nice.slice(1), picture: '' });
+          completeSignIn({ email: d.email, name: nice.charAt(0).toUpperCase() + nice.slice(1), picture: '' }, d.session);
         } else {
           msg.textContent = d.error || 'Something went wrong. Try again.';
           msg.className = 'redeem-msg bad';
@@ -4736,7 +4902,7 @@ function genCode(pence) {
       const u = Store.get().user;
       if (!u || !u.email) return;
       try {
-        const r = await fetch('/api/get-plan?email=' + encodeURIComponent(u.email));
+        const r = await fetch('/api/get-plan', { headers: apiHeaders(false) });
         const d = await r.json();
         if (d && d.plan) Store.set({ plan: d.plan });
         checkOwnerEmail();
@@ -4751,15 +4917,8 @@ function genCode(pence) {
     }
 
     async function saveWalletToServer() {
-      const u = Store.get().user;
-      if (!u || !u.email) return;
-      try {
-        await fetch('/api/save-plan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: u.email, walletPence: getUsage().balance || 0 })
-        });
-      } catch {}
+      // Wallet balances are server-owned. Stripe, owner grants and verified gift codes update them.
+      // This deliberate no-op prevents local browser state from overwriting a paid balance.
     }
 
     async function saveChatsToServer() {
@@ -4769,17 +4928,17 @@ function genCode(pence) {
         const s = Store.get();
         await fetch('/api/save-chats', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: u.email, chats: s.chats || [] })
+          headers: apiHeaders(),
+          body: JSON.stringify({ chats: s.chats || [] })
         });
       } catch {}
     }
 
-    async function loadChatsFromServer(email) {
+    async function loadChatsFromServer() {
       try {
-        const r = await fetch('/api/get-chats?email=' + encodeURIComponent(email));
+        const r = await fetch('/api/get-chats', { headers: apiHeaders(false) });
         const d = await r.json();
-        return d.chats || [];
+        return r.ok && Array.isArray(d.chats) ? d.chats : [];
       } catch { return []; }
     }
     function signOut() {
@@ -4796,7 +4955,7 @@ function genCode(pence) {
       Store.set({
         user: null, chats: [], currentChat: null,
         usage: { used: 0, windowStart: Date.now(), balance: 0, promoBalance: 0, monthKey: '', monthUsed: 0 },
-        plan: 'free', creditsOn: false
+        plan: 'free', creditsOn: false, session: ''
       });
       chats = [];
       currentChatId = null;
@@ -5074,8 +5233,8 @@ function genCode(pence) {
       };
       fetch('/api/create-checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, email: (Store.get().user || {}).email || '' })
+        headers: apiHeaders(),
+        body: JSON.stringify({ plan })
       }).then(r => r.json()).then(data => {
         if (data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
         restore();
@@ -5097,22 +5256,26 @@ function genCode(pence) {
     function init() {
       // Handle Discord OAuth callback
       const urlParams = new URLSearchParams(window.location.search);
-      const discordLogin = urlParams.get('discord_login');
-      const discordUser  = urlParams.get('discord_user');
-      const authError    = urlParams.get('auth_error');
+      const fragmentParams = new URLSearchParams(window.location.hash.slice(1));
+      const discordLogin = fragmentParams.get('discord_login') || urlParams.get('discord_login');
+      const discordSession = fragmentParams.get('discord_session');
+      const discordUser = fragmentParams.get('discord_user') || urlParams.get('discord_user');
+      const authError = urlParams.get('auth_error');
 
       if (authError) {
         window.history.replaceState({}, '', '/app');
       }
 
-      if (discordLogin) {
+      if (discordLogin && discordSession) {
         try {
-          const email = atob(discordLogin);
-          const name  = decodeURIComponent(discordUser || email.split('@')[0]);
+          const raw = discordLogin.replace(/-/g, '+').replace(/_/g, '/');
+          const email = atob(raw.padEnd(Math.ceil(raw.length / 4) * 4, '='));
+          const name = decodeURIComponent(discordUser || email.split('@')[0]);
           window.history.replaceState({}, '', '/app');
-          completeSignIn({ email: email, displayName: name, discord: true });
-        } catch(e) {
-          console.error('Discord login error:', e);
+          completeSignIn({ email, name, discord: true }, discordSession);
+        } catch (error) {
+          console.error('Discord login error:', error);
+          window.history.replaceState({}, '', '/app');
         }
       }
 

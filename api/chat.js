@@ -1,140 +1,216 @@
 // api/chat.js — Stellar AI
-// Handles all AI chat requests with proper plan enforcement
+// Streams Anthropic Messages API responses with server-side plan enforcement.
+import { readSession } from './_auth.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-const KV_URL   = process.env.KV_REST_API_URL;
+const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 
-// ── OWNER EMAILS (unlimited) ─────────────────────────────────
-const OWNER_EMAILS = ['deadlyfox10@gmail.com', 'zitopops@gmail.com', 'tobi@trystellarai.com', 'support@chromecruiser.com'];
+const OWNER_EMAILS = new Set([
+  'deadlyfox10@gmail.com',
+  'zitopops@gmail.com',
+  'tobi@trystellarai.com',
+  'support@chromecruiser.com',
+]);
 
-// ── PLAN LIMITS ───────────────────────────────────────────────
-const PLAN_LIMITS = {
-  free:  { rpm: 40,   maxTokens: 2000, models: ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6', 'claude-opus-4-6'] },
-  lite:  { rpm: 400,  maxTokens: 5000, models: ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6', 'claude-opus-4-6'] },
-  plus:  { rpm: 400,  maxTokens: 5000, models: ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6', 'claude-opus-4-6'] },
-  pro:   { rpm: 1600, maxTokens: 8000, models: ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6', 'claude-opus-4-6', 'claude-opus-4-7', 'claude-opus-4-8'] },
-  owner: { rpm: 99999, maxTokens: 8000, models: ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6', 'claude-opus-4-6', 'claude-opus-4-7', 'claude-opus-4-8'] },
+// Keep customer-facing names separate from Anthropic API IDs.
+// These IDs are valid current/legacy Claude API IDs; do not send display names upstream.
+const MODELS = {
+  spark: 'claude-haiku-4-5-20251001',
+  star: 'claude-sonnet-4-6',
+  comet: 'claude-opus-4-6',
+  nova: 'claude-opus-4-8',
 };
 
-// Model name aliases (what the client sends vs actual model)
 const MODEL_MAP = {
-  // Friendly names
-  'spark':  'claude-haiku-4-5-20251001',
-  'fabie':  'claude-haiku-4-5-20251001',
-  'star':   'claude-sonnet-4-6',
-  'smart':  'claude-sonnet-4-6',
-  'comet':  'claude-opus-4-6',
-  'nova':   'claude-opus-4-8',
-  'ultra':  'claude-opus-4-8',
-  // Full model IDs pass-through
-  'claude-haiku-4-5-20251001': 'claude-haiku-4-5-20251001',
-  'claude-haiku-4-5': 'claude-haiku-4-5-20251001',
-  'claude-sonnet-4-6': 'claude-sonnet-4-6',
-  'claude-opus-4-6':  'claude-opus-4-6',
-  'claude-opus-4-7':  'claude-opus-4-7',
-  'claude-opus-4-8':  'claude-opus-4-8',
+  spark: MODELS.spark,
+  fabie: MODELS.spark,
+  haiku: MODELS.spark,
+  'claude-haiku-4-5': MODELS.spark,
+  'claude-haiku-4-5-20251001': MODELS.spark,
+
+  star: MODELS.star,
+  smart: MODELS.star,
+  sonnet: MODELS.star,
+  'claude-sonnet-4-6': MODELS.star,
+
+  comet: MODELS.comet,
+  opus: MODELS.comet,
+  'claude-opus-4-6': MODELS.comet,
+
+  nova: MODELS.nova,
+  ultra: MODELS.nova,
+  'claude-opus-4-8': MODELS.nova,
 };
+
+const PLAN_LIMITS = {
+  free: { requestsPerHour: 40, maxTokens: 2000, models: [MODELS.spark, MODELS.star, MODELS.comet] },
+  lite: { requestsPerHour: 400, maxTokens: 5000, models: [MODELS.spark, MODELS.star, MODELS.comet] },
+  plus: { requestsPerHour: 400, maxTokens: 5000, models: [MODELS.spark, MODELS.star, MODELS.comet] },
+  pro: { requestsPerHour: 1600, maxTokens: 8000, models: [MODELS.spark, MODELS.star, MODELS.comet, MODELS.nova] },
+  owner: { requestsPerHour: 99999, maxTokens: 8000, models: [MODELS.spark, MODELS.star, MODELS.comet, MODELS.nova] },
+};
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  try {
+    const { hostname } = new URL(origin);
+    return hostname === 'trystellarai.com'
+      || hostname.endsWith('.trystellarai.com')
+      || hostname === 'localhost'
+      || hostname === '127.0.0.1'
+      || hostname.endsWith('.vercel.app');
+  } catch {
+    return false;
+  }
+}
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  res.setHeader('Access-Control-Allow-Origin', isAllowedOrigin(origin) ? origin : DOMAIN);
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Vary', 'Origin');
+}
 
 async function kvGet(key) {
   if (!KV_URL || !KV_TOKEN) return null;
   try {
-    const r = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
-      headers: { Authorization: `Bearer ${KV_TOKEN}` }
+    const response = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
     });
-    const d = await r.json();
-    return d.result ? JSON.parse(d.result) : null;
-  } catch { return null; }
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.result ? JSON.parse(data.result) : null;
+  } catch {
+    return null;
+  }
 }
 
-async function kvSet(key, value, ex) {
+async function kvSet(key, value, seconds) {
   if (!KV_URL || !KV_TOKEN) return;
   try {
     await fetch(`${KV_URL}/pipeline`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify([['SET', key, JSON.stringify(value), 'EX', ex]])
+      body: JSON.stringify([['SET', key, JSON.stringify(value), 'EX', seconds]]),
     });
-  } catch {}
+  } catch {
+    // Rate limiting should not take the chat service offline if Redis is unavailable.
+  }
 }
 
 async function getPlanFromServer(email) {
   if (!email) return 'free';
-  const em = email.toLowerCase().trim();
-  if (OWNER_EMAILS.includes(em)) return 'owner';
-  const user = await kvGet('stellar:user:' + em);
-  return (user && user.plan) ? user.plan : 'free';
+  const normalizedEmail = String(email).toLowerCase().trim();
+  if (OWNER_EMAILS.has(normalizedEmail)) return 'owner';
+  const user = await kvGet(`stellar:user:${normalizedEmail}`);
+  return user && PLAN_LIMITS[user.plan] ? user.plan : 'free';
 }
 
 async function checkRate(ip, plan) {
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
   const key = `rl:${ip}:${plan}`;
-  const win = 3600;
-  const rec = (await kvGet(key)) || { n: 0, reset: Date.now() + win * 1000 };
-  if (Date.now() > rec.reset) { rec.n = 0; rec.reset = Date.now() + win * 1000; }
-  rec.n++;
-  kvSet(key, rec, win);
-  return rec.n <= limits.rpm;
+  const windowSeconds = 60 * 60;
+  const record = (await kvGet(key)) || { count: 0, resetAt: Date.now() + windowSeconds * 1000 };
+
+  if (Date.now() > record.resetAt) {
+    record.count = 0;
+    record.resetAt = Date.now() + windowSeconds * 1000;
+  }
+
+  record.count += 1;
+  await kvSet(key, record, windowSeconds);
+  return record.count <= limits.requestsPerHour;
 }
 
 function resolveModel(requestedModel, plan) {
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-  const key = (requestedModel || '').toLowerCase();
-  // Try exact match in MODEL_MAP
-  const resolved = MODEL_MAP[key] || MODEL_MAP[requestedModel] || requestedModel;
-  // Check if plan allows this model
-  if (resolved && limits.models.includes(resolved)) return resolved;
-  // Try partial match (e.g. claude-haiku-4-5 matches claude-haiku-4-5-20251001)
-  const partial = limits.models.find(m => m.startsWith(resolved || ''));
-  if (partial) return partial;
-  // Safe fallback — always works
-  return 'claude-sonnet-4-6';
+  const requested = String(requestedModel || '').trim().toLowerCase();
+  const resolved = MODEL_MAP[requested] || requested;
+  return limits.models.includes(resolved) ? resolved : limits.models[0];
+}
+
+function normaliseMessages(messages) {
+  if (!Array.isArray(messages) || messages.length === 0) return null;
+
+  const clean = messages
+    .slice(-40)
+    .map((message) => ({
+      role: message?.role === 'assistant' ? 'assistant' : 'user',
+      content: typeof message?.content === 'string' ? message.content.trim() : '',
+    }))
+    .filter((message) => message.content.length > 0);
+
+  return clean.length ? clean : null;
+}
+
+function addImageToLastUserMessage(messages, image) {
+  if (!image?.data || !image?.mediaType) return messages;
+
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    if (messages[index].role === 'user') {
+      return messages.map((message, messageIndex) => messageIndex === index ? {
+        ...message,
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: image.mediaType, data: image.data } },
+          { type: 'text', text: message.content },
+        ],
+      } : message);
+    }
+  }
+
+  return messages;
+}
+
+async function readAnthropicError(response) {
+  try {
+    const payload = await response.json();
+    return payload?.error?.message || `AI request failed (${response.status})`;
+  } catch {
+    return `AI request failed (${response.status})`;
+  }
 }
 
 export default async function handler(req, res) {
-  const origin = req.headers.origin || '';
-  const ok = origin.includes('trystellarai.com') || origin.includes('localhost') || origin.includes('vercel.app');
-  res.setHeader('Access-Control-Allow-Origin', ok ? origin : DOMAIN);
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).end();
+  setCors(req, res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
+  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'The AI service is not configured.' });
 
-  if (!ANTHROPIC_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
+  const { model, messages, system, max_tokens: maxTokens, image } = req.body || {};
+  const cleanMessages = normaliseMessages(messages);
+  if (!cleanMessages) return res.status(400).json({ error: 'Send at least one message before asking Stellar.' });
+  if (JSON.stringify(cleanMessages).length > 5_000_000) {
+    return res.status(400).json({ error: 'That message is too large. Send a smaller file or split it into parts.' });
   }
 
-  const { model, messages, system, max_tokens, _email, image } = req.body || {};
-
-  if (!model || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'model and messages required' });
-  }
-
-  if (JSON.stringify(messages).length > 5000000) {
-    return res.status(400).json({ error: 'That message is very large — try sending a bit less at once.' });
-  }
-
-  // ── Get REAL plan from server (not from client) ───────────────
-  const plan = await getPlanFromServer(_email);
+  const session = readSession(req);
+  const plan = await getPlanFromServer(session?.email);
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-
-  // ── Rate limit ────────────────────────────────────────────────
-  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
-  const allowed = await checkRate(ip, plan);
-  if (!allowed) {
-    return res.status(429).json({ error: 'Too many requests — please wait a moment' });
+  const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  if (!await checkRate(ip, plan)) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' });
   }
 
-  // ── Model enforcement ─────────────────────────────────────────
   const safeModel = resolveModel(model, plan);
+  const requestedMaxTokens = Number(maxTokens);
+  const safeMaxTokens = Number.isFinite(requestedMaxTokens)
+    ? Math.max(64, Math.min(Math.floor(requestedMaxTokens), limits.maxTokens))
+    : limits.maxTokens;
 
-  // ── Token limits by plan ──────────────────────────────────────
-  const safeMax = Math.min(parseInt(max_tokens) || limits.maxTokens, limits.maxTokens);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 95_000);
+  const abortOnDisconnect = () => {
+    if (!res.writableEnded) controller.abort();
+  };
+  res.once('close', abortOnDisconnect);
 
   try {
     const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': ANTHROPIC_KEY,
@@ -142,44 +218,52 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: safeModel,
-        max_tokens: safeMax,
-        system: system || '',
-        messages: image ? messages.map((m, i) => {
-          if (i === messages.length - 1 && m.role === 'user') {
-            return {
-              ...m,
-              content: [
-                { type: 'image', source: { type: 'base64', media_type: image.mediaType, data: image.data } },
-                { type: 'text', text: m.content }
-              ]
-            };
-          }
-          return m;
-        }) : messages,
+        max_tokens: safeMaxTokens,
+        system: typeof system === 'string' ? system.slice(0, 120_000) : '',
+        messages: addImageToLastUserMessage(cleanMessages, image),
         stream: true,
       }),
     });
 
     if (!upstream.ok) {
-      const err = await upstream.json().catch(() => ({}));
-      return res.status(upstream.status).json({ error: err?.error?.message || 'AI error' });
+      return res.status(upstream.status).json({ error: await readAnthropicError(upstream) });
     }
 
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('X-Accel-Buffering', 'no');
+    if (!upstream.body) {
+      return res.status(502).json({ error: 'The AI service returned an empty response. Please try again.' });
+    }
+
+    res.status(200);
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders?.();
 
     const reader = upstream.body.getReader();
-    const dec = new TextDecoder();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(dec.decode(value, { stream: true }));
-    }
-    res.end();
+    const decoder = new TextDecoder();
 
-  } catch (e) {
-    if (!res.headersSent) res.status(500).json({ error: 'Connection failed — try again' });
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        res.write(decoder.decode(value, { stream: true }));
+      }
+      res.write(decoder.decode());
+      res.end();
+    } finally {
+      reader.releaseLock();
+    }
+  } catch (error) {
+    if (!res.headersSent) {
+      const message = error?.name === 'AbortError'
+        ? 'The AI request timed out. Please try again with a shorter request.'
+        : 'Could not connect to the AI service. Please try again.';
+      return res.status(502).json({ error: message });
+    }
+    if (!res.writableEnded) res.end();
+  } finally {
+    clearTimeout(timeout);
+    res.removeListener('close', abortOnDisconnect);
   }
 }

@@ -64,9 +64,12 @@ export default async function handler(req, res) {
     if (!em || !amount) return res.status(400).json({ error: 'Missing email or amount' });
     const userKey = `stellar:user:${em}`;
     const user = await kvGet(url, token, userKey) || {};
-    user.promoBalance = (user.promoBalance || 0) + Math.round(Number(amount) * 100);
+    const pence = Math.round(Number(amount) * 100);
+    if (!Number.isFinite(pence) || pence < 1 || pence > 100000) return res.status(400).json({ error: 'Invalid credit amount' });
+    user.walletPence = Math.max(0, Number(user.walletPence) || 0) + pence;
+    user.updatedAt = Date.now();
     await kv(url, token, [['SET', userKey, JSON.stringify(user)]]);
-    return res.status(200).json({ ok: true, email: em, balance: user.promoBalance });
+    return res.status(200).json({ ok: true, email: em, walletPence: user.walletPence });
   }
 
   // ── REMOVE CREDIT ──
@@ -74,9 +77,12 @@ export default async function handler(req, res) {
     if (!em || !amount) return res.status(400).json({ error: 'Missing email or amount' });
     const userKey = `stellar:user:${em}`;
     const user = await kvGet(url, token, userKey) || {};
-    user.promoBalance = Math.max(0, (user.promoBalance || 0) - Math.round(Number(amount) * 100));
+    const pence = Math.round(Number(amount) * 100);
+    if (!Number.isFinite(pence) || pence < 1 || pence > 100000) return res.status(400).json({ error: 'Invalid credit amount' });
+    user.walletPence = Math.max(0, (Number(user.walletPence) || 0) - pence);
+    user.updatedAt = Date.now();
     await kv(url, token, [['SET', userKey, JSON.stringify(user)]]);
-    return res.status(200).json({ ok: true, email: em, balance: user.promoBalance });
+    return res.status(200).json({ ok: true, email: em, walletPence: user.walletPence });
   }
 
   // ── GIVE £1 TO ALL EXISTING USERS (one-time retroactive) ──
@@ -119,8 +125,9 @@ export default async function handler(req, res) {
 
   // ── CREATE GIFT CODE ──
   if (action === 'createCode') {
-    const amt = Math.round(Number(codeAmount || 100));
-    const code = 'STELLAR-' + crypto.randomBytes(4).toString('hex').toUpperCase();
+    const amt = Math.round(Number(codeAmount || 0));
+    if (!Number.isFinite(amt) || amt < 1 || amt > 100000) return res.status(400).json({ error: 'Invalid code amount' });
+    const code = 'STELLAR-' + crypto.randomBytes(8).toString('hex').toUpperCase();
     const codeKey = `stellar:code:${code}`;
     await kv(url, token, [['SET', codeKey, JSON.stringify({ amount: amt, used: false, createdAt: Date.now() })]]);
     return res.status(200).json({ ok: true, code, amount: amt });
@@ -131,14 +138,15 @@ export default async function handler(req, res) {
     const userKey = `stellar:user:${em}`;
     const user = await kvGet(url, token, userKey) || {};
     if (creditMode === 'add') {
-      user.promoBalance = (user.promoBalance || 0) + Math.round(Number(walletPence));
+      user.walletPence = Math.max(0, Number(user.walletPence) || 0) + Math.round(Number(walletPence));
     } else if (creditMode === 'remove') {
-      user.promoBalance = Math.max(0, (user.promoBalance || 0) - Math.round(Number(walletPence)));
+      user.walletPence = Math.max(0, (Number(user.walletPence) || 0) - Math.round(Number(walletPence)));
     } else if (creditMode === 'set') {
-      user.promoBalance = Math.round(Number(walletPence));
+      user.walletPence = Math.max(0, Math.round(Number(walletPence)));
     }
+    user.updatedAt = Date.now();
     await kv(url, token, [['SET', userKey, JSON.stringify(user)]]);
-    return res.status(200).json({ ok: true, email: em, walletPence: user.promoBalance });
+    return res.status(200).json({ ok: true, email: em, walletPence: user.walletPence });
   }
 
   // Handle plan grant

@@ -1,153 +1,205 @@
-// api/auth.js — email + password accounts (sign up / sign in)
-// Passwords are NEVER stored readable: salted PBKDF2-SHA256, 150,000 rounds.
+// api/auth.js — email/password and verified Google sign-in for Stellar AI
 import crypto from 'crypto';
+import { createSession, readSession } from './_auth.js';
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  const allowed = /^https:\/\/(?:[a-z0-9-]+\.)?trystellarai\.com$/i.test(origin)
+    || /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin)
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+  res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://trystellarai.com');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Vary', 'Origin');
+}
+
+function validEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+}
 
 function hashPassword(password, salt) {
   return crypto.pbkdf2Sync(String(password), salt, 150000, 32, 'sha256').toString('hex');
 }
 
-async function sendWelcomeEmail(email) {
-  try {
-    const RESEND_API_KEY = process.env.RESEND_API_KEY;
-    if (!RESEND_API_KEY) return;
-    const displayName = email.split('@')[0];
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Stellar AI <support@trystellarai.com>',
-        to: [email],
-        subject: 'Welcome to Stellar AI 🐢',
-        html: `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head><body style="margin:0;padding:0;background:#050505;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;"><div style="max-width:560px;margin:0 auto;padding:40px 24px;"><div style="text-align:center;margin-bottom:32px;"><div style="font-size:20px;font-weight:900;color:#ffffff;">✦ Stellar AI</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;"><h1 style="font-size:24px;font-weight:900;color:#ffffff;margin:0 0 12px;letter-spacing:-0.5px;">Welcome, ${displayName} 🐢</h1><p style="font-size:15px;color:rgba(255,255,255,0.6);margin:0 0 24px;line-height:1.6;">You've got <strong style="color:#10a37f;">£1 free credit</strong> ready to go. That's enough to generate your first complete FiveM script right now.</p><div style="margin-bottom:24px;"><div style="font-size:11px;font-weight:800;letter-spacing:0.12em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:14px;">Try asking Stellar to build</div><div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px 16px;font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:8px;">"Make a QBCore police job with cuffing, MDT and jailing"</div><div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px 16px;font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:8px;">"Make a QBCore drug system with weed growing and selling"</div><div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px 16px;font-size:13px;color:rgba(255,255,255,0.7);">"Make a Roblox obby with 10 stages and a coin reward"</div></div><a href="https://trystellarai.com/app" style="display:block;background:#10a37f;color:#000;font-weight:800;font-size:15px;text-align:center;padding:14px;border-radius:10px;text-decoration:none;">Open Stellar AI →</a></div><div style="text-align:center;margin-top:24px;"><p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0;">Stellar AI · <a href="https://trystellarai.com/terms.html" style="color:rgba(255,255,255,0.25);">Terms</a> · <a href="mailto:support@trystellarai.com" style="color:rgba(255,255,255,0.25);">support@trystellarai.com</a></p></div></div></body></html>`,
-      }),
-    });
-  } catch (err) {
-    console.error('Welcome email failed:', err);
-    // Don't block signup if email fails
-  }
+function parseStoredValue(result) {
+  if (!result) return null;
+  try { return JSON.parse(result); } catch { return null; }
 }
 
 async function kvGet(url, token, key) {
+  const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) throw new Error('Database read failed');
+  return parseStoredValue((await response.json()).result);
+}
+
+async function kvSet(url, token, key, value, seconds) {
+  const command = seconds
+    ? ['SET', key, JSON.stringify(value), 'EX', seconds]
+    : ['SET', key, JSON.stringify(value)];
+  const response = await fetch(`${url}/pipeline`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify([command]),
+  });
+  if (!response.ok) throw new Error('Database write failed');
+}
+
+function decodeBase64Url(value) {
+  return JSON.parse(Buffer.from(value, 'base64url').toString('utf8'));
+}
+
+async function verifyGoogleCredential(token) {
+  const [headerPart, payloadPart, signaturePart] = String(token || '').split('.');
+  if (!headerPart || !payloadPart || !signaturePart) throw new Error('Invalid Google sign-in response.');
+
+  const header = decodeBase64Url(headerPart);
+  const payload = decodeBase64Url(payloadPart);
+  const now = Math.floor(Date.now() / 1000);
+  const issuerOk = payload.iss === 'https://accounts.google.com' || payload.iss === 'accounts.google.com';
+
+  if (header.alg !== 'RS256' || !header.kid || !issuerOk || payload.aud !== GOOGLE_CLIENT_ID || !payload.email_verified || payload.exp <= now) {
+    throw new Error('Google sign-in could not be verified.');
+  }
+
+  const certResponse = await fetch('https://www.googleapis.com/oauth2/v3/certs');
+  if (!certResponse.ok) throw new Error('Could not verify Google sign-in.');
+  const keys = await certResponse.json();
+  const jwk = keys.keys?.find((key) => key.kid === header.kid);
+  if (!jwk) throw new Error('Google signing key was not found. Please try again.');
+
+  const key = crypto.createPublicKey({ key: jwk, format: 'jwk' });
+  const verified = crypto.verify(
+    'RSA-SHA256',
+    Buffer.from(`${headerPart}.${payloadPart}`),
+    key,
+    Buffer.from(signaturePart, 'base64url'),
+  );
+  if (!verified || !validEmail(String(payload.email || '').toLowerCase().trim())) {
+    throw new Error('Google sign-in could not be verified.');
+  }
+
+  return {
+    email: String(payload.email).toLowerCase().trim(),
+    name: String(payload.name || payload.given_name || '').slice(0, 100),
+    picture: String(payload.picture || '').slice(0, 500),
+  };
+}
+
+async function sendWelcomeEmail(email) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const displayName = email.split('@')[0].replace(/[._-]+/g, ' ');
   try {
-    const r = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
-      headers: { Authorization: `Bearer ${token}` }
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Stellar AI <support@trystellarai.com>',
+        to: [email],
+        subject: 'Welcome to Stellar AI',
+        html: `<p>Welcome, ${displayName}.</p><p>Your £1 starter credit is ready. Open <a href="https://trystellarai.com/app">Stellar AI</a> to build your first script.</p>`,
+      }),
     });
-    const d = await r.json();
-    return d.result ? JSON.parse(d.result) : null;
-  } catch { return null; }
+  } catch {
+    // Signup remains successful if a non-essential email delivery fails.
+  }
+}
+
+async function ensureUser(url, token, email, source) {
+  const userKey = `stellar:user:${email}`;
+  const existing = await kvGet(url, token, userKey);
+  if (existing) return { user: existing, isNew: false };
+
+  const user = {
+    plan: 'free',
+    walletPence: 100,
+    welcomeCreditGiven: true,
+    welcomeCreditAt: Date.now(),
+    createdAt: Date.now(),
+    signInSource: source,
+  };
+  await kvSet(url, token, userKey, user);
+  return { user, isNew: true };
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin?.includes('trystellarai.com') ? req.headers.origin : 'https://trystellarai.com');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  setCors(req, res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return res.status(500).json({ error: 'Database not connected.' });
+  if (!url || !token) return res.status(500).json({ error: 'Account storage is not configured.' });
 
-  const { action, email, password } = req.body || {};
-  const em = String(email || '').toLowerCase().trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) return res.status(400).json({ error: 'Enter a valid email address.' });
-  // ── REDEEM GIFT CODE (no password needed) ──
-  if (action === 'redeemCode') {
-    const { pence, code } = req.body || {};
-    if (!em || !pence || !code) return res.status(400).json({ error: 'Missing fields' });
-    if (pence < 1 || pence > 100000) return res.status(400).json({ error: 'Invalid amount' });
-    const userKey3 = 'stellar:user:' + em;
-    const user3 = await kvGet(url, token, userKey3) || {};
-    const usedKey = 'stellar:usedcode:' + code;
-    const alreadyUsed = await kvGet(url, token, usedKey);
-    if (alreadyUsed) return res.status(400).json({ error: 'Code already redeemed' });
-    user3.walletPence = (user3.walletPence || 0) + Math.round(Number(pence));
-    await fetch(`${url}/pipeline`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify([
-        ['SET', userKey3, JSON.stringify(user3)],
-        ['SET', usedKey, JSON.stringify({ email: em, redeemedAt: Date.now() }), 'EX', 60 * 60 * 24 * 365]
-      ])
-    });
-    return res.status(200).json({ ok: true, walletPence: user3.walletPence });
-  }
+  const { action, email, password, credential, code } = req.body || {};
 
-  if (!password || String(password).length < 8) return res.status(400).json({ error: 'Password needs to be at least 8 characters.' });
-  if (String(password).length > 100) return res.status(400).json({ error: 'Password is too long.' });
-  if (action !== 'signup' && action !== 'login') return res.status(400).json({ error: 'Unknown action.' });
-
-  const kvKey = 'stellar:auth:' + em;
   try {
-    const getRes = await fetch(`${url}/get/${encodeURIComponent(kvKey)}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const getData = await getRes.json();
-    const existing = getData.result ? JSON.parse(getData.result) : null;
+    if (action === 'googleLogin') {
+      const googleUser = await verifyGoogleCredential(credential);
+      const { isNew } = await ensureUser(url, token, googleUser.email, 'google');
+      if (isNew) void sendWelcomeEmail(googleUser.email);
+      return res.status(200).json({ ok: true, user: googleUser, session: createSession(googleUser.email), isNew });
+    }
+
+    const normalizedEmail = String(email || '').toLowerCase().trim();
+    if (!validEmail(normalizedEmail)) return res.status(400).json({ error: 'Enter a valid email address.' });
+
+    if (action === 'redeemCode') {
+      const session = readSession(req);
+      if (!session || session.email !== normalizedEmail) return res.status(401).json({ error: 'Please sign in again before redeeming a code.' });
+      const normalizedCode = String(code || '').trim().toUpperCase();
+      if (!/^STELLAR-[A-Z0-9-]{6,64}$/.test(normalizedCode)) return res.status(400).json({ error: 'That code is not valid.' });
+
+      const codeKey = `stellar:code:${normalizedCode}`;
+      const gift = await kvGet(url, token, codeKey);
+      if (!gift || gift.used || !Number.isFinite(Number(gift.amount)) || Number(gift.amount) <= 0) {
+        return res.status(400).json({ error: 'That code is invalid or has already been used.' });
+      }
+
+      const userKey = `stellar:user:${normalizedEmail}`;
+      const existing = (await kvGet(url, token, userKey)) || { plan: 'free', createdAt: Date.now() };
+      const amount = Math.round(Number(gift.amount));
+      const updatedUser = {
+        ...existing,
+        walletPence: Math.max(0, Number(existing.walletPence) || 0) + amount,
+        updatedAt: Date.now(),
+      };
+      const updatedGift = { ...gift, used: true, usedBy: normalizedEmail, usedAt: Date.now() };
+      await kvSet(url, token, userKey, updatedUser);
+      await kvSet(url, token, codeKey, updatedGift);
+      return res.status(200).json({ ok: true, walletPence: updatedUser.walletPence, amount });
+    }
+
+    if (action !== 'signup' && action !== 'login') return res.status(400).json({ error: 'Unknown action.' });
+    if (!password || String(password).length < 8) return res.status(400).json({ error: 'Password needs to be at least 8 characters.' });
+    if (String(password).length > 100) return res.status(400).json({ error: 'Password is too long.' });
+
+    const authKey = `stellar:auth:${normalizedEmail}`;
+    const existingAuth = await kvGet(url, token, authKey);
 
     if (action === 'signup') {
-      if (existing) return res.status(409).json({ error: 'That email already has an account — try signing in instead.' });
+      if (existingAuth) return res.status(409).json({ error: 'That email already has an account. Try signing in instead.' });
       const salt = crypto.randomBytes(16).toString('hex');
-      const record = { salt, hash: hashPassword(password, salt), createdAt: Date.now() };
-      await fetch(`${url}/pipeline`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify([['SET', kvKey, JSON.stringify(record)]])
-      });
-      // Add £1 free welcome credit (non-blocking)
-      const userKey = 'stellar:user:' + em;
-      fetch(`${url}/pipeline`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify([['SET', userKey, JSON.stringify({ walletPence: 100, plan: 'free', createdAt: Date.now() })]])
-      }).catch(() => {});
-      // Send welcome email (non-blocking)
-      sendWelcomeEmail(em);
-      return res.status(200).json({ ok: true, email: em });
+      await kvSet(url, token, authKey, { salt, hash: hashPassword(password, salt), createdAt: Date.now() });
+      await ensureUser(url, token, normalizedEmail, 'password');
+      void sendWelcomeEmail(normalizedEmail);
+      return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail) });
     }
 
-    // ── GOOGLE WELCOME CREDIT (replaces welcome-credit.js) ──
-    // Called from app.html on first Google sign-in
-    if (action === 'googleCredit') {
-      const userKey2 = 'stellar:user:' + em;
-      const gr = await fetch(`${url}/get/${encodeURIComponent(userKey2)}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const gd = await gr.json();
-      const gu = gd.result ? JSON.parse(gd.result) : null;
-      if (gu && gu.welcomeCreditGiven) {
-        return res.status(200).json({ ok: true, credited: false, reason: 'already received' });
-      }
-      const newUser = {
-        ...(gu || {}),
-        plan: (gu && gu.plan) || 'free',
-        walletPence: ((gu && gu.walletPence) || 0) + 100,
-        welcomeCreditGiven: true,
-        welcomeCreditAt: Date.now(),
-        createdAt: (gu && gu.createdAt) || Date.now(),
-      };
-      await fetch(`${url}/pipeline`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify([['SET', userKey2, JSON.stringify(newUser)]])
-      });
-      return res.status(200).json({ ok: true, credited: true, balance: newUser.walletPence });
-    }
-
-    // login
-    if (!existing) return res.status(404).json({ error: 'No account found with that email — create one first.' });
-    const tryHash = hashPassword(password, existing.salt);
-    const a = Buffer.from(tryHash, 'hex');
-    const b = Buffer.from(existing.hash, 'hex');
-    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+    if (!existingAuth) return res.status(404).json({ error: 'No account found with that email. Create one first.' });
+    const candidate = Buffer.from(hashPassword(password, existingAuth.salt), 'hex');
+    const stored = Buffer.from(existingAuth.hash, 'hex');
+    if (candidate.length !== stored.length || !crypto.timingSafeEqual(candidate, stored)) {
       return res.status(403).json({ error: 'Wrong password.' });
     }
-    return res.status(200).json({ ok: true, email: em });
 
-  } catch (e) {
-    return res.status(500).json({ error: 'Could not reach the account service. Try again.' });
+    return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail) });
+  } catch (error) {
+    console.error('Authentication error', error?.message || error);
+    return res.status(500).json({ error: error?.message || 'Could not reach the account service. Try again.' });
   }
 }

@@ -1,37 +1,38 @@
-// api/get-chats.js
-const KV_URL   = process.env.KV_REST_API_URL;
+// api/get-chats.js — loads the signed-in user's conversation list
+import { requireSession } from './_auth.js';
+
+const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 
-async function kvGet(key) {
-  try {
-    const r = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
-      headers: { Authorization: `Bearer ${KV_TOKEN}` }
-    });
-    const d = await r.json();
-    return d.result || null;
-  } catch { return null; }
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  const allowed = /^https:\/\/(?:[a-z0-9-]+\.)?trystellarai\.com$/i.test(origin)
+    || /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin)
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+  res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://trystellarai.com');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization');
+  res.setHeader('Vary', 'Origin');
 }
 
 export default async function handler(req, res) {
-  const origin = req.headers.origin || '';
-  const allowed = origin.includes('trystellarai.com') || origin.includes('localhost') || origin.includes('vercel.app');
-  res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://trystellarai.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'GET') return res.status(405).end();
+  setCors(req, res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed.' });
 
-  const { email } = req.query;
-  if (!email) return res.status(400).json({ error: 'email required' });
+  const session = requireSession(req, res);
+  if (!session) return;
+  if (!KV_URL || !KV_TOKEN) return res.status(500).json({ error: 'Account storage is not configured.' });
 
   try {
-    const key  = 'stellar:chats:' + email.toLowerCase().trim();
-    const data = await kvGet(key);
-    if (!data) return res.status(200).json({ chats: [] });
-
-    const chats = JSON.parse(data);
+    const response = await fetch(`${KV_URL}/get/${encodeURIComponent(`stellar:chats:${session.email}`)}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
+    });
+    if (!response.ok) throw new Error('Database read failed');
+    const result = (await response.json()).result;
+    const chats = result ? JSON.parse(result) : [];
     return res.status(200).json({ chats: Array.isArray(chats) ? chats : [] });
-  } catch (e) {
-    return res.status(500).json({ error: 'Failed to load chats' });
+  } catch {
+    return res.status(500).json({ error: 'Could not load chats right now.' });
   }
 }
