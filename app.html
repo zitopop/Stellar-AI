@@ -2614,6 +2614,41 @@
     @media (max-width: 767px) {
       #chat { padding: 18px 14px !important; } .greet-wrap { padding: 28px 4px 34px !important; justify-content: center !important; } .greet-hi, .welcome-sub { text-align: center; } .welcome-kicker, .welcome-strip { justify-content: center; } .greet-hi { font-size: 34px !important; } .welcome-sub { margin-right: auto; margin-left: auto; font-size: 13px; } #suggestion-chips { grid-template-columns: 1fr; } .sug-chip { min-height: 58px; } .input-area > .flex { align-items: stretch; } #txt, #send-btn { min-height: 48px; } .side-new { min-height: 48px; } }
     @media (prefers-reduced-motion: reduce) { .sug-chip, .side-act { transition: none !important; } }
+
+    /* ═══════════ SETTINGS CONTROL CENTRE ═══════════ */
+    #settings-modal { background: rgba(4, 3, 12, .66) !important; backdrop-filter: blur(14px) saturate(1.15); -webkit-backdrop-filter: blur(14px) saturate(1.15); }
+    #settings-modal .set-card { width: min(620px, calc(100vw - 32px)) !important; max-width: 620px !important; padding: 0 !important; border: 1px solid rgba(214, 200, 255, .18) !important; border-radius: 24px !important; background: linear-gradient(165deg, rgba(34, 25, 68, .98), rgba(14, 10, 31, .98)) !important; box-shadow: 0 30px 80px rgba(0,0,0,.52), inset 0 1px rgba(255,255,255,.10) !important; }
+    #settings-modal .set-card::before { display: none !important; }
+    #settings-modal .set-ava-wrap { display: none !important; }
+    #settings-modal .set-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin: 0 !important; padding: 25px 28px 20px; border-bottom: 1px solid rgba(225,216,255,.10); background: radial-gradient(circle at 9% 0%, rgba(160,123,255,.20), transparent 14rem); }
+    .settings-kicker { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; color: #c5b4fa; font-size: 9px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    .settings-kicker::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--premium-mint); box-shadow: 0 0 13px rgba(97,230,191,.75); }
+    .settings-title { color: #f8f5ff; font-size: 25px; font-weight: 900; letter-spacing: -.055em; line-height: 1.05; }
+    .settings-subtitle { margin-top: 7px; color: #a9a2bb; font-size: 12px; font-weight: 600; line-height: 1.55; }
+    #settings-modal .set-head .modal-x { margin-top: 1px; border-color: rgba(221,210,255,.16) !important; background: rgba(255,255,255,.06) !important; }
+    #settings-modal .set-body { padding: 20px 28px 27px; }
+    #settings-modal .set-tabs { display: grid !important; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px !important; margin: 0 0 20px !important; padding: 5px !important; overflow: visible !important; border: 1px solid rgba(224,216,255,.09) !important; border-radius: 16px !important; background: rgba(255,255,255,.035) !important; }
+    #settings-modal .set-tab { display: flex; min-width: 0 !important; min-height: 56px; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 4px !important; border: 1px solid transparent !important; border-radius: 11px !important; color: #9690a8 !important; background: transparent !important; font-size: 9px !important; font-weight: 800 !important; letter-spacing: .01em; white-space: nowrap; transition: transform .18s ease, color .18s ease, background .18s ease, border-color .18s ease; }
+    #settings-modal .set-tab i { display: flex; color: #9382c9; } #settings-modal .set-tab i .ic { width: 17px; height: 17px; }
+    #settings-modal .set-tab:hover { color: #ece8f6 !important; background: rgba(167,139,250,.08) !important; transform: translateY(-1px); }
+    #settings-modal .set-tab.active { color: #fff !important; border-color: rgba(201,180,255,.20) !important; background: linear-gradient(145deg, rgba(162,125,255,.34), rgba(114,79,221,.24)) !important; box-shadow: 0 7px 17px rgba(11,7,29,.22), inset 0 1px rgba(255,255,255,.11) !important; }
+    #settings-modal .set-tab.active i { color: #e9dfff; }
+    #settings-modal .profile-head { margin: 0 0 20px; padding: 16px; border: 1px solid rgba(211,197,255,.12); border-radius: 16px; background: linear-gradient(135deg, rgba(152,114,255,.14), rgba(255,255,255,.025)); }
+    #settings-modal .profile-av { width: 48px; height: 48px; border: 1px solid rgba(217,201,255,.24); background: linear-gradient(135deg, #b89dff, #7959dc); box-shadow: 0 8px 18px rgba(92,63,202,.25), inset 0 1px rgba(255,255,255,.34); }
+    #settings-modal .profile-name { color: #f3effb; font-size: 15px; } #settings-modal .profile-sub { color: #aaa3ba; font-size: 11px; }
+    #settings-modal .set-label { margin: 18px 3px 9px; color: #a993e6; font-size: 9px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    #settings-modal .set-group { overflow: hidden; border: 1px solid rgba(222,213,255,.10) !important; border-radius: 15px; background: rgba(255,255,255,.028) !important; }
+    #settings-modal .set-item { min-height: 62px; padding: 14px 15px !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; }
+    #settings-modal .set-item + .set-item { border-top: 1px solid rgba(222,213,255,.08) !important; }
+    #settings-modal .set-item.set-click:hover { background: rgba(167,139,250,.10) !important; }
+    #settings-modal .set-key { color: #dfd8ed !important; font-size: 13px; font-weight: 800; } #settings-modal .set-val { color: #aea6c0 !important; font-size: 12px; font-weight: 700; }
+    #settings-modal .set-chev { color: #a98bff !important; font-size: 23px; } #settings-modal .sk-ico { border-radius: 9px !important; }
+    #settings-modal .set-signedout { margin: 10px; padding: 13px; border: 1px solid rgba(97,230,191,.17); border-radius: 11px; background: rgba(97,230,191,.06); } #settings-modal .so-title { color: #d9fff3; } #settings-modal .so-sub { color: #9ebfb5; }
+    #settings-modal #set-auth-row { margin: 10px; min-height: 50px; border: 1px solid rgba(201,180,255,.28) !important; border-radius: 11px !important; background: linear-gradient(135deg, rgba(163,127,255,.24), rgba(109,76,220,.15)) !important; } #settings-modal #set-auth-row + #discord-signin-btn { margin: 0 10px 10px; min-height: 50px; border-radius: 11px; }
+    #settings-modal .seg-wrap { padding: 4px; border: 1px solid rgba(222,213,255,.10); border-radius: 10px; background: rgba(0,0,0,.14); } #settings-modal .seg { min-height: 31px; border-radius: 7px !important; color: #aaa1ba; font-size: 11px; } #settings-modal .seg.active { color: #19102e !important; background: linear-gradient(135deg, #d3c0ff, #a786ff) !important; box-shadow: 0 4px 11px rgba(0,0,0,.15); }
+    #settings-modal .set-note { margin-top: 10px; padding: 11px 12px; border-left: 2px solid rgba(155,124,255,.75); border-radius: 0 9px 9px 0; color: #9d95af; background: rgba(155,124,255,.06); font-size: 11px; line-height: 1.6; }
+    body.light #settings-modal { background: rgba(45,35,74,.22) !important; } body.light #settings-modal .set-card { background: linear-gradient(165deg, #ffffff, #f7f5fc) !important; border-color: rgba(85,65,131,.14) !important; } body.light #settings-modal .set-head { border-color: rgba(85,65,131,.10); background: radial-gradient(circle at 9% 0%, rgba(155,124,255,.14), transparent 14rem); } body.light .settings-title { color: #211a38; } body.light .settings-subtitle { color: #6d657c; } body.light #settings-modal .set-tabs { border-color: rgba(85,65,131,.10) !important; background: rgba(83,62,131,.04) !important; } body.light #settings-modal .set-tab { color: #777083 !important; } body.light #settings-modal .set-tab.active { color: #fff !important; background: linear-gradient(145deg, #9a79ec, #7451d2) !important; } body.light #settings-modal .set-group { border-color: rgba(85,65,131,.11) !important; background: #fff !important; } body.light #settings-modal .set-item + .set-item { border-color: rgba(85,65,131,.08) !important; } body.light #settings-modal .set-key { color: #342c46 !important; } body.light #settings-modal .set-val { color: #746d80 !important; } body.light #settings-modal .profile-head { border-color: rgba(85,65,131,.11); background: linear-gradient(135deg, rgba(154,121,236,.10), rgba(255,255,255,.8)); } body.light #settings-modal .profile-name { color: #2b243b; } body.light #settings-modal .profile-sub { color: #706a7c; }
+    @media (max-width: 767px) { #settings-modal { align-items: flex-end !important; } #settings-modal .set-card { width: 100% !important; height: min(94dvh, 760px) !important; max-height: 94dvh !important; border-radius: 24px 24px 0 0 !important; } #settings-modal .set-head { padding: 17px 18px 15px; } .settings-title { font-size: 22px; } .settings-subtitle { font-size: 11px; } #settings-modal .set-body { padding: 16px 14px calc(20px + env(safe-area-inset-bottom)); } #settings-modal .set-tabs { gap: 3px !important; padding: 4px !important; border-radius: 14px !important; } #settings-modal .set-tab { min-height: 52px; padding: 7px 2px !important; font-size: 8px !important; } #settings-modal .set-tab i .ic { width: 16px; height: 16px; } #settings-modal .set-item { min-height: 60px; padding: 13px !important; } }
   </style>
 <script type="application/ld+json">
 {
@@ -2966,8 +3001,12 @@
   <div id="settings-modal" onclick="if (event.target.id === 'settings-modal') closeSettings()" 
        class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
     <div onclick="event.stopImmediatePropagation()" class="set-card glass rounded-3xl w-full max-w-md mx-4 p-8">
-      <div class="flex justify-between mb-6">
-        <div class="text-2xl font-black">Settings</div>
+      <div class="set-head flex justify-between mb-6">
+        <div>
+          <div class="settings-kicker">Workspace preferences</div>
+          <div class="settings-title">Settings</div>
+          <div class="settings-subtitle">Make Stellar feel right for the way you build.</div>
+        </div>
         <button onclick="closeSettings()" class="modal-x" aria-label="Close">×</button>
       </div>
 
