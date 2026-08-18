@@ -4,408 +4,476 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Stellar AI | FiveM QBCore, ESX & Roblox Script Generator</title>
-  <meta name="description" content="Build, fix and download FiveM QBCore, ESX and Roblox scripts from a plain-English prompt. Get complete Lua or Roblox files, including fxmanifest, client, server and config files. Free to try.">
+  <meta name="description" content="Turn a plain-English idea into complete, test-ready FiveM QBCore, ESX or Roblox script files. Build, fix and iterate from one premium AI workspace. Free to try.">
   <meta name="keywords" content="FiveM script generator, QBCore script generator, ESX script generator, Roblox script generator, FiveM Lua scripts, QBCore police job, FiveM AI coding">
   <meta property="og:site_name" content="Stellar AI">
   <meta property="og:title" content="Stellar AI | FiveM QBCore, ESX & Roblox Script Generator">
-  <meta property="og:description" content="Describe a FiveM or Roblox system in plain English, then build, fix and download the script files. Free to try.">
+  <meta property="og:description" content="Turn a plain-English idea into a complete FiveM or Roblox resource. Build, fix and download the script files from one focused workspace.">
   <meta property="og:image" content="https://trystellarai.com/og-image.png">
   <meta property="og:url" content="https://trystellarai.com">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Stellar AI | FiveM QBCore, ESX & Roblox Script Generator">
+  <meta name="twitter:description" content="Build, fix and download FiveM and Roblox scripts from one focused AI workspace.">
   <meta name="twitter:image" content="https://trystellarai.com/og-image.png">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
   <link rel="canonical" href="https://trystellarai.com">
   <link rel="icon" href="/icon-192.png">
   <link rel="apple-touch-icon" href="/icon-180.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@graph":[
-      {
-        "@type":"SoftwareApplication",
-        "name":"Stellar AI",
-        "url":"https://trystellarai.com/app",
-        "applicationCategory":"DeveloperApplication",
-        "operatingSystem":"Web",
-        "description":"A web application for building and fixing FiveM QBCore, ESX and Roblox scripts from plain-English prompts.",
-        "offers":{"@type":"Offer","price":"0","priceCurrency":"GBP","category":"Free trial"}
-      },
-      {
-        "@type":"WebSite",
-        "name":"Stellar AI",
-        "url":"https://trystellarai.com/"
-      },
-      {
-        "@type":"FAQPage",
-        "mainEntity":[
-          {"@type":"Question","name":"What frameworks does Stellar AI support?","acceptedAnswer":{"@type":"Answer","text":"Stellar AI supports FiveM QBCore, ESX, ox_lib, standalone resources and Roblox scripting workflows."}},
-          {"@type":"Question","name":"Can Stellar AI help fix a broken script?","acceptedAnswer":{"@type":"Answer","text":"You can paste a broken or incomplete script into Stellar AI to get a diagnosis and a revised version."}},
-          {"@type":"Question","name":"Can I try Stellar AI before paying?","acceptedAnswer":{"@type":"Answer","text":"Yes. Stellar AI has a free starting option and does not require a card to begin."}}
-        ]
-      }
+      {"@type":"SoftwareApplication","name":"Stellar AI","url":"https://trystellarai.com/app","applicationCategory":"DeveloperApplication","operatingSystem":"Web","description":"A web application for building and fixing FiveM QBCore, ESX and Roblox scripts from plain-English prompts.","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP","category":"Free trial"}},
+      {"@type":"WebSite","name":"Stellar AI","url":"https://trystellarai.com/"},
+      {"@type":"FAQPage","mainEntity":[
+        {"@type":"Question","name":"What frameworks does Stellar AI support?","acceptedAnswer":{"@type":"Answer","text":"Stellar AI supports FiveM QBCore, ESX, ox_lib, standalone resources and Roblox scripting workflows."}},
+        {"@type":"Question","name":"Can Stellar AI help fix a broken script?","acceptedAnswer":{"@type":"Answer","text":"You can paste a broken or incomplete script into Stellar AI to get a diagnosis and a revised version."}},
+        {"@type":"Question","name":"Can I try Stellar AI before paying?","acceptedAnswer":{"@type":"Answer","text":"Yes. Stellar AI has a free starting option and does not require a card to begin."}}
+      ]}
     ]
   }
   </script>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#060608;--surface:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.07);--text:#e2e8f0;--muted:rgba(255,255,255,0.4);--green:#10a37f;--gold:#fbbf24;}
-    html{scroll-behavior:smooth;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.6;min-height:100vh;}
-    a{color:inherit;text-decoration:none;}
-
-    /* NAV */
-    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;position:sticky;top:0;background:rgba(6,6,8,0.95);backdrop-filter:blur(12px);z-index:100;border-bottom:1px solid var(--border);}
-    .nav-logo{font-weight:900;font-size:16px;letter-spacing:-0.3px;color:#fff;}
-    .nav-logo span{color:var(--green);}
-    .nav-links{display:flex;align-items:center;gap:32px;}
-    .nav-links a{font-size:13px;font-weight:700;color:var(--muted);transition:color 0.2s;}
-    .nav-links a:hover{color:#fff;}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:9px 20px;border-radius:8px;transition:opacity 0.2s;}
-    .nav-cta:hover{opacity:0.85;}
-
-    /* HERO */
-    .hero{padding:100px 40px 80px;max-width:1100px;margin:0 auto;text-align:center;}
-    .hero-eyebrow{font-size:11px;font-weight:800;letter-spacing:0.2em;color:var(--green);text-transform:uppercase;margin-bottom:24px;}
-    .hero h1{font-size:clamp(36px,6vw,68px);font-weight:900;letter-spacing:-3px;line-height:1.02;margin-bottom:24px;color:#fff;}
-    .hero h1 em{font-style:normal;color:var(--green);}
-    .hero-sub{font-size:18px;color:var(--muted);max-width:540px;margin:0 auto 40px;line-height:1.6;font-weight:500;}
-    .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
-    .btn-primary{background:var(--green);color:#000;font-weight:800;font-size:15px;padding:14px 32px;border-radius:10px;transition:opacity 0.2s;display:inline-block;}
-    .btn-primary:hover{opacity:0.85;}
-    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:700;font-size:15px;padding:14px 32px;border-radius:10px;transition:all 0.2s;display:inline-block;}
-    .btn-ghost:hover{border-color:rgba(255,255,255,0.2);color:#fff;}
-    .hero-note{font-size:12px;color:var(--muted);}
-
-    /* DEMO FLOW */
-    .demo{max-width:900px;margin:0 auto;padding:0 40px 80px;}
-    .demo-label{font-size:11px;font-weight:800;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;text-align:center;margin-bottom:40px;}
-    .demo-steps{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:start;gap:16px;}
-    .demo-step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
-    .demo-step-num{font-size:10px;font-weight:900;letter-spacing:0.15em;color:var(--green);text-transform:uppercase;margin-bottom:10px;}
-    .demo-step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:8px;}
-    .demo-prompt{font-size:12px;color:var(--muted);line-height:1.5;font-style:italic;}
-    .demo-files{display:flex;flex-direction:column;gap:4px;}
-    .demo-file{font-size:11px;font-family:monospace;color:#a3e635;background:rgba(163,230,53,0.06);border:1px solid rgba(163,230,53,0.15);border-radius:6px;padding:4px 8px;}
-    .demo-result{font-size:12px;color:var(--muted);line-height:1.5;}
-    .demo-result strong{color:var(--green);display:block;margin-bottom:4px;}
-    .demo-arrow{font-size:20px;color:var(--border);display:flex;align-items:center;padding-top:40px;}
-
-    /* PROOF SECTION */
-    .proof{padding:80px 40px;max-width:900px;margin:0 auto;}
-    .section-label{font-size:11px;font-weight:800;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;text-align:center;margin-bottom:48px;}
-    .proof-video{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:16px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:48px;position:relative;overflow:hidden;}
-    .proof-video-placeholder{text-align:center;}
-    .proof-video-placeholder .play{width:64px;height:64px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;cursor:pointer;}
-    .proof-video-label{font-size:13px;color:var(--muted);}
-
-    /* WORKFLOW SECTIONS */
-    .workflows{padding:0 40px 80px;max-width:900px;margin:0 auto;}
-    .workflow{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;margin-bottom:80px;padding-bottom:80px;border-bottom:1px solid var(--border);}
-    .workflow:last-child{border-bottom:none;margin-bottom:0;}
-    .workflow.reverse{direction:rtl;}
-    .workflow.reverse > *{direction:ltr;}
-    .workflow-text h2{font-size:26px;font-weight:900;letter-spacing:-0.8px;margin-bottom:12px;color:#fff;}
-    .workflow-text p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
-    .workflow-link{font-size:13px;font-weight:800;color:var(--green);}
-    .workflow-visual{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;font-family:monospace;font-size:12px;}
-    .wv-prompt{color:var(--muted);margin-bottom:12px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-style:italic;}
-    .wv-file{margin-bottom:8px;}
-    .wv-filename{color:#a3e635;margin-bottom:4px;}
-    .wv-code{color:rgba(255,255,255,0.5);line-height:1.5;font-size:11px;}
-
-    /* OUTCOME SECTION */
-    .outcome{padding:0 40px 80px;max-width:900px;margin:0 auto;text-align:center;}
-    .outcome h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1.5px;margin-bottom:16px;color:#fff;}
-    .outcome p{font-size:16px;color:var(--muted);max-width:500px;margin:0 auto 48px;}
-    .outcomes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left;}
-    .outcome-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;}
-    .outcome-card h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;}
-    .outcome-card p{font-size:13px;color:var(--muted);line-height:1.6;margin:0;}
-
-    /* VS */
-    .vs{padding:0 40px 80px;max-width:900px;margin:0 auto;}
-    .vs-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px;display:grid;grid-template-columns:1fr 1fr;gap:32px;}
-    .vs-col h3{font-size:13px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;}
-    .vs-col.bad h3{color:rgba(239,68,68,0.8);}
-    .vs-col.good h3{color:var(--green);}
-    .vs-item{font-size:13px;color:var(--muted);margin-bottom:12px;display:flex;gap:10px;align-items:flex-start;}
-    .vs-item span:first-child{flex:none;margin-top:2px;}
-
-    /* PLANS */
-    .plans{padding:0 40px 80px;max-width:900px;margin:0 auto;}
-    .plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
-    .plan{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;}
-    .plan.featured{border-color:rgba(16,163,127,0.4);}
-    .plan.gold{border-color:rgba(251,191,36,0.3);}
-    .plan-name{font-size:13px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-    .plan.featured .plan-name{color:var(--green);}
-    .plan.gold .plan-name{color:var(--gold);}
-    .plan-price{font-size:40px;font-weight:900;letter-spacing:-2px;color:#fff;margin-bottom:4px;}
-    .plan-per{font-size:13px;color:var(--muted);margin-bottom:20px;}
-    .plan-btn{display:block;width:100%;padding:12px;border-radius:9px;font-size:13px;font-weight:800;text-align:center;margin-bottom:20px;}
-    .plan-btn.free-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);}
-    .plan-btn.plus-btn{background:var(--green);color:#000;}
-    .plan-btn.pro-btn{background:#f59e0b;color:#000;}
-    .plan-feat{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;gap:8px;}
-    .plan-feat .tick{color:var(--green);flex:none;}
-    .plan-feat .star{color:var(--gold);flex:none;}
-
-    /* FAQ */
-    .faq{padding:0 40px 80px;max-width:700px;margin:0 auto;}
-    .faq-list{display:flex;flex-direction:column;gap:8px;margin-top:48px;}
-    .faq-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-    .faq-q{width:100%;text-align:left;background:none;border:none;color:var(--text);font-size:14px;font-weight:700;padding:18px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:inherit;}
-    .faq-q:hover{background:rgba(255,255,255,0.02);}
-    .faq-arrow{font-size:16px;color:var(--muted);transition:transform 0.2s;flex:none;}
-    .faq-q.open .faq-arrow{transform:rotate(90deg);color:var(--green);}
-    .faq-a{font-size:13px;color:var(--muted);line-height:1.7;padding:0 20px 18px;display:none;}
-    .faq-a.open{display:block;}
-
-    /* CTA */
-    .cta{text-align:center;padding:80px 40px;border-top:1px solid var(--border);}
-    .cta h2{font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-2px;margin-bottom:16px;color:#fff;}
-    .cta p{font-size:16px;color:var(--muted);margin-bottom:32px;}
-
-    /* FOOTER */
-    footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
-    .footer-links a{font-size:12px;color:var(--muted);transition:color 0.2s;}
-    .footer-links a:hover{color:#fff;}
-
-    @media(max-width:768px){
-      nav{padding:16px 20px;}
-      .nav-links{display:none;}
-      .hero{padding:60px 20px 48px;}
-      .demo{padding:0 20px 48px;}
-      .demo-steps{grid-template-columns:1fr;} .demo-arrow{display:none;}
-      .proof,.workflows,.outcome,.vs,.plans,.faq{padding-left:20px;padding-right:20px;}
-      .workflow{grid-template-columns:1fr;} .workflow.reverse{direction:ltr;}
-      .outcomes-grid{grid-template-columns:1fr;}
-      .plans-grid{grid-template-columns:1fr;}
-      .vs-box{grid-template-columns:1fr;}
-      footer{flex-direction:column;align-items:flex-start;padding:20px;}
+    :root {
+      --ink: #f8f7ff;
+      --muted: #a9a4bb;
+      --muted-strong: #d1cde0;
+      --bg: #080714;
+      --bg-deep: #05040c;
+      --surface: rgba(21, 17, 42, .62);
+      --surface-strong: rgba(27, 21, 56, .88);
+      --border: rgba(214, 204, 255, .13);
+      --border-hover: rgba(196, 181, 253, .32);
+      --violet: #9b7cff;
+      --violet-bright: #b69cff;
+      --violet-dark: #7557ee;
+      --emerald: #52e1b5;
+      --amber: #ffcc66;
+      --danger: #f89aa4;
+      --max: 1180px;
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: var(--bg-deep); }
+    body {
+      min-width: 320px;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 50% -14%, rgba(133, 92, 246, .27), transparent 35rem),
+        radial-gradient(circle at 98% 20%, rgba(38, 192, 173, .10), transparent 28rem),
+        radial-gradient(circle at 0% 51%, rgba(86, 63, 202, .10), transparent 32rem),
+        var(--bg);
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    ::selection { color: #0b0817; background: #c8b7ff; }
+    .page-shell { position: relative; isolation: isolate; }
+    .page-shell::before {
+      content: "";
+      z-index: -1;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .25;
+      background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 58px 58px;
+      mask-image: linear-gradient(to bottom, black, transparent 76%);
+    }
+    .container { width: min(calc(100% - 48px), var(--max)); margin: 0 auto; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbbcff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .15em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 0 4px rgba(82,225,181,.11), 0 0 20px var(--emerald); }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 20px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button:focus-visible, .faq-button:focus-visible, .nav-toggle:focus-visible { outline: 3px solid rgba(182,156,255,.65); outline-offset: 3px; }
+    .button-primary { color: #130c28; background: linear-gradient(135deg, #d7caff 0%, #a486ff 42%, #55e5c1 140%); box-shadow: 0 12px 32px rgba(125, 91, 240, .28), inset 0 1px rgba(255,255,255,.55); }
+    .button-primary:hover { box-shadow: 0 16px 38px rgba(125, 91, 240, .42), inset 0 1px rgba(255,255,255,.6); }
+    .button-secondary { color: #e9e3ff; border-color: var(--border); background: rgba(255,255,255,.035); }
+    .button-secondary:hover { border-color: var(--border-hover); background: rgba(167,139,250,.10); }
+    .button-arrow { font-size: 17px; line-height: 1; }
+
+    /* Navigation */
+    .site-header { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid rgba(255,255,255,.035); background: rgba(8,7,20,.66); backdrop-filter: blur(20px) saturate(1.2); }
+    .nav { display: flex; align-items: center; min-height: 76px; justify-content: space-between; gap: 24px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 800; letter-spacing: -.04em; }
+    .brand-mark { position: relative; display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid rgba(210,196,255,.38); border-radius: 9px; color: #e2d8ff; background: linear-gradient(135deg, rgba(189,161,255,.4), rgba(103,75,214,.3)); box-shadow: inset 0 1px rgba(255,255,255,.25), 0 6px 18px rgba(125,91,240,.22); }
+    .brand-mark::after { content: ""; position: absolute; inset: 4px; border: 1px solid rgba(255,255,255,.22); border-radius: 6px; }
+    .brand span { color: #c7b5ff; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { color: var(--muted); font-size: 13px; font-weight: 700; transition: color .2s ease; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .nav-login { color: var(--muted-strong); font-size: 13px; font-weight: 700; }
+    .nav-login:hover { color: white; }
+    .nav-cta { min-height: 40px; padding: 0 15px; border-radius: 11px; font-size: 13px; }
+
+    /* Hero */
+    .hero { position: relative; padding: 84px 0 42px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(480px, 1.05fr); align-items: center; gap: 70px; }
+    .hero-copy { position: relative; z-index: 1; }
+    .hero h1 { max-width: 650px; margin: 18px 0 22px; font-size: clamp(48px, 5.45vw, 78px); font-weight: 800; letter-spacing: -.07em; line-height: .99; }
+    .hero h1 .gradient-text { display: block; color: transparent; background: linear-gradient(100deg, #cbbdff 7%, #ad8eff 47%, #63e8c4 100%); background-clip: text; -webkit-background-clip: text; }
+    .hero-lead { max-width: 570px; color: var(--muted); font-size: 17px; font-weight: 500; line-height: 1.7; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .hero-footnote { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 18px; color: #aaa4ba; font-size: 12px; font-weight: 600; }
+    .hero-footnote span { display: inline-flex; align-items: center; gap: 7px; }
+    .hero-footnote span::before { content: "✓"; color: var(--emerald); font-weight: 900; }
+    .hero-orbit { position: absolute; top: -70px; right: -90px; z-index: -1; width: 380px; height: 380px; border: 1px solid rgba(181,155,255,.11); border-radius: 50%; box-shadow: 0 0 0 54px rgba(153,124,255,.035), 0 0 0 110px rgba(153,124,255,.022); }
+    .hero-orbit::after { content: ""; position: absolute; top: 14%; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 20px 4px rgba(82,225,181,.65); }
+
+    /* Product preview */
+    .product-frame { position: relative; padding: 1px; overflow: hidden; border-radius: 24px; background: linear-gradient(150deg, rgba(203,185,255,.48), rgba(134,90,244,.12) 40%, rgba(82,225,181,.25)); box-shadow: 0 28px 80px rgba(0,0,0,.42), 0 0 0 8px rgba(157,124,255,.035); }
+    .product-frame::before { content: ""; position: absolute; inset: 0; opacity: .7; background: linear-gradient(105deg, transparent 28%, rgba(255,255,255,.13) 49%, transparent 60%); transform: translateX(-80%); animation: sheen 7s ease-in-out infinite; }
+    @keyframes sheen { 0%, 64% { transform: translateX(-110%); } 82%, 100% { transform: translateX(140%); } }
+    .product-shell { position: relative; overflow: hidden; min-height: 520px; padding: 18px; border-radius: 23px; background: linear-gradient(145deg, rgba(20,15,45,.98), rgba(11,9,26,.98)); }
+    .product-top { display: flex; align-items: center; justify-content: space-between; padding: 2px 2px 16px; }
+    .traffic { display: flex; gap: 6px; }
+    .traffic i { display: block; width: 8px; height: 8px; border-radius: 50%; background: #5b506e; }
+    .traffic i:first-child { background: #f79caf; } .traffic i:nth-child(2) { background: #ffc96c; } .traffic i:last-child { background: #62dcb7; }
+    .product-live { display: inline-flex; align-items: center; gap: 7px; color: #c9c2da; font: 500 10px "DM Mono", monospace; letter-spacing: .05em; text-transform: uppercase; }
+    .product-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 12px var(--emerald); }
+    .product-main { display: grid; grid-template-columns: 138px minmax(0, 1fr); min-height: 448px; overflow: hidden; border: 1px solid rgba(232,226,255,.08); border-radius: 15px; background: #0c0a1b; }
+    .preview-side { display: flex; flex-direction: column; gap: 9px; padding: 14px 10px; border-right: 1px solid rgba(232,226,255,.07); background: rgba(255,255,255,.018); }
+    .preview-brand { margin: 2px 6px 13px; color: #f1ecff; font-size: 11px; font-weight: 800; letter-spacing: -.04em; }
+    .preview-brand span { color: #ad91ff; }
+    .preview-new { padding: 9px; border-radius: 8px; color: #150e29; background: linear-gradient(135deg, #cfbdff, #a889ff); font-size: 9px; font-weight: 800; text-align: center; }
+    .preview-nav { padding: 8px 7px; border: 1px solid transparent; border-radius: 8px; color: #807a93; font-size: 9px; font-weight: 700; }
+    .preview-nav.active { color: #e7defe; border-color: rgba(174,146,255,.15); background: rgba(155,124,255,.12); }
+    .preview-credit { margin-top: auto; padding: 8px; border: 1px solid rgba(82,225,181,.16); border-radius: 8px; color: #80e8cc; background: rgba(82,225,181,.06); font: 500 8px "DM Mono", monospace; }
+    .preview-work { display: flex; flex-direction: column; min-width: 0; }
+    .preview-bar { display: flex; align-items: center; justify-content: space-between; min-height: 43px; padding: 0 15px; border-bottom: 1px solid rgba(232,226,255,.06); }
+    .preview-title { color: #e9e3fa; font-size: 10px; font-weight: 800; }
+    .preview-model { padding: 5px 8px; border: 1px solid rgba(174,146,255,.22); border-radius: 99px; color: #beaaff; background: rgba(155,124,255,.1); font-size: 8px; font-weight: 800; }
+    .preview-convo { flex: 1; padding: 18px 16px; }
+    .preview-prompt { max-width: 86%; margin-left: auto; padding: 10px 12px; border-radius: 11px 11px 3px 11px; color: #f4f1fb; background: linear-gradient(135deg, #7654db, #9a72ee); font-size: 9px; font-weight: 600; line-height: 1.45; }
+    .preview-reply { max-width: 93%; margin-top: 13px; padding: 12px; border: 1px solid rgba(230,224,251,.08); border-radius: 3px 11px 11px 11px; background: rgba(255,255,255,.028); }
+    .reply-label { margin-bottom: 8px; color: #7ee8c9; font: 500 8px "DM Mono", monospace; }
+    .reply-text { color: #cbc5d9; font-size: 8.6px; line-height: 1.55; }
+    .preview-code { margin-top: 10px; overflow: hidden; border: 1px solid rgba(173,146,255,.16); border-radius: 8px; background: #0a0815; }
+    .code-head { display: flex; justify-content: space-between; padding: 7px 9px; border-bottom: 1px solid rgba(232,226,255,.06); color: #9e91bc; font: 500 7px "DM Mono", monospace; }
+    .code-lines { padding: 8px 9px 10px; color: #b8a6ef; font: 500 7px/1.7 "DM Mono", monospace; white-space: pre-line; }
+    .code-lines b { color: #69ddba; font-weight: 500; } .code-lines em { color: #efbe73; font-style: normal; }
+    .preview-compose { display: flex; align-items: center; gap: 9px; padding: 10px 13px; border-top: 1px solid rgba(232,226,255,.06); }
+    .preview-input { flex: 1; padding: 8px 10px; border: 1px solid rgba(232,226,255,.09); border-radius: 8px; color: #615b70; background: rgba(255,255,255,.025); font-size: 8px; }
+    .preview-send { padding: 8px 10px; border-radius: 8px; color: #1b1032; background: #a98aff; font-size: 8px; font-weight: 900; }
+    .float-file { position: absolute; right: -28px; bottom: 44px; display: flex; align-items: center; gap: 9px; padding: 11px 13px; border: 1px solid rgba(211,199,255,.23); border-radius: 12px; color: #f4f0ff; background: rgba(28,21,58,.85); box-shadow: 0 18px 30px rgba(0,0,0,.3); backdrop-filter: blur(12px); font: 500 10px "DM Mono", monospace; }
+    .float-file::before { content: "✓"; display: grid; width: 18px; height: 18px; place-items: center; border-radius: 6px; color: #07150f; background: var(--emerald); font: 900 11px "Manrope", sans-serif; }
+
+    /* Framework rail */
+    .framework-rail { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 66px; border: 1px solid var(--border); border-radius: 18px; background: linear-gradient(110deg, rgba(255,255,255,.035), rgba(155,124,255,.065), rgba(255,255,255,.025)); }
+    .framework-copy { color: var(--muted); font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .frameworks { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .frameworks span { padding: 7px 10px; border: 1px solid rgba(226,215,255,.11); border-radius: 7px; color: #d9d2eb; background: rgba(255,255,255,.035); font: 500 10px "DM Mono", monospace; }
+
+    /* Sections */
+    .section { padding: 104px 0; }
+    .section-heading { max-width: 650px; margin-bottom: 44px; }
+    .section-heading.center { margin-right: auto; margin-left: auto; text-align: center; }
+    .section-heading h2 { margin: 15px 0 14px; font-size: clamp(32px, 3.6vw, 52px); font-weight: 800; letter-spacing: -.065em; line-height: 1.03; }
+    .section-heading p { color: var(--muted); font-size: 16px; line-height: 1.7; }
+    .section-heading.center p { max-width: 580px; margin-inline: auto; }
+    .section-heading.center .eyebrow::before { display: none; }
+    .section-heading.center .eyebrow { color: #bca9ff; }
+
+    /* Three capabilities */
+    .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .capability { position: relative; min-height: 345px; padding: 27px; overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: linear-gradient(150deg, rgba(255,255,255,.05), rgba(255,255,255,.018)); transition: transform .25s ease, border-color .25s ease, background .25s ease; }
+    .capability:hover { transform: translateY(-5px); border-color: var(--border-hover); background: linear-gradient(150deg, rgba(173,146,255,.115), rgba(255,255,255,.025)); }
+    .cap-number { color: #9e88dd; font: 500 11px "DM Mono", monospace; }
+    .capability h3 { margin: 59px 0 10px; font-size: 20px; font-weight: 800; letter-spacing: -.05em; }
+    .capability p { max-width: 285px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .cap-icon { position: absolute; top: 25px; right: 25px; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgba(216,204,255,.15); border-radius: 14px; color: #c6b3ff; background: rgba(155,124,255,.12); font-size: 19px; }
+    .cap-ui { position: absolute; right: 19px; bottom: -1px; left: 19px; height: 118px; padding: 12px; border: 1px solid rgba(216,204,255,.10); border-bottom: 0; border-radius: 14px 14px 0 0; background: rgba(6,5,15,.48); }
+    .tiny-label { color: #a69dbd; font: 500 8px "DM Mono", monospace; }
+    .mini-prompt { margin-top: 8px; padding: 8px; border-radius: 7px; color: #e5dfff; background: rgba(155,124,255,.15); font-size: 8px; }
+    .mini-files { display: flex; gap: 5px; margin-top: 8px; }
+    .mini-files i { flex: 1; height: 24px; border: 1px solid rgba(82,225,181,.16); border-radius: 5px; background: rgba(82,225,181,.07); }
+    .mini-diagnosis { display: grid; gap: 5px; margin-top: 9px; }
+    .mini-diagnosis i { display: block; height: 7px; border-radius: 4px; background: rgba(255,255,255,.09); } .mini-diagnosis i:nth-child(2) { width: 80%; background: rgba(248,154,164,.42); } .mini-diagnosis i:nth-child(3) { width: 63%; background: rgba(82,225,181,.42); }
+    .mini-flow { display: flex; align-items: center; gap: 5px; margin-top: 17px; } .mini-flow i { flex: 1; height: 31px; border: 1px solid rgba(174,146,255,.15); border-radius: 6px; background: rgba(174,146,255,.09); } .mini-flow b { color: #7be0c3; font-size: 10px; }
+
+    /* Scenario divider */
+    .scenario { position: relative; overflow: hidden; padding: 28px; border: 1px solid rgba(192,172,255,.19); border-radius: 22px; background: radial-gradient(circle at 75% 20%, rgba(98,233,196,.10), transparent 24rem), linear-gradient(110deg, rgba(93,61,207,.33), rgba(23,18,52,.70)); }
+    .scenario::after { content: ""; position: absolute; right: -140px; bottom: -170px; width: 430px; height: 430px; border: 1px solid rgba(195,176,255,.19); border-radius: 50%; box-shadow: 0 0 0 50px rgba(195,176,255,.04), 0 0 0 110px rgba(195,176,255,.025); }
+    .scenario-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center; }
+    .scenario h2 { max-width: 500px; margin: 12px 0 16px; font-size: clamp(30px, 3.6vw, 48px); font-weight: 800; letter-spacing: -.065em; line-height: 1.04; }
+    .scenario p { max-width: 500px; color: #c4bdd5; font-size: 15px; line-height: 1.7; }
+    .scenario-points { display: grid; gap: 13px; margin-top: 25px; }
+    .scenario-points div { display: flex; align-items: flex-start; gap: 10px; color: #e1dbed; font-size: 13px; font-weight: 700; }
+    .scenario-points i { display: grid; flex: 0 0 auto; width: 20px; height: 20px; place-items: center; border-radius: 6px; color: #0e1021; background: var(--emerald); font-size: 12px; font-style: normal; }
+    .resource-card { padding: 16px; border: 1px solid rgba(224,214,255,.17); border-radius: 15px; background: rgba(9,7,24,.56); box-shadow: 0 24px 40px rgba(0,0,0,.20); }
+    .resource-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,.08); color: #e4ddf5; font-size: 11px; font-weight: 800; }
+    .resource-head span { color: #80dfc4; font: 500 9px "DM Mono", monospace; }
+    .resource-list { display: grid; gap: 8px; padding-top: 12px; }
+    .resource-file { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px; border: 1px solid rgba(255,255,255,.055); border-radius: 9px; background: rgba(255,255,255,.025); }
+    .resource-file span { color: #d7cee7; font: 500 10px "DM Mono", monospace; } .resource-file b { color: #7ae4c8; font: 500 8px "DM Mono", monospace; }
+
+    /* Difference */
+    .difference-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 50px; align-items: start; }
+    .difference-copy { position: sticky; top: 108px; }
+    .difference-copy h2 { max-width: 450px; margin: 15px 0; font-size: clamp(32px, 3.4vw, 48px); font-weight: 800; letter-spacing: -.065em; line-height: 1.04; }
+    .difference-copy p { max-width: 430px; color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .difference-list { display: grid; gap: 12px; }
+    .difference-item { display: grid; grid-template-columns: 40px 1fr; gap: 16px; padding: 20px; border: 1px solid var(--border); border-radius: 15px; background: rgba(255,255,255,.025); }
+    .difference-item .num { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; color: #c8b8fd; background: rgba(155,124,255,.14); font: 500 10px "DM Mono", monospace; }
+    .difference-item h3 { margin: 2px 0 5px; font-size: 15px; font-weight: 800; letter-spacing: -.03em; }
+    .difference-item p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+    /* Pricing */
+    .pricing-wrap { position: relative; overflow: hidden; padding: 76px 0 87px; border-top: 1px solid rgba(255,255,255,.06); border-bottom: 1px solid rgba(255,255,255,.06); background: linear-gradient(180deg, rgba(61,42,119,.13), rgba(8,7,20,.12)); }
+    .pricing-wrap::before { content: ""; position: absolute; top: -180px; left: 50%; width: 540px; height: 390px; border-radius: 50%; background: rgba(134,90,244,.18); filter: blur(80px); transform: translateX(-50%); }
+    .plans { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: stretch; }
+    .plan { position: relative; display: flex; flex-direction: column; min-height: 418px; padding: 27px; border: 1px solid var(--border); border-radius: 18px; background: rgba(16,13,35,.68); }
+    .plan.featured { border-color: rgba(192,168,255,.52); background: linear-gradient(165deg, rgba(139,105,244,.25), rgba(28,20,61,.88) 45%, rgba(16,13,35,.90)); box-shadow: 0 16px 48px rgba(93,61,207,.20); }
+    .plan-badge { position: absolute; top: 18px; right: 18px; padding: 5px 8px; border: 1px solid rgba(82,225,181,.27); border-radius: 99px; color: #8df0d2; background: rgba(82,225,181,.09); font-size: 9px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+    .plan-label { color: #b4a5d9; font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .plan h3 { margin: 10px 0 5px; font-size: 25px; font-weight: 800; letter-spacing: -.055em; }
+    .plan-desc { min-height: 48px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .price { display: flex; align-items: baseline; gap: 4px; margin: 28px 0 4px; }
+    .price strong { font-size: 48px; font-weight: 800; letter-spacing: -.075em; line-height: 1; } .price span { color: var(--muted); font-size: 12px; font-weight: 700; }
+    .annual { min-height: 20px; color: #8ce5ca; font-size: 11px; font-weight: 700; }
+    .plan ul { display: grid; gap: 10px; margin: 24px 0; list-style: none; }
+    .plan li { display: flex; gap: 9px; color: #d5cfe2; font-size: 12px; font-weight: 600; }
+    .plan li::before { content: "✓"; color: var(--emerald); font-weight: 900; }
+    .plan .button { width: 100%; margin-top: auto; }
+    .plan .button-secondary { color: #e5ddf6; }
+    .pricing-note { position: relative; margin-top: 22px; color: #9e97ad; font-size: 11px; font-weight: 600; text-align: center; }
+
+    /* FAQ / CTA */
+    .faq-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: 70px; align-items: start; }
+    .faq-intro { position: sticky; top: 108px; }
+    .faq-intro h2 { margin: 14px 0; font-size: clamp(32px, 3.5vw, 47px); font-weight: 800; letter-spacing: -.065em; line-height: 1.05; }
+    .faq-intro p { color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .faq-list { display: grid; gap: 9px; }
+    .faq-item { overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.022); }
+    .faq-button { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 18px; padding: 19px 20px; border: 0; color: var(--ink); background: transparent; text-align: left; font-size: 14px; font-weight: 800; cursor: pointer; }
+    .faq-plus { display: grid; flex: 0 0 auto; width: 25px; height: 25px; place-items: center; border: 1px solid rgba(226,215,255,.15); border-radius: 8px; color: #beaaff; font-size: 18px; font-weight: 400; transition: transform .2s ease, background .2s ease; }
+    .faq-button[aria-expanded="true"] .faq-plus { color: #101024; background: #beaaff; transform: rotate(45deg); }
+    .faq-answer { display: grid; grid-template-rows: 0fr; padding: 0 20px; transition: grid-template-rows .24s ease, padding .24s ease; }
+    .faq-answer > p { overflow: hidden; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .faq-item.open .faq-answer { grid-template-rows: 1fr; padding-bottom: 19px; }
+    .final-cta { position: relative; overflow: hidden; padding: 70px 28px; border: 1px solid rgba(199,182,255,.29); border-radius: 24px; background: radial-gradient(circle at 20% 0%, rgba(170,134,255,.25), transparent 25rem), linear-gradient(125deg, rgba(71,49,151,.63), rgba(23,18,53,.9)); text-align: center; }
+    .final-cta::before, .final-cta::after { content: ""; position: absolute; border: 1px solid rgba(224,214,255,.17); border-radius: 50%; pointer-events: none; }
+    .final-cta::before { top: -225px; right: -115px; width: 470px; height: 470px; } .final-cta::after { bottom: -265px; left: -165px; width: 470px; height: 470px; }
+    .final-cta > * { position: relative; z-index: 1; }
+    .final-cta h2 { max-width: 680px; margin: 15px auto; font-size: clamp(35px, 4.25vw, 58px); font-weight: 800; letter-spacing: -.07em; line-height: 1.02; }
+    .final-cta p { max-width: 550px; margin: 0 auto 27px; color: #d5cee4; font-size: 15px; line-height: 1.7; }
+    .final-cta .hero-footnote { justify-content: center; }
+
+    /* Footer */
+    .footer { display: grid; grid-template-columns: 1fr auto; gap: 28px; padding: 42px 0; }
+    .footer .brand { margin-bottom: 12px; }
+    .footer-copy { max-width: 370px; color: #878194; font-size: 12px; line-height: 1.65; }
+    .footer-links { display: flex; flex-wrap: wrap; align-content: start; justify-content: flex-end; gap: 10px 22px; max-width: 370px; }
+    .footer-links a { color: #b2acbf; font-size: 12px; font-weight: 700; } .footer-links a:hover { color: #fff; }
+    .footer-meta { padding-top: 20px; border-top: 1px solid rgba(255,255,255,.06); color: #716b7c; font: 500 10px "DM Mono", monospace; }
+
+    @media (max-width: 1030px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 52px; }
+      .hero-copy { max-width: 700px; margin-inline: auto; text-align: center; }
+      .hero h1, .hero-lead { margin-right: auto; margin-left: auto; }
+      .hero-actions, .hero-footnote { justify-content: center; }
+      .hero-orbit { right: 50%; transform: translateX(50%); }
+      .product-frame { width: min(620px, 100%); margin-inline: auto; }
+      .float-file { right: 16px; }
+      .capability-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .scenario-grid, .difference-layout, .faq-layout { grid-template-columns: 1fr; gap: 40px; }
+      .difference-copy, .faq-intro { position: static; }
+      .difference-copy h2, .faq-intro h2 { max-width: 590px; }
+      .difference-copy p, .faq-intro p { max-width: 590px; }
+    }
+    @media (max-width: 760px) {
+      .container { width: min(calc(100% - 32px), var(--max)); }
+      .nav { min-height: 66px; } .nav-links, .nav-login { display: none; } .nav-actions { gap: 3px; } .nav-cta { min-height: 37px; padding: 0 12px; }
+      .hero { padding: 64px 0 26px; } .hero h1 { font-size: clamp(43px, 12vw, 61px); letter-spacing: -.075em; } .hero-lead { font-size: 15px; } .hero-actions .button { flex: 1 1 100%; }
+      .product-shell { min-height: 430px; padding: 12px; } .product-main { grid-template-columns: 105px minmax(0, 1fr); min-height: 374px; } .preview-side { padding: 11px 8px; } .preview-brand { margin: 2px 3px 10px; font-size: 9px; } .preview-nav, .preview-new { padding: 7px 5px; font-size: 7px; } .preview-credit { font-size: 7px; } .preview-convo { padding: 12px 10px; } .float-file { right: 10px; bottom: 30px; padding: 9px 10px; font-size: 8px; }
+      .framework-rail { display: block; padding: 19px; margin-top: 42px; } .framework-copy { margin-bottom: 13px; white-space: normal; } .frameworks { justify-content: flex-start; }
+      .section { padding: 76px 0; } .section-heading { margin-bottom: 31px; } .section-heading h2 { font-size: clamp(33px, 9.5vw, 47px); } .section-heading p { font-size: 14px; }
+      .capability-grid, .plans { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
+      .scenario { padding: 23px; } .scenario-grid { gap: 30px; } .scenario h2 { font-size: 34px; }
+      .pricing-wrap { padding: 65px 0; } .plan { min-height: 0; padding: 24px; } .price { margin-top: 22px; }
+      .final-cta { padding: 55px 20px; } .final-cta h2 { font-size: 39px; }
+      .footer { grid-template-columns: 1fr; } .footer-links { justify-content: flex-start; }
+    }
+    @media (max-width: 430px) {
+      .hero h1 { font-size: 42px; } .button { min-height: 46px; } .product-main { grid-template-columns: 86px minmax(0, 1fr); } .preview-side { padding: 10px 6px; } .preview-brand { display: none; } .preview-new { margin-top: 4px; } .preview-nav { padding: 7px 4px; font-size: 6.5px; } .preview-credit { padding: 6px 4px; } .product-shell { min-height: 402px; } .product-main { min-height: 346px; } .preview-bar { padding: 0 10px; } .preview-prompt, .preview-reply { max-width: 100%; } .code-lines { font-size: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
   </style>
 </head>
 <body>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="nav container" aria-label="Primary navigation">
+        <a href="/" class="brand" aria-label="Stellar AI home"><span class="brand-mark">✦</span>Stellar <span>AI</span></a>
+        <div class="nav-links">
+          <a href="#how-it-works">How it works</a>
+          <a href="#plans">Pricing</a>
+          <a href="/blog">Guides</a>
+        </div>
+        <div class="nav-actions">
+          <a href="/app" class="nav-login">Sign in</a>
+          <a href="/app" class="button button-primary nav-cta">Try it free <span class="button-arrow">→</span></a>
+        </div>
+      </nav>
+    </header>
 
-<nav>
-  <a href="/" class="nav-logo">✦ Stellar <span>AI</span></a>
-  <div class="nav-links">
-    
-    <a href="#plans">Pricing</a>
-    <a href="/blog">Blog</a>
+    <main>
+      <section class="hero container">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">Made for FiveM & Roblox builders</div>
+            <h1>From a rough idea to a <span class="gradient-text">test-ready resource.</span></h1>
+            <p class="hero-lead">Stellar turns plain English into the files your server or game needs. Build new systems, fix broken scripts and iterate in a workspace designed around QBCore, ESX and Roblox.</p>
+            <div class="hero-actions">
+              <a href="/app" class="button button-primary">Generate your first script <span class="button-arrow">→</span></a>
+              <a href="#how-it-works" class="button button-secondary">See how it works</a>
+            </div>
+            <div class="hero-footnote"><span>No card needed to begin</span><span>Free starting credit</span><span>Built for real project files</span></div>
+            <div class="hero-orbit" aria-hidden="true"></div>
+          </div>
+
+          <div class="product-frame" aria-label="Stellar AI workspace preview">
+            <div class="product-shell">
+              <div class="product-top"><div class="traffic"><i></i><i></i><i></i></div><div class="product-live">Resource generation live</div></div>
+              <div class="product-main">
+                <aside class="preview-side">
+                  <div class="preview-brand">✦ Stellar <span>AI</span></div>
+                  <div class="preview-new">+ New script</div>
+                  <div class="preview-nav active">✦ Police job</div>
+                  <div class="preview-nav">◇ Drug system</div>
+                  <div class="preview-nav">◇ Bank heist</div>
+                  <div class="preview-credit">⚡ £1.00 credit</div>
+                </aside>
+                <div class="preview-work">
+                  <div class="preview-bar"><span class="preview-title">QBCore police resource</span><span class="preview-model">✦ Star</span></div>
+                  <div class="preview-convo">
+                    <div class="preview-prompt">Build a QBCore police job with F6 menu, cuffing, MDT and a jail timer.</div>
+                    <div class="preview-reply">
+                      <div class="reply-label">STELLAR · RESOURCE PLAN</div>
+                      <div class="reply-text">I’ll build the resource with configuration, client events, server-side validation and installation steps.</div>
+                      <div class="preview-code"><div class="code-head"><span>client.lua</span><span>Lua</span></div><div class="code-lines"><b>local</b> QBCore = exports[<em>'qb-core'</em>]:GetCoreObject()
+RegisterNetEvent(<em>'police:openMenu'</em>, function()
+  lib.registerContext({...})
+end)</div></div>
+                    </div>
+                  </div>
+                  <div class="preview-compose"><div class="preview-input">Ask Stellar to change anything…</div><div class="preview-send">Send</div></div>
+                </div>
+              </div>
+              <div class="float-file">fxmanifest.lua ready</div>
+            </div>
+          </div>
+        </div>
+        <div class="framework-rail">
+          <div class="framework-copy">One workspace. The frameworks you already build with.</div>
+          <div class="frameworks"><span>QBCore</span><span>ESX</span><span>ox_lib</span><span>Standalone</span><span>Roblox Lua</span></div>
+        </div>
+      </section>
+
+      <section class="section container" id="how-it-works">
+        <div class="section-heading center"><div class="eyebrow">A focused build loop</div><h2>Spend your time shaping the game, not explaining the stack.</h2><p>Stellar keeps the creative and technical work in one place: your idea, the system plan and the resource files you need to test.</p></div>
+        <div class="capability-grid">
+          <article class="capability"><span class="cap-number">01 / CREATE</span><div class="cap-icon">✦</div><h3>Describe the outcome.</h3><p>Start with the gameplay experience you want. Ask in normal language, then refine without restarting from a blank chat.</p><div class="cap-ui"><div class="tiny-label">YOUR PROMPT</div><div class="mini-prompt">“Gang territory with zones, alerts and rewards”</div><div class="mini-files"><i></i><i></i><i></i></div></div></article>
+          <article class="capability"><span class="cap-number">02 / REPAIR</span><div class="cap-icon">⌁</div><h3>Bring in the broken bits.</h3><p>Paste an error or incomplete script. Get a direct explanation, a cleaner fix and the context needed to keep moving.</p><div class="cap-ui"><div class="tiny-label">DIAGNOSIS</div><div class="mini-diagnosis"><i></i><i></i><i></i></div></div></article>
+          <article class="capability"><span class="cap-number">03 / SHIP</span><div class="cap-icon">↗</div><h3>Collect every file.</h3><p>Keep client, server, config and manifest files together. Use the workspace as your build surface before testing in your own environment.</p><div class="cap-ui"><div class="tiny-label">RESOURCE PACKAGE</div><div class="mini-flow"><i></i><b>→</b><i></i><b>→</b><i></i></div></div></article>
+        </div>
+      </section>
+
+      <section class="container section" style="padding-top:10px;">
+        <div class="scenario">
+          <div class="scenario-grid">
+            <div><div class="eyebrow">Built around the resource</div><h2>Get the structure, not just a block of code.</h2><p>Good scripting work is more than a single reply. Stellar helps you think through the resource, create the file set and keep the next edit close to the code it affects.</p><div class="scenario-points"><div><i>✓</i><span>Start with an outcome, not a restrictive form.</span></div><div><i>✓</i><span>Keep framework context close to every iteration.</span></div><div><i>✓</i><span>Move from an idea to a testable file package.</span></div></div></div>
+            <div class="resource-card"><div class="resource-head"><span>qb-police</span><span>5 files generated</span></div><div class="resource-list"><div class="resource-file"><span>fxmanifest.lua</span><b>READY</b></div><div class="resource-file"><span>client/main.lua</span><b>READY</b></div><div class="resource-file"><span>server/main.lua</span><b>READY</b></div><div class="resource-file"><span>config.lua</span><b>READY</b></div><div class="resource-file"><span>README.md</span><b>READY</b></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container">
+        <div class="difference-layout">
+          <div class="difference-copy"><div class="eyebrow">Why Stellar</div><h2>A better place to build the next version.</h2><p>Generic chat tools can help with code, but a focused workspace makes it easier to turn a detailed game idea into a resource you can actually work with.</p></div>
+          <div class="difference-list">
+            <article class="difference-item"><div class="num">01</div><div><h3>Framework-aware starting point</h3><p>Start from QBCore, ESX, ox_lib, standalone or Roblox context instead of explaining your environment from scratch.</p></div></article>
+            <article class="difference-item"><div class="num">02</div><div><h3>One continuous build conversation</h3><p>Draft the feature, improve it, diagnose an error and request the next file in a single focused thread.</p></div></article>
+            <article class="difference-item"><div class="num">03</div><div><h3>Files stay close to the work</h3><p>Use the built-in workspace to keep output visible and easier to carry into your own testing process.</p></div></article>
+            <article class="difference-item"><div class="num">04</div><div><h3>Free to begin, ready to grow</h3><p>Start without a card and choose more capacity when your projects need longer, more frequent iterations.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-wrap" id="plans">
+        <div class="container">
+          <div class="section-heading center"><div class="eyebrow">Simple, transparent plans</div><h2>Choose the space your projects need.</h2><p>Start free, then move up when you are building more often or taking on larger systems.</p></div>
+          <div class="plans">
+            <article class="plan"><div class="plan-label">Free</div><h3>Explore Stellar</h3><p class="plan-desc">A clean way to try your next script idea.</p><div class="price"><strong>£0</strong><span>/ forever</span></div><div class="annual">No card required</div><ul><li>£1 starting credit</li><li>Spark, Star and Comet models</li><li>Build and fix script prompts</li></ul><a href="/app" class="button button-secondary">Start free</a></article>
+            <article class="plan featured"><div class="plan-badge">Most popular</div><div class="plan-label">Plus</div><h3>Build consistently</h3><p class="plan-desc">More room for active server and game work.</p><div class="price"><strong>£20</strong><span>/ month</span></div><div class="annual">or £14/month when billed annually</div><ul><li>10× more usage</li><li>Longer scripts and systems</li><li>Keep iterating in one workspace</li></ul><a href="/app" class="button button-primary">Get Plus <span class="button-arrow">→</span></a></article>
+            <article class="plan"><div class="plan-label">Pro</div><h3>Build at full speed</h3><p class="plan-desc">For bigger systems and frequent production work.</p><div class="price"><strong>£75</strong><span>/ month</span></div><div class="annual">or £52.50/month when billed annually</div><ul><li>40× more usage</li><li>Nova, the strongest model</li><li>More runway for larger systems</li></ul><a href="/app" class="button button-secondary">Get Pro</a></article>
+          </div>
+          <p class="pricing-note">Cancel anytime. Payment and plan selection happen securely inside your Stellar account.</p>
+        </div>
+      </section>
+
+      <section class="section container">
+        <div class="faq-layout">
+          <div class="faq-intro"><div class="eyebrow">Good to know</div><h2>Questions before you start?</h2><p>Here are the practical things builders usually want to know before their first generation.</p></div>
+          <div class="faq-list">
+            <article class="faq-item"><button class="faq-button" aria-expanded="false">How should I test a generated script?<span class="faq-plus">+</span></button><div class="faq-answer"><p>Review the generated files, install the resource in a test environment, add the required ensure line to your server configuration, and test it with your own dependencies before putting it on a live server.</p></div></article>
+            <article class="faq-item"><button class="faq-button" aria-expanded="false">What frameworks does it support?<span class="faq-plus">+</span></button><div class="faq-answer"><p>Stellar supports QBCore, ESX, ox_lib and standalone FiveM resources. It can also help with Roblox DataStores, GUIs, RemoteEvents and game systems.</p></div></article>
+            <article class="faq-item"><button class="faq-button" aria-expanded="false">How is this different from generic AI chat?<span class="faq-plus">+</span></button><div class="faq-answer"><p>Stellar is organised as a script-building workspace for FiveM and Roblox projects, so you can keep the prompt, generated files, follow-up changes and framework context closer together.</p></div></article>
+            <article class="faq-item"><button class="faq-button" aria-expanded="false">Can it fix a broken script?<span class="faq-plus">+</span></button><div class="faq-answer"><p>Yes. Paste the error or incomplete code and ask Stellar to diagnose the issue, explain the cause and return a revised version for you to test.</p></div></article>
+            <article class="faq-item"><button class="faq-button" aria-expanded="false">Can I cancel anytime?<span class="faq-plus">+</span></button><div class="faq-answer"><p>Yes. You can manage or cancel a paid plan from your account settings. There are no long-term contracts.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="container" style="padding-bottom:104px;">
+        <div class="final-cta"><div class="eyebrow">Your next system starts here</div><h2>Build the first version while the idea is still fresh.</h2><p>Open Stellar, describe what you want to create, and turn the next iteration into something you can test.</p><a href="/app" class="button button-primary">Generate your first script free <span class="button-arrow">→</span></a><div class="hero-footnote"><span>Free to begin</span><span>No card needed</span><span>FiveM & Roblox ready</span></div></div>
+      </section>
+    </main>
+
+    <footer class="container">
+      <div class="footer"><div><a href="/" class="brand"><span class="brand-mark">✦</span>Stellar <span>AI</span></a><p class="footer-copy">A focused AI workspace for the next FiveM or Roblox system you want to build, fix and improve.</p></div><div class="footer-links"><a href="/app">Open app</a><a href="#plans">Pricing</a><a href="/blog">Guides</a><a href="/terms.html">Terms</a><a href="https://discord.gg/e6uRAV9HGA">Discord</a><a href="https://www.tiktok.com/@stellaraiapp">TikTok</a></div></div><div class="footer-meta">© 2026 STELLAR AI · BUILT FOR THE NEXT BUILD</div>
+    </footer>
   </div>
-  <a href="/app" class="nav-cta">Try free →</a>
-</nav>
-
-<section class="hero">
-  <div class="hero-eyebrow">FiveM · QBCore · ESX · Roblox</div>
-  <h1>Build and fix FiveM or Roblox scripts <em>from one prompt.</em></h1>
-  <p class="hero-sub">Describe the system you want in plain English. Stellar drafts the Lua or Roblox files you need, including fxmanifest, client, server and config files for FiveM resources.</p>
-  <div class="hero-cta">
-    <a href="/app" class="btn-primary">Generate your first script free</a>
-    
-  </div>
-  <div class="hero-note">Free to try · No card needed to start · FiveM QBCore, ESX and Roblox</div>
-</section>
-
-
-
-
-
-<section class="workflows">
-  <div class="workflow">
-    <div class="workflow-text">
-      <h2>Build a complete police job</h2>
-      <p>Describe your police job once. Stellar knows QBCore exports, ped models, vehicle hashes and F6 menu structure out of the box — no explaining the framework every time.</p>
-      <a href="/app" class="workflow-link">Build a police job →</a>
-    </div>
-    <div class="workflow-visual">
-      <div class="wv-prompt">"QBCore police job with F6 menu, cuffing, MDT, jail timer"</div>
-      <div class="wv-file">
-        <div class="wv-filename">-- fxmanifest.lua</div>
-        <div class="wv-code">fx_version 'cerulean'
-game 'gta5'
-lua54 'yes'</div>
-      </div>
-      <div class="wv-file">
-        <div class="wv-filename">-- client.lua</div>
-        <div class="wv-code">local QBCore = exports['qb-core']:GetCoreObject()
-RegisterNetEvent('police:openMenu', function()
-  lib.registerContext({...})</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="workflow reverse">
-    <div class="workflow-text">
-      <h2>Fix a broken script</h2>
-      <p>Paste your broken or incomplete script. Stellar diagnoses the issue in one sentence, then returns the corrected version — no back and forth.</p>
-      <a href="/app" class="workflow-link">Fix a script →</a>
-    </div>
-    <div class="workflow-visual">
-      <div class="wv-prompt">Broken: "attempt to index a nil value (global 'QBCore')"</div>
-      <div class="wv-file">
-        <div class="wv-filename">Diagnosis</div>
-        <div class="wv-code">QBCore is nil because the script
-loads before qb-core. Fix: use
-GetCoreObject() with a callback.</div>
-      </div>
-      <div class="wv-file">
-        <div class="wv-filename">-- Fixed client.lua</div>
-        <div class="wv-code">local QBCore = nil
-AddEventHandler('QBCore:client:OnPlayerLoaded',
-  function() QBCore = exports[...]</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="workflow">
-    <div class="workflow-text">
-      <h2>Build an entire system</h2>
-      <p>Drug systems, gang territory, housing, banking — Stellar generates all files across multiple scripts in one conversation. Describe your whole server, build it piece by piece.</p>
-      <a href="/app" class="workflow-link">Start building →</a>
-    </div>
-    <div class="workflow-visual">
-      <div class="wv-prompt">"Drug system — weed, coke, dealers, police alerts"</div>
-      <div class="wv-file">
-        <div class="wv-filename">Generated resources</div>
-        <div class="wv-code">qb-drugs/fxmanifest.lua
-qb-drugs/client.lua
-qb-drugs/server.lua
-qb-drugs/config.lua
-install.sql</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="outcome">
-  <h2>Build more without waiting for a custom script.</h2>
-      <p>Use one focused workspace to draft new systems, improve an existing resource and export the files you need to test in your own server.</p>
-  <div class="outcomes-grid">
-    <div class="outcome-card">
-      <h3>Custom scripts instantly</h3>
-      <p>Describe what you want, get it in seconds. Not hours, not days — seconds.</p>
-    </div>
-    <div class="outcome-card">
-      <h3>No developer dependency</h3>
-      <p>Make changes yourself. Add features, fix bugs, update configs — without waiting on anyone.</p>
-    </div>
-    <div class="outcome-card">
-      <h3>QBCore and ESX native</h3>
-      <p>Knows exports, events, ox_lib, ped models and vehicle hashes. No explaining the framework.</p>
-    </div>
-  </div>
-</section>
-
-<section class="vs">
-  <div class="section-label">Why not ChatGPT or Ender Development?</div>
-  <div class="vs-box">
-    <div class="vs-col bad">
-      <h3>Generic AI / Form builders</h3>
-      <div class="vs-item"><span>·</span><span>Explain QBCore every single time</span></div>
-      <div class="vs-item"><span>·</span><span>Requires more framework context before it can draft a resource</span></div>
-      <div class="vs-item"><span>·</span><span>Form dropdowns with limited options</span></div>
-      <div class="vs-item"><span>·</span><span>May require separate tools for drafting, fixing and file export</span></div>
-    </div>
-    <div class="vs-col good">
-      <h3>Stellar AI</h3>
-      <div class="vs-item"><span>·</span><span>Knows QBCore, ESX, ox_lib out of the box</span></div>
-      <div class="vs-item"><span>·</span><span>Conversational — just describe what you want</span></div>
-      <div class="vs-item"><span>·</span><span>Complete files ready to drop in</span></div>
-      <div class="vs-item"><span>·</span><span>Plans designed for ongoing script-building and iteration</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="plans" id="plans">
-  <div class="section-label">Simple pricing</div>
-  <div class="plans-grid">
-    <div class="plan">
-      <div class="plan-name">Free</div>
-      <div class="plan-price">£0</div>
-      <div class="plan-per">forever</div>
-      <a href="/app" class="plan-btn free-btn">Start free</a>
-      <div class="plan-feat"><span class="tick">✓</span><span>£1 credit to start</span></div>
-      <div class="plan-feat"><span class="tick">✓</span><span>No card required</span></div>
-      <div class="plan-feat"><span class="tick">✓</span><span>Spark, Star and Comet</span></div>
-    </div>
-    <div class="plan featured">
-      <div class="plan-name">Plus</div>
-      <div class="plan-price">£20</div>
-      <div class="plan-per">/month · or £14/mo annually</div>
-      <a href="/app" class="plan-btn plus-btn">Get Plus</a>
-      <div class="plan-feat"><span class="tick">✓</span><span>10x more usage</span></div>
-      <div class="plan-feat"><span class="tick">✓</span><span>Longer scripts and systems</span></div>
-      <div class="plan-feat"><span class="tick">✓</span><span>Cancel anytime</span></div>
-    </div>
-    <div class="plan gold">
-      <div class="plan-name">Pro</div>
-      <div class="plan-price">£75</div>
-      <div class="plan-per">/month · or £52.50/mo annually</div>
-      <a href="/app" class="plan-btn pro-btn">Get Pro</a>
-      <div class="plan-feat"><span class="star">★</span><span>Nova — strongest model</span></div>
-      <div class="plan-feat"><span class="tick">✓</span><span>40x more usage</span></div>
-      <div class="plan-feat"><span class="tick">✓</span><span>Cancel anytime</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="faq">
-  <div class="section-label">Questions</div>
-  <div class="faq-list">
-    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How should I test a generated script? <span class="faq-arrow">›</span></button><div class="faq-a">Review the generated files, install the resource in a test environment, add the required ensure line to server.cfg, and test it with your own framework and dependencies before using it on a live server.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What frameworks does it support? <span class="faq-arrow">›</span></button><div class="faq-a">QBCore, ESX, ox_lib and standalone FiveM. Also supports Roblox — DataStores, GUIs, RemoteEvents and game systems.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How is this different from ChatGPT? <span class="faq-arrow">›</span></button><div class="faq-a">ChatGPT is generic — you explain QBCore every time and it often gets events and exports wrong. Stellar knows QBCore, ESX, ox_lib, ped models and vehicle hashes out of the box. Describe what you want and it builds all 4 files correctly.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can it fix broken scripts? <span class="faq-arrow">›</span></button><div class="faq-a">Yes — paste your broken script and Stellar diagnoses the issue and returns the fixed version.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">›</span></button><div class="faq-a">Yes — cancel anytime from your account settings. No contracts, no hidden fees.</div></div>
-  </div>
-</section>
-
-<section class="cta">
-  <h2>Your first script is 30 seconds away.</h2>
-  <p>Free to start. No card needed. Works with QBCore, ESX and Roblox.</p>
-  <a href="/app" class="btn-primary" style="font-size:16px;padding:16px 36px;">Generate your first script free →</a>
-</section>
-
-<footer>
-  <div>
-    <div class="footer-copy">© 2026 Stellar AI</div>
-    <div style="margin-top:10px;">
-      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px;">
-        <a href="https://www.producthunt.com/products/stellar-ai-4" target="_blank">
-          <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=stellar-ai-4&theme=dark" alt="Stellar AI on Product Hunt" style="height:32px;width:auto;">
-        </a>
-        <a href="https://smollaunch.com/products/stellar-ai" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:#fff;">
-          🚀 Featured on Smol Launch
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-links">
-    <a href="/blog">Blog</a>
-    <a href="/terms.html">Terms</a>
-    <a href="https://discord.gg/e6uRAV9HGA">Discord</a>
-    <a href="https://www.tiktok.com/@stellaraiapp">TikTok</a>
-  </div>
-</footer>
-
-<script>
-function toggleFaq(btn) {
-  const a = btn.nextElementSibling;
-  const isOpen = btn.classList.contains('open');
-  document.querySelectorAll('.faq-q').forEach(b => { b.classList.remove('open'); b.nextElementSibling.classList.remove('open'); });
-  if (!isOpen) { btn.classList.add('open'); a.classList.add('open'); }
-}
-</script>
-
+  <script>
+    document.querySelectorAll('.faq-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        const item = button.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach((openItem) => { openItem.classList.remove('open'); openItem.querySelector('.faq-button').setAttribute('aria-expanded', 'false'); });
+        if (!isOpen) { item.classList.add('open'); button.setAttribute('aria-expanded', 'true'); }
+      });
+    });
+  </script>
 </body>
 </html>
