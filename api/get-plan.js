@@ -1,5 +1,5 @@
 // api/get-plan.js — retrieves the signed-in user's plan and wallet
-import { isOwnerEmail, requireSession } from './_auth.js';
+import { isOwnerEmail, requireSession } from '../lib/auth.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';

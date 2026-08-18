@@ -1,6 +1,6 @@
 // api/auth.js — email/password and verified Google sign-in for Stellar AI
 import crypto from 'crypto';
-import { createSession, readSession } from './_auth.js';
+import { createSession, readSession } from '../lib/auth.js';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';
 

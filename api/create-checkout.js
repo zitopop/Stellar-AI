@@ -1,6 +1,6 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
-import { requireSession } from './_auth.js';
-import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, topupBonusPence } from './_pricing.js';
+import { requireSession } from '../lib/auth.js';
+import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, topupBonusPence } from '../lib/pricing.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';

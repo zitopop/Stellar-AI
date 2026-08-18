@@ -2,7 +2,7 @@
 // Stores subscription access and paid top-ups in the same KV user record used by the app.
 
 import Stripe from 'stripe';
-import { topupBonusPence, normalisePlan } from './_pricing.js';
+import { topupBonusPence, normalisePlan } from '../lib/pricing.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;

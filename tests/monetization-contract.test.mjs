@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const checkout = fs.readFileSync(new URL('./create-checkout.js', import.meta.url), 'utf8');
+const checkout = fs.readFileSync(new URL('../api/create-checkout.js', import.meta.url), 'utf8');
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const policy = fs.readFileSync(new URL('../MONETIZATION_APPROVAL.md', import.meta.url), 'utf8');
 

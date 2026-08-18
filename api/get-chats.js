@@ -1,5 +1,5 @@
 // api/get-chats.js — loads the signed-in user's conversation list
-import { requireSession } from './_auth.js';
+import { requireSession } from '../lib/auth.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;

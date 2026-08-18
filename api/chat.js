@@ -1,7 +1,7 @@
 // api/chat.js — Stellar AI
 // Streams Anthropic Messages API responses with server-owned quality guidance,
 // current-model routing, safe fallbacks, and signed-session plan enforcement.
-import { isOwnerEmail, readSession } from './_auth.js';
+import { isOwnerEmail, readSession } from '../lib/auth.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, clampTopupPence, normalisePlan, topupBonusPence } from './_pricing.js';
+import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, clampTopupPence, normalisePlan, topupBonusPence } from '../lib/pricing.js';
 
 test('top-up bonus schedule matches the customer-facing offers', () => {
   assert.equal(topupBonusPence(300), 0);

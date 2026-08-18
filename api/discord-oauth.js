@@ -1,5 +1,5 @@
 // api/discord-oauth.js — Discord OAuth callback with signed Stellar session
-import { createSession } from './_auth.js';
+import { createSession } from '../lib/auth.js';
 
 function fragment(values) {
   return new URLSearchParams(values).toString();

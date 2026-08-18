@@ -1,6 +1,6 @@
 // api/grant.js — owner-only account, credit, and gift-code actions
 import crypto from 'crypto';
-import { isOwnerEmail, requireSession } from './_auth.js';
+import { isOwnerEmail, requireSession } from '../lib/auth.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';

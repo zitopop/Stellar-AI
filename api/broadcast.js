@@ -1,5 +1,5 @@
 // api/broadcast.js — owner-authorized email broadcast
-import { isOwnerEmail, requireSession } from './_auth.js';
+import { isOwnerEmail, requireSession } from '../lib/auth.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
