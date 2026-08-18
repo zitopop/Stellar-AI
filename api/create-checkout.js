@@ -1,7 +1,8 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
+import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
 import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, topupBonusPence } from '../lib/pricing.js';
-import { incrementConversionMetric } from '../lib/conversion-metrics.js';
+import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -38,6 +39,8 @@ export default async function handler(req, res) {
       }
 
       const bonus = topupBonusPence(pence);
+      const attemptId = crypto.randomUUID();
+      await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'topup' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
@@ -54,7 +57,7 @@ export default async function handler(req, res) {
           quantity: 1,
         }],
         success_url: 'https://trystellarai.com/app?payment=success&plan=topup',
-        cancel_url: 'https://trystellarai.com/app?payment=cancelled&plan=topup',
+        cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=topup&attempt=${encodeURIComponent(attemptId)}`,
         metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
       });
       await incrementConversionMetric('checkout-started');
@@ -70,13 +73,15 @@ export default async function handler(req, res) {
     const price = prices[plan];
     if (!price) return res.status(400).json({ error: 'That plan is not available.' });
 
+    const attemptId = crypto.randomUUID();
+    await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
       customer_email: sessionUser.email,
       line_items: [{ price, quantity: 1 }],
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
-      cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}`,
+      cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       metadata: { email: sessionUser.email, plan },
     });
 

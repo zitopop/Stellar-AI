@@ -5463,6 +5463,10 @@
           fireConfetti();
         });
       } else if (paymentState === 'cancelled') {
+        const attempt = params.get('attempt');
+        if (attempt && Store.get().session) {
+          fetch('/api/get-plan?event=checkout_cancelled&attempt=' + encodeURIComponent(attempt), { headers: apiHeaders(false) }).catch(() => {});
+        }
         history.replaceState(null, '', location.pathname);
         const sub = document.getElementById('thanks-sub');
         if (sub) sub.textContent = 'Checkout was cancelled. No payment was taken.';

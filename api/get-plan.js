@@ -1,5 +1,6 @@
 // api/get-plan.js — retrieves the signed-in user's plan and wallet
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
+import { recordCheckoutCancellation } from '../lib/conversion-metrics.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -19,6 +20,11 @@ export default async function handler(req, res) {
 
   const session = requireSession(req, res);
   if (!session) return;
+
+  if (req.query?.event === 'checkout_cancelled') {
+    const tracked = await recordCheckoutCancellation({ id: String(req.query?.attempt || ''), email: session.email });
+    return res.status(200).json({ ok: true, tracked });
+  }
 
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
