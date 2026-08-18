@@ -368,6 +368,53 @@
       .hero h1 { font-size: 42px; } .button { min-height: 46px; } .product-main { grid-template-columns: 86px minmax(0, 1fr); } .preview-side { padding: 10px 6px; } .preview-brand { display: none; } .preview-new { margin-top: 4px; } .preview-nav { padding: 7px 4px; font-size: 6.5px; } .preview-credit { padding: 6px 4px; } .product-shell { min-height: 402px; } .product-main { min-height: 346px; } .preview-bar { padding: 0 10px; } .preview-prompt, .preview-reply { max-width: 100%; } .code-lines { font-size: 6px; }
     }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+
+    /* FINAL PHONE + TABLET POLISH */
+    html { overflow-x: hidden; scroll-padding-top: 84px; }
+    body { min-width: 320px; overflow-x: hidden; }
+    .page-shell, .container, .hero-grid, .product-frame, .plans, .roblox-grid, .launch-grid { min-width: 0; }
+    a, button { -webkit-tap-highlight-color: transparent; }
+    a:focus-visible, button:focus-visible { outline: 3px solid rgba(105,229,193,.9); outline-offset: 3px; }
+    @media (min-width: 761px) and (max-width: 1100px) {
+      .container { width: min(calc(100% - 56px), var(--max)); }
+      .hero { padding-top: 78px; }
+      .hero-grid { gap: 40px; }
+      .product-shell { width: min(720px, 100%); margin-inline: auto; }
+      .capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .plans { gap: 14px; }
+      .plan { padding: 22px; }
+    }
+    @media (max-width: 760px) {
+      .site-header { position: sticky; top: 0; z-index: 20; background: rgba(7,6,18,.88); backdrop-filter: blur(18px); }
+      .nav { padding-inline: 0; gap: 10px; }
+      .brand { white-space: nowrap; }
+      .nav-cta { min-width: 104px; min-height: 44px; }
+      .hero { padding-top: 52px; }
+      .hero h1 { max-width: 12ch; margin-inline: auto; }
+      .hero-lead { max-width: 34rem; line-height: 1.75; }
+      .hero-actions { width: 100%; max-width: 340px; margin-inline: auto; gap: 10px; }
+      .hero-actions .button { min-height: 50px; }
+      .hero-footnote { gap: 9px 14px; line-height: 1.45; }
+      .frameworks { gap: 7px; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; scrollbar-width: none; }
+      .frameworks::-webkit-scrollbar { display: none; }
+      .frameworks span { flex: 0 0 auto; min-height: 36px; display: inline-flex; align-items: center; }
+      .product-frame { overflow: hidden; }
+      .preview-convo, .preview-bar { min-width: 0; }
+      .preview-prompt, .preview-reply { overflow-wrap: anywhere; }
+      .section { overflow: clip; }
+      .roblox-card, .capability, .plan, .launch-card { min-width: 0; }
+      .pricing-note { max-width: 34rem; margin-inline: auto; line-height: 1.7; }
+      .footer-links a { min-height: 38px; display: inline-flex; align-items: center; }
+    }
+    @media (max-width: 430px) {
+      .container { width: min(calc(100% - 28px), var(--max)); }
+      .hero h1 { font-size: clamp(38px, 11vw, 48px); }
+      .hero-lead { font-size: 14px; }
+      .product-shell { min-height: 390px; }
+      .preview-reply, .preview-prompt { font-size: 7px; line-height: 1.45; }
+      .code-lines { font-size: 6px; line-height: 1.45; }
+      .final-cta h2 { font-size: clamp(32px, 10vw, 42px); }
+    }
   </style>
 </head>
 <body>
