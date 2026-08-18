@@ -1,6 +1,7 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
 import { requireSession } from '../lib/auth.js';
 import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, topupBonusPence } from '../lib/pricing.js';
+import { incrementConversionMetric } from '../lib/conversion-metrics.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -56,6 +57,7 @@ export default async function handler(req, res) {
         cancel_url: 'https://trystellarai.com/app?payment=cancelled&plan=topup',
         metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
       });
+      await incrementConversionMetric('checkout-started');
       return res.status(200).json({ url: checkout.url });
     }
 
@@ -78,6 +80,7 @@ export default async function handler(req, res) {
       metadata: { email: sessionUser.email, plan },
     });
 
+    await incrementConversionMetric('checkout-started');
     return res.status(200).json({ url: checkout.url });
   } catch (error) {
     console.error('Stripe checkout error', error?.message || error);

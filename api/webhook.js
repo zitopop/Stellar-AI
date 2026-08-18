@@ -3,6 +3,7 @@
 
 import Stripe from 'stripe';
 import { topupBonusPence, normalisePlan } from '../lib/pricing.js';
+import { incrementConversionMetric } from '../lib/conversion-metrics.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -48,24 +49,6 @@ async function kvSet(key, value, seconds) {
   }
 }
 
-async function kvIncrement(key, amount = 1) {
-  if (!KV_URL || !KV_TOKEN) return false;
-  try {
-    const response = await fetch(`${KV_URL}/pipeline`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify([['INCRBY', key, Math.max(0, Math.round(Number(amount) || 0))]]),
-    });
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
-
-function conversionKey(name, date = new Date()) {
-  return `stellar:conversion:${date.toISOString().slice(0, 10)}:${name}`;
-}
-
 function eventKey(eventId) {
   return `stellar:stripe-event:${eventId}`;
 }
@@ -107,9 +90,9 @@ export default async function handler(req, res) {
               updatedAt: Date.now(),
             });
             await Promise.all([
-              kvIncrement(conversionKey('checkout-completed')),
-              kvIncrement(conversionKey('topup-completed')),
-              kvIncrement(conversionKey('revenue-pence'), Number(session.amount_total || amount)),
+              incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric('topup-completed'),
+              incrementConversionMetric('revenue-pence', Number(session.amount_total || amount)),
             ]);
           }
         } else {
@@ -124,15 +107,17 @@ export default async function handler(req, res) {
               updatedAt: Date.now(),
             });
             await Promise.all([
-              kvIncrement(conversionKey('checkout-completed')),
-              kvIncrement(conversionKey('subscription-completed')),
-              kvIncrement(conversionKey('revenue-pence'), Number(session.amount_total || 0)),
+              incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric('subscription-completed'),
+              incrementConversionMetric('revenue-pence', Number(session.amount_total || 0)),
             ]);
           } else {
             console.error('Stripe checkout completed with an unknown plan', checkoutPlan, session.id);
           }
         }
       }
+    } else if (event.type === 'checkout.session.expired') {
+      await incrementConversionMetric('checkout-cancelled-or-expired');
     } else if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object;
       const stripe = new Stripe(STRIPE_SECRET);

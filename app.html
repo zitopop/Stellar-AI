@@ -3214,6 +3214,7 @@
         <button class="own-tab active" data-otab="grant" onclick="ownerTab('grant')">Grant</button>
         <button class="own-tab" data-otab="codes" onclick="ownerTab('codes')">Codes</button>
         <button class="own-tab" data-otab="broadcast" onclick="ownerTab('broadcast')">📢 Email</button>
+        <button class="own-tab" data-otab="metrics" onclick="ownerTab('metrics')">📈 Metrics</button>
       </div>
 
       <div class="own-panel" data-opanel="grant">
@@ -3267,6 +3268,13 @@
         <textarea id="bc-body" class="own-input" rows="5" placeholder="Write your message to all users..." style="resize:vertical;min-height:200px;font-family:inherit;margin-bottom:8px;width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:13px;line-height:1.6;"></textarea>
         <button class="side-new w-full" style="font-size:12px;padding:8px 12px;" onclick="sendBroadcast()" style="margin-top:4px">📢 Send to all users</button>
         <div id="bc-msg" class="redeem-msg" style="margin-top:8px;text-align:center;font-size:13px;"></div>
+      </div>
+
+      <div class="own-panel" data-opanel="metrics" style="display:none">
+        <div class="own-label">Today’s verified Stripe funnel</div>
+        <div class="own-note" style="margin-bottom:12px">Counts are aggregate only. Successful payments come from signed Stripe webhooks; cancelled or expired checkouts may arrive later from Stripe.</div>
+        <button class="side-new w-full" style="font-size:12px;padding:8px 12px;" onclick="loadConversionMetrics()">↻ Refresh conversion totals</button>
+        <div id="metrics-out" class="own-note" style="margin-top:12px;line-height:1.75">Open this tab to load today’s private totals.</div>
       </div>
 
       </div>
@@ -3776,6 +3784,7 @@
     function ownerTab(name) {
       document.querySelectorAll('.own-tab').forEach(t => t.classList.toggle('active', t.dataset.otab === name));
       document.querySelectorAll('.own-panel').forEach(p => { p.style.display = (p.dataset.opanel === name) ? '' : 'none'; });
+      if (name === 'metrics') loadConversionMetrics();
     }
     let grantPlan = '';
     function pickGrantPlan(p) {
@@ -3868,6 +3877,27 @@
     else { msg.textContent = d.error || 'Failed'; msg.style.color='#e74c3c'; }
   } catch(e) { msg.textContent = 'Error sending'; msg.style.color='#e74c3c'; }
 }
+
+    async function loadConversionMetrics() {
+      const out = document.getElementById('metrics-out');
+      if (!out) return;
+      out.textContent = 'Loading verified Stripe totals…';
+      try {
+        const { response, data } = await ownerRequest('/api/broadcast', { action: 'conversionMetrics' });
+        if (!response.ok || !data.ok || !data.metrics) throw new Error(data.error || 'Could not load metrics.');
+        const m = data.metrics;
+        out.innerHTML = `
+          <div><strong>${m.checkoutStarted}</strong> checkout starts</div>
+          <div><strong>${m.checkoutCompleted}</strong> completed checkouts</div>
+          <div><strong>${m.subscriptionCompleted}</strong> subscriptions</div>
+          <div><strong>${m.topupCompleted}</strong> top-ups</div>
+          <div><strong>${m.checkoutCancelledOrExpired}</strong> cancelled or expired</div>
+          <div><strong>${money(m.revenuePence)}</strong> successful first-payment revenue</div>
+          <div style="margin-top:6px;color:#64748b;font-size:11px;">${m.date} · private aggregate data, not a revenue forecast</div>`;
+      } catch (error) {
+        out.textContent = error.message || 'Could not load conversion totals.';
+      }
+    }
 
     async function genCode(pence) {
       const result = await createGiftCode(pence);
