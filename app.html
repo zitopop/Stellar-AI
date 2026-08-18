@@ -3422,7 +3422,7 @@
   <div id="topup-modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
     <div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card topup-card">
       <div class="topup-title">Add credit</div>
-      <div class="topup-sub">The more you add, the more free credit you get 🎁</div>
+      <div class="topup-sub">Pay once, use your credit whenever you need it. Larger packs include a clear bonus.</div>
 
       <div class="pack-grid">
         <button onclick="pickTopup(300)" data-amt="300" class="pack">
@@ -3431,25 +3431,25 @@
           <span class="pack-tag">Starter</span>
         </button>
         <button onclick="pickTopup(1000)" data-amt="1000" class="pack">
-          <span class="pack-amt">£20</span>
-          <span class="pack-get">£11.50 credit</span>
-          <span class="pack-tag bonus">+15% free</span>
+          <span class="pack-amt">£10</span>
+          <span class="pack-get">£11.00 credit</span>
+          <span class="pack-tag bonus">+10% free</span>
         </button>
         <button onclick="pickTopup(2500)" data-amt="2500" class="pack">
           <span class="pack-amt">£25</span>
-          <span class="pack-get">£30.00 credit</span>
-          <span class="pack-tag bonus">+20% free</span>
+          <span class="pack-get">£28.75 credit</span>
+          <span class="pack-tag bonus">+15% free</span>
         </button>
         <button onclick="pickTopup(5000)" data-amt="5000" class="pack popular">
           <span class="pack-amt">£50</span>
-          <span class="pack-get">£62.50 credit</span>
-          <span class="pack-tag bonus">+25% free</span>
+          <span class="pack-get">£60.00 credit</span>
+          <span class="pack-tag bonus">+20% free</span>
         </button>
       </div>
 
       <div class="topup-custom">
         <div class="text-xs font-black uppercase tracking-widest text-[#8b8b9e] mb-2">Or choose your own</div>
-        <input type="range" id="topup-range" min="50" max="10000" step="50" value="500" oninput="setTopupQty(this.value)">
+        <input type="range" id="topup-range" min="50" max="20000" step="50" value="500" oninput="setTopupQty(this.value)">
         <div id="topup-live" class="topup-live">£5.00</div>
         <div id="topup-bonus" class="topup-bonus"></div>
       </div>
@@ -4032,12 +4032,12 @@
     function closeLimit() { document.getElementById('limit-modal').classList.add('hidden'); }
     function enableCreditsAndSend() { Store.set({ creditsOn: true }); closeLimit(); renderMeter(); refreshSettings(); sendMessage(); }
     function toggleCreditsOn() { Store.set({ creditsOn: !creditsOn() }); renderUsagePage(); renderMeter(); refreshSettings(); }
-    function topupPricePence(p) { return Math.max(50, Math.min(10000, parseInt(p, 10) || 50)); }
+    function topupPricePence(p) { return Math.max(50, Math.min(20000, parseInt(p, 10) || 50)); }
     function bonusFor(pence) {
-      if (pence >= 5000) return Math.round(pence * 0.25);
-      if (pence >= 2500) return Math.round(pence * 0.20);
-      if (pence >= 1000) return Math.round(pence * 0.15);
-      if (pence >= 500) return Math.round(pence * 0.10);
+      if (pence >= 5000) return Math.round(pence * 0.20);
+      if (pence >= 2000) return Math.round(pence * 0.15);
+      if (pence >= 1000) return Math.round(pence * 0.10);
+      if (pence >= 500) return Math.round(pence * 0.05);
       return 0;
     }
     function openTopup() {
@@ -5039,6 +5039,7 @@
           const usage = getUsage();
           usage.balance = d.walletPence;
           usage.promoBalance = d.promoBalance || 0;
+          Store.set({ planBilling: d.planBilling || null });
           Store.set({ usage });
           refreshCreditsDisplay();
         }
@@ -5231,7 +5232,7 @@
         const onPaid = (plan === 'lite' || plan === 'pro');
         const isPaidCard = (p === 'lite' || p === 'pro');
         btn.disabled = current || p === 'free';
-        if (current) btn.textContent = 'Your plan (monthly)';
+        if (current) btn.textContent = 'Your plan' + (Store.get().planBilling === 'annual' ? ' (annual)' : ' (monthly)');
         else if (p === 'free') btn.textContent = 'Free forever';
         else if (onPaid && isPaidCard) btn.textContent = (p === 'lite' ? 'Switch to Plus' : 'Switch to Pro');
         else btn.textContent = p === 'lite' ? 'Get Plus' : 'Get Pro';
@@ -5336,15 +5337,14 @@
 
     function checkout(plan) {
       if (!Store.get().user && !isOwner()) { closePlans(); openWelcome(); return; }
-      // You can only be on one paid plan at a time
+      // Prevent duplicate subscriptions. Subscription changes must happen through Stripe billing management.
       const cur = Store.get().plan || 'free';
-      if (cur === plan) return;
-      if ((cur === 'lite' || cur === 'pro') && (plan === 'lite' || plan === 'pro')) {
+      const requestedBase = String(plan).startsWith('pro') ? 'pro' : (String(plan).startsWith('lite') ? 'lite' : plan);
+      if (cur === requestedBase) return;
+      if ((cur === 'lite' || cur === 'pro') && (requestedBase === 'lite' || requestedBase === 'pro')) {
         const curName = cur === 'pro' ? 'Pro' : 'Plus';
-        const newName = plan === 'pro' ? 'Pro' : 'Plus';
         closePlans();
-        showCheckoutError('You are already on ' + curName + '. Cancel ' + curName +
-          ' first, then you can switch to ' + newName + '. Manage your subscription from Settings.');
+        showCheckoutError('You already have ' + curName + '. Manage or change your subscription from Settings before starting another plan.');
         return;
       }
       const btn = document.getElementById('plan-btn-' + plan);
@@ -5416,7 +5416,8 @@
       document.getElementById('model-btn').innerHTML = mLabels[mCur] || mLabels.smart;
       
       const params = new URLSearchParams(location.search);
-      if (params.get('success') === 'true') {
+      const paymentState = params.get('payment') || (params.get('success') === 'true' ? 'success' : '');
+      if (paymentState === 'success') {
         const boughtPlan = params.get('plan');
         history.replaceState(null, '', location.pathname);
         // Credit and plan granted server-side via Stripe webhook — sync from server
@@ -5431,6 +5432,11 @@
           document.getElementById('thanks-modal').classList.remove('hidden');
           fireConfetti();
         });
+      } else if (paymentState === 'cancelled') {
+        history.replaceState(null, '', location.pathname);
+        const sub = document.getElementById('thanks-sub');
+        if (sub) sub.textContent = 'Checkout was cancelled. No payment was taken.';
+        document.getElementById('thanks-modal').classList.remove('hidden');
       }
 
       checkOwnerEmail();

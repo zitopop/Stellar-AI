@@ -1,5 +1,6 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
 import { requireSession } from './_auth.js';
+import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, topupBonusPence } from './_pricing.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -10,14 +11,6 @@ function setCors(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Vary', 'Origin');
-}
-
-function topupBonus(pence) {
-  if (pence >= 5000) return Math.round(pence * 0.20);
-  if (pence >= 2000) return Math.round(pence * 0.15);
-  if (pence >= 1000) return Math.round(pence * 0.10);
-  if (pence >= 500) return Math.round(pence * 0.05);
-  return 0;
 }
 
 export default async function handler(req, res) {
@@ -39,11 +32,11 @@ export default async function handler(req, res) {
 
     if (plan === 'topup') {
       const pence = Math.round(Number(amount || qty) || 0);
-      if (pence < 50 || pence > 20000) {
+      if (pence < TOPUP_MIN_PENCE || pence > TOPUP_MAX_PENCE) {
         return res.status(400).json({ error: 'Top-up amount must be between 50p and £200.' });
       }
 
-      const bonus = topupBonus(pence);
+      const bonus = topupBonusPence(pence);
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
@@ -59,8 +52,8 @@ export default async function handler(req, res) {
           },
           quantity: 1,
         }],
-        success_url: 'https://trystellarai.com/app?payment=success',
-        cancel_url: 'https://trystellarai.com/app?payment=cancelled',
+        success_url: 'https://trystellarai.com/app?payment=success&plan=topup',
+        cancel_url: 'https://trystellarai.com/app?payment=cancelled&plan=topup',
         metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
       });
       return res.status(200).json({ url: checkout.url });
@@ -80,8 +73,8 @@ export default async function handler(req, res) {
       payment_method_types: ['card'],
       customer_email: sessionUser.email,
       line_items: [{ price, quantity: 1 }],
-      success_url: 'https://trystellarai.com/app?payment=success',
-      cancel_url: 'https://trystellarai.com/app?payment=cancelled',
+      success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
+      cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}`,
       metadata: { email: sessionUser.email, plan },
     });
 

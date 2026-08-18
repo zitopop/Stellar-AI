@@ -36,6 +36,7 @@ export default async function handler(req, res) {
       plan: isOwnerEmail(session.email) ? 'pro' : (user.plan === 'lite' || user.plan === 'pro' ? user.plan : 'free'),
       owner: isOwnerEmail(session.email),
       walletPence: Math.max(0, Number(user.walletPence) || 0),
+      planBilling: (user.plan === 'lite' || user.plan === 'pro') ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null,
       updatedAt: user.updatedAt || null,
     });
   } catch {

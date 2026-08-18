@@ -2,6 +2,7 @@
 // Stores subscription access and paid top-ups in the same KV user record used by the app.
 
 import Stripe from 'stripe';
+import { topupBonusPence, normalisePlan } from './_pricing.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -47,20 +48,6 @@ async function kvSet(key, value, seconds) {
   }
 }
 
-function normalisePlan(plan) {
-  if (plan === 'lite' || plan === 'lite-annual') return 'lite';
-  if (plan === 'pro' || plan === 'pro-annual') return 'pro';
-  return null;
-}
-
-function bonusForPence(pence) {
-  if (pence >= 5000) return Math.round(pence * 0.20);
-  if (pence >= 2000) return Math.round(pence * 0.15);
-  if (pence >= 1000) return Math.round(pence * 0.10);
-  if (pence >= 500) return Math.round(pence * 0.05);
-  return 0;
-}
-
 function eventKey(eventId) {
   return `stellar:stripe-event:${eventId}`;
 }
@@ -93,7 +80,7 @@ export default async function handler(req, res) {
         if (checkoutPlan === 'topup') {
           const amount = Math.round(Number(session.metadata?.amount || session.metadata?.qty || 0));
           if (amount > 0) {
-            const bonus = bonusForPence(amount);
+            const bonus = topupBonusPence(amount);
             await kvSet(userKey, {
               ...existing,
               plan: existing.plan || 'free',
