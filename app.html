@@ -23,10 +23,12 @@
   <meta name="twitter:image" content="https://trystellarai.com/og-image.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon-180.png">
+  <link rel="preconnect" href="https://accounts.google.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <title>Stellar AI — FiveM QBCore &amp; Roblox Script Generator | No Coding Needed</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
   <style>
     /* Baked-in styles — no CDN, no warning */
     *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}
@@ -3072,7 +3074,6 @@
       <div class="own-tabs">
         <button class="own-tab active" data-otab="grant" onclick="ownerTab('grant')">Grant</button>
         <button class="own-tab" data-otab="codes" onclick="ownerTab('codes')">Codes</button>
-        <button class="own-tab" data-otab="key" onclick="ownerTab('key')">Key</button>
         <button class="own-tab" data-otab="broadcast" onclick="ownerTab('broadcast')">📢 Email</button>
       </div>
 
@@ -3120,13 +3121,6 @@
         </div>
       </div>
 
-      <div class="own-panel" data-opanel="key" style="display:none">
-        <div class="own-label">Owner key</div>
-        <input id="own-key" class="own-input" type="password" placeholder="Your OWNER_SECRET" autocomplete="off">
-        <div class="own-note">Stored only on this device. Set the same value as OWNER_SECRET in your Vercel environment variables.</div>
-        <button onclick="saveOwnerKey()" class="side-new w-full" style="font-size:12px;padding:8px 12px;" style="margin-top:12px">Save key</button>
-        <div id="key-msg" class="redeem-msg"></div>
-      </div>
       <div class="own-panel" data-opanel="broadcast" style="display:none">
         <div class="own-label">Subject</div>
         <input id="bc-subject" class="own-input" placeholder="e.g. New feature just dropped!" style="margin-bottom:8px">
@@ -3564,13 +3558,11 @@
       if (!Store.get().user?.email) Store.set({ owner: false });
     }
     async function giftCredit(email, pence) {
-      const secret = Store.get().ownerKey || '';
-      if (!secret) return { ok: false, msg: 'Set your Owner Key first.' };
       try {
         const r = await fetch('/api/grant', {
           method: 'POST',
           headers: apiHeaders(),
-          body: JSON.stringify({ action: 'addCredit', email, amount: pence / 100, secret })
+          body: JSON.stringify({ action: 'addCredit', email, amount: pence / 100 })
         });
         const data = await r.json();
         return r.ok && data.ok ? { ok: true, walletPence: data.walletPence } : { ok: false, msg: data.error || 'Could not add credit.' };
@@ -3579,13 +3571,11 @@
       }
     }
     async function createGiftCode(pence) {
-      const secret = Store.get().ownerKey || '';
-      if (!secret) return { ok: false, msg: 'Set your Owner Key first.' };
       try {
         const r = await fetch('/api/grant', {
           method: 'POST',
           headers: apiHeaders(),
-          body: JSON.stringify({ action: 'createCode', codeAmount: pence, secret })
+          body: JSON.stringify({ action: 'createCode', codeAmount: pence })
         });
         const data = await r.json();
         return r.ok && data.ok ? { ok: true, code: data.code, amount: data.amount } : { ok: false, msg: data.error || 'Could not create a code.' };
@@ -3618,7 +3608,6 @@
     let lastMadeCode = '';
     function openOwner() {
       if (!isOwner()) return;
-      document.getElementById('own-key').value = Store.get().ownerKey || '';
       document.getElementById('own-msg').textContent = '';
       document.getElementById('own-credit').value = '';
       document.getElementById('code-out').classList.add('hidden');
@@ -3636,13 +3625,6 @@
     function pickGrantPlan(p) {
       grantPlan = (grantPlan === p) ? '' : p;
       document.querySelectorAll('.own-pick').forEach(b => b.classList.toggle('on', b.dataset.plan === grantPlan));
-    }
-    function saveOwnerKey() {
-      const v = document.getElementById('own-key').value.trim();
-      Store.set({ ownerKey: v });
-      const m = document.getElementById('key-msg');
-      m.textContent = v ? 'Key saved on this device ✓' : 'Key cleared.';
-      m.className = 'redeem-msg good';
     }
     let creditMode = 'add';
     function pickCreditMode(m) {
@@ -3663,8 +3645,6 @@
       btn.textContent = creditMode === 'add' ? ('➕ Give them ' + amt + ' credit') : ('➖ Take ' + amt + ' off their credit');
     }
     async function giveAllCredit() {
-      const key = (document.getElementById('own-key') || {}).value || localStorage.getItem('ownerKey') || '';
-      if (!key) { document.getElementById('bulk-msg').textContent = '❌ Set your Owner Key first (Key tab)'; return; }
       const btn = event.target;
       btn.disabled = true;
       btn.textContent = '⏳ Working...';
@@ -3672,8 +3652,8 @@
       try {
         const r = await fetch('/api/grant', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'giveAllWelcomeCredit', secret: key })
+          headers: apiHeaders(),
+          body: JSON.stringify({ action: 'giveAllWelcomeCredit' })
         });
         const d = await r.json();
         if (d.ok) {
@@ -3695,11 +3675,9 @@
       const msg = document.getElementById('own-msg');
       const email = document.getElementById('own-email').value.trim();
       const creditRaw = document.getElementById('own-credit').value.trim();
-      const key = Store.get().ownerKey || '';
-      if (!key) { msg.textContent = 'Set your owner key on the Key tab first.'; msg.className = 'redeem-msg bad'; return; }
       if (!email || !email.includes('@')) { msg.textContent = 'Enter a valid email.'; msg.className = 'redeem-msg bad'; return; }
       if (!grantPlan && creditRaw === '') { msg.textContent = 'Pick a plan or enter a credit amount.'; msg.className = 'redeem-msg bad'; return; }
-      const body = { email: email, key: key };
+      const body = { email: email };
       if (grantPlan) body.plan = grantPlan;
       if (creditRaw !== '') {
         body.walletPence = Math.round((parseFloat(creditRaw) || 0) * 100);
@@ -3708,7 +3686,7 @@
       msg.textContent = 'Applying…'; msg.className = 'redeem-msg';
       try {
         const r = await fetch('/api/grant', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+          method: 'POST', headers: apiHeaders(), body: JSON.stringify(body)
         });
         const d = await r.json();
         if (r.ok && d.ok) {
@@ -3740,7 +3718,7 @@
     const r = await fetch('/api/broadcast', {
       method: 'POST',
       headers: apiHeaders(),
-      body: JSON.stringify({ subject, body, secret: Store.get().ownerKey || '' })
+      body: JSON.stringify({ subject, body })
     });
     const d = await r.json();
     if (d.ok) { msg.textContent = `✅ Sent to ${d.count} users!`; msg.style.color='#10a37f'; }

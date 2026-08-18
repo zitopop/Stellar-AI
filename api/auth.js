@@ -11,7 +11,7 @@ function setCors(req, res) {
     || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
   res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://trystellarai.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Vary', 'Origin');
 }
 
