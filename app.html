@@ -2615,6 +2615,9 @@
       #chat { padding: 18px 14px !important; } .greet-wrap { padding: 28px 4px 34px !important; justify-content: center !important; } .greet-hi, .welcome-sub { text-align: center; } .welcome-kicker, .welcome-strip { justify-content: center; } .greet-hi { font-size: 34px !important; } .welcome-sub { margin-right: auto; margin-left: auto; font-size: 13px; } #suggestion-chips { grid-template-columns: 1fr; } .sug-chip { min-height: 58px; } .input-area > .flex { align-items: stretch; } #txt, #send-btn { min-height: 48px; } .side-new { min-height: 48px; } }
     @media (prefers-reduced-motion: reduce) { .sug-chip, .side-act { transition: none !important; } }
 
+    /* Keep the recording control out of the way whenever a modal is active. */
+    body.modal-active #rec-btn { display: none !important; }
+
     /* ═══════════ PLAN BUYING GUIDANCE ═══════════ */
     #plans-modal .plan-fit-line { display: flex; align-items: flex-start; gap: 6px; min-height: 48px; margin: 0 0 16px; padding: 9px 10px; border: 1px solid rgba(222,213,255,.10); border-radius: 10px; color: #cbc4d9; background: rgba(255,255,255,.035); font-size: 11px; font-weight: 700; line-height: 1.5; }
     #plans-modal .plan-fit-line b { flex: 0 0 auto; color: #ad91ff; font-size: 8px; letter-spacing: .08em; }
@@ -4489,9 +4492,12 @@
         .trim().slice(0, 180) || String(text).trim().slice(0, 180);
     }
     async function runWebSearch(query) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
       try {
         const r = await fetch('/api/search', {
           method: 'POST',
+          signal: controller.signal,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query })
         });
@@ -4503,6 +4509,7 @@
         }).join('\n\n');
         return ctx.slice(0, 6000);
       } catch { return null; }
+      finally { clearTimeout(timeout); }
     }
     function toggleWorkspace() {
       const ws = document.getElementById('workspace');
@@ -5456,6 +5463,18 @@
       btn.textContent = on ? '● RECORDING' : '● REC';
       btn.classList.toggle('active', on);
     }
+
+    // Keep the floating recording control from obscuring bottom sheets or dialogs.
+    const stellarModalIds = ['plans-modal', 'settings-modal', 'usage-modal', 'topup-modal', 'welcome-modal', 'redeem-modal', 'thanks-modal', 'limit-modal', 'owner-modal'];
+    function syncModalActivity() {
+      const modalIsOpen = stellarModalIds.some((id) => {
+        const modal = document.getElementById(id);
+        return modal && !modal.classList.contains('hidden');
+      });
+      document.body.classList.toggle('modal-active', modalIsOpen);
+    }
+    new MutationObserver(syncModalActivity).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    syncModalActivity();
     // ── Image Upload ──────────────────────────────────────────
     let uploadedImage = null;
 
