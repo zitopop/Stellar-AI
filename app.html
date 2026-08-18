@@ -2615,6 +2615,13 @@
       #chat { padding: 18px 14px !important; } .greet-wrap { padding: 28px 4px 34px !important; justify-content: center !important; } .greet-hi, .welcome-sub { text-align: center; } .welcome-kicker, .welcome-strip { justify-content: center; } .greet-hi { font-size: 34px !important; } .welcome-sub { margin-right: auto; margin-left: auto; font-size: 13px; } #suggestion-chips { grid-template-columns: 1fr; } .sug-chip { min-height: 58px; } .input-area > .flex { align-items: stretch; } #txt, #send-btn { min-height: 48px; } .side-new { min-height: 48px; } }
     @media (prefers-reduced-motion: reduce) { .sug-chip, .side-act { transition: none !important; } }
 
+    /* ═══════════ PLAN BUYING GUIDANCE ═══════════ */
+    #plans-modal .plan-fit-line { display: flex; align-items: flex-start; gap: 6px; min-height: 48px; margin: 0 0 16px; padding: 9px 10px; border: 1px solid rgba(222,213,255,.10); border-radius: 10px; color: #cbc4d9; background: rgba(255,255,255,.035); font-size: 11px; font-weight: 700; line-height: 1.5; }
+    #plans-modal .plan-fit-line b { flex: 0 0 auto; color: #ad91ff; font-size: 8px; letter-spacing: .08em; }
+    #plans-modal #plan-card-lite .plan-fit-line { border-color: rgba(82,225,181,.22); color: #d9f7ee; background: rgba(82,225,181,.07); } #plans-modal #plan-card-lite .plan-fit-line b { color: #85e7ce; }
+    #plans-modal #plan-card-pro .plan-fit-line { border-color: rgba(251,191,36,.20); color: #f7e6bd; background: rgba(251,191,36,.06); } #plans-modal #plan-card-pro .plan-fit-line b { color: #f8cb68; }
+    body.light #plans-modal .plan-fit-line { border-color: rgba(67,50,103,.12); color: #5d576c; background: rgba(255,255,255,.72); }
+
     /* ═══════════ SETTINGS CONTROL CENTRE ═══════════ */
     #settings-modal { background: rgba(4, 3, 12, .66) !important; backdrop-filter: blur(14px) saturate(1.15); -webkit-backdrop-filter: blur(14px) saturate(1.15); }
     #settings-modal .set-card { width: min(620px, calc(100vw - 32px)) !important; max-width: 620px !important; padding: 0 !important; border: 1px solid rgba(214, 200, 255, .18) !important; border-radius: 24px !important; background: linear-gradient(165deg, rgba(34, 25, 68, .98), rgba(14, 10, 31, .98)) !important; box-shadow: 0 30px 80px rgba(0,0,0,.52), inset 0 1px rgba(255,255,255,.10) !important; }
@@ -2864,25 +2871,25 @@
             <div id="model-menu" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
               <button onclick="pickModel('fabie')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
-                  <div class="font-black text-sm">✨ Spark</div>
+                  <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
                 </div>
                 <div id="fabie-check" class="font-black text-sm text-[#10a37f]">✓</div>
               </button>
               <button onclick="pickModel('smart')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
-                  <div class="font-black text-sm">⭐ Star</div>
+                  <div class="font-black text-sm">⭐ Star <span style="color:#8b8b9e;font-size:10px;">· best for most scripts</span></div>
                 </div>
                 <div id="smart-check" class="font-black text-sm text-[#10a37f]">✓</div>
               </button>
               <button onclick="pickModel('comet')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
-                  <div class="font-black text-sm">☄️ Comet</div>
+                  <div class="font-black text-sm">☄️ Comet <span style="color:#8b8b9e;font-size:10px;">· deep system work</span></div>
                 </div>
                 <div id="comet-check" class="font-black text-sm text-[#10a37f]">✓</div>
               </button>
               <button id="nova-model-btn" onclick="pickModel('ultra')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
-                  <div class="font-black text-sm">🚀 Nova <span class="text-xs px-2 py-0.5 bg-[#10a37f] rounded text-white">PRO</span></div>
+                  <div class="font-black text-sm">🚀 Nova <span class="text-xs px-2 py-0.5 bg-[#10a37f] rounded text-white">PRO</span><span style="color:#8b8b9e;font-size:10px;"> · max quality</span></div>
                 </div>
                 <div id="ultra-check" class="font-black text-sm text-[#10a37f]">✓</div>
               </button>
@@ -2927,7 +2934,8 @@
         <div style="border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;" id="plan-card-free">
           <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;">Free</div>
           <div style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;">£0</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:20px;">forever</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">forever</div>
+          <div class="plan-fit-line"><b>BEST FOR</b><span>Trying Stellar, fixing a script or building your first resource.</span></div>
           <button id="plan-btn-free" disabled style="width:100%;padding:11px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-weight:800;font-size:13px;cursor:not-allowed;margin-bottom:20px;">Current plan</button>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:4px;">Includes</div>
@@ -2944,7 +2952,8 @@
           <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:#10a37f;color:#000;font-size:10px;font-weight:900;letter-spacing:.1em;padding:4px 12px;border-radius:0 0 10px 10px;white-space:nowrap;">MOST POPULAR</div>
           <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#10a37f;margin-bottom:12px;margin-top:12px;">Plus</div>
           <div style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fff;">£20</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:20px;">per month</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
+          <div class="plan-fit-line"><b>BEST FOR</b><span>Most server owners building or updating scripts every week.</span></div>
           <button id="plan-btn-lite" onclick="checkout('lite')" style="width:100%;padding:11px;border-radius:12px;background:#10a37f;border:none;color:#000;font-weight:900;font-size:13px;cursor:pointer;margin-bottom:8px;">Get Plus</button>
           <button id="plan-btn-lite-annual" onclick="checkout('lite-annual')" style="width:100%;padding:9px;border-radius:12px;background:rgba(16,163,127,0.12);border:1px solid rgba(16,163,127,0.3);color:#10a37f;font-weight:800;font-size:11px;cursor:pointer;margin-bottom:20px;">Save 30% · £14/mo annually</button>
           <div style="display:flex;flex-direction:column;gap:10px;">
@@ -2961,7 +2970,8 @@
           <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#f59e0b,#d97706);color:#000;font-size:10px;font-weight:900;letter-spacing:.1em;padding:4px 12px;border-radius:0 0 10px 10px;white-space:nowrap;">BEST VALUE</div>
           <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fbbf24;margin-bottom:12px;margin-top:12px;">Pro</div>
           <div style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fbbf24;">£75</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:20px;">per month</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
+          <div class="plan-fit-line"><b>BEST FOR</b><span>Creators building complete systems, games or multiple resources.</span></div>
           <button id="plan-btn-pro" onclick="checkout('pro')" style="width:100%;padding:11px;border-radius:12px;background:linear-gradient(90deg,#f59e0b,#d97706);border:none;color:#000;font-weight:900;font-size:13px;cursor:pointer;margin-bottom:8px;">Get Pro</button>
           <button id="plan-btn-pro-annual" onclick="checkout('pro-annual')" style="width:100%;padding:9px;border-radius:12px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:#fbbf24;font-weight:800;font-size:11px;cursor:pointer;margin-bottom:20px;">Save 30% · £52.50/mo annually</button>
           <div style="display:flex;flex-direction:column;gap:10px;">
@@ -4719,7 +4729,7 @@
             image: uploadedImage || null,
             max_tokens: isGuest() ? GUEST_MAX_TOKENS
               : (({ free: 6000, lite: 12000, pro: 16000 })[s.plan || 'free'] || 6000),
-            system: (searchContext ? ('Use these current web search results to help answer, and mention the source links where useful:\n\n' + searchContext + '\n\n') : '') + 'You are Stellar, a specialist script-writing tool for FiveM and Roblox servers. You also fix and improve broken or incomplete scripts when the user pastes them. You were built by a developer and are not powered by any publicly known AI model. If asked, say you are Stellar, a purpose-built scripting engine, and nothing more. TONE: Concise and direct, like a senior developer. No waffle, no padding. Sound like a tool, not a chatbot. FIVEM EXPERTISE: QBCore exports, GetPlayerData, GetPlayer, CreateCallback, GetSharedObject with GetCoreObject fallback, RegisterNetEvent, TriggerServerEvent, TriggerClientEvent. ox_lib: lib.registerContext, lib.showContext, lib.addKeybind, lib.progressBar, lib.notify. ESX: ESX.GetPlayerData, TriggerServerCallback. Standalone: Citizen.CreateThread, RegisterCommand. Always include fxmanifest.lua with fx_version cerulean, game gta5, lua54 yes. Always use IF NOT EXISTS for SQL. ROBLOX: ServerScriptService, StarterPlayerScripts, ReplicatedStorage, DataStoreService, RemoteEvents, TweenService. Game Passes via UserOwnsGamePassAsync, Developer Products via PromptProductPurchase. Always verify purchases server-side. DELIVERY: Complete package in one response. Every file in its own code block with filename on line 1. After all code: one-line setup guide. Never cut off mid-script. ERRORS: One sentence diagnosis then the fix. STYLE: Never use emojis in your responses. No emoji characters anywhere — not in explanations, not in code comments, not in setup guides. Plain text only. IDENTITY: You are Stellar. A scripting tool. Not Claude, not GPT, not any AI model. Always write the complete script in one response. Never ask the user to say CONTINUE or any other word to get more code. If the script is long, write all files completely without stopping. Never truncate or cut off mid-script under any circumstances. QUALITY: Write code that works first try. Think about edge cases: what if the player dies, disconnects, or triggers it twice. Handle those without being asked. Never use functions that do not exist. Never leave placeholder comments. Write the actual logic. NARRATE: Before writing code, say what you are about to build in 1-2 sentences. After all code, summarise what you built. ROBLOX GAMES: When building a game, deliver every system needed. An obby needs: checkpoints, kill parts, platforms, leaderboard, and win screen. A fighting game needs: weapons, health, rounds, lobby, and respawning. Never deliver half a game. KEEP CODE SHORT. Write the shortest script that does the job properly. Do not pad it out. No unnecessary comments explaining obvious lines, no unused variables, no config tables for things that will never change, no defensive checks for situations that cannot happen, no example or placeholder functions the user did not ask for. A 30 line script that works beats a 120 line one that does the same thing. Only add length when the feature genuinely needs it. If a request is simple, the answer should be simple. Comment only where the code is not obvious, and keep those comments to one line. WHAT YOU CAN DO: You are not a text-only assistant. You have real tools available and you should never claim you cannot do these things. You can search the live web for current information, and when search results are supplied above, use them and cite the source links. Image generation is not enabled in this version. If someone asks for an image, offer a detailed art prompt or asset brief they can use in their preferred image tool instead. You can read code, files and long text that the user pastes in, and analyse or fix it. Users can talk to you using the microphone button instead of typing. Every script you produce becomes a downloadable file with a filename, timestamp, copy button and download button in their Files panel. If someone asks what you can do, answer with these real capabilities: write and fix code for any game or engine, search the web, read pasted files and code, and produce downloadable script files. Be accurate about your limits too: you cannot run or test code on their server, you cannot access their computer or files unless they paste them, and you cannot see their game while it is running. You are an expert in FiveM (QBCore) and Roblox, and you can build for any game or engine. Provide complete working code in markdown. ANY GAME: FiveM and Roblox are your specialties and where you are strongest, but you can also write scripts, mods, plugins and tools for any other game or engine when asked, for example Minecraft (Java plugins, Bukkit/Spigot/Paper, Fabric/Forge mods, Bedrock add-ons), Unity (C#), Unreal (C++ or Blueprints described in text), Godot (GDScript), GTA V single-player (ScriptHookV / .NET), Rust/Garry’s Mod (Lua), Discord bots for game servers, and general game logic in any language. When the game or engine is stated, use its real APIs, correct language, and the patterns that platform actually uses — never invent functions. If you are not fully certain an API exists for a less common game, say so plainly and give your best working version rather than guessing with false confidence. If the user has not said which game or engine, ask once which one, unless it is obvious from context. Apply the exact same rigour to every platform: complete code, filename comment, edge cases handled, install steps, and a self-check before finishing. ALWAYS begin every code block with a first-line comment giving the filename, using the correct comment style for that language: for Lua use -- filename.lua, for JavaScript use // filename.js, for C# use // filename.cs, for Java use // filename.java, for Python use # filename.py, for JSON use no comment. Choose a clear, lowercase, descriptive filename with the right extension, for example -- bank_heist.lua or -- fxmanifest.lua. Never omit this filename line. FIVEM PEDs: shopkeeper=mp_m_shopkeep_01, police=s_m_y_cop_01, sheriff=s_m_y_sheriff_01, dealer=g_m_y_lost_01, mechanic=s_m_y_xmech_01, doctor=s_m_m_doctor_01, security=s_m_m_security_01, paramedic=s_m_m_paramedic_01. ALWAYS spawn peds this way: RequestModel(hash), then while not HasModelLoaded(hash) do Wait(10) end, then CreatePed(4,hash,x,y,z,heading,false,true), then SetEntityInvincible(ped,true), SetBlockingOfNonTemporaryEvents(ped,true), FreezeEntityPosition(ped,true), then SetModelAsNoLongerNeeded(hash). Never call CreatePed before the model has loaded. VEHICLES: supercars=adder,zentorno,t20; sports=sultan,jester,elegy2; emergency=police,police2,sheriff,ambulance. RequestModel + HasModelLoaded before CreateVehicle. SetVehicleNumberPlateText for plates. NetworkRegisterEntityAsNetworked for sync.',
+            search_context: searchContext || '',
             messages: chat.messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content }))
           })
         });
@@ -4852,7 +4862,7 @@
       const paid = s.plan === 'lite' || s.plan === 'pro' || isOwner();
       if (m === 'ultra' && !(s.plan === 'pro' || isOwner())) { openPlans(); return; }
       Store.set({ model: m });
-      const labels = { fabie: '✨ Spark ▾', smart: '⭐ Star ▾', comet: '☄️ Comet ▾', ultra: '🚀 Nova ▾' };
+      const labels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾' };
       document.getElementById('model-btn').innerHTML = labels[m] || labels.smart;
     }
 
@@ -5375,7 +5385,7 @@
       const s = Store.get();
       chats = s.chats;
       setMode(s.mode || 'dark');
-      const mLabels = { fabie: '✨ Spark ▾', smart: '⭐ Star ▾', comet: '☄️ Comet ▾', ultra: '🚀 Nova ▾' };
+      const mLabels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾' };
       const mCur = (s.model === 'ultra' && s.plan !== 'pro') ? 'smart' : (s.model || 'smart');
       document.getElementById('model-btn').innerHTML = mLabels[mCur] || mLabels.smart;
       
