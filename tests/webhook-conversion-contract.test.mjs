@@ -25,8 +25,10 @@ test('conversion counters remain behind Stripe signature validation and duplicat
 
 test('the payment funnel tracks starts, cancelled or expired sessions, and owner-only reads', () => {
   assert.match(checkout, /incrementConversionMetric\('checkout-started'\)/);
+  assert.match(checkout, /client_reference_id: attemptId/);
   assert.match(webhook, /event\.type === 'checkout\.session\.expired'/);
-  assert.match(webhook, /incrementConversionMetric\('checkout-cancelled-or-expired'\)/);
+  assert.match(webhook, /recordCheckoutExpiry/);
+  assert.match(metrics, /EVAL/);
   assert.match(broadcast, /req\.body\?\.action === 'conversionMetrics'/);
   assert.match(broadcast, /readConversionMetrics/);
 });

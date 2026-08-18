@@ -58,6 +58,7 @@ export default async function handler(req, res) {
         }],
         success_url: 'https://trystellarai.com/app?payment=success&plan=topup',
         cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=topup&attempt=${encodeURIComponent(attemptId)}`,
+        client_reference_id: attemptId,
         metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
       });
       await incrementConversionMetric('checkout-started');
@@ -82,6 +83,7 @@ export default async function handler(req, res) {
       line_items: [{ price, quantity: 1 }],
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
+      client_reference_id: attemptId,
       metadata: { email: sessionUser.email, plan },
     });
 

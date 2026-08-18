@@ -3,7 +3,7 @@
 
 import Stripe from 'stripe';
 import { topupBonusPence, normalisePlan } from '../lib/pricing.js';
-import { incrementConversionMetric } from '../lib/conversion-metrics.js';
+import { incrementConversionMetric, recordCheckoutCompletion, recordCheckoutExpiry } from '../lib/conversion-metrics.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -67,9 +67,10 @@ export default async function handler(req, res) {
     // Stripe can retry events. The record prevents repeat top-ups in normal retry scenarios.
     if (await kvGet(eventKey(event.id))) return res.status(200).json({ received: true, duplicate: true });
 
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
+      if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        await recordCheckoutCompletion({ id: String(session.client_reference_id || '') });
+        const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
       const checkoutPlan = session.metadata?.plan;
       const userKey = email ? `stellar:user:${email}` : '';
 
@@ -117,7 +118,9 @@ export default async function handler(req, res) {
         }
       }
     } else if (event.type === 'checkout.session.expired') {
-      await incrementConversionMetric('checkout-cancelled-or-expired');
+      const session = event.data.object;
+      if (!session.client_reference_id) await incrementConversionMetric('checkout-cancelled-or-expired');
+      else await recordCheckoutExpiry({ id: String(session.client_reference_id) });
     } else if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object;
       const stripe = new Stripe(STRIPE_SECRET);

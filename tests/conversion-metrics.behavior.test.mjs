@@ -48,18 +48,17 @@ test('a matching checkout attempt records one explicit cancel-return event', asy
   process.env.KV_REST_API_URL = 'https://kv.test';
   process.env.KV_REST_API_TOKEN = 'token';
   const calls = [];
+  let transitions = 0;
   globalThis.fetch = async (url, options = {}) => {
     calls.push({ url, options });
-    if (String(url).includes('/get/')) {
-      return { ok: true, json: async () => ({ result: JSON.stringify({ email: 'buyer@example.com', plan: 'plus', status: 'started' }) }) };
-    }
-    return response();
+    return { ok: true, json: async () => [{ result: transitions++ === 0 ? 1 : 0 }] };
   };
   const metrics = await import(`../lib/conversion-metrics.js?cancel=${Date.now()}`);
 
   assert.equal(await metrics.recordCheckoutCancellation({ id: 'attempt-123', email: 'buyer@example.com' }), true);
-  assert.match(String(calls[1].options.body), /cancelled/);
-  assert.match(String(calls[2].options.body), /checkout-cancelled-or-expired/);
+  assert.equal(await metrics.recordCheckoutCancellation({ id: 'attempt-123', email: 'buyer@example.com' }), false);
+  assert.match(String(calls[0].options.body), /EVAL/);
+  assert.match(String(calls[0].options.body), /checkout-cancelled-or-expired/);
 });
 
 test('the owner-only metrics action returns aggregate totals and rejects non-owners', async (t) => {
