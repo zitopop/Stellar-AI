@@ -247,6 +247,26 @@
     .resource-file { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px; border: 1px solid rgba(255,255,255,.055); border-radius: 9px; background: rgba(255,255,255,.025); }
     .resource-file span { color: #d7cee7; font: 500 10px "DM Mono", monospace; } .resource-file b { color: #7ae4c8; font: 500 8px "DM Mono", monospace; }
 
+    /* Roblox worlds */
+    .roblox-worlds { position: relative; overflow: hidden; padding: 31px; border: 1px solid rgba(97,222,184,.21); border-radius: 24px; background: radial-gradient(circle at 82% 8%, rgba(82,225,181,.16), transparent 20rem), linear-gradient(125deg, rgba(22,51,69,.72), rgba(18,14,43,.92) 56%, rgba(31,20,61,.78)); }
+    .roblox-worlds::after { content: ''; position: absolute; right: -120px; bottom: -170px; width: 380px; height: 380px; border: 1px solid rgba(125,244,204,.18); border-radius: 50%; box-shadow: 0 0 0 55px rgba(125,244,204,.035); }
+    .roblox-worlds > * { position: relative; z-index: 1; }
+    .roblox-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+    .roblox-head h2 { max-width: 590px; margin: 10px 0 0; font-size: clamp(31px, 3.8vw, 48px); font-weight: 800; letter-spacing: -.065em; line-height: 1.04; }
+    .roblox-head p { max-width: 420px; color: #c0d0d3; font-size: 13px; line-height: 1.65; }
+    .roblox-grid { display: grid; grid-template-columns: 1.25fr 1.25fr .75fr; gap: 12px; }
+    .roblox-card { display: flex; min-height: 184px; flex-direction: column; justify-content: space-between; padding: 20px; border: 1px solid rgba(217,255,241,.13); border-radius: 16px; background: rgba(5,12,26,.40); transition: transform .22s ease, border-color .22s ease, background .22s ease; }
+    .roblox-card:hover { transform: translateY(-4px); border-color: rgba(120,239,202,.52); background: rgba(82,225,181,.10); }
+    .roblox-game-mark { display: grid; width: 43px; height: 43px; place-items: center; border: 1px solid rgba(149,248,216,.28); border-radius: 13px; color: #0b251f; background: linear-gradient(135deg, #83f2d0, #68b9ff); font-size: 18px; font-weight: 900; }
+    .roblox-card h3 { margin-top: 28px; color: #f4fffb; font-size: 21px; font-weight: 800; letter-spacing: -.045em; }
+    .roblox-card p { margin-top: 5px; color: #aec3c1; font-size: 12px; font-weight: 600; line-height: 1.55; }
+    .roblox-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; color: #a7f3d6; font-size: 11px; font-weight: 800; }
+    .roblox-side { display: grid; gap: 12px; }
+    .roblox-side .roblox-card { min-height: 86px; padding: 16px; }
+    .roblox-side .roblox-card h3 { margin-top: 0; font-size: 14px; }
+    .roblox-side .roblox-card p { margin-top: 3px; font-size: 10px; }
+    .roblox-side .roblox-link { margin-top: 9px; font-size: 10px; }
+
     /* Difference */
     .difference-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 50px; align-items: start; }
     .difference-copy { position: sticky; top: 108px; }
@@ -320,6 +340,7 @@
       .product-frame { width: min(620px, 100%); margin-inline: auto; }
       .float-file { right: 16px; }
       .capability-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .roblox-grid { grid-template-columns: 1fr 1fr; } .roblox-side { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
       .scenario-grid, .difference-layout, .faq-layout { grid-template-columns: 1fr; gap: 40px; }
       .difference-copy, .faq-intro { position: static; }
       .difference-copy h2, .faq-intro h2 { max-width: 590px; }
@@ -334,6 +355,7 @@
       .section { padding: 76px 0; } .section-heading { margin-bottom: 31px; } .section-heading h2 { font-size: clamp(33px, 9.5vw, 47px); } .section-heading p { font-size: 14px; }
       .capability-grid, .plans { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
       .scenario { padding: 23px; } .scenario-grid { gap: 30px; } .scenario h2 { font-size: 34px; }
+      .roblox-worlds { padding: 22px; } .roblox-head { display: block; } .roblox-head p { margin-top: 12px; } .roblox-grid, .roblox-side { grid-template-columns: 1fr; } .roblox-card { min-height: 156px; }
       .pricing-wrap { padding: 65px 0; } .plan { min-height: 0; padding: 24px; } .price { margin-top: 22px; }
       .final-cta { padding: 55px 20px; } .final-cta h2 { font-size: 39px; }
       .footer { grid-template-columns: 1fr; } .footer-links { justify-content: flex-start; }
@@ -352,6 +374,7 @@
         <div class="nav-links">
           <a href="#how-it-works">How it works</a>
           <a href="#plans">Pricing</a>
+          <a href="#roblox-worlds">Roblox worlds</a>
           <a href="/blog">Guides</a>
         </div>
         <div class="nav-actions">
@@ -441,6 +464,20 @@ end)</div></div>
         </div>
       </section>
 
+      <section class="container section" id="roblox-worlds" style="padding-top:24px;">
+        <div class="roblox-worlds">
+          <div class="roblox-head"><div><div class="eyebrow">The Stellar universe</div><h2>Build with Stellar AI. Play in Stellar worlds.</h2></div><p>Explore the Roblox experiences and communities behind the brand, then bring your own next game system back to Stellar AI to shape it.</p></div>
+          <div class="roblox-grid">
+            <a class="roblox-card" href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer"><div><div class="roblox-game-mark">✦</div><h3>Stellar Strike</h3><p>Jump into the official StellarHQ Roblox experience.</p></div><span class="roblox-link">Play on Roblox <span>↗</span></span></a>
+            <a class="roblox-card" href="https://www.roblox.com/games/121360078498296/Stellar-Simulator" target="_blank" rel="noopener noreferrer"><div><div class="roblox-game-mark">S</div><h3>Stellar Simulator</h3><p>Discover another official StellarHQ Roblox world.</p></div><span class="roblox-link">Play on Roblox <span>↗</span></span></a>
+            <div class="roblox-side">
+              <a class="roblox-card" href="https://www.roblox.com/communities/433084698/StellarHQ#!/about" target="_blank" rel="noopener noreferrer"><div><h3>StellarHQ</h3><p>Join the official Roblox community.</p></div><span class="roblox-link">Open community ↗</span></a>
+              <a class="roblox-card" href="https://www.roblox.com/communities/222055052/zitos-gang#!/about" target="_blank" rel="noopener noreferrer"><div><h3>zitos gang</h3><p>Follow the wider Roblox community.</p></div><span class="roblox-link">Open community ↗</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section container">
         <div class="difference-layout">
           <div class="difference-copy"><div class="eyebrow">Why Stellar</div><h2>A better place to build the next version.</h2><p>Generic chat tools can help with code, but a focused workspace makes it easier to turn a detailed game idea into a resource you can actually work with.</p></div>
@@ -484,7 +521,7 @@ end)</div></div>
     </main>
 
     <footer class="container">
-      <div class="footer"><div><a href="/" class="brand"><span class="brand-mark">✦</span>Stellar <span>AI</span></a><p class="footer-copy">A focused AI workspace for the next FiveM or Roblox system you want to build, fix and improve.</p></div><div class="footer-links"><a href="/app">Open app</a><a href="#plans">Pricing</a><a href="/blog">Guides</a><a href="/terms.html">Terms</a><a href="https://discord.gg/e6uRAV9HGA">Discord</a><a href="https://www.tiktok.com/@stellaraiapp">TikTok</a></div></div><div class="footer-meta">© 2026 STELLAR AI · BUILT FOR THE NEXT BUILD</div>
+      <div class="footer"><div><a href="/" class="brand"><span class="brand-mark">✦</span>Stellar <span>AI</span></a><p class="footer-copy">A focused AI workspace for the next FiveM or Roblox system you want to build, fix and improve.</p></div><div class="footer-links"><a href="/app">Open app</a><a href="#plans">Pricing</a><a href="/blog">Guides</a><a href="/terms.html">Terms</a><a href="https://discord.gg/e6uRAV9HGA">Discord</a><a href="https://www.tiktok.com/@stellaraiapp">TikTok</a><a href="https://www.roblox.com/users/11410408479/profile" target="_blank" rel="noopener noreferrer">Roblox profile</a><a href="https://www.roblox.com/communities/433084698/StellarHQ#!/about" target="_blank" rel="noopener noreferrer">StellarHQ</a></div></div><div class="footer-meta">© 2026 STELLAR AI · BUILT FOR THE NEXT BUILD</div>
     </footer>
   </div>
   <script>
