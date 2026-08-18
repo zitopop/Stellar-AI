@@ -3472,6 +3472,28 @@
       return headers;
     }
 
+    function recoverExpiredSession() {
+      // A signed token can expire or be invalidated after a security-secret rotation.
+      // Preserve the user's local copy before returning them to the verified sign-in flow.
+      if (!Store.get().session) return;
+      signOut();
+      setTimeout(() => openWelcome(), 0);
+    }
+
+    async function ownerRequest(endpoint, payload) {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: apiHeaders(),
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.status === 401) {
+        recoverExpiredSession();
+        data.error = 'Your secure sign-in expired. Please sign in again to continue.';
+      }
+      return { response, data };
+    }
+
     let chats = [];
     let currentChatId = null;
 
@@ -3698,12 +3720,7 @@
     }
     async function createGiftCode(pence) {
       try {
-        const r = await fetch('/api/grant', {
-          method: 'POST',
-          headers: apiHeaders(),
-          body: JSON.stringify({ action: 'createCode', codeAmount: pence })
-        });
-        const data = await r.json();
+        const { response: r, data } = await ownerRequest('/api/grant', { action: 'createCode', codeAmount: pence });
         return r.ok && data.ok ? { ok: true, code: data.code, amount: data.amount } : { ok: false, msg: data.error || 'Could not create a code.' };
       } catch {
         return { ok: false, msg: 'Could not reach the account service.' };
@@ -3776,12 +3793,7 @@
       btn.textContent = '⏳ Working...';
       document.getElementById('bulk-msg').textContent = 'Giving £1 to all users...';
       try {
-        const r = await fetch('/api/grant', {
-          method: 'POST',
-          headers: apiHeaders(),
-          body: JSON.stringify({ action: 'giveAllWelcomeCredit' })
-        });
-        const d = await r.json();
+        const { response: r, data: d } = await ownerRequest('/api/grant', { action: 'giveAllWelcomeCredit' });
         if (d.ok) {
           document.getElementById('bulk-msg').textContent = '✅ Credited: ' + d.credited + ' users | Skipped: ' + d.skipped + ' (already had it)';
           document.getElementById('bulk-msg').style.color = '#10a37f';
@@ -3811,10 +3823,7 @@
       }
       msg.textContent = 'Applying…'; msg.className = 'redeem-msg';
       try {
-        const r = await fetch('/api/grant', {
-          method: 'POST', headers: apiHeaders(), body: JSON.stringify(body)
-        });
-        const d = await r.json();
+        const { response: r, data: d } = await ownerRequest('/api/grant', body);
         if (r.ok && d.ok) {
           const names = { free: 'Free', lite: 'Plus', pro: 'Pro' };
           const planLabel = d.plan ? (names[d.plan] || d.plan) : 'credit updated';
@@ -3841,12 +3850,7 @@
   if (!subject || !body) { msg.textContent = 'Fill in subject and message'; msg.style.color='#e74c3c'; return; }
   msg.textContent = 'Sending...'; msg.style.color='rgba(255,255,255,0.5)';
   try {
-    const r = await fetch('/api/broadcast', {
-      method: 'POST',
-      headers: apiHeaders(),
-      body: JSON.stringify({ subject, body })
-    });
-    const d = await r.json();
+    const { response: r, data: d } = await ownerRequest('/api/broadcast', { subject, body });
     if (d.ok) { msg.textContent = `✅ Sent to ${d.count} users!`; msg.style.color='#10a37f'; }
     else { msg.textContent = d.error || 'Failed'; msg.style.color='#e74c3c'; }
   } catch(e) { msg.textContent = 'Error sending'; msg.style.color='#e74c3c'; }
@@ -5013,7 +5017,8 @@
       if (!u || !u.email) return;
       try {
         const r = await fetch('/api/get-plan', { headers: apiHeaders(false) });
-        const d = await r.json();
+        const d = await r.json().catch(() => ({}));
+        if (r.status === 401) { recoverExpiredSession(); return; }
         if (d && d.plan) Store.set({ plan: d.plan, owner: d.owner === true });
         checkOwnerEmail();
         if (d && typeof d.walletPence === 'number') {
