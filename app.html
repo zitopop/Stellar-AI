@@ -2623,6 +2623,12 @@
     body.modal-active #rec-btn { display: none !important; }
 
     /* ═══════════ PLAN BUYING GUIDANCE ═══════════ */
+    #plans-modal .plans-choice-guide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin: -12px 0 20px; }
+    #plans-modal .plans-choice-guide span { display: block; padding: 8px 9px; border: 1px solid rgba(222,213,255,.09); border-radius: 9px; color: #a8a0b9; background: rgba(255,255,255,.025); font-size: 10px; font-weight: 700; line-height: 1.45; }
+    #plans-modal .plans-choice-guide b { display: block; margin-bottom: 1px; color: #d8d0eb; font-size: 10px; font-weight: 900; }
+    body.light #plans-modal .plans-choice-guide span { border-color: rgba(67,50,103,.12); color: #625d70; background: rgba(255,255,255,.72); } body.light #plans-modal .plans-choice-guide b { color: #302849; }
+    @media (max-width: 640px) { #plans-modal .plans-choice-guide { grid-template-columns: 1fr; margin-top: -4px; } #plans-modal .plans-choice-guide span { display: grid; grid-template-columns: 104px 1fr; gap: 4px; } #plans-modal .plans-choice-guide b { margin: 0; } }
+
     #plans-modal .plan-fit-line { display: flex; align-items: flex-start; gap: 6px; min-height: 48px; margin: 0 0 16px; padding: 9px 10px; border: 1px solid rgba(222,213,255,.10); border-radius: 10px; color: #cbc4d9; background: rgba(255,255,255,.035); font-size: 11px; font-weight: 700; line-height: 1.5; }
     #plans-modal .plan-fit-line b { flex: 0 0 auto; color: #ad91ff; font-size: 8px; letter-spacing: .08em; }
     #plans-modal #plan-card-lite .plan-fit-line { border-color: rgba(82,225,181,.22); color: #d9f7ee; background: rgba(82,225,181,.07); } #plans-modal #plan-card-lite .plan-fit-line b { color: #85e7ce; }
@@ -2934,6 +2940,8 @@
         </div>
         <button onclick="closePlans()" class="modal-x" aria-label="Close plans">×</button>
       </div>
+
+      <div class="plans-choice-guide" aria-label="Plan selection guide"><span><b>TRYING IT?</b>Start Free.</span><span><b>BUILDING WEEKLY?</b>Choose Plus.</span><span><b>BUILDING BIG?</b>Choose Pro.</span></div>
 
       <!-- Plan cards grid -->
       <div id="plans-grid-inner" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">

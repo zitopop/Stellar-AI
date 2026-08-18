@@ -301,6 +301,10 @@
     .plan .button { width: 100%; margin-top: auto; }
     .plan .button-secondary { color: #e5ddf6; }
     .pricing-note { position: relative; margin-top: 22px; color: #9e97ad; font-size: 11px; font-weight: 600; text-align: center; }
+    .plan-decider { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 auto 22px; }
+    .plan-decider > div { display: grid; grid-template-columns: 27px 1fr; gap: 9px; align-items: center; padding: 11px; border: 1px solid rgba(218,207,255,.10); border-radius: 12px; background: rgba(255,255,255,.026); }
+    .plan-decider b { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 8px; color: #bdaaff; background: rgba(155,124,255,.12); font: 500 9px "DM Mono", monospace; }
+    .plan-decider strong { display: block; color: #eee9f7; font-size: 11px; font-weight: 800; } .plan-decider span { display: block; margin-top: 1px; color: #9790a6; font-size: 10px; font-weight: 600; line-height: 1.4; }
 
     /* FAQ / CTA */
     .faq-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: 70px; align-items: start; }
@@ -353,7 +357,7 @@
       .product-shell { min-height: 430px; padding: 12px; } .product-main { grid-template-columns: 105px minmax(0, 1fr); min-height: 374px; } .preview-side { padding: 11px 8px; } .preview-brand { margin: 2px 3px 10px; font-size: 9px; } .preview-nav, .preview-new { padding: 7px 5px; font-size: 7px; } .preview-credit { font-size: 7px; } .preview-convo { padding: 12px 10px; } .float-file { right: 10px; bottom: 30px; padding: 9px 10px; font-size: 8px; }
       .framework-rail { display: block; padding: 19px; margin-top: 42px; } .framework-copy { margin-bottom: 13px; white-space: normal; } .frameworks { justify-content: flex-start; } .launch-deck { grid-template-columns: 1fr; padding: 19px; } .launch-deck h2 { font-size: 21px; } .launch-grid { grid-template-columns: 1fr; }
       .section { padding: 76px 0; } .section-heading { margin-bottom: 31px; } .section-heading h2 { font-size: clamp(33px, 9.5vw, 47px); } .section-heading p { font-size: 14px; }
-      .capability-grid, .plans { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
+      .capability-grid, .plans, .plan-decider { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
       .scenario { padding: 23px; } .scenario-grid { gap: 30px; } .scenario h2 { font-size: 34px; }
       .roblox-worlds { padding: 22px; } .roblox-head { display: block; } .roblox-head p { margin-top: 12px; } .roblox-grid, .roblox-side { grid-template-columns: 1fr; } .roblox-card { min-height: 156px; }
       .pricing-wrap { padding: 65px 0; } .plan { min-height: 0; padding: 24px; } .price { margin-top: 22px; }
@@ -493,12 +497,13 @@ end)</div></div>
       <section class="pricing-wrap" id="plans">
         <div class="container">
           <div class="section-heading center"><div class="eyebrow">Simple, transparent plans</div><h2>Choose the space your projects need.</h2><p>Start free, then move up when you are building more often or taking on larger systems.</p></div>
+          <div class="plan-decider" aria-label="How to choose a Stellar AI plan"><div><b>01</b><div><strong>Trying or fixing?</strong><span>Start Free. No card needed.</span></div></div><div><b>02</b><div><strong>Building every week?</strong><span>Plus is the right default.</span></div></div><div><b>03</b><div><strong>Building full systems?</strong><span>Choose Pro for maximum runway.</span></div></div></div>
           <div class="plans">
             <article class="plan"><div class="plan-label">Free</div><h3>Explore Stellar</h3><p class="plan-desc">A clean way to try your next script idea.</p><div class="plan-fit">Trying Stellar, fixing an issue, or building your first smaller resource.</div><div class="price"><strong>£0</strong><span>/ forever</span></div><div class="annual">No card required</div><ul><li>£1 starting credit</li><li>Spark, Star and Comet models</li><li>Build and fix script prompts</li></ul><a href="/app" class="button button-secondary">Start free</a></article>
-            <article class="plan featured"><div class="plan-badge">Most popular</div><div class="plan-label">Plus</div><h3>Build consistently</h3><p class="plan-desc">More room for active server and game work.</p><div class="plan-fit">Most server owners: regular updates, longer systems and weekly script work.</div><div class="price"><strong>£20</strong><span>/ month</span></div><div class="annual">or £14/month when billed annually</div><ul><li>10× more usage</li><li>Longer scripts and systems</li><li>Keep iterating in one workspace</li></ul><a href="/app" class="button button-primary">Get Plus <span class="button-arrow">→</span></a></article>
-            <article class="plan"><div class="plan-label">Pro</div><h3>Build at full speed</h3><p class="plan-desc">For bigger systems and frequent production work.</p><div class="plan-fit">Creators and teams building complete systems, game loops or multiple resources every week.</div><div class="price"><strong>£75</strong><span>/ month</span></div><div class="annual">or £52.50/month when billed annually</div><ul><li>40× more usage</li><li>Nova, the strongest model</li><li>More runway for larger systems</li></ul><a href="/app" class="button button-secondary">Get Pro</a></article>
+            <article class="plan featured"><div class="plan-badge">Most popular</div><div class="plan-label">Plus</div><h3>Build consistently</h3><p class="plan-desc">More room for active server and game work.</p><div class="plan-fit">Most server owners: regular updates, longer systems and weekly script work.</div><div class="price"><strong>£20</strong><span>/ month</span></div><div class="annual">Save 30% · £14/month when billed annually</div><ul><li>10× more usage</li><li>Longer scripts and systems</li><li>Keep iterating in one workspace</li></ul><a href="/app" class="button button-primary">Get Plus <span class="button-arrow">→</span></a></article>
+            <article class="plan"><div class="plan-label">Pro</div><h3>Build at full speed</h3><p class="plan-desc">For bigger systems and frequent production work.</p><div class="plan-fit">Creators and teams building complete systems, game loops or multiple resources every week.</div><div class="price"><strong>£75</strong><span>/ month</span></div><div class="annual">Save 30% · £52.50/month when billed annually</div><ul><li>40× more usage</li><li>Nova, the strongest model</li><li>More runway for larger systems</li></ul><a href="/app" class="button button-secondary">Get Pro</a></article>
           </div>
-          <p class="pricing-note">Cancel anytime. Payment and plan selection happen securely inside your Stellar account.</p>
+          <p class="pricing-note">Cancel anytime. Start free if you are unsure; if you only need extra usage occasionally, you can add credit inside your Stellar account instead of subscribing.</p>
         </div>
       </section>
 
