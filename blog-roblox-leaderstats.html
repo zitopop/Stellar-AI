@@ -3,74 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Add a Leaderboard to Your Roblox Game — Stellar AI</title>
-  <meta name="description" content="A leaderboard shows player stats in the top right corner of your Roblox game. This guide covers how to create leaderstats that save between sessions.">
-  <meta name="keywords" content="roblox leaderstats, roblox leaderboard tutorial, roblox stats display, roblox player stats">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <title>How to Add Leaderstats to a Roblox Game — Stellar AI</title>
+  <meta name="description" content="Learn how to add Roblox leaderstats correctly: create a server-side leaderboard, update stats safely, save real player progression and test it in Studio.">
+  <meta name="keywords" content="roblox leaderstats, roblox leaderboard tutorial, roblox stats display, roblox leaderstats script, roblox coins leaderboard">
+  <meta property="og:title" content="How to Add Leaderstats to a Roblox Game — Stellar AI">
+  <meta property="og:description" content="A practical server-side guide to Roblox leaderstats, safe stat updates and persistent player progression.">
+  <meta property="og:image" content="https://trystellarai.com/og-image.png">
+  <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/roblox-leaderstats-tutorial">
   <link rel="icon" href="/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"How to Add Leaderstats to a Roblox Game","description":"A practical tutorial for creating server-side Roblox leaderstats and connecting them to safe player progression.","author":{"@type":"Organization","name":"Stellar AI"},"publisher":{"@type":"Organization","name":"Stellar AI"},"dateModified":"2026-08-18","mainEntityOfPage":"https://trystellarai.com/blog/roblox-leaderstats-tutorial"}</script>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
+    *{box-sizing:border-box;margin:0;padding:0} :root{--bg:#080714;--panel:rgba(255,255,255,.035);--border:rgba(220,208,255,.12);--text:#f4f1fb;--muted:#aaa3ba;--violet:#b397ff;--mint:#65e2bd;--max:790px} body{min-width:320px;background:radial-gradient(circle at 50% -12%,rgba(135,93,245,.25),transparent 35rem),var(--bg);color:var(--text);font:16px/1.7 Manrope,system-ui,sans-serif} a{color:inherit;text-decoration:none}.nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:72px;padding:0 max(24px,calc((100vw - 1100px)/2));border-bottom:1px solid rgba(255,255,255,.055);background:rgba(8,7,20,.78);backdrop-filter:blur(18px)}.brand{font-weight:800;letter-spacing:-.045em}.brand i{display:inline-grid;width:25px;height:25px;place-items:center;margin-right:7px;border:1px solid rgba(211,194,255,.3);border-radius:8px;color:#e7deff;background:rgba(155,124,255,.15);font-style:normal}.brand span{color:var(--violet)}.nav-cta,.cta-btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 15px;border-radius:11px;color:#120b26;background:linear-gradient(135deg,#d5c6ff,#8debd0);font-size:13px;font-weight:800}.container{width:min(calc(100% - 40px),var(--max));margin:auto;padding:72px 0}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#c8b9ff;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.eyebrow:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 16px var(--mint)}h1{max-width:760px;margin:15px 0 17px;font-size:clamp(37px,6vw,61px);font-weight:800;letter-spacing:-.07em;line-height:1.01}.meta{margin-bottom:30px;color:#8e879e;font:500 11px 'DM Mono',monospace}.intro{max-width:700px;margin-bottom:42px;padding:21px 22px;border-left:2px solid var(--mint);color:#d1cadf;background:rgba(255,255,255,.026);font-size:18px;line-height:1.65}h2{margin:46px 0 14px;font-size:28px;font-weight:800;letter-spacing:-.055em;line-height:1.12}h3{margin:26px 0 8px;font-size:18px;font-weight:800;letter-spacing:-.035em}p{margin-bottom:16px;color:#c4bdcf;font-size:15px}ul,ol{margin:0 0 18px 21px;color:#c4bdcf;font-size:15px}li{margin:8px 0}.code{margin:18px 0;padding:17px;overflow:auto;border:1px solid rgba(180,156,255,.17);border-radius:13px;color:#b5efdb;background:#0b0919;font:12px/1.65 'DM Mono',monospace;white-space:pre}.callout{margin:25px 0;padding:18px 20px;border:1px solid rgba(101,226,189,.22);border-radius:14px;color:#cde7de;background:rgba(101,226,189,.065)}.callout strong{display:block;margin-bottom:5px;color:#90f0d0}.prompt{margin:18px 0;padding:17px 18px;border:1px solid rgba(181,155,255,.2);border-radius:13px;color:#ded2ff;background:rgba(154,124,255,.085);font:13px/1.65 'DM Mono',monospace}.check{display:grid;gap:8px;margin:18px 0}.check div{display:flex;gap:9px;padding:11px;border:1px solid rgba(255,255,255,.07);border-radius:9px;background:rgba(255,255,255,.022);color:#c7c0d2;font-size:13px}.check div:before{content:'✓';color:var(--mint);font-weight:900}.cta{margin:54px 0 10px;padding:32px;border:1px solid rgba(181,155,255,.27);border-radius:20px;background:radial-gradient(circle at 20% 0,rgba(155,124,255,.22),transparent 16rem),rgba(25,18,55,.75);text-align:center}.cta h2{margin:0 0 10px;font-size:29px}.cta p{max-width:540px;margin:0 auto 20px}.related{margin-top:45px;padding-top:30px;border-top:1px solid var(--border)}.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.related a{display:block;padding:15px;border:1px solid var(--border);border-radius:11px;background:var(--panel)}.related b{display:block;color:#eee9fb;font-size:12px;line-height:1.4}.related span{display:block;margin-top:4px;color:#9b94aa;font-size:11px;line-height:1.45}footer{display:flex;justify-content:space-between;gap:15px;padding:28px max(24px,calc((100vw - 1100px)/2));border-top:1px solid rgba(255,255,255,.06);color:#837c91;font-size:11px}@media(max-width:620px){.nav{min-height:64px;padding:0 16px}.container{width:min(calc(100% - 32px),var(--max));padding:48px 0}.intro{font-size:16px}h2{font-size:26px}.cta{padding:26px 18px}.related-grid{grid-template-columns:1fr}footer{padding:24px 16px;flex-direction:column}}
   </style>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>How to Add a Leaderboard to Your Roblox Game</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A leaderboard shows player stats in the top right corner of your Roblox game. This guide covers how to create leaderstats that save between sessions.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
-</div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
+  <nav class="nav"><a href="/" class="brand"><i>✦</i>Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try Stellar free →</a></nav>
+  <main class="container">
+    <div class="eyebrow">Roblox scripting tutorial</div>
+    <h1>How to add leaderstats to your Roblox game</h1>
+    <div class="meta">UPDATED 18 AUGUST 2026 · 7 MIN READ · STELLAR AI</div>
+    <p class="intro">Leaderstats are Roblox’s built-in way to show a small set of player stats on the in-game leaderboard. They are useful for showing coins, wins, rebirths or level—but they are only the display layer. Your game still needs server-side logic and persistent player data behind them.</p>
+
+    <h2>What leaderstats should show</h2>
+    <p>Only display values that help a player understand their progress or compare a meaningful achievement. Coins, wins, kills, rebirths and level are common examples. Avoid putting every saved value on the leaderboard; capacity, internal upgrade levels, equipped items and private settings usually belong in your player data or UI instead.</p>
+    <div class="callout"><strong>Important distinction:</strong> leaderstats show values in Roblox’s player list. They do not automatically save data, balance an economy, or protect a game from exploit attempts.</div>
+
+    <h2>Create the leaderboard from a server Script</h2>
+    <p>Create a normal <strong>Script</strong> inside <strong>ServerScriptService</strong>. Keeping this on the server makes the leaderboard available to every player and stops the client from being the source of truth.</p>
+    <div class="code">local Players = game:GetService("Players")
+
+Players.PlayerAdded:Connect(function(player)
+    local leaderstats = Instance.new("Folder")
+    leaderstats.Name = "leaderstats"
+    leaderstats.Parent = player
+
+    local coins = Instance.new("IntValue")
+    coins.Name = "Coins"
+    coins.Value = 0
+    coins.Parent = leaderstats
+
+    local rebirths = Instance.new("IntValue")
+    rebirths.Name = "Rebirths"
+    rebirths.Value = 0
+    rebirths.Parent = leaderstats
+end)</div>
+    <p>The exact folder name matters: Roblox recognises a folder called <code>leaderstats</code>. Each value inside it then appears in the standard player list when a player joins.</p>
+
+    <h2>Update stats through gameplay, not the client</h2>
+    <p>When a player earns coins, the server should verify the action and update the value. For a simulator, that could mean checking the player is close to a collection object, has not exceeded a cooldown, and has not reached backpack capacity before adding currency.</p>
+    <div class="code">local function awardCoins(player, amount)
+    local leaderstats = player:FindFirstChild("leaderstats")
+    local coins = leaderstats and leaderstats:FindFirstChild("Coins")
+
+    if not coins then return end
+    coins.Value += amount
+end</div>
+    <p>Do not let a LocalScript send a number such as “give me 5000 coins” and apply it directly. The client can request an action, but the server should calculate and approve the reward.</p>
+
+    <h2>Connect leaderstats to saved player data</h2>
+    <p>For a game that players return to, load persistent data when the player joins and apply the saved values to leaderstats. Save progress again when the player leaves and at controlled points during a session. Roblox DataStores are intended for persistent experience data, but calls can fail, so handle failures without erasing existing progress. [<a href="https://create.roblox.com/docs/cloud-services/data-stores" target="_blank" rel="noopener noreferrer">1</a>]</p>
+    <div class="check"><div>Load a default profile for a new player.</div><div>Use protected calls around every data load and save.</div><div>Only show stats after your server has loaded the player profile.</div><div>Never replace old data with blanks after a failed load.</div></div>
+    <p>As your project grows, keep a dedicated player-data module as the source of truth. Update the visible leaderstats whenever the player’s coins or rebirths change. This makes it easier to add UI, shops, game passes and separate internal stats later.</p>
+
+    <h2>Test it in Studio</h2>
+    <p>Start a two-player local server test in Roblox Studio. Confirm that both players get their own values, that an earned reward only changes the correct player, and that one player cannot affect another player’s stats. Test a fresh player, a returning player, and the case where a data request fails.</p>
+    <p>For a simulator, also test the full loop: collect currency, reach capacity, sell, buy an upgrade, leave, and return. The leaderboard should reflect real progress rather than become the system that creates it.</p>
+
+    <h2>Use a clear prompt for the rest of your game</h2>
+    <p>Once you have leaderstats, describe the rest of the system precisely so each script has a defined responsibility.</p>
+    <div class="prompt">Create a Roblox player data and leaderstats system for a simulator. Use server-side Coins and Rebirths values, load and save with protected DataStore calls, and provide a separate server function for awarding coins after validation. Add clear notes showing where the RemoteEvents, data module and UI should go. Do not trust currency amounts sent by the client.</div>
+
+    <section class="cta"><div class="eyebrow">Build the next system</div><h2>Plan your Roblox systems before they turn into one huge script.</h2><p>Use Stellar AI to turn a clear feature description into a structured starting point, then refine it while you test in Roblox Studio.</p><a class="cta-btn" href="/app">Open Stellar AI free →</a></section>
+
+    <section class="related"><h2>More Roblox guides</h2><div class="related-grid"><a href="/blog/roblox-simulator-game-guide"><b>How to make a Roblox simulator game</b><span>Plan the loop, upgrades, saving and progression.</span></a><a href="/blog/roblox-remote-events-tutorial"><b>Roblox RemoteEvents tutorial</b><span>Keep client and server responsibilities clear.</span></a><a href="/blog/roblox-datastore-tutorial"><b>Roblox DataStores tutorial</b><span>Build more reliable persistent player progress.</span></a></div></section>
+  </main>
+  <footer><span>© 2026 Stellar AI</span><span><a href="/">Home</a> · <a href="/blog">Guides</a> · <a href="/app">Open app</a></span></footer>
 </body>
 </html>
