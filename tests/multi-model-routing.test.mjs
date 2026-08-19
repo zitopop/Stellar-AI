@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -85,6 +85,25 @@ test('Task 4 prioritizes audit mode when a platform request asks for review', ()
   const messages = [{ role: 'user', content: 'Audit this Roblox script for vulnerabilities and bugs.' }];
   assert.equal(detectWorkflowMode(messages), 'audit');
   assert.match(buildSystemPrompt('', 'roblox', 'audit'), /WORKFLOW MODE: CODE AUDIT/);
+});
+
+test('Task 5 detects QBCore and injects only QBCore assumptions', () => {
+  const messages = [{ role: 'user', content: 'Create a FiveM QBCore resource using GetCoreObject.' }];
+  assert.equal(detectFramework(messages), 'qbcore');
+  assert.match(buildSystemPrompt('', 'fivem', 'fivem_resource', 'qbcore'), /FRAMEWORK CONTEXT: QBCORE/);
+  assert.match(buildSystemPrompt('', 'fivem', 'fivem_resource', 'qbcore'), /do not mix ESX/);
+});
+
+test('Task 5 detects ESX, ox_lib, and standalone framework contexts', () => {
+  assert.equal(detectFramework([{ role: 'user', content: 'Make a FiveM ESX job.' }]), 'esx');
+  assert.equal(detectFramework([{ role: 'user', content: 'Use ox_lib for the menu in FiveM.' }]), 'ox_lib');
+  assert.equal(detectFramework([{ role: 'user', content: 'Build a standalone FiveM script with no framework.' }]), 'standalone');
+});
+
+test('Task 5 refuses to choose when conflicting FiveM frameworks are named', () => {
+  const messages = [{ role: 'user', content: 'Use QBCore and ESX together in this FiveM resource.' }];
+  assert.equal(detectFramework(messages), 'unknown');
+  assert.match(buildSystemPrompt('', 'fivem', 'fivem_resource', 'unknown'), /FRAMEWORK NOT CONFIRMED/);
 });
 
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
