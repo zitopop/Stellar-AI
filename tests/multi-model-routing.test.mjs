@@ -391,6 +391,34 @@ test('Task 23 returns a retryable 503 after all Anthropic candidates fail', asyn
   }
 });
 
+test('Task 24 falls back to the next Anthropic candidate on a 404', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url, options) => {
+    calls.push(JSON.parse(options.body).model);
+    if (calls.length === 1) return new Response('model not found', { status: 404 });
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"status fallback"}}\\n\\ndata: [DONE]\\n\\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'anthropic', tier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), 'data: {"type":"content_block_delta","delta":{"text":"status fallback"}}\\n\\ndata: [DONE]\\n\\n');
+    assert.equal(calls.length, 2);
+    assert.notEqual(calls[0], calls[1]);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
