@@ -16,4 +16,7 @@ test('Task 49 exposes an accessible validated image-upload control in the worksp
   assert.match(appHtml, /const imageItem = Array\.from\(clipboard\?\.items \|\| \[\]\)\.find\(\(item\) => item\.kind === 'file' && item\.type\.startsWith\('image\/'\)\)/);
   assert.match(appHtml, /attachImageFile\(imageFile, null, 'Pasted image'\)/);
   assert.match(appHtml, /if \(imageFile\) \{\s+e\.preventDefault\(\);\s+attachImageFile\(imageFile, null, 'Pasted image'\);\s+return;\s+\}\s+\}\s+const t = clipboard\.getData\('text'\);/);
+  assert.match(appHtml, /function initImageDrop\(\)/);
+  assert.match(appHtml, /composer\.addEventListener\('drop', \(event\) => \{[\s\S]*?const droppedFile = Array\.from\(event\.dataTransfer\?\.files \|\| \[\]\)\[0\];[\s\S]*?event\.preventDefault\(\);\s+attachImageFile\(droppedFile, null, 'Dropped image'\);/);
+  assert.match(appHtml, /initPaste\(\);\s+initImageDrop\(\);/);
 });
