@@ -38,6 +38,32 @@ test('Task 1 routes premium security role to GPT on Pro', () => {
   assert.equal(route.role, 'security');
 });
 
+test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {
+  const originalFetch = globalThis.fetch;
+  const bodies = [];
+  globalThis.fetch = async (_url, options) => {
+    bodies.push(JSON.parse(options.body));
+    return new Response(JSON.stringify({ choices: [{ message: { content: 'schema-ok' } }] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  };
+  try {
+    for (const role of Object.keys(ROLE_RESPONSE_SCHEMAS)) {
+      const response = await createUpstreamStream({
+        route: { provider: 'forge', model: 'gpt-5-mini' },
+        maxTokens: 256,
+        system: 'test',
+        messages: [{ role: 'user', content: 'test' }],
+        responseFormat: ROLE_RESPONSE_SCHEMAS[role],
+        signal: undefined,
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get('content-type').includes('text/event-stream'), true);
+    }
+    assert.deepEqual(bodies.map((body) => body.response_format), Object.values(ROLE_RESPONSE_SCHEMAS));
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 1 emits the existing Anthropic-compatible stream framing', () => {
   const stream = forgeEventStream('hello', 'gpt-5-mini');
   assert.match(stream, /data: .*content_block_delta/);
