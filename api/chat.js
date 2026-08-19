@@ -568,7 +568,15 @@ async function createAnthropicStream({ tier, maxTokens, system, messages, signal
       });
       continue;
     }
-    if (response.ok || ![400, 404].includes(response.status)) return response;
+    if (response.ok && response.body) return response;
+    if (response.ok && !response.body) {
+      lastResponse = new Response(JSON.stringify({ error: { message: 'The Anthropic provider returned an empty stream.' } }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      continue;
+    }
+    if (![400, 404].includes(response.status)) return response;
     lastResponse = response;
   }
 
