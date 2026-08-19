@@ -28,7 +28,7 @@
 | 22 | ✅ Complete | Direct Anthropic AbortError propagation without trying another candidate | `tests/multi-model-routing.test.mjs`; full suite 49 tests pass | `559164f` |
 | 23 | ✅ Complete | Terminal Anthropic failure returns retryable 503 after all candidates fail | `tests/multi-model-routing.test.mjs`; full suite 50 tests pass | `dfc85c3` |
 | 24 | ✅ Complete | Direct Anthropic 404 fallback preserves the configured candidate stream | `tests/multi-model-routing.test.mjs`; full suite 51 tests pass | `9ea039e` |
-| 25 | ☐ Pending | Next approved implementation task | — | — |
+| 25 | ✅ Complete | Caller AbortSignal forwarded unchanged to Anthropic fetch | `tests/multi-model-routing.test.mjs`; full suite 52 tests pass | `810c531` |
 | 26 | ☐ Pending | Next approved implementation task | — | — |
 | 27 | ☐ Pending | Next approved implementation task | — | — |
 | 28 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**24 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**25 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
