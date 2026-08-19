@@ -23,7 +23,7 @@
 | 17 | ✅ Complete | Structured-output fallback transparency notice and regression coverage | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 44 tests pass | `68e3708` |
 | 18 | ✅ Complete | Retryable Forge network-error normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 45 tests pass | `a07007e` |
 | 19 | ✅ Complete | AbortError propagation without fallback request | `tests/multi-model-routing.test.mjs`; full suite 46 tests pass | `518ddc7` |
-| 20 | ☐ Pending | Next approved implementation task | — | — |
+| 20 | ✅ Complete | Malformed Forge JSON normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 47 tests pass | `febcb15` |
 | 21 | ☐ Pending | Next approved implementation task | — | — |
 | 22 | ☐ Pending | Next approved implementation task | — | — |
 | 23 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**19 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**20 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 

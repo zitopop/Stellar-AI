@@ -21,7 +21,8 @@ for (let task = 1; task <= 400; task += 1) {
   else if (task === 17) rows.push('| 17 | ✅ Complete | Structured-output fallback transparency notice and regression coverage | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 44 tests pass | `68e3708` |');
   else if (task === 18) rows.push('| 18 | ✅ Complete | Retryable Forge network-error normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 45 tests pass | `a07007e` |');
   else if (task === 19) rows.push('| 19 | ✅ Complete | AbortError propagation without fallback request | `tests/multi-model-routing.test.mjs`; full suite 46 tests pass | `518ddc7` |');
+  else if (task === 20) rows.push('| 20 | ✅ Complete | Malformed Forge JSON normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 47 tests pass | `febcb15` |');
   else rows.push(`| ${task} | ☐ Pending | Next approved implementation task | — | — |`);
 }
-rows.push('', '## Current count', '', '**19 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.', '', '## Protected boundary', '', 'Auth, payments, secrets, package files, Vercel configuration, database code, and unrelated API/server behavior remain protected unless a later task names an explicit approved change.');
+rows.push('', '## Current count', '', '**20 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.', '', '## Protected boundary', '', 'Auth, payments, secrets, package files, Vercel configuration, database code, and unrelated API/server behavior remain protected unless a later task names an explicit approved change.');
 writeFileSync('PROGRESS_400.md', `${rows.join('\n')}\n`);
