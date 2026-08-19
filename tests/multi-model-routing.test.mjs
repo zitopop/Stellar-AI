@@ -85,6 +85,13 @@ test('Task 3 detects FiveM and injects the FiveM quality gate', () => {
   assert.match(PLATFORM_GUIDANCE.fivem, /fxmanifest/);
 });
 
+test('Task 17 explains structured-output limits during fallback', () => {
+  const prompt = buildSystemPrompt('', 'roblox', 'roblox_build_pack', 'unknown', 'planner');
+  assert.match(prompt, /STRUCTURED OUTPUT FALLBACK/);
+  assert.match(prompt, /JSON Schema transport is unavailable/);
+  assert.match(prompt, /do not claim that schema validation or execution occurred/);
+});
+
 test('Task 16 keeps mixed-platform APIs, files, dependencies, and tests isolated', () => {
   const prompt = buildSystemPrompt('', 'mixed', 'general', 'unknown', 'implementer');
   assert.match(prompt, /Separate Roblox Luau and FiveM Lua conventions/);
