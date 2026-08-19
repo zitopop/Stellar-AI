@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -86,6 +86,15 @@ test('Task 42 keeps valid messages when trailing blank records would otherwise e
     { role: 'user', content: 'Build a QBCore FiveM resource.' },
     { role: 'assistant', content: 'I need the command names.' },
   ]);
+});
+
+test('Task 43 accepts a bounded supported image attachment and rejects invalid provider payload metadata', () => {
+  assert.deepEqual(normaliseImageAttachment({ mediaType: ' IMAGE/PNG ', data: ' dGVzdA== ' }), {
+    image: { mediaType: 'image/png', data: 'dGVzdA==' },
+  });
+  assert.match(normaliseImageAttachment({ mediaType: 'image/svg+xml', data: 'dGVzdA==' }).error, /PNG, JPEG, GIF, or WebP/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: 'not base64!' }).error, /invalid or too large/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/webp', data: 'A'.repeat(4_000_001) }).error, /invalid or too large/);
 });
 
 test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {

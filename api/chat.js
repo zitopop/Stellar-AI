@@ -193,6 +193,8 @@ const ROLE_RESPONSE_SCHEMAS = {
 
 const STRUCTURED_FALLBACK_NOTICE = 'STRUCTURED OUTPUT FALLBACK: If JSON Schema transport is unavailable on a fallback provider, preserve every required field in clearly labelled prose or JSON-like sections, but do not claim that schema validation or execution occurred.';
 const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+const MAX_IMAGE_DATA_LENGTH = 4_000_000;
 
 const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
@@ -368,6 +370,19 @@ function normaliseMessages(messages) {
     .slice(-40);
 
   return clean.length ? clean : null;
+}
+
+function normaliseImageAttachment(image) {
+  if (image == null) return { image: null };
+  const mediaType = typeof image?.mediaType === 'string' ? image.mediaType.trim().toLowerCase() : '';
+  const data = typeof image?.data === 'string' ? image.data.trim() : '';
+  if (!SUPPORTED_IMAGE_MEDIA_TYPES.has(mediaType)) {
+    return { error: 'Attach a PNG, JPEG, GIF, or WebP image.' };
+  }
+  if (!data || data.length > MAX_IMAGE_DATA_LENGTH || !/^[A-Za-z0-9+/]*={0,2}$/.test(data)) {
+    return { error: 'That image is invalid or too large. Choose an image under about 3 MB and try again.' };
+  }
+  return { image: { mediaType, data } };
 }
 
 function addImageToLastUserMessage(messages, image) {
@@ -607,6 +622,8 @@ export default async function handler(req, res) {
   const { model, role, messages, max_tokens: maxTokens, image, search_context: searchContext } = req.body || {};
   const cleanMessages = normaliseMessages(messages);
   if (!cleanMessages) return res.status(400).json({ error: 'Send at least one message before asking Stellar.' });
+  const imageAttachment = normaliseImageAttachment(image);
+  if (imageAttachment.error) return res.status(400).json({ error: imageAttachment.error });
   const platform = detectPlatform(cleanMessages);
   const workflowMode = detectWorkflowMode(cleanMessages, platform);
   const framework = detectFramework(cleanMessages, platform);
@@ -640,7 +657,7 @@ export default async function handler(req, res) {
       route,
       maxTokens: safeMaxTokens,
       system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role) + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
-      messages: addImageToLastUserMessage(cleanMessages, image),
+      messages: addImageToLastUserMessage(cleanMessages, imageAttachment.image),
       responseFormat: ROLE_RESPONSE_SCHEMAS[route.role],
       signal: controller.signal,
     });
@@ -685,4 +702,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, normaliseMessages, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, resolveRoute };
