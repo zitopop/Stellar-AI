@@ -42,7 +42,7 @@
 | 36 | ✅ Complete | Unknown specialist role input safely defaults to the complete implementer route and schema | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 63 tests pass; green Vercel deployment | `315f245` |
 | 37 | ✅ Complete | No-role routes preserve the requested model while retaining the implementer contract | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 64 tests pass; green Vercel deployment | `da66a6a` |
 | 38 | ✅ Complete | Inherited object-property names cannot select specialist routing roles | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 65 tests pass; green Vercel deployment | `8000e4f` |
-| 39 | ☐ Pending | Next approved implementation task | — | — |
+| 39 | ✅ Complete | Saved-tool favorite controls reach a 44px mobile touch target while desktop density remains unchanged | `index.html`; full suite 65 tests pass; live CSS rule and green Vercel deployment verified | `aefdb03` |
 | 40 | ☐ Pending | Next approved implementation task | — | — |
 | 41 | ☐ Pending | Next approved implementation task | — | — |
 | 42 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**38 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**39 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
