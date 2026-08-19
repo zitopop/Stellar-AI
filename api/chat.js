@@ -412,24 +412,23 @@ function exceedsRequestPayloadLimit(messages, image) {
 
 function addImageToLastUserMessage(messages, image) {
   if (!image?.data || !image?.mediaType) return messages;
-
-  for (let index = messages.length - 1; index >= 0; index -= 1) {
-    if (messages[index].role === 'user') {
-      return messages.map((message, messageIndex) => messageIndex === index ? {
-        ...message,
-        content: [
-          { type: 'image', source: { type: 'base64', media_type: image.mediaType, data: image.data } },
-          { type: 'text', text: message.content },
-        ],
-      } : message);
-    }
-  }
-
-  return messages;
+  if (!hasLatestUserMessage(messages)) return messages;
+  const index = messages.length - 1;
+  return messages.map((message, messageIndex) => messageIndex === index ? {
+    ...message,
+    content: [
+      { type: 'image', source: { type: 'base64', media_type: image.mediaType, data: image.data } },
+      { type: 'text', text: message.content },
+    ],
+  } : message);
 }
 
 function hasUserMessage(messages) {
   return Array.isArray(messages) && messages.some((message) => message?.role === 'user');
+}
+
+function hasLatestUserMessage(messages) {
+  return Array.isArray(messages) && messages.length > 0 && messages[messages.length - 1]?.role === 'user';
 }
 
 const WORKFLOW_GUIDANCE = {
@@ -664,7 +663,7 @@ export default async function handler(req, res) {
   if (!cleanMessages) return res.status(400).json({ error: 'Send at least one message before asking Stellar.' });
   const imageAttachment = normaliseImageAttachment(image);
   if (imageAttachment.error) return res.status(400).json({ error: imageAttachment.error });
-  if (imageAttachment.image && !hasUserMessage(cleanMessages)) {
+  if (imageAttachment.image && !hasLatestUserMessage(cleanMessages)) {
     return res.status(400).json({ error: 'Add a message describing what you want before attaching an image.' });
   }
   const platform = detectPlatform(cleanMessages);
@@ -745,4 +744,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute };
