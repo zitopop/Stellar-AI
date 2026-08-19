@@ -1,6 +1,7 @@
 // api/chat.js — Stellar AI
 // Streams Anthropic Messages API responses with server-owned quality guidance,
 // current-model routing, safe fallbacks, and signed-session plan enforcement.
+import { isIP } from 'node:net';
 import { isOwnerEmail, readSession } from '../lib/auth.js';
 
 const DOMAIN = 'https://trystellarai.com';
@@ -336,7 +337,7 @@ async function checkRate(ip, plan) {
 function normaliseClientIp(forwardedFor) {
   const rawHeader = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor;
   const firstForwardedValue = typeof rawHeader === 'string' ? rawHeader.split(',', 1)[0].trim() : '';
-  return firstForwardedValue && firstForwardedValue.length <= 128 ? firstForwardedValue : 'unknown';
+  return firstForwardedValue.length <= 128 && isIP(firstForwardedValue) ? firstForwardedValue : 'unknown';
 }
 
 function resolveModelTier(requestedModel, plan) {

@@ -82,6 +82,13 @@ test('Task 53 normalizes bounded forwarded client identity before rate-limit key
   assert.equal(normaliseClientIp('x'.repeat(129)), 'unknown');
 });
 
+test('Task 54 rejects malformed forwarded client identity before rate-limit keys', () => {
+  assert.equal(normaliseClientIp('999.999.999.999'), 'unknown');
+  assert.equal(normaliseClientIp('203.0.113.24:6379'), 'unknown');
+  assert.equal(normaliseClientIp('203.0.113.24\nrl:other:free'), 'unknown');
+  assert.equal(normaliseClientIp('::ffff:192.0.2.128'), '::ffff:192.0.2.128');
+});
+
 test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {
   const trailingBlanks = Array.from({ length: 40 }, () => ({ role: 'assistant', content: ' \n\t ' }));
   assert.deepEqual(normaliseMessages([
