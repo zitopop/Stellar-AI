@@ -59,7 +59,7 @@
 | 53 | ✅ Complete | Forwarded client identity is bounded and normalized before chat rate-limit key construction, preventing blank or oversized proxy values from producing unstable keys | `api/chat.js`; focused suite 58 tests and full suite 74 tests pass; Vercel deployment `57ad63a` READY | `57ad63a` |
 | 54 | ✅ Complete | Only valid IPv4 or IPv6 identities reach chat rate-limit key construction; malformed values, ports, and control characters use the shared unknown key | `api/chat.js`; focused suite 59 tests and full suite 75 tests pass; Vercel deployment `39bc2b9` READY | `39bc2b9` |
 | 55 | ✅ Complete | Untrusted search context is bounded before processing and stripped of non-text control characters before system-prompt construction | `api/chat.js`; focused suite 60 tests and full suite 76 tests pass; Vercel deployment `67af968` READY | `67af968` |
-| 56 | ☐ Pending | Next approved implementation task | — | — |
+| 56 | ✅ Complete | Individual chat-message content is capped before trimming and normalization, preserving recent valid messages while bounding per-record work | `api/chat.js`; focused suite 61 tests and full suite 77 tests pass; Vercel deployment `1e5c8d3` READY | `1e5c8d3` |
 | 57 | ☐ Pending | Next approved implementation task | — | — |
 | 58 | ☐ Pending | Next approved implementation task | — | — |
 | 59 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**55 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**56 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
