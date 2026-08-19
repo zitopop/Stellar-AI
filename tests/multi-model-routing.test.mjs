@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -104,6 +104,18 @@ test('Task 5 refuses to choose when conflicting FiveM frameworks are named', () 
   const messages = [{ role: 'user', content: 'Use QBCore and ESX together in this FiveM resource.' }];
   assert.equal(detectFramework(messages), 'unknown');
   assert.match(buildSystemPrompt('', 'fivem', 'fivem_resource', 'unknown'), /FRAMEWORK NOT CONFIRMED/);
+});
+
+test('Task 8 injects explicit contracts for every workspace role', () => {
+  for (const role of Object.keys(ROLE_OUTPUT_CONTRACTS)) {
+    const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', role);
+    assert.match(prompt, new RegExp(`ROLE OUTPUT CONTRACT:.*${role === 'planner' ? 'concise plan' : role === 'implementer' ? 'complete destination' : role === 'researcher' ? 'documented facts' : role === 'security' ? 'severity' : 'test matrix'}`));
+  }
+});
+
+test('Task 8 keeps the stream envelope independent from role contracts', () => {
+  assert.match(forgeEventStream('role-safe', 'gpt-5'), /content_block_delta/);
+  assert.match(forgeEventStream('role-safe', 'gpt-5'), /role-safe/);
 });
 
 test('Task 7 uses GPT completion tokens and reasoning effort', () => {
