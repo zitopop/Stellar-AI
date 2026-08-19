@@ -37,6 +37,38 @@ const ROUTING_ROLES = {
 };
 
 const ROLE_RESPONSE_SCHEMAS = {
+  implementer: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'stellar_implementation_bundle',
+      strict: true,
+      schema: {
+        type: 'object',
+        properties: {
+          summary: { type: 'string' },
+          files: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                path: { type: 'string' },
+                content: { type: 'string' },
+                purpose: { type: 'string' },
+                complete: { type: 'boolean' },
+              },
+              required: ['path', 'content', 'purpose', 'complete'],
+              additionalProperties: false,
+            },
+          },
+          setup_steps: { type: 'array', items: { type: 'string' } },
+          validation_checks: { type: 'array', items: { type: 'string' } },
+          execution_status: { type: 'string', enum: ['not_run', 'not_verified'] },
+        },
+        required: ['summary', 'files', 'setup_steps', 'validation_checks', 'execution_status'],
+        additionalProperties: false,
+      },
+    },
+  },
   researcher: {
     type: 'json_schema',
     json_schema: {
