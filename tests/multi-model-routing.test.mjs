@@ -622,6 +622,29 @@ test('Task 31 tries the next Anthropic candidate after a transient 503 response'
   }
 });
 
+test('Task 32 preserves a permanent Anthropic 401 without trying another candidate', async () => {
+  const originalFetch = globalThis.fetch;
+  const models = [];
+  globalThis.fetch = async (_url, options) => {
+    models.push(JSON.parse(options.body).model);
+    return new Response('invalid credentials', { status: 401 });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'anthropic', tier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 401);
+    assert.equal(await response.text(), 'invalid credentials');
+    assert.equal(models.length, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
