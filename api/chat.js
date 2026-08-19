@@ -534,7 +534,7 @@ async function createForgeResponse({ model, maxTokens, system, messages, signal,
   }
   const content = payload?.choices?.[0]?.message?.content;
   const text = Array.isArray(content) ? content.map((part) => part?.text || '').join('') : String(content || '');
-  if (!text) return new Response(JSON.stringify({ error: { message: 'The selected AI returned an empty response.' } }), { status: 502 });
+  if (!text.trim()) return new Response(JSON.stringify({ error: { message: 'The selected AI returned an empty response.' } }), { status: 502 });
   return new Response(forgeEventStream(text, model), { status: 200, headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } });
 }
 
