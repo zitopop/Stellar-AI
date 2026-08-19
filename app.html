@@ -4548,7 +4548,17 @@
       const txt = document.getElementById('txt');
       if (!txt) return;
       txt.addEventListener('paste', (e) => {
-        const t = (e.clipboardData || window.clipboardData).getData('text');
+        const clipboard = e.clipboardData || window.clipboardData;
+        const imageItem = Array.from(clipboard?.items || []).find((item) => item.kind === 'file' && item.type.startsWith('image/'));
+        if (imageItem) {
+          const imageFile = imageItem.getAsFile();
+          if (imageFile) {
+            e.preventDefault();
+            attachImageFile(imageFile, null, 'Pasted image');
+          }
+          return;
+        }
+        const t = clipboard.getData('text');
         if (!t || t.length < 700) return;
         e.preventDefault();
         pastedBlock = t;
@@ -5692,18 +5702,16 @@
       status.classList.toggle('error', Boolean(message && isError));
     }
 
-    function handleImageUpload(event) {
-      const input = event.target;
-      const file = input.files && input.files[0];
+    function attachImageFile(file, input = null, displayName = '') {
       if (!file) return;
       if (!UPLOAD_IMAGE_MEDIA_TYPES.has(file.type)) {
         setImageUploadStatus('Choose a PNG, JPEG, GIF, or WebP image.', true);
-        input.value = '';
+        if (input) input.value = '';
         return;
       }
       if (file.size > UPLOAD_IMAGE_MAX_BYTES) {
         setImageUploadStatus('Choose an image under 3 MB.', true);
-        input.value = '';
+        if (input) input.value = '';
         return;
       }
       const reader = new FileReader();
@@ -5712,24 +5720,29 @@
         const commaIndex = result.indexOf(',');
         if (commaIndex < 0) {
           setImageUploadStatus('That image could not be read. Try another file.', true);
-          input.value = '';
+          if (input) input.value = '';
           return;
         }
         uploadedImage = {
           data: result.slice(commaIndex + 1),
           mediaType: file.type,
-          name: file.name
+          name: displayName || file.name || 'Attached image'
         };
         document.getElementById('img-preview').src = result;
         document.getElementById('img-preview-bar').style.display = 'block';
-        setImageUploadStatus(`${file.name} is ready to send.`);
-        input.value = '';
+        setImageUploadStatus(`${displayName || file.name || 'Image'} is ready to send.`);
+        if (input) input.value = '';
       };
       reader.onerror = function() {
         setImageUploadStatus('That image could not be read. Try another file.', true);
-        input.value = '';
+        if (input) input.value = '';
       };
       reader.readAsDataURL(file);
+    }
+
+    function handleImageUpload(event) {
+      const input = event.target;
+      attachImageFile(input.files && input.files[0], input);
     }
 
     function removeImage() {

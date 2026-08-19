@@ -13,4 +13,6 @@ test('Task 49 exposes an accessible validated image-upload control in the worksp
   assert.match(appHtml, /if \(!UPLOAD_IMAGE_MEDIA_TYPES\.has\(file\.type\)\)/);
   assert.match(appHtml, /if \(file\.size > UPLOAD_IMAGE_MAX_BYTES\)/);
   assert.match(appHtml, /reader\.onerror = function\(\)/);
+  assert.match(appHtml, /const imageItem = Array\.from\(clipboard\?\.items \|\| \[\]\)\.find\(\(item\) => item\.kind === 'file' && item\.type\.startsWith\('image\/'\)\)/);
+  assert.match(appHtml, /attachImageFile\(imageFile, null, 'Pasted image'\)/);
 });
