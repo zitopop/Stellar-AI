@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -73,6 +73,13 @@ test('Task 38 rejects inherited object-property names as specialist roles', () =
   assert.equal(route.model, 'claude-sonnet-4-6');
   assert.equal(route.role, 'implementer');
   assert.equal(route.instruction, ROUTING_ROLES.implementer.instruction);
+});
+
+test('Task 53 normalizes bounded forwarded client identity before rate-limit keys', () => {
+  assert.equal(normaliseClientIp(' 203.0.113.24, 10.0.0.2 '), '203.0.113.24');
+  assert.equal(normaliseClientIp(['2001:db8::7, 10.0.0.2']), '2001:db8::7');
+  assert.equal(normaliseClientIp('  \n\t '), 'unknown');
+  assert.equal(normaliseClientIp('x'.repeat(129)), 'unknown');
 });
 
 test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {

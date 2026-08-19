@@ -333,6 +333,12 @@ async function checkRate(ip, plan) {
   return record.count <= limits.requestsPerHour;
 }
 
+function normaliseClientIp(forwardedFor) {
+  const rawHeader = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor;
+  const firstForwardedValue = typeof rawHeader === 'string' ? rawHeader.split(',', 1)[0].trim() : '';
+  return firstForwardedValue && firstForwardedValue.length <= 128 ? firstForwardedValue : 'unknown';
+}
+
 function resolveModelTier(requestedModel, plan) {
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
   const requested = String(requestedModel || '').trim().toLowerCase();
@@ -655,7 +661,7 @@ export default async function handler(req, res) {
   const session = readSession(req);
   const plan = await getPlanFromServer(session?.email);
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-  const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  const ip = normaliseClientIp(req.headers['x-forwarded-for']);
   if (!await checkRate(ip, plan)) {
     return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' });
   }
@@ -723,4 +729,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, resolveRoute };
