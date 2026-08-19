@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -87,6 +87,13 @@ test('Task 54 rejects malformed forwarded client identity before rate-limit keys
   assert.equal(normaliseClientIp('203.0.113.24:6379'), 'unknown');
   assert.equal(normaliseClientIp('203.0.113.24\nrl:other:free'), 'unknown');
   assert.equal(normaliseClientIp('::ffff:192.0.2.128'), '::ffff:192.0.2.128');
+});
+
+test('Task 55 normalizes bounded untrusted search context before prompt construction', () => {
+  assert.equal(normaliseSearchContext('  https://example.test\u0000\nUseful source\u0007  '), 'https://example.test\nUseful source');
+  assert.equal(normaliseSearchContext('x'.repeat(40_001)).length, 40_000);
+  assert.equal(normaliseSearchContext({ text: 'not a string' }), '');
+  assert.match(buildSystemPrompt('\u0000Source: https://example.test'), /Source: https:\/\/example\.test/);
 });
 
 test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {

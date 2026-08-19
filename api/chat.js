@@ -479,8 +479,13 @@ function detectWorkflowMode(messages, platform = detectPlatform(messages)) {
   return 'general';
 }
 
+function normaliseSearchContext(searchContext) {
+  if (typeof searchContext !== 'string') return '';
+  return searchContext.slice(0, 40_000).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
+}
+
 function buildSystemPrompt(searchContext, platform = 'general', workflowMode = 'general', framework = 'unknown', role = '') {
-  const cleanContext = typeof searchContext === 'string' ? searchContext.trim().slice(0, 40_000) : '';
+  const cleanContext = normaliseSearchContext(searchContext);
   const qualityGate = PLATFORM_GUIDANCE[platform] || PLATFORM_GUIDANCE.general;
   const workflowGate = WORKFLOW_GUIDANCE[workflowMode] || WORKFLOW_GUIDANCE.general;
   const frameworkGate = platform === 'fivem' || platform === 'mixed'
@@ -730,4 +735,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute };
