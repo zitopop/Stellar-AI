@@ -48,6 +48,16 @@ test('Task 35 normalizes recognised specialist role input before applying its co
   assert.match(buildSystemPrompt('', 'general', 'general', 'unknown', route.role), /ROLE OUTPUT CONTRACT:.*severity/);
 });
 
+test('Task 36 resolves unknown specialist role input to the default implementer contract', () => {
+  const route = resolveRoute('smart', 'not-a-real-role', 'pro');
+  assert.equal(route.provider, 'forge');
+  assert.equal(route.model, 'claude-sonnet-4-6');
+  assert.equal(route.role, 'implementer');
+  assert.equal(route.instruction, ROUTING_ROLES.implementer.instruction);
+  assert.equal(ROLE_RESPONSE_SCHEMAS[route.role], ROLE_RESPONSE_SCHEMAS.implementer);
+  assert.match(buildSystemPrompt('', 'general', 'general', 'unknown', route.role), /ROLE OUTPUT CONTRACT:.*complete destination/);
+});
+
 test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {
   const originalFetch = globalThis.fetch;
   const bodies = [];
