@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -103,6 +103,11 @@ test('Task 56 caps individual message content before normalization work', () => 
   ]);
   assert.equal(normalized[0].content.length, 100_000);
   assert.equal(normalized[1].content, 'Recent assistant context stays intact.');
+});
+
+test('Task 59 accepts images only when a normalized user message can carry them', () => {
+  assert.equal(hasUserMessage([{ role: 'assistant', content: 'Prior output' }]), false);
+  assert.equal(hasUserMessage([{ role: 'assistant', content: 'Prior output' }, { role: 'user', content: 'Please review this image.' }]), true);
 });
 
 test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {

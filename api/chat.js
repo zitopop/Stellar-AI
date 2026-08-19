@@ -428,6 +428,10 @@ function addImageToLastUserMessage(messages, image) {
   return messages;
 }
 
+function hasUserMessage(messages) {
+  return Array.isArray(messages) && messages.some((message) => message?.role === 'user');
+}
+
 const WORKFLOW_GUIDANCE = {
   roblox_build_pack: `WORKFLOW MODE: ROBLOX BUILD PACK\nStart with a compact implementation plan and exact Studio file tree before code. For every remote, list server validation for types, ranges, ownership, cooldowns, permissions, and duplicate requests. For persistence, state the key shape, pcall behavior, and SetAsync versus UpdateAsync choice. End with a Studio setup checklist, a test matrix, and manual art/animation/plugin steps if required. Never claim the place was run or published.`,
   fivem_resource: `WORKFLOW MODE: FIVEM RESOURCE\nStart with a resource manifest and dependency/framework assumptions. Name each required client, server, shared, config, and SQL file, keep rewards, money, permissions, and validation server-side, and include protected network-event checks. End with install/restart steps and a live-server test checklist. Never claim the resource was installed or run.`,
@@ -660,6 +664,9 @@ export default async function handler(req, res) {
   if (!cleanMessages) return res.status(400).json({ error: 'Send at least one message before asking Stellar.' });
   const imageAttachment = normaliseImageAttachment(image);
   if (imageAttachment.error) return res.status(400).json({ error: imageAttachment.error });
+  if (imageAttachment.image && !hasUserMessage(cleanMessages)) {
+    return res.status(400).json({ error: 'Add a message describing what you want before attaching an image.' });
+  }
   const platform = detectPlatform(cleanMessages);
   const workflowMode = detectWorkflowMode(cleanMessages, platform);
   const framework = detectFramework(cleanMessages, platform);
@@ -738,4 +745,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute };
