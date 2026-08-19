@@ -24,7 +24,7 @@
 | 18 | ✅ Complete | Retryable Forge network-error normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 45 tests pass | `a07007e` |
 | 19 | ✅ Complete | AbortError propagation without fallback request | `tests/multi-model-routing.test.mjs`; full suite 46 tests pass | `518ddc7` |
 | 20 | ✅ Complete | Malformed Forge JSON normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 47 tests pass | `febcb15` |
-| 21 | ☐ Pending | Next approved implementation task | — | — |
+| 21 | ✅ Complete | Anthropic candidate retry after non-abort network error | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 48 tests pass | `cf173d5` |
 | 22 | ☐ Pending | Next approved implementation task | — | — |
 | 23 | ☐ Pending | Next approved implementation task | — | — |
 | 24 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**20 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**21 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
