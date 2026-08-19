@@ -342,6 +342,31 @@ test('Task 21 tries the next Anthropic candidate after a network error', async (
   }
 });
 
+test('Task 22 propagates direct Anthropic AbortError without trying another candidate', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  const abortError = Object.assign(new Error('client disconnected'), { name: 'AbortError' });
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    throw abortError;
+  };
+  try {
+    await assert.rejects(
+      createUpstreamStream({
+        route: { provider: 'anthropic', tier: 'star' },
+        maxTokens: 256,
+        system: 'test',
+        messages: [{ role: 'user', content: 'test' }],
+        signal: undefined,
+      }),
+      (error) => error === abortError,
+    );
+    assert.deepEqual(calls, ['https://api.anthropic.com/v1/messages']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
