@@ -594,6 +594,34 @@ test('Task 30 tries the next Anthropic candidate when a successful response has 
   }
 });
 
+test('Task 31 tries the next Anthropic candidate after a transient 503 response', async () => {
+  const originalFetch = globalThis.fetch;
+  const models = [];
+  globalThis.fetch = async (_url, options) => {
+    models.push(JSON.parse(options.body).model);
+    if (models.length === 1) return new Response('provider unavailable', { status: 503 });
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"transient status fallback"}}\n\ndata: [DONE]\n\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'anthropic', tier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), 'data: {"type":"content_block_delta","delta":{"text":"transient status fallback"}}\n\ndata: [DONE]\n\n');
+    assert.equal(models.length, 2);
+    assert.notEqual(models[0], models[1]);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];

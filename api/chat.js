@@ -192,6 +192,7 @@ const ROLE_RESPONSE_SCHEMAS = {
 };
 
 const STRUCTURED_FALLBACK_NOTICE = 'STRUCTURED OUTPUT FALLBACK: If JSON Schema transport is unavailable on a fallback provider, preserve every required field in clearly labelled prose or JSON-like sections, but do not claim that schema validation or execution occurred.';
+const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
 
 const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
@@ -576,7 +577,7 @@ async function createAnthropicStream({ tier, maxTokens, system, messages, signal
       });
       continue;
     }
-    if (![400, 404].includes(response.status)) return response;
+    if (![400, 404].includes(response.status) && !ANTHROPIC_RETRYABLE_STATUSES.has(response.status)) return response;
     lastResponse = response;
   }
 
