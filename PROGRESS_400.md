@@ -56,7 +56,7 @@
 | 50 | ✅ Complete | Combined normalized chat text and attached image data are bounded before routing or provider payload construction | `api/chat.js`; focused suite 57 tests and full suite 73 tests pass; Vercel deployment `91f45e6` READY | `91f45e6` |
 | 51 | ✅ Complete | Supported clipboard images enter the existing validated workspace preview and removal flow without intercepting ordinary text paste | `app.html`; attachment contract and full suite 73 tests pass; Vercel deployment `6fa5f55` READY; live in-memory clipboard check verified | `6fa5f55` |
 | 52 | ✅ Complete | An unusable clipboard image item now falls through to the existing text-paste path instead of swallowing pasted content | `app.html`; attachment contract and full suite 73 tests pass; Vercel deployment `076e492` READY; live source and native long-text paste path verified | `076e492` |
-| 53 | ☐ Pending | Next approved implementation task | — | — |
+| 53 | ✅ Complete | Forwarded client identity is bounded and normalized before chat rate-limit key construction, preventing blank or oversized proxy values from producing unstable keys | `api/chat.js`; focused suite 58 tests and full suite 74 tests pass; Vercel deployment `57ad63a` READY | `57ad63a` |
 | 54 | ☐ Pending | Next approved implementation task | — | — |
 | 55 | ☐ Pending | Next approved implementation task | — | — |
 | 56 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**52 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**53 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
