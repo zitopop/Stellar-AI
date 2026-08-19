@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { resolveRoute, createUpstreamStream, forgeEventStream, FORGE_MODELS, ROUTING_ROLES } = await import('../api/chat.js');
+const { buildSystemPrompt, detectPlatform, resolveRoute, createUpstreamStream, forgeEventStream, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -43,6 +43,25 @@ test('Task 1 emits the existing Anthropic-compatible stream framing', () => {
   assert.match(stream, /data: .*content_block_delta/);
   assert.match(stream, /"text":"hello"/);
   assert.match(stream, /data: \[DONE\]\n\n$/);
+});
+
+test('Task 3 detects Roblox and injects the Roblox quality gate', () => {
+  const platform = detectPlatform([{ role: 'user', content: 'Build a Roblox Luau DataStore with RemoteEvent validation.' }]);
+  assert.equal(platform, 'roblox');
+  assert.match(buildSystemPrompt('', platform), /PLATFORM QUALITY GATE: ROBLOX/);
+  assert.match(PLATFORM_GUIDANCE.roblox, /server-side/);
+});
+
+test('Task 3 detects FiveM and injects the FiveM quality gate', () => {
+  const platform = detectPlatform([{ role: 'user', content: 'Create a QBCore resource with fxmanifest.lua and server events.' }]);
+  assert.equal(platform, 'fivem');
+  assert.match(buildSystemPrompt('', platform), /PLATFORM QUALITY GATE: FIVEM/);
+  assert.match(PLATFORM_GUIDANCE.fivem, /fxmanifest/);
+});
+
+test('Task 3 keeps mixed and unknown requests explicit', () => {
+  assert.equal(detectPlatform([{ role: 'user', content: 'Roblox and FiveM bridge' }]), 'mixed');
+  assert.equal(detectPlatform([{ role: 'user', content: 'Make a game system' }]), 'general');
 });
 
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
