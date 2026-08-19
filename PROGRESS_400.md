@@ -51,7 +51,7 @@
 | 45 | ✅ Complete | Image attachment validation rejects structurally invalid base64 padding or length before provider payload construction | `api/chat.js`; focused suite 53 tests and full suite 68 tests pass; Vercel deployment `b248fa5` READY | `b248fa5` |
 | 46 | ✅ Complete | Forge multipart completions emit only string text parts; unusable content triggers the existing fallback instead of leaking object text | `api/chat.js`; focused suite 54 tests and full suite 69 tests pass; Vercel deployment `7d482fe` READY | `7d482fe` |
 | 47 | ✅ Complete | Regression coverage confirms ordered Forge multipart text streams normally and does not invoke fallback | `tests/multi-model-routing.test.mjs`; focused suite 55 tests and full suite 70 tests pass; Vercel deployment `e3488f2` READY | `e3488f2` |
-| 48 | ☐ Pending | Next approved implementation task | — | — |
+| 48 | ✅ Complete | Regression coverage confirms a non-text Forge single content object triggers fallback instead of user-visible object text | `tests/multi-model-routing.test.mjs`; focused suite 56 tests and full suite 71 tests pass; Vercel deployment `aa4d6e0` READY | `aa4d6e0` |
 | 49 | ☐ Pending | Next approved implementation task | — | — |
 | 50 | ☐ Pending | Next approved implementation task | — | — |
 | 51 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**47 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**48 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
