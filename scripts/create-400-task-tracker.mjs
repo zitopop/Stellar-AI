@@ -29,7 +29,8 @@ for (let task = 1; task <= 400; task += 1) {
   else if (task === 25) rows.push('| 25 | ✅ Complete | Caller AbortSignal forwarded unchanged to Anthropic fetch | `tests/multi-model-routing.test.mjs`; full suite 52 tests pass | `810c531` |');
   else if (task === 26) rows.push('| 26 | ✅ Complete | Caller AbortSignal forwarded unchanged to Forge fetch | `tests/multi-model-routing.test.mjs`; full suite 53 tests pass; included in green production deployment `c27fc10` | `1864dd0` |');
   else if (task === 27) rows.push('| 27 | ✅ Complete | Forge 200 response without a usable completion falls back to the existing Anthropic stream | `tests/multi-model-routing.test.mjs`; full suite 54 tests pass; green Vercel deployment | `6cd0d73` |');
+  else if (task === 28) rows.push('| 28 | ✅ Complete | Whitespace-only Forge completion is normalized to retryable empty-output failure and falls back to Anthropic | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 55 tests pass; green Vercel deployment | `2a69944` |');
   else rows.push(`| ${task} | ☐ Pending | Next approved implementation task | — | — |`);
 }
-rows.push('', '## Current count', '', '**27 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.', '', '## Protected boundary', '', 'Auth, payments, secrets, package files, Vercel configuration, database code, and unrelated API/server behavior remain protected unless a later task names an explicit approved change.');
+rows.push('', '## Current count', '', '**28 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.', '', '## Protected boundary', '', 'Auth, payments, secrets, package files, Vercel configuration, database code, and unrelated API/server behavior remain protected unless a later task names an explicit approved change.');
 writeFileSync('PROGRESS_400.md', `${rows.join('\n')}\n`);
