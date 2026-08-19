@@ -312,6 +312,36 @@ test('Task 20 falls back once when Forge returns malformed JSON', async () => {
   }
 });
 
+test('Task 21 tries the next Anthropic candidate after a network error', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url, options) => {
+    calls.push({ url: String(url), model: JSON.parse(options.body).model });
+    if (calls.length === 1) throw new Error('socket closed');
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"anthropic retry"}}\\n\\ndata: [DONE]\\n\\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'anthropic', tier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.deepEqual(calls.map(({ url }) => url), [
+      'https://api.anthropic.com/v1/messages',
+      'https://api.anthropic.com/v1/messages',
+    ]);
+    assert.notEqual(calls[0].model, calls[1].model);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];

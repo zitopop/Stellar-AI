@@ -541,24 +541,33 @@ async function createForgeResponse({ model, maxTokens, system, messages, signal,
 async function createAnthropicStream({ tier, maxTokens, system, messages, signal }) {
   let lastResponse = null;
 
-  for (const model of getModelCandidates(tier)) {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      signal,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: maxTokens,
-        system,
-        messages,
-        stream: true,
-      }),
-    });
-
+    for (const model of getModelCandidates(tier)) {
+    let response;
+    try {
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: maxTokens,
+          system,
+          messages,
+          stream: true,
+        }),
+      });
+    } catch (error) {
+      if (error?.name === 'AbortError') throw error;
+      lastResponse = new Response(JSON.stringify({ error: { message: 'The Anthropic provider is temporarily unavailable.' } }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      continue;
+    }
     if (response.ok || ![400, 404].includes(response.status)) return response;
     lastResponse = response;
   }
