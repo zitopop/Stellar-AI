@@ -85,6 +85,15 @@ test('Task 3 detects FiveM and injects the FiveM quality gate', () => {
   assert.match(PLATFORM_GUIDANCE.fivem, /fxmanifest/);
 });
 
+test('Task 16 keeps mixed-platform APIs, files, dependencies, and tests isolated', () => {
+  const prompt = buildSystemPrompt('', 'mixed', 'general', 'unknown', 'implementer');
+  assert.match(prompt, /Separate Roblox Luau and FiveM Lua conventions/);
+  assert.match(prompt, /State which files belong to each platform/);
+  assert.match(prompt, /name platform-specific dependencies/);
+  assert.match(prompt, /independent test matrices/);
+  assert.equal(detectFramework([{ role: 'user', content: 'Roblox and FiveM with QBCore and ESX' }], 'mixed'), 'unknown');
+});
+
 test('Task 3 keeps mixed and unknown requests explicit', () => {
   assert.equal(detectPlatform([{ role: 'user', content: 'Roblox and FiveM bridge' }]), 'mixed');
   assert.equal(detectPlatform([{ role: 'user', content: 'Make a game system' }]), 'general');
