@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -96,6 +96,17 @@ test('Task 43 accepts a bounded supported image attachment and rejects invalid p
   assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: 'not base64!' }).error, /invalid or too large/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: 'abcde' }).error, /invalid or too large/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/webp', data: 'A'.repeat(4_000_001) }).error, /invalid or too large/);
+});
+
+test('Task 50 bounds the combined text and image payload before routing', () => {
+  const messages = [{ role: 'user', content: 'Build a QBCore resource.' }];
+  const messageLength = JSON.stringify(messages).length;
+  const fittingImage = { data: 'A'.repeat(5_000_000 - messageLength) };
+  const oversizedImage = { data: `${fittingImage.data}A` };
+  assert.equal(getCombinedRequestPayloadLength(messages, fittingImage), 5_000_000);
+  assert.equal(exceedsRequestPayloadLimit(messages, fittingImage), false);
+  assert.equal(exceedsRequestPayloadLimit(messages, oversizedImage), true);
+  assert.equal(exceedsRequestPayloadLimit(messages, undefined), false);
 });
 
 test('Task 46 ignores unusable Forge multipart content and falls back when no text remains', async () => {

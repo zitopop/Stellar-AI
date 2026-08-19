@@ -194,6 +194,7 @@ const ROLE_RESPONSE_SCHEMAS = {
 const STRUCTURED_FALLBACK_NOTICE = 'STRUCTURED OUTPUT FALLBACK: If JSON Schema transport is unavailable on a fallback provider, preserve every required field in clearly labelled prose or JSON-like sections, but do not claim that schema validation or execution occurred.';
 const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
 const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+const MAX_REQUEST_PAYLOAD_CHARS = 5_000_000;
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
 const MAX_NORMALISED_MESSAGE_SOURCE_COUNT = 400;
 const MAX_NORMALISED_MESSAGE_COUNT = 40;
@@ -387,6 +388,16 @@ function normaliseImageAttachment(image) {
     return { error: 'That image is invalid or too large. Choose an image under about 3 MB and try again.' };
   }
   return { image: { mediaType, data } };
+}
+
+function getCombinedRequestPayloadLength(messages, image) {
+  const messageLength = JSON.stringify(messages).length;
+  const imageLength = typeof image?.data === 'string' ? image.data.length : 0;
+  return messageLength + imageLength;
+}
+
+function exceedsRequestPayloadLimit(messages, image) {
+  return getCombinedRequestPayloadLength(messages, image) > MAX_REQUEST_PAYLOAD_CHARS;
 }
 
 function addImageToLastUserMessage(messages, image) {
@@ -637,8 +648,8 @@ export default async function handler(req, res) {
   const platform = detectPlatform(cleanMessages);
   const workflowMode = detectWorkflowMode(cleanMessages, platform);
   const framework = detectFramework(cleanMessages, platform);
-  if (JSON.stringify(cleanMessages).length > 5_000_000) {
-    return res.status(400).json({ error: 'That message is too large. Send a smaller file or split it into parts.' });
+  if (exceedsRequestPayloadLimit(cleanMessages, imageAttachment.image)) {
+    return res.status(400).json({ error: 'That message or image is too large. Send a smaller file or split it into parts.' });
   }
 
   const session = readSession(req);
@@ -712,4 +723,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, normaliseImageAttachment, normaliseMessages, resolveRoute };
