@@ -211,6 +211,14 @@ test('Task 7 omits explicit thinking for adaptive Claude and preserves unknown f
   assert.deepEqual(getForgeGenerationOptions('future-model', 800), { max_tokens: 800 });
 });
 
+test('Task 15 preserves role, platform, workflow, and framework guidance during fallback', () => {
+  const prompt = buildSystemPrompt('', 'fivem', 'fivem_resource', 'qbcore', 'security');
+  assert.match(prompt, /PLATFORM QUALITY GATE: FIVEM/);
+  assert.match(prompt, /FRAMEWORK CONTEXT: QBCORE/);
+  assert.match(prompt, /WORKFLOW MODE: FIVEM RESOURCE/);
+  assert.match(prompt, /ROLE OUTPUT CONTRACT:.*severity/);
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
