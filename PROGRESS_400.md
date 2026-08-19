@@ -47,7 +47,7 @@
 | 41 | ✅ Complete | CDN cache policy for public HTML routes only; API, auth, payments, secrets, and checkout routes remain unchanged | Full suite 65 tests pass; HTML/config checks pass; Vercel deployment `b8832c9` READY; live `x-vercel-cache: HIT` verified | `b8832c9` |
 | 42 | ✅ Complete | Message normalization filters blank or malformed records before retaining the newest 40 valid entries | `api/chat.js`; focused suite 51 tests and full suite 66 tests pass; Vercel deployment `0d1c906` READY | `0d1c906` |
 | 43 | ✅ Complete | Image attachments allow only bounded PNG, JPEG, GIF, or WebP base64 payloads before provider request construction | `api/chat.js`; focused suite 52 tests and full suite 67 tests pass; Vercel deployment `8d8dce4` READY | `8d8dce4` |
-| 44 | ☐ Pending | Next approved implementation task | — | — |
+| 44 | ✅ Complete | Chat-history normalization scans only the latest 400 raw records before retaining the newest 40 valid messages | `api/chat.js`; focused suite 53 tests and full suite 68 tests pass; Vercel deployment `0d4fe89` READY | `0d4fe89` |
 | 45 | ☐ Pending | Next approved implementation task | — | — |
 | 46 | ☐ Pending | Next approved implementation task | — | — |
 | 47 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**43 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**44 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
