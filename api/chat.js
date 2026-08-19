@@ -182,7 +182,7 @@ function resolveRoute(requestedModel, requestedRole, plan) {
       && !['pro', 'owner'].includes(plan)) {
       return { provider: 'anthropic', tier: resolveModelTier('star', plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
     }
-    return { provider: 'forge', model: candidate, role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
+    return { provider: 'forge', model: candidate, fallbackTier: resolveModelTier('star', plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
   }
   return { provider: 'anthropic', tier: resolveModelTier(candidate, plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
 }
@@ -280,11 +280,10 @@ async function createForgeResponse({ model, maxTokens, system, messages, signal 
   return new Response(forgeEventStream(text, model), { status: 200, headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } });
 }
 
-async function createUpstreamStream({ route, maxTokens, system, messages, signal }) {
-  if (route.provider === 'forge') return createForgeResponse({ model: route.model, maxTokens, system, messages, signal });
+async function createAnthropicStream({ tier, maxTokens, system, messages, signal }) {
   let lastResponse = null;
 
-  for (const model of getModelCandidates(route.tier)) {
+  for (const model of getModelCandidates(tier)) {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       signal,
@@ -307,6 +306,14 @@ async function createUpstreamStream({ route, maxTokens, system, messages, signal
   }
 
   return lastResponse;
+}
+
+async function createUpstreamStream({ route, maxTokens, system, messages, signal }) {
+  if (route.provider !== 'forge') return createAnthropicStream({ tier: route.tier, maxTokens, system, messages, signal });
+
+  const forgeResponse = await createForgeResponse({ model: route.model, maxTokens, system, messages, signal });
+  if (forgeResponse.ok || ![400, 404, 408, 409, 425, 429, 500, 502, 503, 504].includes(forgeResponse.status) || !ANTHROPIC_KEY) return forgeResponse;
+  return createAnthropicStream({ tier: route.fallbackTier || 'star', maxTokens, system, messages, signal });
 }
 
 export default async function handler(req, res) {
@@ -392,4 +399,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, ROUTING_ROLES, forgeEventStream, resolveRoute };
+export { FORGE_MODELS, ROUTING_ROLES, createUpstreamStream, forgeEventStream, resolveRoute };

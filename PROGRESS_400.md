@@ -4,7 +4,7 @@
 
 | Task | Status | Scope | Evidence | Checkpoint |
 |---:|:---:|---|---|---|
-| 1 | ✅ Complete | Multi-AI provider contract, role routing, plan gating, and Anthropic-compatible SSE envelope | `tests/multi-model-routing.test.mjs`; 20 Stellar AI tests pass | `pending-task-1-checkpoint` |
+| 1 | ✅ Complete | Multi-AI provider contract, role routing, plan gating, and Anthropic-compatible SSE envelope | `tests/multi-model-routing.test.mjs`; 20 Stellar AI tests pass | `f68195f` |
 | 2 | ☐ Pending | Next approved implementation task | — | — |
 | 3 | ☐ Pending | Next approved implementation task | — | — |
 | 4 | ☐ Pending | Next approved implementation task | — | — |
