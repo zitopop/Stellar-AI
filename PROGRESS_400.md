@@ -26,7 +26,7 @@
 | 20 | ✅ Complete | Malformed Forge JSON normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 47 tests pass | `febcb15` |
 | 21 | ✅ Complete | Anthropic candidate retry after non-abort network error | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 48 tests pass | `cf173d5` |
 | 22 | ✅ Complete | Direct Anthropic AbortError propagation without trying another candidate | `tests/multi-model-routing.test.mjs`; full suite 49 tests pass | `559164f` |
-| 23 | ☐ Pending | Next approved implementation task | — | — |
+| 23 | ✅ Complete | Terminal Anthropic failure returns retryable 503 after all candidates fail | `tests/multi-model-routing.test.mjs`; full suite 50 tests pass | `dfc85c3` |
 | 24 | ☐ Pending | Next approved implementation task | — | — |
 | 25 | ☐ Pending | Next approved implementation task | — | — |
 | 26 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**22 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**23 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 

@@ -24,7 +24,8 @@ for (let task = 1; task <= 400; task += 1) {
   else if (task === 20) rows.push('| 20 | ✅ Complete | Malformed Forge JSON normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 47 tests pass | `febcb15` |');
   else if (task === 21) rows.push('| 21 | ✅ Complete | Anthropic candidate retry after non-abort network error | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 48 tests pass | `cf173d5` |');
   else if (task === 22) rows.push('| 22 | ✅ Complete | Direct Anthropic AbortError propagation without trying another candidate | `tests/multi-model-routing.test.mjs`; full suite 49 tests pass | `559164f` |');
+  else if (task === 23) rows.push('| 23 | ✅ Complete | Terminal Anthropic failure returns retryable 503 after all candidates fail | `tests/multi-model-routing.test.mjs`; full suite 50 tests pass | `dfc85c3` |');
   else rows.push(`| ${task} | ☐ Pending | Next approved implementation task | — | — |`);
 }
-rows.push('', '## Current count', '', '**22 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.', '', '## Protected boundary', '', 'Auth, payments, secrets, package files, Vercel configuration, database code, and unrelated API/server behavior remain protected unless a later task names an explicit approved change.');
+rows.push('', '## Current count', '', '**23 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.', '', '## Protected boundary', '', 'Auth, payments, secrets, package files, Vercel configuration, database code, and unrelated API/server behavior remain protected unless a later task names an explicit approved change.');
 writeFileSync('PROGRESS_400.md', `${rows.join('\n')}\n`);
