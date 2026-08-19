@@ -471,6 +471,38 @@ test('Task 26 forwards the caller AbortSignal to Forge fetch', async () => {
   }
 });
 
+test('Task 27 falls back once when Forge returns a success response without a completion', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    if (String(url).includes('/v1/chat/completions')) {
+      return new Response(JSON.stringify({ choices: [] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"empty completion fallback"}}\n\ndata: [DONE]\n\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'forge', model: 'gpt-5-mini', fallbackTier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), 'data: {"type":"content_block_delta","delta":{"text":"empty completion fallback"}}\n\ndata: [DONE]\n\n');
+    assert.deepEqual(calls, ['https://forge.test/v1/chat/completions', 'https://api.anthropic.com/v1/messages']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
