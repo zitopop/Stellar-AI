@@ -7,22 +7,22 @@
 | 1 | ✅ Complete | Multi-AI provider contract, role routing, plan gating, and Anthropic-compatible SSE envelope | `tests/multi-model-routing.test.mjs`; 20 Stellar AI tests pass | `f68195f` |
 | 2 | ✅ Complete | Retryable built-in-provider failure falls back once to the existing Anthropic tier | `tests/multi-model-routing.test.mjs`; 21 Stellar AI tests pass | `b9085b5` |
 | 3 | ✅ Complete | Roblox, FiveM, mixed, and general platform-aware quality gates | `tests/multi-model-routing.test.mjs`; 24 Stellar AI tests pass | `7023cac` |
-| 4 | ☐ Pending | Next approved implementation task | — | — |
-| 5 | ☐ Pending | Next approved implementation task | — | — |
-| 6 | ☐ Pending | Next approved implementation task | — | — |
-| 7 | ☐ Pending | Next approved implementation task | — | — |
-| 8 | ☐ Pending | Next approved implementation task | — | — |
-| 9 | ☐ Pending | Next approved implementation task | — | — |
-| 10 | ☐ Pending | Next approved implementation task | — | — |
-| 11 | ☐ Pending | Next approved implementation task | — | — |
-| 12 | ☐ Pending | Next approved implementation task | — | — |
-| 13 | ☐ Pending | Next approved implementation task | — | — |
-| 14 | ☐ Pending | Next approved implementation task | — | — |
-| 15 | ☐ Pending | Next approved implementation task | — | — |
-| 16 | ☐ Pending | Next approved implementation task | — | — |
-| 17 | ☐ Pending | Next approved implementation task | — | — |
-| 18 | ☐ Pending | Next approved implementation task | — | — |
-| 19 | ☐ Pending | Next approved implementation task | — | — |
+| 4 | ✅ Complete | Roblox Build Pack, FiveM resource, audit, and general workflow-mode contracts | `tests/multi-model-routing.test.mjs`; full suite 27 tests pass | `063b459` |
+| 5 | ✅ Complete | QBCore, ESX, ox_lib, standalone, and conflicting-framework safety context | `tests/multi-model-routing.test.mjs`; full suite 30 tests pass | `c714b87` |
+| 6 | ✅ Complete | Mobile plans-modal dynamic scrolling, overscroll containment, and safe-area padding | `app.html`; 30 tests, phone/tablet screenshots, static smoke checks | `e6c8fe6` |
+| 7 | ✅ Complete | Provider-specific GPT, Claude, Gemini, and unknown-model token/reasoning contract | `tests/multi-model-routing.test.mjs`; full suite 34 tests pass | `2060de9` |
+| 8 | ✅ Complete | Planner, implementer, researcher, security, and tester output contracts | `tests/multi-model-routing.test.mjs`; full suite 36 tests pass | `f3ffa6f` |
+| 9 | ✅ Complete | Truthful specialist-role descriptions aligned to deployed research, security, and tester contracts | `app.html`; full suite 36 tests, phone/tablet captures, static smoke checks | `4ecdf6c` |
+| 10 | ✅ Complete | Strict security JSON Schema response contract for Forge-routed reviews | `tests/multi-model-routing.test.mjs`; full suite 37 tests pass | `3a8bb0d` |
+| 11 | ✅ Complete | Strict planner and tester JSON Schema response contracts | `tests/multi-model-routing.test.mjs`; full suite 38 tests pass | `b1ff6d6` |
+| 12 | ✅ Complete | Strict researcher JSON Schema with claim-level provenance and uncertainty fields | `tests/multi-model-routing.test.mjs`; full suite 39 tests pass | `e86cb32` |
+| 13 | ✅ Complete | Strict implementer JSON Schema for complete destination-labelled file bundles | `tests/multi-model-routing.test.mjs`; full suite 40 tests pass | `7b47803` |
+| 14 | ✅ Complete | Wire-level forwarding test for all role schemas and stream compatibility | `tests/multi-model-routing.test.mjs`; full suite 41 tests pass | `7212e8d` |
+| 15 | ✅ Complete | Fallback test preserving FiveM QBCore role, platform, workflow, and framework guidance | `tests/multi-model-routing.test.mjs`; full suite 42 tests pass | `08c3ce6` |
+| 16 | ✅ Complete | Mixed Roblox/FiveM isolation and conservative framework ambiguity regression coverage | `tests/multi-model-routing.test.mjs`; full suite 43 tests pass | `e6fd77d` |
+| 17 | ✅ Complete | Structured-output fallback transparency notice and regression coverage | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 44 tests pass | `68e3708` |
+| 18 | ✅ Complete | Retryable Forge network-error normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 45 tests pass | `a07007e` |
+| 19 | ✅ Complete | AbortError propagation without fallback request | `tests/multi-model-routing.test.mjs`; full suite 46 tests pass | `518ddc7` |
 | 20 | ☐ Pending | Next approved implementation task | — | — |
 | 21 | ☐ Pending | Next approved implementation task | — | — |
 | 22 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**3 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**19 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
