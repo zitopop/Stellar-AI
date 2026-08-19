@@ -419,6 +419,32 @@ test('Task 24 falls back to the next Anthropic candidate on a 404', async () => 
   }
 });
 
+test('Task 25 forwards the caller AbortSignal to Anthropic fetch', async () => {
+  const originalFetch = globalThis.fetch;
+  const controller = new AbortController();
+  let receivedSignal;
+  globalThis.fetch = async (url, options) => {
+    receivedSignal = options.signal;
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"signal forwarded"}}\\n\\ndata: [DONE]\\n\\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'anthropic', tier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: controller.signal,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(receivedSignal, controller.signal);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
