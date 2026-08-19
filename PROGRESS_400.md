@@ -66,7 +66,7 @@
 | 60 | ✅ Complete | Image attachments must align with the latest normalized user turn and cannot be associated with stale history | `api/chat.js`; focused suite 63 tests and full suite 79 tests pass; Vercel deployment `09e94af` READY | `09e94af` |
 | 61 | ✅ Complete | Image attachments must have decoded PNG, JPEG, GIF, or WebP signatures that match their declared media type before provider payload construction | `api/chat.js`; focused suite 64 tests and full suite 80 tests pass; Vercel deployment `e88c652` READY | `e88c652` |
 | 62 | ✅ Complete | Image data is serialized as a provider-format image part only on the final user payload entry, leaving earlier turns and source history unchanged | `api/chat.js`; focused suite 65 tests and full suite 81 tests pass; Vercel deployment `e77eca6` READY | `e77eca6` |
-| 63 | ☐ Pending | Next approved implementation task | — | — |
+| 63 | ✅ Complete | Image attachments require essential PNG, JPEG, GIF, or WebP container structure and reject header-only or truncated payloads before provider routing | `api/chat.js`; focused suite 66 tests and full suite 82 tests pass; Vercel deployment `5b17e5a` READY | `5b17e5a` |
 | 64 | ☐ Pending | Next approved implementation task | — | — |
 | 65 | ☐ Pending | Next approved implementation task | — | — |
 | 66 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**62 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**63 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
