@@ -54,7 +54,7 @@
 | 48 | ✅ Complete | Regression coverage confirms a non-text Forge single content object triggers fallback instead of user-visible object text | `tests/multi-model-routing.test.mjs`; focused suite 56 tests and full suite 71 tests pass; Vercel deployment `aa4d6e0` READY | `aa4d6e0` |
 | 49 | ✅ Complete | Workspace exposes a validated PNG, JPEG, GIF, or WebP image picker with preview, removal, and mobile touch-safe control | `app.html`; upload contract test and full suite 72 tests pass; Vercel deployment `9e855e3` READY | `9e855e3` |
 | 50 | ✅ Complete | Combined normalized chat text and attached image data are bounded before routing or provider payload construction | `api/chat.js`; focused suite 57 tests and full suite 73 tests pass; Vercel deployment `91f45e6` READY | `91f45e6` |
-| 51 | ☐ Pending | Next approved implementation task | — | — |
+| 51 | ✅ Complete | Supported clipboard images enter the existing validated workspace preview and removal flow without intercepting ordinary text paste | `app.html`; attachment contract and full suite 73 tests pass; Vercel deployment `6fa5f55` READY; live in-memory clipboard check verified | `6fa5f55` |
 | 52 | ☐ Pending | Next approved implementation task | — | — |
 | 53 | ☐ Pending | Next approved implementation task | — | — |
 | 54 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**50 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**51 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
