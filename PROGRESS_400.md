@@ -41,7 +41,7 @@
 | 35 | ✅ Complete | Recognised specialist role input normalizes before applying its model, contract, and schema | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 62 tests pass; green Vercel deployment | `fe03380` |
 | 36 | ✅ Complete | Unknown specialist role input safely defaults to the complete implementer route and schema | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 63 tests pass; green Vercel deployment | `315f245` |
 | 37 | ✅ Complete | No-role routes preserve the requested model while retaining the implementer contract | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 64 tests pass; green Vercel deployment | `da66a6a` |
-| 38 | ☐ Pending | Next approved implementation task | — | — |
+| 38 | ✅ Complete | Inherited object-property names cannot select specialist routing roles | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 65 tests pass; green Vercel deployment | `8000e4f` |
 | 39 | ☐ Pending | Next approved implementation task | — | — |
 | 40 | ☐ Pending | Next approved implementation task | — | — |
 | 41 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**37 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**38 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
