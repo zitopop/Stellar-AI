@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectPlatform, resolveRoute, createUpstreamStream, forgeEventStream, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES } = await import('../api/chat.js');
+const { buildSystemPrompt, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -62,6 +62,29 @@ test('Task 3 detects FiveM and injects the FiveM quality gate', () => {
 test('Task 3 keeps mixed and unknown requests explicit', () => {
   assert.equal(detectPlatform([{ role: 'user', content: 'Roblox and FiveM bridge' }]), 'mixed');
   assert.equal(detectPlatform([{ role: 'user', content: 'Make a game system' }]), 'general');
+});
+
+test('Task 4 detects Roblox Build Pack mode and injects its delivery contract', () => {
+  const messages = [{ role: 'user', content: 'Build a complete Roblox game system with a DataStore and RemoteEvent.' }];
+  assert.equal(detectWorkflowMode(messages), 'roblox_build_pack');
+  const prompt = buildSystemPrompt('', 'roblox', 'roblox_build_pack');
+  assert.match(prompt, /WORKFLOW MODE: ROBLOX BUILD PACK/);
+  assert.match(prompt, /exact Studio file tree/);
+  assert.equal(WORKFLOW_GUIDANCE.roblox_build_pack.includes('Never claim the place was run'), true);
+});
+
+test('Task 4 detects FiveM resource mode and injects install/test requirements', () => {
+  const messages = [{ role: 'user', content: 'Make a complete QBCore resource with fxmanifest.lua.' }];
+  assert.equal(detectWorkflowMode(messages), 'fivem_resource');
+  const prompt = buildSystemPrompt('', 'fivem', 'fivem_resource');
+  assert.match(prompt, /WORKFLOW MODE: FIVEM RESOURCE/);
+  assert.match(prompt, /install\/restart steps/);
+});
+
+test('Task 4 prioritizes audit mode when a platform request asks for review', () => {
+  const messages = [{ role: 'user', content: 'Audit this Roblox script for vulnerabilities and bugs.' }];
+  assert.equal(detectWorkflowMode(messages), 'audit');
+  assert.match(buildSystemPrompt('', 'roblox', 'audit'), /WORKFLOW MODE: CODE AUDIT/);
 });
 
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {

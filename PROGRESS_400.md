@@ -5,8 +5,8 @@
 | Task | Status | Scope | Evidence | Checkpoint |
 |---:|:---:|---|---|---|
 | 1 | ✅ Complete | Multi-AI provider contract, role routing, plan gating, and Anthropic-compatible SSE envelope | `tests/multi-model-routing.test.mjs`; 20 Stellar AI tests pass | `f68195f` |
-| 2 | ☐ Pending | Next approved implementation task | — | — |
-| 3 | ☐ Pending | Next approved implementation task | — | — |
+| 2 | ✅ Complete | Retryable built-in-provider failure falls back once to the existing Anthropic tier | `tests/multi-model-routing.test.mjs`; 21 Stellar AI tests pass | `b9085b5` |
+| 3 | ✅ Complete | Roblox, FiveM, mixed, and general platform-aware quality gates | `tests/multi-model-routing.test.mjs`; 24 Stellar AI tests pass | `7023cac` |
 | 4 | ☐ Pending | Next approved implementation task | — | — |
 | 5 | ☐ Pending | Next approved implementation task | — | — |
 | 6 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**1 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**3 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
