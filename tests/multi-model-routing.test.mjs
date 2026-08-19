@@ -445,6 +445,32 @@ test('Task 25 forwards the caller AbortSignal to Anthropic fetch', async () => {
   }
 });
 
+test('Task 26 forwards the caller AbortSignal to Forge fetch', async () => {
+  const originalFetch = globalThis.fetch;
+  const controller = new AbortController();
+  let receivedSignal;
+  globalThis.fetch = async (url, options) => {
+    receivedSignal = options.signal;
+    return new Response(JSON.stringify({ choices: [{ message: { content: 'forge signal forwarded' } }] }), {
+      status: 200,
+      headers: { 'content-type': 'application/json' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'forge', model: 'gpt-5-mini', fallbackTier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: controller.signal,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(receivedSignal, controller.signal);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
