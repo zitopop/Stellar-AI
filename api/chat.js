@@ -309,6 +309,24 @@ function toForgeMessages(messages) {
   });
 }
 
+function getForgeGenerationOptions(model, maxTokens) {
+  const safeMaxTokens = Math.max(64, Math.floor(Number(maxTokens) || 64));
+  if (model.startsWith('gpt-')) {
+    return { max_completion_tokens: safeMaxTokens, reasoning: { effort: 'low' } };
+  }
+  if (model.startsWith('claude-')) {
+    // Claude 4.7 uses adaptive thinking; explicit thinking is not sent there.
+    if (model === 'claude-opus-4-7') return { max_tokens: safeMaxTokens };
+    const budgetTokens = Math.max(16, Math.min(512, Math.floor(safeMaxTokens / 2)));
+    return { max_tokens: safeMaxTokens, thinking: { type: 'enabled', budget_tokens: budgetTokens } };
+  }
+  if (model.startsWith('gemini-')) {
+    // Gemini requires max_tokens, not max_completion_tokens, on the current proxy.
+    return { max_tokens: safeMaxTokens, reasoning_effort: 'low' };
+  }
+  return { max_tokens: safeMaxTokens };
+}
+
 function forgeEventStream(text, model) {
   const events = [
     { type: 'message_start', message: { id: `forge-${Date.now()}`, type: 'message', role: 'assistant', model } },
@@ -323,9 +341,7 @@ function forgeEventStream(text, model) {
 
 async function createForgeResponse({ model, maxTokens, system, messages, signal }) {
   const modelMessages = [{ role: 'system', content: system }, ...toForgeMessages(messages)];
-  const body = { model, messages: modelMessages };
-  if (model.startsWith('gpt-')) body.max_completion_tokens = maxTokens;
-  else body.max_tokens = maxTokens;
+  const body = { model, messages: modelMessages, ...getForgeGenerationOptions(model, maxTokens) };
   const response = await fetch(`${FORGE_URL.replace(/\/$/, '')}/v1/chat/completions`, {
     method: 'POST',
     signal,
@@ -462,4 +478,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, resolveRoute };

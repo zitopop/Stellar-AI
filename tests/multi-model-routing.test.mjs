@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, FORGE_MODELS, PLATFORM_GUIDANCE, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -104,6 +104,32 @@ test('Task 5 refuses to choose when conflicting FiveM frameworks are named', () 
   const messages = [{ role: 'user', content: 'Use QBCore and ESX together in this FiveM resource.' }];
   assert.equal(detectFramework(messages), 'unknown');
   assert.match(buildSystemPrompt('', 'fivem', 'fivem_resource', 'unknown'), /FRAMEWORK NOT CONFIRMED/);
+});
+
+test('Task 7 uses GPT completion tokens and reasoning effort', () => {
+  assert.deepEqual(getForgeGenerationOptions('gpt-5', 800), {
+    max_completion_tokens: 800,
+    reasoning: { effort: 'low' },
+  });
+});
+
+test('Task 7 uses Claude thinking with a valid budget below max tokens', () => {
+  const options = getForgeGenerationOptions('claude-sonnet-4-6', 800);
+  assert.equal(options.max_tokens, 800);
+  assert.deepEqual(options.thinking, { type: 'enabled', budget_tokens: 400 });
+  assert.equal(options.max_tokens > options.thinking.budget_tokens, true);
+});
+
+test('Task 7 uses Gemini max_tokens and low reasoning effort', () => {
+  assert.deepEqual(getForgeGenerationOptions('gemini-3-flash-preview', 800), {
+    max_tokens: 800,
+    reasoning_effort: 'low',
+  });
+});
+
+test('Task 7 omits explicit thinking for adaptive Claude and preserves unknown fallback', () => {
+  assert.deepEqual(getForgeGenerationOptions('claude-opus-4-7', 800), { max_tokens: 800 });
+  assert.deepEqual(getForgeGenerationOptions('future-model', 800), { max_tokens: 800 });
 });
 
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
