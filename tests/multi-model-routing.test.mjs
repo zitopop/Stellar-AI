@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { EventEmitter } from 'node:events';
 
 process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { addImageToLastUserMessage, buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { addImageToLastUserMessage, buildSystemPrompt, default: chatHandler, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -163,6 +164,97 @@ test('Task 65 bounds untrusted model and role route inputs before resolution', (
   assert.equal(normaliseRoutingInput('x'.repeat(129)), 'x'.repeat(128));
   assert.equal(resolveRoute('x'.repeat(129), 'researcher', 'pro').role, 'researcher');
   assert.equal(resolveRoute('gpt-5-mini', 'x'.repeat(129), 'pro').role, 'implementer');
+});
+
+test('Task 66 clears the request timeout and disconnect listener after a streamed chat response', async () => {
+  const originalFetch = globalThis.fetch;
+  const originalSetTimeout = globalThis.setTimeout;
+  const originalClearTimeout = globalThis.clearTimeout;
+  const timeoutHandle = Symbol('chat-timeout');
+  const clearedTimeouts = [];
+  const response = new EventEmitter();
+  response.headersSent = false;
+  response.writableEnded = false;
+  response.setHeader = () => {};
+  response.status = (statusCode) => {
+    response.statusCode = statusCode;
+    return response;
+  };
+  response.json = (body) => {
+    response.body = body;
+    response.headersSent = true;
+    response.writableEnded = true;
+    return response;
+  };
+  response.flushHeaders = () => {
+    response.headersSent = true;
+  };
+  response.write = (chunk) => {
+    response.chunks = `${response.chunks || ''}${chunk}`;
+  };
+  response.end = () => {
+    response.writableEnded = true;
+  };
+
+  try {
+    globalThis.fetch = async () => new Response('data: [DONE]\n\n', { status: 200 });
+    globalThis.setTimeout = () => timeoutHandle;
+    globalThis.clearTimeout = (handle) => clearedTimeouts.push(handle);
+    await chatHandler({
+      method: 'POST',
+      headers: { 'x-forwarded-for': '127.0.0.1' },
+      body: { model: 'gpt-5-mini', messages: [{ role: 'user', content: 'Build a FiveM resource.' }] },
+    }, response);
+    assert.equal(response.statusCode, 200);
+    assert.match(response.chunks, /data: \[DONE\]/);
+    assert.deepEqual(clearedTimeouts, [timeoutHandle]);
+    assert.equal(response.listenerCount('close'), 0);
+  } finally {
+    globalThis.fetch = originalFetch;
+    globalThis.setTimeout = originalSetTimeout;
+    globalThis.clearTimeout = originalClearTimeout;
+  }
+});
+
+test('Task 66 clears the request timeout and disconnect listener after an upstream error', async () => {
+  const originalFetch = globalThis.fetch;
+  const originalSetTimeout = globalThis.setTimeout;
+  const originalClearTimeout = globalThis.clearTimeout;
+  const timeoutHandle = Symbol('chat-timeout');
+  const clearedTimeouts = [];
+  const response = new EventEmitter();
+  response.headersSent = false;
+  response.writableEnded = false;
+  response.setHeader = () => {};
+  response.status = (statusCode) => {
+    response.statusCode = statusCode;
+    return response;
+  };
+  response.json = (body) => {
+    response.body = body;
+    response.headersSent = true;
+    response.writableEnded = true;
+    return response;
+  };
+
+  try {
+    globalThis.fetch = async () => new Response(JSON.stringify({ error: { message: 'Provider unavailable' } }), { status: 503 });
+    globalThis.setTimeout = () => timeoutHandle;
+    globalThis.clearTimeout = (handle) => clearedTimeouts.push(handle);
+    await chatHandler({
+      method: 'POST',
+      headers: { 'x-forwarded-for': '127.0.0.1' },
+      body: { model: 'gpt-5-mini', messages: [{ role: 'user', content: 'Build a FiveM resource.' }] },
+    }, response);
+    assert.equal(response.statusCode, 503);
+    assert.match(response.body.error, /Provider unavailable/);
+    assert.deepEqual(clearedTimeouts, [timeoutHandle]);
+    assert.equal(response.listenerCount('close'), 0);
+  } finally {
+    globalThis.fetch = originalFetch;
+    globalThis.setTimeout = originalSetTimeout;
+    globalThis.clearTimeout = originalClearTimeout;
+  }
 });
 
 test('Task 62 inserts an image only into the final user entry before provider serialization', () => {
