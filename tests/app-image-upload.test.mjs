@@ -30,3 +30,10 @@ test('Task 67 keeps IME composition intact while documenting composer keyboard b
   assert.match(appHtml, /id="txt"[^>]*aria-label="Message composer\. Press Enter to send and Shift\+Enter for a new line\."/);
   assert.match(appHtml, /onkeydown="if \(event\.key === 'Enter' && !event\.shiftKey && !event\.isComposing\) \{ event\.preventDefault\(\); if \(!currentAbort\) sendMessage\(\); \}"/);
 });
+
+test('Task 68 exposes a visible desktop keyboard hint without squashing mobile controls', () => {
+  assert.match(appHtml, /id="keyboard-hint" class="keyboard-hint">Enter to send · Shift\+Enter for new line<\/span>/);
+  assert.match(appHtml, /\.keyboard-hint \{ color: rgba\(226,217,255,0\.58\);/);
+  assert.match(appHtml, /body\.light \.keyboard-hint \{ color: #6b7280; \}/);
+  assert.match(appHtml, /@media \(max-width: 640px\) \{\s+\.composer-foot \{ gap: 6px; justify-content: flex-start; \}\s+\.keyboard-hint \{ display: none; \}/);
+});

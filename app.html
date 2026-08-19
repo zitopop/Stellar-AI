@@ -756,6 +756,8 @@
     .input-area #txt { min-width: 0; flex: 1 1 0%; }
     .input-area #send-btn, .input-area #mic-btn { flex: none; }
     .foot-right { display: flex; align-items: center; gap: 8px; flex: none; }
+    .keyboard-hint { color: rgba(226,217,255,0.58); font-size: 11px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; }
+    body.light .keyboard-hint { color: #6b7280; }
     .image-upload-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     .image-attach-btn { min-height: 34px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
@@ -883,6 +885,7 @@
     }
     @media (max-width: 640px) {
       .composer-foot { gap: 6px; justify-content: flex-start; }
+      .keyboard-hint { display: none; }
       .foot-right { gap: 6px; margin-left: 0; }
       .ws-toggle, .model-pill { min-width: 0; }
       #model-menu { width: min(280px, calc(100vw - 24px)); left: 0; right: auto; }
@@ -3002,6 +3005,7 @@
         </div>
         <div class="composer-foot">
           <button onclick="openUsage()" id="credits-btn" class="ws-toggle credits-btn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> <span id="credits-val">—</span></button>
+          <span id="keyboard-hint" class="keyboard-hint">Enter to send · Shift+Enter for new line</span>
           <div class="foot-right">
           <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Image</span></button>
           <button onclick="toggleWorkspace()" id="ws-btn" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
