@@ -50,7 +50,7 @@
 | 44 | ✅ Complete | Chat-history normalization scans only the latest 400 raw records before retaining the newest 40 valid messages | `api/chat.js`; focused suite 53 tests and full suite 68 tests pass; Vercel deployment `0d4fe89` READY | `0d4fe89` |
 | 45 | ✅ Complete | Image attachment validation rejects structurally invalid base64 padding or length before provider payload construction | `api/chat.js`; focused suite 53 tests and full suite 68 tests pass; Vercel deployment `b248fa5` READY | `b248fa5` |
 | 46 | ✅ Complete | Forge multipart completions emit only string text parts; unusable content triggers the existing fallback instead of leaking object text | `api/chat.js`; focused suite 54 tests and full suite 69 tests pass; Vercel deployment `7d482fe` READY | `7d482fe` |
-| 47 | ☐ Pending | Next approved implementation task | — | — |
+| 47 | ✅ Complete | Regression coverage confirms ordered Forge multipart text streams normally and does not invoke fallback | `tests/multi-model-routing.test.mjs`; focused suite 55 tests and full suite 70 tests pass; Vercel deployment `e3488f2` READY | `e3488f2` |
 | 48 | ☐ Pending | Next approved implementation task | — | — |
 | 49 | ☐ Pending | Next approved implementation task | — | — |
 | 50 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**46 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**47 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
