@@ -38,6 +38,16 @@ test('Task 1 routes premium security role to GPT on Pro', () => {
   assert.equal(route.role, 'security');
 });
 
+test('Task 35 normalizes recognised specialist role input before applying its contract', () => {
+  const route = resolveRoute('smart', ' SECURITY ', 'pro');
+  assert.equal(route.provider, 'forge');
+  assert.equal(route.model, 'gpt-5');
+  assert.equal(route.role, 'security');
+  assert.equal(route.instruction, ROUTING_ROLES.security.instruction);
+  assert.equal(ROLE_RESPONSE_SCHEMAS[route.role], ROLE_RESPONSE_SCHEMAS.security);
+  assert.match(buildSystemPrompt('', 'general', 'general', 'unknown', route.role), /ROLE OUTPUT CONTRACT:.*severity/);
+});
+
 test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {
   const originalFetch = globalThis.fetch;
   const bodies = [];

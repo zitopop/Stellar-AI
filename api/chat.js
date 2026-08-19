@@ -341,16 +341,18 @@ function getModelCandidates(tier) {
 
 function resolveRoute(requestedModel, requestedRole, plan) {
   const requested = String(requestedModel || '').trim().toLowerCase();
-  const role = ROUTING_ROLES[String(requestedRole || '').trim().toLowerCase()];
+  const roleKey = String(requestedRole || '').trim().toLowerCase();
+  const role = ROUTING_ROLES[roleKey];
+  const resolvedRole = role ? roleKey : 'implementer';
   const candidate = role?.model || requested;
   if (FORGE_URL && FORGE_KEY && FORGE_MODELS.has(candidate)) {
     if ((candidate === 'gpt-5' || candidate === 'gpt-5.5' || candidate === 'gemini-3.1-pro-preview' || candidate === 'claude-opus-4-7')
       && !['pro', 'owner'].includes(plan)) {
-      return { provider: 'anthropic', tier: resolveModelTier('star', plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
+      return { provider: 'anthropic', tier: resolveModelTier('star', plan), role: resolvedRole, instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
     }
-    return { provider: 'forge', model: candidate, fallbackTier: resolveModelTier('star', plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
+    return { provider: 'forge', model: candidate, fallbackTier: resolveModelTier('star', plan), role: resolvedRole, instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
   }
-  return { provider: 'anthropic', tier: resolveModelTier(candidate, plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
+  return { provider: 'anthropic', tier: resolveModelTier(candidate, plan), role: resolvedRole, instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
 }
 
 function normaliseMessages(messages) {
