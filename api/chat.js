@@ -197,6 +197,7 @@ const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503,
 const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 const MAX_REQUEST_PAYLOAD_CHARS = 5_000_000;
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
+const MAX_ROUTING_INPUT_LENGTH = 128;
 const MAX_NORMALISED_MESSAGE_SOURCE_COUNT = 400;
 const MAX_NORMALISED_MESSAGE_COUNT = 40;
 const MAX_NORMALISED_MESSAGE_CONTENT_LENGTH = 100_000;
@@ -341,9 +342,15 @@ function normaliseClientIp(forwardedFor) {
   return firstForwardedValue.length <= 128 && isIP(firstForwardedValue) ? firstForwardedValue : 'unknown';
 }
 
+function normaliseRoutingInput(value) {
+  return typeof value === 'string'
+    ? value.slice(0, MAX_ROUTING_INPUT_LENGTH).trim().toLowerCase()
+    : '';
+}
+
 function resolveModelTier(requestedModel, plan) {
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-  const requested = String(requestedModel || '').trim().toLowerCase();
+  const requested = normaliseRoutingInput(requestedModel);
   const tier = MODEL_MAP[requested] || 'star';
   return limits.models.includes(tier) ? tier : limits.models[0];
 }
@@ -354,8 +361,8 @@ function getModelCandidates(tier) {
 }
 
 function resolveRoute(requestedModel, requestedRole, plan) {
-  const requested = String(requestedModel || '').trim().toLowerCase();
-  const roleKey = String(requestedRole || '').trim().toLowerCase();
+  const requested = normaliseRoutingInput(requestedModel);
+  const roleKey = normaliseRoutingInput(requestedRole);
   const matchedRole = Object.hasOwn(ROUTING_ROLES, roleKey) ? ROUTING_ROLES[roleKey] : undefined;
   const role = matchedRole || ROUTING_ROLES.implementer;
   const resolvedRole = matchedRole ? roleKey : 'implementer';
@@ -781,4 +788,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute, toForgeMessages };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveRoute, toForgeMessages };
