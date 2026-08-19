@@ -510,12 +510,21 @@ async function createForgeResponse({ model, maxTokens, system, messages, signal,
   const modelMessages = [{ role: 'system', content: system }, ...toForgeMessages(messages)];
   const body = { model, messages: modelMessages, ...getForgeGenerationOptions(model, maxTokens) };
   if (responseFormat) body.response_format = responseFormat;
-  const response = await fetch(`${FORGE_URL.replace(/\/$/, '')}/v1/chat/completions`, {
-    method: 'POST',
-    signal,
-    headers: { Authorization: `Bearer ${FORGE_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  let response;
+  try {
+    response = await fetch(`${FORGE_URL.replace(/\/$/, '')}/v1/chat/completions`, {
+      method: 'POST',
+      signal,
+      headers: { Authorization: `Bearer ${FORGE_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch (error) {
+    if (error?.name === 'AbortError') throw error;
+    return new Response(JSON.stringify({ error: { message: 'The built-in AI provider is temporarily unavailable.' } }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
   if (!response.ok) return response;
   const payload = await response.json();
   const content = payload?.choices?.[0]?.message?.content;
