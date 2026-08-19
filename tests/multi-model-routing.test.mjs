@@ -58,6 +58,15 @@ test('Task 36 resolves unknown specialist role input to the default implementer 
   assert.match(buildSystemPrompt('', 'general', 'general', 'unknown', route.role), /ROLE OUTPUT CONTRACT:.*complete destination/);
 });
 
+test('Task 37 preserves the requested model when no specialist role is selected', () => {
+  const route = resolveRoute('gpt-5-mini', '', 'lite');
+  assert.equal(route.provider, 'forge');
+  assert.equal(route.model, 'gpt-5-mini');
+  assert.equal(route.role, 'implementer');
+  assert.equal(route.instruction, ROUTING_ROLES.implementer.instruction);
+  assert.equal(ROLE_RESPONSE_SCHEMAS[route.role], ROLE_RESPONSE_SCHEMAS.implementer);
+});
+
 test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {
   const originalFetch = globalThis.fetch;
   const bodies = [];

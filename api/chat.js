@@ -342,9 +342,10 @@ function getModelCandidates(tier) {
 function resolveRoute(requestedModel, requestedRole, plan) {
   const requested = String(requestedModel || '').trim().toLowerCase();
   const roleKey = String(requestedRole || '').trim().toLowerCase();
-  const role = ROUTING_ROLES[roleKey] || ROUTING_ROLES.implementer;
-  const resolvedRole = ROUTING_ROLES[roleKey] ? roleKey : 'implementer';
-  const candidate = role.model || requested;
+  const matchedRole = ROUTING_ROLES[roleKey];
+  const role = matchedRole || ROUTING_ROLES.implementer;
+  const resolvedRole = matchedRole ? roleKey : 'implementer';
+  const candidate = matchedRole || roleKey ? role.model : requested;
   if (FORGE_URL && FORGE_KEY && FORGE_MODELS.has(candidate)) {
     if ((candidate === 'gpt-5' || candidate === 'gpt-5.5' || candidate === 'gemini-3.1-pro-preview' || candidate === 'claude-opus-4-7')
       && !['pro', 'owner'].includes(plan)) {
