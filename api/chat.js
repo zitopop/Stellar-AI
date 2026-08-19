@@ -390,21 +390,27 @@ function normaliseMessages(messages) {
 function hasMatchingImageSignature(mediaType, data) {
   const bytes = Buffer.from(data, 'base64');
   if (mediaType === 'image/png') {
-    return bytes.length >= 8
+    return bytes.length >= 45
       && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47
-      && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a;
+      && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a
+      && bytes.subarray(12, 16).toString('ascii') === 'IHDR'
+      && bytes.subarray(-8, -4).toString('ascii') === 'IEND';
   }
   if (mediaType === 'image/jpeg') {
-    return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    return bytes.length >= 4
+      && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff
+      && bytes[bytes.length - 2] === 0xff && bytes[bytes.length - 1] === 0xd9;
   }
   if (mediaType === 'image/gif') {
     const signature = bytes.subarray(0, 6).toString('ascii');
-    return signature === 'GIF87a' || signature === 'GIF89a';
+    return bytes.length >= 14 && (signature === 'GIF87a' || signature === 'GIF89a') && bytes[bytes.length - 1] === 0x3b;
   }
   if (mediaType === 'image/webp') {
-    return bytes.length >= 12
+    return bytes.length >= 20
       && bytes.subarray(0, 4).toString('ascii') === 'RIFF'
-      && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
+      && bytes.readUInt32LE(4) === bytes.length - 8
+      && bytes.subarray(8, 12).toString('ascii') === 'WEBP'
+      && ['VP8 ', 'VP8L', 'VP8X'].includes(bytes.subarray(12, 16).toString('ascii'));
   }
   return false;
 }
@@ -420,7 +426,7 @@ function normaliseImageAttachment(image) {
     return { error: 'That image is invalid or too large. Choose an image under about 3 MB and try again.' };
   }
   if (!hasMatchingImageSignature(mediaType, data)) {
-    return { error: 'That image data does not match its declared file type. Choose the original image and try again.' };
+    return { error: 'That image data is incomplete or does not match its declared file type. Choose the original image and try again.' };
   }
   return { image: { mediaType, data } };
 }

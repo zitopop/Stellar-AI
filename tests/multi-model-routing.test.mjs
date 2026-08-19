@@ -116,15 +116,30 @@ test('Task 60 requires an image to align with the latest normalized user turn', 
 });
 
 test('Task 61 validates decoded image signatures against declared media types', () => {
-  const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString('base64');
-  const jpeg = Buffer.from([0xff, 0xd8, 0xff]).toString('base64');
-  const gif = Buffer.from('GIF89a', 'ascii').toString('base64');
-  const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(4), Buffer.from('WEBP')]).toString('base64');
+  const png = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    Buffer.from([0x00, 0x00, 0x00, 0x0d]), Buffer.from('IHDR'), Buffer.alloc(13), Buffer.alloc(4),
+    Buffer.alloc(4), Buffer.from('IEND'), Buffer.alloc(4),
+  ]).toString('base64');
+  const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xd9]).toString('base64');
+  const gif = Buffer.concat([Buffer.from('GIF89a', 'ascii'), Buffer.alloc(7), Buffer.from([0x3b])]).toString('base64');
+  const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([0x0c, 0x00, 0x00, 0x00]), Buffer.from('WEBPVP8 '), Buffer.alloc(4)]).toString('base64');
   assert.equal(normaliseImageAttachment({ mediaType: 'image/png', data: png }).error, undefined);
   assert.equal(normaliseImageAttachment({ mediaType: 'image/jpeg', data: jpeg }).error, undefined);
   assert.equal(normaliseImageAttachment({ mediaType: 'image/gif', data: gif }).error, undefined);
   assert.equal(normaliseImageAttachment({ mediaType: 'image/webp', data: webp }).error, undefined);
   assert.match(normaliseImageAttachment({ mediaType: 'image/png', data: jpeg }).error, /does not match its declared file type/);
+});
+
+test('Task 63 rejects image payloads that stop after a valid-looking header', () => {
+  const truncatedPng = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString('base64');
+  const truncatedJpeg = Buffer.from([0xff, 0xd8, 0xff]).toString('base64');
+  const truncatedGif = Buffer.from('GIF89a', 'ascii').toString('base64');
+  const truncatedWebp = Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(4), Buffer.from('WEBP')]).toString('base64');
+  assert.match(normaliseImageAttachment({ mediaType: 'image/png', data: truncatedPng }).error, /incomplete/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: truncatedJpeg }).error, /incomplete/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/gif', data: truncatedGif }).error, /incomplete/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/webp', data: truncatedWebp }).error, /incomplete/);
 });
 
 test('Task 62 inserts an image only into the final user entry before provider serialization', () => {
@@ -162,8 +177,13 @@ test('Task 42 keeps valid messages when trailing blank records would otherwise e
 });
 
 test('Task 43 accepts a bounded supported image attachment and rejects invalid provider payload metadata', () => {
-  assert.deepEqual(normaliseImageAttachment({ mediaType: ' IMAGE/PNG ', data: ' iVBORw0KGgo= ' }), {
-    image: { mediaType: 'image/png', data: 'iVBORw0KGgo=' },
+  const png = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    Buffer.from([0x00, 0x00, 0x00, 0x0d]), Buffer.from('IHDR'), Buffer.alloc(13), Buffer.alloc(4),
+    Buffer.alloc(4), Buffer.from('IEND'), Buffer.alloc(4),
+  ]).toString('base64');
+  assert.deepEqual(normaliseImageAttachment({ mediaType: ' IMAGE/PNG ', data: ` ${png} ` }), {
+    image: { mediaType: 'image/png', data: png },
   });
   assert.match(normaliseImageAttachment({ mediaType: 'image/svg+xml', data: 'dGVzdA==' }).error, /PNG, JPEG, GIF, or WebP/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: 'not base64!' }).error, /invalid or too large/);
