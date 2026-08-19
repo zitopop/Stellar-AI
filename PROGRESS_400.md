@@ -70,7 +70,7 @@
 | 64 | ✅ Complete | Image attachments reject malformed primary PNG, JPEG, GIF, or WebP structures that otherwise pass simple signature and trailer checks | `api/chat.js`; focused suite 67 tests and full suite 83 tests pass; Vercel deployment `0b195e5` READY | `0b195e5` |
 | 65 | ✅ Complete | Client-provided model and role strings are limited to 128 normalized characters and non-string values safely default before chat route resolution | `api/chat.js`; focused suite 68 tests and full suite 84 tests pass; Vercel deployment `2b7335b` READY | `2b7335b` |
 | 66 | ✅ Complete | Handler-level regression coverage proves the existing chat timeout and disconnect listener are cleaned up after streamed success and upstream error paths | `tests/multi-model-routing.test.mjs`; focused suite 70 tests and full suite 86 tests pass; Vercel deployment `36c6219` READY | `36c6219` |
-| 67 | ☐ Pending | Next approved implementation task | — | — |
+| 67 | ✅ Complete | Workspace composer preserves IME composition, keeps Enter-to-send and Shift+Enter newline behavior, and exposes an accessible keyboard-use label | `app.html`; static UI contract and full suite 87 tests pass; exact Vercel deployment `1c7de33` READY; live DOM verified | `1c7de33` |
 | 68 | ☐ Pending | Next approved implementation task | — | — |
 | 69 | ☐ Pending | Next approved implementation task | — | — |
 | 70 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**66 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**67 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
