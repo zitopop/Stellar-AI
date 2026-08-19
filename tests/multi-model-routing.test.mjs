@@ -130,6 +130,36 @@ test('Task 46 ignores unusable Forge multipart content and falls back when no te
   }
 });
 
+test('Task 47 streams valid Forge multipart text in order without fallback', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    return new Response(JSON.stringify({ choices: [{ message: { content: [
+      { type: 'text', text: 'Build ' },
+      { type: 'tool_call', id: 'ignored' },
+      { type: 'text', text: 'complete.' },
+    ] } }] }), {
+      status: 200,
+      headers: { 'content-type': 'application/json' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'forge', model: 'gpt-5-mini', fallbackTier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /"text":"Build complete\."/);
+    assert.deepEqual(calls, ['https://forge.test/v1/chat/completions']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 44 bounds raw chat-history normalization while retaining the newest valid messages', () => {
   const ignoredOldMessage = {};
   Object.defineProperty(ignoredOldMessage, 'role', { get: () => { throw new Error('older records must not be evaluated'); } });
