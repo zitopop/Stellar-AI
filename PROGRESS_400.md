@@ -62,7 +62,7 @@
 | 56 | ✅ Complete | Individual chat-message content is capped before trimming and normalization, preserving recent valid messages while bounding per-record work | `api/chat.js`; focused suite 61 tests and full suite 77 tests pass; Vercel deployment `1e5c8d3` READY | `1e5c8d3` |
 | 57 | ✅ Complete | Supported image files can be dropped onto the workspace composer through the existing validation, preview, removal, and sending path without intercepting text-only drops | `app.html`; attachment contract and full suite 77 tests pass; Vercel deployment `347cac4` READY; live drop preview verified | `347cac4` |
 | 58 | ✅ Complete | Latest workspace image action wins: stale FileReader completions cannot overwrite a newer selection or a removed attachment | `app.html`; attachment contract and full suite 77 tests pass; Vercel deployment `596efa2` READY | `596efa2` |
-| 59 | ☐ Pending | Next approved implementation task | — | — |
+| 59 | ✅ Complete | Image payloads without a valid user message are rejected rather than silently omitted from provider input | `api/chat.js`; focused suite 62 tests and full suite 78 tests pass; Vercel deployment `38e982a` READY | `38e982a` |
 | 60 | ☐ Pending | Next approved implementation task | — | — |
 | 61 | ☐ Pending | Next approved implementation task | — | — |
 | 62 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**58 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**59 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
