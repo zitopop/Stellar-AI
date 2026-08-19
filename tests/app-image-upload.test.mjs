@@ -25,3 +25,8 @@ test('Task 49 exposes an accessible validated image-upload control in the worksp
   assert.match(appHtml, /composer\.addEventListener\('drop', \(event\) => \{[\s\S]*?const droppedFile = Array\.from\(event\.dataTransfer\?\.files \|\| \[\]\)\[0\];[\s\S]*?event\.preventDefault\(\);\s+attachImageFile\(droppedFile, null, 'Dropped image'\);/);
   assert.match(appHtml, /initPaste\(\);\s+initImageDrop\(\);/);
 });
+
+test('Task 67 keeps IME composition intact while documenting composer keyboard behavior', () => {
+  assert.match(appHtml, /id="txt"[^>]*aria-label="Message composer\. Press Enter to send and Shift\+Enter for a new line\."/);
+  assert.match(appHtml, /onkeydown="if \(event\.key === 'Enter' && !event\.shiftKey && !event\.isComposing\) \{ event\.preventDefault\(\); if \(!currentAbort\) sendMessage\(\); \}"/);
+});

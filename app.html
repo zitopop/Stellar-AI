@@ -2984,9 +2984,9 @@
         <p id="image-upload-status" class="image-upload-status" role="status" aria-live="polite"></p>
         <input id="image-upload-input" class="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp" onchange="handleImageUpload(event)">
         <div class="flex gap-3">
-          <textarea id="txt" rows="1" autofocus placeholder="Ask Stellar…" 
+          <textarea id="txt" rows="1" autofocus placeholder="Ask Stellar…" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."
                     class="flex-1 glass rounded-2xl px-5 py-3.5 resize-none focus:outline-none font-bold text-white"
-                    onkeydown="if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if (!currentAbort) sendMessage(); }"></textarea>
+                    onkeydown="if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!currentAbort) sendMessage(); }"></textarea>
           <div id="paste-chip" class="paste-chip hidden">
             <div class="paste-ico">📄</div>
             <div class="paste-meta">
