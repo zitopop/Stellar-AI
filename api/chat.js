@@ -387,6 +387,28 @@ function normaliseMessages(messages) {
   return clean.length ? clean : null;
 }
 
+function hasMatchingImageSignature(mediaType, data) {
+  const bytes = Buffer.from(data, 'base64');
+  if (mediaType === 'image/png') {
+    return bytes.length >= 8
+      && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47
+      && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a;
+  }
+  if (mediaType === 'image/jpeg') {
+    return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  }
+  if (mediaType === 'image/gif') {
+    const signature = bytes.subarray(0, 6).toString('ascii');
+    return signature === 'GIF87a' || signature === 'GIF89a';
+  }
+  if (mediaType === 'image/webp') {
+    return bytes.length >= 12
+      && bytes.subarray(0, 4).toString('ascii') === 'RIFF'
+      && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
+  }
+  return false;
+}
+
 function normaliseImageAttachment(image) {
   if (image == null) return { image: null };
   const mediaType = typeof image?.mediaType === 'string' ? image.mediaType.trim().toLowerCase() : '';
@@ -396,6 +418,9 @@ function normaliseImageAttachment(image) {
   }
   if (!data || data.length > MAX_IMAGE_DATA_LENGTH || !BASE64_DATA_PATTERN.test(data)) {
     return { error: 'That image is invalid or too large. Choose an image under about 3 MB and try again.' };
+  }
+  if (!hasMatchingImageSignature(mediaType, data)) {
+    return { error: 'That image data does not match its declared file type. Choose the original image and try again.' };
   }
   return { image: { mediaType, data } };
 }
@@ -744,4 +769,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, resolveRoute };

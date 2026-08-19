@@ -115,6 +115,18 @@ test('Task 60 requires an image to align with the latest normalized user turn', 
   assert.equal(hasLatestUserMessage([{ role: 'assistant', content: 'Prior output' }, { role: 'user', content: 'Please review this image.' }]), true);
 });
 
+test('Task 61 validates decoded image signatures against declared media types', () => {
+  const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString('base64');
+  const jpeg = Buffer.from([0xff, 0xd8, 0xff]).toString('base64');
+  const gif = Buffer.from('GIF89a', 'ascii').toString('base64');
+  const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(4), Buffer.from('WEBP')]).toString('base64');
+  assert.equal(normaliseImageAttachment({ mediaType: 'image/png', data: png }).error, undefined);
+  assert.equal(normaliseImageAttachment({ mediaType: 'image/jpeg', data: jpeg }).error, undefined);
+  assert.equal(normaliseImageAttachment({ mediaType: 'image/gif', data: gif }).error, undefined);
+  assert.equal(normaliseImageAttachment({ mediaType: 'image/webp', data: webp }).error, undefined);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/png', data: jpeg }).error, /does not match its declared file type/);
+});
+
 test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {
   const trailingBlanks = Array.from({ length: 40 }, () => ({ role: 'assistant', content: ' \n\t ' }));
   assert.deepEqual(normaliseMessages([
@@ -129,8 +141,8 @@ test('Task 42 keeps valid messages when trailing blank records would otherwise e
 });
 
 test('Task 43 accepts a bounded supported image attachment and rejects invalid provider payload metadata', () => {
-  assert.deepEqual(normaliseImageAttachment({ mediaType: ' IMAGE/PNG ', data: ' dGVzdA== ' }), {
-    image: { mediaType: 'image/png', data: 'dGVzdA==' },
+  assert.deepEqual(normaliseImageAttachment({ mediaType: ' IMAGE/PNG ', data: ' iVBORw0KGgo= ' }), {
+    image: { mediaType: 'image/png', data: 'iVBORw0KGgo=' },
   });
   assert.match(normaliseImageAttachment({ mediaType: 'image/svg+xml', data: 'dGVzdA==' }).error, /PNG, JPEG, GIF, or WebP/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: 'not base64!' }).error, /invalid or too large/);
