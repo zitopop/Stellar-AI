@@ -60,7 +60,7 @@
 | 54 | ✅ Complete | Only valid IPv4 or IPv6 identities reach chat rate-limit key construction; malformed values, ports, and control characters use the shared unknown key | `api/chat.js`; focused suite 59 tests and full suite 75 tests pass; Vercel deployment `39bc2b9` READY | `39bc2b9` |
 | 55 | ✅ Complete | Untrusted search context is bounded before processing and stripped of non-text control characters before system-prompt construction | `api/chat.js`; focused suite 60 tests and full suite 76 tests pass; Vercel deployment `67af968` READY | `67af968` |
 | 56 | ✅ Complete | Individual chat-message content is capped before trimming and normalization, preserving recent valid messages while bounding per-record work | `api/chat.js`; focused suite 61 tests and full suite 77 tests pass; Vercel deployment `1e5c8d3` READY | `1e5c8d3` |
-| 57 | ☐ Pending | Next approved implementation task | — | — |
+| 57 | ✅ Complete | Supported image files can be dropped onto the workspace composer through the existing validation, preview, removal, and sending path without intercepting text-only drops | `app.html`; attachment contract and full suite 77 tests pass; Vercel deployment `347cac4` READY; live drop preview verified | `347cac4` |
 | 58 | ☐ Pending | Next approved implementation task | — | — |
 | 59 | ☐ Pending | Next approved implementation task | — | — |
 | 60 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**56 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**57 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
