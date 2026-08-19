@@ -535,6 +535,37 @@ test('Task 28 falls back once when Forge returns a whitespace-only completion', 
   }
 });
 
+test('Task 29 preserves the complete specialist system prompt during Forge fallback', async () => {
+  const originalFetch = globalThis.fetch;
+  const specialistSystem = buildSystemPrompt('', 'fivem', 'fivem_resource', 'qbcore', 'security');
+  let fallbackBody;
+  globalThis.fetch = async (url, options) => {
+    if (String(url).includes('/v1/chat/completions')) return new Response('provider unavailable', { status: 503 });
+    fallbackBody = JSON.parse(options.body);
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"prompt preserved"}}\n\ndata: [DONE]\n\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'forge', model: 'gpt-5-mini', fallbackTier: 'star' },
+      maxTokens: 256,
+      system: specialistSystem,
+      messages: [{ role: 'user', content: 'Create a QBCore FiveM resource and security review.' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(fallbackBody.system, specialistSystem);
+    assert.match(fallbackBody.system, /PLATFORM QUALITY GATE: FIVEM/);
+    assert.match(fallbackBody.system, /WORKFLOW MODE: FIVEM RESOURCE/);
+    assert.match(fallbackBody.system, /FRAMEWORK CONTEXT: QBCORE/);
+    assert.match(fallbackBody.system, /ROLE OUTPUT CONTRACT:.*severity/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
