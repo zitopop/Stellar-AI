@@ -5,6 +5,8 @@ import { isOwnerEmail, readSession } from '../lib/auth.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+const FORGE_URL = process.env.BUILT_IN_FORGE_API_URL;
+const FORGE_KEY = process.env.BUILT_IN_FORGE_API_KEY;
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 
@@ -16,6 +18,22 @@ const MODEL_TIERS = {
   star: { primary: 'claude-sonnet-5', fallback: 'claude-sonnet-4-6' },
   comet: { primary: 'claude-opus-5', fallback: 'claude-opus-4-6' },
   nova: { primary: 'claude-fable-5', fallback: 'claude-opus-4-8' },
+};
+
+// Task 1 provider contract. Forge models use the built-in OpenAI-compatible proxy;
+// legacy aliases remain Anthropic-backed so existing plans and UI do not break.
+const FORGE_MODELS = new Set([
+  'gpt-5-nano', 'gpt-5-mini', 'gpt-5', 'gpt-5.5',
+  'gemini-3-flash-preview', 'gemini-3.1-pro-preview',
+  'claude-haiku-4-5', 'claude-sonnet-4-6', 'claude-opus-4-6', 'claude-opus-4-7',
+]);
+
+const ROUTING_ROLES = {
+  planner: { model: 'gpt-5-mini', instruction: 'Return a compact implementation plan, assumptions, exact file tree, dependencies, and acceptance checks before code.' },
+  implementer: { model: 'claude-sonnet-4-6', instruction: 'Generate complete production-oriented files with no omitted critical logic and name every destination.' },
+  researcher: { model: 'gemini-3-flash-preview', instruction: 'Use current documented conventions when available, cite sources, and label uncertainty instead of inventing APIs.' },
+  security: { model: 'gpt-5', instruction: 'Review server authority, permissions, remotes/events, persistence, purchases, duplicate requests, and abuse paths; return severity and fixes.' },
+  tester: { model: 'claude-opus-4-7', instruction: 'Create an edge-case test matrix and inspect failure paths; never claim code or a game was run when it was not.' },
 };
 
 const MODEL_MAP = {
@@ -55,6 +73,13 @@ FIVEM QUALITY
 ROBLOX QUALITY
 - Use Luau and actual Roblox services. Keep DataStore writes, currency, purchases and important validation server-side. Validate RemoteEvent inputs. Use ReplicatedStorage for shared remotes and modules only where appropriate.
 - For game passes and developer products, use the relevant Roblox ownership and receipt-validation flow. Explain any required Studio configuration briefly.
+
+ROBLOX BUILD PACK MODE
+- When the request is a larger Roblox system or the user asks for a complete game feature, return a compact build plan first, followed by a Studio file tree that names the exact destination for every Script, LocalScript, ModuleScript, RemoteEvent, RemoteFunction and UI object.
+- Separate server authority from client presentation. For every client-to-server remote, state the server validation rule for types, ranges, ownership, cooldowns, permissions and duplicate requests. Never trust client-supplied currency, damage, inventory, rewards or purchase completion.
+- For persistence, identify the DataStore key shape, use pcall around network calls, explain SetAsync versus UpdateAsync when concurrency matters, and warn that Studio testing should use a separate test version with API Services enabled rather than a live game.
+- Include a short Studio setup checklist and a test matrix covering first join, reconnect, invalid remote input, duplicate request, player leaving during a save, failed DataStore call, and the main happy path. Never claim the game was run or published.
+- Prefer a small working system with complete files over a giant speculative framework. If the requested feature needs art, animation, plugins or Creator Hub configuration that Stellar cannot provide, say exactly what remains manual.
 
 DELIVERY STANDARD
 - Put every generated file in its own fenced code block. The first line of a Lua code block must be a filename comment such as -- client.lua. Use the correct comment style for other languages; JSON has no comment.
@@ -148,6 +173,20 @@ function getModelCandidates(tier) {
   return [modelTier.primary, modelTier.fallback].filter(Boolean);
 }
 
+function resolveRoute(requestedModel, requestedRole, plan) {
+  const requested = String(requestedModel || '').trim().toLowerCase();
+  const role = ROUTING_ROLES[String(requestedRole || '').trim().toLowerCase()];
+  const candidate = role?.model || requested;
+  if (FORGE_URL && FORGE_KEY && FORGE_MODELS.has(candidate)) {
+    if ((candidate === 'gpt-5' || candidate === 'gpt-5.5' || candidate === 'gemini-3.1-pro-preview' || candidate === 'claude-opus-4-7')
+      && !['pro', 'owner'].includes(plan)) {
+      return { provider: 'anthropic', tier: resolveModelTier('star', plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
+    }
+    return { provider: 'forge', model: candidate, role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
+  }
+  return { provider: 'anthropic', tier: resolveModelTier(candidate, plan), role: requestedRole || 'implementer', instruction: role?.instruction || ROUTING_ROLES.implementer.instruction };
+}
+
 function normaliseMessages(messages) {
   if (!Array.isArray(messages) || messages.length === 0) return null;
 
@@ -196,10 +235,56 @@ async function readAnthropicError(response) {
   }
 }
 
-async function createUpstreamStream({ tier, maxTokens, system, messages, signal }) {
+function toForgeMessages(messages) {
+  return messages.map((message) => {
+    if (!Array.isArray(message.content)) return message;
+    return {
+      ...message,
+      content: message.content.map((part) => part.type === 'text'
+        ? { type: 'text', text: part.text }
+        : part.type === 'image'
+          ? { type: 'image_url', image_url: { url: `data:${part.source.media_type};base64,${part.source.data}` } }
+          : part).filter(Boolean),
+    };
+  });
+}
+
+function forgeEventStream(text, model) {
+  const events = [
+    { type: 'message_start', message: { id: `forge-${Date.now()}`, type: 'message', role: 'assistant', model } },
+    { type: 'content_block_start', index: 0, content_block: { type: 'text', text: '' } },
+    { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text } },
+    { type: 'content_block_stop', index: 0 },
+    { type: 'message_delta', delta: { stop_reason: 'end_turn' } },
+    { type: 'message_stop' },
+  ];
+  return `${events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join('')}data: [DONE]\n\n`;
+}
+
+async function createForgeResponse({ model, maxTokens, system, messages, signal }) {
+  const modelMessages = [{ role: 'system', content: system }, ...toForgeMessages(messages)];
+  const body = { model, messages: modelMessages };
+  if (model.startsWith('gpt-')) body.max_completion_tokens = maxTokens;
+  else body.max_tokens = maxTokens;
+  const response = await fetch(`${FORGE_URL.replace(/\/$/, '')}/v1/chat/completions`, {
+    method: 'POST',
+    signal,
+    headers: { Authorization: `Bearer ${FORGE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) return response;
+  const payload = await response.json();
+  const content = payload?.choices?.[0]?.message?.content;
+  const text = Array.isArray(content) ? content.map((part) => part?.text || '').join('') : String(content || '');
+  if (!text) return new Response(JSON.stringify({ error: { message: 'The selected AI returned an empty response.' } }), { status: 502 });
+  return new Response(forgeEventStream(text, model), { status: 200, headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } });
+}
+
+async function createUpstreamStream({ route, maxTokens, system, messages, signal }) {
+  if (route.provider === 'forge') return createForgeResponse({ model: route.model, maxTokens, system, messages, signal });
   let lastResponse = null;
 
-  for (const model of getModelCandidates(tier)) {
+  for (const model of getModelCandidates(route.tier)) {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       signal,
@@ -228,9 +313,9 @@ export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
-  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'The AI service is not configured.' });
+  if (!ANTHROPIC_KEY && !(FORGE_URL && FORGE_KEY)) return res.status(500).json({ error: 'The AI service is not configured.' });
 
-  const { model, messages, max_tokens: maxTokens, image, search_context: searchContext } = req.body || {};
+  const { model, role, messages, max_tokens: maxTokens, image, search_context: searchContext } = req.body || {};
   const cleanMessages = normaliseMessages(messages);
   if (!cleanMessages) return res.status(400).json({ error: 'Send at least one message before asking Stellar.' });
   if (JSON.stringify(cleanMessages).length > 5_000_000) {
@@ -245,7 +330,7 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' });
   }
 
-  const tier = resolveModelTier(model, plan);
+  const route = resolveRoute(model, role, plan);
   const requestedMaxTokens = Number(maxTokens);
   const safeMaxTokens = Number.isFinite(requestedMaxTokens)
     ? Math.max(64, Math.min(Math.floor(requestedMaxTokens), limits.maxTokens))
@@ -260,9 +345,9 @@ export default async function handler(req, res) {
 
   try {
     const upstream = await createUpstreamStream({
-      tier,
+      route,
       maxTokens: safeMaxTokens,
-      system: buildSystemPrompt(searchContext),
+      system: buildSystemPrompt(searchContext) + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
       messages: addImageToLastUserMessage(cleanMessages, image),
       signal: controller.signal,
     });
@@ -305,3 +390,6 @@ export default async function handler(req, res) {
     res.removeListener('close', abortOnDisconnect);
   }
 }
+
+
+export { FORGE_MODELS, ROUTING_ROLES, forgeEventStream, resolveRoute };
