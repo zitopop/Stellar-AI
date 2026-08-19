@@ -94,6 +94,7 @@ test('Task 43 accepts a bounded supported image attachment and rejects invalid p
   });
   assert.match(normaliseImageAttachment({ mediaType: 'image/svg+xml', data: 'dGVzdA==' }).error, /PNG, JPEG, GIF, or WebP/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: 'not base64!' }).error, /invalid or too large/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: 'abcde' }).error, /invalid or too large/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/webp', data: 'A'.repeat(4_000_001) }).error, /invalid or too large/);
 });
 

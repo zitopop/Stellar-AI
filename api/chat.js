@@ -197,6 +197,7 @@ const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/g
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
 const MAX_NORMALISED_MESSAGE_SOURCE_COUNT = 400;
 const MAX_NORMALISED_MESSAGE_COUNT = 40;
+const BASE64_DATA_PATTERN = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
 const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
@@ -382,7 +383,7 @@ function normaliseImageAttachment(image) {
   if (!SUPPORTED_IMAGE_MEDIA_TYPES.has(mediaType)) {
     return { error: 'Attach a PNG, JPEG, GIF, or WebP image.' };
   }
-  if (!data || data.length > MAX_IMAGE_DATA_LENGTH || !/^[A-Za-z0-9+/]*={0,2}$/.test(data)) {
+  if (!data || data.length > MAX_IMAGE_DATA_LENGTH || !BASE64_DATA_PATTERN.test(data)) {
     return { error: 'That image is invalid or too large. Choose an image under about 3 MB and try again.' };
   }
   return { image: { mediaType, data } };
