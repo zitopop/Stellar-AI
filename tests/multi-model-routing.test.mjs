@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { addImageToLastUserMessage, buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseSearchContext, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -125,6 +125,27 @@ test('Task 61 validates decoded image signatures against declared media types', 
   assert.equal(normaliseImageAttachment({ mediaType: 'image/gif', data: gif }).error, undefined);
   assert.equal(normaliseImageAttachment({ mediaType: 'image/webp', data: webp }).error, undefined);
   assert.match(normaliseImageAttachment({ mediaType: 'image/png', data: jpeg }).error, /does not match its declared file type/);
+});
+
+test('Task 62 inserts an image only into the final user entry before provider serialization', () => {
+  const originalMessages = [
+    { role: 'user', content: 'Earlier question' },
+    { role: 'assistant', content: 'Earlier answer' },
+    { role: 'user', content: 'Please review this current screenshot.' },
+  ];
+  const providerMessages = toForgeMessages(addImageToLastUserMessage(originalMessages, {
+    mediaType: 'image/png',
+    data: 'iVBORw0KGgo=',
+  }));
+  assert.deepEqual(providerMessages.slice(0, 2), originalMessages.slice(0, 2));
+  assert.deepEqual(providerMessages[2], {
+    role: 'user',
+    content: [
+      { type: 'image_url', image_url: { url: 'data:image/png;base64,iVBORw0KGgo=' } },
+      { type: 'text', text: 'Please review this current screenshot.' },
+    ],
+  });
+  assert.deepEqual(originalMessages[2], { role: 'user', content: 'Please review this current screenshot.' });
 });
 
 test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {
