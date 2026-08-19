@@ -195,6 +195,8 @@ const STRUCTURED_FALLBACK_NOTICE = 'STRUCTURED OUTPUT FALLBACK: If JSON Schema t
 const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
 const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
+const MAX_NORMALISED_MESSAGE_SOURCE_COUNT = 400;
+const MAX_NORMALISED_MESSAGE_COUNT = 40;
 
 const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
@@ -362,12 +364,13 @@ function normaliseMessages(messages) {
   if (!Array.isArray(messages) || messages.length === 0) return null;
 
   const clean = messages
+    .slice(-MAX_NORMALISED_MESSAGE_SOURCE_COUNT)
     .map((message) => ({
       role: message?.role === 'assistant' ? 'assistant' : 'user',
       content: typeof message?.content === 'string' ? message.content.trim() : '',
     }))
     .filter((message) => message.content.length > 0)
-    .slice(-40);
+    .slice(-MAX_NORMALISED_MESSAGE_COUNT);
 
   return clean.length ? clean : null;
 }

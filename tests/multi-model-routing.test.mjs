@@ -97,6 +97,17 @@ test('Task 43 accepts a bounded supported image attachment and rejects invalid p
   assert.match(normaliseImageAttachment({ mediaType: 'image/webp', data: 'A'.repeat(4_000_001) }).error, /invalid or too large/);
 });
 
+test('Task 44 bounds raw chat-history normalization while retaining the newest valid messages', () => {
+  const ignoredOldMessage = {};
+  Object.defineProperty(ignoredOldMessage, 'role', { get: () => { throw new Error('older records must not be evaluated'); } });
+  const trailingBlankRecords = Array.from({ length: 360 }, () => ({ role: 'user', content: '  ' }));
+  const newestValidMessages = Array.from({ length: 40 }, (_, index) => ({ role: index % 2 ? 'assistant' : 'user', content: ` newest ${index} ` }));
+  const normalized = normaliseMessages([ignoredOldMessage, ...trailingBlankRecords, ...newestValidMessages]);
+  assert.equal(normalized.length, 40);
+  assert.deepEqual(normalized[0], { role: 'user', content: 'newest 0' });
+  assert.deepEqual(normalized.at(-1), { role: 'assistant', content: 'newest 39' });
+});
+
 test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {
   const originalFetch = globalThis.fetch;
   const bodies = [];
