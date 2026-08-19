@@ -37,6 +37,64 @@ const ROUTING_ROLES = {
 };
 
 const ROLE_RESPONSE_SCHEMAS = {
+  planner: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'stellar_implementation_plan',
+      strict: true,
+      schema: {
+        type: 'object',
+        properties: {
+          summary: { type: 'string' },
+          assumptions: { type: 'array', items: { type: 'string' } },
+          files: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: { path: { type: 'string' }, purpose: { type: 'string' } },
+              required: ['path', 'purpose'],
+              additionalProperties: false,
+            },
+          },
+          dependencies: { type: 'array', items: { type: 'string' } },
+          acceptance_checks: { type: 'array', items: { type: 'string' } },
+        },
+        required: ['summary', 'assumptions', 'files', 'dependencies', 'acceptance_checks'],
+        additionalProperties: false,
+      },
+    },
+  },
+  tester: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'stellar_test_matrix',
+      strict: true,
+      schema: {
+        type: 'object',
+        properties: {
+          summary: { type: 'string' },
+          cases: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                setup: { type: 'string' },
+                input: { type: 'string' },
+                expected: { type: 'string' },
+                failure_path: { type: 'string' },
+              },
+              required: ['name', 'setup', 'input', 'expected', 'failure_path'],
+              additionalProperties: false,
+            },
+          },
+          evidence_limits: { type: 'string' },
+        },
+        required: ['summary', 'cases', 'evidence_limits'],
+        additionalProperties: false,
+      },
+    },
+  },
   security: {
     type: 'json_schema',
     json_schema: {
