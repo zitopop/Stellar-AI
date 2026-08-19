@@ -121,9 +121,9 @@ test('Task 61 validates decoded image signatures against declared media types', 
     Buffer.from([0x00, 0x00, 0x00, 0x0d]), Buffer.from('IHDR'), Buffer.alloc(13), Buffer.alloc(4),
     Buffer.alloc(4), Buffer.from('IEND'), Buffer.alloc(4),
   ]).toString('base64');
-  const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xd9]).toString('base64');
-  const gif = Buffer.concat([Buffer.from('GIF89a', 'ascii'), Buffer.alloc(7), Buffer.from([0x3b])]).toString('base64');
-  const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([0x0c, 0x00, 0x00, 0x00]), Buffer.from('WEBPVP8 '), Buffer.alloc(4)]).toString('base64');
+  const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x02, 0xff, 0xd9]).toString('base64');
+  const gif = Buffer.concat([Buffer.from('GIF89a', 'ascii'), Buffer.from([0x01, 0x00, 0x01, 0x00]), Buffer.alloc(3), Buffer.from([0x3b])]).toString('base64');
+  const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([0x0e, 0x00, 0x00, 0x00]), Buffer.from('WEBPVP8 '), Buffer.from([0x01, 0x00, 0x00, 0x00]), Buffer.alloc(2)]).toString('base64');
   assert.equal(normaliseImageAttachment({ mediaType: 'image/png', data: png }).error, undefined);
   assert.equal(normaliseImageAttachment({ mediaType: 'image/jpeg', data: jpeg }).error, undefined);
   assert.equal(normaliseImageAttachment({ mediaType: 'image/gif', data: gif }).error, undefined);
@@ -140,6 +140,21 @@ test('Task 63 rejects image payloads that stop after a valid-looking header', ()
   assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: truncatedJpeg }).error, /incomplete/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/gif', data: truncatedGif }).error, /incomplete/);
   assert.match(normaliseImageAttachment({ mediaType: 'image/webp', data: truncatedWebp }).error, /incomplete/);
+});
+
+test('Task 64 rejects malformed primary image structures despite matching headers and trailers', () => {
+  const malformedPng = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    Buffer.alloc(4), Buffer.from('IHDR'), Buffer.alloc(13), Buffer.alloc(4),
+    Buffer.alloc(4), Buffer.from('IEND'), Buffer.alloc(4),
+  ]).toString('base64');
+  const malformedJpeg = Buffer.from([0xff, 0xd8, 0xff, 0xd9]).toString('base64');
+  const malformedGif = Buffer.concat([Buffer.from('GIF89a', 'ascii'), Buffer.alloc(7), Buffer.from([0x3b])]).toString('base64');
+  const malformedWebp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([0x0c, 0x00, 0x00, 0x00]), Buffer.from('WEBPVP8 '), Buffer.alloc(4)]).toString('base64');
+  assert.match(normaliseImageAttachment({ mediaType: 'image/png', data: malformedPng }).error, /incomplete/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/jpeg', data: malformedJpeg }).error, /incomplete/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/gif', data: malformedGif }).error, /incomplete/);
+  assert.match(normaliseImageAttachment({ mediaType: 'image/webp', data: malformedWebp }).error, /incomplete/);
 });
 
 test('Task 62 inserts an image only into the final user entry before provider serialization', () => {
