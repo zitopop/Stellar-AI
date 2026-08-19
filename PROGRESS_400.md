@@ -38,7 +38,7 @@
 | 32 | ✅ Complete | Permanent Anthropic authorization errors return unchanged without a fallback candidate request | `tests/multi-model-routing.test.mjs`; full suite 59 tests pass; green Vercel deployment | `fa4053d` |
 | 33 | ✅ Complete | Anthropic candidate 400 response advances to the configured fallback stream | `tests/multi-model-routing.test.mjs`; full suite 60 tests pass; green Vercel deployment | `5e0cde9` |
 | 34 | ✅ Complete | Non-finite Forge token inputs normalize to a valid safe minimum | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 61 tests pass; green Vercel deployment | `1a66ccb` |
-| 35 | ☐ Pending | Next approved implementation task | — | — |
+| 35 | ✅ Complete | Recognised specialist role input normalizes before applying its model, contract, and schema | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 62 tests pass; green Vercel deployment | `fe03380` |
 | 36 | ☐ Pending | Next approved implementation task | — | — |
 | 37 | ☐ Pending | Next approved implementation task | — | — |
 | 38 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**34 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**35 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
