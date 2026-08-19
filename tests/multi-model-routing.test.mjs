@@ -160,6 +160,38 @@ test('Task 47 streams valid Forge multipart text in order without fallback', asy
   }
 });
 
+test('Task 48 falls back when Forge returns a non-text single content object', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    if (String(url).includes('/v1/chat/completions')) {
+      return new Response(JSON.stringify({ choices: [{ message: { content: { type: 'tool_call', arguments: {} } } }] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"single-content fallback"}}\n\ndata: [DONE]\n\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'forge', model: 'gpt-5-mini', fallbackTier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), 'data: {"type":"content_block_delta","delta":{"text":"single-content fallback"}}\n\ndata: [DONE]\n\n');
+    assert.deepEqual(calls, ['https://forge.test/v1/chat/completions', 'https://api.anthropic.com/v1/messages']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 44 bounds raw chat-history normalization while retaining the newest valid messages', () => {
   const ignoredOldMessage = {};
   Object.defineProperty(ignoredOldMessage, 'role', { get: () => { throw new Error('older records must not be evaluated'); } });
