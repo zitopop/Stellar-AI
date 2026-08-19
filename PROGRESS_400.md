@@ -68,7 +68,7 @@
 | 62 | ✅ Complete | Image data is serialized as a provider-format image part only on the final user payload entry, leaving earlier turns and source history unchanged | `api/chat.js`; focused suite 65 tests and full suite 81 tests pass; Vercel deployment `e77eca6` READY | `e77eca6` |
 | 63 | ✅ Complete | Image attachments require essential PNG, JPEG, GIF, or WebP container structure and reject header-only or truncated payloads before provider routing | `api/chat.js`; focused suite 66 tests and full suite 82 tests pass; Vercel deployment `5b17e5a` READY | `5b17e5a` |
 | 64 | ✅ Complete | Image attachments reject malformed primary PNG, JPEG, GIF, or WebP structures that otherwise pass simple signature and trailer checks | `api/chat.js`; focused suite 67 tests and full suite 83 tests pass; Vercel deployment `0b195e5` READY | `0b195e5` |
-| 65 | ☐ Pending | Next approved implementation task | — | — |
+| 65 | ✅ Complete | Client-provided model and role strings are limited to 128 normalized characters and non-string values safely default before chat route resolution | `api/chat.js`; focused suite 68 tests and full suite 84 tests pass; Vercel deployment `2b7335b` READY | `2b7335b` |
 | 66 | ☐ Pending | Next approved implementation task | — | — |
 | 67 | ☐ Pending | Next approved implementation task | — | — |
 | 68 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**64 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**65 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
