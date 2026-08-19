@@ -67,6 +67,14 @@ test('Task 37 preserves the requested model when no specialist role is selected'
   assert.equal(ROLE_RESPONSE_SCHEMAS[route.role], ROLE_RESPONSE_SCHEMAS.implementer);
 });
 
+test('Task 38 rejects inherited object-property names as specialist roles', () => {
+  const route = resolveRoute('smart', 'constructor', 'pro');
+  assert.equal(route.provider, 'forge');
+  assert.equal(route.model, 'claude-sonnet-4-6');
+  assert.equal(route.role, 'implementer');
+  assert.equal(route.instruction, ROUTING_ROLES.implementer.instruction);
+});
+
 test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {
   const originalFetch = globalThis.fetch;
   const bodies = [];

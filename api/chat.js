@@ -342,7 +342,7 @@ function getModelCandidates(tier) {
 function resolveRoute(requestedModel, requestedRole, plan) {
   const requested = String(requestedModel || '').trim().toLowerCase();
   const roleKey = String(requestedRole || '').trim().toLowerCase();
-  const matchedRole = ROUTING_ROLES[roleKey];
+  const matchedRole = Object.hasOwn(ROUTING_ROLES, roleKey) ? ROUTING_ROLES[roleKey] : undefined;
   const role = matchedRole || ROUTING_ROLES.implementer;
   const resolvedRole = matchedRole ? roleKey : 'implementer';
   const candidate = matchedRole || roleKey ? role.model : requested;
