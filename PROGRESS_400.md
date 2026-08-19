@@ -32,7 +32,7 @@
 | 26 | ✅ Complete | Caller AbortSignal forwarded unchanged to Forge fetch | `tests/multi-model-routing.test.mjs`; full suite 53 tests pass; included in green production deployment `c27fc10` | `1864dd0` |
 | 27 | ✅ Complete | Forge 200 response without a usable completion falls back to the existing Anthropic stream | `tests/multi-model-routing.test.mjs`; full suite 54 tests pass; green Vercel deployment | `6cd0d73` |
 | 28 | ✅ Complete | Whitespace-only Forge completion is normalized to retryable empty-output failure and falls back to Anthropic | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 55 tests pass; green Vercel deployment | `2a69944` |
-| 29 | ☐ Pending | Next approved implementation task | — | — |
+| 29 | ✅ Complete | Forge-to-Anthropic fallback preserves the complete specialist system prompt unchanged | `tests/multi-model-routing.test.mjs`; full suite 56 tests pass; green Vercel deployment | `4793027` |
 | 30 | ☐ Pending | Next approved implementation task | — | — |
 | 31 | ☐ Pending | Next approved implementation task | — | — |
 | 32 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**28 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**29 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
