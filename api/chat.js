@@ -36,6 +36,40 @@ const ROUTING_ROLES = {
   tester: { model: 'claude-opus-4-7', instruction: 'Create an edge-case test matrix and inspect failure paths; never claim code or a game was run when it was not.' },
 };
 
+const ROLE_RESPONSE_SCHEMAS = {
+  security: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'stellar_security_review',
+      strict: true,
+      schema: {
+        type: 'object',
+        properties: {
+          summary: { type: 'string' },
+          findings: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                severity: { type: 'string', enum: ['critical', 'high', 'medium', 'low', 'info'] },
+                boundary: { type: 'string' },
+                abuse_path: { type: 'string' },
+                fix: { type: 'string' },
+                residual_risk: { type: 'string' },
+              },
+              required: ['severity', 'boundary', 'abuse_path', 'fix', 'residual_risk'],
+              additionalProperties: false,
+            },
+          },
+          evidence_limits: { type: 'string' },
+        },
+        required: ['summary', 'findings', 'evidence_limits'],
+        additionalProperties: false,
+      },
+    },
+  },
+};
+
 const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
   implementer: 'ROLE OUTPUT CONTRACT: Provide complete destination-labelled files, setup steps, and a short validation checklist. Do not omit critical logic or claim execution.',
@@ -348,9 +382,10 @@ function forgeEventStream(text, model) {
   return `${events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join('')}data: [DONE]\n\n`;
 }
 
-async function createForgeResponse({ model, maxTokens, system, messages, signal }) {
+async function createForgeResponse({ model, maxTokens, system, messages, signal, responseFormat }) {
   const modelMessages = [{ role: 'system', content: system }, ...toForgeMessages(messages)];
   const body = { model, messages: modelMessages, ...getForgeGenerationOptions(model, maxTokens) };
+  if (responseFormat) body.response_format = responseFormat;
   const response = await fetch(`${FORGE_URL.replace(/\/$/, '')}/v1/chat/completions`, {
     method: 'POST',
     signal,
@@ -393,10 +428,10 @@ async function createAnthropicStream({ tier, maxTokens, system, messages, signal
   return lastResponse;
 }
 
-async function createUpstreamStream({ route, maxTokens, system, messages, signal }) {
+async function createUpstreamStream({ route, maxTokens, system, messages, signal, responseFormat }) {
   if (route.provider !== 'forge') return createAnthropicStream({ tier: route.tier, maxTokens, system, messages, signal });
 
-  const forgeResponse = await createForgeResponse({ model: route.model, maxTokens, system, messages, signal });
+  const forgeResponse = await createForgeResponse({ model: route.model, maxTokens, system, messages, signal, responseFormat });
   if (forgeResponse.ok || ![400, 404, 408, 409, 425, 429, 500, 502, 503, 504].includes(forgeResponse.status) || !ANTHROPIC_KEY) return forgeResponse;
   return createAnthropicStream({ tier: route.fallbackTier || 'star', maxTokens, system, messages, signal });
 }
@@ -444,6 +479,7 @@ export default async function handler(req, res) {
       maxTokens: safeMaxTokens,
       system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role) + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
       messages: addImageToLastUserMessage(cleanMessages, image),
+      responseFormat: ROLE_RESPONSE_SCHEMAS[route.role],
       signal: controller.signal,
     });
 
@@ -487,4 +523,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROUTING_ROLES, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, resolveRoute };

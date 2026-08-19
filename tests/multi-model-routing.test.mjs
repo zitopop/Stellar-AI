@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -104,6 +104,16 @@ test('Task 5 refuses to choose when conflicting FiveM frameworks are named', () 
   const messages = [{ role: 'user', content: 'Use QBCore and ESX together in this FiveM resource.' }];
   assert.equal(detectFramework(messages), 'unknown');
   assert.match(buildSystemPrompt('', 'fivem', 'fivem_resource', 'unknown'), /FRAMEWORK NOT CONFIRMED/);
+});
+
+test('Task 10 exposes a strict security JSON Schema contract', () => {
+  const schema = ROLE_RESPONSE_SCHEMAS.security;
+  assert.equal(schema.type, 'json_schema');
+  assert.equal(schema.json_schema.strict, true);
+  assert.deepEqual(schema.json_schema.schema.required, ['summary', 'findings', 'evidence_limits']);
+  assert.equal(schema.json_schema.schema.additionalProperties, false);
+  assert.deepEqual(schema.json_schema.schema.properties.findings.items.required, ['severity', 'boundary', 'abuse_path', 'fix', 'residual_risk']);
+  assert.equal(schema.json_schema.schema.properties.findings.items.additionalProperties, false);
 });
 
 test('Task 8 injects explicit contracts for every workspace role', () => {
