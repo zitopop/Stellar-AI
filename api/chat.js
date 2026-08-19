@@ -360,12 +360,12 @@ function normaliseMessages(messages) {
   if (!Array.isArray(messages) || messages.length === 0) return null;
 
   const clean = messages
-    .slice(-40)
     .map((message) => ({
       role: message?.role === 'assistant' ? 'assistant' : 'user',
       content: typeof message?.content === 'string' ? message.content.trim() : '',
     }))
-    .filter((message) => message.content.length > 0);
+    .filter((message) => message.content.length > 0)
+    .slice(-40);
 
   return clean.length ? clean : null;
 }
@@ -685,4 +685,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, resolveRoute };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, forgeEventStream, getForgeGenerationOptions, normaliseMessages, resolveRoute };

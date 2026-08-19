@@ -5,7 +5,7 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { buildSystemPrompt, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, forgeEventStream, getForgeGenerationOptions, normaliseMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
@@ -73,6 +73,19 @@ test('Task 38 rejects inherited object-property names as specialist roles', () =
   assert.equal(route.model, 'claude-sonnet-4-6');
   assert.equal(route.role, 'implementer');
   assert.equal(route.instruction, ROUTING_ROLES.implementer.instruction);
+});
+
+test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {
+  const trailingBlanks = Array.from({ length: 40 }, () => ({ role: 'assistant', content: ' \n\t ' }));
+  assert.deepEqual(normaliseMessages([
+    { role: 'user', content: '  Build a QBCore FiveM resource.  ' },
+    { role: 'assistant', content: '  I need the command names.  ' },
+    ...trailingBlanks,
+    { role: 'user', content: null },
+  ]), [
+    { role: 'user', content: 'Build a QBCore FiveM resource.' },
+    { role: 'assistant', content: 'I need the command names.' },
+  ]);
 });
 
 test('Task 14 forwards every role schema to Forge and preserves the stream response', async () => {
