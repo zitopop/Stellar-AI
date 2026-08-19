@@ -261,6 +261,31 @@ test('Task 18 falls back once when Forge fetch throws a network error', async ()
   }
 });
 
+test('Task 19 propagates AbortError without starting a fallback request', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  const abortError = Object.assign(new Error('request aborted'), { name: 'AbortError' });
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    throw abortError;
+  };
+  try {
+    await assert.rejects(
+      createUpstreamStream({
+        route: { provider: 'forge', model: 'gpt-5-mini', fallbackTier: 'star' },
+        maxTokens: 256,
+        system: 'test',
+        messages: [{ role: 'user', content: 'test' }],
+        signal: undefined,
+      }),
+      (error) => error === abortError,
+    );
+    assert.deepEqual(calls, ['https://forge.test/v1/chat/completions']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
