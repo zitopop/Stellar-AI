@@ -506,6 +506,135 @@
     .feature-empty.is-visible { display: block; }
     @media (max-width: 760px) { .feature-finder { padding: 13px; } .feature-finder-head { align-items: flex-start; flex-direction: column; gap: 5px; } .favorite-grid { grid-template-columns: 1fr; } .favorite-section { padding: 14px; } .favorite-star { width: 44px; height: 44px; border-radius: 12px; } }
     @media (prefers-reduced-motion: reduce) { .site-header, .favorite-star, .favorite-card { transition: none !important; } }
+
+    /* APPLE-INSPIRED 3D HERO */
+    .hero-visual {
+      --tilt-x: 4deg;
+      --tilt-y: -9deg;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      padding: 38px 20px 36px;
+      perspective: 1700px;
+      isolation: isolate;
+    }
+    .hero-visual::before,
+    .hero-visual::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(8px);
+    }
+    .hero-visual::before {
+      top: 0;
+      right: 1%;
+      width: 69%;
+      aspect-ratio: 1;
+      background: radial-gradient(circle at 35% 31%, rgba(198, 180, 255, .54), rgba(141, 103, 250, .19) 40%, transparent 69%);
+      opacity: .88;
+      transform: translateZ(-80px);
+    }
+    .hero-visual::after {
+      right: 7%;
+      bottom: 0;
+      width: 74%;
+      height: 27%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(27, 15, 71, .74), transparent 68%);
+      filter: blur(18px);
+      transform: translateY(22px) rotateX(72deg);
+    }
+    .hero-visual .product-frame {
+      width: min(100%, 640px);
+      overflow: visible;
+      border-radius: 27px;
+      background: linear-gradient(142deg, rgba(247, 244, 255, .9), rgba(182, 151, 255, .47) 19%, rgba(89, 231, 195, .54) 59%, rgba(118, 80, 242, .20));
+      box-shadow: 34px 46px 100px rgba(0, 0, 0, .52), -18px 20px 58px rgba(125, 91, 240, .20), 0 0 0 1px rgba(255,255,255,.16) inset;
+      transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+      transform-style: preserve-3d;
+      transition: transform .65s cubic-bezier(.23,1,.32,1), box-shadow .65s cubic-bezier(.23,1,.32,1);
+      will-change: transform;
+    }
+    .hero-visual .product-frame::before {
+      z-index: 3;
+      border-radius: inherit;
+      mix-blend-mode: screen;
+      opacity: .78;
+      animation-duration: 8.5s;
+    }
+    .hero-visual .product-shell {
+      min-height: 522px;
+      border-radius: 26px;
+      background: linear-gradient(148deg, rgba(36, 25, 75, .98), rgba(11, 9, 27, .99) 43%, rgba(10, 20, 39, .98));
+      box-shadow: inset 0 1px rgba(255,255,255,.16), inset 0 -1px rgba(5,3,13,.55);
+      transform: translateZ(2px);
+      transform-style: preserve-3d;
+    }
+    .hero-visual .product-top { transform: translateZ(18px); }
+    .hero-visual .product-main { box-shadow: 0 18px 32px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.04); transform: translateZ(26px); }
+    .hero-visual .float-file { right: -38px; bottom: 32px; z-index: 4; border-color: rgba(232,224,255,.42); background: rgba(31, 23, 65, .76); box-shadow: 0 18px 38px rgba(3,2,12,.42), inset 0 1px rgba(255,255,255,.18); transform: translateZ(75px); }
+    .hero-depth-chip {
+      position: absolute;
+      z-index: 5;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 11px;
+      border: 1px solid rgba(232,224,255,.32);
+      border-radius: 12px;
+      color: #f7f4ff;
+      background: linear-gradient(135deg, rgba(48,35,98,.80), rgba(28,21,60,.63));
+      box-shadow: 0 16px 32px rgba(1,1,10,.35), inset 0 1px rgba(255,255,255,.18);
+      backdrop-filter: blur(18px) saturate(1.35);
+      font: 600 9px "DM Mono", monospace;
+      letter-spacing: .025em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .hero-depth-chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 13px rgba(82,225,181,.85); }
+    .hero-depth-chip--top { top: 12px; right: -8px; transform: translateZ(94px) rotate(3deg); }
+    .hero-depth-chip--bottom { bottom: 10px; left: -12px; transform: translateZ(74px) rotate(-4deg); }
+    .hero-depth-orbit {
+      position: absolute;
+      z-index: -1;
+      width: 86%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(213,199,255,.20);
+      border-radius: 50%;
+      box-shadow: 0 0 0 34px rgba(179,155,255,.045), 0 0 0 82px rgba(179,155,255,.024);
+      transform: translateZ(-54px) rotateX(66deg) rotateZ(-18deg);
+      pointer-events: none;
+    }
+    .hero-depth-orbit::before,
+    .hero-depth-orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+    }
+    .hero-depth-orbit::before { top: 8%; left: 19%; width: 8px; height: 8px; background: #e8ddff; box-shadow: 0 0 19px 5px rgba(211,192,255,.68); }
+    .hero-depth-orbit::after { right: 17%; bottom: 8%; width: 10px; height: 10px; background: #72eac8; box-shadow: 0 0 21px 5px rgba(82,225,181,.56); }
+    .hero-visual:hover .product-frame { --tilt-x: 1.5deg; --tilt-y: -3deg; box-shadow: 40px 58px 112px rgba(0,0,0,.56), -22px 23px 68px rgba(125,91,240,.27), 0 0 0 1px rgba(255,255,255,.19) inset; }
+    body.light .hero-visual::before { background: radial-gradient(circle at 35% 31%, rgba(200,183,255,.70), rgba(141,103,250,.20) 42%, transparent 70%); }
+    body.light .hero-visual::after { background: radial-gradient(ellipse, rgba(89,66,143,.22), transparent 68%); }
+    body.light .hero-visual .product-frame { box-shadow: 30px 44px 92px rgba(54,36,110,.22), -16px 18px 46px rgba(125,91,240,.16), 0 0 0 1px rgba(255,255,255,.6) inset; }
+    @media (max-width: 1030px) { .hero-visual { padding-inline: 30px; } .hero-depth-chip--top { right: 0; } .hero-depth-chip--bottom { left: 0; } }
+    @media (max-width: 760px) {
+      .hero-visual { padding: 26px 4px 34px; perspective: none; }
+      .hero-visual .product-frame { border-radius: 22px; transform: none; box-shadow: 0 28px 74px rgba(0,0,0,.46), 0 0 0 1px rgba(255,255,255,.14) inset; }
+      .hero-visual .product-shell { min-height: 430px; border-radius: 21px; transform: none; }
+      .hero-visual .product-top, .hero-visual .product-main, .hero-visual .float-file { transform: none; }
+      .hero-depth-orbit { width: 89%; transform: rotate(-19deg); opacity: .6; }
+      .hero-depth-chip { padding: 8px 9px; font-size: 7px; }
+      .hero-depth-chip--top { top: 2px; right: 1px; }
+      .hero-depth-chip--bottom { bottom: 4px; left: 0; }
+      .hero-visual .float-file { right: 10px; bottom: 30px; }
+    }
+    @media (max-width: 430px) { .hero-depth-chip--bottom { display: none; } .hero-depth-chip--top { top: -2px; } }
+    @media (prefers-reduced-motion: reduce) { .hero-visual .product-frame { transform: none; transition: none !important; } .hero-visual .product-frame::before { animation: none !important; } }
   </style>
 </head>
 <body>
@@ -542,6 +671,10 @@
             <div class="hero-orbit" aria-hidden="true"></div>
           </div>
 
+          <div class="hero-visual" data-hero-visual>
+            <div class="hero-depth-orbit" aria-hidden="true"></div>
+            <div class="hero-depth-chip hero-depth-chip--top" aria-hidden="true">QBCore context</div>
+            <div class="hero-depth-chip hero-depth-chip--bottom" aria-hidden="true">Roblox ready</div>
           <div class="product-frame" aria-label="Stellar AI workspace preview">
             <div class="product-shell">
               <div class="product-top"><div class="traffic"><i></i><i></i><i></i></div><div class="product-live">Resource generation live</div></div>
@@ -572,6 +705,7 @@ end)</div></div>
               </div>
               <div class="float-file">fxmanifest.lua ready</div>
             </div>
+          </div>
           </div>
         </div>
         <div class="framework-rail">
@@ -683,6 +817,25 @@ end)</div></div>
       const updateHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 18);
       updateHeader();
       window.addEventListener('scroll', updateHeader, { passive: true });
+
+      const heroVisual = document.querySelector('[data-hero-visual]');
+      const motionReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      const finePointer = window.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
+      if (heroVisual && finePointer && !motionReduced) {
+        const resetHeroTilt = () => {
+          heroVisual.style.removeProperty('--tilt-x');
+          heroVisual.style.removeProperty('--tilt-y');
+        };
+        heroVisual.addEventListener('pointermove', (event) => {
+          const bounds = heroVisual.getBoundingClientRect();
+          const x = (event.clientX - bounds.left) / bounds.width - .5;
+          const y = (event.clientY - bounds.top) / bounds.height - .5;
+          heroVisual.style.setProperty('--tilt-x', `${(2.8 - y * 5).toFixed(2)}deg`);
+          heroVisual.style.setProperty('--tilt-y', `${(-7 + x * 7).toFixed(2)}deg`);
+        });
+        heroVisual.addEventListener('pointerleave', resetHeroTilt);
+        heroVisual.addEventListener('pointercancel', resetHeroTilt);
+      }
 
       const catalog = {
         police: { title: 'Police job', description: 'Menus, MDT and roleplay tools', icon: '👮', href: '/app' },
