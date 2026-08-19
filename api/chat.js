@@ -199,6 +199,7 @@ const MAX_REQUEST_PAYLOAD_CHARS = 5_000_000;
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
 const MAX_NORMALISED_MESSAGE_SOURCE_COUNT = 400;
 const MAX_NORMALISED_MESSAGE_COUNT = 40;
+const MAX_NORMALISED_MESSAGE_CONTENT_LENGTH = 100_000;
 const BASE64_DATA_PATTERN = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
 const ROLE_OUTPUT_CONTRACTS = {
@@ -376,7 +377,9 @@ function normaliseMessages(messages) {
     .slice(-MAX_NORMALISED_MESSAGE_SOURCE_COUNT)
     .map((message) => ({
       role: message?.role === 'assistant' ? 'assistant' : 'user',
-      content: typeof message?.content === 'string' ? message.content.trim() : '',
+      content: typeof message?.content === 'string'
+        ? message.content.slice(0, MAX_NORMALISED_MESSAGE_CONTENT_LENGTH).trim()
+        : '',
     }))
     .filter((message) => message.content.length > 0)
     .slice(-MAX_NORMALISED_MESSAGE_COUNT);

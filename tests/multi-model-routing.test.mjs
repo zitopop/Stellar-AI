@@ -96,6 +96,15 @@ test('Task 55 normalizes bounded untrusted search context before prompt construc
   assert.match(buildSystemPrompt('\u0000Source: https://example.test'), /Source: https:\/\/example\.test/);
 });
 
+test('Task 56 caps individual message content before normalization work', () => {
+  const normalized = normaliseMessages([
+    { role: 'user', content: `${'x'.repeat(100_000)} trailing content that must not be retained` },
+    { role: 'assistant', content: 'Recent assistant context stays intact.' },
+  ]);
+  assert.equal(normalized[0].content.length, 100_000);
+  assert.equal(normalized[1].content, 'Recent assistant context stays intact.');
+});
+
 test('Task 42 keeps valid messages when trailing blank records would otherwise exhaust the history window', () => {
   const trailingBlanks = Array.from({ length: 40 }, () => ({ role: 'assistant', content: ' \n\t ' }));
   assert.deepEqual(normaliseMessages([
