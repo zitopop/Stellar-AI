@@ -37,6 +37,37 @@ const ROUTING_ROLES = {
 };
 
 const ROLE_RESPONSE_SCHEMAS = {
+  researcher: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'stellar_research_brief',
+      strict: true,
+      schema: {
+        type: 'object',
+        properties: {
+          summary: { type: 'string' },
+          facts: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                claim: { type: 'string' },
+                source_label: { type: 'string' },
+                source_url: { type: 'string' },
+                supports: { type: 'string' },
+              },
+              required: ['claim', 'source_label', 'source_url', 'supports'],
+              additionalProperties: false,
+            },
+          },
+          assumptions: { type: 'array', items: { type: 'string' } },
+          open_questions: { type: 'array', items: { type: 'string' } },
+        },
+        required: ['summary', 'facts', 'assumptions', 'open_questions'],
+        additionalProperties: false,
+      },
+    },
+  },
   planner: {
     type: 'json_schema',
     json_schema: {

@@ -106,6 +106,14 @@ test('Task 5 refuses to choose when conflicting FiveM frameworks are named', () 
   assert.match(buildSystemPrompt('', 'fivem', 'fivem_resource', 'unknown'), /FRAMEWORK NOT CONFIRMED/);
 });
 
+test('Task 12 exposes a strict researcher JSON Schema contract', () => {
+  const researcher = ROLE_RESPONSE_SCHEMAS.researcher.json_schema;
+  assert.equal(researcher.strict, true);
+  assert.deepEqual(researcher.schema.required, ['summary', 'facts', 'assumptions', 'open_questions']);
+  assert.equal(researcher.schema.properties.facts.items.additionalProperties, false);
+  assert.deepEqual(researcher.schema.properties.facts.items.required, ['claim', 'source_label', 'source_url', 'supports']);
+});
+
 test('Task 11 exposes strict planner and tester JSON Schema contracts', () => {
   const planner = ROLE_RESPONSE_SCHEMAS.planner.json_schema;
   assert.equal(planner.strict, true);
