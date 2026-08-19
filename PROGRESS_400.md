@@ -36,7 +36,7 @@
 | 30 | ✅ Complete | Successful Anthropic response without a stream body retries the configured candidate fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 57 tests pass; green Vercel deployment | `d8add6b` |
 | 31 | ✅ Complete | Transient Anthropic upstream statuses retry the configured candidate fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 58 tests pass; green Vercel deployment | `2228470` |
 | 32 | ✅ Complete | Permanent Anthropic authorization errors return unchanged without a fallback candidate request | `tests/multi-model-routing.test.mjs`; full suite 59 tests pass; green Vercel deployment | `fa4053d` |
-| 33 | ☐ Pending | Next approved implementation task | — | — |
+| 33 | ✅ Complete | Anthropic candidate 400 response advances to the configured fallback stream | `tests/multi-model-routing.test.mjs`; full suite 60 tests pass; green Vercel deployment | `5e0cde9` |
 | 34 | ☐ Pending | Next approved implementation task | — | — |
 | 35 | ☐ Pending | Next approved implementation task | — | — |
 | 36 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**32 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**33 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
