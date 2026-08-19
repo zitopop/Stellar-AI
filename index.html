@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0720">
   <title>Stellar AI | FiveM QBCore, ESX & Roblox Script Generator</title>
   <meta name="description" content="Turn a plain-English idea into complete, test-ready FiveM QBCore, ESX or Roblox script files. Build, fix and iterate from one premium AI workspace. Free to try.">
   <meta name="keywords" content="FiveM script generator, QBCore script generator, ESX script generator, Roblox script generator, FiveM Lua scripts, QBCore police job, FiveM AI coding">
@@ -444,6 +445,67 @@
       .brand-mark, .button, .capability, .scenario, .roblox-card, .plan, .launch-card, .product-frame { transition: none !important; }
       .button::after { display: none; }
     }
+
+    /* THEME + MOTION UPDATE */
+    .theme-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 42px; min-height: 40px; padding: 0 11px; border: 1px solid var(--border); border-radius: 12px; color: var(--muted-strong); background: rgba(255,255,255,.035); font-size: 12px; font-weight: 800; transition: transform .2s ease, color .2s ease, background .2s ease, border-color .2s ease; }
+    .theme-toggle:hover { transform: translateY(-2px); color: var(--ink); border-color: var(--border-hover); background: rgba(155,124,255,.11); }
+    .theme-toggle:active { transform: translateY(0) scale(.97); }
+    .theme-icon { font-size: 16px; line-height: 1; }
+    .reveal { transform: translateY(18px); transition: opacity .65s ease, transform .65s cubic-bezier(.23,1,.32,1); }
+    body.motion-ready .reveal { opacity: 0; }
+    .reveal.is-visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 70ms; } .reveal-delay-2 { transition-delay: 140ms; } .reveal-delay-3 { transition-delay: 210ms; }
+    body.light { --ink: #211a35; --muted: #625b75; --muted-strong: #403653; --bg: #f7f5fc; --bg-deep: #eeebf7; --surface: rgba(255,255,255,.76); --surface-strong: rgba(255,255,255,.94); --border: rgba(84,67,128,.16); --border-hover: rgba(113,83,205,.38); --violet: #6f4dcc; --violet-bright: #6242c0; --violet-dark: #5635b6; --emerald: #148c70; --amber: #ab6e12; }
+    body.light { background: radial-gradient(circle at 50% -14%, rgba(157,124,255,.22), transparent 35rem), radial-gradient(circle at 98% 20%, rgba(38,192,173,.12), transparent 28rem), var(--bg); }
+    body.light .page-shell::before { opacity: .18; background-image: linear-gradient(rgba(91,68,154,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(91,68,154,.07) 1px, transparent 1px); }
+    body.light .site-header { border-color: rgba(84,67,128,.12); background: rgba(247,245,252,.78); }
+    body.light .brand-mark { color: #6242c0; background: linear-gradient(135deg, rgba(157,124,255,.35), rgba(103,75,214,.16)); }
+    body.light .brand span { color: #6242c0; }
+    body.light .nav-links a, body.light .nav-login { color: #625b75; } body.light .nav-links a:hover, body.light .nav-login:hover { color: #211a35; }
+    body.light .button-secondary { color: #3d3156; background: rgba(255,255,255,.62); }
+    body.light .framework-rail, body.light .launch-deck, body.light .capability, body.light .scenario, body.light .roblox-worlds, body.light .roblox-card, body.light .plan, body.light .faq-item, body.light .final-cta { border-color: rgba(84,67,128,.15); background: rgba(255,255,255,.64); }
+    body.light .framework-rail, body.light .launch-deck, body.light .final-cta { box-shadow: 0 18px 46px rgba(74,54,128,.08); }
+    body.light .capability:hover, body.light .scenario:hover, body.light .roblox-card:hover, body.light .launch-card:hover { background: rgba(255,255,255,.96); box-shadow: 0 18px 46px rgba(74,54,128,.12); }
+    body.light .footer-copy, body.light .footer-meta { color: #716a82; } body.light .footer-links a { color: #574e6d; } body.light .footer-links a:hover { color: #211a35; }
+    @media (max-width: 760px) { .theme-toggle { min-height: 44px; padding-inline: 10px; } .theme-label { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none !important; } .theme-toggle { transition: none !important; } }
+
+    /* NAV + FEATURE DISCOVERY UPDATE */
+    .site-header { transition: background .28s ease, border-color .28s ease, box-shadow .28s ease; }
+    .site-header.is-scrolled { background: rgba(8,7,20,.9); border-color: rgba(196,181,253,.18); box-shadow: 0 12px 34px rgba(0,0,0,.24); }
+    body.light .site-header.is-scrolled { background: rgba(247,245,252,.94); border-color: rgba(84,67,128,.18); box-shadow: 0 12px 34px rgba(74,54,128,.12); }
+    .feature-finder { margin-top: 25px; padding: 16px; border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,.025); }
+    .feature-finder-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
+    .feature-finder-title { color: var(--ink); font-size: 13px; font-weight: 800; }
+    .feature-count { color: var(--muted); font: 500 10px "DM Mono", monospace; }
+    .feature-search-wrap { position: relative; }
+    .feature-search { width: 100%; min-height: 44px; padding: 0 14px 0 38px; border: 1px solid var(--border); border-radius: 12px; color: var(--ink); background: rgba(255,255,255,.045); font-size: 13px; outline: none; }
+    .feature-search::placeholder { color: var(--muted); }
+    .feature-search:focus { border-color: var(--border-hover); box-shadow: 0 0 0 4px rgba(155,124,255,.1); }
+    .feature-search-wrap::before { content: "⌕"; position: absolute; left: 14px; top: 50%; z-index: 1; color: var(--muted); font-size: 18px; transform: translateY(-52%); pointer-events: none; }
+    .favorite-section { display: none; margin-top: 18px; padding: 18px; border: 1px solid rgba(82,225,181,.2); border-radius: 16px; background: rgba(82,225,181,.045); }
+    .favorite-section.has-favorites { display: block; }
+    .favorite-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .favorite-head h3 { color: var(--ink); font-size: 15px; }
+    .favorite-head span { color: var(--muted); font-size: 11px; }
+    .favorite-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .launch-card > a { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; color: inherit; }
+    .launch-card { position: relative; gap: 8px; }
+    .favorite-card { display: flex; align-items: center; gap: 9px; min-width: 0; padding: 10px; border: 1px solid var(--border); border-radius: 11px; color: var(--ink); background: rgba(255,255,255,.04); }
+    .favorite-card:hover { border-color: var(--border-hover); background: rgba(155,124,255,.1); }
+    .favorite-card strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .favorite-card small { display: block; overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; font-size: 9px; }
+    .favorite-card > a { display: flex; align-items: center; gap: 9px; min-width: 0; flex: 1; color: inherit; }
+    .favorite-card .launch-icon { flex: none; width: 28px; height: 28px; font-size: 15px; }
+    .favorite-card .favorite-star { margin-left: auto; }
+    .favorite-star { display: inline-grid; flex: none; width: 30px; height: 30px; place-items: center; border: 1px solid var(--border); border-radius: 9px; color: var(--muted); background: rgba(255,255,255,.035); font-size: 16px; transition: transform .18s ease, color .18s ease, background .18s ease, border-color .18s ease; }
+    .favorite-star:hover { transform: scale(1.08); color: var(--amber); border-color: rgba(255,204,102,.45); background: rgba(255,204,102,.1); }
+    .favorite-star.is-favorite { color: var(--amber); border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.1); }
+    .launch-card.is-filtered, .capability.is-filtered { display: none; }
+    .feature-empty { display: none; margin-top: 12px; color: var(--muted); font-size: 12px; }
+    .feature-empty.is-visible { display: block; }
+    @media (max-width: 760px) { .feature-finder { padding: 13px; } .feature-finder-head { align-items: flex-start; flex-direction: column; gap: 5px; } .favorite-grid { grid-template-columns: 1fr; } .favorite-section { padding: 14px; } }
+    @media (prefers-reduced-motion: reduce) { .site-header, .favorite-star, .favorite-card { transition: none !important; } }
   </style>
 </head>
 <body>
@@ -458,6 +520,7 @@
           <a href="/blog">Guides</a>
         </div>
         <div class="nav-actions">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Theme</span></button>
           <a href="/app" class="nav-login">Sign in</a>
           <a href="/app" class="button button-primary nav-cta">Try it free <span class="button-arrow">→</span></a>
         </div>
@@ -518,11 +581,20 @@ end)</div></div>
         <div class="launch-deck">
           <div class="launch-deck-copy"><div class="eyebrow">Start with a proven brief</div><h2>Open Stellar with a clear next move.</h2><p>Choose a project type, shape it in your own words, then keep refining the resource in one workspace.</p></div>
           <div class="launch-grid">
-            <a href="/app" class="launch-card"><div class="launch-icon">👮</div><div><strong>Police job</strong><span>Menus, MDT and roleplay tools</span></div></a>
-            <a href="/app" class="launch-card"><div class="launch-icon">🏦</div><div><strong>Heist system</strong><span>Planning, payout and dispatch</span></div></a>
-            <a href="/app" class="launch-card"><div class="launch-icon">🔧</div><div><strong>Fix an error</strong><span>Diagnose and revise a script</span></div></a>
-            <a href="/app" class="launch-card"><div class="launch-icon">🎮</div><div><strong>Roblox game</strong><span>Systems, UI and progression</span></div></a>
+            <div class="launch-card" data-feature-id="police" data-search="police fivem qbcore mdt roleplay"><a href="/app"><div class="launch-icon">👮</div><div><strong>Police job</strong><span>Menus, MDT and roleplay tools</span></div></a><button type="button" class="favorite-star" data-favorite="police" aria-label="Save Police job">☆</button></div>
+            <div class="launch-card" data-feature-id="heist" data-search="heist fivem planning payout dispatch"><a href="/app"><div class="launch-icon">🏦</div><div><strong>Heist system</strong><span>Planning, payout and dispatch</span></div></a><button type="button" class="favorite-star" data-favorite="heist" aria-label="Save Heist system">☆</button></div>
+            <div class="launch-card" data-feature-id="fix" data-search="fix error repair debug script"><a href="/app"><div class="launch-icon">🔧</div><div><strong>Fix an error</strong><span>Diagnose and revise a script</span></div></a><button type="button" class="favorite-star" data-favorite="fix" aria-label="Save Fix an error">☆</button></div>
+            <div class="launch-card" data-feature-id="roblox" data-search="roblox lua game systems ui progression"><a href="/app"><div class="launch-icon">🎮</div><div><strong>Roblox game</strong><span>Systems, UI and progression</span></div></a><button type="button" class="favorite-star" data-favorite="roblox" aria-label="Save Roblox game">☆</button></div>
           </div>
+          <div class="feature-finder" aria-label="Find Stellar tools">
+            <div class="feature-finder-head"><strong class="feature-finder-title">Find a starting point</strong><span class="feature-count" id="feature-count">4 tools</span></div>
+            <div class="feature-search-wrap"><input id="feature-search" class="feature-search" type="search" autocomplete="off" placeholder="Search tools and features…" aria-label="Search tools and features"></div>
+            <div id="feature-empty" class="feature-empty">No matching tools yet. Try “Roblox”, “police”, “fix” or “heist”.</div>
+          </div>
+          <section id="favorite-section" class="favorite-section" aria-labelledby="favorite-title">
+            <div class="favorite-head"><h3 id="favorite-title">Your saved tools</h3><span id="favorite-count">0 saved</span></div>
+            <div id="favorite-grid" class="favorite-grid"></div>
+          </section>
         </div>
       </section>
 
@@ -606,6 +678,74 @@ end)</div></div>
     </footer>
   </div>
   <script>
+    (() => {
+      const header = document.querySelector('.site-header');
+      const updateHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 18);
+      updateHeader();
+      window.addEventListener('scroll', updateHeader, { passive: true });
+
+      const catalog = {
+        police: { title: 'Police job', description: 'Menus, MDT and roleplay tools', icon: '👮', href: '/app' },
+        heist: { title: 'Heist system', description: 'Planning, payout and dispatch', icon: '🏦', href: '/app' },
+        fix: { title: 'Fix an error', description: 'Diagnose and revise a script', icon: '🔧', href: '/app' },
+        roblox: { title: 'Roblox game', description: 'Systems, UI and progression', icon: '🎮', href: '/app' }
+      };
+      const readFavorites = () => { try { return JSON.parse(localStorage.getItem('stellar-favorite-tools') || '[]').filter((id) => catalog[id]); } catch { return []; } };
+      let favorites = readFavorites();
+      const favoriteSection = document.getElementById('favorite-section');
+      const favoriteGrid = document.getElementById('favorite-grid');
+      const favoriteCount = document.getElementById('favorite-count');
+      const renderFavorites = () => {
+        document.querySelectorAll('[data-favorite]').forEach((button) => {
+          const id = button.dataset.favorite;
+          const active = favorites.includes(id);
+          button.classList.toggle('is-favorite', active);
+          button.textContent = active ? '★' : '☆';
+          button.setAttribute('aria-label', `${active ? 'Remove' : 'Save'} ${catalog[id].title}`);
+          button.setAttribute('aria-pressed', String(active));
+        });
+        favoriteSection?.classList.toggle('has-favorites', favorites.length > 0);
+        if (favoriteCount) favoriteCount.textContent = `${favorites.length} saved`;
+        if (favoriteGrid) favoriteGrid.innerHTML = favorites.map((id) => { const item = catalog[id]; return `<div class="favorite-card"><a href="${item.href}"><span class="launch-icon">${item.icon}</span><span><strong>${item.title}</strong><small>${item.description}</small></span></a><button type="button" class="favorite-star is-favorite" data-favorite="${id}" aria-label="Remove ${item.title}" aria-pressed="true">★</button></div>`; }).join('');
+        favoriteGrid?.querySelectorAll('[data-favorite]').forEach((button) => button.addEventListener('click', (event) => { event.preventDefault(); event.stopPropagation(); toggleFavorite(button.dataset.favorite); }));
+      };
+      const toggleFavorite = (id) => { favorites = favorites.includes(id) ? favorites.filter((item) => item !== id) : [...favorites, id]; localStorage.setItem('stellar-favorite-tools', JSON.stringify(favorites)); renderFavorites(); };
+      document.querySelectorAll('[data-favorite]').forEach((button) => button.addEventListener('click', (event) => { event.preventDefault(); event.stopPropagation(); toggleFavorite(button.dataset.favorite); }));
+      const search = document.getElementById('feature-search');
+      const cards = [...document.querySelectorAll('.launch-card[data-feature-id]')];
+      const count = document.getElementById('feature-count');
+      const empty = document.getElementById('feature-empty');
+      const filterFeatures = () => { const query = (search?.value || '').trim().toLowerCase(); let visible = 0; cards.forEach((card) => { const match = !query || card.dataset.search.includes(query); card.classList.toggle('is-filtered', !match); if (match) visible += 1; }); if (count) count.textContent = `${visible} ${visible === 1 ? 'tool' : 'tools'}`; empty?.classList.toggle('is-visible', visible === 0); };
+      search?.addEventListener('input', filterFeatures);
+      renderFavorites();
+
+      const root = document.body;
+      const toggle = document.getElementById('theme-toggle');
+      const saved = localStorage.getItem('stellar-landing-theme');
+      const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      const applyTheme = (mode) => {
+        const light = mode === 'light';
+        root.classList.toggle('light', light);
+        if (toggle) {
+          toggle.setAttribute('aria-pressed', String(light));
+          toggle.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+          toggle.querySelector('.theme-icon').textContent = light ? '☀' : '☾';
+        }
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f5fc' : '#0d0720');
+      };
+      applyTheme(saved || (prefersLight ? 'light' : 'dark'));
+      toggle?.addEventListener('click', () => {
+        const next = root.classList.contains('light') ? 'dark' : 'light';
+        localStorage.setItem('stellar-landing-theme', next);
+        applyTheme(next);
+      });
+      const revealTargets = document.querySelectorAll('.framework-rail, .launch-deck, .section-heading, .capability, .scenario, .roblox-worlds, .plans, .faq-layout, .final-cta');
+      revealTargets.forEach((element, index) => { element.classList.add('reveal'); if (index % 4 === 1) element.classList.add('reveal-delay-1'); if (index % 4 === 2) element.classList.add('reveal-delay-2'); if (index % 4 === 3) element.classList.add('reveal-delay-3'); });
+      if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { revealTargets.forEach((element) => element.classList.add('is-visible')); return; }
+      document.body.classList.add('motion-ready');
+      const observer = new IntersectionObserver((entries, instance) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); instance.unobserve(entry.target); } }); }, { threshold: .12, rootMargin: '0px 0px -36px' });
+      revealTargets.forEach((element) => observer.observe(element));
+    })();
     document.querySelectorAll('.faq-button').forEach((button) => {
       button.addEventListener('click', () => {
         const item = button.closest('.faq-item');
