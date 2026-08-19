@@ -15,4 +15,5 @@ test('Task 49 exposes an accessible validated image-upload control in the worksp
   assert.match(appHtml, /reader\.onerror = function\(\)/);
   assert.match(appHtml, /const imageItem = Array\.from\(clipboard\?\.items \|\| \[\]\)\.find\(\(item\) => item\.kind === 'file' && item\.type\.startsWith\('image\/'\)\)/);
   assert.match(appHtml, /attachImageFile\(imageFile, null, 'Pasted image'\)/);
+  assert.match(appHtml, /if \(imageFile\) \{\s+e\.preventDefault\(\);\s+attachImageFile\(imageFile, null, 'Pasted image'\);\s+return;\s+\}\s+\}\s+const t = clipboard\.getData\('text'\);/);
 });
