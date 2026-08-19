@@ -286,6 +286,32 @@ test('Task 19 propagates AbortError without starting a fallback request', async 
   }
 });
 
+test('Task 20 falls back once when Forge returns malformed JSON', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    if (String(url).includes('/v1/chat/completions')) return new Response('{not-json', { status: 200 });
+    return new Response('data: {"type":"content_block_delta","delta":{"text":"malformed fallback"}}\\n\\ndata: [DONE]\\n\\n', {
+      status: 200,
+      headers: { 'content-type': 'text/event-stream' },
+    });
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'forge', model: 'gpt-5-mini', fallbackTier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 200);
+    assert.deepEqual(calls, ['https://forge.test/v1/chat/completions', 'https://api.anthropic.com/v1/messages']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];

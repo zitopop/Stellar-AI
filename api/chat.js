@@ -526,7 +526,12 @@ async function createForgeResponse({ model, maxTokens, system, messages, signal,
     });
   }
   if (!response.ok) return response;
-  const payload = await response.json();
+  let payload;
+  try {
+    payload = await response.json();
+  } catch {
+    return new Response(JSON.stringify({ error: { message: 'The built-in AI provider returned an unreadable response.' } }), { status: 502 });
+  }
   const content = payload?.choices?.[0]?.message?.content;
   const text = Array.isArray(content) ? content.map((part) => part?.text || '').join('') : String(content || '');
   if (!text) return new Response(JSON.stringify({ error: { message: 'The selected AI returned an empty response.' } }), { status: 502 });
