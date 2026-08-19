@@ -12,6 +12,11 @@ test('Task 49 exposes an accessible validated image-upload control in the worksp
   assert.match(appHtml, /const UPLOAD_IMAGE_MEDIA_TYPES = new Set\(\['image\/png', 'image\/jpeg', 'image\/gif', 'image\/webp'\]\);/);
   assert.match(appHtml, /if \(!UPLOAD_IMAGE_MEDIA_TYPES\.has\(file\.type\)\)/);
   assert.match(appHtml, /if \(file\.size > UPLOAD_IMAGE_MAX_BYTES\)/);
+  assert.match(appHtml, /let imageUploadRequestId = 0;/);
+  assert.match(appHtml, /const uploadRequestId = \+\+imageUploadRequestId;/);
+  assert.match(appHtml, /reader\.onload = function\(e\) \{\s+if \(uploadRequestId !== imageUploadRequestId\) return;/);
+  assert.match(appHtml, /reader\.onerror = function\(\) \{\s+if \(uploadRequestId !== imageUploadRequestId\) return;/);
+  assert.match(appHtml, /function removeImage\(\) \{\s+imageUploadRequestId \+= 1;/);
   assert.match(appHtml, /reader\.onerror = function\(\)/);
   assert.match(appHtml, /const imageItem = Array\.from\(clipboard\?\.items \|\| \[\]\)\.find\(\(item\) => item\.kind === 'file' && item\.type\.startsWith\('image\/'\)\)/);
   assert.match(appHtml, /attachImageFile\(imageFile, null, 'Pasted image'\)/);
