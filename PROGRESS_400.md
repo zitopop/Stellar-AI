@@ -45,7 +45,7 @@
 | 39 | ✅ Complete | Saved-tool favorite controls reach a 44px mobile touch target while desktop density remains unchanged | `index.html`; full suite 65 tests pass; live CSS rule and green Vercel deployment verified | `aefdb03` |
 | 40 | ✅ Complete | Mobile recording control reaches a 44px touch target without changing recording behavior | `app.html`; full suite 65 tests pass; live CSS rule and green Vercel deployment verified | `4013df8` |
 | 41 | ✅ Complete | CDN cache policy for public HTML routes only; API, auth, payments, secrets, and checkout routes remain unchanged | Full suite 65 tests pass; HTML/config checks pass; Vercel deployment `b8832c9` READY; live `x-vercel-cache: HIT` verified | `b8832c9` |
-| 42 | ☐ Pending | Next approved implementation task | — | — |
+| 42 | ✅ Complete | Message normalization filters blank or malformed records before retaining the newest 40 valid entries | `api/chat.js`; focused suite 51 tests and full suite 66 tests pass; Vercel deployment `0d1c906` READY | `0d1c906` |
 | 43 | ☐ Pending | Next approved implementation task | — | — |
 | 44 | ☐ Pending | Next approved implementation task | — | — |
 | 45 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**41 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**42 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
