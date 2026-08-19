@@ -227,6 +227,17 @@ test('Task 7 omits explicit thinking for adaptive Claude and preserves unknown f
   assert.deepEqual(getForgeGenerationOptions('future-model', 800), { max_tokens: 800 });
 });
 
+test('Task 34 normalizes non-finite Forge token inputs to a valid minimum', () => {
+  assert.deepEqual(getForgeGenerationOptions('gpt-5-mini', Infinity), {
+    max_completion_tokens: 64,
+    reasoning: { effort: 'low' },
+  });
+  assert.deepEqual(getForgeGenerationOptions('gemini-3-flash-preview', Number.NaN), {
+    max_tokens: 64,
+    reasoning_effort: 'low',
+  });
+});
+
 test('Task 15 preserves role, platform, workflow, and framework guidance during fallback', () => {
   const prompt = buildSystemPrompt('', 'fivem', 'fivem_resource', 'qbcore', 'security');
   assert.match(prompt, /PLATFORM QUALITY GATE: FIVEM/);

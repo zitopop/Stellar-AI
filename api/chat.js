@@ -478,7 +478,10 @@ function toForgeMessages(messages) {
 }
 
 function getForgeGenerationOptions(model, maxTokens) {
-  const safeMaxTokens = Math.max(64, Math.floor(Number(maxTokens) || 64));
+  const parsedMaxTokens = Number(maxTokens);
+  const safeMaxTokens = Number.isFinite(parsedMaxTokens)
+    ? Math.max(64, Math.floor(parsedMaxTokens))
+    : 64;
   if (model.startsWith('gpt-')) {
     return { max_completion_tokens: safeMaxTokens, reasoning: { effort: 'low' } };
   }
