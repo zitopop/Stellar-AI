@@ -532,6 +532,12 @@ function forgeEventStream(text, model) {
   return `${events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join('')}data: [DONE]\n\n`;
 }
 
+function normaliseForgeCompletionText(content) {
+  if (typeof content === 'string') return content;
+  if (!Array.isArray(content)) return '';
+  return content.map((part) => typeof part?.text === 'string' ? part.text : '').join('');
+}
+
 async function createForgeResponse({ model, maxTokens, system, messages, signal, responseFormat }) {
   const modelMessages = [{ role: 'system', content: system }, ...toForgeMessages(messages)];
   const body = { model, messages: modelMessages, ...getForgeGenerationOptions(model, maxTokens) };
@@ -559,7 +565,7 @@ async function createForgeResponse({ model, maxTokens, system, messages, signal,
     return new Response(JSON.stringify({ error: { message: 'The built-in AI provider returned an unreadable response.' } }), { status: 502 });
   }
   const content = payload?.choices?.[0]?.message?.content;
-  const text = Array.isArray(content) ? content.map((part) => part?.text || '').join('') : String(content || '');
+  const text = normaliseForgeCompletionText(content);
   if (!text.trim()) return new Response(JSON.stringify({ error: { message: 'The selected AI returned an empty response.' } }), { status: 502 });
   return new Response(forgeEventStream(text, model), { status: 200, headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } });
 }
