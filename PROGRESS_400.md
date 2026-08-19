@@ -30,7 +30,7 @@
 | 24 | ✅ Complete | Direct Anthropic 404 fallback preserves the configured candidate stream | `tests/multi-model-routing.test.mjs`; full suite 51 tests pass | `9ea039e` |
 | 25 | ✅ Complete | Caller AbortSignal forwarded unchanged to Anthropic fetch | `tests/multi-model-routing.test.mjs`; full suite 52 tests pass | `810c531` |
 | 26 | ✅ Complete | Caller AbortSignal forwarded unchanged to Forge fetch | `tests/multi-model-routing.test.mjs`; full suite 53 tests pass; included in green production deployment `c27fc10` | `1864dd0` |
-| 27 | ☐ Pending | Next approved implementation task | — | — |
+| 27 | ✅ Complete | Forge 200 response without a usable completion falls back to the existing Anthropic stream | `tests/multi-model-routing.test.mjs`; full suite 54 tests pass; green Vercel deployment | `6cd0d73` |
 | 28 | ☐ Pending | Next approved implementation task | — | — |
 | 29 | ☐ Pending | Next approved implementation task | — | — |
 | 30 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**26 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**27 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
