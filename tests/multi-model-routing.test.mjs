@@ -367,6 +367,30 @@ test('Task 22 propagates direct Anthropic AbortError without trying another cand
   }
 });
 
+test('Task 23 returns a retryable 503 after all Anthropic candidates fail', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url, options) => {
+    calls.push(JSON.parse(options.body).model);
+    throw new Error('upstream unavailable');
+  };
+  try {
+    const response = await createUpstreamStream({
+      route: { provider: 'anthropic', tier: 'star' },
+      maxTokens: 256,
+      system: 'test',
+      messages: [{ role: 'user', content: 'test' }],
+      signal: undefined,
+    });
+    assert.equal(response.status, 503);
+    assert.match(await response.text(), /temporarily unavailable/);
+    assert.equal(calls.length, 2);
+    assert.notEqual(calls[0], calls[1]);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('Task 2 falls back once when the built-in provider is unavailable', async () => {
   const originalFetch = globalThis.fetch;
   const calls = [];
