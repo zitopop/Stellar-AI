@@ -44,7 +44,7 @@
 | 38 | ✅ Complete | Inherited object-property names cannot select specialist routing roles | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 65 tests pass; green Vercel deployment | `8000e4f` |
 | 39 | ✅ Complete | Saved-tool favorite controls reach a 44px mobile touch target while desktop density remains unchanged | `index.html`; full suite 65 tests pass; live CSS rule and green Vercel deployment verified | `aefdb03` |
 | 40 | ✅ Complete | Mobile recording control reaches a 44px touch target without changing recording behavior | `app.html`; full suite 65 tests pass; live CSS rule and green Vercel deployment verified | `4013df8` |
-| 41 | ☐ Pending | Next approved implementation task | — | — |
+| 41 | ✅ Complete | CDN cache policy for public HTML routes only; API, auth, payments, secrets, and checkout routes remain unchanged | Full suite 65 tests pass; HTML/config checks pass; Vercel deployment `b8832c9` READY; live `x-vercel-cache: HIT` verified | `b8832c9` |
 | 42 | ☐ Pending | Next approved implementation task | — | — |
 | 43 | ☐ Pending | Next approved implementation task | — | — |
 | 44 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**40 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**41 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
