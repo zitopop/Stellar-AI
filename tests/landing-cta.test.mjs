@@ -19,3 +19,10 @@ test('Task 124 lets keyboard visitors skip the landing navigation and focus main
 test('Task 125 keeps the visible mobile landing theme control touch-safe', () => {
   assert.match(landingHtml, /@media \(max-width: 760px\) \{\s+\.container[\s\S]*?\.nav-cta \{ min-height: 37px; padding: 0 12px; \} \.theme-toggle \{ min-width: 44px; min-height: 44px; \}/);
 });
+
+test('Task 126 exposes unsaved favorite-tool buttons as unpressed before the existing state renderer runs', () => {
+  for (const id of ['police', 'heist', 'fix', 'roblox']) {
+    assert.match(landingHtml, new RegExp(`data-favorite="${id}" aria-label="Save [^"]+" aria-pressed="false"`));
+  }
+  assert.match(landingHtml, /button\.setAttribute\('aria-pressed', String\(active\)\);/);
+});
