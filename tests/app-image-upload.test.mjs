@@ -310,3 +310,12 @@ test('Task 119 moves Arrow-key focus within the open model menu and wraps visibl
   assert.match(appHtml, /function navigateModelMenuWithArrows\(event\) \{\s+if \(!\['ArrowDown', 'ArrowUp'\]\.includes\(event\.key\)\) return;[\s\S]*?const focusable = getVisibleModelMenuControls\(menu\);[\s\S]*?const direction = event\.key === 'ArrowDown' \? 1 : -1;[\s\S]*?const currentIndex = focusable\.indexOf\(document\.activeElement\);[\s\S]*?\(currentIndex \+ direction \+ focusable\.length\) % focusable\.length;\s+event\.preventDefault\(\);\s+focusable\[nextIndex\]\.focus\(\);\s+\}/);
   assert.match(appHtml, /document\.addEventListener\('keydown', navigateModelMenuWithArrows\);/);
 });
+
+test('Task 120 exposes the selected model with synchronized radio-menu semantics', () => {
+  assert.match(appHtml, /pickModel\('fabie'\)" data-model-choice="fabie" role="menuitemradio" aria-checked="false"/);
+  assert.match(appHtml, /pickModel\('smart'\)" data-model-choice="smart" role="menuitemradio" aria-checked="true"/);
+  assert.match(appHtml, /pickModel\('ultra'\)" data-model-choice="ultra" role="menuitemradio" aria-checked="false"/);
+  assert.match(appHtml, /pickModel\('researcher'\)" data-model-choice="researcher" role="menuitemradio" aria-checked="false"/);
+  assert.match(appHtml, /document\.querySelectorAll\('\[data-model-choice\]'\)\.forEach\(\(choice\) => \{\s+choice\.setAttribute\('aria-checked', String\(choice\.dataset\.modelChoice === cur\)\);\s+\}\);/);
+  assert.match(appHtml, /closeModelMenu\(\); openPlans\(\)" role="menuitem"/);
+});
