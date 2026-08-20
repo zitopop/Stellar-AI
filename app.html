@@ -5441,10 +5441,17 @@
       if (Store.get().user) { signOut(); refreshSettings(); }
       else { closeSettings(); openWelcome(); }
     }
+    let welcomeTrigger = null;
+    function focusWelcomeDialog() {
+      setTimeout(() => document.getElementById('si-email')?.focus({ preventScroll: true }), 0);
+    }
     function openWelcome() {
+      const active = document.activeElement;
+      welcomeTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
       authPage('login');
       document.getElementById('welcome-modal').classList.remove('hidden');
       initGoogle();
+      focusWelcomeDialog();
     }
     function handleDiscordReturn() {
       const p = new URLSearchParams(location.search);
@@ -5472,12 +5479,16 @@
     function dismissWelcome() {
       document.getElementById('welcome-modal').classList.add('hidden');
       Store.set({ seenWelcome: true });
+      const trigger = welcomeTrigger;
+      welcomeTrigger = null;
+      if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
     function maybeShowWelcome() {
       const s = Store.get();
       if (!GOOGLE_CLIENT_ID) return;
       if (s.user || s.seenWelcome) return;
       document.getElementById('welcome-modal').classList.remove('hidden');
+      focusWelcomeDialog();
     }
     function initGoogle() {
       if (!GOOGLE_CLIENT_ID) { document.getElementById('account-box').style.display = 'none'; return; }

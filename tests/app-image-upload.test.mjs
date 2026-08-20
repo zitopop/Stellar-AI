@@ -102,3 +102,9 @@ test('Task 79 closes an open workspace drawer with Escape and restores Files con
 test('Task 80 gives the sign-in modal an explicit labelled modal-dialog role', () => {
   assert.match(appHtml, /<div class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-heading">\s+<h2 id="welcome-modal-heading" class="sr-only">Account access<\/h2>/);
 });
+
+test('Task 81 manages focus when the sign-in dialog opens and is explicitly dismissed', () => {
+  assert.match(appHtml, /let welcomeTrigger = null;\s+function focusWelcomeDialog\(\) \{\s+setTimeout\(\(\) => document\.getElementById\('si-email'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /function openWelcome\(\) \{\s+const active = document\.activeElement;\s+welcomeTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?focusWelcomeDialog\(\);/);
+  assert.match(appHtml, /function dismissWelcome\(\) \{[\s\S]*?const trigger = welcomeTrigger;\s+welcomeTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);/);
+});
