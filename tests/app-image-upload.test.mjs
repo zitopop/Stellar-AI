@@ -171,3 +171,8 @@ test('Task 92 gives the remaining symbol-only workspace controls specific access
   assert.match(appHtml, /<button onclick="clearPaste\(\)" class="paste-x" aria-label="Remove pasted content" title="Remove pasted content">×<\/button>/);
   assert.match(appHtml, /<button onclick="closeOwner\(\)" class="modal-x" aria-label="Close owner tools">×<\/button>/);
 });
+
+test('Task 93 gives the owner-tools modal explicit labelled dialog semantics', () => {
+  assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-md mx-4 p-6 thanks-card" role="dialog" aria-modal="true" aria-labelledby="owner-modal-heading">/);
+  assert.match(appHtml, /<div id="owner-modal-heading" class="text-2xl font-black">👑 Owner tools<\/div>/);
+});
