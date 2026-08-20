@@ -72,7 +72,7 @@
 | 66 | ✅ Complete | Handler-level regression coverage proves the existing chat timeout and disconnect listener are cleaned up after streamed success and upstream error paths | `tests/multi-model-routing.test.mjs`; focused suite 70 tests and full suite 86 tests pass; Vercel deployment `36c6219` READY | `36c6219` |
 | 67 | ✅ Complete | Workspace composer preserves IME composition, keeps Enter-to-send and Shift+Enter newline behavior, and exposes an accessible keyboard-use label | `app.html`; static UI contract and full suite 87 tests pass; exact Vercel deployment `1c7de33` READY; live DOM verified | `1c7de33` |
 | 68 | ✅ Complete | Workspace composer displays a concise Enter-to-send and Shift+Enter hint on desktop, with readable theme styling and a narrow-screen hide rule to protect mobile controls | `app.html`; attachment contract and full suite 88 tests pass; exact Vercel deployment `e9bd5c3` READY; live DOM text, geometry, and mobile CSS rule verified | `e9bd5c3` |
-| 69 | ☐ Pending | Next approved implementation task | — | — |
+| 69 | ✅ Complete | Workspace chat exposes polite, atomic live status text for thinking, completion, stop, and failure states without changing provider behavior | `app.html`; static UI contract and full suite 89 tests pass; Vercel deployment `9460654` READY | `9460654` |
 | 70 | ☐ Pending | Next approved implementation task | — | — |
 | 71 | ☐ Pending | Next approved implementation task | — | — |
 | 72 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**68 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**69 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
