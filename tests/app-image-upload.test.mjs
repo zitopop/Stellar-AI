@@ -147,3 +147,7 @@ test('Task 87 gives sign-in and sign-up credential fields explicit accessible na
   assert.match(appHtml, /id="su-email"[^>]*aria-label="Email address"[^>]*autocomplete="email"/);
   assert.match(appHtml, /id="su-pass"[^>]*aria-label="Choose a password"[^>]*autocomplete="new-password"/);
 });
+
+test('Task 88 focuses the active authentication page email field after switching pages', () => {
+  assert.match(appHtml, /function authPage\(which\) \{[\s\S]*?const login = which === 'login';[\s\S]*?setTimeout\(\(\) => document\.getElementById\(login \? 'si-email' : 'su-email'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+});

@@ -5287,6 +5287,7 @@
       document.getElementById('page-signup').classList.toggle('hidden', login);
       document.getElementById('si-msg').textContent = '';
       document.getElementById('su-msg').textContent = '';
+      setTimeout(() => document.getElementById(login ? 'si-email' : 'su-email')?.focus({ preventScroll: true }), 0);
     }
     async function emailAuth(action) {
       const p = action === 'signup' ? 'su' : 'si';
