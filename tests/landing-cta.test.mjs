@@ -31,3 +31,11 @@ test('Task 127 announces existing feature-search result-count updates politely',
   assert.match(landingHtml, /<span class="feature-count" id="feature-count" role="status" aria-live="polite" aria-atomic="true">4 tools<\/span>/);
   assert.match(landingHtml, /if \(count\) count\.textContent = `\$\{visible\} \$\{visible === 1 \? 'tool' : 'tools'\}`;/);
 });
+
+test('Task 128 links every FAQ disclosure control with its labelled answer region', () => {
+  for (const id of ['faq-test', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
+    assert.match(landingHtml, new RegExp(`<button id="${id}-button" class="faq-button" aria-expanded="false" aria-controls="${id}-answer">`));
+    assert.match(landingHtml, new RegExp(`<div id="${id}-answer" class="faq-answer" role="region" aria-labelledby="${id}-button">`));
+  }
+  assert.match(landingHtml, /openItem\.querySelector\('\.faq-button'\)\.setAttribute\('aria-expanded', 'false'\)/);
+});
