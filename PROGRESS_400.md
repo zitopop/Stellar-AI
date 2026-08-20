@@ -85,7 +85,7 @@
 | 79 | ✅ Complete | Keyboard users can close an open workspace drawer with Escape and return focus to the existing Files control | `app.html`; static UI contract and full suite 99 tests pass; Vercel deployment `443fa2d` READY; live workspace load verified | `443fa2d` |
 | 80 | ✅ Complete | Sign-in modal exposes an explicit labelled modal-dialog role with a stable Account access title | `app.html`; static UI contract and full suite 100 tests pass; Vercel deployment `b318e90` READY; live dialog title verified | `b318e90` |
 | 81 | ✅ Complete | Sign-in dialog moves focus to its email field when opened and returns focus to its trigger after explicit dismissal | `app.html`; static UI contract and full suite 101 tests pass; Vercel deployment `ed15260` READY; live workspace load verified | `ed15260` |
-| 82 | ☐ Pending | Next approved implementation task | — | — |
+| 82 | ✅ Complete | Escape closes the open sign-in dialog through its existing dismissal path and restores focus to the triggering control | `app.html`; static UI contract and full suite 102 tests pass; Vercel deployment `9464675` READY; live Escape and focus-return behavior verified | `9464675` |
 | 83 | ☐ Pending | Next approved implementation task | — | — |
 | 84 | ☐ Pending | Next approved implementation task | — | — |
 | 85 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**81 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**82 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
