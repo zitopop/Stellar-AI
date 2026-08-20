@@ -244,3 +244,8 @@ test('Task 106 manages focus for the redeem-code dialog lifecycle', () => {
 test('Task 107 closes only the open redeem-code dialog with an unhandled Escape key', () => {
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const redeemModal = document\.getElementById\('redeem-modal'\);\s+if \(!redeemModal \|\| redeemModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeRedeem\(\);\s+\}\);/);
 });
+
+test('Task 108 keeps Tab navigation inside the open redeem-code dialog', () => {
+  assert.match(appHtml, /function trapRedeemDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const redeemModal = document\.getElementById\('redeem-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', trapRedeemDialogFocus\);/);
+});
