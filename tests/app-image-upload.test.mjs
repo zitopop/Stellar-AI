@@ -60,6 +60,12 @@ test('Task 134 gives the existing workspace chat region a stable accessible name
   assert.match(appHtml, /chatEl\.setAttribute\('aria-busy', 'true'\);/);
 });
 
+test('Task 135 exposes the existing workspace composer as a named form landmark', () => {
+  assert.match(appHtml, /<div class="input-area p-6 glass border-t border-white\/10" role="form" aria-label="Message composer">/);
+  assert.match(appHtml, /id="txt" rows="1" autofocus placeholder="Ask Stellar…" aria-label="Message composer\. Press Enter to send and Shift\+Enter for a new line\."/);
+  assert.match(appHtml, /id="send-btn" onclick="stopOrSend\(\)" aria-label="Send message"/);
+});
+
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
   assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(appHtml, /loading\.innerHTML = '<div class="think-bubble" aria-hidden="true"><div class="think-spinner"><\/div><div class="think-status" id="think-status">' \+ STEPS\[0\]\[1\] \+ '<\/div><\/div>';/);
