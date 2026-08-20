@@ -211,3 +211,8 @@ test('Task 99 manages focus for the allowance-limit dialog lifecycle', () => {
 test('Task 100 closes only the open allowance-limit dialog with an unhandled Escape key', () => {
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const limitModal = document\.getElementById\('limit-modal'\);\s+if \(!limitModal \|\| limitModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeLimit\(\);\s+\}\);/);
 });
+
+test('Task 101 gives the credit top-up modal explicit labelled dialog semantics', () => {
+  assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card topup-card" role="dialog" aria-modal="true" aria-labelledby="topup-modal-heading">/);
+  assert.match(appHtml, /<div id="topup-modal-heading" class="topup-title">Add credit<\/div>/);
+});
