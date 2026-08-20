@@ -5545,6 +5545,17 @@
     }
     function closeSettings() {
       document.body.classList.remove('settings-open'); document.getElementById('settings-modal').classList.add('hidden'); }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      const openUtilityDialog = [
+        ['settings-modal', closeSettings],
+        ['usage-modal', closeUsage],
+        ['plans-modal', closePlans],
+      ].find(([id]) => !document.getElementById(id)?.classList.contains('hidden'));
+      if (!openUtilityDialog) return;
+      event.preventDefault();
+      openUtilityDialog[1]();
+    });
     function refreshSettings() {
       (function(){ const t = Store.get().textSize || 'md';
         ['sm','md','lg'].forEach(k => { const b = document.getElementById('seg-txt-' + k); if (b) b.classList.toggle('on', k === t); }); })();

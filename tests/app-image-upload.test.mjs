@@ -124,3 +124,7 @@ test('Task 84 gives every scoped utility-dialog close control a specific accessi
   assert.match(appHtml, /<button onclick="closeSettings\(\)" class="modal-x" aria-label="Close settings" title="Close settings">×<\/button>/);
   assert.match(appHtml, /<button onclick="closeUsage\(\)" aria-label="Close usage limits" title="Close usage limits"/);
 });
+
+test('Task 85 closes the open plans, usage, or settings dialog with Escape without overriding an earlier handler', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const openUtilityDialog = \[\s+\['settings-modal', closeSettings\],\s+\['usage-modal', closeUsage\],\s+\['plans-modal', closePlans\],\s+\]\.find\(\(\[id\]\) => !document\.getElementById\(id\)\?\.classList\.contains\('hidden'\)\);\s+if \(!openUtilityDialog\) return;\s+event\.preventDefault\(\);\s+openUtilityDialog\[1\]\(\);/);
+});
