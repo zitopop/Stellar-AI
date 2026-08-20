@@ -296,6 +296,12 @@ test('Task 116 closes only the open model menu with an unhandled Escape key and 
 });
 
 test('Task 117 keeps Tab navigation inside the open model menu', () => {
-  assert.match(appHtml, /function trapModelMenuFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const menu = document\.getElementById\('model-menu'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /function getVisibleModelMenuControls\(menu\) \{\s+return Array\.from\(menu\.querySelectorAll\('button, \[href\], input, select, textarea, \[tabindex\]:not\(\[tabindex="-1"\]\)'\)\)\s+\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);/);
+  assert.match(appHtml, /function trapModelMenuFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const focusable = getVisibleModelMenuControls\(menu\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
   assert.match(appHtml, /document\.addEventListener\('keydown', trapModelMenuFocus\);/);
+});
+
+test('Task 118 moves keyboard-triggered model-menu opening focus to the first visible choice', () => {
+  assert.match(appHtml, /document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', String\(willOpen\)\);\s+if \(willOpen && e\.detail === 0\) setTimeout\(focusModelMenuFirstChoice, 0\);/);
+  assert.match(appHtml, /function focusModelMenuFirstChoice\(\) \{\s+const menu = document\.getElementById\('model-menu'\);\s+if \(!menu \|\| menu\.classList\.contains\('hidden'\)\) return;\s+getVisibleModelMenuControls\(menu\)\[0\]\?\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });

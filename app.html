@@ -5326,6 +5326,7 @@
       const willOpen = menu.classList.contains('hidden');
       menu.classList.toggle('hidden', !willOpen);
       document.getElementById('model-btn').setAttribute('aria-expanded', String(willOpen));
+      if (willOpen && e.detail === 0) setTimeout(focusModelMenuFirstChoice, 0);
     }
 
     function closeModelMenu() {
@@ -5348,6 +5349,15 @@
     }
 
     document.addEventListener('click', closeModelMenu);
+    function getVisibleModelMenuControls(menu) {
+      return Array.from(menu.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+        .filter((element) => !element.closest('.hidden') && element.offsetParent !== null && !element.disabled);
+    }
+    function focusModelMenuFirstChoice() {
+      const menu = document.getElementById('model-menu');
+      if (!menu || menu.classList.contains('hidden')) return;
+      getVisibleModelMenuControls(menu)[0]?.focus({ preventScroll: true });
+    }
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape' || event.defaultPrevented) return;
       const menu = document.getElementById('model-menu');
@@ -5360,8 +5370,7 @@
       if (event.key !== 'Tab') return;
       const menu = document.getElementById('model-menu');
       if (!menu || menu.classList.contains('hidden')) return;
-      const focusable = Array.from(menu.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
-        .filter((element) => !element.closest('.hidden') && element.offsetParent !== null && !element.disabled);
+      const focusable = getVisibleModelMenuControls(menu);
       if (!focusable.length) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
