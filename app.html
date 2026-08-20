@@ -3012,27 +3012,27 @@
           <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Image</span></button>
           <button onclick="toggleWorkspace()" id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
           <div class="relative">
-            <button id="model-btn" onclick="toggleModelMenu(event)" class="model-pill">⭐ Star ▾</button>
+            <button id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts">⭐ Star ▾</button>
             <div id="model-menu" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
-              <button onclick="pickModel('fabie')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button onclick="pickModel('fabie')" aria-label="Select Spark for fast drafts" title="Fast drafts with Claude Haiku" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
                 </div>
                 <div id="fabie-check" class="font-black text-sm text-[#10a37f]">✓</div>
               </button>
-              <button onclick="pickModel('smart')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button onclick="pickModel('smart')" aria-label="Select Star, recommended for most scripts" title="Recommended scripts with Claude Sonnet" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">⭐ Star <span style="color:#8b8b9e;font-size:10px;">· best for most scripts</span></div>
                 </div>
                 <div id="smart-check" class="font-black text-sm text-[#10a37f]">✓</div>
               </button>
-              <button onclick="pickModel('comet')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button onclick="pickModel('comet')" aria-label="Select Comet for deep system work" title="Deep system work with Claude Opus" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">☄️ Comet <span style="color:#8b8b9e;font-size:10px;">· deep system work</span></div>
                 </div>
                 <div id="comet-check" class="font-black text-sm text-[#10a37f]">✓</div>
               </button>
-              <button id="nova-model-btn" onclick="pickModel('ultra')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button id="nova-model-btn" onclick="pickModel('ultra')" aria-label="Select Nova for maximum quality, available on Pro" title="Maximum quality with Claude Opus, Pro plan" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">🚀 Nova <span class="text-xs px-2 py-0.5 bg-[#10a37f] rounded text-white">PRO</span><span style="color:#8b8b9e;font-size:10px;"> · max quality</span></div>
                 </div>
@@ -5333,7 +5333,10 @@
       if (['researcher', 'security', 'tester'].includes(m) && !(s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
       Store.set({ model: m });
       const labels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
-      document.getElementById('model-btn').innerHTML = labels[m] || labels.smart;
+      const modelLabels = { fabie: 'Choose model: Spark for fast drafts', smart: 'Choose model: Star, recommended for most scripts', comet: 'Choose model: Comet for deep system work', ultra: 'Choose model: Nova for maximum quality, available on Pro', researcher: 'Choose Research AI', security: 'Choose Security AI', tester: 'Choose Test AI' };
+      const modelButton = document.getElementById('model-btn');
+      modelButton.innerHTML = labels[m] || labels.smart;
+      modelButton.setAttribute('aria-label', modelLabels[m] || modelLabels.smart);
     }
 
     document.addEventListener('click', () => {

@@ -274,3 +274,11 @@ test('Task 112 keeps Tab navigation inside the open purchase-confirmation dialog
 test('Task 113 hides the decorative purchase confetti canvas from assistive technologies', () => {
   assert.match(appHtml, /function fireConfetti\(\) \{\s+const c = document\.createElement\('canvas'\);\s+c\.id = 'confetti-canvas';\s+c\.setAttribute\('aria-hidden', 'true'\);/);
 });
+
+test('Task 114 gives model choices clear accessible descriptions aligned to routing tiers', () => {
+  assert.match(appHtml, /id="model-btn"[^>]*aria-label="Choose model: Star, recommended for most scripts"/);
+  assert.match(appHtml, /pickModel\('fabie'\)[^>]*aria-label="Select Spark for fast drafts"[^>]*title="Fast drafts with Claude Haiku"/);
+  assert.match(appHtml, /pickModel\('smart'\)[^>]*aria-label="Select Star, recommended for most scripts"[^>]*title="Recommended scripts with Claude Sonnet"/);
+  assert.match(appHtml, /pickModel\('ultra'\)[^>]*aria-label="Select Nova for maximum quality, available on Pro"[^>]*title="Maximum quality with Claude Opus, Pro plan"/);
+  assert.match(appHtml, /modelButton\.setAttribute\('aria-label', modelLabels\[m\] \|\| modelLabels\.smart\);/);
+});
