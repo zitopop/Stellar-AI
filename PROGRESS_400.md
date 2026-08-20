@@ -83,7 +83,7 @@
 | 77 | ✅ Complete | Workspace drawer close control exposes an explicit Close workspace label while preserving the existing toggle behavior | `app.html`; static UI contract and full suite 97 tests pass; Vercel deployment `aa6778e` READY; live workspace load verified | `aa6778e` |
 | 78 | ✅ Complete | Workspace Files control exposes a synchronized aria-expanded state and aria-controls relationship for the existing drawer | `app.html`; static UI contract and full suite 98 tests pass; Vercel deployment `34f86eb` READY; live workspace load verified | `34f86eb` |
 | 79 | ✅ Complete | Keyboard users can close an open workspace drawer with Escape and return focus to the existing Files control | `app.html`; static UI contract and full suite 99 tests pass; Vercel deployment `443fa2d` READY; live workspace load verified | `443fa2d` |
-| 80 | ☐ Pending | Next approved implementation task | — | — |
+| 80 | ✅ Complete | Sign-in modal exposes an explicit labelled modal-dialog role with a stable Account access title | `app.html`; static UI contract and full suite 100 tests pass; Vercel deployment `b318e90` READY; live dialog title verified | `b318e90` |
 | 81 | ☐ Pending | Next approved implementation task | — | — |
 | 82 | ☐ Pending | Next approved implementation task | — | — |
 | 83 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**79 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**80 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
