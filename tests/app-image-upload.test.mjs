@@ -72,3 +72,7 @@ test('Task 73 gives the active stop control enough narrow-screen width to keep i
   assert.match(appHtml, /#send-btn\.is-stop \{ flex-basis: 88px !important; width: 88px !important; min-width: 88px !important; padding-inline: 10px !important; white-space: nowrap; \}/);
   assert.match(appHtml, /button\.classList\.toggle\('is-stop', label === '◼ Stop'\);/);
 });
+
+test('Task 74 restores guarded composer focus after standard generation cleanup', () => {
+  assert.match(appHtml, /loading\.remove\(\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+setSendControl\('Send', 'Send message'\);\s+document\.getElementById\('logo-star'\)\.classList\.remove\('logo-working'\);\s+restoreComposerFocusIfSendControlFocused\(\);/);
+});
