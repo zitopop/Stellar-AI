@@ -80,3 +80,8 @@ test('Task 74 restores guarded composer focus after standard generation cleanup'
 test('Task 75 announces a requested stop before aborting the active generation', () => {
   assert.match(appHtml, /function stopOrSend\(\) \{\s+if \(currentAbort\) \{\s+setGenerationStatus\('Stopping generation\.'\);\s+currentAbort\.abort\(\);\s+return;/);
 });
+
+test('Task 76 exposes the mobile navigation toggle name and expanded state', () => {
+  assert.match(appHtml, /id="mobile-menu-toggle"[^>]*aria-label="Open navigation"[^>]*aria-expanded="false"[^>]*aria-controls="sidebar"/);
+  assert.match(appHtml, /const toggle = document\.getElementById\('mobile-menu-toggle'\);\s+if \(toggle\) \{\s+toggle\.setAttribute\('aria-expanded', String\(opening\)\);\s+toggle\.setAttribute\('aria-label', opening \? 'Close navigation' : 'Open navigation'\);/);
+});

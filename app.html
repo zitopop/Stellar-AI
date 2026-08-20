@@ -2942,7 +2942,7 @@
     <div class="flex-1 flex flex-col" id="main-col">
       <div class="topbar h-14 glass border-b border-white/10 flex items-center justify-between px-6">
         <div class="flex items-center gap-4">
-          <button onclick="toggleSidebar()" class="menu-btn-mobile w-10 h-10 items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">☰</button>
+          <button id="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar" class="menu-btn-mobile w-10 h-10 items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">☰</button>
           <div id="chat-title" class="font-black tracking-[-0.3px]">Stellar AI</div>
         </div>
 
@@ -3785,6 +3785,11 @@
         sb.classList.toggle('open');
         document.getElementById('overlay').classList.toggle('open');
         document.body.classList.toggle('nav-open', opening);
+        const toggle = document.getElementById('mobile-menu-toggle');
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', String(opening));
+          toggle.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
+        }
       }
     }
 
