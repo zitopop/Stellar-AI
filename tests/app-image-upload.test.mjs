@@ -80,6 +80,11 @@ test('Task 137 exposes the existing workspace sidebar as named navigation', () =
   assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list"><\/div>/);
 });
 
+test('Task 138 gives workspace chat search an explicit accessible name', () => {
+  assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)" placeholder="&#128269; Search chats" aria-label="Search chats"/);
+  assert.match(appHtml, /autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="search_stellar_20607">/);
+});
+
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
   assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(appHtml, /loading\.innerHTML = '<div class="think-bubble" aria-hidden="true"><div class="think-spinner"><\/div><div class="think-status" id="think-status">' \+ STEPS\[0\]\[1\] \+ '<\/div><\/div>';/);
