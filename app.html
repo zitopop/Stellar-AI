@@ -3084,7 +3084,7 @@
           <div id="plans-modal-heading" style="font-size:22px;font-weight:900;letter-spacing:-0.5px;">Choose your plan</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Upgrade any time · Cancel any time · Billed in GBP</div>
         </div>
-        <button onclick="closePlans()" class="modal-x" aria-label="Close plans">×</button>
+        <button id="plans-modal-close" onclick="closePlans()" class="modal-x" aria-label="Close plans">×</button>
       </div>
 
       <div class="plans-choice-guide" aria-label="Plan selection guide"><span><b>TRYING IT?</b>Start Free.</span><span><b>BUILDING WEEKLY?</b>Choose Plus.</span><span><b>BUILDING BIG?</b>Choose Pro.</span></div>
@@ -3179,7 +3179,7 @@
           <div id="settings-modal-heading" class="settings-title">Settings</div>
           <div class="settings-subtitle">Make Stellar feel right for the way you build.</div>
         </div>
-        <button onclick="closeSettings()" class="modal-x" aria-label="Close settings" title="Close settings">×</button>
+        <button id="settings-modal-close" onclick="closeSettings()" class="modal-x" aria-label="Close settings" title="Close settings">×</button>
       </div>
 
       <div class="set-body">
@@ -3454,7 +3454,7 @@
       <!-- Header -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.07);">
         <div id="usage-modal-heading" style="font-size:16px;font-weight:900;letter-spacing:-0.3px;color:#ffffff;">Plan usage limits</div>
-        <button onclick="closeUsage()" aria-label="Close usage limits" title="Close usage limits" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;color:rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;">×</button>
+        <button id="usage-modal-close" onclick="closeUsage()" aria-label="Close usage limits" title="Close usage limits" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;color:rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;">×</button>
       </div>
 
       <!-- Plan name -->
@@ -5174,7 +5174,20 @@
       if (mm) mm.classList.add('hidden');
     });
 
-    function openPlans() { refreshPlans(); document.getElementById('plans-modal').classList.remove('hidden');
+    let utilityDialogTrigger = null;
+    function captureUtilityDialogTrigger() {
+      const active = document.activeElement;
+      utilityDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
+    }
+    function focusUtilityDialogClose(id) {
+      setTimeout(() => document.getElementById(id)?.focus({ preventScroll: true }), 0);
+    }
+    function restoreUtilityDialogFocus() {
+      const trigger = utilityDialogTrigger;
+      utilityDialogTrigger = null;
+      if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+    }
+    function openPlans() { captureUtilityDialogTrigger(); refreshPlans(); document.getElementById('plans-modal').classList.remove('hidden'); focusUtilityDialogClose('plans-modal-close');
       setTimeout(initPlansScroll, 100); }
     function initPlansScroll() {
       const grid = document.getElementById('plans-grid-inner');
@@ -5189,6 +5202,7 @@
     function closePlans() {
       const m = document.getElementById('plans-modal');
       if (m) m.classList.add('hidden');
+      restoreUtilityDialogFocus();
     }
 
     // ── Google Sign-In ──────────────────────────────────────────
@@ -5401,10 +5415,10 @@
     function openUsage() {
       document.body.classList.add('usage-open');
       if (!Store.get().user && !isOwner()) { openWelcome(); return; }
-      renderUsagePage(); document.getElementById('usage-modal').classList.remove('hidden');
+      captureUtilityDialogTrigger(); renderUsagePage(); document.getElementById('usage-modal').classList.remove('hidden'); focusUtilityDialogClose('usage-modal-close');
     }
     function closeUsage() {
-      document.body.classList.remove('usage-open'); document.getElementById('usage-modal').classList.add('hidden'); }
+      document.body.classList.remove('usage-open'); document.getElementById('usage-modal').classList.add('hidden'); restoreUtilityDialogFocus(); }
     function renderUsagePage() {
       const u = getUsage();
       const allow = allowanceFor();
@@ -5538,13 +5552,15 @@
       }
     }
     function openSettings() {
+      captureUtilityDialogTrigger();
       document.body.classList.add('settings-open');
       setTimeout(() => setTab(Store.get().setTab || 'account'), 0);
       refreshSettings();
       document.getElementById('settings-modal').classList.remove('hidden');
+      focusUtilityDialogClose('settings-modal-close');
     }
     function closeSettings() {
-      document.body.classList.remove('settings-open'); document.getElementById('settings-modal').classList.add('hidden'); }
+      document.body.classList.remove('settings-open'); document.getElementById('settings-modal').classList.add('hidden'); restoreUtilityDialogFocus(); }
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape' || event.defaultPrevented) return;
       const openUtilityDialog = [

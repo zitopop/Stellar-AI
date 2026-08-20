@@ -120,11 +120,23 @@ test('Task 83 gives the plans, usage, and settings modal cards explicit labelled
 });
 
 test('Task 84 gives every scoped utility-dialog close control a specific accessible name', () => {
-  assert.match(appHtml, /<button onclick="closePlans\(\)" class="modal-x" aria-label="Close plans">×<\/button>/);
-  assert.match(appHtml, /<button onclick="closeSettings\(\)" class="modal-x" aria-label="Close settings" title="Close settings">×<\/button>/);
-  assert.match(appHtml, /<button onclick="closeUsage\(\)" aria-label="Close usage limits" title="Close usage limits"/);
+  assert.match(appHtml, /<button id="plans-modal-close" onclick="closePlans\(\)" class="modal-x" aria-label="Close plans">×<\/button>/);
+  assert.match(appHtml, /<button id="settings-modal-close" onclick="closeSettings\(\)" class="modal-x" aria-label="Close settings" title="Close settings">×<\/button>/);
+  assert.match(appHtml, /<button id="usage-modal-close" onclick="closeUsage\(\)" aria-label="Close usage limits" title="Close usage limits"/);
 });
 
 test('Task 85 closes the open plans, usage, or settings dialog with Escape without overriding an earlier handler', () => {
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const openUtilityDialog = \[\s+\['settings-modal', closeSettings\],\s+\['usage-modal', closeUsage\],\s+\['plans-modal', closePlans\],\s+\]\.find\(\(\[id\]\) => !document\.getElementById\(id\)\?\.classList\.contains\('hidden'\)\);\s+if \(!openUtilityDialog\) return;\s+event\.preventDefault\(\);\s+openUtilityDialog\[1\]\(\);/);
+});
+
+test('Task 86 manages close-control and trigger focus for scoped utility dialogs', () => {
+  assert.match(appHtml, /let utilityDialogTrigger = null;\s+function captureUtilityDialogTrigger\(\) \{[\s\S]*?utilityDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;/);
+  assert.match(appHtml, /function focusUtilityDialogClose\(id\) \{\s+setTimeout\(\(\) => document\.getElementById\(id\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /function restoreUtilityDialogFocus\(\) \{[\s\S]*?utilityDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);/);
+  assert.match(appHtml, /function openPlans\(\) \{ captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('plans-modal-close'\);/);
+  assert.match(appHtml, /captureUtilityDialogTrigger\(\); renderUsagePage\(\);[\s\S]*?focusUtilityDialogClose\('usage-modal-close'\);/);
+  assert.match(appHtml, /function openSettings\(\) \{\s+captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('settings-modal-close'\);/);
+  assert.match(appHtml, /function closePlans\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
+  assert.match(appHtml, /function closeUsage\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
+  assert.match(appHtml, /function closeSettings\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
 });
