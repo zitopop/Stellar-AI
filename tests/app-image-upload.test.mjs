@@ -48,11 +48,16 @@ test('Task 69 exposes live generation status for thinking, completion, stop, and
 });
 
 test('Task 70 marks the workspace chat busy only while generation is active', () => {
-  assert.match(appHtml, /<main id="chat" class="flex-1 overflow-y-auto p-6" aria-busy="false">/);
+  assert.match(appHtml, /<main id="chat" class="flex-1 overflow-y-auto p-6" aria-label="Chat conversation" aria-busy="false">/);
   assert.match(appHtml, /const chatEl = document\.getElementById\('chat'\);\s+chatEl\.setAttribute\('aria-busy', 'true'\);/);
   assert.match(appHtml, /setGenerationStatus\('Command completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);/);
   assert.match(appHtml, /setGenerationStatus\('Image request completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);/);
   assert.match(appHtml, /loading\.remove\(\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+setSendControl\('Send', 'Send message'\);/);
+});
+
+test('Task 134 gives the existing workspace chat region a stable accessible name', () => {
+  assert.match(appHtml, /<main id="chat" class="flex-1 overflow-y-auto p-6" aria-label="Chat conversation" aria-busy="false">/);
+  assert.match(appHtml, /chatEl\.setAttribute\('aria-busy', 'true'\);/);
 });
 
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
