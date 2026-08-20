@@ -4264,6 +4264,13 @@
       limitDialogTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      const limitModal = document.getElementById('limit-modal');
+      if (!limitModal || limitModal.classList.contains('hidden')) return;
+      event.preventDefault();
+      closeLimit();
+    });
     function enableCreditsAndSend() { Store.set({ creditsOn: true }); closeLimit(); renderMeter(); refreshSettings(); sendMessage(); }
     function toggleCreditsOn() { Store.set({ creditsOn: !creditsOn() }); renderUsagePage(); renderMeter(); refreshSettings(); }
     function topupPricePence(p) { return Math.max(50, Math.min(20000, parseInt(p, 10) || 50)); }

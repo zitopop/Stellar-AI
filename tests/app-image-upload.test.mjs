@@ -207,3 +207,7 @@ test('Task 99 manages focus for the allowance-limit dialog lifecycle', () => {
   assert.match(appHtml, /function showLimit\(\) \{\s+captureLimitDialogTrigger\(\);/);
   assert.match(appHtml, /function closeLimit\(\) \{\s+document\.getElementById\('limit-modal'\)\.classList\.add\('hidden'\);\s+const trigger = limitDialogTrigger;\s+limitDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
+
+test('Task 100 closes only the open allowance-limit dialog with an unhandled Escape key', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const limitModal = document\.getElementById\('limit-modal'\);\s+if \(!limitModal \|\| limitModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeLimit\(\);\s+\}\);/);
+});
