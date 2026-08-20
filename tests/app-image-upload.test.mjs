@@ -254,3 +254,10 @@ test('Task 109 gives the purchase-confirmation modal explicit labelled dialog se
   assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-8 text-center thanks-card" role="dialog" aria-modal="true" aria-labelledby="thanks-modal-heading">/);
   assert.match(appHtml, /<div id="thanks-modal-heading" class="text-2xl font-black mb-2">Thank you for your purchase<\/div>/);
 });
+
+test('Task 110 manages focus for the purchase-confirmation dialog lifecycle', () => {
+  assert.match(appHtml, /<button id="thanks-modal-continue" onclick="closeThanks\(\)" class="side-new w-full" style="font-size:12px;padding:8px 12px;">Continue<\/button>/);
+  assert.match(appHtml, /let thanksDialogTrigger = null;\s+function openThanksDialog\(\) \{\s+const active = document\.activeElement;\s+thanksDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;\s+document\.getElementById\('thanks-modal'\)\.classList\.remove\('hidden'\);\s+setTimeout\(\(\) => document\.getElementById\('thanks-modal-continue'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /function closeThanks\(\) \{\s+document\.getElementById\('thanks-modal'\)\.classList\.add\('hidden'\);\s+const trigger = thanksDialogTrigger;\s+thanksDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
+  assert.doesNotMatch(appHtml, /document\.getElementById\('thanks-modal'\)\.classList\.remove\('hidden'\);\s+fireConfetti\(\);/);
+});

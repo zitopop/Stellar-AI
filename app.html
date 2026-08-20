@@ -3340,7 +3340,7 @@
       <div class="thanks-star">✦</div>
       <div id="thanks-modal-heading" class="text-2xl font-black mb-2">Thank you for your purchase</div>
       <div id="thanks-sub" class="text-sm font-bold text-[#94a3b8] mb-6"></div>
-      <button onclick="closeThanks()" class="side-new w-full" style="font-size:12px;padding:8px 12px;">Continue</button>
+      <button id="thanks-modal-continue" onclick="closeThanks()" class="side-new w-full" style="font-size:12px;padding:8px 12px;">Continue</button>
     </div>
   </div>
 
@@ -3794,7 +3794,19 @@
       }
     }
 
-    function closeThanks() { document.getElementById('thanks-modal').classList.add('hidden'); }
+    let thanksDialogTrigger = null;
+    function openThanksDialog() {
+      const active = document.activeElement;
+      thanksDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
+      document.getElementById('thanks-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('thanks-modal-continue')?.focus({ preventScroll: true }), 0);
+    }
+    function closeThanks() {
+      document.getElementById('thanks-modal').classList.add('hidden');
+      const trigger = thanksDialogTrigger;
+      thanksDialogTrigger = null;
+      if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+    }
     function fireConfetti() {
       const c = document.createElement('canvas');
       c.id = 'confetti-canvas';
@@ -5925,7 +5937,7 @@
               ? 'Welcome to Pro. Nova is unlocked and you have the highest usage available.'
               : 'Welcome to Plus. You now have far more usage.';
           document.getElementById('thanks-sub').textContent = msg;
-          document.getElementById('thanks-modal').classList.remove('hidden');
+          openThanksDialog();
           fireConfetti();
         });
       } else if (paymentState === 'cancelled') {
@@ -5936,7 +5948,7 @@
         history.replaceState(null, '', location.pathname);
         const sub = document.getElementById('thanks-sub');
         if (sub) sub.textContent = 'Checkout was cancelled. No payment was taken.';
-        document.getElementById('thanks-modal').classList.remove('hidden');
+        openThanksDialog();
       }
 
       checkOwnerEmail();
