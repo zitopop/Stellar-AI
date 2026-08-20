@@ -176,3 +176,7 @@ test('Task 93 gives the owner-tools modal explicit labelled dialog semantics', (
   assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-md mx-4 p-6 thanks-card" role="dialog" aria-modal="true" aria-labelledby="owner-modal-heading">/);
   assert.match(appHtml, /<div id="owner-modal-heading" class="text-2xl font-black">👑 Owner tools<\/div>/);
 });
+
+test('Task 94 lets keyboard users open owner tools from the settings entry', () => {
+  assert.match(appHtml, /<div class="set-item set-click" id="set-owner-row" role="button" tabindex="0" aria-haspopup="dialog" onclick="openOwner\(\)" onkeydown="if \(event\.key === 'Enter' \|\| event\.key === ' '\) \{ event\.preventDefault\(\); openOwner\(\); \}" style="display:none">/);
+});
