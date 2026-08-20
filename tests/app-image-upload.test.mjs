@@ -249,3 +249,8 @@ test('Task 108 keeps Tab navigation inside the open redeem-code dialog', () => {
   assert.match(appHtml, /function trapRedeemDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const redeemModal = document\.getElementById\('redeem-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
   assert.match(appHtml, /document\.addEventListener\('keydown', trapRedeemDialogFocus\);/);
 });
+
+test('Task 109 gives the purchase-confirmation modal explicit labelled dialog semantics', () => {
+  assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-8 text-center thanks-card" role="dialog" aria-modal="true" aria-labelledby="thanks-modal-heading">/);
+  assert.match(appHtml, /<div id="thanks-modal-heading" class="text-2xl font-black mb-2">Thank you for your purchase<\/div>/);
+});
