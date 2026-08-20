@@ -118,3 +118,9 @@ test('Task 83 gives the plans, usage, and settings modal cards explicit labelled
   assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="settings-modal-heading" class="set-card[\s\S]*?id="settings-modal-heading" class="settings-title">Settings<\//);
   assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="usage-modal-heading"[\s\S]*?id="usage-modal-heading"[\s\S]*?>Plan usage limits<\//);
 });
+
+test('Task 84 gives every scoped utility-dialog close control a specific accessible name', () => {
+  assert.match(appHtml, /<button onclick="closePlans\(\)" class="modal-x" aria-label="Close plans">×<\/button>/);
+  assert.match(appHtml, /<button onclick="closeSettings\(\)" class="modal-x" aria-label="Close settings" title="Close settings">×<\/button>/);
+  assert.match(appHtml, /<button onclick="closeUsage\(\)" aria-label="Close usage limits" title="Close usage limits"/);
+});
