@@ -79,7 +79,7 @@
 | 73 | ✅ Complete | Workspace stop action expands to a touch-safe 88px width only while generating, keeping its visible label readable on narrow screens | `app.html`; static UI contract and full suite 93 tests pass; Vercel deployment `e017ece` READY; live workspace load verified | `e017ece` |
 | 74 | ✅ Complete | Workspace restores composer focus after normal, stopped, or failed generation cleanup only when the send control remains focused | `app.html`; static UI contract and full suite 94 tests pass; Vercel deployment `af88761` READY; live workspace load verified | `af88761` |
 | 75 | ✅ Complete | Workspace announces “Stopping generation” immediately through the existing live status region before aborting an active request | `app.html`; static UI contract and full suite 95 tests pass; Vercel deployment `1875fa8` READY; live workspace load verified | `1875fa8` |
-| 76 | ☐ Pending | Next approved implementation task | — | — |
+| 76 | ✅ Complete | Mobile navigation control exposes an explicit open/close label and synchronized aria-expanded state while preserving the existing sidebar behavior | `app.html`; static UI contract and full suite 96 tests pass; Vercel deployment `8483d82` READY; live control label verified | `8483d82` |
 | 77 | ☐ Pending | Next approved implementation task | — | — |
 | 78 | ☐ Pending | Next approved implementation task | — | — |
 | 79 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**75 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**76 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
