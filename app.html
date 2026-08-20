@@ -4116,6 +4116,13 @@
       redeemDialogTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      const redeemModal = document.getElementById('redeem-modal');
+      if (!redeemModal || redeemModal.classList.contains('hidden')) return;
+      event.preventDefault();
+      closeRedeem();
+    });
     async function doRedeem() {
       const inp = document.getElementById('redeem-input');
       const out = document.getElementById('redeem-msg');

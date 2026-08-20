@@ -240,3 +240,7 @@ test('Task 106 manages focus for the redeem-code dialog lifecycle', () => {
   assert.match(appHtml, /let redeemDialogTrigger = null;\s+function openRedeem\(\) \{\s+const active = document\.activeElement;\s+redeemDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;\s+document\.getElementById\('redeem-modal'\)\.classList\.remove\('hidden'\);\s+setTimeout\(\(\) => document\.getElementById\('redeem-input'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
   assert.match(appHtml, /function closeRedeem\(\) \{\s+document\.getElementById\('redeem-modal'\)\.classList\.add\('hidden'\);\s+const trigger = redeemDialogTrigger;\s+redeemDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
+
+test('Task 107 closes only the open redeem-code dialog with an unhandled Escape key', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const redeemModal = document\.getElementById\('redeem-modal'\);\s+if \(!redeemModal \|\| redeemModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeRedeem\(\);\s+\}\);/);
+});
