@@ -80,7 +80,7 @@
 | 74 | ✅ Complete | Workspace restores composer focus after normal, stopped, or failed generation cleanup only when the send control remains focused | `app.html`; static UI contract and full suite 94 tests pass; Vercel deployment `af88761` READY; live workspace load verified | `af88761` |
 | 75 | ✅ Complete | Workspace announces “Stopping generation” immediately through the existing live status region before aborting an active request | `app.html`; static UI contract and full suite 95 tests pass; Vercel deployment `1875fa8` READY; live workspace load verified | `1875fa8` |
 | 76 | ✅ Complete | Mobile navigation control exposes an explicit open/close label and synchronized aria-expanded state while preserving the existing sidebar behavior | `app.html`; static UI contract and full suite 96 tests pass; Vercel deployment `8483d82` READY; live control label verified | `8483d82` |
-| 77 | ☐ Pending | Next approved implementation task | — | — |
+| 77 | ✅ Complete | Workspace drawer close control exposes an explicit Close workspace label while preserving the existing toggle behavior | `app.html`; static UI contract and full suite 97 tests pass; Vercel deployment `aa6778e` READY; live workspace load verified | `aa6778e` |
 | 78 | ☐ Pending | Next approved implementation task | — | — |
 | 79 | ☐ Pending | Next approved implementation task | — | — |
 | 80 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**76 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**77 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
