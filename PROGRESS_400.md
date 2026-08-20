@@ -118,7 +118,7 @@
 | 112 | ✅ Complete | Tab and Shift+Tab stay within the open purchase-confirmation dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
 | 113 | ✅ Complete | Post-purchase confetti canvas is hidden from assistive technologies as decorative content | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
 | 114 | ✅ Complete | Workspace model choices expose clear accessible descriptions aligned to Spark, Star, Comet, and Nova routing tiers | `app.html`; full suite 135 tests pass; Vercel deployment `914160d` success | `914160d` |
-| 115 | ☐ Pending | Next approved implementation task | — | — |
+| 115 | ✅ Complete | Workspace model selector exposes synchronized menu disclosure state while preserving routing and plan gates | `app.html`; full suite 136 tests pass; Vercel deployment `bac8dd8` success | `bac8dd8` |
 | 116 | ☐ Pending | Next approved implementation task | — | — |
 | 117 | ☐ Pending | Next approved implementation task | — | — |
 | 118 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**114 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**115 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
