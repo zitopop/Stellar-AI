@@ -225,3 +225,8 @@ test('Task 102 manages focus for the credit top-up dialog lifecycle', () => {
 test('Task 103 closes only the open credit top-up dialog with an unhandled Escape key', () => {
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const topupModal = document\.getElementById\('topup-modal'\);\s+if \(!topupModal \|\| topupModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeTopup\(\);\s+\}\);/);
 });
+
+test('Task 104 keeps Tab navigation inside the open credit top-up dialog', () => {
+  assert.match(appHtml, /function trapTopupDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const topupModal = document\.getElementById\('topup-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', trapTopupDialogFocus\);/);
+});
