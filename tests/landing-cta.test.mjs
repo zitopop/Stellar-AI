@@ -26,3 +26,8 @@ test('Task 126 exposes unsaved favorite-tool buttons as unpressed before the exi
   }
   assert.match(landingHtml, /button\.setAttribute\('aria-pressed', String\(active\)\);/);
 });
+
+test('Task 127 announces existing feature-search result-count updates politely', () => {
+  assert.match(landingHtml, /<span class="feature-count" id="feature-count" role="status" aria-live="polite" aria-atomic="true">4 tools<\/span>/);
+  assert.match(landingHtml, /if \(count\) count\.textContent = `\$\{visible\} \$\{visible === 1 \? 'tool' : 'tools'\}`;/);
+});
