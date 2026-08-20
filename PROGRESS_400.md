@@ -94,29 +94,29 @@
 | 88 | ✅ Complete | Switching sign-in and sign-up pages moves focus to the active page’s email field without changing authentication behavior | `app.html`; static UI contract and full suite 108 tests pass; Vercel deployment `33f8980` READY; live focus switching verified | `33f8980` |
 | 89 | ✅ Complete | Tab and Shift+Tab focus loops remain within the open sign-in dialog without changing sign-in behavior | `app.html`; static UI contract and full suite 109 tests pass; Vercel deployment `ef28609` READY; live focus-loop behavior verified | `ef28609` |
 | 90 | ✅ Complete | Tab and Shift+Tab focus loops remain within the open plans, usage, or settings dialog without changing modal behavior | `app.html`; static UI contract and full suite 110 tests pass; Vercel deployment `ab68234` READY; live plans focus-loop behavior verified | `ab68234` |
-| 91 | ☐ Pending | Next approved implementation task | — | — |
-| 92 | ☐ Pending | Next approved implementation task | — | — |
-| 93 | ☐ Pending | Next approved implementation task | — | — |
-| 94 | ☐ Pending | Next approved implementation task | — | — |
-| 95 | ☐ Pending | Next approved implementation task | — | — |
-| 96 | ☐ Pending | Next approved implementation task | — | — |
-| 97 | ☐ Pending | Next approved implementation task | — | — |
-| 98 | ☐ Pending | Next approved implementation task | — | — |
-| 99 | ☐ Pending | Next approved implementation task | — | — |
-| 100 | ☐ Pending | Next approved implementation task | — | — |
-| 101 | ☐ Pending | Next approved implementation task | — | — |
-| 102 | ☐ Pending | Next approved implementation task | — | — |
-| 103 | ☐ Pending | Next approved implementation task | — | — |
-| 104 | ☐ Pending | Next approved implementation task | — | — |
-| 105 | ☐ Pending | Next approved implementation task | — | — |
-| 106 | ☐ Pending | Next approved implementation task | — | — |
-| 107 | ☐ Pending | Next approved implementation task | — | — |
-| 108 | ☐ Pending | Next approved implementation task | — | — |
-| 109 | ☐ Pending | Next approved implementation task | — | — |
-| 110 | ☐ Pending | Next approved implementation task | — | — |
-| 111 | ☐ Pending | Next approved implementation task | — | — |
-| 112 | ☐ Pending | Next approved implementation task | — | — |
-| 113 | ☐ Pending | Next approved implementation task | — | — |
+| 91 | ✅ Complete | Sign-in and sign-up feedback regions announce status politely and atomically | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 92 | ✅ Complete | Pasted-content removal and owner-tools close controls expose specific accessible names | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 93 | ✅ Complete | Owner-tools card exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 94 | ✅ Complete | Owner-tools settings entry is keyboard-operable without changing owner actions | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 95 | ✅ Complete | Owner-tools dialog moves focus to close control and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 96 | ✅ Complete | Escape dismisses the open owner-tools dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 97 | ✅ Complete | Tab and Shift+Tab stay within the open owner-tools dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 98 | ✅ Complete | Usage-limit modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 99 | ✅ Complete | Usage-limit dialog focuses its first action and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 100 | ✅ Complete | Escape dismisses the open usage-limit dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 101 | ✅ Complete | Credit top-up modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 102 | ✅ Complete | Credit top-up dialog focuses its first pack and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 103 | ✅ Complete | Escape dismisses the open credit top-up dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 104 | ✅ Complete | Tab and Shift+Tab stay within the open credit top-up dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 105 | ✅ Complete | Redeem-code modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 106 | ✅ Complete | Redeem-code dialog focuses its field and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 107 | ✅ Complete | Escape dismisses the open redeem-code dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 108 | ✅ Complete | Tab and Shift+Tab stay within the open redeem-code dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 109 | ✅ Complete | Purchase-confirmation modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 110 | ✅ Complete | Purchase-confirmation dialog focuses Continue and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 111 | ✅ Complete | Escape dismisses the open purchase-confirmation dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 112 | ✅ Complete | Tab and Shift+Tab stay within the open purchase-confirmation dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 113 | ✅ Complete | Post-purchase confetti canvas is hidden from assistive technologies as decorative content | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
 | 114 | ☐ Pending | Next approved implementation task | — | — |
 | 115 | ☐ Pending | Next approved implementation task | — | — |
 | 116 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**90 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**113 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
