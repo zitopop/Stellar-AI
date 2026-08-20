@@ -216,3 +216,8 @@ test('Task 101 gives the credit top-up modal explicit labelled dialog semantics'
   assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card topup-card" role="dialog" aria-modal="true" aria-labelledby="topup-modal-heading">/);
   assert.match(appHtml, /<div id="topup-modal-heading" class="topup-title">Add credit<\/div>/);
 });
+
+test('Task 102 manages focus for the credit top-up dialog lifecycle', () => {
+  assert.match(appHtml, /let topupDialogTrigger = null;\s+function openTopup\(\) \{\s+const active = document\.activeElement;\s+topupDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?setTopupQty\(document\.getElementById\('topup-range'\)\.value\);\s+setTimeout\(\(\) => document\.querySelector\('#topup-modal \.pack'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /function closeTopup\(\) \{\s+document\.getElementById\('topup-modal'\)\.classList\.add\('hidden'\);\s+const trigger = topupDialogTrigger;\s+topupDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
+});

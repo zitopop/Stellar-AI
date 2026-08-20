@@ -4281,11 +4281,20 @@
       if (pence >= 500) return Math.round(pence * 0.05);
       return 0;
     }
+    let topupDialogTrigger = null;
     function openTopup() {
+      const active = document.activeElement;
+      topupDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
       document.getElementById('topup-modal').classList.remove('hidden');
       setTopupQty(document.getElementById('topup-range').value);
+      setTimeout(() => document.querySelector('#topup-modal .pack')?.focus({ preventScroll: true }), 0);
     }
-    function closeTopup() { document.getElementById('topup-modal').classList.add('hidden'); }
+    function closeTopup() {
+      document.getElementById('topup-modal').classList.add('hidden');
+      const trigger = topupDialogTrigger;
+      topupDialogTrigger = null;
+      if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+    }
     function setTopupQty(p) {
       const pence = topupPricePence(p);
       const bon = bonusFor(pence);
