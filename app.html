@@ -2955,6 +2955,7 @@
         <div id="ws-list" class="ws-list"></div>
       </div>
       <main id="chat" class="flex-1 overflow-y-auto p-6">
+        <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
         <div class="greet-wrap">
           <div class="welcome-kicker">Stellar workspace ready</div>
           <div class="greet-hi" id="greet-hi">Hello</div>
@@ -4642,10 +4643,16 @@
       if (recogOn) { try { recog.stop(); } catch {} return; }
       try { recog.start(); } catch {}
     }
+    function setGenerationStatus(label) {
+      const el = document.getElementById('generation-status');
+      if (el) el.textContent = label || '';
+    }
     function setThinking(icon, label) {
+      const message = (icon ? icon + ' ' : '') + label;
       const el = document.getElementById('think-status');
-      if (el) el.textContent = (icon ? icon + ' ' : '') + label;
-      if (streamStatus) streamStatus.textContent = (icon ? icon + ' ' : '') + label;
+      if (el) el.textContent = message;
+      if (streamStatus) streamStatus.textContent = message;
+      setGenerationStatus(label);
     }
     function streamView(raw) {
       const parts = String(raw).split('```');
@@ -4873,6 +4880,7 @@
       const loading = document.createElement('div');
       loading.className = 'message glass rounded-3xl px-5 py-3.5';
       loading.innerHTML = '<div class="think-bubble"><div class="think-spinner"></div><div class="think-status" id="think-status">' + STEPS[0][1] + '</div></div>';
+      setGenerationStatus(STEPS[0][1]);
       chatEl.appendChild(loading);
       chatEl.scrollTop = chatEl.scrollHeight;
       let userScrolledUp = false;
@@ -4916,6 +4924,7 @@
         sendLock = false;
         document.getElementById('send-btn').textContent = 'Send';
         document.getElementById('logo-star').classList.remove('logo-working');
+        setGenerationStatus('Command completed.');
         return;
       }
       consumeMsg();
@@ -4943,6 +4952,7 @@
         sendLock = false;
         document.getElementById('send-btn').textContent = 'Send';
         document.getElementById('logo-star').classList.remove('logo-working');
+        setGenerationStatus('Image request completed.');
         loadChat(currentChatId);
         return;
       }
@@ -5048,6 +5058,7 @@
           renderWorkspace();
           scrollChatToEnd();
           saveChatsToServer();
+          setGenerationStatus('Generation completed.');
         }
       } catch (error) {
         clearInterval(autoScroll);
@@ -5058,12 +5069,14 @@
             Store.set({ chats: s.chats });
           }
           loadChat(currentChatId);
+          setGenerationStatus('Generation stopped.');
         } else {
           const msg = (error && error.message && !/failed to fetch|load failed|networkerror/i.test(error.message))
             ? error.message : 'Connection error — try again.';
           chat.messages.push({ role: 'ai', content: '⚠️ ' + msg, t: Date.now() });
           Store.set({ chats: s.chats });
           loadChat(currentChatId);
+          setGenerationStatus('Generation failed: ' + msg);
         }
       } finally {
         clearInterval(stepTimer);

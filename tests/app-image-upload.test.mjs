@@ -37,3 +37,12 @@ test('Task 68 exposes a visible desktop keyboard hint without squashing mobile c
   assert.match(appHtml, /body\.light \.keyboard-hint \{ color: #6b7280; \}/);
   assert.match(appHtml, /@media \(max-width: 640px\) \{\s+\.composer-foot \{ gap: 6px; justify-content: flex-start; \}\s+\.keyboard-hint \{ display: none; \}/);
 });
+
+test('Task 69 exposes live generation status for thinking, completion, stop, and failure outcomes', () => {
+  assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(appHtml, /function setGenerationStatus\(label\)/);
+  assert.match(appHtml, /setGenerationStatus\(STEPS\[0\]\[1\]\);/);
+  assert.match(appHtml, /setGenerationStatus\('Generation completed\.'\);/);
+  assert.match(appHtml, /setGenerationStatus\('Generation stopped\.'\);/);
+  assert.match(appHtml, /setGenerationStatus\('Generation failed: ' \+ msg\);/);
+});
