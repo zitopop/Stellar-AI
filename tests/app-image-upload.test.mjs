@@ -261,3 +261,7 @@ test('Task 110 manages focus for the purchase-confirmation dialog lifecycle', ()
   assert.match(appHtml, /function closeThanks\(\) \{\s+document\.getElementById\('thanks-modal'\)\.classList\.add\('hidden'\);\s+const trigger = thanksDialogTrigger;\s+thanksDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
   assert.doesNotMatch(appHtml, /document\.getElementById\('thanks-modal'\)\.classList\.remove\('hidden'\);\s+fireConfetti\(\);/);
 });
+
+test('Task 111 closes only the open purchase-confirmation dialog with an unhandled Escape key', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const thanksModal = document\.getElementById\('thanks-modal'\);\s+if \(!thanksModal \|\| thanksModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeThanks\(\);\s+\}\);/);
+});

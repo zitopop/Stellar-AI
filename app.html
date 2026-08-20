@@ -3807,6 +3807,13 @@
       thanksDialogTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      const thanksModal = document.getElementById('thanks-modal');
+      if (!thanksModal || thanksModal.classList.contains('hidden')) return;
+      event.preventDefault();
+      closeThanks();
+    });
     function fireConfetti() {
       const c = document.createElement('canvas');
       c.id = 'confetti-canvas';
