@@ -73,6 +73,13 @@ test('Task 136 announces the existing pasted-content summary politely', () => {
   assert.match(appHtml, /function clearPaste\(\) \{\s+pastedBlock = null;\s+document\.getElementById\('paste-chip'\)\.classList\.add\('hidden'\);/);
 });
 
+test('Task 137 exposes the existing workspace sidebar as named navigation', () => {
+  assert.match(appHtml, /<div id="sidebar" class="w-72 glass border-r border-white\/10 flex flex-col p-4" role="navigation" aria-label="Workspace navigation">/);
+  assert.match(appHtml, /<button onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">/);
+  assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)"/);
+  assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list"><\/div>/);
+});
+
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
   assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(appHtml, /loading\.innerHTML = '<div class="think-bubble" aria-hidden="true"><div class="think-spinner"><\/div><div class="think-status" id="think-status">' \+ STEPS\[0\]\[1\] \+ '<\/div><\/div>';/);
