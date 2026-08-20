@@ -133,7 +133,7 @@
 | 127 | ✅ Complete | The landing-page feature-search result count announces existing filter updates politely to assistive technology | `index.html`; full suite 148 tests pass; Vercel deployment `e1f4d14` success | `e1f4d14` |
 | 128 | ✅ Complete | Every landing-page FAQ disclosure button is linked to its labelled answer region while preserving existing one-at-a-time behavior | `index.html`; full suite 149 tests pass; Vercel deployment `8a0920a` success | `8a0920a` |
 | 129 | ✅ Complete | Landing-page FAQ answer regions expose accessibility visibility that matches their existing open and closed state | `index.html`; full suite 150 tests pass; Vercel deployment `3b3268e` success | `3b3268e` |
-| 130 | ☐ Pending | Next approved implementation task | — | — |
+| 130 | ✅ Complete | The landing-page saved-tool count announces existing local favorite updates politely to assistive technology | `index.html`; full suite 151 tests pass; Vercel deployment `0385ac0` success | `0385ac0` |
 | 131 | ☐ Pending | Next approved implementation task | — | — |
 | 132 | ☐ Pending | Next approved implementation task | — | — |
 | 133 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**129 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**130 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
