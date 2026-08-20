@@ -66,6 +66,13 @@ test('Task 135 exposes the existing workspace composer as a named form landmark'
   assert.match(appHtml, /id="send-btn" onclick="stopOrSend\(\)" aria-label="Send message"/);
 });
 
+test('Task 136 announces the existing pasted-content summary politely', () => {
+  assert.match(appHtml, /<div class="paste-title" id="paste-chip-text" role="status" aria-live="polite" aria-atomic="true">Pasted content<\/div>/);
+  assert.match(appHtml, /document\.getElementById\('paste-chip-text'\)\.textContent = label;/);
+  assert.match(appHtml, /document\.getElementById\('paste-chip'\)\.classList\.remove\('hidden'\);/);
+  assert.match(appHtml, /function clearPaste\(\) \{\s+pastedBlock = null;\s+document\.getElementById\('paste-chip'\)\.classList\.add\('hidden'\);/);
+});
+
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
   assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(appHtml, /loading\.innerHTML = '<div class="think-bubble" aria-hidden="true"><div class="think-spinner"><\/div><div class="think-status" id="think-status">' \+ STEPS\[0\]\[1\] \+ '<\/div><\/div>';/);
