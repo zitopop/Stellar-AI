@@ -5483,6 +5483,13 @@
       welcomeTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const welcomeModal = document.getElementById('welcome-modal');
+      if (!welcomeModal || welcomeModal.classList.contains('hidden')) return;
+      event.preventDefault();
+      dismissWelcome();
+    });
     function maybeShowWelcome() {
       const s = Store.get();
       if (!GOOGLE_CLIENT_ID) return;

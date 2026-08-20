@@ -108,3 +108,7 @@ test('Task 81 manages focus when the sign-in dialog opens and is explicitly dism
   assert.match(appHtml, /function openWelcome\(\) \{\s+const active = document\.activeElement;\s+welcomeTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?focusWelcomeDialog\(\);/);
   assert.match(appHtml, /function dismissWelcome\(\) \{[\s\S]*?const trigger = welcomeTrigger;\s+welcomeTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);/);
 });
+
+test('Task 82 closes an open sign-in dialog with Escape through the existing dismissal path', () => {
+  assert.match(appHtml, /function dismissWelcome\(\) \{[\s\S]*?\}\s+document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape'\) return;\s+const welcomeModal = document\.getElementById\('welcome-modal'\);\s+if \(!welcomeModal \|\| welcomeModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+dismissWelcome\(\);/);
+});
