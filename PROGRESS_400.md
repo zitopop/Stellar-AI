@@ -75,7 +75,7 @@
 | 69 | ✅ Complete | Workspace chat exposes polite, atomic live status text for thinking, completion, stop, and failure states without changing provider behavior | `app.html`; static UI contract and full suite 89 tests pass; Vercel deployment `9460654` READY | `9460654` |
 | 70 | ✅ Complete | Workspace chat exposes aria-busy while a generation is active and clears it on command, image, normal, stopped, and failed completion paths | `app.html`; static UI contract and full suite 90 tests pass; Vercel deployment `0e08c70` READY | `0e08c70` |
 | 71 | ✅ Complete | Workspace send control exposes accurate accessible names for sending and stopping a generation throughout the existing lifecycle | `app.html`; static UI contract and full suite 91 tests pass; Vercel deployment `8845c48` READY; live initial control label verified | `8845c48` |
-| 72 | ☐ Pending | Next approved implementation task | — | — |
+| 72 | ✅ Complete | Workspace returns keyboard focus to the composer after local command or image-request completion, only when focus remains on the send control | `app.html`; static UI contract and full suite 92 tests pass; Vercel deployment `b0b0682` READY; live workspace load verified | `b0b0682` |
 | 73 | ☐ Pending | Next approved implementation task | — | — |
 | 74 | ☐ Pending | Next approved implementation task | — | — |
 | 75 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**71 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**72 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
