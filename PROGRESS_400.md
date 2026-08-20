@@ -137,7 +137,7 @@
 | 131 | ✅ Complete | Decorative landing-page FAQ plus icons are hidden from assistive technology while retaining their existing visual state treatment | `index.html`; full suite 152 tests pass; Vercel deployment `e6a7d64` success | `e6a7d64` |
 | 132 | ✅ Complete | Landing-page FAQ structured data includes additional answers already visible in the public FAQ, without changing the canonical page meaning | `index.html`; full suite 153 tests pass; Vercel deployment `142e107` success | `142e107` |
 | 133 | ✅ Complete | Workspace generation status remains announced by one authoritative live region while the duplicate visual thinking bubble is decorative | `app.html`; full suite 154 tests pass; Vercel deployment `1f1a351` success | `1f1a351` |
-| 134 | ☐ Pending | Next approved implementation task | — | — |
+| 134 | ✅ Complete | The existing workspace chat conversation region has a stable accessible name while preserving busy and scrolling behavior | `app.html`; full suite 155 tests pass; Vercel deployment `cf40560` success | `cf40560` |
 | 135 | ☐ Pending | Next approved implementation task | — | — |
 | 136 | ☐ Pending | Next approved implementation task | — | — |
 | 137 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**133 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**134 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
