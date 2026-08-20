@@ -305,3 +305,8 @@ test('Task 118 moves keyboard-triggered model-menu opening focus to the first vi
   assert.match(appHtml, /document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', String\(willOpen\)\);\s+if \(willOpen && e\.detail === 0\) setTimeout\(focusModelMenuFirstChoice, 0\);/);
   assert.match(appHtml, /function focusModelMenuFirstChoice\(\) \{\s+const menu = document\.getElementById\('model-menu'\);\s+if \(!menu \|\| menu\.classList\.contains\('hidden'\)\) return;\s+getVisibleModelMenuControls\(menu\)\[0\]\?\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
+
+test('Task 119 moves Arrow-key focus within the open model menu and wraps visible choices', () => {
+  assert.match(appHtml, /function navigateModelMenuWithArrows\(event\) \{\s+if \(!\['ArrowDown', 'ArrowUp'\]\.includes\(event\.key\)\) return;[\s\S]*?const focusable = getVisibleModelMenuControls\(menu\);[\s\S]*?const direction = event\.key === 'ArrowDown' \? 1 : -1;[\s\S]*?const currentIndex = focusable\.indexOf\(document\.activeElement\);[\s\S]*?\(currentIndex \+ direction \+ focusable\.length\) % focusable\.length;\s+event\.preventDefault\(\);\s+focusable\[nextIndex\]\.focus\(\);\s+\}/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', navigateModelMenuWithArrows\);/);
+});

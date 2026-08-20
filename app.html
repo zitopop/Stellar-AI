@@ -5384,6 +5384,22 @@
     }
     document.addEventListener('keydown', trapModelMenuFocus);
 
+    function navigateModelMenuWithArrows(event) {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      const menu = document.getElementById('model-menu');
+      if (!menu || menu.classList.contains('hidden')) return;
+      const focusable = getVisibleModelMenuControls(menu);
+      if (!focusable.length) return;
+      const direction = event.key === 'ArrowDown' ? 1 : -1;
+      const currentIndex = focusable.indexOf(document.activeElement);
+      const nextIndex = currentIndex === -1
+        ? (direction === 1 ? 0 : focusable.length - 1)
+        : (currentIndex + direction + focusable.length) % focusable.length;
+      event.preventDefault();
+      focusable[nextIndex].focus();
+    }
+    document.addEventListener('keydown', navigateModelMenuWithArrows);
+
     let utilityDialogTrigger = null;
     function captureUtilityDialogTrigger() {
       const active = document.activeElement;
