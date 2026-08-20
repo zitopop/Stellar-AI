@@ -3352,7 +3352,7 @@
     <div class="glass rounded-3xl w-full max-w-md mx-4 p-6 thanks-card" role="dialog" aria-modal="true" aria-labelledby="owner-modal-heading">
       <div class="flex items-center justify-between mb-1">
         <div id="owner-modal-heading" class="text-2xl font-black">👑 Owner tools</div>
-        <button onclick="closeOwner()" class="modal-x" aria-label="Close owner tools">×</button>
+        <button id="owner-modal-close" onclick="closeOwner()" class="modal-x" aria-label="Close owner tools">×</button>
       </div>
       <div class="text-sm font-bold text-[#94a3b8] mb-5">Grant plans, gift credit and create codes.</div>
 
@@ -3922,17 +3922,26 @@
       }
     }
     let lastMadeCode = '';
+    let ownerDialogTrigger = null;
     function openOwner() {
       if (!isOwner()) return;
+      const active = document.activeElement;
+      ownerDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
       document.getElementById('own-msg').textContent = '';
       document.getElementById('own-credit').value = '';
       document.getElementById('code-out').classList.add('hidden');
       pickCreditMode('add');
       ownerTab('grant');
       document.getElementById('owner-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('owner-modal-close')?.focus({ preventScroll: true }), 0);
     }
     (function(){ const oc = document.getElementById('own-credit'); if (oc) oc.addEventListener('input', updateApplyLabel); })();
-    function closeOwner() { document.getElementById('owner-modal').classList.add('hidden'); }
+    function closeOwner() {
+      document.getElementById('owner-modal').classList.add('hidden');
+      const trigger = ownerDialogTrigger;
+      ownerDialogTrigger = null;
+      if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+    }
     function ownerTab(name) {
       document.querySelectorAll('.own-tab').forEach(t => t.classList.toggle('active', t.dataset.otab === name));
       document.querySelectorAll('.own-panel').forEach(p => { p.style.display = (p.dataset.opanel === name) ? '' : 'none'; });

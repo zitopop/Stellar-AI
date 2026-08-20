@@ -169,7 +169,7 @@ test('Task 91 gives sign-in and sign-up feedback polite atomic live-status seman
 
 test('Task 92 gives the remaining symbol-only workspace controls specific accessible names', () => {
   assert.match(appHtml, /<button onclick="clearPaste\(\)" class="paste-x" aria-label="Remove pasted content" title="Remove pasted content">×<\/button>/);
-  assert.match(appHtml, /<button onclick="closeOwner\(\)" class="modal-x" aria-label="Close owner tools">×<\/button>/);
+  assert.match(appHtml, /<button id="owner-modal-close" onclick="closeOwner\(\)" class="modal-x" aria-label="Close owner tools">×<\/button>/);
 });
 
 test('Task 93 gives the owner-tools modal explicit labelled dialog semantics', () => {
@@ -179,4 +179,10 @@ test('Task 93 gives the owner-tools modal explicit labelled dialog semantics', (
 
 test('Task 94 lets keyboard users open owner tools from the settings entry', () => {
   assert.match(appHtml, /<div class="set-item set-click" id="set-owner-row" role="button" tabindex="0" aria-haspopup="dialog" onclick="openOwner\(\)" onkeydown="if \(event\.key === 'Enter' \|\| event\.key === ' '\) \{ event\.preventDefault\(\); openOwner\(\); \}" style="display:none">/);
+});
+
+test('Task 95 moves focus into the owner-tools dialog and restores its trigger on close', () => {
+  assert.match(appHtml, /<button id="owner-modal-close" onclick="closeOwner\(\)" class="modal-x" aria-label="Close owner tools">×<\/button>/);
+  assert.match(appHtml, /let ownerDialogTrigger = null;\s+function openOwner\(\) \{\s+if \(!isOwner\(\)\) return;\s+const active = document\.activeElement;\s+ownerDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?setTimeout\(\(\) => document\.getElementById\('owner-modal-close'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /function closeOwner\(\) \{\s+document\.getElementById\('owner-modal'\)\.classList\.add\('hidden'\);\s+const trigger = ownerDialogTrigger;\s+ownerDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
