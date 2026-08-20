@@ -15,10 +15,10 @@ const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 // premium tier has a confirmed legacy fallback so a model-access change never
 // turns into a spinner or failed customer request.
 const MODEL_TIERS = {
-  spark: { primary: 'claude-haiku-4-5-20251001' },
-  star: { primary: 'claude-sonnet-5', fallback: 'claude-sonnet-4-6' },
-  comet: { primary: 'claude-opus-5', fallback: 'claude-opus-4-6' },
-  nova: { primary: 'claude-fable-5', fallback: 'claude-opus-4-8' },
+  spark: { primary: 'claude-haiku-4-5-20251001', fallback: 'claude-sonnet-4-6' },
+  star: { primary: 'claude-sonnet-4-6', fallback: 'claude-haiku-4-5-20251001' },
+  comet: { primary: 'claude-opus-4-6', fallback: 'claude-sonnet-4-6' },
+  nova: { primary: 'claude-opus-4-8', fallback: 'claude-sonnet-4-6' },
 };
 
 // Task 1 provider contract. Forge models use the built-in OpenAI-compatible proxy;
@@ -212,14 +212,21 @@ const ROLE_OUTPUT_CONTRACTS = {
 };
 
 const MODEL_MAP = {
-  spark: 'spark', fabie: 'spark', haiku: 'spark',
-  'claude-haiku-4-5': 'spark', 'claude-haiku-4-5-20251001': 'spark',
-  star: 'star', smart: 'star', sonnet: 'star',
-  'claude-sonnet-5': 'star', 'claude-sonnet-4-6': 'star',
-  comet: 'comet', opus: 'comet',
-  'claude-opus-5': 'comet', 'claude-opus-4-6': 'comet',
-  nova: 'nova', ultra: 'nova', fable: 'nova',
-  'claude-fable-5': 'nova', 'claude-opus-4-8': 'nova',
+  spark: 'claude-haiku-4-5-20251001', fabie: 'claude-haiku-4-5-20251001', haiku: 'claude-haiku-4-5-20251001',
+  'claude-haiku-4-5': 'claude-haiku-4-5-20251001', 'claude-haiku-4-5-20251001': 'claude-haiku-4-5-20251001',
+  star: 'claude-sonnet-4-6', smart: 'claude-sonnet-4-6', sonnet: 'claude-sonnet-4-6',
+  'claude-sonnet-5': 'claude-sonnet-4-6', 'claude-sonnet-4-6': 'claude-sonnet-4-6',
+  comet: 'claude-opus-4-6', opus: 'claude-opus-4-6',
+  'claude-opus-5': 'claude-opus-4-6', 'claude-opus-4-6': 'claude-opus-4-6',
+  nova: 'claude-opus-4-8', ultra: 'claude-opus-4-8', fable: 'claude-opus-4-8',
+  'claude-fable-5': 'claude-opus-4-8', 'claude-opus-4-8': 'claude-opus-4-8',
+};
+
+const MODEL_TIER_BY_ID = {
+  'claude-haiku-4-5-20251001': 'spark',
+  'claude-sonnet-4-6': 'star',
+  'claude-opus-4-6': 'comet',
+  'claude-opus-4-8': 'nova',
 };
 
 const PLAN_LIMITS = {
@@ -351,8 +358,9 @@ function normaliseRoutingInput(value) {
 function resolveModelTier(requestedModel, plan) {
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
   const requested = normaliseRoutingInput(requestedModel);
-  const tier = MODEL_MAP[requested] || 'star';
-  return limits.models.includes(tier) ? tier : limits.models[0];
+  const model = MODEL_MAP[requested] || 'claude-sonnet-4-6';
+  const tier = MODEL_TIER_BY_ID[model] || 'star';
+  return limits.models.includes(tier) ? tier : limits.models.includes('star') ? 'star' : limits.models[0];
 }
 
 function getModelCandidates(tier) {
@@ -788,4 +796,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveRoute, toForgeMessages };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, toForgeMessages };

@@ -6,12 +6,19 @@ process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-const { addImageToLastUserMessage, buildSystemPrompt, default: chatHandler, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
+const { addImageToLastUserMessage, buildSystemPrompt, default: chatHandler, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
 test('Task 1 exposes the approved specialist role contract', () => {
   assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
   assert.equal(FORGE_MODELS.has('gpt-5-mini'), true);
   assert.equal(FORGE_MODELS.has('gemini-3-flash-preview'), true);
+});
+
+test('model aliases resolve to concrete supported Anthropic models with a safe Sonnet fallback', () => {
+  assert.equal(getModelCandidates(resolveModelTier('fabie', 'pro'))[0], 'claude-haiku-4-5-20251001');
+  assert.equal(getModelCandidates(resolveModelTier('smart', 'pro'))[0], 'claude-sonnet-4-6');
+  assert.equal(getModelCandidates(resolveModelTier('ultra', 'pro'))[0], 'claude-opus-4-8');
+  assert.equal(getModelCandidates(resolveModelTier('unrecognised-model', 'pro'))[0], 'claude-sonnet-4-6');
 });
 
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
