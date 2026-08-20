@@ -2786,6 +2786,7 @@
       .input-area { padding: 12px 12px calc(12px + env(safe-area-inset-bottom)) !important; }
       #txt { min-height: 50px; max-height: 140px; }
       #send-btn { min-width: 54px; min-height: 50px; }
+      #send-btn.is-stop { flex-basis: 88px !important; width: 88px !important; min-width: 88px !important; padding-inline: 10px !important; white-space: nowrap; }
       .composer-foot { flex-wrap: wrap; gap: 8px; }
       .foot-right { margin-left: 0 !important; width: 100%; justify-content: space-between; }
       .ws-toggle, .model-pill { min-height: 42px; }
@@ -4845,6 +4846,7 @@
       button.textContent = label;
       button.setAttribute('aria-label', ariaLabel);
       button.title = ariaLabel;
+      button.classList.toggle('is-stop', label === '◼ Stop');
     }
     function restoreComposerFocusIfSendControlFocused() {
       const button = document.getElementById('send-btn');

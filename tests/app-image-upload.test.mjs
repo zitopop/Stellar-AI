@@ -67,3 +67,8 @@ test('Task 72 restores keyboard focus after local completion only when the send 
   assert.match(appHtml, /setGenerationStatus\('Command completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+restoreComposerFocusIfSendControlFocused\(\);/);
   assert.match(appHtml, /setGenerationStatus\('Image request completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+loadChat\(currentChatId\);\s+restoreComposerFocusIfSendControlFocused\(\);/);
 });
+
+test('Task 73 gives the active stop control enough narrow-screen width to keep its label visible', () => {
+  assert.match(appHtml, /#send-btn\.is-stop \{ flex-basis: 88px !important; width: 88px !important; min-width: 88px !important; padding-inline: 10px !important; white-space: nowrap; \}/);
+  assert.match(appHtml, /button\.classList\.toggle\('is-stop', label === '◼ Stop'\);/);
+});
