@@ -323,3 +323,7 @@ test('Task 120 exposes the selected model with synchronized radio-menu semantics
 test('Task 121 keeps the mobile model menu scrollable within a bounded viewport', () => {
   assert.match(appHtml, /@media \(max-width: 767px\) \{[\s\S]*?#model-menu \{[^}]*?max-height: 58dvh !important; overflow-y: auto !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;/);
 });
+
+test('Task 122 refreshes existing selected-model indicators immediately after a permitted choice', () => {
+  assert.match(appHtml, /function pickModel\(m\) \{[\s\S]*?if \(\['researcher', 'security', 'tester'\]\.includes\(m\) && !\(s\.plan === 'lite' \|\| s\.plan === 'pro' \|\| isOwner\(\)\)\) \{ openPlans\(\); return; \}\s+Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);/);
+});
