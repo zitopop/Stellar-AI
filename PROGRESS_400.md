@@ -123,7 +123,7 @@
 | 117 | ✅ Complete | Tab and Shift+Tab wrap within the open workspace model menu, excluding hidden or disabled choices | `app.html`; full suite 138 tests pass; Vercel deployment `748882e` success | `748882e` |
 | 118 | ✅ Complete | Keyboard-triggered model-menu opening moves focus to the first visible available choice while pointer opening remains unchanged | `app.html`; full suite 139 tests pass; Vercel deployment `4bb3ae1` success | `4bb3ae1` |
 | 119 | ✅ Complete | ArrowDown and ArrowUp move focus through visible enabled model-menu choices with wrapping | `app.html`; full suite 140 tests pass; Vercel deployment `b07c844` success | `b07c844` |
-| 120 | ☐ Pending | Next approved implementation task | — | — |
+| 120 | ✅ Complete | Model choices expose synchronized menu-radio selection state, while the plan action remains a menu item | `app.html`; full suite 141 tests pass; Vercel deployment `56fd574` success | `56fd574` |
 | 121 | ☐ Pending | Next approved implementation task | — | — |
 | 122 | ☐ Pending | Next approved implementation task | — | — |
 | 123 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**119 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**120 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
