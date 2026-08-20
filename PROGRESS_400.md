@@ -140,7 +140,7 @@
 | 134 | ✅ Complete | The existing workspace chat conversation region has a stable accessible name while preserving busy and scrolling behavior | `app.html`; full suite 155 tests pass; Vercel deployment `cf40560` success | `cf40560` |
 | 135 | ✅ Complete | The existing workspace message composer is exposed as a named form landmark without changing keyboard or send controls | `app.html`; full suite 156 tests pass; Vercel deployment `e2f11a3` success | `e2f11a3` |
 | 136 | ✅ Complete | The workspace pasted-content summary announces its existing feedback politely while retaining the visual remove control | `app.html`; full suite 157 tests pass; Vercel deployment `3dfe7db` success | `3dfe7db` |
-| 137 | ☐ Pending | Next approved implementation task | — | — |
+| 137 | ✅ Complete | The existing workspace sidebar is exposed as named navigation without changing its chat, account, or utility controls | `app.html`; full suite 158 tests pass; Vercel deployment `4721d8e` success | `4721d8e` |
 | 138 | ☐ Pending | Next approved implementation task | — | — |
 | 139 | ☐ Pending | Next approved implementation task | — | — |
 | 140 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**136 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**137 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
