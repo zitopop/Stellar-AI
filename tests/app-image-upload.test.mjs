@@ -265,3 +265,8 @@ test('Task 110 manages focus for the purchase-confirmation dialog lifecycle', ()
 test('Task 111 closes only the open purchase-confirmation dialog with an unhandled Escape key', () => {
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const thanksModal = document\.getElementById\('thanks-modal'\);\s+if \(!thanksModal \|\| thanksModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeThanks\(\);\s+\}\);/);
 });
+
+test('Task 112 keeps Tab navigation inside the open purchase-confirmation dialog', () => {
+  assert.match(appHtml, /function trapThanksDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const thanksModal = document\.getElementById\('thanks-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', trapThanksDialogFocus\);/);
+});
