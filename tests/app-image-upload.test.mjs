@@ -77,12 +77,18 @@ test('Task 137 exposes the existing workspace sidebar as named navigation', () =
   assert.match(appHtml, /<div id="sidebar" class="w-72 glass border-r border-white\/10 flex flex-col p-4" role="navigation" aria-label="Workspace navigation">/);
   assert.match(appHtml, /<button onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">/);
   assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)"/);
-  assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list"><\/div>/);
+  assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list"(?: role="region" aria-labelledby="chats-heading")?><\/div>/);
 });
 
 test('Task 138 gives workspace chat search an explicit accessible name', () => {
   assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)" placeholder="&#128269; Search chats" aria-label="Search chats"/);
   assert.match(appHtml, /autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="search_stellar_20607">/);
+});
+
+test('Task 139 relates the existing workspace chat-history label and list', () => {
+  assert.match(appHtml, /<div id="chats-heading" class="chats-label" role="heading" aria-level="2">Chats<\/div>/);
+  assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list" role="region" aria-labelledby="chats-heading"><\/div>/);
+  assert.match(appHtml, /const container = document\.getElementById\('chats-list'\);\s+container\.innerHTML = '';/);
 });
 
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
