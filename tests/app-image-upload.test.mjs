@@ -270,3 +270,7 @@ test('Task 112 keeps Tab navigation inside the open purchase-confirmation dialog
   assert.match(appHtml, /function trapThanksDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const thanksModal = document\.getElementById\('thanks-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
   assert.match(appHtml, /document\.addEventListener\('keydown', trapThanksDialogFocus\);/);
 });
+
+test('Task 113 hides the decorative purchase confetti canvas from assistive technologies', () => {
+  assert.match(appHtml, /function fireConfetti\(\) \{\s+const c = document\.createElement\('canvas'\);\s+c\.id = 'confetti-canvas';\s+c\.setAttribute\('aria-hidden', 'true'\);/);
+});
