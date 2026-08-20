@@ -94,3 +94,7 @@ test('Task 78 synchronizes the Files control expanded state with the workspace d
   assert.match(appHtml, /id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"/);
   assert.match(appHtml, /function toggleWorkspace\(\) \{\s+const ws = document\.getElementById\('workspace'\);\s+const opening = ws\.classList\.contains\('hidden'\);\s+ws\.classList\.toggle\('hidden'\);\s+document\.getElementById\('ws-btn'\)\?\.setAttribute\('aria-expanded', String\(opening\)\);/);
 });
+
+test('Task 79 closes an open workspace drawer with Escape and restores Files control focus', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape'\) return;\s+const workspace = document\.getElementById\('workspace'\);\s+if \(!workspace \|\| workspace\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+toggleWorkspace\(\);\s+document\.getElementById\('ws-btn'\)\?\.focus\(\{ preventScroll: true \}\);/);
+});

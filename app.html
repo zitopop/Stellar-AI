@@ -4765,6 +4765,14 @@
       document.getElementById('ws-btn')?.setAttribute('aria-expanded', String(opening));
       if (!ws.classList.contains('hidden')) renderWorkspace();
     }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const workspace = document.getElementById('workspace');
+      if (!workspace || workspace.classList.contains('hidden')) return;
+      event.preventDefault();
+      toggleWorkspace();
+      document.getElementById('ws-btn')?.focus({ preventScroll: true });
+    });
     function wsCopy(i, btn) {
       const f = currentFiles()[i];
       if (!f) return;
