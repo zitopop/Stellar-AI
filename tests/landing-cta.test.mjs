@@ -47,3 +47,8 @@ test('Task 129 keeps FAQ answer accessibility visibility synchronized with discl
   assert.match(landingHtml, /openItem\.querySelector\('\.faq-answer'\)\.setAttribute\('aria-hidden', 'true'\)/);
   assert.match(landingHtml, /item\.querySelector\('\.faq-answer'\)\.setAttribute\('aria-hidden', 'false'\)/);
 });
+
+test('Task 130 announces existing saved-tool count updates politely', () => {
+  assert.match(landingHtml, /<span id="favorite-count" role="status" aria-live="polite" aria-atomic="true">0 saved<\/span>/);
+  assert.match(landingHtml, /if \(favoriteCount\) favoriteCount\.textContent = `\$\{favorites\.length\} saved`;/);
+});
