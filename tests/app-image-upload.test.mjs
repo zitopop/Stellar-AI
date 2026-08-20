@@ -76,3 +76,7 @@ test('Task 73 gives the active stop control enough narrow-screen width to keep i
 test('Task 74 restores guarded composer focus after standard generation cleanup', () => {
   assert.match(appHtml, /loading\.remove\(\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+setSendControl\('Send', 'Send message'\);\s+document\.getElementById\('logo-star'\)\.classList\.remove\('logo-working'\);\s+restoreComposerFocusIfSendControlFocused\(\);/);
 });
+
+test('Task 75 announces a requested stop before aborting the active generation', () => {
+  assert.match(appHtml, /function stopOrSend\(\) \{\s+if \(currentAbort\) \{\s+setGenerationStatus\('Stopping generation\.'\);\s+currentAbort\.abort\(\);\s+return;/);
+});

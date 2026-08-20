@@ -4854,7 +4854,11 @@
       document.getElementById('txt')?.focus({ preventScroll: true });
     }
     function stopOrSend() {
-      if (currentAbort) { currentAbort.abort(); return; }
+      if (currentAbort) {
+        setGenerationStatus('Stopping generation.');
+        currentAbort.abort();
+        return;
+      }
       sendMessage();
     }
 
