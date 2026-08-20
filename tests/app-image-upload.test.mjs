@@ -319,3 +319,7 @@ test('Task 120 exposes the selected model with synchronized radio-menu semantics
   assert.match(appHtml, /document\.querySelectorAll\('\[data-model-choice\]'\)\.forEach\(\(choice\) => \{\s+choice\.setAttribute\('aria-checked', String\(choice\.dataset\.modelChoice === cur\)\);\s+\}\);/);
   assert.match(appHtml, /closeModelMenu\(\); openPlans\(\)" role="menuitem"/);
 });
+
+test('Task 121 keeps the mobile model menu scrollable within a bounded viewport', () => {
+  assert.match(appHtml, /@media \(max-width: 767px\) \{[\s\S]*?#model-menu \{[^}]*?max-height: 58dvh !important; overflow-y: auto !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;/);
+});
