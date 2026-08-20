@@ -121,7 +121,7 @@
 | 115 | ✅ Complete | Workspace model selector exposes synchronized menu disclosure state while preserving routing and plan gates | `app.html`; full suite 136 tests pass; Vercel deployment `bac8dd8` success | `bac8dd8` |
 | 116 | ✅ Complete | Escape closes the open workspace model menu and restores focus to the selector trigger | `app.html`; full suite 137 tests pass; Vercel deployment `e1716bb` success | `e1716bb` |
 | 117 | ✅ Complete | Tab and Shift+Tab wrap within the open workspace model menu, excluding hidden or disabled choices | `app.html`; full suite 138 tests pass; Vercel deployment `748882e` success | `748882e` |
-| 118 | ☐ Pending | Next approved implementation task | — | — |
+| 118 | ✅ Complete | Keyboard-triggered model-menu opening moves focus to the first visible available choice while pointer opening remains unchanged | `app.html`; full suite 139 tests pass; Vercel deployment `4bb3ae1` success | `4bb3ae1` |
 | 119 | ☐ Pending | Next approved implementation task | — | — |
 | 120 | ☐ Pending | Next approved implementation task | — | — |
 | 121 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**117 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**118 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
