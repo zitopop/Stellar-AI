@@ -125,7 +125,7 @@
 | 119 | ✅ Complete | ArrowDown and ArrowUp move focus through visible enabled model-menu choices with wrapping | `app.html`; full suite 140 tests pass; Vercel deployment `b07c844` success | `b07c844` |
 | 120 | ✅ Complete | Model choices expose synchronized menu-radio selection state, while the plan action remains a menu item | `app.html`; full suite 141 tests pass; Vercel deployment `56fd574` success | `56fd574` |
 | 121 | ✅ Complete | Mobile model menu is scrollable and overscroll-contained within its bounded viewport, keeping all choices reachable | `app.html`; full suite 142 tests pass; Vercel deployment `3fd1a80` success | `3fd1a80` |
-| 122 | ☐ Pending | Next approved implementation task | — | — |
+| 122 | ✅ Complete | Permitted model selection refreshes the visible checks and radio-menu selected state immediately | `app.html`; full suite 143 tests pass; Vercel deployment `f4cf7a0` success | `f4cf7a0` |
 | 123 | ☐ Pending | Next approved implementation task | — | — |
 | 124 | ☐ Pending | Next approved implementation task | — | — |
 | 125 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**121 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**122 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
