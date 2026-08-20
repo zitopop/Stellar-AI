@@ -35,7 +35,15 @@ test('Task 127 announces existing feature-search result-count updates politely',
 test('Task 128 links every FAQ disclosure control with its labelled answer region', () => {
   for (const id of ['faq-test', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
     assert.match(landingHtml, new RegExp(`<button id="${id}-button" class="faq-button" aria-expanded="false" aria-controls="${id}-answer">`));
-    assert.match(landingHtml, new RegExp(`<div id="${id}-answer" class="faq-answer" role="region" aria-labelledby="${id}-button">`));
+    assert.match(landingHtml, new RegExp(`<div id="${id}-answer" class="faq-answer" role="region" aria-labelledby="${id}-button" aria-hidden="true">`));
   }
   assert.match(landingHtml, /openItem\.querySelector\('\.faq-button'\)\.setAttribute\('aria-expanded', 'false'\)/);
+});
+
+test('Task 129 keeps FAQ answer accessibility visibility synchronized with disclosure state', () => {
+  for (const id of ['faq-test', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
+    assert.match(landingHtml, new RegExp(`<div id="${id}-answer" class="faq-answer" role="region" aria-labelledby="${id}-button" aria-hidden="true">`));
+  }
+  assert.match(landingHtml, /openItem\.querySelector\('\.faq-answer'\)\.setAttribute\('aria-hidden', 'true'\)/);
+  assert.match(landingHtml, /item\.querySelector\('\.faq-answer'\)\.setAttribute\('aria-hidden', 'false'\)/);
 });
