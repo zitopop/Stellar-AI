@@ -4295,6 +4295,13 @@
       topupDialogTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      const topupModal = document.getElementById('topup-modal');
+      if (!topupModal || topupModal.classList.contains('hidden')) return;
+      event.preventDefault();
+      closeTopup();
+    });
     function setTopupQty(p) {
       const pence = topupPricePence(p);
       const bon = bonusFor(pence);

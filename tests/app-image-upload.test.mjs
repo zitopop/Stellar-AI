@@ -221,3 +221,7 @@ test('Task 102 manages focus for the credit top-up dialog lifecycle', () => {
   assert.match(appHtml, /let topupDialogTrigger = null;\s+function openTopup\(\) \{\s+const active = document\.activeElement;\s+topupDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?setTopupQty\(document\.getElementById\('topup-range'\)\.value\);\s+setTimeout\(\(\) => document\.querySelector\('#topup-modal \.pack'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
   assert.match(appHtml, /function closeTopup\(\) \{\s+document\.getElementById\('topup-modal'\)\.classList\.add\('hidden'\);\s+const trigger = topupDialogTrigger;\s+topupDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
+
+test('Task 103 closes only the open credit top-up dialog with an unhandled Escape key', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const topupModal = document\.getElementById\('topup-modal'\);\s+if \(!topupModal \|\| topupModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeTopup\(\);\s+\}\);/);
+});
