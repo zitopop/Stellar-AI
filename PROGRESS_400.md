@@ -129,7 +129,7 @@
 | 123 | ✅ Complete | Primary landing-page hero CTA explicitly states that the first script can be generated free while retaining the existing workspace destination | `index.html`; full suite 144 tests pass; Vercel deployment `3607ecc` success | `3607ecc` |
 | 124 | ✅ Complete | Keyboard visitors can skip landing-page navigation and focus the main content through a visible-on-focus skip link | `index.html`; full suite 145 tests pass; Vercel deployment `fa6d442` success | `fa6d442` |
 | 125 | ✅ Complete | The visible mobile landing-header theme control has a reliable 44px minimum touch target | `index.html`; full suite 146 tests pass; Vercel deployment `161edbf` success | `161edbf` |
-| 126 | ☐ Pending | Next approved implementation task | — | — |
+| 126 | ✅ Complete | Landing-page favorite-tool controls expose their unsaved pressed state before the existing renderer restores saved state | `index.html`; full suite 147 tests pass; Vercel deployment `f51b7ce` success | `f51b7ce` |
 | 127 | ☐ Pending | Next approved implementation task | — | — |
 | 128 | ☐ Pending | Next approved implementation task | — | — |
 | 129 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**125 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**126 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
