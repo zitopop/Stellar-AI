@@ -4217,7 +4217,17 @@
         document.getElementById('set-usage-wallet').textContent = moneyShort(wallet);
       }
     }
+    let limitDialogTrigger = null;
+    function captureLimitDialogTrigger() {
+      const active = document.activeElement;
+      limitDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
+    }
+    function openLimitDialog() {
+      document.getElementById('limit-modal').classList.remove('hidden');
+      setTimeout(() => document.querySelector('#limit-actions button')?.focus({ preventScroll: true }), 0);
+    }
     function showLimit() {
+      captureLimitDialogTrigger();
       const plan = Store.get().plan || 'free';
       document.getElementById('limit-sub').textContent = 'Your allowance refreshes in ' + refillTimeStr() + '.';
       const acts = document.getElementById('limit-actions');
@@ -4227,7 +4237,7 @@
           'Create a free account and we will add £1 of credit so you can keep going.';
         acts.innerHTML = '<button onclick="closeLimit(); openWelcome()" class="side-new w-full" style="font-size:12px;padding:8px 12px;">Sign in free — get £1 credit</button>' +
           '<button onclick="closeLimit()" class="plan-btn glass">Not now</button>';
-        document.getElementById('limit-modal').classList.remove('hidden');
+        openLimitDialog();
         return;
       }
       if (!creditsOn() && totalBalance() >= MSG_COST_PENCE) {
@@ -4235,7 +4245,7 @@
           'You have ' + money(totalBalance()) + ' of credit. Turn on usage credit to keep going, or wait ' + refillTimeStr() + '.';
         acts.innerHTML = '<button onclick="enableCreditsAndSend()" class="side-new w-full" style="font-size:12px;padding:8px 12px;">Turn on usage credit</button>' +
           '<button onclick="closeLimit()" class="plan-btn glass">I will wait</button>';
-        document.getElementById('limit-modal').classList.remove('hidden');
+        openLimitDialog();
         return;
       }
       if (plan === 'free') {
@@ -4246,9 +4256,14 @@
         acts.innerHTML = '<button onclick="closeLimit(); openTopup()" class="side-new w-full" style="font-size:12px;padding:8px 12px;">Add credit →</button>' +
           '<button onclick="closeLimit()" class="plan-btn glass">I will wait</button>';
       }
-      document.getElementById('limit-modal').classList.remove('hidden');
+      openLimitDialog();
     }
-    function closeLimit() { document.getElementById('limit-modal').classList.add('hidden'); }
+    function closeLimit() {
+      document.getElementById('limit-modal').classList.add('hidden');
+      const trigger = limitDialogTrigger;
+      limitDialogTrigger = null;
+      if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+    }
     function enableCreditsAndSend() { Store.set({ creditsOn: true }); closeLimit(); renderMeter(); refreshSettings(); sendMessage(); }
     function toggleCreditsOn() { Store.set({ creditsOn: !creditsOn() }); renderUsagePage(); renderMeter(); refreshSettings(); }
     function topupPricePence(p) { return Math.max(50, Math.min(20000, parseInt(p, 10) || 50)); }
