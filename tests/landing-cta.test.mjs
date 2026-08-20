@@ -58,3 +58,11 @@ test('Task 131 keeps decorative FAQ plus icons out of control names', () => {
   assert.equal(icons.length, 5);
   assert.match(landingHtml, /\.faq-button\[aria-expanded="true"\] \.faq-plus/);
 });
+
+test('Task 132 keeps FAQ structured data aligned with additional visible landing-page answers', () => {
+  assert.match(landingHtml, /"@type":"FAQPage"/);
+  assert.match(landingHtml, /"name":"How should I test a generated script\?"/);
+  assert.match(landingHtml, /"name":"How is this different from generic AI chat\?"/);
+  assert.match(landingHtml, /<button id="faq-test-button"/);
+  assert.match(landingHtml, /<button id="faq-generic-ai-button"/);
+});
