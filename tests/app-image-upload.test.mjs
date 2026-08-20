@@ -61,3 +61,9 @@ test('Task 71 keeps the send control’s accessible name synchronized with send 
   assert.match(appHtml, /setSendControl\('◼ Stop', 'Stop generating response'\);/);
   assert.match(appHtml, /setSendControl\('Send', 'Send message'\);/);
 });
+
+test('Task 72 restores keyboard focus after local completion only when the send control still owns focus', () => {
+  assert.match(appHtml, /function restoreComposerFocusIfSendControlFocused\(\) \{[\s\S]*?document\.activeElement !== button[\s\S]*?document\.getElementById\('txt'\)\?\.focus\(\{ preventScroll: true \}\);/);
+  assert.match(appHtml, /setGenerationStatus\('Command completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+restoreComposerFocusIfSendControlFocused\(\);/);
+  assert.match(appHtml, /setGenerationStatus\('Image request completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+loadChat\(currentChatId\);\s+restoreComposerFocusIfSendControlFocused\(\);/);
+});

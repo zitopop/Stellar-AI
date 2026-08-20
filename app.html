@@ -4846,6 +4846,11 @@
       button.setAttribute('aria-label', ariaLabel);
       button.title = ariaLabel;
     }
+    function restoreComposerFocusIfSendControlFocused() {
+      const button = document.getElementById('send-btn');
+      if (document.activeElement !== button) return;
+      document.getElementById('txt')?.focus({ preventScroll: true });
+    }
     function stopOrSend() {
       if (currentAbort) { currentAbort.abort(); return; }
       sendMessage();
@@ -4934,6 +4939,7 @@
         document.getElementById('logo-star').classList.remove('logo-working');
         setGenerationStatus('Command completed.');
         chatEl.setAttribute('aria-busy', 'false');
+        restoreComposerFocusIfSendControlFocused();
         return;
       }
       consumeMsg();
@@ -4964,6 +4970,7 @@
         setGenerationStatus('Image request completed.');
         chatEl.setAttribute('aria-busy', 'false');
         loadChat(currentChatId);
+        restoreComposerFocusIfSendControlFocused();
         return;
       }
       if (wantsSearch) {
