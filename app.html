@@ -2954,7 +2954,7 @@
         </div>
         <div id="ws-list" class="ws-list"></div>
       </div>
-      <main id="chat" class="flex-1 overflow-y-auto p-6">
+      <main id="chat" class="flex-1 overflow-y-auto p-6" aria-busy="false">
         <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
         <div class="greet-wrap">
           <div class="welcome-kicker">Stellar workspace ready</div>
@@ -4873,6 +4873,7 @@
       input.style.height = 'auto';
 
       const chatEl = document.getElementById('chat');
+      chatEl.setAttribute('aria-busy', 'true');
       const wantsSearch = needsSearch(text);
       const STEPS = wantsSearch
         ? [['','Reading your request…'], ['','Searching the web…'], ['','Opening top results…'], ['','Reading sources…'], ['','Cross-checking facts…'], ['','Combining results…'], ['','Verifying the answer…'], ['','Formatting response…']]
@@ -4925,6 +4926,7 @@
         document.getElementById('send-btn').textContent = 'Send';
         document.getElementById('logo-star').classList.remove('logo-working');
         setGenerationStatus('Command completed.');
+        chatEl.setAttribute('aria-busy', 'false');
         return;
       }
       consumeMsg();
@@ -4953,6 +4955,7 @@
         document.getElementById('send-btn').textContent = 'Send';
         document.getElementById('logo-star').classList.remove('logo-working');
         setGenerationStatus('Image request completed.');
+        chatEl.setAttribute('aria-busy', 'false');
         loadChat(currentChatId);
         return;
       }
@@ -5087,6 +5090,7 @@
         currentAbort = null;
         sendLock = false;
         loading.remove();
+        chatEl.setAttribute('aria-busy', 'false');
         document.getElementById('send-btn').textContent = 'Send';
         document.getElementById('logo-star').classList.remove('logo-working');
       }

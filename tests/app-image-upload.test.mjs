@@ -46,3 +46,11 @@ test('Task 69 exposes live generation status for thinking, completion, stop, and
   assert.match(appHtml, /setGenerationStatus\('Generation stopped\.'\);/);
   assert.match(appHtml, /setGenerationStatus\('Generation failed: ' \+ msg\);/);
 });
+
+test('Task 70 marks the workspace chat busy only while generation is active', () => {
+  assert.match(appHtml, /<main id="chat" class="flex-1 overflow-y-auto p-6" aria-busy="false">/);
+  assert.match(appHtml, /const chatEl = document\.getElementById\('chat'\);\s+chatEl\.setAttribute\('aria-busy', 'true'\);/);
+  assert.match(appHtml, /setGenerationStatus\('Command completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);/);
+  assert.match(appHtml, /setGenerationStatus\('Image request completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);/);
+  assert.match(appHtml, /loading\.remove\(\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+document\.getElementById\('send-btn'\)/);
+});
