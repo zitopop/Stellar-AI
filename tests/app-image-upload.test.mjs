@@ -55,6 +55,12 @@ test('Task 70 marks the workspace chat busy only while generation is active', ()
   assert.match(appHtml, /loading\.remove\(\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+setSendControl\('Send', 'Send message'\);/);
 });
 
+test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
+  assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(appHtml, /loading\.innerHTML = '<div class="think-bubble" aria-hidden="true"><div class="think-spinner"><\/div><div class="think-status" id="think-status">' \+ STEPS\[0\]\[1\] \+ '<\/div><\/div>';/);
+  assert.match(appHtml, /setGenerationStatus\(STEPS\[0\]\[1\]\);/);
+});
+
 test('Task 71 keeps the send control’s accessible name synchronized with send and stop states', () => {
   assert.match(appHtml, /id="send-btn"[^>]*aria-label="Send message"[^>]*title="Send message"/);
   assert.match(appHtml, /function setSendControl\(label, ariaLabel\) \{[\s\S]*?button\.setAttribute\('aria-label', ariaLabel\);[\s\S]*?button\.title = ariaLabel;/);
