@@ -112,3 +112,9 @@ test('Task 81 manages focus when the sign-in dialog opens and is explicitly dism
 test('Task 82 closes an open sign-in dialog with Escape through the existing dismissal path', () => {
   assert.match(appHtml, /function dismissWelcome\(\) \{[\s\S]*?\}\s+document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape'\) return;\s+const welcomeModal = document\.getElementById\('welcome-modal'\);\s+if \(!welcomeModal \|\| welcomeModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+dismissWelcome\(\);/);
 });
+
+test('Task 83 gives the plans, usage, and settings modal cards explicit labelled dialog semantics', () => {
+  assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="plans-modal-heading"[\s\S]*?id="plans-modal-heading"[\s\S]*?>Choose your plan<\//);
+  assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="settings-modal-heading" class="set-card[\s\S]*?id="settings-modal-heading" class="settings-title">Settings<\//);
+  assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="usage-modal-heading"[\s\S]*?id="usage-modal-heading"[\s\S]*?>Plan usage limits<\//);
+});
