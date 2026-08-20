@@ -110,7 +110,7 @@ test('Task 81 manages focus when the sign-in dialog opens and is explicitly dism
 });
 
 test('Task 82 closes an open sign-in dialog with Escape through the existing dismissal path', () => {
-  assert.match(appHtml, /function dismissWelcome\(\) \{[\s\S]*?\}\s+document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape'\) return;\s+const welcomeModal = document\.getElementById\('welcome-modal'\);\s+if \(!welcomeModal \|\| welcomeModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+dismissWelcome\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+const welcomeModal = document\.getElementById\('welcome-modal'\);\s+if \(!welcomeModal \|\| welcomeModal\.classList\.contains\('hidden'\)\) return;[\s\S]*?if \(event\.key !== 'Escape'\) return;\s+event\.preventDefault\(\);\s+dismissWelcome\(\);/);
 });
 
 test('Task 83 gives the plans, usage, and settings modal cards explicit labelled dialog semantics', () => {
@@ -150,4 +150,9 @@ test('Task 87 gives sign-in and sign-up credential fields explicit accessible na
 
 test('Task 88 focuses the active authentication page email field after switching pages', () => {
   assert.match(appHtml, /function authPage\(which\) \{[\s\S]*?const login = which === 'login';[\s\S]*?setTimeout\(\(\) => document\.getElementById\(login \? 'si-email' : 'su-email'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+});
+
+test('Task 89 keeps Tab navigation inside the open sign-in dialog', () => {
+  assert.match(appHtml, /function trapWelcomeDialogFocus\(event, welcomeModal\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /if \(event\.key === 'Tab'\) \{\s+trapWelcomeDialogFocus\(event, welcomeModal\);\s+return;\s+\}/);
 });
