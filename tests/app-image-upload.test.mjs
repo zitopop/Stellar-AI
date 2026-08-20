@@ -89,3 +89,8 @@ test('Task 76 exposes the mobile navigation toggle name and expanded state', () 
 test('Task 77 gives the workspace drawer close control an explicit accessible name', () => {
   assert.match(appHtml, /<button onclick="toggleWorkspace\(\)" aria-label="Close workspace" title="Close workspace" class="ws-close">×<\/button>/);
 });
+
+test('Task 78 synchronizes the Files control expanded state with the workspace drawer', () => {
+  assert.match(appHtml, /id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"/);
+  assert.match(appHtml, /function toggleWorkspace\(\) \{\s+const ws = document\.getElementById\('workspace'\);\s+const opening = ws\.classList\.contains\('hidden'\);\s+ws\.classList\.toggle\('hidden'\);\s+document\.getElementById\('ws-btn'\)\?\.setAttribute\('aria-expanded', String\(opening\)\);/);
+});

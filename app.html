@@ -3010,7 +3010,7 @@
           <span id="keyboard-hint" class="keyboard-hint">Enter to send · Shift+Enter for new line</span>
           <div class="foot-right">
           <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Image</span></button>
-          <button onclick="toggleWorkspace()" id="ws-btn" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
+          <button onclick="toggleWorkspace()" id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
           <div class="relative">
             <button id="model-btn" onclick="toggleModelMenu(event)" class="model-pill">⭐ Star ▾</button>
             <div id="model-menu" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
@@ -4760,7 +4760,9 @@
     }
     function toggleWorkspace() {
       const ws = document.getElementById('workspace');
+      const opening = ws.classList.contains('hidden');
       ws.classList.toggle('hidden');
+      document.getElementById('ws-btn')?.setAttribute('aria-expanded', String(opening));
       if (!ws.classList.contains('hidden')) renderWorkspace();
     }
     function wsCopy(i, btn) {
