@@ -98,3 +98,7 @@ test('Task 78 synchronizes the Files control expanded state with the workspace d
 test('Task 79 closes an open workspace drawer with Escape and restores Files control focus', () => {
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape'\) return;\s+const workspace = document\.getElementById\('workspace'\);\s+if \(!workspace \|\| workspace\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+toggleWorkspace\(\);\s+document\.getElementById\('ws-btn'\)\?\.focus\(\{ preventScroll: true \}\);/);
 });
+
+test('Task 80 gives the sign-in modal an explicit labelled modal-dialog role', () => {
+  assert.match(appHtml, /<div class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-heading">\s+<h2 id="welcome-modal-heading" class="sr-only">Account access<\/h2>/);
+});
