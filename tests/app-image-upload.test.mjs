@@ -230,3 +230,8 @@ test('Task 104 keeps Tab navigation inside the open credit top-up dialog', () =>
   assert.match(appHtml, /function trapTopupDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const topupModal = document\.getElementById\('topup-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
   assert.match(appHtml, /document\.addEventListener\('keydown', trapTopupDialogFocus\);/);
 });
+
+test('Task 105 gives the redeem-code modal explicit labelled dialog semantics', () => {
+  assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card" role="dialog" aria-modal="true" aria-labelledby="redeem-modal-heading">/);
+  assert.match(appHtml, /<div id="redeem-modal-heading" class="text-2xl font-black mb-2">Redeem a gift code<\/div>/);
+});
