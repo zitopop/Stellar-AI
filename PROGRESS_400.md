@@ -88,7 +88,7 @@
 | 82 | ✅ Complete | Escape closes the open sign-in dialog through its existing dismissal path and restores focus to the triggering control | `app.html`; static UI contract and full suite 102 tests pass; Vercel deployment `9464675` READY; live Escape and focus-return behavior verified | `9464675` |
 | 83 | ✅ Complete | Plans, usage, and settings cards expose explicit labelled modal-dialog semantics without changing existing behavior | `app.html`; static UI contract and full suite 103 tests pass; Vercel deployment `ed117b9` READY; live DOM semantics verified | `ed117b9` |
 | 84 | ✅ Complete | Plans, usage, and settings close controls expose specific accessible names without changing existing behavior | `app.html`; static UI contract and full suite 104 tests pass; Vercel deployment `409c9b8` READY; live DOM labels verified | `409c9b8` |
-| 85 | ☐ Pending | Next approved implementation task | — | — |
+| 85 | ✅ Complete | Escape dismisses an open plans, usage, or settings dialog through its existing close path without overriding earlier handlers | `app.html`; static UI contract and full suite 105 tests pass; Vercel deployment `c51fd39` READY; live plans Escape behavior verified | `c51fd39` |
 | 86 | ☐ Pending | Next approved implementation task | — | — |
 | 87 | ☐ Pending | Next approved implementation task | — | — |
 | 88 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**84 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**85 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
