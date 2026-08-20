@@ -140,3 +140,10 @@ test('Task 86 manages close-control and trigger focus for scoped utility dialogs
   assert.match(appHtml, /function closeUsage\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
   assert.match(appHtml, /function closeSettings\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
 });
+
+test('Task 87 gives sign-in and sign-up credential fields explicit accessible names while preserving autocomplete', () => {
+  assert.match(appHtml, /id="si-email"[^>]*aria-label="Email address"[^>]*autocomplete="email"/);
+  assert.match(appHtml, /id="si-pass"[^>]*aria-label="Password"[^>]*autocomplete="current-password"/);
+  assert.match(appHtml, /id="su-email"[^>]*aria-label="Email address"[^>]*autocomplete="email"/);
+  assert.match(appHtml, /id="su-pass"[^>]*aria-label="Choose a password"[^>]*autocomplete="new-password"/);
+});
