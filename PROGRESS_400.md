@@ -73,7 +73,7 @@
 | 67 | ✅ Complete | Workspace composer preserves IME composition, keeps Enter-to-send and Shift+Enter newline behavior, and exposes an accessible keyboard-use label | `app.html`; static UI contract and full suite 87 tests pass; exact Vercel deployment `1c7de33` READY; live DOM verified | `1c7de33` |
 | 68 | ✅ Complete | Workspace composer displays a concise Enter-to-send and Shift+Enter hint on desktop, with readable theme styling and a narrow-screen hide rule to protect mobile controls | `app.html`; attachment contract and full suite 88 tests pass; exact Vercel deployment `e9bd5c3` READY; live DOM text, geometry, and mobile CSS rule verified | `e9bd5c3` |
 | 69 | ✅ Complete | Workspace chat exposes polite, atomic live status text for thinking, completion, stop, and failure states without changing provider behavior | `app.html`; static UI contract and full suite 89 tests pass; Vercel deployment `9460654` READY | `9460654` |
-| 70 | ☐ Pending | Next approved implementation task | — | — |
+| 70 | ✅ Complete | Workspace chat exposes aria-busy while a generation is active and clears it on command, image, normal, stopped, and failed completion paths | `app.html`; static UI contract and full suite 90 tests pass; Vercel deployment `0e08c70` READY | `0e08c70` |
 | 71 | ☐ Pending | Next approved implementation task | — | — |
 | 72 | ☐ Pending | Next approved implementation task | — | — |
 | 73 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**69 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**70 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
