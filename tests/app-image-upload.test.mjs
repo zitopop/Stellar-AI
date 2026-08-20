@@ -52,5 +52,12 @@ test('Task 70 marks the workspace chat busy only while generation is active', ()
   assert.match(appHtml, /const chatEl = document\.getElementById\('chat'\);\s+chatEl\.setAttribute\('aria-busy', 'true'\);/);
   assert.match(appHtml, /setGenerationStatus\('Command completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);/);
   assert.match(appHtml, /setGenerationStatus\('Image request completed\.'\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);/);
-  assert.match(appHtml, /loading\.remove\(\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+document\.getElementById\('send-btn'\)/);
+  assert.match(appHtml, /loading\.remove\(\);\s+chatEl\.setAttribute\('aria-busy', 'false'\);\s+setSendControl\('Send', 'Send message'\);/);
+});
+
+test('Task 71 keeps the send control’s accessible name synchronized with send and stop states', () => {
+  assert.match(appHtml, /id="send-btn"[^>]*aria-label="Send message"[^>]*title="Send message"/);
+  assert.match(appHtml, /function setSendControl\(label, ariaLabel\) \{[\s\S]*?button\.setAttribute\('aria-label', ariaLabel\);[\s\S]*?button\.title = ariaLabel;/);
+  assert.match(appHtml, /setSendControl\('◼ Stop', 'Stop generating response'\);/);
+  assert.match(appHtml, /setSendControl\('Send', 'Send message'\);/);
 });

@@ -3000,7 +3000,7 @@
             <button onclick="clearPaste()" class="paste-x" title="Remove">×</button>
           </div>
           
-          <button id="send-btn" onclick="stopOrSend()" class="primary-btn px-6 hover:bg-white/15 rounded-2xl font-black transition-all active:scale-[0.985]">
+          <button id="send-btn" onclick="stopOrSend()" aria-label="Send message" title="Send message" class="primary-btn px-6 hover:bg-white/15 rounded-2xl font-black transition-all active:scale-[0.985]">
             Send
           </button>
         </div>
@@ -4839,6 +4839,13 @@
     }
 
     let currentAbort = null;
+    function setSendControl(label, ariaLabel) {
+      const button = document.getElementById('send-btn');
+      if (!button) return;
+      button.textContent = label;
+      button.setAttribute('aria-label', ariaLabel);
+      button.title = ariaLabel;
+    }
     function stopOrSend() {
       if (currentAbort) { currentAbort.abort(); return; }
       sendMessage();
@@ -4914,7 +4921,7 @@
         }
       }, 3500);
       currentAbort = new AbortController();
-      document.getElementById('send-btn').textContent = '◼ Stop';
+      setSendControl('◼ Stop', 'Stop generating response');
       if (tryCreditsCommand(text) || tryGiftCommand(text) || tryCodeCommand(text)) {
         clearInterval(autoScroll);
         clearInterval(stepTimer);
@@ -4923,7 +4930,7 @@
         chatEl.removeEventListener('touchmove', pauseAutoScroll);
         currentAbort = null;
         sendLock = false;
-        document.getElementById('send-btn').textContent = 'Send';
+        setSendControl('Send', 'Send message');
         document.getElementById('logo-star').classList.remove('logo-working');
         setGenerationStatus('Command completed.');
         chatEl.setAttribute('aria-busy', 'false');
@@ -4952,7 +4959,7 @@
         loading.remove();
         currentAbort = null;
         sendLock = false;
-        document.getElementById('send-btn').textContent = 'Send';
+        setSendControl('Send', 'Send message');
         document.getElementById('logo-star').classList.remove('logo-working');
         setGenerationStatus('Image request completed.');
         chatEl.setAttribute('aria-busy', 'false');
@@ -5091,7 +5098,7 @@
         sendLock = false;
         loading.remove();
         chatEl.setAttribute('aria-busy', 'false');
-        document.getElementById('send-btn').textContent = 'Send';
+        setSendControl('Send', 'Send message');
         document.getElementById('logo-star').classList.remove('logo-working');
       }
     }
