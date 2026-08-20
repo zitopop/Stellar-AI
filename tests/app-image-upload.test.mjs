@@ -294,3 +294,8 @@ test('Task 115 exposes synchronized disclosure semantics for the model menu', ()
 test('Task 116 closes only the open model menu with an unhandled Escape key and restores trigger focus', () => {
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const menu = document\.getElementById\('model-menu'\);\s+if \(!menu \|\| menu\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeModelMenu\(\);\s+document\.getElementById\('model-btn'\)\?\.focus\(\{ preventScroll: true \}\);\s+\}\);/);
 });
+
+test('Task 117 keeps Tab navigation inside the open model menu', () => {
+  assert.match(appHtml, /function trapModelMenuFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const menu = document\.getElementById\('model-menu'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', trapModelMenuFocus\);/);
+});
