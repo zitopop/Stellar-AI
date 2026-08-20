@@ -93,7 +93,7 @@
 | 87 | ✅ Complete | Sign-in and sign-up email and password fields expose explicit accessible names while preserving browser autofill metadata | `app.html`; static UI contract and full suite 107 tests pass; Vercel deployment `7a26b07` READY; live sign-in field labels verified | `7a26b07` |
 | 88 | ✅ Complete | Switching sign-in and sign-up pages moves focus to the active page’s email field without changing authentication behavior | `app.html`; static UI contract and full suite 108 tests pass; Vercel deployment `33f8980` READY; live focus switching verified | `33f8980` |
 | 89 | ✅ Complete | Tab and Shift+Tab focus loops remain within the open sign-in dialog without changing sign-in behavior | `app.html`; static UI contract and full suite 109 tests pass; Vercel deployment `ef28609` READY; live focus-loop behavior verified | `ef28609` |
-| 90 | ☐ Pending | Next approved implementation task | — | — |
+| 90 | ✅ Complete | Tab and Shift+Tab focus loops remain within the open plans, usage, or settings dialog without changing modal behavior | `app.html`; static UI contract and full suite 110 tests pass; Vercel deployment `ab68234` READY; live plans focus-loop behavior verified | `ab68234` |
 | 91 | ☐ Pending | Next approved implementation task | — | — |
 | 92 | ☐ Pending | Next approved implementation task | — | — |
 | 93 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**89 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**90 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
