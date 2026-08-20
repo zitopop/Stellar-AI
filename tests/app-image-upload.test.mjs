@@ -195,3 +195,8 @@ test('Task 97 keeps Tab navigation inside the open owner-tools dialog', () => {
   assert.match(appHtml, /function trapOwnerDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const ownerModal = document\.getElementById\('owner-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key === 'Tab'\) \{\s+trapOwnerDialogFocus\(event\);\s+return;\s+\}/);
 });
+
+test('Task 98 gives the allowance-limit modal explicit labelled dialog semantics', () => {
+  assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-8 text-center thanks-card" role="dialog" aria-modal="true" aria-labelledby="limit-modal-heading">/);
+  assert.match(appHtml, /<div id="limit-modal-heading" class="text-2xl font-black mb-2">Allowance used<\/div>/);
+});
