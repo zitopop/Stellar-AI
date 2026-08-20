@@ -235,3 +235,8 @@ test('Task 105 gives the redeem-code modal explicit labelled dialog semantics', 
   assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card" role="dialog" aria-modal="true" aria-labelledby="redeem-modal-heading">/);
   assert.match(appHtml, /<div id="redeem-modal-heading" class="text-2xl font-black mb-2">Redeem a gift code<\/div>/);
 });
+
+test('Task 106 manages focus for the redeem-code dialog lifecycle', () => {
+  assert.match(appHtml, /let redeemDialogTrigger = null;\s+function openRedeem\(\) \{\s+const active = document\.activeElement;\s+redeemDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;\s+document\.getElementById\('redeem-modal'\)\.classList\.remove\('hidden'\);\s+setTimeout\(\(\) => document\.getElementById\('redeem-input'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /function closeRedeem\(\) \{\s+document\.getElementById\('redeem-modal'\)\.classList\.add\('hidden'\);\s+const trigger = redeemDialogTrigger;\s+redeemDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
+});

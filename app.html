@@ -4103,8 +4103,19 @@
       btn.textContent = 'Copied ✓';
       setTimeout(() => btn.textContent = '📋 Copy code', 1800);
     }
-    function openRedeem() { document.getElementById('redeem-modal').classList.remove('hidden'); }
-    function closeRedeem() { document.getElementById('redeem-modal').classList.add('hidden'); }
+    let redeemDialogTrigger = null;
+    function openRedeem() {
+      const active = document.activeElement;
+      redeemDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
+      document.getElementById('redeem-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('redeem-input')?.focus({ preventScroll: true }), 0);
+    }
+    function closeRedeem() {
+      document.getElementById('redeem-modal').classList.add('hidden');
+      const trigger = redeemDialogTrigger;
+      redeemDialogTrigger = null;
+      if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+    }
     async function doRedeem() {
       const inp = document.getElementById('redeem-input');
       const out = document.getElementById('redeem-msg');
