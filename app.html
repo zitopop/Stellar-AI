@@ -5581,7 +5581,31 @@
     }
     function closeSettings() {
       document.body.classList.remove('settings-open'); document.getElementById('settings-modal').classList.add('hidden'); restoreUtilityDialogFocus(); }
+    function trapOpenUtilityDialogFocus(event) {
+      if (event.key !== 'Tab') return;
+      const utilityDialog = ['settings-modal', 'usage-modal', 'plans-modal']
+        .map((id) => document.getElementById(id))
+        .find((modal) => modal && !modal.classList.contains('hidden'))
+        ?.querySelector('[role="dialog"]');
+      if (!utilityDialog) return;
+      const focusable = [...utilityDialog.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])')]
+        .filter((element) => !element.closest('.hidden') && element.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
     document.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') {
+        if (!event.defaultPrevented) trapOpenUtilityDialogFocus(event);
+        return;
+      }
       if (event.key !== 'Escape' || event.defaultPrevented) return;
       const openUtilityDialog = [
         ['settings-modal', closeSettings],

@@ -126,7 +126,7 @@ test('Task 84 gives every scoped utility-dialog close control a specific accessi
 });
 
 test('Task 85 closes the open plans, usage, or settings dialog with Escape without overriding an earlier handler', () => {
-  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const openUtilityDialog = \[\s+\['settings-modal', closeSettings\],\s+\['usage-modal', closeUsage\],\s+\['plans-modal', closePlans\],\s+\]\.find\(\(\[id\]\) => !document\.getElementById\(id\)\?\.classList\.contains\('hidden'\)\);\s+if \(!openUtilityDialog\) return;\s+event\.preventDefault\(\);\s+openUtilityDialog\[1\]\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{[\s\S]*?if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const openUtilityDialog = \[\s+\['settings-modal', closeSettings\],\s+\['usage-modal', closeUsage\],\s+\['plans-modal', closePlans\],\s+\]\.find\(\(\[id\]\) => !document\.getElementById\(id\)\?\.classList\.contains\('hidden'\)\);\s+if \(!openUtilityDialog\) return;\s+event\.preventDefault\(\);\s+openUtilityDialog\[1\]\(\);/);
 });
 
 test('Task 86 manages close-control and trigger focus for scoped utility dialogs', () => {
@@ -155,4 +155,9 @@ test('Task 88 focuses the active authentication page email field after switching
 test('Task 89 keeps Tab navigation inside the open sign-in dialog', () => {
   assert.match(appHtml, /function trapWelcomeDialogFocus\(event, welcomeModal\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
   assert.match(appHtml, /if \(event\.key === 'Tab'\) \{\s+trapWelcomeDialogFocus\(event, welcomeModal\);\s+return;\s+\}/);
+});
+
+test('Task 90 keeps Tab navigation inside the open plans, usage, or settings dialog', () => {
+  assert.match(appHtml, /function trapOpenUtilityDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;\s+const utilityDialog = \['settings-modal', 'usage-modal', 'plans-modal'\][\s\S]*?\.querySelector\('\[role="dialog"\]'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key === 'Tab'\) \{\s+if \(!event\.defaultPrevented\) trapOpenUtilityDialogFocus\(event\);\s+return;\s+\}/);
 });
