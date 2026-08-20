@@ -186,3 +186,12 @@ test('Task 95 moves focus into the owner-tools dialog and restores its trigger o
   assert.match(appHtml, /let ownerDialogTrigger = null;\s+function openOwner\(\) \{\s+if \(!isOwner\(\)\) return;\s+const active = document\.activeElement;\s+ownerDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?setTimeout\(\(\) => document\.getElementById\('owner-modal-close'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
   assert.match(appHtml, /function closeOwner\(\) \{\s+document\.getElementById\('owner-modal'\)\.classList\.add\('hidden'\);\s+const trigger = ownerDialogTrigger;\s+ownerDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
+
+test('Task 96 closes only the open owner-tools dialog with an unhandled Escape key', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{[\s\S]*?if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const ownerModal = document\.getElementById\('owner-modal'\);\s+if \(!ownerModal \|\| ownerModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeOwner\(\);\s+\}\);/);
+});
+
+test('Task 97 keeps Tab navigation inside the open owner-tools dialog', () => {
+  assert.match(appHtml, /function trapOwnerDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;[\s\S]*?const ownerModal = document\.getElementById\('owner-modal'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null && !element\.disabled\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key === 'Tab'\) \{\s+trapOwnerDialogFocus\(event\);\s+return;\s+\}/);
+});
