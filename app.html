@@ -3012,8 +3012,8 @@
           <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Image</span></button>
           <button onclick="toggleWorkspace()" id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
           <div class="relative">
-            <button id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts">⭐ Star ▾</button>
-            <div id="model-menu" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
+            <button id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false">⭐ Star ▾</button>
+            <div id="model-menu" role="menu" aria-label="Choose an AI model" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
               <button onclick="pickModel('fabie')" aria-label="Select Spark for fast drafts" title="Fast drafts with Claude Haiku" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
@@ -3054,7 +3054,7 @@
                 </button>
               </div>
               <div class="border-t border-white/10 mt-2"></div>
-              <button onclick="document.getElementById('model-menu').classList.add('hidden'); openPlans()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 font-black text-sm">⭐ See all plans</button>
+              <button onclick="closeModelMenu(); openPlans()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 font-black text-sm">⭐ See all plans</button>
             </div>
           </div>
           </div>
@@ -5322,12 +5322,20 @@
     function toggleModelMenu(e) {
       e.stopPropagation();
       refreshModelMenu();
-      document.getElementById('model-menu').classList.toggle('hidden');
+      const menu = document.getElementById('model-menu');
+      const willOpen = menu.classList.contains('hidden');
+      menu.classList.toggle('hidden', !willOpen);
+      document.getElementById('model-btn').setAttribute('aria-expanded', String(willOpen));
+    }
+
+    function closeModelMenu() {
+      document.getElementById('model-menu').classList.add('hidden');
+      document.getElementById('model-btn').setAttribute('aria-expanded', 'false');
     }
 
     function pickModel(m) {
       const s = Store.get();
-      document.getElementById('model-menu').classList.add('hidden');
+      closeModelMenu();
       const paid = s.plan === 'lite' || s.plan === 'pro' || isOwner();
       if (m === 'ultra' && !(s.plan === 'pro' || isOwner())) { openPlans(); return; }
       if (['researcher', 'security', 'tester'].includes(m) && !(s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
@@ -5339,10 +5347,7 @@
       modelButton.setAttribute('aria-label', modelLabels[m] || modelLabels.smart);
     }
 
-    document.addEventListener('click', () => {
-      const mm = document.getElementById('model-menu');
-      if (mm) mm.classList.add('hidden');
-    });
+    document.addEventListener('click', closeModelMenu);
 
     let utilityDialogTrigger = null;
     function captureUtilityDialogTrigger() {

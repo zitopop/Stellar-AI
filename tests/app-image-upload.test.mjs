@@ -282,3 +282,11 @@ test('Task 114 gives model choices clear accessible descriptions aligned to rout
   assert.match(appHtml, /pickModel\('ultra'\)[^>]*aria-label="Select Nova for maximum quality, available on Pro"[^>]*title="Maximum quality with Claude Opus, Pro plan"/);
   assert.match(appHtml, /modelButton\.setAttribute\('aria-label', modelLabels\[m\] \|\| modelLabels\.smart\);/);
 });
+
+test('Task 115 exposes synchronized disclosure semantics for the model menu', () => {
+  assert.match(appHtml, /id="model-btn"[^>]*aria-haspopup="menu"[^>]*aria-controls="model-menu"[^>]*aria-expanded="false"/);
+  assert.match(appHtml, /<div id="model-menu" role="menu" aria-label="Choose an AI model"/);
+  assert.match(appHtml, /function toggleModelMenu\(e\) \{\s+e\.stopPropagation\(\);\s+refreshModelMenu\(\);\s+const menu = document\.getElementById\('model-menu'\);\s+const willOpen = menu\.classList\.contains\('hidden'\);\s+menu\.classList\.toggle\('hidden', !willOpen\);\s+document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', String\(willOpen\)\);/);
+  assert.match(appHtml, /function closeModelMenu\(\) \{\s+document\.getElementById\('model-menu'\)\.classList\.add\('hidden'\);\s+document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', 'false'\);/);
+  assert.match(appHtml, /document\.addEventListener\('click', closeModelMenu\);/);
+});
