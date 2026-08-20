@@ -52,3 +52,9 @@ test('Task 130 announces existing saved-tool count updates politely', () => {
   assert.match(landingHtml, /<span id="favorite-count" role="status" aria-live="polite" aria-atomic="true">0 saved<\/span>/);
   assert.match(landingHtml, /if \(favoriteCount\) favoriteCount\.textContent = `\$\{favorites\.length\} saved`;/);
 });
+
+test('Task 131 keeps decorative FAQ plus icons out of control names', () => {
+  const icons = landingHtml.match(/<span class="faq-plus" aria-hidden="true">\+<\/span>/g) ?? [];
+  assert.equal(icons.length, 5);
+  assert.match(landingHtml, /\.faq-button\[aria-expanded="true"\] \.faq-plus/);
+});
