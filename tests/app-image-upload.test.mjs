@@ -161,3 +161,8 @@ test('Task 90 keeps Tab navigation inside the open plans, usage, or settings dia
   assert.match(appHtml, /function trapOpenUtilityDialogFocus\(event\) \{\s+if \(event\.key !== 'Tab'\) return;\s+const utilityDialog = \['settings-modal', 'usage-modal', 'plans-modal'\][\s\S]*?\.querySelector\('\[role="dialog"\]'\);[\s\S]*?\.filter\(\(element\) => !element\.closest\('\.hidden'\) && element\.offsetParent !== null\);[\s\S]*?if \(event\.shiftKey && document\.activeElement === first\) \{\s+event\.preventDefault\(\);\s+last\.focus\(\);[\s\S]*?else if \(!event\.shiftKey && document\.activeElement === last\) \{\s+event\.preventDefault\(\);\s+first\.focus\(\);/);
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key === 'Tab'\) \{\s+if \(!event\.defaultPrevented\) trapOpenUtilityDialogFocus\(event\);\s+return;\s+\}/);
 });
+
+test('Task 91 gives sign-in and sign-up feedback polite atomic live-status semantics', () => {
+  assert.match(appHtml, /<div id="si-msg" class="redeem-msg" role="status" aria-live="polite" aria-atomic="true"><\/div>/);
+  assert.match(appHtml, /<div id="su-msg" class="redeem-msg" role="status" aria-live="polite" aria-atomic="true"><\/div>/);
+});
