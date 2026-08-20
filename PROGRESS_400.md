@@ -127,7 +127,7 @@
 | 121 | ✅ Complete | Mobile model menu is scrollable and overscroll-contained within its bounded viewport, keeping all choices reachable | `app.html`; full suite 142 tests pass; Vercel deployment `3fd1a80` success | `3fd1a80` |
 | 122 | ✅ Complete | Permitted model selection refreshes the visible checks and radio-menu selected state immediately | `app.html`; full suite 143 tests pass; Vercel deployment `f4cf7a0` success | `f4cf7a0` |
 | 123 | ✅ Complete | Primary landing-page hero CTA explicitly states that the first script can be generated free while retaining the existing workspace destination | `index.html`; full suite 144 tests pass; Vercel deployment `3607ecc` success | `3607ecc` |
-| 124 | ☐ Pending | Next approved implementation task | — | — |
+| 124 | ✅ Complete | Keyboard visitors can skip landing-page navigation and focus the main content through a visible-on-focus skip link | `index.html`; full suite 145 tests pass; Vercel deployment `fa6d442` success | `fa6d442` |
 | 125 | ☐ Pending | Next approved implementation task | — | — |
 | 126 | ☐ Pending | Next approved implementation task | — | — |
 | 127 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**123 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**124 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
