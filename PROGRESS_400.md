@@ -82,7 +82,7 @@
 | 76 | ✅ Complete | Mobile navigation control exposes an explicit open/close label and synchronized aria-expanded state while preserving the existing sidebar behavior | `app.html`; static UI contract and full suite 96 tests pass; Vercel deployment `8483d82` READY; live control label verified | `8483d82` |
 | 77 | ✅ Complete | Workspace drawer close control exposes an explicit Close workspace label while preserving the existing toggle behavior | `app.html`; static UI contract and full suite 97 tests pass; Vercel deployment `aa6778e` READY; live workspace load verified | `aa6778e` |
 | 78 | ✅ Complete | Workspace Files control exposes a synchronized aria-expanded state and aria-controls relationship for the existing drawer | `app.html`; static UI contract and full suite 98 tests pass; Vercel deployment `34f86eb` READY; live workspace load verified | `34f86eb` |
-| 79 | ☐ Pending | Next approved implementation task | — | — |
+| 79 | ✅ Complete | Keyboard users can close an open workspace drawer with Escape and return focus to the existing Files control | `app.html`; static UI contract and full suite 99 tests pass; Vercel deployment `443fa2d` READY; live workspace load verified | `443fa2d` |
 | 80 | ☐ Pending | Next approved implementation task | — | — |
 | 81 | ☐ Pending | Next approved implementation task | — | — |
 | 82 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**78 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**79 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
