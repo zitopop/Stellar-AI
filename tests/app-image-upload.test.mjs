@@ -290,3 +290,7 @@ test('Task 115 exposes synchronized disclosure semantics for the model menu', ()
   assert.match(appHtml, /function closeModelMenu\(\) \{\s+document\.getElementById\('model-menu'\)\.classList\.add\('hidden'\);\s+document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', 'false'\);/);
   assert.match(appHtml, /document\.addEventListener\('click', closeModelMenu\);/);
 });
+
+test('Task 116 closes only the open model menu with an unhandled Escape key and restores trigger focus', () => {
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const menu = document\.getElementById\('model-menu'\);\s+if \(!menu \|\| menu\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeModelMenu\(\);\s+document\.getElementById\('model-btn'\)\?\.focus\(\{ preventScroll: true \}\);\s+\}\);/);
+});

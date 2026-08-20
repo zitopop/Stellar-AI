@@ -5348,6 +5348,14 @@
     }
 
     document.addEventListener('click', closeModelMenu);
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      const menu = document.getElementById('model-menu');
+      if (!menu || menu.classList.contains('hidden')) return;
+      event.preventDefault();
+      closeModelMenu();
+      document.getElementById('model-btn')?.focus({ preventScroll: true });
+    });
 
     let utilityDialogTrigger = null;
     function captureUtilityDialogTrigger() {
