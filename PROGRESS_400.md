@@ -162,7 +162,7 @@
 | 156 | ✅ Complete | Existing quick-start paths include one concise contextual route to the existing FiveM and Roblox Guides hub without changing offers or destination behavior | `index.html`; full suite 185 tests pass; responsive source and active-worktree checks; Vercel deployment `f34b3c1` success | `f34b3c1` |
 | 157 | ✅ Complete | Existing quick-start cards use readable light-theme surfaces and foregrounds while preserving starter links, saved-tool actions, and feature search behavior | `index.html`; full suite 185 tests pass; active-worktree light-theme computed-style check; Vercel deployment `f34b3c1` success | `f34b3c1` |
 | 158 | ✅ Complete | Existing saved-tool star actions use a consistent 44px touch target without changing favorite state, starter routes, or feature-search behavior | `index.html`; full suite 186 tests pass; active-source geometry shows no starter-link overlap; Vercel deployment `60b2d17` success | `60b2d17` |
-| 159 | ☐ Pending | Next approved implementation task | — | — |
+| 159 | ✅ Complete | The offscreen mobile workspace sidebar synchronizes `aria-hidden` while closed and stays exposed when opened or on desktop | `app.html`; full suite 187 tests pass; focused mobile-state contract; Vercel deployment `dca7cc0` success | `dca7cc0` |
 | 160 | ☐ Pending | Next approved implementation task | — | — |
 | 161 | ☐ Pending | Next approved implementation task | — | — |
 | 162 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**158 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**159 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
