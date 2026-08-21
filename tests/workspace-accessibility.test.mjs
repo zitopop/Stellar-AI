@@ -93,3 +93,12 @@ test('Task 178 keeps every Settings tab an explicit non-submit button', () => {
   }
   assert.match(workspaceHtml, /document\.querySelectorAll\('\.set-tab'\)\.forEach\(t => t\.classList\.toggle\('active', t\.dataset\.tab === name\)\)/);
 });
+
+test('Task 179 keeps Dark and Light appearance controls explicit non-submit buttons', () => {
+  assert.match(workspaceHtml, /<button type="button" id="seg-dark" class="seg" onclick="setMode\('dark'\); refreshSettings\(\)" aria-pressed="true">🌙 Dark<\/button>/);
+  assert.match(workspaceHtml, /<button type="button" id="seg-light" class="seg" onclick="setMode\('light'\); refreshSettings\(\)" aria-pressed="false">☀️ Light<\/button>/);
+  assert.match(workspaceHtml, /document\.getElementById\('seg-dark'\)\.setAttribute\('aria-pressed', String\(!light\)\)/);
+  assert.match(workspaceHtml, /document\.getElementById\('seg-light'\)\.setAttribute\('aria-pressed', String\(light\)\)/);
+  assert.doesNotMatch(workspaceHtml, /<button id="seg-dark" class="seg"/);
+  assert.doesNotMatch(workspaceHtml, /<button id="seg-light" class="seg"/);
+});
