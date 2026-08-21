@@ -43,3 +43,8 @@ test('Task 170 keeps the Credit sidebar control an explicit non-submit button', 
   assert.match(workspaceHtml, /<button type="button" onclick="openUsage\(\)" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-card"\/><\/svg><\/span>Credit<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="openUsage\(\)" class="side-act side-act-key">/);
 });
+
+test('Task 171 keeps the Plans sidebar control an explicit non-submit button', () => {
+  assert.match(workspaceHtml, /<button type="button" onclick="openPlans\(\)" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"\/><\/svg><\/span>Plans<\/button>/);
+  assert.doesNotMatch(workspaceHtml, /<button onclick="openPlans\(\)" class="side-act side-act-key">/);
+});
