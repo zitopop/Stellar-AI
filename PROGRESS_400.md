@@ -170,7 +170,7 @@
 | 164 | ✅ Complete | Existing chat-history options buttons use 44 × 44px touch targets while preserving their Chat options trigger, menu semantics, and keyboard behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 192 tests pass; exact READY Vercel deployment for `c222cda` verified | `c222cda` |
 | 165 | ✅ Complete | Dynamically generated Pin, Rename, and Delete chat-menu actions explicitly use non-submit buttons while preserving labels, menu roles, keyboard navigation, and focus restoration | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 193 tests pass; exact READY Vercel deployment for `bde6e4e` verified | `bde6e4e` |
 | 166 | ✅ Complete | Existing “See all plans” model-menu action explicitly uses a non-submit button while preserving its menu role, plan gating, dialog behavior, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 194 tests pass; exact READY Vercel deployment for `260b9d2` verified | `260b9d2` |
-| 167 | ☐ Pending | Next approved implementation task | — | — |
+| 167 | ✅ Complete | Existing New Chat sidebar control explicitly uses a non-submit button while preserving its newChat action, navigation placement, focus behavior, and visible copy | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 195 tests pass; exact READY Vercel deployment for `55d3bf7` verified | `55d3bf7` |
 | 168 | ☐ Pending | Next approved implementation task | — | — |
 | 169 | ☐ Pending | Next approved implementation task | — | — |
 | 170 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**166 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**167 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
