@@ -22,6 +22,12 @@ test('Task 141 keeps the phone-sized hero preview focused on its readable worksp
   assert.match(landingHtml, /<div class="preview-compose"><div class="preview-input">Ask Stellar to change anything…<\/div><div class="preview-send">Send<\/div><\/div>/);
 });
 
+test('Task 144 gives each existing pricing action an explicit plan-oriented name', () => {
+  assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Start with the Free plan">Start free<\/a>/);
+  assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Choose the Plus plan">Get Plus <span class="button-arrow">→<\/span><\/a>/);
+  assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Choose the Pro plan">Get Pro<\/a>/);
+});
+
 test('Task 124 lets keyboard visitors skip the landing navigation and focus main content', () => {
   assert.match(landingHtml, /<a href="#main-content" class="skip-link">Skip to main content<\/a>/);
   assert.match(landingHtml, /<main id="main-content" tabindex="-1">/);
