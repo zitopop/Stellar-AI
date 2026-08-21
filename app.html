@@ -3056,15 +3056,15 @@
               </button>
               <div id="provider-models" class="hidden border-t border-white/10 mt-2 pt-2">
                 <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/45">Specialist roles</div>
-                <button onclick="pickModel('researcher')" data-model-choice="researcher" role="menuitemradio" aria-checked="false" title="Separate documented sources, assumptions, and open questions." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <button onclick="pickModel('researcher')" data-model-choice="researcher" role="menuitemradio" aria-checked="false" aria-label="Select Research AI for documented sources and uncertainty" title="Separate documented sources, assumptions, and open questions." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                   <div><div class="font-black text-sm">🔎 Research AI <span style="color:#8b8b9e;font-size:10px;">· sources + uncertainty</span></div></div>
                   <div id="researcher-check" class="font-black text-sm text-[#10a37f]">✓</div>
                 </button>
-                <button onclick="pickModel('security')" data-model-choice="security" role="menuitemradio" aria-checked="false" title="Report severity, abuse path, concrete fix, and residual risk." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <button onclick="pickModel('security')" data-model-choice="security" role="menuitemradio" aria-checked="false" aria-label="Select Security AI for risk assessment and fixes" title="Report severity, abuse path, concrete fix, and residual risk." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                   <div><div class="font-black text-sm">🛡 Security AI <span style="color:#8b8b9e;font-size:10px;">· severity + fixes</span></div></div>
                   <div id="security-check" class="font-black text-sm text-[#10a37f]">✓</div>
                 </button>
-                <button onclick="pickModel('tester')" data-model-choice="tester" role="menuitemradio" aria-checked="false" title="Return an edge-case matrix and state what was not run." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <button onclick="pickModel('tester')" data-model-choice="tester" role="menuitemradio" aria-checked="false" aria-label="Select Test AI for edge cases and evidence limits" title="Return an edge-case matrix and state what was not run." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                   <div><div class="font-black text-sm">🧪 Test AI <span style="color:#8b8b9e;font-size:10px;">· matrix + evidence limits</span></div></div>
                   <div id="tester-check" class="font-black text-sm text-[#10a37f]">✓</div>
                 </button>
@@ -5441,16 +5441,22 @@
     document.addEventListener('keydown', trapModelMenuFocus);
 
     function navigateModelMenuWithArrows(event) {
-      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
       const menu = document.getElementById('model-menu');
       if (!menu || menu.classList.contains('hidden')) return;
       const focusable = getVisibleModelMenuControls(menu);
       if (!focusable.length) return;
-      const direction = event.key === 'ArrowDown' ? 1 : -1;
       const currentIndex = focusable.indexOf(document.activeElement);
-      const nextIndex = currentIndex === -1
-        ? (direction === 1 ? 0 : focusable.length - 1)
-        : (currentIndex + direction + focusable.length) % focusable.length;
+      const nextIndex = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? focusable.length - 1
+          : (() => {
+              const direction = event.key === 'ArrowDown' ? 1 : -1;
+              return currentIndex === -1
+                ? (direction === 1 ? 0 : focusable.length - 1)
+                : (currentIndex + direction + focusable.length) % focusable.length;
+            })();
       event.preventDefault();
       focusable[nextIndex].focus();
     }

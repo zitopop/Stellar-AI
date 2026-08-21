@@ -85,3 +85,7 @@ test('Task 132 keeps FAQ structured data aligned with additional visible landing
   assert.match(landingHtml, /<button id="faq-test-button"/);
   assert.match(landingHtml, /<button id="faq-generic-ai-button"/);
 });
+
+test('Task 147 gives the final free-generation action an explicit accessible name', () => {
+  assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
+});

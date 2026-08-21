@@ -366,7 +366,7 @@ test('Task 118 moves keyboard-triggered model-menu opening focus to the first vi
 });
 
 test('Task 119 moves Arrow-key focus within the open model menu and wraps visible choices', () => {
-  assert.match(appHtml, /function navigateModelMenuWithArrows\(event\) \{\s+if \(!\['ArrowDown', 'ArrowUp'\]\.includes\(event\.key\)\) return;[\s\S]*?const focusable = getVisibleModelMenuControls\(menu\);[\s\S]*?const direction = event\.key === 'ArrowDown' \? 1 : -1;[\s\S]*?const currentIndex = focusable\.indexOf\(document\.activeElement\);[\s\S]*?\(currentIndex \+ direction \+ focusable\.length\) % focusable\.length;\s+event\.preventDefault\(\);\s+focusable\[nextIndex\]\.focus\(\);\s+\}/);
+  assert.match(appHtml, /function navigateModelMenuWithArrows\(event\) \{\s+if \(!\['ArrowDown', 'ArrowUp', 'Home', 'End'\]\.includes\(event\.key\)\) return;[\s\S]*?const focusable = getVisibleModelMenuControls\(menu\);[\s\S]*?const currentIndex = focusable\.indexOf\(document\.activeElement\);[\s\S]*?const direction = event\.key === 'ArrowDown' \? 1 : -1;[\s\S]*?\(currentIndex \+ direction \+ focusable\.length\) % focusable\.length;\s+\}\)\(\);\s+event\.preventDefault\(\);\s+focusable\[nextIndex\]\.focus\(\);\s+\}/);
   assert.match(appHtml, /document\.addEventListener\('keydown', navigateModelMenuWithArrows\);/);
 });
 
@@ -385,4 +385,16 @@ test('Task 121 keeps the mobile model menu scrollable within a bounded viewport'
 
 test('Task 122 refreshes existing selected-model indicators immediately after a permitted choice', () => {
   assert.match(appHtml, /function pickModel\(m\) \{[\s\S]*?if \(\['researcher', 'security', 'tester'\]\.includes\(m\) && !\(s\.plan === 'lite' \|\| s\.plan === 'pro' \|\| isOwner\(\)\)\) \{ openPlans\(\); return; \}\s+Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);/);
+});
+
+test('Task 145 lets keyboard users jump to the first or last visible model-menu option', () => {
+  assert.match(appHtml, /if \(!\['ArrowDown', 'ArrowUp', 'Home', 'End'\]\.includes\(event\.key\)\) return;/);
+  assert.match(appHtml, /const nextIndex = event\.key === 'Home'\s+\? 0\s+: event\.key === 'End'\s+\? focusable\.length - 1/);
+  assert.match(appHtml, /focusable\[nextIndex\]\.focus\(\);/);
+});
+
+test('Task 146 gives specialist model choices concise explicit accessible names', () => {
+  assert.match(appHtml, /data-model-choice="researcher"[^>]*aria-label="Select Research AI for documented sources and uncertainty"/);
+  assert.match(appHtml, /data-model-choice="security"[^>]*aria-label="Select Security AI for risk assessment and fixes"/);
+  assert.match(appHtml, /data-model-choice="tester"[^>]*aria-label="Select Test AI for edge cases and evidence limits"/);
 });
