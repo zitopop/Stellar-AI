@@ -33,3 +33,8 @@ test('Task 168 keeps the signed-out Sign in sidebar control an explicit non-subm
   assert.match(workspaceHtml, /<button type="button" onclick="openWelcome\(\)" class="acct-signin-btn">Sign in<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="openWelcome\(\)" class="acct-signin-btn">/);
 });
+
+test('Task 169 keeps the signed-in Sign out sidebar control an explicit non-submit button', () => {
+  assert.match(workspaceHtml, /<button type="button" onclick="signOut\(\)" class="acct-out-btn" title="Sign out">Sign out<\/button>/);
+  assert.doesNotMatch(workspaceHtml, /<button onclick="signOut\(\)" class="acct-out-btn"/);
+});
