@@ -142,7 +142,7 @@ test('Task 182 keeps every landing FAQ disclosure control an explicit non-submit
 
 test('Task 183 keeps the mobile landing navigation keyboard-accessible and destination-stable', () => {
   assert.match(landingHtml, /<button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-controls="mobile-nav" aria-expanded="false">/);
-  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#capabilities">Capabilities<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
+  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#capabilities">Capabilities<\/a><a href="#jarvis-pro">Jarvis Pro<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
   assert.match(landingHtml, /navToggle\?\.addEventListener\('click', \(\) => \{ const open = navToggle\.getAttribute\('aria-expanded'\) === 'true';/);
   assert.match(landingHtml, /mobileNav\?\.querySelectorAll\('a'\)\.forEach\(\(link\) => link\.addEventListener\('click', closeMobileNav\)\)/);
   assert.match(landingHtml, /\.nav-toggle \{ display: none; min-width: 44px; min-height: 44px;/);
@@ -167,8 +167,9 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
 test('Task 187 keeps plan positioning truthful and pricing consistent', () => {
   assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Plus adds more room for regular work\.[\s\S]*Pro gives you the largest usage allowance and Nova\./);
   assert.match(landingHtml, /<p class="plan-compare">Start with Free and upgrade when your workflow needs more usage\.[\s\S]*one-off credit instead of subscribing\.<\/p>/);
-  assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">For regular building<\/div><div class="plan-label">Plus<\/div>/);
+  assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For regular building<\/div><div class="plan-label">Plus<\/div>/);
   assert.doesNotMatch(landingHtml, /<div class="plan-badge">Most popular<\/div>/);
+  assert.match(landingHtml, /<article class="plan featured jarvis-plan"><div class="plan-badge">Jarvis Pro · for serious workflows<\/div>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });
@@ -258,4 +259,22 @@ test('Task 196 keeps introductory and revealed landing content visible if animat
   assert.match(landingHtml, /\.reveal \{ opacity: 1; transform: translateY\(18px\);/);
   assert.match(landingHtml, /body\.motion-ready \.reveal \{ opacity: 1; \}/);
   assert.match(landingHtml, /\.reveal\.is-visible \{ opacity: 1; transform: none; \}/);
+});
+
+test('Task 192 makes Jarvis Pro visible and approval-first on desktop and mobile', () => {
+  assert.match(landingHtml, /<a href="#jarvis-pro">Jarvis Pro<\/a>/g);
+  assert.match(landingHtml, /<section class="section container" id="jarvis-pro">[\s\S]*Jarvis Pro · approval-first workspace[\s\S]*Explore Jarvis Pro/);
+  assert.match(landingHtml, /Purchases, ad publishing and budget changes require confirmation\./);
+  assert.match(landingHtml, /it does not silently purchase, publish or spend money\./);
+});
+
+test('Task 192 explains the plan choices without changing the approved prices', () => {
+  assert.match(landingHtml, /Turn a first idea or broken script into a useful starting point\./);
+  assert.match(landingHtml, /Keep regular FiveM or Roblox work moving without running out of room as quickly\./);
+  assert.match(landingHtml, /The largest build runway plus the clearest path into Jarvis Pro workflows\./);
+  assert.match(landingHtml, /<strong>£0<\/strong><span>\/ forever<\/span>/);
+  assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
+  assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
+  assert.match(landingHtml, /£168\/year · Save 30%/);
+  assert.match(landingHtml, /£630\/year · Save 30%/);
 });
