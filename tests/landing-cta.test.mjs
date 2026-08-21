@@ -53,7 +53,7 @@ test('Task 127 announces existing feature-search result-count updates politely',
 
 test('Task 128 links every FAQ disclosure control with its labelled answer region', () => {
   for (const id of ['faq-test', 'faq-fivem-security', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
-    assert.match(landingHtml, new RegExp(`<button id="${id}-button" class="faq-button" aria-expanded="false" aria-controls="${id}-answer">`));
+    assert.match(landingHtml, new RegExp(`<button(?: type="button")? id="${id}-button" class="faq-button" aria-expanded="false" aria-controls="${id}-answer">`));
     assert.match(landingHtml, new RegExp(`<div id="${id}-answer" class="faq-answer" role="region" aria-labelledby="${id}-button" aria-hidden="true">`));
   }
   assert.match(landingHtml, /openItem\.querySelector\('\.faq-button'\)\.setAttribute\('aria-expanded', 'false'\)/);
@@ -82,14 +82,14 @@ test('Task 132 keeps FAQ structured data aligned with additional visible landing
   assert.match(landingHtml, /"@type":"FAQPage"/);
   assert.match(landingHtml, /"name":"How should I test a generated script\?"/);
   assert.match(landingHtml, /"name":"How is this different from generic AI chat\?"/);
-  assert.match(landingHtml, /<button id="faq-test-button"/);
-  assert.match(landingHtml, /<button id="faq-generic-ai-button"/);
+  assert.match(landingHtml, /<button(?: type="button")? id="faq-test-button"/);
+  assert.match(landingHtml, /<button(?: type="button")? id="faq-generic-ai-button"/);
 });
 
 test('Task 162 keeps the FiveM server-validation FAQ visible and aligned with structured data', () => {
   assert.match(landingHtml, /"name":"How should I keep FiveM script events secure\?"/);
   assert.match(landingHtml, /validate the player's server-side state, permissions, inventory and relevant position/);
-  assert.match(landingHtml, /<button id="faq-fivem-security-button" class="faq-button" aria-expanded="false" aria-controls="faq-fivem-security-answer">How should I keep FiveM script events secure\?/);
+  assert.match(landingHtml, /<button type="button" id="faq-fivem-security-button" class="faq-button" aria-expanded="false" aria-controls="faq-fivem-security-answer">How should I keep FiveM script events secure\?/);
   assert.match(landingHtml, /<div id="faq-fivem-security-answer" class="faq-answer" role="region" aria-labelledby="faq-fivem-security-button" aria-hidden="true"><p>Treat client input as untrusted\./);
 });
 
@@ -129,4 +129,13 @@ test('Task 163 adds truthful private-testing guidance beside the FiveM Police st
   assert.match(landingHtml, /<small class="launch-note">Before you test: review the files, verify dependencies, test privately, and return with any errors\.<\/small>/);
   assert.match(landingHtml, /\.launch-note \{ display: block; max-width: 25rem; margin-top: 5px; color: #b9b1c8; font-size: 8px; font-weight: 600; line-height: 1\.45; \}/);
   assert.match(landingHtml, /body\.light \.launch-card \.launch-note \{ color: #6d647e; \}/);
+});
+
+test('Task 182 keeps every landing FAQ disclosure control an explicit non-submit button', () => {
+  for (const id of ['faq-test', 'faq-fivem-security', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
+    assert.match(landingHtml, new RegExp(`<button type="button" id="${id}-button" class="faq-button" aria-expanded="false" aria-controls="${id}-answer">`));
+    assert.doesNotMatch(landingHtml, new RegExp(`<button id="${id}-button" class="faq-button"`));
+  }
+  assert.match(landingHtml, /openItem\.querySelector\('\.faq-button'\)\.setAttribute\('aria-expanded', 'false'\)/);
+  assert.match(landingHtml, /button\.setAttribute\('aria-expanded', 'true'\)/);
 });
