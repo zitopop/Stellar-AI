@@ -89,3 +89,15 @@ test('Task 132 keeps FAQ structured data aligned with additional visible landing
 test('Task 147 gives the final free-generation action an explicit accessible name', () => {
   assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
 });
+
+test('Task 154 sends each existing project quick start into the workspace with only a named starter key', () => {
+  const starters = {
+    police: 'Police job',
+    heist: 'Heist system',
+    fix: 'Fix an error',
+    roblox: 'Roblox game'
+  };
+  for (const [key, label] of Object.entries(starters)) {
+    assert.match(landingHtml, new RegExp(`<a href="/app\\?starter=${key}" aria-label="Open Stellar with a ${label} starter prompt">`));
+  }
+});

@@ -66,6 +66,18 @@ test('Task 135 exposes the existing workspace composer as a named form landmark'
   assert.match(appHtml, /id="send-btn" onclick="stopOrSend\(\)" aria-label="Send message"/);
 });
 
+test('Task 154 accepts only named landing starters and pre-fills a non-persistent editable composer prompt', () => {
+  assert.match(appHtml, /const LANDING_STARTER_PROMPTS = Object\.freeze\(\{/);
+  for (const key of ['police', 'heist', 'fix', 'roblox']) {
+    assert.match(appHtml, new RegExp(`${key}: '`));
+  }
+  assert.match(appHtml, /function applyLandingStarterPrompt\(\) \{[\s\S]*?const starterPrompt = LANDING_STARTER_PROMPTS\[starterKey\];[\s\S]*?if \(!starterPrompt\) return;/);
+  assert.match(appHtml, /params\.delete\('starter'\);/);
+  assert.match(appHtml, /input\.value = starterPrompt;[\s\S]*?input\.dispatchEvent\(new Event\('input', \{ bubbles: true \}\)\);/);
+  assert.match(appHtml, /setGenerationStatus\('Starter prompt ready to edit\.'\);/);
+  assert.match(appHtml, /maybeShowWelcome\(\);\s+applyLandingStarterPrompt\(\);/);
+});
+
 test('Task 136 announces the existing pasted-content summary politely', () => {
   assert.match(appHtml, /<div class="paste-title" id="paste-chip-text" role="status" aria-live="polite" aria-atomic="true">Pasted content<\/div>/);
   assert.match(appHtml, /document\.getElementById\('paste-chip-text'\)\.textContent = label;/);

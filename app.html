@@ -6140,6 +6140,29 @@
       document.getElementById('limit-modal').classList.remove('hidden');
     }
 
+    const LANDING_STARTER_PROMPTS = Object.freeze({
+      police: 'Build a QBCore police job with F6 menu, handcuffing, MDT and a jail timer.',
+      heist: 'Create a FiveM bank-heist flow with planning, payout and dispatch.',
+      fix: 'Help me diagnose and fix this FiveM or Roblox script error:',
+      roblox: 'Build a Roblox game system with server-safe remotes, UI and progression.'
+    });
+
+    function applyLandingStarterPrompt() {
+      const params = new URLSearchParams(location.search);
+      const starterKey = params.get('starter');
+      const starterPrompt = LANDING_STARTER_PROMPTS[starterKey];
+      if (!starterPrompt) return;
+      params.delete('starter');
+      const remainingQuery = params.toString();
+      history.replaceState(null, '', location.pathname + (remainingQuery ? '?' + remainingQuery : '') + location.hash);
+      const input = document.getElementById('txt');
+      if (!input || input.value.trim()) return;
+      input.value = starterPrompt;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      setGenerationStatus('Starter prompt ready to edit.');
+      setTimeout(() => input.focus({ preventScroll: true }), 0);
+    }
+
     function init() {
       // Handle Discord OAuth callback
       const urlParams = new URLSearchParams(window.location.search);
@@ -6232,6 +6255,7 @@
       setTextSize(Store.get().textSize || 'md');
       updateSignedOutHint();
       maybeShowWelcome();
+      applyLandingStarterPrompt();
     }
 
     // iPhone polish: box grows as you type, keyboard keeps it in view
