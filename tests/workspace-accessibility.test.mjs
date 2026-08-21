@@ -28,3 +28,8 @@ test('Task 167 keeps the New Chat sidebar control an explicit non-submit button'
   assert.match(workspaceHtml, /<button type="button" onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">\s*New Chat\s*<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="newChat\(\)" class="side-new/);
 });
+
+test('Task 168 keeps the signed-out Sign in sidebar control an explicit non-submit button', () => {
+  assert.match(workspaceHtml, /<button type="button" onclick="openWelcome\(\)" class="acct-signin-btn">Sign in<\/button>/);
+  assert.doesNotMatch(workspaceHtml, /<button onclick="openWelcome\(\)" class="acct-signin-btn">/);
+});
