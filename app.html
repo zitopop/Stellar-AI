@@ -6146,6 +6146,9 @@
       document.body.classList.toggle('recording-mode');
       const on = document.body.classList.contains('recording-mode');
       btn.textContent = on ? '● RECORDING' : '● REC';
+      btn.setAttribute('aria-pressed', String(on));
+      btn.setAttribute('aria-label', on ? 'Stop recording mode' : 'Start recording mode');
+      btn.title = on ? 'Stop recording mode' : 'Start recording mode';
       btn.classList.toggle('active', on);
     }
 
@@ -6313,7 +6316,7 @@
       }, { passive: false });
     })();
   </script>
-  <button class="rec-btn" id="rec-btn" onclick="toggleRecording()" title="Toggle recording mode">● REC</button>
+  <button class="rec-btn" id="rec-btn" onclick="toggleRecording()" aria-pressed="false" aria-label="Start recording mode" title="Start recording mode">● REC</button>
 
 <script>
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js').catch(function(){}); }

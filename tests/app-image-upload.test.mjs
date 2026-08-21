@@ -398,3 +398,10 @@ test('Task 146 gives specialist model choices concise explicit accessible names'
   assert.match(appHtml, /data-model-choice="security"[^>]*aria-label="Select Security AI for risk assessment and fixes"/);
   assert.match(appHtml, /data-model-choice="tester"[^>]*aria-label="Select Test AI for edge cases and evidence limits"/);
 });
+
+test('Task 148 synchronizes the workspace recording control state with recording mode', () => {
+  assert.match(appHtml, /<button class="rec-btn" id="rec-btn" onclick="toggleRecording\(\)" aria-pressed="false" aria-label="Start recording mode" title="Start recording mode">● REC<\/button>/);
+  assert.match(appHtml, /btn\.setAttribute\('aria-pressed', String\(on\)\);/);
+  assert.match(appHtml, /btn\.setAttribute\('aria-label', on \? 'Stop recording mode' : 'Start recording mode'\);/);
+  assert.match(appHtml, /btn\.title = on \? 'Stop recording mode' : 'Start recording mode';/);
+});
