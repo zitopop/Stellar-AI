@@ -151,7 +151,7 @@
 | 145 | ✅ Complete | Workspace model chooser supports Home and End focus navigation across visible choices without changing selection, routing, or plan gates | `app.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
 | 146 | ✅ Complete | Specialist workspace model choices have concise explicit accessible names that state their output focus | `app.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
 | 147 | ✅ Complete | Final public free-generation call to action has an explicit accessible name without changing its destination or offer | `index.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
-| 148 | ☐ Pending | Next approved implementation task | — | — |
+| 148 | ✅ Complete | Workspace recording control synchronizes its pressed state and accessible name with its existing recording mode without changing recording behavior or privacy handling | `app.html`; full suite 174 tests pass; Vercel deployment `2460d7f` success | `2460d7f` |
 | 149 | ☐ Pending | Next approved implementation task | — | — |
 | 150 | ☐ Pending | Next approved implementation task | — | — |
 | 151 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**147 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**148 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
