@@ -86,3 +86,10 @@ test('Task 177 keeps the model-menu trigger an explicit non-submit button', () =
   assert.match(workspaceHtml, /<button type="button" id="model-btn" onclick="toggleModelMenu\(event\)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false">/);
   assert.doesNotMatch(workspaceHtml, /<button id="model-btn" onclick="toggleModelMenu\(event\)"/);
 });
+
+test('Task 178 keeps every Settings tab an explicit non-submit button', () => {
+  for (const tab of ['account', 'plan', 'usage', 'look', 'about']) {
+    assert.match(workspaceHtml, new RegExp(`<button type="button" class="set-tab(?: active)?" data-tab="${tab}" onclick="setTab\\('${tab}'\\)">`));
+  }
+  assert.match(workspaceHtml, /document\.querySelectorAll\('\.set-tab'\)\.forEach\(t => t\.classList\.toggle\('active', t\.dataset\.tab === name\)\)/);
+});
