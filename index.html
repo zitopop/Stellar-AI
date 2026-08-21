@@ -234,8 +234,10 @@
     .launch-guides a { color: #d8ceff; text-decoration: underline; text-decoration-color: rgba(216,206,255,.42); text-underline-offset: 3px; transition: color .16s ease, text-decoration-color .16s ease; }
     .launch-guides a:hover { color: #fff; text-decoration-color: currentColor; }
 
-    /* Three capabilities */
-    .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    /* Four workflow steps */
+    .capability-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; }
+    .workflow-note { max-width: 760px; margin: 20px auto 0; padding: 12px 14px; border: 1px solid rgba(82,225,181,.18); border-radius: 12px; color: var(--muted); background: rgba(82,225,181,.045); font-size: 12px; font-weight: 650; line-height: 1.6; text-align: center; }
+    .workflow-note strong { color: var(--ink); }
     .capability-map { padding: 30px; border: 1px solid var(--border); border-radius: 22px; background: linear-gradient(135deg, rgba(155,124,255,.08), rgba(255,255,255,.025) 55%, rgba(82,225,181,.05)); }
     .capability-map-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
     .capability-map-card { min-height: 250px; padding: 21px; border: 1px solid var(--border); border-radius: 16px; background: rgba(8,7,20,.42); }
@@ -381,7 +383,7 @@
       .hero-orbit { right: 50%; transform: translateX(50%); }
       .product-frame { width: min(620px, 100%); margin-inline: auto; }
       .float-file { right: 16px; }
-      .capability-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .roblox-grid { grid-template-columns: 1fr 1fr; } .roblox-side { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
       .scenario-grid, .difference-layout, .faq-layout { grid-template-columns: 1fr; gap: 34px; }
       .difference-copy, .faq-intro { position: static; }
@@ -395,7 +397,7 @@
       .product-shell { min-height: 430px; padding: 12px; } .product-main { grid-template-columns: 105px minmax(0, 1fr); min-height: 374px; } .preview-side { padding: 11px 8px; } .preview-brand { margin: 2px 3px 10px; font-size: 9px; } .preview-nav, .preview-new { padding: 7px 5px; font-size: 7px; } .preview-credit { font-size: 7px; } .preview-convo { padding: 12px 10px; } .float-file { right: 10px; bottom: 30px; padding: 9px 10px; font-size: 8px; }
       .why-stellar-section { padding-top: 36px; padding-bottom: 36px; } .difference-copy .difference-note { margin-top: 12px; } .text-link { margin-top: 18px; }
       .framework-rail { display: block; padding: 19px; margin-top: 42px; } .framework-copy { margin-bottom: 13px; white-space: normal; } .frameworks { justify-content: flex-start; } .hero-capabilities { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero-capabilities-intro { grid-column: 1 / -1; } .launch-deck { grid-template-columns: 1fr; padding: 19px; } .launch-deck h2 { font-size: 21px; } .launch-grid { grid-template-columns: 1fr; }
-      .section { padding: 56px 0; } .section-heading { margin-bottom: 31px; } .section-heading h2 { font-size: clamp(33px, 9.5vw, 47px); } .section-heading p { font-size: 14px; }
+      .section { padding: 56px 0; } .section-heading { margin-bottom: 31px; } .section-heading h2 { font-size: clamp(33px, 9.5vw, 47px); } .section-heading p { font-size: 14px; } .workflow-note { margin-top: 14px; text-align: left; }
       .capability-grid, .capability-map-grid, .plans, .plan-decider { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
       .scenario { padding: 23px; } .scenario-grid { gap: 30px; } .scenario h2 { font-size: 34px; }
       .roblox-worlds { padding: 22px; } .roblox-head { display: block; } .roblox-head p { margin-top: 12px; } .roblox-grid, .roblox-side { grid-template-columns: 1fr; } .roblox-card { min-height: 156px; }
@@ -725,13 +727,13 @@
         <div class="hero-grid">
           <div class="hero-copy">
             <div class="eyebrow">Made for FiveM & Roblox builders</div>
-            <h1>From a rough idea to a <span class="gradient-text">test-ready resource.</span></h1>
-            <p class="hero-lead">Stellar turns plain English into the files your server or game needs. Build new systems, fix broken scripts and iterate in a workspace designed around QBCore, ESX and Roblox.</p>
+            <h1>Build and fix FiveM &amp; Roblox scripts <span class="gradient-text">you can test.</span></h1>
+            <p class="hero-lead">Describe the system you want, get a clear file-based starting point, then keep improving it in a workspace built for QBCore, ESX and Roblox.</p>
             <div class="hero-actions">
               <a href="/app" class="button button-primary">Generate your first script free <span class="button-arrow">→</span></a>
-              <a href="#how-it-works" class="button button-secondary">See how it works</a>
+              <a href="#how-it-works" class="button button-secondary">See the 4-step workflow</a>
             </div>
-            <div class="hero-footnote"><span>No card needed to begin</span><span>Free starting credit</span><span>Built for real project files</span></div>
+            <div class="hero-footnote"><span>No card needed to begin</span><span>Free starting credit</span><span>Review and test every script</span></div>
             <div class="hero-orbit" aria-hidden="true"></div>
           </div>
 
@@ -777,7 +779,7 @@ end)</div></div>
           <div class="frameworks"><span>QBCore</span><span>ESX</span><span>ox_lib</span><span>Standalone</span><span>Roblox Lua</span></div>
         </div>
         <div class="hero-capabilities" aria-label="What Stellar AI can help you build">
-          <div class="hero-capabilities-intro"><strong>What can you build?</strong><span>Start with the system you need, then keep the files, fixes and next version close by.</span></div>
+          <div class="hero-capabilities-intro"><strong>Pick your starting point.</strong><span>Start with the system you need, then keep the files, fixes and next version close by.</span></div>
           <a class="hero-capability" href="/app?starter=police"><b>FiveM resources</b><span>Jobs, police, economy and roleplay</span></a>
           <a class="hero-capability" href="/app?starter=roblox"><b>Roblox systems</b><span>Luau, UI, progression and DataStores</span></a>
           <a class="hero-capability" href="/app?starter=fix"><b>Fix broken code</b><span>Diagnose errors and revise scripts</span></a>
@@ -805,12 +807,14 @@ end)</div></div>
       </section>
 
       <section class="section container" id="how-it-works">
-        <div class="section-heading center"><div class="eyebrow">A focused build loop</div><h2>Spend your time shaping the game, not explaining the stack.</h2><p>Stellar keeps the creative and technical work in one place: your idea, the system plan and the resource files you need to test.</p></div>
+        <div class="section-heading center"><div class="eyebrow">A focused 4-step build loop</div><h2>Describe it. Generate it. Test it. Improve it.</h2><p>Stellar keeps the creative and technical work in one place, from your first brief to the files and revisions you need to review.</p></div>
         <div class="capability-grid">
-          <article class="capability"><span class="cap-number">01 / CREATE</span><div class="cap-icon">✦</div><h3>Describe the outcome.</h3><p>Start with the gameplay experience you want. Ask in normal language, then refine without restarting from a blank chat.</p><div class="cap-ui"><div class="tiny-label">YOUR PROMPT</div><div class="mini-prompt">“Gang territory with zones, alerts and rewards”</div><div class="mini-files"><i></i><i></i><i></i></div></div></article>
-          <article class="capability"><span class="cap-number">02 / REPAIR</span><div class="cap-icon">⌁</div><h3>Bring in the broken bits.</h3><p>Paste an error or incomplete script. Get a direct explanation, a cleaner fix and the context needed to keep moving.</p><div class="cap-ui"><div class="tiny-label">DIAGNOSIS</div><div class="mini-diagnosis"><i></i><i></i><i></i></div></div></article>
-          <article class="capability"><span class="cap-number">03 / SHIP</span><div class="cap-icon">↗</div><h3>Collect every file.</h3><p>Keep client, server, config and manifest files together. Use the workspace as your build surface before testing in your own environment.</p><div class="cap-ui"><div class="tiny-label">RESOURCE PACKAGE</div><div class="mini-flow"><i></i><b>→</b><i></i><b>→</b><i></i></div></div></article>
+          <article class="capability"><span class="cap-number">01 / DESCRIBE</span><div class="cap-icon">✦</div><h3>Describe the outcome.</h3><p>Start with the gameplay experience you want. Ask in normal language, then refine without restarting from a blank chat.</p><div class="cap-ui"><div class="tiny-label">YOUR BRIEF</div><div class="mini-prompt">“Gang territory with zones, alerts and rewards”</div><div class="mini-files"><i></i><i></i><i></i></div></div></article>
+          <article class="capability"><span class="cap-number">02 / GENERATE</span><div class="cap-icon">↗</div><h3>Generate the first build.</h3><p>Turn the brief into a structured starting point with the files, framework context and notes you need to review.</p><div class="cap-ui"><div class="tiny-label">RESOURCE PACKAGE</div><div class="mini-flow"><i></i><b>→</b><i></i><b>→</b><i></i></div></div></article>
+          <article class="capability"><span class="cap-number">03 / TEST</span><div class="cap-icon">✓</div><h3>Test it in your environment.</h3><p>Review the files, check the dependencies and run the result in your own private FiveM server or Roblox place.</p><div class="cap-ui"><div class="tiny-label">TEST CHECKS</div><div class="mini-diagnosis"><i></i><i></i><i></i></div></div></article>
+          <article class="capability"><span class="cap-number">04 / IMPROVE</span><div class="cap-icon">⌁</div><h3>Improve the next version.</h3><p>Bring back an error, a changed requirement or incomplete code, then keep moving with the same project context nearby.</p><div class="cap-ui"><div class="tiny-label">NEXT REVISION</div><div class="mini-prompt">“Add a cooldown and explain the changed files”</div><div class="mini-files"><i></i><i></i><i></i></div></div></article>
         </div>
+        <p class="workflow-note"><strong>What you get:</strong> a structured starting point, explained files and a clear next test. You remain responsible for reviewing dependencies and testing the result in your own FiveM server or Roblox place.</p>
       </section>
 
       <section class="section container" id="capabilities">
@@ -863,9 +867,9 @@ end)</div></div>
 
       <section class="pricing-wrap" id="plans">
         <div class="container">
-          <div class="section-heading center"><div class="eyebrow">Simple, transparent plans</div><h2>Choose the space your projects need.</h2><p>Start free, then move up when you are building more often or taking on larger systems.</p></div>
+          <div class="section-heading center"><div class="eyebrow">Simple, transparent plans</div><h2>Choose the plan for how often you build.</h2><p>Every plan supports FiveM and Roblox work. Choose based on the amount of building and iteration you need.</p></div>
           <div class="plan-decider" aria-label="How to choose a Stellar AI plan"><div><b>01</b><div><strong>Trying or fixing?</strong><span>Start Free. No card needed.</span></div></div><div><b>02</b><div><strong>Building every week?</strong><span>Plus adds more room for regular work.</span></div></div><div><b>03</b><div><strong>Building full systems?</strong><span>Pro gives you the largest usage allowance and Nova.</span></div></div></div>
-          <p class="plan-compare">Start with Free and upgrade when your workflow needs more usage. Choose Plus for regular FiveM or Roblox building; choose Pro when you are working on larger systems more often. You can also use one-off credit instead of subscribing.</p>
+          <p class="plan-compare">Start with Free if you are trying Stellar or fixing something smaller. Choose Plus for regular FiveM or Roblox building, and Pro for larger systems and more frequent iteration. You can also use one-off credit instead of subscribing.</p>
           <div class="plans">
             <article class="plan"><div class="plan-label">Free</div><h3>Explore Stellar</h3><p class="plan-desc">Turn a first idea or broken script into a useful starting point.</p><div class="plan-fit">Best when you are testing the workflow, learning what Stellar can do, or fixing a smaller issue.</div><div class="price"><strong>£0</strong><span>/ forever</span></div><div class="annual">No card required</div><ul><li>£1 starting credit</li><li>Spark, Star and Comet models</li><li>Build and fix script prompts</li></ul><a href="/app" class="button button-secondary" aria-label="Start with the Free plan">Start free</a></article>
             <article class="plan"><div class="plan-badge">For regular building</div><div class="plan-label">Plus</div><h3>Build consistently</h3><p class="plan-desc">Keep regular FiveM or Roblox work moving without running out of room as quickly.</p><div class="plan-fit">Best when you are shipping updates, building longer systems, and returning to the workspace every week.</div><div class="price"><strong>£20</strong><span>/ month</span></div><div class="annual">£168/year · Save 30%</div><ul><li>10× more usage</li><li>Longer scripts and systems</li><li>Keep iterating in one workspace</li></ul><a href="/app" class="button button-primary" aria-label="Choose the Plus plan">Get Plus <span class="button-arrow">→</span></a></article>
@@ -890,7 +894,7 @@ end)</div></div>
       </section>
 
       <section class="container" style="padding-bottom:104px;">
-        <div class="final-cta"><div class="eyebrow">Your next system starts here</div><h2>Build the first version while the idea is still fresh.</h2><p>Open Stellar, describe what you want to create, and turn the next iteration into something you can test.</p><a href="/app" class="button button-primary" aria-label="Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→</span></a><div class="hero-footnote"><span>Free to begin</span><span>No card needed</span><span>FiveM & Roblox ready</span></div></div>
+        <div class="final-cta"><div class="eyebrow">Your next system starts here</div><h2>Start the next build while the idea is still fresh.</h2><p>Open Stellar, describe the system, review the files, then test the next version in your own environment.</p><a href="/app" class="button button-primary" aria-label="Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→</span></a><div class="hero-footnote"><span>Free to begin</span><span>No card needed</span><span>FiveM & Roblox ready</span></div></div>
       </section>
     </main>
 

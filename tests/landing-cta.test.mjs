@@ -4,9 +4,12 @@ import test from 'node:test';
 
 const landingHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('Task 123 keeps the primary hero CTA honest, free, and routed to the workspace', () => {
+test('Task 199 keeps the direct hero explanation and primary CTA honest, free, and routed to the workspace', () => {
+  assert.match(landingHtml, /<h1>Build and fix FiveM &amp; Roblox scripts <span class="gradient-text">you can test\.<\/span><\/h1>/);
+  assert.match(landingHtml, /<p class="hero-lead">Describe the system you want, get a clear file-based starting point, then keep improving it in a workspace built for QBCore, ESX and Roblox\.<\/p>/);
   assert.match(landingHtml, /<a href="\/app" class="button button-primary">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
-  assert.match(landingHtml, /<div class="hero-footnote"><span>No card needed to begin<\/span><span>Free starting credit<\/span><span>Built for real project files<\/span><\/div>/);
+  assert.match(landingHtml, /<a href="#how-it-works" class="button button-secondary">See the 4-step workflow<\/a>/);
+  assert.match(landingHtml, /<div class="hero-footnote"><span>No card needed to begin<\/span><span>Free starting credit<\/span><span>Review and test every script<\/span><\/div>/);
 });
 
 test('Task 140 presents the landing workspace preview as one concise labelled visual', () => {
@@ -164,9 +167,10 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
   assert.match(landingHtml, /window\.addEventListener\('hashchange', \(\) => revealHashTarget\(window\.location\.hash\)\)/);
 });
 
-test('Task 187 keeps plan positioning truthful and pricing consistent', () => {
+test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consistent', () => {
   assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Plus adds more room for regular work\.[\s\S]*Pro gives you the largest usage allowance and Nova\./);
-  assert.match(landingHtml, /<p class="plan-compare">Start with Free and upgrade when your workflow needs more usage\.[\s\S]*one-off credit instead of subscribing\.<\/p>/);
+  assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Simple, transparent plans<\/div><h2>Choose the plan for how often you build\.<\/h2><p>Every plan supports FiveM and Roblox work\. Choose based on the amount of building and iteration you need\.<\/p><\/div>/);
+  assert.match(landingHtml, /<p class="plan-compare">Start with Free if you are trying Stellar or fixing something smaller\.[\s\S]*one-off credit instead of subscribing\.<\/p>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For regular building<\/div><div class="plan-label">Plus<\/div>/);
   assert.doesNotMatch(landingHtml, /<div class="plan-badge">Most popular<\/div>/);
   assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">For larger systems<\/div><div class="plan-label">Pro<\/div>/);
@@ -292,4 +296,33 @@ test('Task 197 keeps every plan description and fit statement readable in light 
   assert.match(landingHtml, /body\.light \.plan-fit \{ border-color: rgba\(84,67,128,\.18\); color: #453b58; background: rgba\(247,245,252,\.92\); \}/);
   assert.match(landingHtml, /body\.light \.plan\.featured \.plan-fit \{ border-color: rgba\(20,140,112,\.28\); color: #254f44; background: rgba\(82,225,181,\.13\); \}/);
   assert.match(landingHtml, /body\.light \.price span, body\.light \.plan li \{ color: #514967; \}/);
+});
+
+test('Task 199 keeps the approved landing structure clear, test-oriented, and free of new unsupported outcomes', () => {
+  const sectionOrder = [
+    'class="hero container"',
+    'class="launch-deck"',
+    '<section class="section container" id="how-it-works">',
+    '<section class="section container" id="capabilities">',
+    '<section class="section container why-stellar-section" id="why-stellar">',
+    '<section class="pricing-wrap" id="plans">',
+    'class="faq-layout"',
+    'class="final-cta"'
+  ];
+  let previousIndex = -1;
+  for (const marker of sectionOrder) {
+    const currentIndex = landingHtml.indexOf(marker);
+    assert.ok(currentIndex > previousIndex, `${marker} should remain in the approved landing flow`);
+    previousIndex = currentIndex;
+  }
+  assert.match(landingHtml, /<p class="workflow-note"><strong>What you get:<\/strong> a structured starting point, explained files and a clear next test\. You remain responsible for reviewing dependencies and testing the result in your own FiveM server or Roblox place\.<\/p>/);
+  assert.match(landingHtml, /<div class="eyebrow">A focused 4-step build loop<\/div><h2>Describe it\. Generate it\. Test it\. Improve it\.<\/h2>/);
+  for (const step of ['01 / DESCRIBE', '02 / GENERATE', '03 / TEST', '04 / IMPROVE']) {
+    assert.match(landingHtml, new RegExp(`<span class="cap-number">${step}<\\/span>`));
+  }
+  assert.match(landingHtml, /\.capability-grid \{ display: grid; grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); gap: 15px; \}/);
+  assert.match(landingHtml, /\.capability-grid \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
+  assert.match(landingHtml, /\.workflow-note \{ max-width: 760px; margin: 20px auto 0;/);
+  assert.match(landingHtml, /<div class="final-cta"><div class="eyebrow">Your next system starts here<\/div><h2>Start the next build while the idea is still fresh\.<\/h2><p>Open Stellar, describe the system, review the files, then test the next version in your own environment\.<\/p>/);
+  assert.doesNotMatch(landingHtml, /guaranteed|no testing required|automatically install/i);
 });
