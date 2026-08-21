@@ -91,6 +91,11 @@ test('Task 159 removes a closed mobile sidebar from the accessibility tree witho
   assert.match(appHtml, /updateSignedOutHint\(\);\s+syncSidebarAccessibility\(\);\s+maybeShowWelcome\(\);/);
 });
 
+test('Task 160 gives the existing redeem-code field an explicit accessible name', () => {
+  assert.match(appHtml, /<input id="redeem-input" class="redeem-input" placeholder="STELLAR-XXXXXX-XXX-XXXX" aria-label="Gift code" autocomplete="off">/);
+  assert.match(appHtml, /<button onclick="doRedeem\(\)" class="side-new w-full mt-3">Redeem<\/button>/);
+});
+
 test('Task 136 announces the existing pasted-content summary politely', () => {
   assert.match(appHtml, /<div class="paste-title" id="paste-chip-text" role="status" aria-live="polite" aria-atomic="true">Pasted content<\/div>/);
   assert.match(appHtml, /document\.getElementById\('paste-chip-text'\)\.textContent = label;/);
