@@ -123,3 +123,11 @@ test('Task 181 keeps workspace suggestion chips explicit non-submit buttons', ()
   assert.match(workspaceHtml, /useSuggestion\('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist'\)/);
   assert.match(workspaceHtml, /useSuggestion\('Fix this broken script: '\)/);
 });
+
+test('Task 185 keeps top-up credit controls explicit non-submit buttons', () => {
+  for (const amount of ['300', '1000', '2500', '5000']) {
+    assert.match(workspaceHtml, new RegExp(`<button type="button" onclick="pickTopup\\(${amount}\\)" data-amt="${amount}" class="pack`));
+  }
+  assert.match(workspaceHtml, /<button type="button" id="topup-buy" onclick="buyTopup\(document\.getElementById\('topup-range'\)\.value\)"/);
+  assert.match(workspaceHtml, /<button type="button" onclick="closeTopup\(\)" class="plan-btn glass w-full mt-2">Cancel<\/button>/);
+});
