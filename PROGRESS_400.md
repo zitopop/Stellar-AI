@@ -179,7 +179,7 @@
 | 173 | ✅ Complete | Existing Settings sidebar control explicitly uses a non-submit button while preserving its openSettings action, settings dialog behavior, placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 201 tests pass; exact READY Vercel deployment for `a373308` verified | `a373308` |
 | 174 | ✅ Complete | Existing model chooser selection buttons explicitly use non-submit buttons while preserving model selection, plan gating, menuitemradio roles, and aria-checked synchronization | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 202 tests pass; exact READY Vercel deployment for `da90537` verified | `da90537` |
 | 175 | ✅ Complete | Existing paste-removal and Send composer controls explicitly use non-submit buttons while preserving clearPaste, stopOrSend, labels, keyboard handling, and chat behavior | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 203 tests pass; exact READY Vercel deployment for `07a4e47` verified | `07a4e47` |
-| 176 | ☐ Pending | Next approved implementation task | — | — |
+| 176 | ✅ Complete | Existing composer Credit and Files controls explicitly use non-submit buttons while preserving openUsage, toggleWorkspace, labels, file behavior, and usage behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 204 tests pass; exact READY Vercel deployment for `20d71f0` verified | `20d71f0` |
 | 177 | ☐ Pending | Next approved implementation task | — | — |
 | 178 | ☐ Pending | Next approved implementation task | — | — |
 | 179 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**175 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**176 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
