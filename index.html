@@ -442,6 +442,12 @@
     [id="how-it-works"], [id="plans"], [id="roblox-worlds"] { scroll-margin-top: 96px; }
     .section-heading p, .hero-lead, .difference-copy p, .faq-intro p { text-wrap: pretty; }
     .plan-compare { max-width: 720px; margin: 16px auto 0; color: var(--muted); font-size: 12px; line-height: 1.65; text-align: center; }
+    .roblox-directory { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin: 22px 0 16px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; color: var(--muted); background: rgba(255,255,255,.035); font-size: 12px; line-height: 1.45; }
+    .roblox-directory strong { color: var(--ink); margin-right: 4px; }
+    .roblox-directory span { color: var(--muted-strong); font-weight: 800; }
+    .roblox-directory a { color: var(--violet-bright); font-weight: 800; text-decoration: underline; text-decoration-color: rgba(167,139,250,.45); text-underline-offset: 3px; }
+    .roblox-directory a:hover { color: var(--ink); }
+    @media (max-width: 760px) { .roblox-directory { align-items: baseline; } .roblox-directory strong { width: 100%; } }
     @media (max-width: 760px) { .plan-compare { padding-inline: 8px; text-align: left; } }
     .framework-rail { box-shadow: 0 14px 40px rgba(0,0,0,.12); }
     .product-frame { transition: transform .35s ease, box-shadow .35s ease; }
@@ -774,6 +780,7 @@ end)</div></div>
       <section class="container section" id="roblox-worlds" style="padding-top:24px;">
         <div class="roblox-worlds">
           <div class="roblox-head"><div><div class="eyebrow">The Stellar universe</div><h2>Build with Stellar AI. Play in Stellar worlds.</h2></div><p>Explore the Roblox experiences and communities behind the brand, then bring your own next game system back to Stellar AI to shape it.</p></div>
+          <div class="roblox-directory" aria-label="Stellar Roblox games and groups"><strong>Roblox games &amp; groups</strong><span>Games:</span><a href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer">Stellar Strike</a><a href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer">Stellar Simulator</a><span>Groups:</span><a href="https://www.roblox.com/communities/433084698/StellarHQ#!/about" target="_blank" rel="noopener noreferrer">StellarHQ</a><a href="https://www.roblox.com/communities/222055052/zitos-gang#!/about" target="_blank" rel="noopener noreferrer">zitos gang</a></div>
           <div class="roblox-grid">
             <a class="roblox-card" href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer"><div><div class="roblox-game-mark">✦</div><h3>Stellar Strike</h3><p>Jump into the official StellarHQ Roblox experience.</p></div><span class="roblox-link">Play on Roblox <span>↗</span></span></a>
             <a class="roblox-card" href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer"><div><div class="roblox-game-mark">S</div><h3>Stellar Simulator</h3><p>Discover another official StellarHQ Roblox world.</p></div><span class="roblox-link">Play on Roblox <span>↗</span></span></a>
@@ -915,7 +922,7 @@ end)</div></div>
         localStorage.setItem('stellar-landing-theme', next);
         applyTheme(next);
       });
-      const revealTargets = document.querySelectorAll('.framework-rail, .launch-deck, .section-heading, .capability, .scenario, .roblox-worlds, .plans, .faq-layout, .final-cta');
+      const revealTargets = document.querySelectorAll('.framework-rail, .launch-deck, .section-heading, .capability, .scenario, .plans, .faq-layout, .final-cta');
       revealTargets.forEach((element, index) => { element.classList.add('reveal'); if (index % 4 === 1) element.classList.add('reveal-delay-1'); if (index % 4 === 2) element.classList.add('reveal-delay-2'); if (index % 4 === 3) element.classList.add('reveal-delay-3'); });
       if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { revealTargets.forEach((element) => element.classList.add('is-visible')); return; }
       document.body.classList.add('motion-ready');

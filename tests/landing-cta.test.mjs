@@ -172,3 +172,13 @@ test('Task 187 keeps plan positioning truthful and pricing consistent', () => {
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });
+
+test('Task 188 keeps Roblox games and groups visible with approved destinations', () => {
+  assert.match(landingHtml, /<div class="roblox-directory" aria-label="Stellar Roblox games and groups">[\s\S]*Roblox games &amp; groups[\s\S]*Stellar Strike[\s\S]*Stellar Simulator[\s\S]*StellarHQ[\s\S]*zitos gang[\s\S]*<\/div>/);
+  assert.match(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.plans, \.faq-layout, \.final-cta'\)/);
+  assert.doesNotMatch(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.roblox-worlds, \.plans/);
+  assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike/);
+  assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator/);
+  assert.match(landingHtml, /communities\/433084698\/StellarHQ/);
+  assert.match(landingHtml, /communities\/222055052\/zitos-gang/);
+});
