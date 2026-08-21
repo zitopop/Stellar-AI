@@ -112,3 +112,8 @@ test('Task 157 keeps existing quick-start card content readable in light theme',
   assert.match(landingHtml, /body\.light \.launch-card \{ border-color: rgba\(84,67,128,\.16\); background: rgba\(255,255,255,\.86\); \}/);
   assert.match(landingHtml, /body\.light \.launch-card strong \{ color: #211a35; \} body\.light \.launch-card span \{ color: #625b75; \}/);
 });
+
+test('Task 158 keeps existing saved-tool actions touch-safe on every viewport', () => {
+  assert.match(landingHtml, /\.favorite-star \{ display: inline-grid; flex: none; width: 44px; height: 44px; place-items: center; border: 1px solid var\(--border\); border-radius: 12px;/);
+  assert.doesNotMatch(landingHtml, /\.favorite-star \{ display: inline-grid; flex: none; width: 30px;/);
+});
