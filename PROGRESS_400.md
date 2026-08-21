@@ -166,7 +166,7 @@
 | 160 | ✅ Complete | The existing redeem-code input has an explicit accessible name while preserving redemption flow and dialog keyboard behavior | `app.html`; full suite 188 tests pass; focused redeem-field contract; Vercel deployment `27db994` success | `27db994` |
 | 161 | ✅ Complete | The existing sidebar toggle synchronizes expanded state and action label across desktop collapse and mobile drawer modes | `app.html`; full suite 189 tests pass; focused navigation-state contract; Vercel deployment `23cfd6b` success | `23cfd6b` |
 | 162 | ✅ Complete | Landing FAQ and FAQ structured data explain that FiveM event-driven scripts still need server-side validation, without exploit-proof claims | `index.html`; full suite 190 tests pass; focused FAQ contract; Vercel deployment `61c9a3a` success | `61c9a3a` |
-| 163 | ☐ Pending | Next approved implementation task | — | — |
+| 163 | ✅ Complete | Approved “Before you test” guidance beside the FiveM Police starter, naming file review, dependency verification, private testing, and returning with errors | `index.html`, `tests/landing-cta.test.mjs`; full suite 191 tests pass; exact READY Vercel deployment for `571bff4` verified | `571bff4` |
 | 164 | ☐ Pending | Next approved implementation task | — | — |
 | 165 | ☐ Pending | Next approved implementation task | — | — |
 | 166 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**162 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**163 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
