@@ -164,7 +164,7 @@
 | 158 | ✅ Complete | Existing saved-tool star actions use a consistent 44px touch target without changing favorite state, starter routes, or feature-search behavior | `index.html`; full suite 186 tests pass; active-source geometry shows no starter-link overlap; Vercel deployment `60b2d17` success | `60b2d17` |
 | 159 | ✅ Complete | The offscreen mobile workspace sidebar synchronizes `aria-hidden` while closed and stays exposed when opened or on desktop | `app.html`; full suite 187 tests pass; focused mobile-state contract; Vercel deployment `dca7cc0` success | `dca7cc0` |
 | 160 | ✅ Complete | The existing redeem-code input has an explicit accessible name while preserving redemption flow and dialog keyboard behavior | `app.html`; full suite 188 tests pass; focused redeem-field contract; Vercel deployment `27db994` success | `27db994` |
-| 161 | ☐ Pending | Next approved implementation task | — | — |
+| 161 | ✅ Complete | The existing sidebar toggle synchronizes expanded state and action label across desktop collapse and mobile drawer modes | `app.html`; full suite 189 tests pass; focused navigation-state contract; Vercel deployment `23cfd6b` success | `23cfd6b` |
 | 162 | ☐ Pending | Next approved implementation task | — | — |
 | 163 | ☐ Pending | Next approved implementation task | — | — |
 | 164 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**160 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**161 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
