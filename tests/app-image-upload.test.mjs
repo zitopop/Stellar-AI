@@ -137,7 +137,7 @@ test('Task 143 gives existing chat Options popups menu semantics and keyboard co
   assert.match(appHtml, /<div id="chat-menu" class="hidden" role="menu" aria-label="Chat options" aria-hidden="true"><\/div>/);
   assert.match(appHtml, /aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯<\/button>/);
   assert.match(appHtml, /let chatMenuFor = null;\s+let chatMenuTrigger = null;/);
-  assert.match(appHtml, /<button role="menuitem" onclick="closeChatMenu\(\); togglePin\(/);
+  assert.match(appHtml, /<button type="button" role="menuitem" onclick="closeChatMenu\(\); togglePin\(/);
   assert.match(appHtml, /menu\.setAttribute\('aria-hidden', 'false'\);/);
   assert.match(appHtml, /if \(event\.key === 'Escape'\)/);
   assert.match(appHtml, /event\.key === 'ArrowDown' \|\| event\.key === 'ArrowUp'/);

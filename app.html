@@ -3813,9 +3813,9 @@
       const chat = (Store.get().chats || []).find(c => c.id === id);
       const pinned = chat && chat.pinned;
       menu.innerHTML =
-        '<button role="menuitem" onclick="closeChatMenu(); togglePin(\'' + id + '\')">📌 ' + (pinned ? 'Unpin' : 'Pin') + '</button>' +
-        '<button role="menuitem" onclick="closeChatMenu(); renameChat(\'' + id + '\')">✏️ Rename</button>' +
-        '<button role="menuitem" class="cm-danger" onclick="closeChatMenu(); deleteChat(\'' + id + '\')">🗑️ Delete</button>';
+        '<button type="button" role="menuitem" onclick="closeChatMenu(); togglePin(\'' + id + '\')">📌 ' + (pinned ? 'Unpin' : 'Pin') + '</button>' +
+        '<button type="button" role="menuitem" onclick="closeChatMenu(); renameChat(\'' + id + '\')">✏️ Rename</button>' +
+        '<button type="button" role="menuitem" class="cm-danger" onclick="closeChatMenu(); deleteChat(\'' + id + '\')">🗑️ Delete</button>';
       menu.classList.remove('hidden');
       menu.setAttribute('aria-hidden', 'false');
       const r = e.currentTarget.getBoundingClientRect();
