@@ -3920,6 +3920,13 @@
       }
     }
 
+    function syncSidebarAccessibility() {
+      const sidebar = document.getElementById('sidebar');
+      if (!sidebar) return;
+      const mobileSidebarIsClosed = window.matchMedia('(max-width: 767px)').matches && !sidebar.classList.contains('open');
+      sidebar.setAttribute('aria-hidden', String(mobileSidebarIsClosed));
+    }
+
     function toggleSidebar() {
       const sb = document.getElementById('sidebar');
       if (window.innerWidth >= 768) {
@@ -3935,7 +3942,10 @@
           toggle.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
         }
       }
+      syncSidebarAccessibility();
     }
+
+    window.addEventListener('resize', syncSidebarAccessibility);
 
     let thanksDialogTrigger = null;
     function openThanksDialog() {
@@ -6262,6 +6272,7 @@
       else loadChat(s.currentChat || chats[0].id);
       setTextSize(Store.get().textSize || 'md');
       updateSignedOutHint();
+      syncSidebarAccessibility();
       maybeShowWelcome();
       applyLandingStarterPrompt();
     }

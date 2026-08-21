@@ -85,6 +85,12 @@ test('Task 155 focuses a landing starter only after guest continuation, preservi
   assert.match(appHtml, /landingStarterFocusPending = true;\s+if \(document\.getElementById\('welcome-modal'\)\.classList\.contains\('hidden'\)\) focusLandingStarterComposer\(\);/);
 });
 
+test('Task 159 removes a closed mobile sidebar from the accessibility tree without hiding desktop navigation', () => {
+  assert.match(appHtml, /function syncSidebarAccessibility\(\) \{\s+const sidebar = document\.getElementById\('sidebar'\);\s+if \(!sidebar\) return;\s+const mobileSidebarIsClosed = window\.matchMedia\('\(max-width: 767px\)'\)\.matches && !sidebar\.classList\.contains\('open'\);\s+sidebar\.setAttribute\('aria-hidden', String\(mobileSidebarIsClosed\)\);/);
+  assert.match(appHtml, /syncSidebarAccessibility\(\);\s+\}\s+\s+window\.addEventListener\('resize', syncSidebarAccessibility\);/);
+  assert.match(appHtml, /updateSignedOutHint\(\);\s+syncSidebarAccessibility\(\);\s+maybeShowWelcome\(\);/);
+});
+
 test('Task 136 announces the existing pasted-content summary politely', () => {
   assert.match(appHtml, /<div class="paste-title" id="paste-chip-text" role="status" aria-live="polite" aria-atomic="true">Pasted content<\/div>/);
   assert.match(appHtml, /document\.getElementById\('paste-chip-text'\)\.textContent = label;/);
