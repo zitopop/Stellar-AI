@@ -186,7 +186,7 @@
 | 180 | ✅ Complete | Existing Small, Normal, and Large text-size controls explicitly use non-submit buttons while preserving setTextSize, aria-pressed synchronization, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 208 tests pass; exact READY Vercel production deployment for `166983a` verified | `166983a` |
 | 181 | ✅ Complete | Existing workspace suggestion chips explicitly use non-submit buttons while preserving useSuggestion actions, visible labels, and responsive layout | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 209 tests pass; exact READY Vercel production deployment for `1000e28` verified | `1000e28` |
 | 182 | ✅ Complete | Existing landing-page FAQ disclosure controls explicitly use non-submit buttons while preserving their answers, ARIA state synchronization, and visible copy | `index.html`, `tests/landing-cta.test.mjs`; full suite 210 tests pass; exact READY Vercel production deployment for `a29f520` verified | `a29f520` |
-| 183 | ☐ Pending | Next approved implementation task | — | — |
+| 183 | ✅ Complete | Added a keyboard-accessible mobile landing navigation toggle with unchanged How it works, Pricing, Roblox worlds, and Guides destinations | `index.html`, `tests/landing-cta.test.mjs`; full suite 211 tests pass; exact READY Vercel production deployment for `786a724` verified | `786a724` |
 | 184 | ☐ Pending | Next approved implementation task | — | — |
 | 185 | ☐ Pending | Next approved implementation task | — | — |
 | 186 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**182 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**183 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
