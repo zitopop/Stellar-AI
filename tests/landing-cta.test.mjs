@@ -153,3 +153,13 @@ test('Task 184 keeps the framework rail close to the hero without removing the m
   assert.match(landingHtml, /\.framework-rail \{ display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 28px;/);
   assert.match(landingHtml, /\.framework-rail \{ display: block; padding: 19px; margin-top: 42px; \}/);
 });
+
+test('Task 186 keeps landing hash navigation visible beneath the sticky header', () => {
+  assert.match(landingHtml, /html \{ overflow-x: hidden; scroll-padding-top: 96px; \}/);
+  assert.match(landingHtml, /\[id="how-it-works"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
+  assert.match(landingHtml, /const revealHashTarget = \(hash, behavior = 'smooth'\) => \{/);
+  assert.match(landingHtml, /target\.querySelectorAll\('\.reveal'\)\.forEach\(\(element\) => element\.classList\.add\('is-visible'\)\)/);
+  assert.match(landingHtml, /history\.pushState\(null, '', hash\);/);
+  assert.match(landingHtml, /closeMobileNav\(\);\n      history\.pushState/);
+  assert.match(landingHtml, /window\.addEventListener\('hashchange', \(\) => revealHashTarget\(window\.location\.hash\)\)/);
+});
