@@ -141,13 +141,13 @@
 | 135 | ✅ Complete | The existing workspace message composer is exposed as a named form landmark without changing keyboard or send controls | `app.html`; full suite 156 tests pass; Vercel deployment `e2f11a3` success | `e2f11a3` |
 | 136 | ✅ Complete | The workspace pasted-content summary announces its existing feedback politely while retaining the visual remove control | `app.html`; full suite 157 tests pass; Vercel deployment `3dfe7db` success | `3dfe7db` |
 | 137 | ✅ Complete | The existing workspace sidebar is exposed as named navigation without changing its chat, account, or utility controls | `app.html`; full suite 158 tests pass; Vercel deployment `4721d8e` success | `4721d8e` |
-| 138 | ☐ Pending | Next approved implementation task | — | — |
-| 139 | ☐ Pending | Next approved implementation task | — | — |
-| 140 | ☐ Pending | Next approved implementation task | — | — |
-| 141 | ☐ Pending | Next approved implementation task | — | — |
-| 142 | ☐ Pending | Next approved implementation task | — | — |
-| 143 | ☐ Pending | Next approved implementation task | — | — |
-| 144 | ☐ Pending | Next approved implementation task | — | — |
+| 138 | ✅ Complete | The existing workspace chat search control has an explicit accessible name without changing filter behavior | `app.html`; full suite 159 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 139 | ✅ Complete | Existing workspace chat-history heading and list have an explicit accessible relationship without changing chat behavior | `app.html`; full suite 160 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 140 | ✅ Complete | The landing workspace preview is exposed as one concise labelled visual while visible hero content and CTA behavior remain unchanged | `index.html`; full suite 161 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 141 | ✅ Complete | The narrow-phone landing workspace preview omits its unreadably compact decorative sidebar while preserving hero conversion paths | `index.html`; full suite 162 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 142 | ✅ Complete | Workspace chat-history entries are keyboard-operable through separate chat-open and options controls without nested interactions | `app.html`; full suite 163 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 143 | ✅ Complete | Existing chat Options popup exposes accurate menu semantics, trigger state, keyboard navigation, and focus return | `app.html`; full suite 164 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 144 | ✅ Complete | Public landing plan actions have explicit plan-oriented accessible labels without changing prices or destinations | `index.html`; full suite 165 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
 | 145 | ☐ Pending | Next approved implementation task | — | — |
 | 146 | ☐ Pending | Next approved implementation task | — | — |
 | 147 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**137 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**144 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
