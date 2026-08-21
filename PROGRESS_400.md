@@ -155,8 +155,8 @@
 | 149 | ✅ Complete | Workspace model chooser returns focus to its visible trigger after selection, avoiding focus remaining on a hidden menu choice | `app.html`; full suite 175 tests pass; Vercel deployment `9a53c2b` success | `9a53c2b` |
 | 150 | ✅ Complete | Settings theme and text-size segmented controls synchronize their pressed states with the saved appearance choice without changing preference behavior | `app.html`; full suite 176 tests pass; Vercel deployment `f29e7af` success | `f29e7af` |
 | 151 | ✅ Complete | Sidebar theme control synchronizes its pressed state and next-theme action label with the saved workspace theme | `app.html`; full suite 177 tests pass; Vercel deployment `b716653` success | `b716653` |
-| 152 | ☐ Pending | Next approved implementation task | — | — |
-| 153 | ☐ Pending | Next approved implementation task | — | — |
+| 152 | ✅ Complete | Sidebar and Settings → About Terms destinations use native links while retaining their `/terms.html` destination, mobile layout, and accessible controls | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
+| 153 | ✅ Complete | Workspace uses a clean deep-dark premium conversation layout with a 760px chat column, right user bubbles, ✦ assistant identity, compact sidebar, pill composer, and responsive mobile presentation | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
 | 154 | ☐ Pending | Next approved implementation task | — | — |
 | 155 | ☐ Pending | Next approved implementation task | — | — |
 | 156 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**151 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**153 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
