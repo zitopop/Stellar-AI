@@ -295,3 +295,11 @@ test('Task 197 keeps the Jarvis demo and pricing cards stacked and touch-safe on
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });
+
+test('Task 197 keeps every plan description and fit statement readable in light theme', () => {
+  assert.match(landingHtml, /body\.light \.plan h3 \{ color: #211a35; \}/);
+  assert.match(landingHtml, /body\.light \.plan-desc \{ color: #514967; \}/);
+  assert.match(landingHtml, /body\.light \.plan-fit \{ border-color: rgba\(84,67,128,\.18\); color: #453b58; background: rgba\(247,245,252,\.92\); \}/);
+  assert.match(landingHtml, /body\.light \.plan\.featured \.plan-fit \{ border-color: rgba\(20,140,112,\.28\); color: #254f44; background: rgba\(82,225,181,\.13\); \}/);
+  assert.match(landingHtml, /body\.light \.price span, body\.light \.plan li \{ color: #514967; \}/);
+});
