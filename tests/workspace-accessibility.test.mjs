@@ -102,3 +102,15 @@ test('Task 179 keeps Dark and Light appearance controls explicit non-submit butt
   assert.doesNotMatch(workspaceHtml, /<button id="seg-dark" class="seg"/);
   assert.doesNotMatch(workspaceHtml, /<button id="seg-light" class="seg"/);
 });
+
+test('Task 180 keeps Small, Normal, and Large text-size controls explicit non-submit buttons', () => {
+  for (const [id, size, pressed, label] of [
+    ['seg-txt-sm', 'sm', 'false', 'Small'],
+    ['seg-txt-md', 'md', 'true', 'Normal'],
+    ['seg-txt-lg', 'lg', 'false', 'Large'],
+  ]) {
+    assert.match(workspaceHtml, new RegExp(`<button type="button" id="${id}" class="seg" onclick="setTextSize\\('${size}'\\)" aria-pressed="${pressed}">${label}<\\/button>`));
+    assert.doesNotMatch(workspaceHtml, new RegExp(`<button id="${id}" class="seg"`));
+  }
+  assert.match(workspaceHtml, /const active = k === t; b\.classList\.toggle\('on', active\); b\.setAttribute\('aria-pressed', String\(active\)\)/);
+});

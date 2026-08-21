@@ -182,7 +182,7 @@
 | 176 | ✅ Complete | Existing composer Credit and Files controls explicitly use non-submit buttons while preserving openUsage, toggleWorkspace, labels, file behavior, and usage behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 204 tests pass; exact READY Vercel deployment for `20d71f0` verified | `20d71f0` |
 | 177 | ✅ Complete | Existing model-menu trigger explicitly uses a non-submit button while preserving toggleModelMenu, menu accessibility attributes, model selection, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 205 tests pass; exact READY Vercel deployment for `27e88b6` verified | `27e88b6` |
 | 178 | ✅ Complete | Existing Settings tab controls explicitly use non-submit buttons while preserving setTab behavior, selected-state synchronization, keyboard navigation, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 206 tests pass; exact READY Vercel deployment for `31bce9d` verified | `31bce9d` |
-| 179 | ☐ Pending | Next approved implementation task | — | — |
+| 179 | ✅ Complete | Existing Dark and Light appearance controls explicitly use non-submit buttons while preserving setMode, refreshSettings, aria-pressed synchronization, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 207 tests pass; exact READY Vercel production deployment for `a7d5263` verified | `a7d5263` |
 | 180 | ☐ Pending | Next approved implementation task | — | — |
 | 181 | ☐ Pending | Next approved implementation task | — | — |
 | 182 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**178 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**179 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
