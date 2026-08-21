@@ -2945,7 +2945,7 @@
           <button onclick="openPlans()" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg></span>Plans</button>
         </div>
         <div class="side-row-3">
-          <button onclick="toggleDarkMode()" class="side-act"><span class="ico" id="side-theme-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></span>Theme</button>
+          <button id="side-theme-toggle" onclick="toggleDarkMode()" class="side-act" aria-pressed="false" aria-label="Switch to light theme"><span class="ico" id="side-theme-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></span>Theme</button>
           <button onclick="location.href='/terms.html'" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>Terms</button>
           <button onclick="openSettings()" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"/></svg></span>Settings</button>
         </div>
@@ -5984,6 +5984,12 @@
       const s = document.getElementById('side-theme-ico');
       if (s) s.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'
         + (mode === 'light' ? 'sun' : 'moon') + '"/></svg>';
+      const themeToggle = document.getElementById('side-theme-toggle');
+      if (themeToggle) {
+        const light = mode === 'light';
+        themeToggle.setAttribute('aria-pressed', String(light));
+        themeToggle.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+      }
       Store.set({ mode });
     }
 

@@ -421,3 +421,10 @@ test('Task 150 synchronizes appearance segments with their selected settings sta
   assert.match(appHtml, /document\.getElementById\('seg-dark'\)\.setAttribute\('aria-pressed', String\(!light\)\);/);
   assert.match(appHtml, /document\.getElementById\('seg-light'\)\.setAttribute\('aria-pressed', String\(light\)\);/);
 });
+
+test('Task 151 synchronizes the sidebar theme control state and action label', () => {
+  assert.match(appHtml, /<button id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="side-act" aria-pressed="false" aria-label="Switch to light theme">/);
+  assert.match(appHtml, /const themeToggle = document\.getElementById\('side-theme-toggle'\);/);
+  assert.match(appHtml, /themeToggle\.setAttribute\('aria-pressed', String\(light\)\);/);
+  assert.match(appHtml, /themeToggle\.setAttribute\('aria-label', light \? 'Switch to dark theme' : 'Switch to light theme'\);/);
+});
