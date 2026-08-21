@@ -54,3 +54,8 @@ test('Task 172 keeps the Theme sidebar control an explicit non-submit button', (
   assert.match(workspaceHtml, /const themeToggle = document\.getElementById\('side-theme-toggle'\);[\s\S]*?themeToggle\.setAttribute\('aria-pressed', String\(light\)\)/);
   assert.doesNotMatch(workspaceHtml, /<button\s+id="side-theme-toggle"\s+onclick="toggleDarkMode\(\)"/);
 });
+
+test('Task 173 keeps the Settings sidebar control an explicit non-submit button', () => {
+  assert.match(workspaceHtml, /<button type="button" onclick="openSettings\(\)" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"\/><\/svg><\/span>Settings<\/button>/);
+  assert.doesNotMatch(workspaceHtml, /<button onclick="openSettings\(\)" class="side-act">/);
+});
