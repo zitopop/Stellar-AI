@@ -199,3 +199,12 @@ test('Task 190 keeps the landing hero-to-framework spacing compact without chang
   assert.match(landingHtml, /Fix an error/);
   assert.match(landingHtml, /Roblox game/);
 });
+
+test('Task 191 keeps landing section rhythm compact across breakpoints', () => {
+  assert.match(landingHtml, /\.section \{ padding: 76px 0; \}/);
+  assert.match(landingHtml, /\.pricing-wrap \{ position: relative; overflow: hidden; padding: 60px 0 68px;/);
+  assert.match(landingHtml, /\.final-cta \{ position: relative; overflow: hidden; padding: 58px 28px;/);
+  assert.match(landingHtml, /\.section \{ padding: 56px 0; \}/);
+  assert.match(landingHtml, /\.pricing-wrap \{ padding: 52px 0 58px; \}/);
+  assert.match(landingHtml, /\.final-cta \{ padding: 55px 20px; \}/);
+});
