@@ -159,8 +159,8 @@
 | 153 | ✅ Complete | Workspace uses a clean deep-dark premium conversation layout with a 760px chat column, right user bubbles, ✦ assistant identity, compact sidebar, pill composer, and responsive mobile presentation | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
 | 154 | ✅ Complete | Landing quick-start cards hand off a whitelisted editable starter prompt to the workspace without auto-submitting, persisting it, or changing offers, accounts, or payments | `index.html`, `app.html`; full suite 182 tests pass; desktop and 375px guest-path checks; Vercel deployment `d533b06` success | `d533b06` |
 | 155 | ✅ Complete | A first-run guest continuation returns focus to an already-ready landing starter composer, while explicit welcome-dialog launches still restore their original trigger | `app.html`; full suite 183 tests pass; desktop focus and 375px guest-path checks; Vercel deployment `1c294e3` success | `1c294e3` |
-| 156 | ☐ Pending | Next approved implementation task | — | — |
-| 157 | ☐ Pending | Next approved implementation task | — | — |
+| 156 | ✅ Complete | Existing quick-start paths include one concise contextual route to the existing FiveM and Roblox Guides hub without changing offers or destination behavior | `index.html`; full suite 185 tests pass; responsive source and active-worktree checks; Vercel deployment `f34b3c1` success | `f34b3c1` |
+| 157 | ✅ Complete | Existing quick-start cards use readable light-theme surfaces and foregrounds while preserving starter links, saved-tool actions, and feature search behavior | `index.html`; full suite 185 tests pass; active-worktree light-theme computed-style check; Vercel deployment `f34b3c1` success | `f34b3c1` |
 | 158 | ☐ Pending | Next approved implementation task | — | — |
 | 159 | ☐ Pending | Next approved implementation task | — | — |
 | 160 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**155 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**157 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
