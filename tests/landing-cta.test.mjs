@@ -101,3 +101,14 @@ test('Task 154 sends each existing project quick start into the workspace with o
     assert.match(landingHtml, new RegExp(`<a href="/app\\?starter=${key}" aria-label="Open Stellar with a ${label} starter prompt">`));
   }
 });
+
+test('Task 156 adds a concise, honest Guides-hub route beside existing quick starts', () => {
+  assert.match(landingHtml, /<p class="launch-guides">Need a walkthrough first\? <a href="\/blog">Browse FiveM &amp; Roblox guides <span aria-hidden="true">→<\/span><\/a><\/p>/);
+  assert.match(landingHtml, /\.launch-guides \{ display: flex; align-items: center; flex-wrap: wrap;/);
+  assert.match(landingHtml, /body\.light \.launch-guides a \{ color: #5b36aa;/);
+});
+
+test('Task 157 keeps existing quick-start card content readable in light theme', () => {
+  assert.match(landingHtml, /body\.light \.launch-card \{ border-color: rgba\(84,67,128,\.16\); background: rgba\(255,255,255,\.86\); \}/);
+  assert.match(landingHtml, /body\.light \.launch-card strong \{ color: #211a35; \} body\.light \.launch-card span \{ color: #625b75; \}/);
+});
