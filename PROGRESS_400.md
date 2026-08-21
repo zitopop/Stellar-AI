@@ -192,7 +192,7 @@
 | 186 | ✅ Complete | Fixed landing-page hash navigation so Plans, Roblox worlds, and How it works links reveal their animated content and apply a sticky-header-safe scroll offset | `index.html`, `tests/landing-cta.test.mjs`; full suite 214 tests pass; exact READY Vercel production deployment for `9a83304` verified | `9a83304` |
 | 187 | ✅ Complete | Added truthful plan-selection guidance, clarified Free/Plus/Pro use cases, and replaced the unsupported “Most popular” badge without changing prices or payment logic | `index.html`, `tests/landing-cta.test.mjs`; full suite 215 tests pass; exact READY Vercel production deployment for `18b174e` verified | `18b174e` |
 | 188 | ✅ Complete | Kept the Roblox games and communities section visible without scroll-reveal delay and added a clear directory for Stellar Strike, Stellar Simulator, StellarHQ, and zitos gang using approved URLs | `index.html`, `tests/landing-cta.test.mjs`; full suite 216 tests pass; exact READY Vercel production deployment for `a16a3ba` verified | `a16a3ba` |
-| 189 | ☐ Pending | Next approved implementation task | — | — |
+| 189 | ✅ Complete | Added explicit accessible labels to the Stellar Strike, Stellar Simulator, StellarHQ, and zitos gang links while preserving approved URLs and new-tab behavior | `index.html`, `tests/landing-cta.test.mjs`; full suite 217 tests pass; exact READY Vercel production deployment for `ec88cb1` verified | `ec88cb1` |
 | 190 | ☐ Pending | Next approved implementation task | — | — |
 | 191 | ☐ Pending | Next approved implementation task | — | — |
 | 192 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**188 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**189 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
