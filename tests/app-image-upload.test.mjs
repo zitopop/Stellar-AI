@@ -428,3 +428,32 @@ test('Task 151 synchronizes the sidebar theme control state and action label', (
   assert.match(appHtml, /themeToggle\.setAttribute\('aria-pressed', String\(light\)\);/);
   assert.match(appHtml, /themeToggle\.setAttribute\('aria-label', light \? 'Switch to dark theme' : 'Switch to light theme'\);/);
 });
+
+test('Task 152 exposes both existing Terms destinations as native links', () => {
+  assert.match(appHtml, /<a href="\/terms\.html" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"\/><\/svg><\/span>Terms<\/a>/);
+  assert.match(appHtml, /<a href="\/terms\.html" class="set-item set-click">\s+<div class="set-key"><i class="sk-ico t-slate"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"\/><\/svg><\/i>Terms &amp; Privacy<\/div>\s+<div class="set-chev" aria-hidden="true">›<\/div>\s+<\/a>/);
+  assert.doesNotMatch(appHtml, /<button onclick="location\.href='\/terms\.html'" class="side-act">/);
+});
+
+test('premium workspace redesign keeps chat presentation clean, centered, and behavior-preserving', () => {
+  assert.match(appHtml, /\/\* ═══════════ CLEAN PREMIUM CONVERSATION WORKSPACE ═══════════ \*\//);
+  assert.match(appHtml, /body::before \{ background: #0d0720 !important; background-image: none !important; \}/);
+  assert.match(appHtml, /#chat \{ width: min\(100%, 760px\) !important; max-width: 760px !important;/);
+  assert.match(appHtml, /#sidebar \{ width: 232px !important;[\s\S]*?background: #100a22 !important;/);
+  assert.match(appHtml, /\.message\.msg-user \.msg-content \{[\s\S]*?background: #7050bb !important;/);
+  assert.match(appHtml, /\.message\.msg-ai \{ display: grid !important; grid-template-columns: 28px minmax\(0, 1fr\);/);
+  assert.match(appHtml, /#chat \.message\.msg-user, #chat \.message\.msg-ai \{ padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; \}/);
+  assert.match(appHtml, /\.assistant-avatar \{ display: grid; width: 28px; height: 28px;/);
+  assert.match(appHtml, /\.input-area > \.flex \{ width: min\(100%, 760px\) !important;[\s\S]*?border-radius: 20px !important; background: #17102b !important;/);
+  assert.match(appHtml, /const isUserMessage = msg\.role === 'user';\s+return isUserMessage\s+\? `<article class="message msg-user"><div class="msg-content">\$\{content\}<\/div><\/article>`\s+: `<article class="message msg-ai"><div class="assistant-avatar" aria-hidden="true">✦<\/div><div class="msg-content">\$\{content\}<\/div><\/article>`;/);
+});
+
+test('premium workspace redesign keeps the mobile composer controls compact without removing core actions', () => {
+  assert.match(appHtml, /#send-btn:not\(\.is-stop\) \{ color: transparent !important; font-size: 0 !important; \}/);
+  assert.match(appHtml, /#send-btn:not\(\.is-stop\)::after \{ content: '↑'; color: #160c2c !important;/);
+  assert.match(appHtml, /#credits-btn, #keyboard-hint, \[href\*="smollaunch"\] \{ display: none !important; \}/);
+  assert.match(appHtml, /#image-upload-btn, #ws-btn, \.model-pill \{ min-height: 34px !important;/);
+  assert.match(appHtml, /#rec-btn \{ right: 14px !important; bottom: 106px !important;/);
+  assert.match(appHtml, /\[href\*="smollaunch"\] \{ display: none !important; \}/);
+  assert.match(appHtml, /@media \(min-width: 768px\) and \(max-width: 1100px\) \{\s+#credits-btn, #keyboard-hint \{ display: none !important; \}/);
+});
