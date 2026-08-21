@@ -148,9 +148,9 @@
 | 142 | ✅ Complete | Workspace chat-history entries are keyboard-operable through separate chat-open and options controls without nested interactions | `app.html`; full suite 163 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
 | 143 | ✅ Complete | Existing chat Options popup exposes accurate menu semantics, trigger state, keyboard navigation, and focus return | `app.html`; full suite 164 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
 | 144 | ✅ Complete | Public landing plan actions have explicit plan-oriented accessible labels without changing prices or destinations | `index.html`; full suite 165 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
-| 145 | ☐ Pending | Next approved implementation task | — | — |
-| 146 | ☐ Pending | Next approved implementation task | — | — |
-| 147 | ☐ Pending | Next approved implementation task | — | — |
+| 145 | ✅ Complete | Workspace model chooser supports Home and End focus navigation across visible choices without changing selection, routing, or plan gates | `app.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
+| 146 | ✅ Complete | Specialist workspace model choices have concise explicit accessible names that state their output focus | `app.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
+| 147 | ✅ Complete | Final public free-generation call to action has an explicit accessible name without changing its destination or offer | `index.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
 | 148 | ☐ Pending | Next approved implementation task | — | — |
 | 149 | ☐ Pending | Next approved implementation task | — | — |
 | 150 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**144 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**147 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
