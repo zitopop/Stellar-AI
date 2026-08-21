@@ -78,6 +78,13 @@ test('Task 154 accepts only named landing starters and pre-fills a non-persisten
   assert.match(appHtml, /maybeShowWelcome\(\);\s+applyLandingStarterPrompt\(\);/);
 });
 
+test('Task 155 focuses a landing starter only after guest continuation, preserving explicit welcome-dialog trigger restoration', () => {
+  assert.match(appHtml, /let landingStarterFocusPending = false;/);
+  assert.match(appHtml, /function focusLandingStarterComposer\(\) \{[\s\S]*?landingStarterFocusPending = false;[\s\S]*?input\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(appHtml, /if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+else if \(landingStarterFocusPending\) focusLandingStarterComposer\(\);/);
+  assert.match(appHtml, /landingStarterFocusPending = true;\s+if \(document\.getElementById\('welcome-modal'\)\.classList\.contains\('hidden'\)\) focusLandingStarterComposer\(\);/);
+});
+
 test('Task 136 announces the existing pasted-content summary politely', () => {
   assert.match(appHtml, /<div class="paste-title" id="paste-chip-text" role="status" aria-live="polite" aria-atomic="true">Pasted content<\/div>/);
   assert.match(appHtml, /document\.getElementById\('paste-chip-text'\)\.textContent = label;/);
@@ -175,7 +182,7 @@ test('Task 80 gives the sign-in modal an explicit labelled modal-dialog role', (
 });
 
 test('Task 81 manages focus when the sign-in dialog opens and is explicitly dismissed', () => {
-  assert.match(appHtml, /let welcomeTrigger = null;\s+function focusWelcomeDialog\(\) \{\s+setTimeout\(\(\) => document\.getElementById\('si-email'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /let welcomeTrigger = null;\s+let landingStarterFocusPending = false;\s+function focusLandingStarterComposer\(\) \{[\s\S]*?\}\s+function focusWelcomeDialog\(\) \{\s+setTimeout\(\(\) => document\.getElementById\('si-email'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
   assert.match(appHtml, /function openWelcome\(\) \{\s+const active = document\.activeElement;\s+welcomeTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?focusWelcomeDialog\(\);/);
   assert.match(appHtml, /function dismissWelcome\(\) \{[\s\S]*?const trigger = welcomeTrigger;\s+welcomeTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);/);
 });

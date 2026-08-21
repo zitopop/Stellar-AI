@@ -5840,6 +5840,12 @@
       else { closeSettings(); openWelcome(); }
     }
     let welcomeTrigger = null;
+    let landingStarterFocusPending = false;
+    function focusLandingStarterComposer() {
+      const input = document.getElementById('txt');
+      landingStarterFocusPending = false;
+      if (input) setTimeout(() => input.focus({ preventScroll: true }), 0);
+    }
     function focusWelcomeDialog() {
       setTimeout(() => document.getElementById('si-email')?.focus({ preventScroll: true }), 0);
     }
@@ -5880,6 +5886,7 @@
       const trigger = welcomeTrigger;
       welcomeTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+      else if (landingStarterFocusPending) focusLandingStarterComposer();
     }
     function trapWelcomeDialogFocus(event, welcomeModal) {
       if (event.key !== 'Tab') return;
@@ -6160,7 +6167,8 @@
       input.value = starterPrompt;
       input.dispatchEvent(new Event('input', { bubbles: true }));
       setGenerationStatus('Starter prompt ready to edit.');
-      setTimeout(() => input.focus({ preventScroll: true }), 0);
+      landingStarterFocusPending = true;
+      if (document.getElementById('welcome-modal').classList.contains('hidden')) focusLandingStarterComposer();
     }
 
     function init() {
