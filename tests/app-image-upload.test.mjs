@@ -410,3 +410,14 @@ test('Task 149 returns focus to the model chooser after choosing a model', () =>
   assert.match(appHtml, /function pickModel\(m\) \{\s+const s = Store\.get\(\);\s+closeModelMenu\(\);\s+const modelButton = document\.getElementById\('model-btn'\);\s+modelButton\?\.focus\(\{ preventScroll: true \}\);/);
   assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);[\s\S]*?modelButton\.innerHTML = labels\[m\] \|\| labels\.smart;/);
 });
+
+test('Task 150 synchronizes appearance segments with their selected settings state', () => {
+  assert.match(appHtml, /id="seg-dark" class="seg" onclick="setMode\('dark'\); refreshSettings\(\)" aria-pressed="true"/);
+  assert.match(appHtml, /id="seg-light" class="seg" onclick="setMode\('light'\); refreshSettings\(\)" aria-pressed="false"/);
+  assert.match(appHtml, /id="seg-txt-sm" class="seg" onclick="setTextSize\('sm'\)" aria-pressed="false"/);
+  assert.match(appHtml, /id="seg-txt-md" class="seg" onclick="setTextSize\('md'\)" aria-pressed="true"/);
+  assert.match(appHtml, /id="seg-txt-lg" class="seg" onclick="setTextSize\('lg'\)" aria-pressed="false"/);
+  assert.match(appHtml, /b\.setAttribute\('aria-pressed', String\(active\)\);/);
+  assert.match(appHtml, /document\.getElementById\('seg-dark'\)\.setAttribute\('aria-pressed', String\(!light\)\);/);
+  assert.match(appHtml, /document\.getElementById\('seg-light'\)\.setAttribute\('aria-pressed', String\(light\)\);/);
+});

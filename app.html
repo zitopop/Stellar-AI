@@ -3310,16 +3310,16 @@
         <div class="set-item">
           <div class="set-key"><i class="sk-ico t-pink"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-palette"/></svg></i>Theme</div>
           <div class="seg-wrap">
-            <button id="seg-dark" class="seg" onclick="setMode('dark'); refreshSettings()">🌙 Dark</button>
-            <button id="seg-light" class="seg" onclick="setMode('light'); refreshSettings()">☀️ Light</button>
+            <button id="seg-dark" class="seg" onclick="setMode('dark'); refreshSettings()" aria-pressed="true">🌙 Dark</button>
+            <button id="seg-light" class="seg" onclick="setMode('light'); refreshSettings()" aria-pressed="false">☀️ Light</button>
           </div>
         </div>
         <div class="set-item">
           <div class="set-key"><i class="sk-ico t-blue"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-type"/></svg></i>Text size</div>
           <div class="seg-wrap">
-            <button id="seg-txt-sm" class="seg" onclick="setTextSize('sm')">Small</button>
-            <button id="seg-txt-md" class="seg" onclick="setTextSize('md')">Normal</button>
-            <button id="seg-txt-lg" class="seg" onclick="setTextSize('lg')">Large</button>
+            <button id="seg-txt-sm" class="seg" onclick="setTextSize('sm')" aria-pressed="false">Small</button>
+            <button id="seg-txt-md" class="seg" onclick="setTextSize('md')" aria-pressed="true">Normal</button>
+            <button id="seg-txt-lg" class="seg" onclick="setTextSize('lg')" aria-pressed="false">Large</button>
           </div>
         </div>
       </div>
@@ -5907,7 +5907,7 @@
     });
     function refreshSettings() {
       (function(){ const t = Store.get().textSize || 'md';
-        ['sm','md','lg'].forEach(k => { const b = document.getElementById('seg-txt-' + k); if (b) b.classList.toggle('on', k === t); }); })();
+        ['sm','md','lg'].forEach(k => { const b = document.getElementById('seg-txt-' + k); if (b) { const active = k === t; b.classList.toggle('on', active); b.setAttribute('aria-pressed', String(active)); } }); })();
       const s = Store.get();
       const name = s.name || '';
       const email = s.email || '';
@@ -5960,6 +5960,8 @@
       const light = document.body.classList.contains('light');
       document.getElementById('seg-dark').classList.toggle('on', !light);
       document.getElementById('seg-light').classList.toggle('on', light);
+      document.getElementById('seg-dark').setAttribute('aria-pressed', String(!light));
+      document.getElementById('seg-light').setAttribute('aria-pressed', String(light));
     }
     function updateSignedOutHint() {
       const t = document.getElementById('txt');
