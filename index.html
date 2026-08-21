@@ -228,6 +228,19 @@
 
     /* Three capabilities */
     .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .capability-map { padding: 30px; border: 1px solid var(--border); border-radius: 22px; background: linear-gradient(135deg, rgba(155,124,255,.08), rgba(255,255,255,.025) 55%, rgba(82,225,181,.05)); }
+    .capability-map-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .capability-map-card { min-height: 250px; padding: 21px; border: 1px solid var(--border); border-radius: 16px; background: rgba(8,7,20,.42); }
+    .capability-map-card h3 { margin: 11px 0 8px; font-size: 20px; letter-spacing: -.045em; }
+    .capability-map-card p { color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .capability-map-card ul { display: grid; gap: 8px; margin-top: 16px; padding: 0; list-style: none; }
+    .capability-map-card li { position: relative; padding-left: 18px; color: var(--muted-strong); font-size: 12px; line-height: 1.5; }
+    .capability-map-card li::before { content: "✓"; position: absolute; left: 0; color: var(--emerald); font-weight: 900; }
+    .capability-map-label { color: #bca9ff; font: 500 10px "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .capability-map-foot { max-width: 760px; margin: 20px auto 0; color: var(--muted); font-size: 12px; line-height: 1.7; text-align: center; }
+    body.light .capability-map, body.light .capability-map-card { border-color: rgba(84,67,128,.15); background: rgba(255,255,255,.68); }
+    body.light .capability-map-card li { color: #4f4767; }
+    /* Capability map */
     .capability { position: relative; min-height: 345px; padding: 27px; overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: linear-gradient(150deg, rgba(255,255,255,.05), rgba(255,255,255,.018)); transition: transform .25s ease, border-color .25s ease, background .25s ease; }
     .capability:hover { transform: translateY(-5px); border-color: var(--border-hover); background: linear-gradient(150deg, rgba(173,146,255,.115), rgba(255,255,255,.025)); }
     .cap-number { color: #9e88dd; font: 500 11px "DM Mono", monospace; }
@@ -375,7 +388,7 @@
       .why-stellar-section { padding-top: 36px; padding-bottom: 36px; } .difference-copy .difference-note { margin-top: 12px; } .text-link { margin-top: 18px; }
       .framework-rail { display: block; padding: 19px; margin-top: 42px; } .framework-copy { margin-bottom: 13px; white-space: normal; } .frameworks { justify-content: flex-start; } .launch-deck { grid-template-columns: 1fr; padding: 19px; } .launch-deck h2 { font-size: 21px; } .launch-grid { grid-template-columns: 1fr; }
       .section { padding: 56px 0; } .section-heading { margin-bottom: 31px; } .section-heading h2 { font-size: clamp(33px, 9.5vw, 47px); } .section-heading p { font-size: 14px; }
-      .capability-grid, .plans, .plan-decider { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
+      .capability-grid, .capability-map-grid, .plans, .plan-decider { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
       .scenario { padding: 23px; } .scenario-grid { gap: 30px; } .scenario h2 { font-size: 34px; }
       .roblox-worlds { padding: 22px; } .roblox-head { display: block; } .roblox-head p { margin-top: 12px; } .roblox-grid, .roblox-side { grid-template-columns: 1fr; } .roblox-card { min-height: 156px; }
       .pricing-wrap { padding: 52px 0 58px; } .plan { min-height: 0; padding: 24px; } .price { margin-top: 22px; }
@@ -445,7 +458,7 @@
     .capability:hover, .scenario:hover, .roblox-card:hover, .launch-card:hover { transform: translateY(-4px); border-color: var(--border-hover); background: var(--surface-hover); box-shadow: 0 18px 46px rgba(0,0,0,.2); }
     .plan:hover { transform: translateY(-5px); box-shadow: 0 22px 48px rgba(0,0,0,.23); }
     .section-heading h2, .difference-copy h2, .faq-intro h2 { text-wrap: balance; }
-    [id="how-it-works"], [id="why-stellar"], [id="plans"], [id="roblox-worlds"] { scroll-margin-top: 96px; }
+    [id="how-it-works"], [id="why-stellar"], [id="capabilities"], [id="plans"], [id="roblox-worlds"] { scroll-margin-top: 96px; }
     .section-heading p, .hero-lead, .difference-copy p, .faq-intro p { text-wrap: pretty; }
     .plan-compare { max-width: 720px; margin: 16px auto 0; color: var(--muted); font-size: 12px; line-height: 1.65; text-align: center; }
     .roblox-directory { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin: 22px 0 16px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; color: var(--muted); background: rgba(255,255,255,.035); font-size: 12px; line-height: 1.45; }
@@ -675,6 +688,7 @@
         <div class="nav-links">
           <a href="#how-it-works">How it works</a>
           <a href="#why-stellar">Why Stellar</a>
+          <a href="#capabilities">Capabilities</a>
           <a href="#plans">Pricing</a>
           <a href="#roblox-worlds">Roblox worlds</a>
           <a href="/blog">Guides</a>
@@ -687,7 +701,7 @@
           <a href="/app" class="button button-primary nav-cta">Try it free <span class="button-arrow">→</span></a>
         </div>
       </nav>
-      <div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works</a><a href="#why-stellar">Why Stellar</a><a href="#plans">Pricing</a><a href="#roblox-worlds">Roblox worlds</a><a href="/blog">Guides</a><a href="/terms.html">Terms</a></div></div>
+      <div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works</a><a href="#why-stellar">Why Stellar</a><a href="#capabilities">Capabilities</a><a href="#plans">Pricing</a><a href="#roblox-worlds">Roblox worlds</a><a href="/blog">Guides</a><a href="/terms.html">Terms</a></div></div>
     </header>
 
     <main id="main-content" tabindex="-1">
@@ -776,6 +790,17 @@ end)</div></div>
         </div>
       </section>
 
+      <section class="section container" id="capabilities">
+        <div class="section-heading center"><div class="eyebrow">Everything in one build loop</div><h2>From first idea to the next version.</h2><p>Stellar AI can help you plan, write, explain, repair and organise the scripting work around your FiveM or Roblox project. Choose the part you need now, then keep the context for the part that comes next.</p></div>
+        <div class="capability-map" aria-label="Stellar AI capabilities for FiveM and Roblox builders">
+          <div class="capability-map-grid">
+            <article class="capability-map-card"><div class="capability-map-label">FiveM</div><h3>Server resources</h3><p>Start with a gameplay outcome and shape the resource around the framework and dependencies you actually use.</p><ul><li>QBCore, ESX, ox_lib and standalone context</li><li>Client, server, config, shared and manifest files</li><li>Jobs, inventories, economy, police, heists and roleplay systems</li><li>Installation notes and private test checks</li></ul></article>
+            <article class="capability-map-card"><div class="capability-map-label">Roblox</div><h3>Luau game systems</h3><p>Describe the game loop and get help mapping scripts to the right Studio locations and services.</p><ul><li>DataStores, GUIs, RemoteEvents and progression</li><li>Server and client responsibilities kept separate</li><li>Round systems, obbies, rewards and interactive mechanics</li><li>Studio placement guidance and test matrices</li></ul></article>
+            <article class="capability-map-card"><div class="capability-map-label">Workflow</div><h3>Build, fix and understand</h3><p>Keep the useful context close to the code instead of starting over every time something changes.</p><ul><li>Plan a feature before generating a larger implementation</li><li>Explain unfamiliar code and assumptions</li><li>Diagnose errors and revise incomplete scripts</li><li>Iterate on the next file or requirement in one thread</li></ul></article>
+          </div>
+          <p class="capability-map-foot">Stellar generates guidance and code for you to review and test. It does not claim to have installed, run, published or verified a project on your server or Roblox place.</p>
+        </div>
+      </section>
       <section class="container section" style="padding-top:10px;">
         <div class="scenario">
           <div class="scenario-grid">
@@ -931,7 +956,7 @@ end)</div></div>
         localStorage.setItem('stellar-landing-theme', next);
         applyTheme(next);
       });
-      const revealTargets = document.querySelectorAll('.framework-rail, .launch-deck, .section-heading, .capability, .scenario, .why-stellar-section, .plans, .faq-layout, .final-cta');
+      const revealTargets = document.querySelectorAll('.framework-rail, .launch-deck, .section-heading, .capability, .scenario, .capability-map, .why-stellar-section, .plans, .faq-layout, .final-cta');
       revealTargets.forEach((element, index) => { element.classList.add('reveal'); if (index % 4 === 1) element.classList.add('reveal-delay-1'); if (index % 4 === 2) element.classList.add('reveal-delay-2'); if (index % 4 === 3) element.classList.add('reveal-delay-3'); });
       if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { revealTargets.forEach((element) => element.classList.add('is-visible')); return; }
       document.body.classList.add('motion-ready');

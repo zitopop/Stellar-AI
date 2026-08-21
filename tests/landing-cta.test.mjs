@@ -142,7 +142,7 @@ test('Task 182 keeps every landing FAQ disclosure control an explicit non-submit
 
 test('Task 183 keeps the mobile landing navigation keyboard-accessible and destination-stable', () => {
   assert.match(landingHtml, /<button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-controls="mobile-nav" aria-expanded="false">/);
-  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
+  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#capabilities">Capabilities<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
   assert.match(landingHtml, /navToggle\?\.addEventListener\('click', \(\) => \{ const open = navToggle\.getAttribute\('aria-expanded'\) === 'true';/);
   assert.match(landingHtml, /mobileNav\?\.querySelectorAll\('a'\)\.forEach\(\(link\) => link\.addEventListener\('click', closeMobileNav\)\)/);
   assert.match(landingHtml, /\.nav-toggle \{ display: none; min-width: 44px; min-height: 44px;/);
@@ -156,7 +156,7 @@ test('Task 184/190 keeps the framework rail close to the hero without removing t
 
 test('Task 186 keeps landing hash navigation visible beneath the sticky header', () => {
   assert.match(landingHtml, /html \{ overflow-x: hidden; scroll-padding-top: 96px; \}/);
-  assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
+  assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="capabilities"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
   assert.match(landingHtml, /const revealHashTarget = \(hash, behavior = 'smooth'\) => \{/);
   assert.match(landingHtml, /target\.querySelectorAll\('\.reveal'\)\.forEach\(\(element\) => element\.classList\.add\('is-visible'\)\)/);
   assert.match(landingHtml, /history\.pushState\(null, '', hash\);/);
@@ -175,7 +175,7 @@ test('Task 187 keeps plan positioning truthful and pricing consistent', () => {
 
 test('Task 188 keeps Roblox games and groups visible with approved destinations', () => {
   assert.match(landingHtml, /<div class="roblox-directory" aria-label="Stellar Roblox games and groups">[\s\S]*Roblox games &amp; groups[\s\S]*Stellar Strike[\s\S]*Stellar Simulator[\s\S]*StellarHQ[\s\S]*zitos gang[\s\S]*<\/div>/);
-  assert.match(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.why-stellar-section, \.plans, \.faq-layout, \.final-cta'\)/);
+  assert.match(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.capability-map, \.why-stellar-section, \.plans, \.faq-layout, \.final-cta'\)/);
   assert.doesNotMatch(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.roblox-worlds, \.plans/);
   assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike/);
   assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator/);
@@ -230,4 +230,15 @@ test('Task 193 exposes Why Stellar, Pricing, and Terms as direct landing destina
   assert.match(landingHtml, /<a href="\/terms\.html">Terms<\/a>/);
   assert.match(landingHtml, /why-stellar-section/);
   assert.match(landingHtml, /why-stellar-section, \.plans/);
+});
+
+
+test('Task 194 exposes the expanded truthful capability map for FiveM and Roblox builders', () => {
+  assert.match(landingHtml, /<section class="section container" id="capabilities">/);
+  assert.match(landingHtml, /Everything in one build loop/);
+  assert.match(landingHtml, /QBCore, ESX, ox_lib and standalone context/);
+  assert.match(landingHtml, /DataStores, GUIs, RemoteEvents and progression/);
+  assert.match(landingHtml, /Plan a feature before generating a larger implementation/);
+  assert.match(landingHtml, /does not claim to have installed, run, published or verified/);
+  assert.match(landingHtml, /<a href="#capabilities">Capabilities<\/a>/);
 });
