@@ -189,7 +189,7 @@
 | 183 | ✅ Complete | Added a keyboard-accessible mobile landing navigation toggle with unchanged How it works, Pricing, Roblox worlds, and Guides destinations | `index.html`, `tests/landing-cta.test.mjs`; full suite 211 tests pass; exact READY Vercel production deployment for `786a724` verified | `786a724` |
 | 184 | ✅ Complete | Reduced the measured whitespace between the landing-page hero grid and framework rail from 66px to 28px on desktop while preserving the mobile 42px override | `index.html`, `tests/landing-cta.test.mjs`; full suite 212 tests pass; exact READY Vercel production deployment for `082aecb` verified | `082aecb` |
 | 185 | ✅ Complete | Existing top-up amount packs, purchase action, and cancel control explicitly use non-submit buttons while preserving credit values, handlers, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 213 tests pass; exact READY Vercel production deployment for `934d5be` verified | `934d5be` |
-| 186 | ☐ Pending | Next approved implementation task | — | — |
+| 186 | ✅ Complete | Fixed landing-page hash navigation so Plans, Roblox worlds, and How it works links reveal their animated content and apply a sticky-header-safe scroll offset | `index.html`, `tests/landing-cta.test.mjs`; full suite 214 tests pass; exact READY Vercel production deployment for `9a83304` verified | `9a83304` |
 | 187 | ☐ Pending | Next approved implementation task | — | — |
 | 188 | ☐ Pending | Next approved implementation task | — | — |
 | 189 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**185 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**186 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
