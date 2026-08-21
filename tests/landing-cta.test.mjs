@@ -124,3 +124,9 @@ test('Task 158 keeps existing saved-tool actions touch-safe on every viewport', 
   assert.match(landingHtml, /\.favorite-star \{ display: inline-grid; flex: none; width: 44px; height: 44px; place-items: center; border: 1px solid var\(--border\); border-radius: 12px;/);
   assert.doesNotMatch(landingHtml, /\.favorite-star \{ display: inline-grid; flex: none; width: 30px;/);
 });
+
+test('Task 163 adds truthful private-testing guidance beside the FiveM Police starter', () => {
+  assert.match(landingHtml, /<small class="launch-note">Before you test: review the files, verify dependencies, test privately, and return with any errors\.<\/small>/);
+  assert.match(landingHtml, /\.launch-note \{ display: block; max-width: 25rem; margin-top: 5px; color: #b9b1c8; font-size: 8px; font-weight: 600; line-height: 1\.45; \}/);
+  assert.match(landingHtml, /body\.light \.launch-card \.launch-note \{ color: #6d647e; \}/);
+});
