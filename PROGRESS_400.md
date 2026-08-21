@@ -184,7 +184,7 @@
 | 178 | ✅ Complete | Existing Settings tab controls explicitly use non-submit buttons while preserving setTab behavior, selected-state synchronization, keyboard navigation, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 206 tests pass; exact READY Vercel deployment for `31bce9d` verified | `31bce9d` |
 | 179 | ✅ Complete | Existing Dark and Light appearance controls explicitly use non-submit buttons while preserving setMode, refreshSettings, aria-pressed synchronization, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 207 tests pass; exact READY Vercel production deployment for `a7d5263` verified | `a7d5263` |
 | 180 | ✅ Complete | Existing Small, Normal, and Large text-size controls explicitly use non-submit buttons while preserving setTextSize, aria-pressed synchronization, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 208 tests pass; exact READY Vercel production deployment for `166983a` verified | `166983a` |
-| 181 | ☐ Pending | Next approved implementation task | — | — |
+| 181 | ✅ Complete | Existing workspace suggestion chips explicitly use non-submit buttons while preserving useSuggestion actions, visible labels, and responsive layout | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 209 tests pass; exact READY Vercel production deployment for `1000e28` verified | `1000e28` |
 | 182 | ☐ Pending | Next approved implementation task | — | — |
 | 183 | ☐ Pending | Next approved implementation task | — | — |
 | 184 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**180 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**181 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
