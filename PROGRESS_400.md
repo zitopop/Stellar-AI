@@ -188,7 +188,7 @@
 | 182 | ✅ Complete | Existing landing-page FAQ disclosure controls explicitly use non-submit buttons while preserving their answers, ARIA state synchronization, and visible copy | `index.html`, `tests/landing-cta.test.mjs`; full suite 210 tests pass; exact READY Vercel production deployment for `a29f520` verified | `a29f520` |
 | 183 | ✅ Complete | Added a keyboard-accessible mobile landing navigation toggle with unchanged How it works, Pricing, Roblox worlds, and Guides destinations | `index.html`, `tests/landing-cta.test.mjs`; full suite 211 tests pass; exact READY Vercel production deployment for `786a724` verified | `786a724` |
 | 184 | ✅ Complete | Reduced the measured whitespace between the landing-page hero grid and framework rail from 66px to 28px on desktop while preserving the mobile 42px override | `index.html`, `tests/landing-cta.test.mjs`; full suite 212 tests pass; exact READY Vercel production deployment for `082aecb` verified | `082aecb` |
-| 185 | ☐ Pending | Next approved implementation task | — | — |
+| 185 | ✅ Complete | Existing top-up amount packs, purchase action, and cancel control explicitly use non-submit buttons while preserving credit values, handlers, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 213 tests pass; exact READY Vercel production deployment for `934d5be` verified | `934d5be` |
 | 186 | ☐ Pending | Next approved implementation task | — | — |
 | 187 | ☐ Pending | Next approved implementation task | — | — |
 | 188 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**184 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**185 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
