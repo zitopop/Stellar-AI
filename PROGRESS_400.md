@@ -158,7 +158,7 @@
 | 152 | ✅ Complete | Sidebar and Settings → About Terms destinations use native links while retaining their `/terms.html` destination, mobile layout, and accessible controls | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
 | 153 | ✅ Complete | Workspace uses a clean deep-dark premium conversation layout with a 760px chat column, right user bubbles, ✦ assistant identity, compact sidebar, pill composer, and responsive mobile presentation | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
 | 154 | ✅ Complete | Landing quick-start cards hand off a whitelisted editable starter prompt to the workspace without auto-submitting, persisting it, or changing offers, accounts, or payments | `index.html`, `app.html`; full suite 182 tests pass; desktop and 375px guest-path checks; Vercel deployment `d533b06` success | `d533b06` |
-| 155 | ☐ Pending | Next approved implementation task | — | — |
+| 155 | ✅ Complete | A first-run guest continuation returns focus to an already-ready landing starter composer, while explicit welcome-dialog launches still restore their original trigger | `app.html`; full suite 183 tests pass; desktop focus and 375px guest-path checks; Vercel deployment `1c294e3` success | `1c294e3` |
 | 156 | ☐ Pending | Next approved implementation task | — | — |
 | 157 | ☐ Pending | Next approved implementation task | — | — |
 | 158 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**154 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**155 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
