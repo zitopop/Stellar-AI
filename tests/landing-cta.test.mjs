@@ -142,7 +142,7 @@ test('Task 182 keeps every landing FAQ disclosure control an explicit non-submit
 
 test('Task 183 keeps the mobile landing navigation keyboard-accessible and destination-stable', () => {
   assert.match(landingHtml, /<button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-controls="mobile-nav" aria-expanded="false">/);
-  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#capabilities">Capabilities<\/a><a href="#jarvis-pro">Jarvis Pro<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
+  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#capabilities">Capabilities<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
   assert.match(landingHtml, /navToggle\?\.addEventListener\('click', \(\) => \{ const open = navToggle\.getAttribute\('aria-expanded'\) === 'true';/);
   assert.match(landingHtml, /mobileNav\?\.querySelectorAll\('a'\)\.forEach\(\(link\) => link\.addEventListener\('click', closeMobileNav\)\)/);
   assert.match(landingHtml, /\.nav-toggle \{ display: none; min-width: 44px; min-height: 44px;/);
@@ -156,7 +156,7 @@ test('Task 184/190 keeps the framework rail close to the hero without removing t
 
 test('Task 186 keeps landing hash navigation visible beneath the sticky header', () => {
   assert.match(landingHtml, /html \{ overflow-x: hidden; scroll-padding-top: 96px; \}/);
-  assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="capabilities"\], \[id="jarvis-pro"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
+  assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="capabilities"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
   assert.match(landingHtml, /const revealHashTarget = \(hash, behavior = 'smooth'\) => \{/);
   assert.match(landingHtml, /target\.querySelectorAll\('\.reveal'\)\.forEach\(\(element\) => element\.classList\.add\('is-visible'\)\)/);
   assert.match(landingHtml, /history\.pushState\(null, '', hash\);/);
@@ -169,7 +169,7 @@ test('Task 187 keeps plan positioning truthful and pricing consistent', () => {
   assert.match(landingHtml, /<p class="plan-compare">Start with Free and upgrade when your workflow needs more usage\.[\s\S]*one-off credit instead of subscribing\.<\/p>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For regular building<\/div><div class="plan-label">Plus<\/div>/);
   assert.doesNotMatch(landingHtml, /<div class="plan-badge">Most popular<\/div>/);
-  assert.match(landingHtml, /<article class="plan featured jarvis-plan"><div class="plan-badge">Jarvis Pro · for serious workflows<\/div>/);
+  assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">For larger systems<\/div><div class="plan-label">Pro<\/div>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });
@@ -261,17 +261,18 @@ test('Task 196 keeps introductory and revealed landing content visible if animat
   assert.match(landingHtml, /\.reveal\.is-visible \{ opacity: 1; transform: none; \}/);
 });
 
-test('Task 192 makes Jarvis Pro visible and approval-first on desktop and mobile', () => {
-  assert.match(landingHtml, /<a href="#jarvis-pro">Jarvis Pro<\/a>/g);
-  assert.match(landingHtml, /<section class="section container" id="jarvis-pro">[\s\S]*Jarvis Pro · approval-first workspace[\s\S]*Explore Jarvis Pro/);
-  assert.match(landingHtml, /Purchases, ad publishing and budget changes require confirmation\./);
-  assert.match(landingHtml, /it does not silently purchase, publish or spend money\./);
+test('Task 198 removes the unavailable Jarvis public presentation from landing, navigation, plans, and scripts', () => {
+  assert.doesNotMatch(landingHtml, /Jarvis/i);
+  assert.doesNotMatch(landingHtml, /jarvis-pro/i);
+  assert.doesNotMatch(landingHtml, /jarvis-demo/i);
+  assert.doesNotMatch(landingHtml, /shopping comparisons|ad publishing|approval-first/i);
 });
 
-test('Task 192 explains the plan choices without changing the approved prices', () => {
+test('Task 198 keeps current Pro positioning and approved plan prices after removing Jarvis', () => {
   assert.match(landingHtml, /Turn a first idea or broken script into a useful starting point\./);
   assert.match(landingHtml, /Keep regular FiveM or Roblox work moving without running out of room as quickly\./);
-  assert.match(landingHtml, /The largest build runway plus the clearest path into Jarvis Pro workflows\./);
+  assert.match(landingHtml, /The largest usage allowance for bigger FiveM and Roblox systems\./);
+  assert.match(landingHtml, /Best when you are building longer resources, returning to complex projects often, or need the strongest available model\./);
   assert.match(landingHtml, /<strong>£0<\/strong><span>\/ forever<\/span>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
@@ -279,19 +280,8 @@ test('Task 192 explains the plan choices without changing the approved prices', 
   assert.match(landingHtml, /£630\/year · Save 30%/);
 });
 
-test('Task 197 adds a safe, interactive Jarvis workflow preview with explicit no-action boundaries', () => {
-  assert.match(landingHtml, /<div class="jarvis-demo" data-jarvis-demo aria-label="Interactive Jarvis Pro workflow preview">/);
-  assert.match(landingHtml, /<div class="jarvis-demo-status" id="jarvis-demo-status" role="status" aria-live="polite">Plan ready\./);
-  assert.match(landingHtml, /<button type="button" class="jarvis-demo-primary" id="jarvis-demo-next" aria-controls="jarvis-demo-status jarvis-demo-summary jarvis-demo-stage jarvis-demo-title jarvis-demo-detail jarvis-demo-safety">Review approval<\/button>/);
-  assert.match(landingHtml, /<button type="button" id="jarvis-demo-reset">Reset demo<\/button>/);
-  assert.match(landingHtml, /Demo only\. Nothing is purchased, published, charged or changed in an account from this preview\./);
-  assert.match(landingHtml, /Explicit approval would be required before any real purchase, publication or spend\./);
-  assert.match(landingHtml, /jarvisNext\?\.addEventListener\('click', \(\) => \{ jarvisIndex = jarvisIndex === jarvisStates\.length - 1 \? 0 : jarvisIndex \+ 1; renderJarvisDemo\(\); \}\);/);
-});
-
-test('Task 197 keeps the Jarvis demo and pricing cards stacked and touch-safe on mobile', () => {
-  assert.match(landingHtml, /@media \(max-width: 760px\) \{ \.jarvis-spotlight \{ grid-template-columns: 1fr; padding: 18px; \} \.jarvis-demo \{ padding: 14px; \}[\s\S]*?\.jarvis-demo-grid \{ grid-template-columns: 1fr; \}[\s\S]*?\.jarvis-demo-actions button \{ flex: 1 1 150px; \} \}/);
-  assert.match(landingHtml, /\.jarvis-demo-actions button \{ min-height: 44px;/);
+test('Task 198 keeps the remaining current pricing cards mobile-safe after removing the Jarvis section', () => {
+  assert.match(landingHtml, /\.capability-grid, \.capability-map-grid, \.plans, \.plan-decider \{ grid-template-columns: 1fr; \}/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });
