@@ -405,3 +405,8 @@ test('Task 148 synchronizes the workspace recording control state with recording
   assert.match(appHtml, /btn\.setAttribute\('aria-label', on \? 'Stop recording mode' : 'Start recording mode'\);/);
   assert.match(appHtml, /btn\.title = on \? 'Stop recording mode' : 'Start recording mode';/);
 });
+
+test('Task 149 returns focus to the model chooser after choosing a model', () => {
+  assert.match(appHtml, /function pickModel\(m\) \{\s+const s = Store\.get\(\);\s+closeModelMenu\(\);\s+const modelButton = document\.getElementById\('model-btn'\);\s+modelButton\?\.focus\(\{ preventScroll: true \}\);/);
+  assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);[\s\S]*?modelButton\.innerHTML = labels\[m\] \|\| labels\.smart;/);
+});

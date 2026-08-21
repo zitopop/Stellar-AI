@@ -5392,6 +5392,8 @@
     function pickModel(m) {
       const s = Store.get();
       closeModelMenu();
+      const modelButton = document.getElementById('model-btn');
+      modelButton?.focus({ preventScroll: true });
       const paid = s.plan === 'lite' || s.plan === 'pro' || isOwner();
       if (m === 'ultra' && !(s.plan === 'pro' || isOwner())) { openPlans(); return; }
       if (['researcher', 'security', 'tester'].includes(m) && !(s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
@@ -5399,7 +5401,6 @@
       refreshModelMenu();
       const labels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
       const modelLabels = { fabie: 'Choose model: Spark for fast drafts', smart: 'Choose model: Star, recommended for most scripts', comet: 'Choose model: Comet for deep system work', ultra: 'Choose model: Nova for maximum quality, available on Pro', researcher: 'Choose Research AI', security: 'Choose Security AI', tester: 'Choose Test AI' };
-      const modelButton = document.getElementById('model-btn');
       modelButton.innerHTML = labels[m] || labels.smart;
       modelButton.setAttribute('aria-label', modelLabels[m] || modelLabels.smart);
     }
