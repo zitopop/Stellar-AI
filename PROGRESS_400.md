@@ -195,14 +195,14 @@
 | 189 | ✅ Complete | Added explicit accessible labels to the Stellar Strike, Stellar Simulator, StellarHQ, and zitos gang links while preserving approved URLs and new-tab behavior | `index.html`, `tests/landing-cta.test.mjs`; full suite 217 tests pass; exact READY Vercel production deployment for `ec88cb1` verified | `ec88cb1` |
 | 190 | ✅ Complete | Reduced the confirmed desktop hero-to-framework whitespace while preserving the mobile 42px framework override and all four quick-start cards | `index.html`, `tests/landing-cta.test.mjs`; full suite 218 tests pass; exact READY Vercel production deployment for `d0e6aa7` verified | `d0e6aa7` |
 | 191 | ✅ Complete | Tightened repeated landing section spacing, pricing wrapper spacing, and final CTA spacing while preserving mobile readability and all useful content | `index.html`, `tests/landing-cta.test.mjs`; full suite 219 tests pass; exact READY Vercel production deployment for `888d941` verified | `888d941` |
-| 192 | ☐ Pending | Next approved implementation task | — | — |
-| 193 | ☐ Pending | Next approved implementation task | — | — |
-| 194 | ☐ Pending | Next approved implementation task | — | — |
-| 195 | ☐ Pending | Next approved implementation task | — | — |
-| 196 | ☐ Pending | Next approved implementation task | — | — |
-| 197 | ☐ Pending | Next approved implementation task | — | — |
-| 198 | ☐ Pending | Next approved implementation task | — | — |
-| 199 | ☐ Pending | Next approved implementation task | — | — |
+| 192 | ✅ Complete | Added a visible, truthful Why Stellar comparison that explains its FiveM and Roblox workflow focus without unsupported outcomes | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `b29c004` |
+| 193 | ✅ Complete | Exposed direct Why Stellar, Pricing, and Terms destinations in the landing navigation without changing protected flows | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `6692888` |
+| 194 | ✅ Complete | Expanded the public FiveM, Roblox, and workflow capability map with review-and-test boundaries | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `ce57926` |
+| 195 | ✅ Complete | Added a compact hero build-path rail that hands visitors to truthful FiveM, Roblox, repair, and capabilities routes | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `3084092` |
+| 196 | ✅ Complete | Kept introductory landing content visible when animation setup is delayed while preserving existing motion preferences | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `0ea5a91` |
+| 197 | ✅ Complete | Kept all Free, Plus, and Pro descriptions and fit statements readable in the light theme without changing prices or entitlements | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `9593e69` |
+| 198 | ✅ Complete | Removed the unavailable public Jarvis presentation, navigation, plan wording, and demo references without changing prices or entitlements | `index.html`, `tests/landing-cta.test.mjs`; release included in the latest READY production deployment | `14bf25c` |
+| 199 | ✅ Complete | Refined the approved landing flow with a direct hero, immediate quick starts, a four-step Describe → Generate → Test → Improve workflow, clear capability and plan guidance, and a test-oriented final CTA | `index.html`, `tests/landing-cta.test.mjs`; full suite 229/229 passes, whitespace validation passes, and Vercel production deployment `dpl_2YFAgqgBWQEEYqpPuNsg5chpcmj2` is READY with a 200 smoke check | `22837c7` |
 | 200 | ☐ Pending | Next approved implementation task | — | — |
 | 201 | ☐ Pending | Next approved implementation task | — | — |
 | 202 | ☐ Pending | Next approved implementation task | — | — |
