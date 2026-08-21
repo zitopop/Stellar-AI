@@ -114,3 +114,12 @@ test('Task 180 keeps Small, Normal, and Large text-size controls explicit non-su
   }
   assert.match(workspaceHtml, /const active = k === t; b\.classList\.toggle\('on', active\); b\.setAttribute\('aria-pressed', String\(active\)\)/);
 });
+
+test('Task 181 keeps workspace suggestion chips explicit non-submit buttons', () => {
+  const suggestionButtons = workspaceHtml.match(/<button type="button" onclick="useSuggestion\(/g) ?? [];
+  assert.equal(suggestionButtons.length, 14);
+  assert.doesNotMatch(workspaceHtml, /<button onclick="useSuggestion\(/);
+  assert.match(workspaceHtml, /useSuggestion\('QBCore police job with F6 menu, handcuffing, MDT and jail timer'\)/);
+  assert.match(workspaceHtml, /useSuggestion\('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist'\)/);
+  assert.match(workspaceHtml, /useSuggestion\('Fix this broken script: '\)/);
+});
