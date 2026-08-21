@@ -15,6 +15,13 @@ test('Task 140 presents the landing workspace preview as one concise labelled vi
   assert.match(landingHtml, /<div class="hero-depth-chip hero-depth-chip--bottom" aria-hidden="true">Roblox ready<\/div>/);
 });
 
+test('Task 141 keeps the phone-sized hero preview focused on its readable workspace pane', () => {
+  assert.match(landingHtml, /\.hero-visual \.product-main \{ grid-template-columns: 1fr; \}/);
+  assert.match(landingHtml, /\.hero-visual \.preview-side \{ display: none; \}/);
+  assert.match(landingHtml, /<div class="preview-work">/);
+  assert.match(landingHtml, /<div class="preview-compose"><div class="preview-input">Ask Stellar to change anything…<\/div><div class="preview-send">Send<\/div><\/div>/);
+});
+
 test('Task 124 lets keyboard visitors skip the landing navigation and focus main content', () => {
   assert.match(landingHtml, /<a href="#main-content" class="skip-link">Skip to main content<\/a>/);
   assert.match(landingHtml, /<main id="main-content" tabindex="-1">/);
