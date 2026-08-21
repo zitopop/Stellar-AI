@@ -167,7 +167,7 @@
 | 161 | ✅ Complete | The existing sidebar toggle synchronizes expanded state and action label across desktop collapse and mobile drawer modes | `app.html`; full suite 189 tests pass; focused navigation-state contract; Vercel deployment `23cfd6b` success | `23cfd6b` |
 | 162 | ✅ Complete | Landing FAQ and FAQ structured data explain that FiveM event-driven scripts still need server-side validation, without exploit-proof claims | `index.html`; full suite 190 tests pass; focused FAQ contract; Vercel deployment `61c9a3a` success | `61c9a3a` |
 | 163 | ✅ Complete | Approved “Before you test” guidance beside the FiveM Police starter, naming file review, dependency verification, private testing, and returning with errors | `index.html`, `tests/landing-cta.test.mjs`; full suite 191 tests pass; exact READY Vercel deployment for `571bff4` verified | `571bff4` |
-| 164 | ☐ Pending | Next approved implementation task | — | — |
+| 164 | ✅ Complete | Existing chat-history options buttons use 44 × 44px touch targets while preserving their Chat options trigger, menu semantics, and keyboard behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 192 tests pass; exact READY Vercel deployment for `c222cda` verified | `c222cda` |
 | 165 | ☐ Pending | Next approved implementation task | — | — |
 | 166 | ☐ Pending | Next approved implementation task | — | — |
 | 167 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**163 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**164 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
