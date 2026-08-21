@@ -3361,7 +3361,7 @@
   </div>
 
   <!-- CHAT OPTIONS MENU (Claude-style ⋯ popup) -->
-  <div id="chat-menu" class="hidden"></div>
+  <div id="chat-menu" class="hidden" role="menu" aria-label="Chat options" aria-hidden="true"></div>
 
   <!-- OWNER CONSOLE -->
   <div id="owner-modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -3703,7 +3703,7 @@
               <div class="text-xs text-[#64748b] truncate mt-0.5">${escapeHtml(lastMsg)}</div>
             </button>
             <div class="chat-actions flex">
-              <button onclick="event.stopPropagation(); openChatMenu(event, '${chat.id}')" title="Options" class="chat-dots">⋯</button>
+              <button onclick="event.stopPropagation(); openChatMenu(event, '${chat.id}')" title="Options" aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯</button>
             </div>
           </div>`;
         container.appendChild(div);
@@ -3711,17 +3711,22 @@
     }
 
     let chatMenuFor = null;
+    let chatMenuTrigger = null;
     function openChatMenu(e, id) {
       const menu = document.getElementById('chat-menu');
       if (chatMenuFor === id && !menu.classList.contains('hidden')) { closeChatMenu(); return; }
+      if (chatMenuTrigger) chatMenuTrigger.setAttribute('aria-expanded', 'false');
       chatMenuFor = id;
+      chatMenuTrigger = e.currentTarget;
+      chatMenuTrigger.setAttribute('aria-expanded', 'true');
       const chat = (Store.get().chats || []).find(c => c.id === id);
       const pinned = chat && chat.pinned;
       menu.innerHTML =
-        '<button onclick="closeChatMenu(); togglePin(\'' + id + '\')">📌 ' + (pinned ? 'Unpin' : 'Pin') + '</button>' +
-        '<button onclick="closeChatMenu(); renameChat(\'' + id + '\')">✏️ Rename</button>' +
-        '<button class="cm-danger" onclick="closeChatMenu(); deleteChat(\'' + id + '\')">🗑️ Delete</button>';
+        '<button role="menuitem" onclick="closeChatMenu(); togglePin(\'' + id + '\')">📌 ' + (pinned ? 'Unpin' : 'Pin') + '</button>' +
+        '<button role="menuitem" onclick="closeChatMenu(); renameChat(\'' + id + '\')">✏️ Rename</button>' +
+        '<button role="menuitem" class="cm-danger" onclick="closeChatMenu(); deleteChat(\'' + id + '\')">🗑️ Delete</button>';
       menu.classList.remove('hidden');
+      menu.setAttribute('aria-hidden', 'false');
       const r = e.currentTarget.getBoundingClientRect();
       const mw = menu.offsetWidth || 180;
       const mh = menu.offsetHeight || 140;
@@ -3730,11 +3735,20 @@
       if (top + mh > window.innerHeight - 8) top = Math.max(8, r.top - mh - 6);
       menu.style.left = left + 'px';
       menu.style.top = top + 'px';
+      menu.querySelector('[role="menuitem"]')?.focus();
     }
     function closeChatMenu() {
       const menu = document.getElementById('chat-menu');
-      if (menu) menu.classList.add('hidden');
+      if (menu) {
+        menu.classList.add('hidden');
+        menu.setAttribute('aria-hidden', 'true');
+      }
+      if (chatMenuTrigger) {
+        chatMenuTrigger.setAttribute('aria-expanded', 'false');
+        chatMenuTrigger.focus();
+      }
       chatMenuFor = null;
+      chatMenuTrigger = null;
     }
     document.addEventListener('click', (e) => {
       const menu = document.getElementById('chat-menu');
@@ -3742,6 +3756,26 @@
       if (!e.target.closest('#chat-menu') && !e.target.closest('.chat-dots')) closeChatMenu();
     });
     window.addEventListener('resize', closeChatMenu);
+    document.addEventListener('keydown', (event) => {
+      const menu = document.getElementById('chat-menu');
+      if (!menu || menu.classList.contains('hidden')) return;
+      const items = [...menu.querySelectorAll('[role="menuitem"]')];
+      const index = items.indexOf(document.activeElement);
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeChatMenu();
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const direction = event.key === 'ArrowDown' ? 1 : -1;
+        items[(index + direction + items.length) % items.length]?.focus();
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        items[0]?.focus();
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        items.at(-1)?.focus();
+      }
+    });
     (function(){
       const cl = document.getElementById('chats-list');
       if (cl) cl.addEventListener('scroll', closeChatMenu);

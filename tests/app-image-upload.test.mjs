@@ -95,7 +95,17 @@ test('Task 142 makes existing chat-history items keyboard-operable with current-
   assert.match(appHtml, /\.chat-open:focus-visible \{\s+outline: 3px solid rgba\(105,229,193,\.9\);\s+outline-offset: 3px;/);
   assert.match(appHtml, /const currentAttribute = isCurrent \? ' aria-current="page"' : '';/);
   assert.match(appHtml, /<button type="button" class="chat-open flex-1 min-w-0" onclick="loadChat\('\$\{chat\.id\}'\)" aria-label="Open chat: \$\{escapeHtml\(chatLabel\)\}"\$\{currentAttribute\}>/);
-  assert.match(appHtml, /<button onclick="event\.stopPropagation\(\); openChatMenu\(event, '\$\{chat\.id\}'\)" title="Options" class="chat-dots">⋯<\/button>/);
+  assert.match(appHtml, /<button onclick="event\.stopPropagation\(\); openChatMenu\(event, '\$\{chat\.id\}'\)" title="Options"(?: aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false")? class="chat-dots">⋯<\/button>/);
+});
+
+test('Task 143 gives existing chat Options popups menu semantics and keyboard control', () => {
+  assert.match(appHtml, /<div id="chat-menu" class="hidden" role="menu" aria-label="Chat options" aria-hidden="true"><\/div>/);
+  assert.match(appHtml, /aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯<\/button>/);
+  assert.match(appHtml, /let chatMenuFor = null;\s+let chatMenuTrigger = null;/);
+  assert.match(appHtml, /<button role="menuitem" onclick="closeChatMenu\(\); togglePin\(/);
+  assert.match(appHtml, /menu\.setAttribute\('aria-hidden', 'false'\);/);
+  assert.match(appHtml, /if \(event\.key === 'Escape'\)/);
+  assert.match(appHtml, /event\.key === 'ArrowDown' \|\| event\.key === 'ArrowUp'/);
 });
 
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
