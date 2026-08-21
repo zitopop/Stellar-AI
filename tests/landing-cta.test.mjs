@@ -208,3 +208,17 @@ test('Task 191 keeps landing section rhythm compact across breakpoints', () => {
   assert.match(landingHtml, /\.pricing-wrap \{ padding: 52px 0 58px; \}/);
   assert.match(landingHtml, /\.final-cta \{ padding: 55px 20px; \}/);
 });
+
+
+test('Task 192 gives visitors a useful, truthful Why Stellar AI comparison instead of an empty section', () => {
+  assert.match(landingHtml, /<section class="section container why-stellar-section" id="why-stellar">/);
+  assert.match(landingHtml, /<div class="eyebrow">Why Stellar AI<\/div><h2>Less generic chat\. More room to build\.<\/h2>/);
+  assert.match(landingHtml, /browser workspace for turning a FiveM or Roblox idea into a clearer plan, a complete set of files and a next step you can test/);
+  assert.match(landingHtml, /We do not promise that generated code removes the need for testing/);
+  assert.match(landingHtml, /<a class="text-link" href="\/app">Open the workspace/);
+  for (const heading of ['Built for FiveM and Roblox workflows', 'Plan before the code gets long', 'Keep the whole resource together', 'Fix, explain and iterate in the same place', 'Start free, then choose your runway']) {
+    assert.match(landingHtml, new RegExp(`<h3>${heading.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}<\\/h3>`));
+  }
+  assert.match(landingHtml, /\.why-stellar-section \{ padding-top: 52px; padding-bottom: 52px; \}/);
+  assert.match(landingHtml, /\.why-stellar-section \{ padding-top: 36px; padding-bottom: 36px; \}/);
+});
