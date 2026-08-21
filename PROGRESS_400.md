@@ -173,7 +173,7 @@
 | 167 | ✅ Complete | Existing New Chat sidebar control explicitly uses a non-submit button while preserving its newChat action, navigation placement, focus behavior, and visible copy | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 195 tests pass; exact READY Vercel deployment for `55d3bf7` verified | `55d3bf7` |
 | 168 | ✅ Complete | Existing signed-out Sign in sidebar control explicitly uses a non-submit button while preserving its openWelcome flow, focus behavior, navigation placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 196 tests pass; exact READY Vercel deployment for `f0ca635` verified | `f0ca635` |
 | 169 | ✅ Complete | Existing signed-in Sign out sidebar control explicitly uses a non-submit button while preserving its signOut action, account behavior, title, placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 197 tests pass; exact READY Vercel deployment for `d4f89cf` verified | `d4f89cf` |
-| 170 | ☐ Pending | Next approved implementation task | — | — |
+| 170 | ✅ Complete | Existing Credit sidebar control explicitly uses a non-submit button while preserving its openUsage action, usage panel behavior, placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 198 tests pass; exact READY Vercel deployment for `3157d8d` verified | `3157d8d` |
 | 171 | ☐ Pending | Next approved implementation task | — | — |
 | 172 | ☐ Pending | Next approved implementation task | — | — |
 | 173 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**169 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**170 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
