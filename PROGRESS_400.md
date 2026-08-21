@@ -165,7 +165,7 @@
 | 159 | ✅ Complete | The offscreen mobile workspace sidebar synchronizes `aria-hidden` while closed and stays exposed when opened or on desktop | `app.html`; full suite 187 tests pass; focused mobile-state contract; Vercel deployment `dca7cc0` success | `dca7cc0` |
 | 160 | ✅ Complete | The existing redeem-code input has an explicit accessible name while preserving redemption flow and dialog keyboard behavior | `app.html`; full suite 188 tests pass; focused redeem-field contract; Vercel deployment `27db994` success | `27db994` |
 | 161 | ✅ Complete | The existing sidebar toggle synchronizes expanded state and action label across desktop collapse and mobile drawer modes | `app.html`; full suite 189 tests pass; focused navigation-state contract; Vercel deployment `23cfd6b` success | `23cfd6b` |
-| 162 | ☐ Pending | Next approved implementation task | — | — |
+| 162 | ✅ Complete | Landing FAQ and FAQ structured data explain that FiveM event-driven scripts still need server-side validation, without exploit-proof claims | `index.html`; full suite 190 tests pass; focused FAQ contract; Vercel deployment `61c9a3a` success | `61c9a3a` |
 | 163 | ☐ Pending | Next approved implementation task | — | — |
 | 164 | ☐ Pending | Next approved implementation task | — | — |
 | 165 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**161 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**162 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
