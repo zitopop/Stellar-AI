@@ -92,9 +92,10 @@ test('Task 139 relates the existing workspace chat-history label and list', () =
 });
 
 test('Task 142 makes existing chat-history items keyboard-operable with current-chat context', () => {
-  assert.match(appHtml, /\.sidebar-item:focus-visible \{\s+outline: 3px solid rgba\(105,229,193,\.9\);\s+outline-offset: 3px;\s+\}/);
-  assert.match(appHtml, /div\.tabIndex = 0;\s+div\.setAttribute\('role', 'button'\);\s+div\.setAttribute\('aria-label', `Open chat: \$\{chat\.name \|\| 'Untitled chat'\}`\);\s+if \(chat\.id === currentChatId\) div\.setAttribute\('aria-current', 'page'\);/);
-  assert.match(appHtml, /div\.addEventListener\('keydown', \(event\) => \{\s+if \(\(event\.key === 'Enter' \|\| event\.key === ' '\) && !event\.target\.closest\('button'\)\) \{\s+event\.preventDefault\(\);\s+loadChat\(chat\.id\);/);
+  assert.match(appHtml, /\.chat-open:focus-visible \{\s+outline: 3px solid rgba\(105,229,193,\.9\);\s+outline-offset: 3px;/);
+  assert.match(appHtml, /const currentAttribute = isCurrent \? ' aria-current="page"' : '';/);
+  assert.match(appHtml, /<button type="button" class="chat-open flex-1 min-w-0" onclick="loadChat\('\$\{chat\.id\}'\)" aria-label="Open chat: \$\{escapeHtml\(chatLabel\)\}"\$\{currentAttribute\}>/);
+  assert.match(appHtml, /<button onclick="event\.stopPropagation\(\); openChatMenu\(event, '\$\{chat\.id\}'\)" title="Options" class="chat-dots">⋯<\/button>/);
 });
 
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {

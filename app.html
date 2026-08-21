@@ -419,9 +419,21 @@
     .sidebar-item:active {
       transform: scale(0.98);
     }
-    .sidebar-item:focus-visible {
+    .chat-open {
+      display: block;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .chat-open:focus-visible {
       outline: 3px solid rgba(105,229,193,.9);
       outline-offset: 3px;
+      border-radius: 5px;
     }
 
     .message {
@@ -3680,28 +3692,20 @@
         if (q && !(chat.name || '').toLowerCase().includes(q)) return;
         const div = document.createElement('div');
         div.className = `sidebar-item px-4 py-3 rounded-2xl text-sm cursor-pointer mb-2 ${chat.id === currentChatId ? 'active bg-white/20 border-white/30' : ''}`;
-        div.tabIndex = 0;
-        div.setAttribute('role', 'button');
-        div.setAttribute('aria-label', `Open chat: ${chat.name || 'Untitled chat'}`);
-        if (chat.id === currentChatId) div.setAttribute('aria-current', 'page');
+        const isCurrent = chat.id === currentChatId;
+        const currentAttribute = isCurrent ? ' aria-current="page"' : '';
+        const chatLabel = chat.name || 'Untitled chat';
         const lastMsg = chat.messages?.length > 0 ? chat.messages[chat.messages.length-1].content.substring(0, 40) : 'No messages';
         div.innerHTML = `
           <div class="flex justify-between items-center gap-2">
-            <div class="flex-1 min-w-0">
+            <button type="button" class="chat-open flex-1 min-w-0" onclick="loadChat('${chat.id}')" aria-label="Open chat: ${escapeHtml(chatLabel)}"${currentAttribute}>
               <div class="font-bold truncate">${chat.pinned ? '📌 ' : ''}${escapeHtml(chat.name)}</div>
               <div class="text-xs text-[#64748b] truncate mt-0.5">${escapeHtml(lastMsg)}</div>
-            </div>
+            </button>
             <div class="chat-actions flex">
               <button onclick="event.stopPropagation(); openChatMenu(event, '${chat.id}')" title="Options" class="chat-dots">⋯</button>
             </div>
           </div>`;
-        div.onclick = () => loadChat(chat.id);
-        div.addEventListener('keydown', (event) => {
-          if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('button')) {
-            event.preventDefault();
-            loadChat(chat.id);
-          }
-        });
         container.appendChild(div);
       });
     }
