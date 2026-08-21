@@ -110,7 +110,7 @@ test('Task 136 announces the existing pasted-content summary politely', () => {
 
 test('Task 137 exposes the existing workspace sidebar as named navigation', () => {
   assert.match(appHtml, /<div id="sidebar" class="w-72 glass border-r border-white\/10 flex flex-col p-4" role="navigation" aria-label="Workspace navigation">/);
-  assert.match(appHtml, /<button onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">/);
+  assert.match(appHtml, /<button type="button" onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">/);
   assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)"/);
   assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list"(?: role="region" aria-labelledby="chats-heading")?><\/div>/);
 });

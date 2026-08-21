@@ -23,3 +23,8 @@ test('Task 166 keeps the model-menu plan action an explicit non-submit menu butt
   assert.match(workspaceHtml, /<button type="button" onclick="closeModelMenu\(\); openPlans\(\)" role="menuitem" class="w-full text-left px-3 py-2\.5 rounded-xl hover:bg-white\/10 font-black text-sm">⭐ See all plans<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="closeModelMenu\(\); openPlans\(\)" role="menuitem"/);
 });
+
+test('Task 167 keeps the New Chat sidebar control an explicit non-submit button', () => {
+  assert.match(workspaceHtml, /<button type="button" onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">\s*New Chat\s*<\/button>/);
+  assert.doesNotMatch(workspaceHtml, /<button onclick="newChat\(\)" class="side-new/);
+});
