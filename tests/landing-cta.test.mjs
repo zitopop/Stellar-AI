@@ -42,16 +42,15 @@ test('Task 125 keeps the visible mobile landing theme control touch-safe', () =>
   assert.match(landingHtml, /@media \(max-width: 760px\) \{\s+\.container[\s\S]*?\.nav-cta \{ min-height: 37px; padding: 0 12px; \} \.theme-toggle \{ min-width: 44px; min-height: 44px; \}/);
 });
 
-test('Task 126 exposes unsaved favorite-tool buttons as unpressed before the existing state renderer runs', () => {
-  for (const id of ['police', 'heist', 'fix', 'roblox']) {
-    assert.match(landingHtml, new RegExp(`data-favorite="${id}" aria-label="Save [^"]+" aria-pressed="false"`));
+test('Task 200 keeps each quick start as one direct, uncluttered workspace route', () => {
+  for (const [key, label] of Object.entries({ police: 'Police job', heist: 'Heist system', fix: 'Fix an error', roblox: 'Roblox game' })) {
+    assert.match(landingHtml, new RegExp(`<a class="launch-card" href="/app\\?starter=${key}" aria-label="Open Stellar with a ${label} starter prompt">`));
   }
-  assert.match(landingHtml, /button\.setAttribute\('aria-pressed', String\(active\)\);/);
+  assert.doesNotMatch(landingHtml, /data-favorite|favorite-star/);
 });
 
-test('Task 127 announces existing feature-search result-count updates politely', () => {
-  assert.match(landingHtml, /<span class="feature-count" id="feature-count" role="status" aria-live="polite" aria-atomic="true">4 tools<\/span>/);
-  assert.match(landingHtml, /if \(count\) count\.textContent = `\$\{visible\} \$\{visible === 1 \? 'tool' : 'tools'\}`;/);
+test('Task 200 removes the redundant on-page tool search rather than displaying an empty first-visit state', () => {
+  assert.doesNotMatch(landingHtml, /feature-search|feature-empty|Find a starting point|No matching tools yet/);
 });
 
 test('Task 128 links every FAQ disclosure control with its labelled answer region', () => {
@@ -70,9 +69,8 @@ test('Task 129 keeps FAQ answer accessibility visibility synchronized with discl
   assert.match(landingHtml, /item\.querySelector\('\.faq-answer'\)\.setAttribute\('aria-hidden', 'false'\)/);
 });
 
-test('Task 130 announces existing saved-tool count updates politely', () => {
-  assert.match(landingHtml, /<span id="favorite-count" role="status" aria-live="polite" aria-atomic="true">0 saved<\/span>/);
-  assert.match(landingHtml, /if \(favoriteCount\) favoriteCount\.textContent = `\$\{favorites\.length\} saved`;/);
+test('Task 200 removes the empty saved-tools surface and its unused browser-storage behavior', () => {
+  assert.doesNotMatch(landingHtml, /favorite-section|favorite-grid|stellar-favorite-tools|renderFavorites/);
 });
 
 test('Task 131 keeps decorative FAQ plus icons out of control names', () => {
@@ -108,7 +106,7 @@ test('Task 154 sends each existing project quick start into the workspace with o
     roblox: 'Roblox game'
   };
   for (const [key, label] of Object.entries(starters)) {
-    assert.match(landingHtml, new RegExp(`<a href="/app\\?starter=${key}" aria-label="Open Stellar with a ${label} starter prompt">`));
+    assert.match(landingHtml, new RegExp(`<a class="launch-card" href="/app\\?starter=${key}" aria-label="Open Stellar with a ${label} starter prompt">`));
   }
 });
 
@@ -123,9 +121,9 @@ test('Task 157 keeps existing quick-start card content readable in light theme',
   assert.match(landingHtml, /body\.light \.launch-card strong \{ color: #211a35; \} body\.light \.launch-card span \{ color: #625b75; \}/);
 });
 
-test('Task 158 keeps existing saved-tool actions touch-safe on every viewport', () => {
-  assert.match(landingHtml, /\.favorite-star \{ display: inline-grid; flex: none; width: 44px; height: 44px; place-items: center; border: 1px solid var\(--border\); border-radius: 12px;/);
-  assert.doesNotMatch(landingHtml, /\.favorite-star \{ display: inline-grid; flex: none; width: 30px;/);
+test('Task 200 avoids nested quick-start controls while retaining a complete card-sized route', () => {
+  assert.match(landingHtml, /\.launch-card \{ display: flex; min-height: 76px; align-items: center; gap: 10px; padding: 11px;/);
+  assert.doesNotMatch(landingHtml, /<div class="launch-card"/);
 });
 
 test('Task 163 adds truthful private-testing guidance beside the FiveM Police starter', () => {
