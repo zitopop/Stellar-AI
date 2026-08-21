@@ -181,7 +181,7 @@
 | 175 | ✅ Complete | Existing paste-removal and Send composer controls explicitly use non-submit buttons while preserving clearPaste, stopOrSend, labels, keyboard handling, and chat behavior | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 203 tests pass; exact READY Vercel deployment for `07a4e47` verified | `07a4e47` |
 | 176 | ✅ Complete | Existing composer Credit and Files controls explicitly use non-submit buttons while preserving openUsage, toggleWorkspace, labels, file behavior, and usage behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 204 tests pass; exact READY Vercel deployment for `20d71f0` verified | `20d71f0` |
 | 177 | ✅ Complete | Existing model-menu trigger explicitly uses a non-submit button while preserving toggleModelMenu, menu accessibility attributes, model selection, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 205 tests pass; exact READY Vercel deployment for `27e88b6` verified | `27e88b6` |
-| 178 | ☐ Pending | Next approved implementation task | — | — |
+| 178 | ✅ Complete | Existing Settings tab controls explicitly use non-submit buttons while preserving setTab behavior, selected-state synchronization, keyboard navigation, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 206 tests pass; exact READY Vercel deployment for `31bce9d` verified | `31bce9d` |
 | 179 | ☐ Pending | Next approved implementation task | — | — |
 | 180 | ☐ Pending | Next approved implementation task | — | — |
 | 181 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**177 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**178 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
