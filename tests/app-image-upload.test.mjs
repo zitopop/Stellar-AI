@@ -91,6 +91,12 @@ test('Task 139 relates the existing workspace chat-history label and list', () =
   assert.match(appHtml, /const container = document\.getElementById\('chats-list'\);\s+container\.innerHTML = '';/);
 });
 
+test('Task 142 makes existing chat-history items keyboard-operable with current-chat context', () => {
+  assert.match(appHtml, /\.sidebar-item:focus-visible \{\s+outline: 3px solid rgba\(105,229,193,\.9\);\s+outline-offset: 3px;\s+\}/);
+  assert.match(appHtml, /div\.tabIndex = 0;\s+div\.setAttribute\('role', 'button'\);\s+div\.setAttribute\('aria-label', `Open chat: \$\{chat\.name \|\| 'Untitled chat'\}`\);\s+if \(chat\.id === currentChatId\) div\.setAttribute\('aria-current', 'page'\);/);
+  assert.match(appHtml, /div\.addEventListener\('keydown', \(event\) => \{\s+if \(\(event\.key === 'Enter' \|\| event\.key === ' '\) && !event\.target\.closest\('button'\)\) \{\s+event\.preventDefault\(\);\s+loadChat\(chat\.id\);/);
+});
+
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
   assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(appHtml, /loading\.innerHTML = '<div class="think-bubble" aria-hidden="true"><div class="think-spinner"><\/div><div class="think-status" id="think-status">' \+ STEPS\[0\]\[1\] \+ '<\/div><\/div>';/);

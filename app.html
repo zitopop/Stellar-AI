@@ -419,6 +419,10 @@
     .sidebar-item:active {
       transform: scale(0.98);
     }
+    .sidebar-item:focus-visible {
+      outline: 3px solid rgba(105,229,193,.9);
+      outline-offset: 3px;
+    }
 
     .message {
       font-size: 15px;
@@ -3676,6 +3680,10 @@
         if (q && !(chat.name || '').toLowerCase().includes(q)) return;
         const div = document.createElement('div');
         div.className = `sidebar-item px-4 py-3 rounded-2xl text-sm cursor-pointer mb-2 ${chat.id === currentChatId ? 'active bg-white/20 border-white/30' : ''}`;
+        div.tabIndex = 0;
+        div.setAttribute('role', 'button');
+        div.setAttribute('aria-label', `Open chat: ${chat.name || 'Untitled chat'}`);
+        if (chat.id === currentChatId) div.setAttribute('aria-current', 'page');
         const lastMsg = chat.messages?.length > 0 ? chat.messages[chat.messages.length-1].content.substring(0, 40) : 'No messages';
         div.innerHTML = `
           <div class="flex justify-between items-center gap-2">
@@ -3688,6 +3696,12 @@
             </div>
           </div>`;
         div.onclick = () => loadChat(chat.id);
+        div.addEventListener('keydown', (event) => {
+          if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('button')) {
+            event.preventDefault();
+            loadChat(chat.id);
+          }
+        });
         container.appendChild(div);
       });
     }
