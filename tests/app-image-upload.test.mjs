@@ -262,7 +262,7 @@ test('Task 91 gives sign-in and sign-up feedback polite atomic live-status seman
 });
 
 test('Task 92 gives the remaining symbol-only workspace controls specific accessible names', () => {
-  assert.match(appHtml, /<button onclick="clearPaste\(\)" class="paste-x" aria-label="Remove pasted content" title="Remove pasted content">×<\/button>/);
+  assert.match(appHtml, /<button type="button" onclick="clearPaste\(\)" class="paste-x" aria-label="Remove pasted content" title="Remove pasted content">×<\/button>/);
   assert.match(appHtml, /<button id="owner-modal-close" onclick="closeOwner\(\)" class="modal-x" aria-label="Close owner tools">×<\/button>/);
 });
 
