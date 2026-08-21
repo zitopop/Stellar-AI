@@ -139,3 +139,12 @@ test('Task 182 keeps every landing FAQ disclosure control an explicit non-submit
   assert.match(landingHtml, /openItem\.querySelector\('\.faq-button'\)\.setAttribute\('aria-expanded', 'false'\)/);
   assert.match(landingHtml, /button\.setAttribute\('aria-expanded', 'true'\)/);
 });
+
+test('Task 183 keeps the mobile landing navigation keyboard-accessible and destination-stable', () => {
+  assert.match(landingHtml, /<button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-controls="mobile-nav" aria-expanded="false">/);
+  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><\/div><\/div>/);
+  assert.match(landingHtml, /navToggle\?\.addEventListener\('click', \(\) => \{ const open = navToggle\.getAttribute\('aria-expanded'\) === 'true';/);
+  assert.match(landingHtml, /mobileNav\?\.querySelectorAll\('a'\)\.forEach\(\(link\) => link\.addEventListener\('click', closeMobileNav\)\)/);
+  assert.match(landingHtml, /\.nav-toggle \{ display: none; min-width: 44px; min-height: 44px;/);
+  assert.match(landingHtml, /\.nav-toggle \{ display: inline-grid; place-items: center; \}/);
+});
