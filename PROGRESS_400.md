@@ -154,7 +154,7 @@
 | 148 | ✅ Complete | Workspace recording control synchronizes its pressed state and accessible name with its existing recording mode without changing recording behavior or privacy handling | `app.html`; full suite 174 tests pass; Vercel deployment `2460d7f` success | `2460d7f` |
 | 149 | ✅ Complete | Workspace model chooser returns focus to its visible trigger after selection, avoiding focus remaining on a hidden menu choice | `app.html`; full suite 175 tests pass; Vercel deployment `9a53c2b` success | `9a53c2b` |
 | 150 | ✅ Complete | Settings theme and text-size segmented controls synchronize their pressed states with the saved appearance choice without changing preference behavior | `app.html`; full suite 176 tests pass; Vercel deployment `f29e7af` success | `f29e7af` |
-| 151 | ☐ Pending | Next approved implementation task | — | — |
+| 151 | ✅ Complete | Sidebar theme control synchronizes its pressed state and next-theme action label with the saved workspace theme | `app.html`; full suite 177 tests pass; Vercel deployment `b716653` success | `b716653` |
 | 152 | ☐ Pending | Next approved implementation task | — | — |
 | 153 | ☐ Pending | Next approved implementation task | — | — |
 | 154 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**150 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**151 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
