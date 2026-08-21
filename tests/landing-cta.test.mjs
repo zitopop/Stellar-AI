@@ -156,7 +156,7 @@ test('Task 184/190 keeps the framework rail close to the hero without removing t
 
 test('Task 186 keeps landing hash navigation visible beneath the sticky header', () => {
   assert.match(landingHtml, /html \{ overflow-x: hidden; scroll-padding-top: 96px; \}/);
-  assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="capabilities"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
+  assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="capabilities"\], \[id="jarvis-pro"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
   assert.match(landingHtml, /const revealHashTarget = \(hash, behavior = 'smooth'\) => \{/);
   assert.match(landingHtml, /target\.querySelectorAll\('\.reveal'\)\.forEach\(\(element\) => element\.classList\.add\('is-visible'\)\)/);
   assert.match(landingHtml, /history\.pushState\(null, '', hash\);/);
@@ -277,4 +277,21 @@ test('Task 192 explains the plan choices without changing the approved prices', 
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /£168\/year · Save 30%/);
   assert.match(landingHtml, /£630\/year · Save 30%/);
+});
+
+test('Task 197 adds a safe, interactive Jarvis workflow preview with explicit no-action boundaries', () => {
+  assert.match(landingHtml, /<div class="jarvis-demo" data-jarvis-demo aria-label="Interactive Jarvis Pro workflow preview">/);
+  assert.match(landingHtml, /<div class="jarvis-demo-status" id="jarvis-demo-status" role="status" aria-live="polite">Plan ready\./);
+  assert.match(landingHtml, /<button type="button" class="jarvis-demo-primary" id="jarvis-demo-next" aria-controls="jarvis-demo-status jarvis-demo-summary jarvis-demo-stage jarvis-demo-title jarvis-demo-detail jarvis-demo-safety">Review approval<\/button>/);
+  assert.match(landingHtml, /<button type="button" id="jarvis-demo-reset">Reset demo<\/button>/);
+  assert.match(landingHtml, /Demo only\. Nothing is purchased, published, charged or changed in an account from this preview\./);
+  assert.match(landingHtml, /Explicit approval would be required before any real purchase, publication or spend\./);
+  assert.match(landingHtml, /jarvisNext\?\.addEventListener\('click', \(\) => \{ jarvisIndex = jarvisIndex === jarvisStates\.length - 1 \? 0 : jarvisIndex \+ 1; renderJarvisDemo\(\); \}\);/);
+});
+
+test('Task 197 keeps the Jarvis demo and pricing cards stacked and touch-safe on mobile', () => {
+  assert.match(landingHtml, /@media \(max-width: 760px\) \{ \.jarvis-spotlight \{ grid-template-columns: 1fr; padding: 18px; \} \.jarvis-demo \{ padding: 14px; \}[\s\S]*?\.jarvis-demo-grid \{ grid-template-columns: 1fr; \}[\s\S]*?\.jarvis-demo-actions button \{ flex: 1 1 150px; \} \}/);
+  assert.match(landingHtml, /\.jarvis-demo-actions button \{ min-height: 44px;/);
+  assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
+  assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });
