@@ -157,7 +157,7 @@
 | 151 | ✅ Complete | Sidebar theme control synchronizes its pressed state and next-theme action label with the saved workspace theme | `app.html`; full suite 177 tests pass; Vercel deployment `b716653` success | `b716653` |
 | 152 | ✅ Complete | Sidebar and Settings → About Terms destinations use native links while retaining their `/terms.html` destination, mobile layout, and accessible controls | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
 | 153 | ✅ Complete | Workspace uses a clean deep-dark premium conversation layout with a 760px chat column, right user bubbles, ✦ assistant identity, compact sidebar, pill composer, and responsive mobile presentation | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
-| 154 | ☐ Pending | Next approved implementation task | — | — |
+| 154 | ✅ Complete | Landing quick-start cards hand off a whitelisted editable starter prompt to the workspace without auto-submitting, persisting it, or changing offers, accounts, or payments | `index.html`, `app.html`; full suite 182 tests pass; desktop and 375px guest-path checks; Vercel deployment `d533b06` success | `d533b06` |
 | 155 | ☐ Pending | Next approved implementation task | — | — |
 | 156 | ☐ Pending | Next approved implementation task | — | — |
 | 157 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**153 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**154 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
