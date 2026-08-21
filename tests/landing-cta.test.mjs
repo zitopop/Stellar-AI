@@ -163,3 +163,12 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
   assert.match(landingHtml, /closeMobileNav\(\);\n      history\.pushState/);
   assert.match(landingHtml, /window\.addEventListener\('hashchange', \(\) => revealHashTarget\(window\.location\.hash\)\)/);
 });
+
+test('Task 187 keeps plan positioning truthful and pricing consistent', () => {
+  assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Plus adds more room for regular work\.[\s\S]*Pro gives you the largest usage allowance and Nova\./);
+  assert.match(landingHtml, /<p class="plan-compare">Start with Free and upgrade when your workflow needs more usage\.[\s\S]*one-off credit instead of subscribing\.<\/p>/);
+  assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">For regular building<\/div><div class="plan-label">Plus<\/div>/);
+  assert.doesNotMatch(landingHtml, /<div class="plan-badge">Most popular<\/div>/);
+  assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
+  assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
+});
