@@ -148,3 +148,8 @@ test('Task 183 keeps the mobile landing navigation keyboard-accessible and desti
   assert.match(landingHtml, /\.nav-toggle \{ display: none; min-width: 44px; min-height: 44px;/);
   assert.match(landingHtml, /\.nav-toggle \{ display: inline-grid; place-items: center; \}/);
 });
+
+test('Task 184 keeps the framework rail close to the hero without removing the mobile spacing override', () => {
+  assert.match(landingHtml, /\.framework-rail \{ display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 28px;/);
+  assert.match(landingHtml, /\.framework-rail \{ display: block; padding: 19px; margin-top: 42px; \}/);
+});
