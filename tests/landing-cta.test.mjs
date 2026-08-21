@@ -9,6 +9,12 @@ test('Task 123 keeps the primary hero CTA honest, free, and routed to the worksp
   assert.match(landingHtml, /<div class="hero-footnote"><span>No card needed to begin<\/span><span>Free starting credit<\/span><span>Built for real project files<\/span><\/div>/);
 });
 
+test('Task 140 presents the landing workspace preview as one concise labelled visual', () => {
+  assert.match(landingHtml, /<div class="product-frame" role="img" aria-label="Illustrated Stellar AI workspace preview showing a QBCore police resource plan, generated files, and a message composer">/);
+  assert.match(landingHtml, /<div class="hero-depth-chip hero-depth-chip--top" aria-hidden="true">QBCore context<\/div>/);
+  assert.match(landingHtml, /<div class="hero-depth-chip hero-depth-chip--bottom" aria-hidden="true">Roblox ready<\/div>/);
+});
+
 test('Task 124 lets keyboard visitors skip the landing navigation and focus main content', () => {
   assert.match(landingHtml, /<a href="#main-content" class="skip-link">Skip to main content<\/a>/);
   assert.match(landingHtml, /<main id="main-content" tabindex="-1">/);
