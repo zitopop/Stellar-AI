@@ -252,3 +252,10 @@ test('Task 195 makes the hero follow-up useful with visible build paths', () => 
   assert.match(landingHtml, /href="#capabilities"><b>Explore capabilities/);
   assert.match(landingHtml, /\.hero-capabilities \{ display: grid;/);
 });
+
+
+test('Task 196 keeps introductory and revealed landing content visible if animation setup is delayed', () => {
+  assert.match(landingHtml, /\.reveal \{ opacity: 1; transform: translateY\(18px\);/);
+  assert.match(landingHtml, /body\.motion-ready \.reveal \{ opacity: 1; \}/);
+  assert.match(landingHtml, /\.reveal\.is-visible \{ opacity: 1; transform: none; \}/);
+});
