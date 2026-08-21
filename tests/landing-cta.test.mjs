@@ -182,3 +182,10 @@ test('Task 188 keeps Roblox games and groups visible with approved destinations'
   assert.match(landingHtml, /communities\/433084698\/StellarHQ/);
   assert.match(landingHtml, /communities\/222055052\/zitos-gang/);
 });
+
+test('Task 189 keeps Roblox destinations explicitly labelled for assistive technology', () => {
+  assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike[^>]*aria-label="Open Stellar Strike on Roblox"/);
+  assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator[^>]*aria-label="Open Stellar Simulator on Roblox"/);
+  assert.match(landingHtml, /communities\/433084698\/StellarHQ[^>]*aria-label="Open the StellarHQ Roblox community"/);
+  assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community"/);
+});
