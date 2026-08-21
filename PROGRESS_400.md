@@ -169,7 +169,7 @@
 | 163 | ✅ Complete | Approved “Before you test” guidance beside the FiveM Police starter, naming file review, dependency verification, private testing, and returning with errors | `index.html`, `tests/landing-cta.test.mjs`; full suite 191 tests pass; exact READY Vercel deployment for `571bff4` verified | `571bff4` |
 | 164 | ✅ Complete | Existing chat-history options buttons use 44 × 44px touch targets while preserving their Chat options trigger, menu semantics, and keyboard behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 192 tests pass; exact READY Vercel deployment for `c222cda` verified | `c222cda` |
 | 165 | ✅ Complete | Dynamically generated Pin, Rename, and Delete chat-menu actions explicitly use non-submit buttons while preserving labels, menu roles, keyboard navigation, and focus restoration | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 193 tests pass; exact READY Vercel deployment for `bde6e4e` verified | `bde6e4e` |
-| 166 | ☐ Pending | Next approved implementation task | — | — |
+| 166 | ✅ Complete | Existing “See all plans” model-menu action explicitly uses a non-submit button while preserving its menu role, plan gating, dialog behavior, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 194 tests pass; exact READY Vercel deployment for `260b9d2` verified | `260b9d2` |
 | 167 | ☐ Pending | Next approved implementation task | — | — |
 | 168 | ☐ Pending | Next approved implementation task | — | — |
 | 169 | ☐ Pending | Next approved implementation task | — | — |
@@ -407,7 +407,7 @@
 
 ## Current count
 
-**165 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+**166 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
 
 ## Protected boundary
 
