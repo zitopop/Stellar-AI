@@ -86,7 +86,7 @@ test('Task 155 focuses a landing starter only after guest continuation, preservi
 });
 
 test('Task 159 removes a closed mobile sidebar from the accessibility tree without hiding desktop navigation', () => {
-  assert.match(appHtml, /function syncSidebarAccessibility\(\) \{\s+const sidebar = document\.getElementById\('sidebar'\);\s+if \(!sidebar\) return;\s+const mobileSidebarIsClosed = window\.matchMedia\('\(max-width: 767px\)'\)\.matches && !sidebar\.classList\.contains\('open'\);\s+sidebar\.setAttribute\('aria-hidden', String\(mobileSidebarIsClosed\)\);/);
+  assert.match(appHtml, /function syncSidebarAccessibility\(\) \{\s+const sidebar = document\.getElementById\('sidebar'\);\s+if \(!sidebar\) return;\s+const isMobile = window\.matchMedia\('\(max-width: 767px\)'\)\.matches;\s+const mobileSidebarIsClosed = isMobile && !sidebar\.classList\.contains\('open'\);\s+sidebar\.setAttribute\('aria-hidden', String\(mobileSidebarIsClosed\)\);/);
   assert.match(appHtml, /syncSidebarAccessibility\(\);\s+\}\s+\s+window\.addEventListener\('resize', syncSidebarAccessibility\);/);
   assert.match(appHtml, /updateSignedOutHint\(\);\s+syncSidebarAccessibility\(\);\s+maybeShowWelcome\(\);/);
 });
@@ -94,6 +94,11 @@ test('Task 159 removes a closed mobile sidebar from the accessibility tree witho
 test('Task 160 gives the existing redeem-code field an explicit accessible name', () => {
   assert.match(appHtml, /<input id="redeem-input" class="redeem-input" placeholder="STELLAR-XXXXXX-XXX-XXXX" aria-label="Gift code" autocomplete="off">/);
   assert.match(appHtml, /<button onclick="doRedeem\(\)" class="side-new w-full mt-3">Redeem<\/button>/);
+});
+
+test('Task 161 synchronizes the existing sidebar toggle state for desktop collapse and mobile drawer modes', () => {
+  assert.match(appHtml, /const navigationIsExpanded = isMobile \? !mobileSidebarIsClosed : !sidebar\.classList\.contains\('collapsed'\);/);
+  assert.match(appHtml, /toggle\.setAttribute\('aria-expanded', String\(navigationIsExpanded\)\);\s+toggle\.setAttribute\('aria-label', isMobile\s+\? \(navigationIsExpanded \? 'Close navigation' : 'Open navigation'\)\s+\: \(navigationIsExpanded \? 'Collapse navigation' : 'Expand navigation'\)\);/);
 });
 
 test('Task 136 announces the existing pasted-content summary politely', () => {
@@ -172,7 +177,7 @@ test('Task 75 announces a requested stop before aborting the active generation',
 
 test('Task 76 exposes the mobile navigation toggle name and expanded state', () => {
   assert.match(appHtml, /id="mobile-menu-toggle"[^>]*aria-label="Open navigation"[^>]*aria-expanded="false"[^>]*aria-controls="sidebar"/);
-  assert.match(appHtml, /const toggle = document\.getElementById\('mobile-menu-toggle'\);\s+if \(toggle\) \{\s+toggle\.setAttribute\('aria-expanded', String\(opening\)\);\s+toggle\.setAttribute\('aria-label', opening \? 'Close navigation' : 'Open navigation'\);/);
+  assert.match(appHtml, /const navigationIsExpanded = isMobile \? !mobileSidebarIsClosed : !sidebar\.classList\.contains\('collapsed'\);/);
 });
 
 test('Task 77 gives the workspace drawer close control an explicit accessible name', () => {

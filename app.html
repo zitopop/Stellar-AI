@@ -3923,8 +3923,16 @@
     function syncSidebarAccessibility() {
       const sidebar = document.getElementById('sidebar');
       if (!sidebar) return;
-      const mobileSidebarIsClosed = window.matchMedia('(max-width: 767px)').matches && !sidebar.classList.contains('open');
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+      const mobileSidebarIsClosed = isMobile && !sidebar.classList.contains('open');
       sidebar.setAttribute('aria-hidden', String(mobileSidebarIsClosed));
+      const toggle = document.getElementById('mobile-menu-toggle');
+      if (!toggle) return;
+      const navigationIsExpanded = isMobile ? !mobileSidebarIsClosed : !sidebar.classList.contains('collapsed');
+      toggle.setAttribute('aria-expanded', String(navigationIsExpanded));
+      toggle.setAttribute('aria-label', isMobile
+        ? (navigationIsExpanded ? 'Close navigation' : 'Open navigation')
+        : (navigationIsExpanded ? 'Collapse navigation' : 'Expand navigation'));
     }
 
     function toggleSidebar() {
@@ -3936,11 +3944,6 @@
         sb.classList.toggle('open');
         document.getElementById('overlay').classList.toggle('open');
         document.body.classList.toggle('nav-open', opening);
-        const toggle = document.getElementById('mobile-menu-toggle');
-        if (toggle) {
-          toggle.setAttribute('aria-expanded', String(opening));
-          toggle.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
-        }
       }
       syncSidebarAccessibility();
     }
