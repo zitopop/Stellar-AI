@@ -52,7 +52,7 @@ test('Task 127 announces existing feature-search result-count updates politely',
 });
 
 test('Task 128 links every FAQ disclosure control with its labelled answer region', () => {
-  for (const id of ['faq-test', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
+  for (const id of ['faq-test', 'faq-fivem-security', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
     assert.match(landingHtml, new RegExp(`<button id="${id}-button" class="faq-button" aria-expanded="false" aria-controls="${id}-answer">`));
     assert.match(landingHtml, new RegExp(`<div id="${id}-answer" class="faq-answer" role="region" aria-labelledby="${id}-button" aria-hidden="true">`));
   }
@@ -60,7 +60,7 @@ test('Task 128 links every FAQ disclosure control with its labelled answer regio
 });
 
 test('Task 129 keeps FAQ answer accessibility visibility synchronized with disclosure state', () => {
-  for (const id of ['faq-test', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
+  for (const id of ['faq-test', 'faq-fivem-security', 'faq-frameworks', 'faq-generic-ai', 'faq-fix', 'faq-cancel']) {
     assert.match(landingHtml, new RegExp(`<div id="${id}-answer" class="faq-answer" role="region" aria-labelledby="${id}-button" aria-hidden="true">`));
   }
   assert.match(landingHtml, /openItem\.querySelector\('\.faq-answer'\)\.setAttribute\('aria-hidden', 'true'\)/);
@@ -74,7 +74,7 @@ test('Task 130 announces existing saved-tool count updates politely', () => {
 
 test('Task 131 keeps decorative FAQ plus icons out of control names', () => {
   const icons = landingHtml.match(/<span class="faq-plus" aria-hidden="true">\+<\/span>/g) ?? [];
-  assert.equal(icons.length, 5);
+  assert.equal(icons.length, 6);
   assert.match(landingHtml, /\.faq-button\[aria-expanded="true"\] \.faq-plus/);
 });
 
@@ -84,6 +84,13 @@ test('Task 132 keeps FAQ structured data aligned with additional visible landing
   assert.match(landingHtml, /"name":"How is this different from generic AI chat\?"/);
   assert.match(landingHtml, /<button id="faq-test-button"/);
   assert.match(landingHtml, /<button id="faq-generic-ai-button"/);
+});
+
+test('Task 162 keeps the FiveM server-validation FAQ visible and aligned with structured data', () => {
+  assert.match(landingHtml, /"name":"How should I keep FiveM script events secure\?"/);
+  assert.match(landingHtml, /validate the player's server-side state, permissions, inventory and relevant position/);
+  assert.match(landingHtml, /<button id="faq-fivem-security-button" class="faq-button" aria-expanded="false" aria-controls="faq-fivem-security-answer">How should I keep FiveM script events secure\?/);
+  assert.match(landingHtml, /<div id="faq-fivem-security-answer" class="faq-answer" role="region" aria-labelledby="faq-fivem-security-button" aria-hidden="true"><p>Treat client input as untrusted\./);
 });
 
 test('Task 147 gives the final free-generation action an explicit accessible name', () => {
