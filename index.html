@@ -202,8 +202,16 @@
     .framework-rail { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 16px; border: 1px solid var(--border); border-radius: 18px; background: linear-gradient(110deg, rgba(255,255,255,.035), rgba(155,124,255,.065), rgba(255,255,255,.025)); }
     .framework-copy { color: var(--muted); font-size: 12px; font-weight: 700; white-space: nowrap; }
     .frameworks { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-    .frameworks span { padding: 7px 10px; border: 1px solid rgba(226,215,255,.11); border-radius: 7px; color: #d9d2eb; background: rgba(255,255,255,.035); font: 500 10px "DM Mono", monospace; }
-
+        .frameworks span { padding: 7px 10px; border: 1px solid rgba(226,215,255,.11); border-radius: 7px; color: #d9d2eb; background: rgba(255,255,255,.035); font: 500 10px "DM Mono", monospace; }
+    .hero-capabilities { display: grid; grid-template-columns: 1.1fr repeat(4, 1fr); gap: 10px; align-items: stretch; margin-top: 14px; }
+    .hero-capabilities-intro, .hero-capability { padding: 15px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.028); }
+    .hero-capabilities-intro strong { display: block; margin-bottom: 4px; color: var(--ink); font-size: 13px; letter-spacing: -.02em; }
+    .hero-capabilities-intro span { color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .hero-capability { display: flex; flex-direction: column; justify-content: center; min-width: 0; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+    .hero-capability:hover { transform: translateY(-3px); border-color: var(--border-hover); background: rgba(155,124,255,.08); }
+    .hero-capability b { color: var(--ink); font-size: 12px; }
+    .hero-capability span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    body.light .hero-capabilities-intro, body.light .hero-capability { border-color: rgba(84,67,128,.15); background: rgba(255,255,255,.7); }
     /* Sections */
     .section { padding: 76px 0; }
     .section-heading { max-width: 650px; margin-bottom: 44px; }
@@ -386,7 +394,7 @@
       .hero { padding: 64px 0 26px; } .hero h1 { font-size: clamp(43px, 12vw, 61px); letter-spacing: -.075em; } .hero-lead { font-size: 15px; } .hero-actions .button { flex: 1 1 100%; }
       .product-shell { min-height: 430px; padding: 12px; } .product-main { grid-template-columns: 105px minmax(0, 1fr); min-height: 374px; } .preview-side { padding: 11px 8px; } .preview-brand { margin: 2px 3px 10px; font-size: 9px; } .preview-nav, .preview-new { padding: 7px 5px; font-size: 7px; } .preview-credit { font-size: 7px; } .preview-convo { padding: 12px 10px; } .float-file { right: 10px; bottom: 30px; padding: 9px 10px; font-size: 8px; }
       .why-stellar-section { padding-top: 36px; padding-bottom: 36px; } .difference-copy .difference-note { margin-top: 12px; } .text-link { margin-top: 18px; }
-      .framework-rail { display: block; padding: 19px; margin-top: 42px; } .framework-copy { margin-bottom: 13px; white-space: normal; } .frameworks { justify-content: flex-start; } .launch-deck { grid-template-columns: 1fr; padding: 19px; } .launch-deck h2 { font-size: 21px; } .launch-grid { grid-template-columns: 1fr; }
+      .framework-rail { display: block; padding: 19px; margin-top: 42px; } .framework-copy { margin-bottom: 13px; white-space: normal; } .frameworks { justify-content: flex-start; } .hero-capabilities { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero-capabilities-intro { grid-column: 1 / -1; } .launch-deck { grid-template-columns: 1fr; padding: 19px; } .launch-deck h2 { font-size: 21px; } .launch-grid { grid-template-columns: 1fr; }
       .section { padding: 56px 0; } .section-heading { margin-bottom: 31px; } .section-heading h2 { font-size: clamp(33px, 9.5vw, 47px); } .section-heading p { font-size: 14px; }
       .capability-grid, .capability-map-grid, .plans, .plan-decider { grid-template-columns: 1fr; } .capability { min-height: 285px; } .capability h3 { margin-top: 43px; }
       .scenario { padding: 23px; } .scenario-grid { gap: 30px; } .scenario h2 { font-size: 34px; }
@@ -759,6 +767,13 @@ end)</div></div>
         <div class="framework-rail">
           <div class="framework-copy">One workspace. The frameworks you already build with.</div>
           <div class="frameworks"><span>QBCore</span><span>ESX</span><span>ox_lib</span><span>Standalone</span><span>Roblox Lua</span></div>
+        </div>
+        <div class="hero-capabilities" aria-label="What Stellar AI can help you build">
+          <div class="hero-capabilities-intro"><strong>What can you build?</strong><span>Start with the system you need, then keep the files, fixes and next version close by.</span></div>
+          <a class="hero-capability" href="/app?starter=police"><b>FiveM resources</b><span>Jobs, police, economy and roleplay</span></a>
+          <a class="hero-capability" href="/app?starter=roblox"><b>Roblox systems</b><span>Luau, UI, progression and DataStores</span></a>
+          <a class="hero-capability" href="/app?starter=fix"><b>Fix broken code</b><span>Diagnose errors and revise scripts</span></a>
+          <a class="hero-capability" href="#capabilities"><b>Explore capabilities</b><span>See the complete build workflow</span></a>
         </div>
         <div class="launch-deck">
           <div class="launch-deck-copy"><div class="eyebrow">Start with a proven brief</div><h2>Open Stellar with a clear next move.</h2><p>Choose a project type, shape it in your own words, then keep refining the resource in one workspace.</p></div>

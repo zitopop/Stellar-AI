@@ -242,3 +242,13 @@ test('Task 194 exposes the expanded truthful capability map for FiveM and Roblox
   assert.match(landingHtml, /does not claim to have installed, run, published or verified/);
   assert.match(landingHtml, /<a href="#capabilities">Capabilities<\/a>/);
 });
+
+
+test('Task 195 makes the hero follow-up useful with visible build paths', () => {
+  assert.match(landingHtml, /<div class="hero-capabilities" aria-label="What Stellar AI can help you build">/);
+  assert.match(landingHtml, /FiveM resources/);
+  assert.match(landingHtml, /Roblox systems/);
+  assert.match(landingHtml, /Fix broken code/);
+  assert.match(landingHtml, /href="#capabilities"><b>Explore capabilities/);
+  assert.match(landingHtml, /\.hero-capabilities \{ display: grid;/);
+});
