@@ -149,8 +149,8 @@ test('Task 183 keeps the mobile landing navigation keyboard-accessible and desti
   assert.match(landingHtml, /\.nav-toggle \{ display: inline-grid; place-items: center; \}/);
 });
 
-test('Task 184 keeps the framework rail close to the hero without removing the mobile spacing override', () => {
-  assert.match(landingHtml, /\.framework-rail \{ display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 28px;/);
+test('Task 184/190 keeps the framework rail close to the hero without removing the mobile spacing override', () => {
+  assert.match(landingHtml, /\.framework-rail \{ display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 16px;/);
   assert.match(landingHtml, /\.framework-rail \{ display: block; padding: 19px; margin-top: 42px; \}/);
 });
 
@@ -188,4 +188,14 @@ test('Task 189 keeps Roblox destinations explicitly labelled for assistive techn
   assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator[^>]*aria-label="Open Stellar Simulator on Roblox"/);
   assert.match(landingHtml, /communities\/433084698\/StellarHQ[^>]*aria-label="Open the StellarHQ Roblox community"/);
   assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community"/);
+});
+
+test('Task 190 keeps the landing hero-to-framework spacing compact without changing mobile spacing', () => {
+  assert.match(landingHtml, /\.hero \{ position: relative; padding: 84px 0 24px; \}/);
+  assert.match(landingHtml, /\.framework-rail \{ display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 16px;/);
+  assert.match(landingHtml, /\.framework-rail \{ display: block; padding: 19px; margin-top: 42px; \}/);
+  assert.match(landingHtml, /Police job/);
+  assert.match(landingHtml, /Heist system/);
+  assert.match(landingHtml, /Fix an error/);
+  assert.match(landingHtml, /Roblox game/);
 });
