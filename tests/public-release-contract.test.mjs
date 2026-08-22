@@ -89,8 +89,8 @@ test('approved QBCore police and Roblox tapping guides are original long-form pu
   const sitemap = read('sitemap.xml');
   const hub = read('blog.html');
   const guides = [
-    ['blog-qbcore-police-job-script-free.html', 'https://trystellarai.com/blog/qbcore-police-job-script-free', /QBCore Police Job Script Free/],
-    ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog/roblox-tapping-simulator-script', /Roblox Tapping Simulator Script/]
+    ['blog-qbcore-police-job-script-free.html', 'https://trystellarai.com/blog-qbcore-police-job-script-free.html', /QBCore Police Job Script Free/],
+    ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog-roblox-tapping-simulator-script.html', /Roblox Tapping Simulator Script/]
   ];
   for (const [file, canonical, title] of guides) {
     const html = read(file);
