@@ -77,11 +77,30 @@ test('the public support address remains a one-line mail link in settings', () =
 
 test('all published standalone blog articles have non-empty page titles and descriptions', () => {
   const blogFiles = readdirSync(root).filter((name) => /^blog-.*\.html$/.test(name));
-  assert.equal(blogFiles.length, 56);
+  assert.equal(blogFiles.length, 58);
   for (const file of blogFiles) {
     const html = read(file);
     assert.match(html, /<title>[^<]+<\/title>/, `${file} requires a title`);
     assert.match(html, /<meta name="description" content="[^"]+">/, `${file} requires a description`);
+  }
+});
+
+test('approved QBCore police and Roblox tapping guides are original long-form public pages with discovery links', () => {
+  const sitemap = read('sitemap.xml');
+  const hub = read('blog.html');
+  const guides = [
+    ['blog-qbcore-police-job-script-free.html', 'https://trystellarai.com/blog/qbcore-police-job-script-free', /QBCore Police Job Script Free/],
+    ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog/roblox-tapping-simulator-script', /Roblox Tapping Simulator Script/]
+  ];
+  for (const [file, canonical, title] of guides) {
+    const html = read(file);
+    const words = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').length;
+    assert.ok(words >= 800, `${file} must contain at least 800 readable words`);
+    assert.match(html, title);
+    assert.match(html, new RegExp(`href="${canonical}"`));
+    assert.match(html, /href="\/app\?starter=/);
+    assert.match(sitemap, new RegExp(canonical.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(hub, new RegExp(canonical.replace('https://trystellarai.com', '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
 });
 
