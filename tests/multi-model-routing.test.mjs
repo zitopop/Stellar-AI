@@ -145,6 +145,16 @@ test('Task 216 keeps every recognised Nova alias available to the owner plan', (
   }
 });
 
+test('Task 217 keeps specialist-role routing from elevating Free or Plus ultra requests to Nova', () => {
+  for (const role of ['planner', 'implementer', 'researcher', 'security', 'tester']) {
+    for (const plan of ['free', 'plus']) {
+      const route = resolveRoute('ultra', role, plan);
+      assert.notEqual(route.tier, 'nova', `${role} must not route ${plan} ultra requests to Nova`);
+      assert.equal(route.role, role);
+    }
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
