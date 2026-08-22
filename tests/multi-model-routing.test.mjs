@@ -74,6 +74,16 @@ test('Task 208 normalizes Nova aliases without weakening their Pro-only gate', (
   }
 });
 
+test('Task 209 safely routes unknown model inputs to Star on every plan tier', () => {
+  for (const plan of ['free', 'lite', 'plus', 'pro', 'owner']) {
+    const route = resolveRoute('not-a-real-model', '', plan);
+    assert.equal(resolveModelTier('not-a-real-model', plan), 'star', `${plan} must resolve the safe Star tier`);
+    assert.equal(route.provider, 'anthropic');
+    assert.equal(route.tier, 'star', `${plan} must route the unknown model to Star`);
+    assert.notEqual(route.tier, 'nova', `${plan} must not route the unknown model to Nova`);
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
