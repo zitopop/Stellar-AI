@@ -200,6 +200,16 @@ test('Task 221 keeps every premium specialist model route available on Pro', () 
   }
 });
 
+test('Task 222 keeps every premium specialist route on Star for the legacy Lite plan', () => {
+  for (const role of ['security', 'tester']) {
+    const route = resolveRoute('ultra', role, 'lite');
+    assert.equal(route.role, role);
+    assert.equal(route.provider, 'anthropic');
+    assert.equal(route.tier, 'star', `${role} must remain on Star for Lite`);
+    assert.notEqual(route.tier, 'nova');
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
