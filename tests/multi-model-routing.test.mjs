@@ -117,6 +117,13 @@ test('Task 212 keeps every recognised Nova alias behind route-level Pro gating',
   }
 });
 
+test('Task 213 keeps every supported tier on a concrete primary-and-fallback candidate chain', () => {
+  assert.deepEqual(getModelCandidates('spark'), ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6']);
+  assert.deepEqual(getModelCandidates('star'), ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001']);
+  assert.deepEqual(getModelCandidates('comet'), ['claude-opus-4-6', 'claude-sonnet-4-6']);
+  assert.deepEqual(getModelCandidates('nova'), ['claude-opus-4-8', 'claude-sonnet-4-6']);
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
