@@ -166,6 +166,18 @@ test('Task 218 keeps unknown role labels from affecting non-Pro ultra plan gatin
   }
 });
 
+test('Task 219 keeps malformed role values from affecting non-Pro ultra plan gating', () => {
+  for (const role of [null, undefined, {}, [], 42]) {
+    for (const plan of ['free', 'plus']) {
+      const route = resolveRoute('ultra', role, plan);
+      assert.equal(route.role, 'implementer');
+      assert.equal(route.provider, 'anthropic');
+      assert.equal(route.tier, 'star', `${String(role)} must retain the Star fallback on ${plan}`);
+      assert.notEqual(route.tier, 'nova');
+    }
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
