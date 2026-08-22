@@ -131,3 +131,12 @@ test('Task 185 keeps top-up credit controls explicit non-submit buttons', () => 
   assert.match(workspaceHtml, /<button type="button" id="topup-buy" onclick="buyTopup\(document\.getElementById\('topup-range'\)\.value\)"/);
   assert.match(workspaceHtml, /<button type="button" onclick="closeTopup\(\)" class="plan-btn glass w-full mt-2">Cancel<\/button>/);
 });
+
+test('chat workspace refinement keeps the model picker descriptive, flat, and behavior-preserving', () => {
+  assert.match(workspaceHtml, /\/\* Workspace refinement: clearer chat rhythm and model hierarchy, with no routing or interaction changes\. \*\//);
+  assert.match(workspaceHtml, /#model-menu \{ width: min\(348px, calc\(100vw - 24px\)\) !important;[\s\S]*?background: #181818 !important;/);
+  assert.match(workspaceHtml, /<div class="model-menu-heading" aria-hidden="true"><span>AI models<\/span><span>Select a focus<\/span><\/div>/);
+  assert.match(workspaceHtml, /#model-menu \[data-model-choice\]\[aria-checked="true"\] \{ border-color: #d4d4d8; color: #101010 !important; background: #f4f4f5 !important; \}/);
+  assert.match(workspaceHtml, /\.message\.msg-user \.msg-content \{ padding: 12px 15px !important;[\s\S]*?background: #27272a !important;/);
+  assert.match(workspaceHtml, /\*, \*::before, \*::after \{ animation: none !important; transition: none !important; box-shadow: none !important;/);
+});

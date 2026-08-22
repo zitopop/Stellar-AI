@@ -2917,6 +2917,60 @@
     #plans-modal > div, #settings-modal > div, #usage-modal > div, #owner-modal > div, #redeem-modal > div, #topup-modal > div, #thanks-modal > div, #limit-modal > div { background: #181818 !important; }
     body.light #plans-modal > div, body.light #settings-modal > div, body.light #usage-modal > div, body.light #owner-modal > div, body.light #redeem-modal > div, body.light #topup-modal > div, body.light #thanks-modal > div, body.light #limit-modal > div { background: #ffffff !important; }
     #free-upgrade-nudge:not([hidden]) { display: flex !important; }
+
+    /* Workspace refinement: clearer chat rhythm and model hierarchy, with no routing or interaction changes. */
+    #main-col { min-width: 0; }
+    .topbar.glass { min-height: 56px !important; padding-inline: clamp(16px, 3vw, 32px) !important; border-bottom-color: #27272a !important; }
+    #chat-title { display: inline-flex; align-items: center; gap: 8px; color: #fafafa !important; font-size: 14px !important; font-weight: 800 !important; letter-spacing: -.02em !important; }
+    #chat-title::before { content: '✦'; color: #d4d4d8; font-size: 12px; }
+    #chat { width: min(100%, 820px) !important; max-width: 820px !important; padding-top: 52px !important; }
+    .message { margin-bottom: 26px !important; }
+    .message.msg-user { max-width: min(76%, 580px) !important; }
+    .message.msg-user .msg-content { padding: 12px 15px !important; border-color: #3f3f46 !important; border-radius: 14px 14px 4px 14px !important; background: #27272a !important; line-height: 1.6 !important; }
+    .message.msg-ai { grid-template-columns: 30px minmax(0, 1fr) !important; gap: 12px !important; line-height: 1.72 !important; }
+    .assistant-avatar { width: 30px !important; height: 30px !important; border-color: #3f3f46 !important; border-radius: 9px !important; color: #fafafa !important; background: #181818 !important; }
+    .input-area.glass { padding-top: 14px !important; border-top-color: #27272a !important; }
+    .input-area > .flex { min-height: 58px; padding: 6px !important; border-color: #3f3f46 !important; border-radius: 16px !important; background: #181818 !important; }
+    #txt, .input-area textarea { min-height: 48px !important; padding: 12px 14px !important; color: #fafafa !important; font-size: 15px !important; line-height: 1.55 !important; }
+    #txt::placeholder { color: #a1a1aa !important; }
+    #txt:focus { background: #181818 !important; }
+    #send-btn { flex-basis: 48px !important; min-width: 48px !important; min-height: 48px !important; border-radius: 12px !important; color: #101010 !important; background: #fafafa !important; }
+    #send-btn:not(.is-stop)::after { color: #101010 !important; }
+    .composer-foot { align-items: center !important; margin-top: 10px !important; }
+    .ws-toggle, .model-pill { min-height: 34px !important; border-color: #3f3f46 !important; border-radius: 8px !important; color: #d4d4d8 !important; background: transparent !important; font-size: 11px !important; font-weight: 700 !important; letter-spacing: .01em !important; }
+    .model-pill { display: inline-flex !important; align-items: center !important; gap: 4px; padding-inline: 10px !important; color: #fafafa !important; background: #27272a !important; }
+    .model-pill[aria-expanded="true"] { border-color: #fafafa !important; background: #fafafa !important; color: #101010 !important; }
+    #model-menu { width: min(348px, calc(100vw - 24px)) !important; padding: 8px !important; border: 1px solid #3f3f46 !important; border-radius: 12px !important; background: #181818 !important; }
+    .model-menu-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 5px 7px 9px; color: #a1a1aa; font-size: 9px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .model-menu-heading span:last-child { color: #71717a; font-weight: 700; letter-spacing: .08em; }
+    #model-menu [data-model-choice] { min-height: 56px; margin-bottom: 4px; padding: 10px 11px !important; border: 1px solid transparent; border-radius: 9px !important; color: #e4e4e7; background: #181818; }
+    #model-menu [data-model-choice]:hover, #model-menu [data-model-choice]:focus-visible { border-color: #52525b; background: #27272a !important; }
+    #model-menu [data-model-choice][aria-checked="true"] { border-color: #d4d4d8; color: #101010 !important; background: #f4f4f5 !important; }
+    #model-menu [data-model-choice][aria-checked="true"] span { color: #3f3f46 !important; }
+    #model-menu [data-model-choice][aria-checked="true"] [id$="-check"] { color: #101010 !important; }
+    #model-menu #nova-model-btn { border-color: #52525b; }
+    #model-menu #nova-model-btn .bg-\[\#10a37f\] { color: #101010 !important; background: #f4f4f5 !important; }
+    #provider-models { margin-top: 7px !important; padding-top: 8px !important; border-top-color: #3f3f46 !important; }
+    #provider-models > div { padding-left: 7px !important; color: #a1a1aa !important; }
+    #model-menu > .border-t { margin: 7px 0 !important; border-top-color: #3f3f46 !important; }
+    #model-menu [role="menuitem"] { min-height: 42px; border-radius: 8px !important; color: #fafafa; }
+    body.light .topbar.glass, body.light .input-area.glass { border-color: #e4e4e7 !important; }
+    body.light #chat-title, body.light .model-pill { color: #18181b !important; }
+    body.light .model-pill { background: #f4f4f5 !important; }
+    body.light .model-pill[aria-expanded="true"], body.light #model-menu [data-model-choice][aria-checked="true"] { color: #ffffff !important; border-color: #18181b !important; background: #18181b !important; }
+    body.light #model-menu [data-model-choice][aria-checked="true"] span, body.light #model-menu [data-model-choice][aria-checked="true"] [id$="-check"] { color: #d4d4d8 !important; }
+    body.light #model-menu { border-color: #d4d4d8 !important; background: #ffffff !important; }
+    body.light #model-menu [data-model-choice] { color: #27272a; background: #ffffff; }
+    body.light #model-menu [data-model-choice]:hover, body.light #model-menu [data-model-choice]:focus-visible { border-color: #a1a1aa; background: #f4f4f5 !important; }
+    @media (max-width: 767px) {
+      #chat { padding-top: 30px !important; }
+      .message.msg-user { max-width: 88% !important; }
+      .message.msg-ai { grid-template-columns: 27px minmax(0, 1fr) !important; gap: 10px !important; }
+      .assistant-avatar { width: 27px !important; height: 27px !important; }
+      .input-area > .flex { min-height: 56px; border-radius: 14px !important; }
+      #model-menu { width: min(348px, calc(100vw - 20px)) !important; }
+      #model-menu [data-model-choice] { min-height: 52px; }
+    }
   </style>
 <script type="application/ld+json">
 {
@@ -3141,6 +3195,7 @@
           <div class="relative">
             <button type="button" id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false">⭐ Star ▾</button>
             <div id="model-menu" role="menu" aria-label="Choose an AI model" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
+              <div class="model-menu-heading" aria-hidden="true"><span>AI models</span><span>Select a focus</span></div>
               <button type="button" onclick="pickModel('fabie')" data-model-choice="fabie" role="menuitemradio" aria-checked="false" aria-label="Select Spark for fast drafts" title="Fast drafts with Claude Haiku" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
