@@ -251,10 +251,10 @@ test('Task 225 keeps every permitted public tier available to Lite', () => {
 
 test('Task 226 keeps every authorised tier available to Pro and owner', () => {
   const authorisedAliases = {
-    spark: ['spark', 'fabie', 'haiku'],
-    star: ['star', 'smart', 'sonnet'],
-    comet: ['comet', 'opus'],
-    nova: ['nova', 'ultra', 'fable'],
+    spark: ['spark', 'fabie', 'haiku', 'claude-haiku-4-5', 'claude-haiku-4-5-20251001'],
+    star: ['star', 'smart', 'sonnet', 'claude-sonnet-5', 'claude-sonnet-4-6'],
+    comet: ['comet', 'opus', 'claude-opus-5', 'claude-opus-4-6'],
+    nova: ['nova', 'ultra', 'fable', 'claude-fable-5', 'claude-opus-4-8'],
   };
 
   for (const [tier, aliases] of Object.entries(authorisedAliases)) {
