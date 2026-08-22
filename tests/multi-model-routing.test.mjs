@@ -235,6 +235,20 @@ test('Task 224 keeps every permitted public tier available to Free and Plus', ()
   }
 });
 
+test('Task 225 keeps every permitted public tier available to Lite', () => {
+  const permittedAliases = {
+    spark: ['spark', 'fabie', 'haiku'],
+    star: ['star', 'smart', 'sonnet'],
+    comet: ['comet', 'opus'],
+  };
+
+  for (const [tier, aliases] of Object.entries(permittedAliases)) {
+    for (const alias of aliases) {
+      assert.equal(resolveModelTier(alias, 'lite'), tier, `${alias} must remain available to Lite`);
+    }
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
