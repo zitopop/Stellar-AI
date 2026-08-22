@@ -105,6 +105,18 @@ test('Task 211 safely routes oversized model inputs to Star without premium acce
   assert.notEqual(route.tier, 'nova');
 });
 
+test('Task 212 keeps every recognised Nova alias behind route-level Pro gating', () => {
+  const novaAliases = ['nova', 'ultra', 'fable', 'claude-fable-5', 'claude-opus-4-8'];
+  for (const alias of novaAliases) {
+    const freeRoute = resolveRoute(alias, '', 'free');
+    const plusRoute = resolveRoute(alias, '', 'plus');
+    assert.equal(freeRoute.provider, 'anthropic');
+    assert.equal(freeRoute.tier, 'star', `${alias} must route to Star on Free`);
+    assert.equal(plusRoute.tier, 'star', `${alias} must route to Star on Plus`);
+    assert.equal(resolveRoute(alias, '', 'pro').tier, 'nova', `${alias} must route to Nova on Pro`);
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
