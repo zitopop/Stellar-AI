@@ -2913,6 +2913,7 @@
     .side-new, #send-btn, #free-upgrade-nudge button:first-of-type { color: #101010 !important; background: #f4f4f5 !important; }
     .message.msg-user .msg-content { color: #f5f3f7 !important; border-color: #3f3f46 !important; }
     body.light .message.msg-user .msg-content { color: #171219 !important; border-color: #d4d4d8 !important; }
+    .greet-wrap { opacity: 1 !important; }
     .greet-wrap::before, .greet-wrap::after, .think-spinner::before, .think-spinner::after { display: none !important; }
     #plans-modal > div, #settings-modal > div, #usage-modal > div, #owner-modal > div, #redeem-modal > div, #topup-modal > div, #thanks-modal > div, #limit-modal > div { background: #181818 !important; }
     body.light #plans-modal > div, body.light #settings-modal > div, body.light #usage-modal > div, body.light #owner-modal > div, body.light #redeem-modal > div, body.light #topup-modal > div, body.light #thanks-modal > div, body.light #limit-modal > div { background: #ffffff !important; }
@@ -2962,6 +2963,16 @@
     body.light #model-menu { border-color: #d4d4d8 !important; background: #ffffff !important; }
     body.light #model-menu [data-model-choice] { color: #27272a; background: #ffffff; }
     body.light #model-menu [data-model-choice]:hover, body.light #model-menu [data-model-choice]:focus-visible { border-color: #a1a1aa; background: #f4f4f5 !important; }
+    .welcome-next-step { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; width: min(100%, 640px); margin: 0 auto 14px; padding: 10px 12px; border: 1px solid #3f3f46; border-radius: 10px; color: #d4d4d8; background: #181818; text-align: left; }
+    .welcome-next-step-label { color: #a1a1aa; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+    .welcome-next-step p { margin: 0; color: inherit; font-size: 11px; font-weight: 500; line-height: 1.5; }
+    .welcome-next-step strong { color: #fafafa; font-weight: 800; }
+    .welcome-guide-link { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 0 8px; border: 1px solid #52525b; border-radius: 7px; color: #fafafa; font-size: 10px; font-weight: 800; white-space: nowrap; text-decoration: none; }
+    .welcome-guide-link:focus-visible { outline-offset: 2px !important; }
+    .welcome-starters-label { width: min(100%, 640px); margin: 0 auto 7px; color: #a1a1aa; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-align: left; text-transform: uppercase; }
+    body.light .welcome-next-step { border-color: #d4d4d8; color: #52525b; background: #f4f4f5; }
+    body.light .welcome-next-step strong, body.light .welcome-guide-link { color: #18181b; }
+    body.light .welcome-guide-link { border-color: #a1a1aa; }
     @media (max-width: 767px) {
       #chat { padding-top: 30px !important; }
       .message.msg-user { max-width: 88% !important; }
@@ -2970,6 +2981,10 @@
       .input-area > .flex { min-height: 56px; border-radius: 14px !important; }
       #model-menu { width: min(348px, calc(100vw - 20px)) !important; }
       #model-menu [data-model-choice] { min-height: 52px; }
+      .welcome-next-step { grid-template-columns: 1fr; gap: 6px; padding: 11px 12px; }
+      .welcome-next-step-label { font-size: 9px; }
+      .welcome-guide-link { justify-self: start; }
+      .welcome-starters-label { margin-top: 2px; text-align: left; }
     }
   </style>
 <script type="application/ld+json">
@@ -3140,7 +3155,9 @@
           <p class="welcome-sub">Turn the next server or game idea into a structured build. Choose a launch point or tell Stellar exactly what you want to create. Roblox builders can start with a Build Pack or Fix & Review workflow.</p>
           <div class="welcome-strip"><span>QBCore & ESX aware</span><span>Roblox ready</span><span>Files stay together</span></div>
           <div class="roblox-world-links"><a href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer">✦ Play Stellar Strike ↗</a><a href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer">S Play Stellar Simulator ↗</a><a href="https://www.roblox.com/communities/433084698/StellarHQ#!/about" target="_blank" rel="noopener noreferrer">StellarHQ community ↗</a></div>
-          <div id="suggestion-chips">
+          <div class="welcome-next-step" role="note"><span class="welcome-next-step-label">First build</span><p><strong>Choose a starter,</strong> make the brief yours, then review the files and test them privately.</p><a href="/blog" class="welcome-guide-link">Read the Guides <span aria-hidden="true">→</span></a></div>
+          <div id="welcome-starters-heading" class="welcome-starters-label">Choose a starting point</div>
+          <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
             <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job with an F6 menu</span></button>
             <button type="button" onclick="useSuggestion('QBCore drug system with weed, coke, dealers and police alerts')" class="sug-chip"><span>💊</span><span>Design a drug system with dealers</span></button>
             <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Create a full bank-heist flow</span></button>
@@ -4720,7 +4737,9 @@
           <p class="welcome-sub">Turn the next server or game idea into a structured build. Choose a launch point or tell Stellar exactly what you want to create. Roblox builders can start with a Build Pack or Fix & Review workflow.</p>
           <div class="welcome-strip"><span>QBCore & ESX aware</span><span>Roblox ready</span><span>Files stay together</span></div>
           <div class="roblox-world-links"><a href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer">✦ Play Stellar Strike ↗</a><a href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer">S Play Stellar Simulator ↗</a><a href="https://www.roblox.com/communities/433084698/StellarHQ#!/about" target="_blank" rel="noopener noreferrer">StellarHQ community ↗</a></div>
-          <div id="suggestion-chips">
+          <div class="welcome-next-step" role="note"><span class="welcome-next-step-label">First build</span><p><strong>Choose a starter,</strong> make the brief yours, then review the files and test them privately.</p><a href="/blog" class="welcome-guide-link">Read the Guides <span aria-hidden="true">→</span></a></div>
+          <div id="welcome-starters-heading" class="welcome-starters-label">Choose a starting point</div>
+          <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
             <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job with an F6 menu</span></button>
             <button type="button" onclick="useSuggestion('QBCore drug system with weed, coke, dealers and police alerts')" class="sug-chip"><span>💊</span><span>Design a drug system with dealers</span></button>
             <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Create a full bank-heist flow</span></button>

@@ -140,3 +140,13 @@ test('chat workspace refinement keeps the model picker descriptive, flat, and be
   assert.match(workspaceHtml, /\.message\.msg-user \.msg-content \{ padding: 12px 15px !important;[\s\S]*?background: #27272a !important;/);
   assert.match(workspaceHtml, /\*, \*::before, \*::after \{ animation: none !important; transition: none !important; box-shadow: none !important;/);
 });
+
+test('workspace welcome states keep first-use guidance and Guides discovery consistent', () => {
+  const orientation = /<div class="welcome-next-step" role="note"><span class="welcome-next-step-label">First build<\/span><p><strong>Choose a starter,<\/strong> make the brief yours, then review the files and test them privately\.<\/p><a href="\/blog" class="welcome-guide-link">Read the Guides <span aria-hidden="true">→<\/span><\/a><\/div>/g;
+  assert.equal(workspaceHtml.match(orientation)?.length, 2);
+  assert.equal((workspaceHtml.match(/id="welcome-starters-heading" class="welcome-starters-label">Choose a starting point<\/div>/g) ?? []).length, 2);
+  assert.equal((workspaceHtml.match(/id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading"/g) ?? []).length, 2);
+  assert.match(workspaceHtml, /\.welcome-next-step \{ display: grid; grid-template-columns: auto minmax\(0, 1fr\) auto;/);
+  assert.match(workspaceHtml, /@media \(max-width: 767px\) \{[\s\S]*?\.welcome-next-step \{ grid-template-columns: 1fr;/);
+  assert.match(workspaceHtml, /\.greet-wrap \{ opacity: 1 !important; \}/);
+});
