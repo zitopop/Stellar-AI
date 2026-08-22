@@ -21,6 +21,15 @@ test('model aliases resolve to concrete supported Anthropic models with a safe S
   assert.equal(getModelCandidates(resolveModelTier('unrecognised-model', 'pro'))[0], 'claude-sonnet-4-6');
 });
 
+test('Task 203 keeps Nova denied on every non-Pro plan while retaining Pro access', () => {
+  for (const plan of ['free', 'lite', 'plus']) {
+    assert.equal(resolveModelTier('nova', plan), 'star', `${plan} must fall back to Star`);
+    assert.notEqual(resolveModelTier('nova', plan), 'nova', `${plan} must not resolve Nova`);
+  }
+  assert.equal(resolveModelTier('nova', 'pro'), 'nova');
+  assert.equal(resolveModelTier('nova', 'owner'), 'nova');
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
