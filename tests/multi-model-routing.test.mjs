@@ -30,6 +30,13 @@ test('Task 203 keeps Nova denied on every non-Pro plan while retaining Pro acces
   assert.equal(resolveModelTier('ultra', 'owner'), 'nova');
 });
 
+test('Task 204 defaults unknown plan labels to Free-tier Nova protection', () => {
+  for (const plan of ['', 'pro ', 'enterprise', null, undefined]) {
+    assert.equal(resolveModelTier('ultra', plan), 'star', `${String(plan)} must use the safe Star fallback`);
+    assert.notEqual(resolveModelTier('ultra', plan), 'nova', `${String(plan)} must not bypass Nova gating`);
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
