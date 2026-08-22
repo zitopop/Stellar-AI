@@ -84,6 +84,17 @@ test('Task 209 safely routes unknown model inputs to Star on every plan tier', (
   }
 });
 
+test('Task 210 safely routes malformed model inputs to Star without premium access', () => {
+  for (const model of [null, undefined, {}, [], 42]) {
+    const route = resolveRoute(model, '', 'pro');
+    assert.equal(resolveModelTier(model, 'free'), 'star', `${String(model)} must resolve Star on Free`);
+    assert.equal(resolveModelTier(model, 'pro'), 'star', `${String(model)} must resolve Star on Pro`);
+    assert.equal(route.provider, 'anthropic');
+    assert.equal(route.tier, 'star', `${String(model)} must route to Star`);
+    assert.notEqual(route.tier, 'nova', `${String(model)} must not route to Nova`);
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
