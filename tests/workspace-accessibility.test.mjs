@@ -150,3 +150,9 @@ test('workspace welcome states keep first-use guidance and Guides discovery cons
   assert.match(workspaceHtml, /@media \(max-width: 767px\) \{[\s\S]*?\.welcome-next-step \{ grid-template-columns: 1fr;/);
   assert.match(workspaceHtml, /\.greet-wrap \{ opacity: 1 !important; \}/);
 });
+
+test('workspace sidebar retains an accessible persistent Guides-hub route', () => {
+  assert.match(workspaceHtml, /<a href="\/blog" class="side-act side-guides-link" aria-label="Open FiveM and Roblox Guides"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"\/><\/svg><\/span>Guides<\/a>/);
+  assert.match(workspaceHtml, /\.side-guides-link \{ flex-direction: row !important; justify-content: center; gap: 7px !important; min-height: 38px !important;/);
+  assert.match(workspaceHtml, /body\.light \.side-guides-link \{ color: #4b4658 !important; \}/);
+});
