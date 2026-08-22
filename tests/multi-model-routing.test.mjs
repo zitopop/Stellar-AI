@@ -37,6 +37,17 @@ test('Task 204 defaults unknown plan labels to Free-tier Nova protection', () =>
   }
 });
 
+test('Task 205 routes the public ultra alias to Star outside Pro and Nova on Pro', () => {
+  for (const plan of ['free', 'lite', 'plus']) {
+    const route = resolveRoute('ultra', '', plan);
+    assert.equal(route.provider, 'anthropic');
+    assert.equal(route.tier, 'star', `${plan} must route ultra to Star`);
+    assert.notEqual(route.tier, 'nova', `${plan} must not route ultra to Nova`);
+  }
+  assert.equal(resolveRoute('ultra', '', 'pro').tier, 'nova');
+  assert.equal(resolveRoute('ultra', '', 'owner').tier, 'nova');
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
