@@ -131,6 +131,12 @@ test('Task 214 safely falls back to the Star candidate chain for unsupported tie
   assert.deepEqual(getModelCandidates(undefined), safeStarCandidates);
 });
 
+test('Task 215 keeps candidate chains isolated between routing requests', () => {
+  const firstCandidates = getModelCandidates('star');
+  firstCandidates[0] = 'caller-mutated-model';
+  assert.deepEqual(getModelCandidates('star'), ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001']);
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
