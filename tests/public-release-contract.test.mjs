@@ -9,6 +9,7 @@ const appHtml = read('app.html');
 const termsHtml = read('terms.html');
 const launchKit = read('LAUNCH-KIT.md');
 const simulatorBlogHtml = read('blog-roblox-simulator-game.html');
+const comparisonBlogHtml = read('blog-stellar-ai-vs-swisserai-qbcore-roblox.html');
 
 test('public Simulator destinations use the approved Roblox game ID everywhere', () => {
   for (const html of [indexHtml, appHtml, simulatorBlogHtml]) {
@@ -77,7 +78,7 @@ test('the public support address remains a one-line mail link in settings', () =
 
 test('all published standalone blog articles have non-empty page titles and descriptions', () => {
   const blogFiles = readdirSync(root).filter((name) => /^blog-.*\.html$/.test(name));
-  assert.equal(blogFiles.length, 58);
+  assert.equal(blogFiles.length, 59);
   for (const file of blogFiles) {
     const html = read(file);
     assert.match(html, /<title>[^<]+<\/title>/, `${file} requires a title`);
@@ -85,12 +86,13 @@ test('all published standalone blog articles have non-empty page titles and desc
   }
 });
 
-test('approved QBCore police and Roblox tapping guides are original long-form public pages with discovery links', () => {
+test('approved long-form public guides have discovery links', () => {
   const sitemap = read('sitemap.xml');
   const hub = read('blog.html');
   const guides = [
     ['blog-qbcore-police-job-script-free.html', 'https://trystellarai.com/blog-qbcore-police-job-script-free.html', /QBCore Police Job Script Free/],
-    ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog-roblox-tapping-simulator-script.html', /Roblox Tapping Simulator Script/]
+    ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog-roblox-tapping-simulator-script.html', /Roblox Tapping Simulator Script/],
+    ['blog-stellar-ai-vs-swisserai-qbcore-roblox.html', 'https://trystellarai.com/blog-stellar-ai-vs-swisserai-qbcore-roblox.html', /Stellar AI vs SwisserAI/]
   ];
   for (const [file, canonical, title] of guides) {
     const html = read(file);
@@ -102,6 +104,14 @@ test('approved QBCore police and Roblox tapping guides are original long-form pu
     assert.match(sitemap, new RegExp(canonical.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(hub, new RegExp(canonical.replace('https://trystellarai.com', '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
+});
+
+test('the SwisserAI comparison article names its source scope without unsupported universal superiority claims', () => {
+  assert.match(comparisonBlogHtml, /https:\/\/ai\.swisser\.dev\/fivem-script-generator/);
+  assert.match(comparisonBlogHtml, /https:\/\/ai\.swisser\.dev\/pricing/);
+  assert.match(comparisonBlogHtml, /This is not a claim that one tool is universally better\./);
+  assert.match(comparisonBlogHtml, /The reviewed public home, generator, framework and pricing pages position the product around FiveM; they did not present Roblox support\./);
+  assert.doesNotMatch(comparisonBlogHtml, /best AI|always better|outperforms every/i);
 });
 
 test('the unsent feature announcement broadcast draft preserves its review notice and official destination', () => {
