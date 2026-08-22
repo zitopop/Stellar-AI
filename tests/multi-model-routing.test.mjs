@@ -48,6 +48,15 @@ test('Task 205 routes the public ultra alias to Star outside Pro and Nova on Pro
   assert.equal(resolveRoute('ultra', '', 'owner').tier, 'nova');
 });
 
+test('Task 206 keeps the canonical Nova identifier gated to Pro and owner plans', () => {
+  for (const plan of ['free', 'lite', 'plus']) {
+    assert.equal(resolveModelTier('claude-opus-4-8', plan), 'star', `${plan} must fall back to Star`);
+    assert.equal(resolveRoute('claude-opus-4-8', '', plan).tier, 'star', `${plan} route must fall back to Star`);
+  }
+  assert.equal(resolveModelTier('claude-opus-4-8', 'pro'), 'nova');
+  assert.equal(resolveRoute('claude-opus-4-8', '', 'owner').tier, 'nova');
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
