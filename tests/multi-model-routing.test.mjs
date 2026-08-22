@@ -190,6 +190,16 @@ test('Task 220 keeps normalized premium-role labels gated to Star outside Pro', 
   }
 });
 
+test('Task 221 keeps every premium specialist model route available on Pro', () => {
+  for (const [role, model] of [['security', 'gpt-5'], ['tester', 'claude-opus-4-7']]) {
+    const route = resolveRoute('ultra', role, 'pro');
+    assert.equal(route.role, role);
+    assert.equal(route.provider, 'forge');
+    assert.equal(route.model, model);
+    assert.equal(route.fallbackTier, 'star');
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
