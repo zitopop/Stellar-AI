@@ -66,6 +66,14 @@ test('Task 207 keeps every recognised Nova alias gated to Pro and owner plans', 
   }
 });
 
+test('Task 208 normalizes Nova aliases without weakening their Pro-only gate', () => {
+  for (const alias of [' ULTRA ', 'NoVa', '\tClAuDe-OpUs-4-8\n']) {
+    assert.equal(resolveModelTier(alias, 'free'), 'star', `${JSON.stringify(alias)} must fall back to Star on Free`);
+    assert.equal(resolveModelTier(alias, 'plus'), 'star', `${JSON.stringify(alias)} must fall back to Star on Plus`);
+    assert.equal(resolveModelTier(alias, 'pro'), 'nova', `${JSON.stringify(alias)} must resolve Nova on Pro`);
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
