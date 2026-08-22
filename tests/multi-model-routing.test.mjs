@@ -124,6 +124,13 @@ test('Task 213 keeps every supported tier on a concrete primary-and-fallback can
   assert.deepEqual(getModelCandidates('nova'), ['claude-opus-4-8', 'claude-sonnet-4-6']);
 });
 
+test('Task 214 safely falls back to the Star candidate chain for unsupported tiers', () => {
+  const safeStarCandidates = ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001'];
+  assert.deepEqual(getModelCandidates('not-a-tier'), safeStarCandidates);
+  assert.deepEqual(getModelCandidates(null), safeStarCandidates);
+  assert.deepEqual(getModelCandidates(undefined), safeStarCandidates);
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
