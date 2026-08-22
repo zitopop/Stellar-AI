@@ -2901,6 +2901,22 @@
       #credits-btn, #keyboard-hint { display: none !important; }
       .composer-foot { justify-content: flex-end !important; }
     }
+    /* Flat minimal presentation: keep every control and dialog, remove decorative depth and motion. */
+    *, *::before, *::after { animation: none !important; transition: none !important; box-shadow: none !important; text-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    body, #main-col, #chat, .input-area.glass, .topbar.glass { background: #101010 !important; }
+    body.light, body.light #main-col, body.light #chat, body.light .input-area.glass, body.light .topbar.glass { background: #ffffff !important; }
+    body, body *, body *::before, body *::after { background-image: none !important; }
+    #sidebar { background: #171717 !important; }
+    body.light #sidebar { background: #f4f4f5 !important; }
+    .glass, .input-area > .flex, .sug-chip, .welcome-strip span, .roblox-world-links a, .message.msg-user .msg-content, .assistant-avatar, .model-pill { background-color: #181818 !important; }
+    body.light .glass, body.light .input-area > .flex, body.light .sug-chip, body.light .welcome-strip span, body.light .roblox-world-links a, body.light .message.msg-user .msg-content, body.light .assistant-avatar, body.light .model-pill { background-color: #f4f4f5 !important; }
+    .side-new, #send-btn, #free-upgrade-nudge button:first-of-type { color: #101010 !important; background: #f4f4f5 !important; }
+    .message.msg-user .msg-content { color: #f5f3f7 !important; border-color: #3f3f46 !important; }
+    body.light .message.msg-user .msg-content { color: #171219 !important; border-color: #d4d4d8 !important; }
+    .greet-wrap::before, .greet-wrap::after, .think-spinner::before, .think-spinner::after { display: none !important; }
+    #plans-modal > div, #settings-modal > div, #usage-modal > div, #owner-modal > div, #redeem-modal > div, #topup-modal > div, #thanks-modal > div, #limit-modal > div { background: #181818 !important; }
+    body.light #plans-modal > div, body.light #settings-modal > div, body.light #usage-modal > div, body.light #owner-modal > div, body.light #redeem-modal > div, body.light #topup-modal > div, body.light #thanks-modal > div, body.light #limit-modal > div { background: #ffffff !important; }
+    #free-upgrade-nudge:not([hidden]) { display: flex !important; }
   </style>
 <script type="application/ld+json">
 {
@@ -3083,6 +3099,10 @@
 
       </main>
       <div class="input-area p-6 glass border-t border-white/10" role="form" aria-label="Message composer">
+        <div id="free-upgrade-nudge" hidden role="status" aria-live="polite" style="align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:0 auto 10px;padding:10px 12px;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:#18131f;color:#f5f3f7;font-size:12px;line-height:1.4;">
+          <span><strong>Enjoying Stellar?</strong> Upgrade to Plus for 10× more usage — £20/mo.</span>
+          <span style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><button type="button" onclick="openPlansFromFreeUpgradeNudge()" style="min-height:36px;padding:0 10px;border:1px solid #f5f3f7;border-radius:8px;background:#f5f3f7;color:#171219;font:inherit;font-weight:800;cursor:pointer;">View plans</button><button type="button" onclick="dismissFreeUpgradeNudge()" aria-label="Dismiss upgrade reminder" title="Dismiss upgrade reminder" style="width:36px;height:36px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:transparent;color:#f5f3f7;font-size:18px;cursor:pointer;">×</button></span>
+        </div>
         <div id="img-preview-bar" style="display:none;padding:8px 0;margin-bottom:6px;">
           <div class="image-preview-card">
             <img id="img-preview" style="height:60px;width:auto;border-radius:8px;object-fit:cover;" alt="Uploaded image">
@@ -5206,6 +5226,28 @@
 
 
     let sendLock = false;
+    function countFreePlanSentMessages() {
+      return (Store.get().chats || []).reduce((total, chat) => total + (chat.messages || []).filter(message => message.role === 'user').length, 0);
+    }
+    function maybeShowFreeUpgradeNudge() {
+      const state = Store.get();
+      const nudge = document.getElementById('free-upgrade-nudge');
+      if (!nudge) return;
+      const sent = countFreePlanSentMessages();
+      const isFree = (state.plan || 'free') === 'free' && !isOwner();
+      const shouldShow = isFree && sent > 0 && sent % 3 === 0 && Number(state.freeUpgradeNudgeDismissedAt || 0) !== sent;
+      nudge.hidden = !shouldShow;
+    }
+    function dismissFreeUpgradeNudge() {
+      const sent = countFreePlanSentMessages();
+      Store.set({ freeUpgradeNudgeDismissedAt: sent });
+      const nudge = document.getElementById('free-upgrade-nudge');
+      if (nudge) nudge.hidden = true;
+    }
+    function openPlansFromFreeUpgradeNudge() {
+      dismissFreeUpgradeNudge();
+      openPlans();
+    }
     async function sendMessage() {
       const chips = document.getElementById('suggestion-chips');
       if (chips) chips.style.display = 'none';
@@ -5291,6 +5333,7 @@
         return;
       }
       consumeMsg();
+      maybeShowFreeUpgradeNudge();
       if (pastedBlock) {
         text = text + '\n\n--- pasted content ---\n' + pastedBlock;
         clearPaste();

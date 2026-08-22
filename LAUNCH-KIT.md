@@ -13,7 +13,7 @@ Your app is COMPLETE. This kit has everything left: flipping the money switch, f
 - Google sign-in (done) · owner mode (you get everything free)
 - Installable app (Add to Home Screen → your star icon, full screen)
 - Stop button, thinking-star animation, posh dark UI, business-tone AI
-- Plans: Free · Plus £10/mo · Pro £30/mo — confetti thank-you after purchase
+- Plans: Free · Plus £20/mo · Pro £75/mo — confetti thank-you after purchase
 - Terms & Privacy page at /terms.html
 - Landing page at /landing.html
 
@@ -25,10 +25,10 @@ Your app is COMPLETE. This kit has everything left: flipping the money switch, f
 Go to **dashboard.stripe.com** → log in → **Product catalogue** (or "Products") → **+ Add product**. Create these two, exactly:
 
 1. **Stellar Plus**
-   - Price: **£10.00**
+   - Price: **£20.00**
    - Billing: **Recurring — Monthly**
 2. **Stellar Pro**
-   - Price: **£30.00**
+   - Price: **£75.00**
    - Billing: **Recurring — Monthly**
 
 (Top-ups need NO product — the app prices them automatically: 3p per message, 50p minimum, packs from 10 to 100.)
@@ -87,7 +87,7 @@ Post the SAME clip everywhere. One clip, four platforms.
 
 ## 📋 LAUNCH CHECKLIST
 
-- [ ] 2 Stripe products created (Plus £10/mo, Pro £30/mo)
+- [ ] 2 Stripe products created (Plus £20/mo, Pro £75/mo)
 - [ ] 2 price codes into Vercel
 - [ ] Redeployed → green Ready
 - [ ] Test purchase → confetti seen
