@@ -210,6 +210,16 @@ test('Task 222 keeps every premium specialist route on Star for the legacy Lite 
   }
 });
 
+test('Task 223 keeps every premium specialist model route available to the owner plan', () => {
+  for (const [role, model] of [['security', 'gpt-5'], ['tester', 'claude-opus-4-7']]) {
+    const route = resolveRoute('ultra', role, 'owner');
+    assert.equal(route.role, role);
+    assert.equal(route.provider, 'forge');
+    assert.equal(route.model, model);
+    assert.equal(route.fallbackTier, 'star');
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
