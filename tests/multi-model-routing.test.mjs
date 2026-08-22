@@ -178,6 +178,18 @@ test('Task 219 keeps malformed role values from affecting non-Pro ultra plan gat
   }
 });
 
+test('Task 220 keeps normalized premium-role labels gated to Star outside Pro', () => {
+  for (const [input, role] of [[' SECURITY ', 'security'], ['TeStEr', 'tester']]) {
+    for (const plan of ['free', 'plus']) {
+      const route = resolveRoute('ultra', input, plan);
+      assert.equal(route.role, role);
+      assert.equal(route.provider, 'anthropic');
+      assert.equal(route.tier, 'star', `${input} must retain the Star fallback on ${plan}`);
+      assert.notEqual(route.tier, 'nova');
+    }
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
