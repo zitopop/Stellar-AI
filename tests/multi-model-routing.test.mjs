@@ -95,6 +95,16 @@ test('Task 210 safely routes malformed model inputs to Star without premium acce
   }
 });
 
+test('Task 211 safely routes oversized model inputs to Star without premium access', () => {
+  const oversizedModel = `ultra${'x'.repeat(128)}`;
+  const route = resolveRoute(oversizedModel, '', 'pro');
+  assert.equal(resolveModelTier(oversizedModel, 'free'), 'star');
+  assert.equal(resolveModelTier(oversizedModel, 'pro'), 'star');
+  assert.equal(route.provider, 'anthropic');
+  assert.equal(route.tier, 'star');
+  assert.notEqual(route.tier, 'nova');
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
