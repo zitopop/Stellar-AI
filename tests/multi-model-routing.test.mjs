@@ -334,6 +334,18 @@ test('Task 1 routes research role to the built-in multi-AI provider', () => {
   });
 });
 
+test('Task 229 keeps privileged plan labels exact before allowing Nova or premium roles', () => {
+  const variants = [' pro', 'pro ', 'PRO', '\tPro\n', ' owner', 'owner ', 'OWNER', '\tOwner\n'];
+
+  for (const plan of variants) {
+    assert.equal(resolveModelTier('ultra', plan), 'star', `${JSON.stringify(plan)} must not unlock Nova`);
+
+    const route = resolveRoute('ultra', 'security', plan);
+    assert.equal(route.provider, 'anthropic', `${JSON.stringify(plan)} must not unlock the premium security route`);
+    assert.equal(route.tier, 'star', `${JSON.stringify(plan)} must retain the Star fallback`);
+  }
+});
+
 test('Task 1 protects premium security routing on non-Pro plans', () => {
   const route = resolveRoute('smart', 'security', 'lite');
   assert.equal(route.provider, 'anthropic');
