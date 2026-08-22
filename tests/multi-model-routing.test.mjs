@@ -293,6 +293,36 @@ test('Task 227 keeps direct alias routing intact for Pro and owner', () => {
   }
 });
 
+test('Task 228 keeps normalized direct alias routing intact for Pro and owner', () => {
+  const anthropicAliases = {
+    spark: ['spark', 'fabie', 'haiku', 'claude-haiku-4-5-20251001'],
+    star: ['star', 'smart', 'sonnet', 'claude-sonnet-5'],
+    comet: ['comet', 'opus', 'claude-opus-5'],
+    nova: ['nova', 'ultra', 'fable', 'claude-fable-5', 'claude-opus-4-8'],
+  };
+
+  for (const [tier, aliases] of Object.entries(anthropicAliases)) {
+    for (const alias of aliases) {
+      const normalizedAlias = ` \t${alias.toUpperCase()}\n`;
+      for (const plan of ['pro', 'owner']) {
+        const route = resolveRoute(normalizedAlias, '', plan);
+        assert.equal(route.provider, 'anthropic', `${alias} must use Anthropic for ${plan}`);
+        assert.equal(route.tier, tier, `${alias} must route to ${tier} for ${plan}`);
+      }
+    }
+  }
+
+  for (const alias of ['claude-haiku-4-5', 'claude-sonnet-4-6', 'claude-opus-4-6']) {
+    const normalizedAlias = ` \t${alias.toUpperCase()}\n`;
+    for (const plan of ['pro', 'owner']) {
+      const route = resolveRoute(normalizedAlias, '', plan);
+      assert.equal(route.provider, 'forge', `${alias} must retain its direct Forge route for ${plan}`);
+      assert.equal(route.model, alias);
+      assert.equal(route.fallbackTier, 'star');
+    }
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
