@@ -155,6 +155,17 @@ test('Task 217 keeps specialist-role routing from elevating Free or Plus ultra r
   }
 });
 
+test('Task 218 keeps unknown role labels from affecting non-Pro ultra plan gating', () => {
+  for (const plan of ['free', 'plus']) {
+    const route = resolveRoute('ultra', 'unknown-role', plan);
+    assert.equal(route.role, 'implementer');
+    assert.equal(route.provider, 'forge');
+    assert.equal(route.model, 'claude-sonnet-4-6');
+    assert.equal(route.fallbackTier, 'star', `unknown roles must retain the Star fallback on ${plan}`);
+    assert.notEqual(route.model, 'claude-opus-4-8');
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
