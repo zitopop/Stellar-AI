@@ -137,6 +137,14 @@ test('Task 215 keeps candidate chains isolated between routing requests', () => 
   assert.deepEqual(getModelCandidates('star'), ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001']);
 });
 
+test('Task 216 keeps every recognised Nova alias available to the owner plan', () => {
+  for (const alias of ['nova', 'ultra', 'fable', 'claude-fable-5', 'claude-opus-4-8']) {
+    const route = resolveRoute(alias, '', 'owner');
+    assert.equal(route.provider, 'anthropic');
+    assert.equal(route.tier, 'nova', `${alias} must route to Nova for the owner plan`);
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
