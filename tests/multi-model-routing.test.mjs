@@ -57,6 +57,15 @@ test('Task 206 keeps the canonical Nova identifier gated to Pro and owner plans'
   assert.equal(resolveRoute('claude-opus-4-8', '', 'owner').tier, 'nova');
 });
 
+test('Task 207 keeps every recognised Nova alias gated to Pro and owner plans', () => {
+  const novaAliases = ['nova', 'ultra', 'fable', 'claude-fable-5', 'claude-opus-4-8'];
+  for (const alias of novaAliases) {
+    assert.equal(resolveModelTier(alias, 'free'), 'star', `${alias} must fall back to Star on Free`);
+    assert.equal(resolveModelTier(alias, 'plus'), 'star', `${alias} must fall back to Star on Plus`);
+    assert.equal(resolveModelTier(alias, 'pro'), 'nova', `${alias} must resolve Nova on Pro`);
+  }
+});
+
 test('Task 1 routes research role to the built-in multi-AI provider', () => {
   const route = resolveRoute('smart', 'researcher', 'lite');
   assert.deepEqual(route, {
