@@ -302,6 +302,17 @@ test('Task 198 keeps current Pro positioning and approved plan prices after remo
   assert.match(landingHtml, /£630\/year · Save 30%/);
 });
 
+test('capability and improve cards use larger, scan-friendly dimensions', () => {
+  assert.match(landingHtml, /\.capability-grid \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 20px; \}/);
+  assert.match(landingHtml, /\.capability \{ min-height: 420px; padding: 36px; \}/);
+  assert.match(landingHtml, /\.capability h3 \{ max-width: 14ch; margin-top: 72px; font-size: 27px;/);
+  assert.match(landingHtml, /\.capability p \{ max-width: 420px; font-size: 15px; line-height: 1\.72; \}/);
+  assert.match(landingHtml, /\.capability-map-card \{ min-height: 340px; padding: 30px; \}/);
+  assert.match(landingHtml, /\.capability-map-card p, \.capability-map-card li \{ font-size: 14px; line-height: 1\.65; \}/);
+  assert.match(landingHtml, /\.capability \{ min-height: 350px; padding: 28px; \}/);
+  assert.match(landingHtml, /\.capability-map-card \{ min-height: 0; padding: 26px; \}/);
+});
+
 test('Task 198 keeps the remaining current pricing cards mobile-safe after removing the Jarvis section', () => {
   assert.match(landingHtml, /\.capability-grid, \.capability-map-grid, \.plans, \.plan-decider, \.proof-strip \{ grid-template-columns: 1fr; \}/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
