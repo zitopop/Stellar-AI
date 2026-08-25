@@ -3857,7 +3857,7 @@
         <div style="font-size:13px;font-weight:800;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;" id="u-plan">Free</div>
 
         <!-- Usage section -->
-        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;margin-bottom:14px;">
+        <div id="u-usage-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
             <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Used</div>
           </div>
@@ -3865,7 +3865,7 @@
             <div id="u-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#10a37f);border-radius:99px;transition:width 0.5s ease;"></div>
           </div>
           <div style="display:flex;justify-content:space-between;">
-            <div style="font-size:13px;font-weight:900;color:#ffffff;" id="u-pct">0% used</div>
+            <div style="font-size:13px;font-weight:900;color:#ffffff;" id="u-pct" aria-live="polite">0% used</div>
             <div style="font-size:12px;color:rgba(255,255,255,0.55);" id="u-reset">Resets in 6h 0m</div>
           </div>
         </div>
@@ -4766,27 +4766,30 @@
       const used = remote && Number.isFinite(Number(remote.used)) ? Number(remote.used) : 0;
       const left = remote && Number.isFinite(Number(remote.remaining)) ? Math.max(0, Number(remote.remaining)) : Math.max(0, allow - used);
       const pct = Math.min(100, Math.round(used / Math.max(1, allow) * 100));
+      const owner = isOwner();
       const wallet = (u.promoBalance || 0) + (u.balance || 0);
       const cb = document.getElementById('credits-btn');
       if (cb) {
-        const lowNow = left <= Math.max(3, Math.ceil(allow * 0.1));
-        const guest = !Store.get().user && !isOwner();
+        const lowNow = !owner && left <= Math.max(3, Math.ceil(allow * 0.1));
+        const guest = !Store.get().user && !owner;
+        const memberSummary = owner ? moneyShort(wallet) + ' credit · Unlimited' : moneyShort(wallet) + ' credit · ' + left + ' left';
         cb.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> '
-          + (guest ? '40 requests/hr' : escapeHtml(moneyShort(wallet) + ' credit · ' + left + ' left'));
-        cb.setAttribute('aria-label', guest ? '40 requests per hour' : moneyShort(wallet) + ' account credit, ' + left + ' requests left');
-        cb.setAttribute('title', guest ? '40 requests per hour' : moneyShort(wallet) + ' account credit · ' + left + ' requests left');
+          + (guest ? '40 requests/hr' : escapeHtml(memberSummary));
+        cb.setAttribute('aria-label', guest ? '40 requests per hour' : owner ? moneyShort(wallet) + ' account credit, unlimited requests' : moneyShort(wallet) + ' account credit, ' + left + ' requests left');
+        cb.setAttribute('title', guest ? '40 requests per hour' : owner ? moneyShort(wallet) + ' account credit · Unlimited requests' : moneyShort(wallet) + ' account credit · ' + left + ' requests left');
         cb.classList.toggle('credits-low', lowNow);
       }
       const sfill = document.getElementById('set-meter-fill');
       if (sfill) {
-        sfill.style.width = pct + '%';
-        sfill.classList.toggle('mid', pct > 60 && pct < 90);
-        sfill.classList.toggle('low', pct >= 90);
+        sfill.style.width = owner ? '0%' : pct + '%';
+        sfill.classList.toggle('unlimited', owner);
+        sfill.classList.toggle('mid', !owner && pct > 60 && pct < 90);
+        sfill.classList.toggle('low', !owner && pct >= 90);
       }
       const sp = document.getElementById('set-usage-pct');
       if (sp) {
-        sp.textContent = left + ' of ' + allow + ' left';
-        document.getElementById('set-usage-reset').textContent = refillTimeStr();
+        sp.textContent = owner ? 'Unlimited access' : left + ' of ' + allow + ' left';
+        document.getElementById('set-usage-reset').textContent = owner ? 'No hourly cap' : refillTimeStr();
         const wr = document.getElementById('set-usage-wallet-row');
         wr.style.display = (wallet > 0 || Store.get().user || isOwner()) ? '' : 'none';
         document.getElementById('set-usage-wallet').textContent = moneyShort(wallet) + ' credit';
@@ -6213,6 +6216,7 @@
       const u = getUsage();
       const remote = serverUsage();
       const allow = allowanceFor();
+      const owner = isOwner();
       const used = remote && Number.isFinite(Number(remote.used)) ? Number(remote.used) : 0;
       const remaining = remote && Number.isFinite(Number(remote.remaining)) ? Number(remote.remaining) : Math.max(0, allow - used);
       const pct = Math.min(100, Math.round(used / Math.max(1, allow) * 100));
@@ -6220,13 +6224,15 @@
       const el = id => document.getElementById(id);
       if (!el('u-plan')) return;
       el('u-plan').textContent = names[Store.get().plan || 'free'] || 'Free';
-      el('u-fill').style.width = pct + '%';
-      el('u-fill').className = 'u-fill' + (pct >= 90 ? ' low' : pct > 60 ? ' mid' : '');
-      el('u-pct').textContent = remaining + ' of ' + allow + ' requests left';
+      const usageCard = el('u-usage-card');
+      if (usageCard) usageCard.classList.toggle('usage-unlimited', owner);
+      el('u-fill').style.width = owner ? '0%' : pct + '%';
+      el('u-fill').className = 'u-fill' + (owner ? ' unlimited' : pct >= 90 ? ' low' : pct > 60 ? ' mid' : '');
+      el('u-pct').textContent = owner ? 'Unlimited access' : remaining + ' of ' + allow + ' requests left';
       // Show a clear lower-tier upgrade route before a user runs out.
       const cta = el('u-upgrade-cta');
       if (cta) cta.style.display = (Store.get().plan === 'free' || !Store.get().plan) ? 'block' : 'none';
-      el('u-reset').textContent = 'Resets in ' + refillTimeStr();
+      el('u-reset').textContent = owner ? 'No hourly cap' : 'Resets in ' + refillTimeStr();
       const promo = u.promoBalance || 0, paid = u.balance || 0;
       el('u-total').textContent = moneyShort(promo + paid) + ' credit';
       el('u-promo').textContent = moneyShort(promo) + ' credit';
@@ -7203,6 +7209,38 @@
     @media (max-width: 767px) {
       #rec-btn:not(.active) { opacity: .22 !important; transform: scale(.7) !important; }
       .side-foot { gap: 5px !important; }
+    }
+  </style>
+<style>
+    /* Settings Usage cleanup: make account value and allowance the first read. */
+    #settings-modal .set-panel[data-panel="usage"] .set-label { margin-bottom: 8px !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-group { overflow: hidden; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item { min-height: 58px; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:first-child { min-height: 70px; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:first-child .set-key { color: #f4f4f5 !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:first-child .set-val { color: #f4f4f5 !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(3) { background: rgba(97,230,191,.045); }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(3) .set-key { color: #dcfff3 !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(3) .set-val { color: #7ee8c9 !important; font-weight: 900 !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(n+4) { min-height: 50px; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(n+4) .set-key { color: #c9c9d1 !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(n+4) .set-chev { color: #8e8e98 !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(4) { margin-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
+    #u-usage-card.usage-unlimited { border-color: rgba(97,230,191,.24) !important; background: rgba(97,230,191,.055) !important; }
+    #u-usage-card.usage-unlimited > div:nth-child(2) { display: none; }
+    #u-fill.unlimited { background: #61e6bf !important; }
+    #settings-modal .set-panel[data-panel="usage"] .set-val { white-space: nowrap; }
+    body.light #settings-modal .set-panel[data-panel="usage"] .set-item:first-child .set-key,
+    body.light #settings-modal .set-panel[data-panel="usage"] .set-item:first-child .set-val { color: #211a35 !important; }
+    body.light #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(3) { background: rgba(20,140,112,.06); }
+    body.light #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(3) .set-key { color: #254f44 !important; }
+    body.light #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(3) .set-val { color: #087057 !important; }
+    body.light #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(n+4) .set-key { color: #4b4655 !important; }
+    body.light #settings-modal .set-panel[data-panel="usage"] .set-item:nth-child(4) { border-top-color: rgba(85,65,131,.10); }
+    @media (max-width: 767px) {
+      #settings-modal .set-panel[data-panel="usage"] .set-item { min-height: 56px; }
+      #settings-modal .set-panel[data-panel="usage"] .set-item:first-child { min-height: 66px; }
+      #settings-modal .set-panel[data-panel="usage"] .set-val { font-size: 11px !important; }
     }
   </style>
 <script src="/currency.js"></script>
