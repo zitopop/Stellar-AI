@@ -29,20 +29,26 @@ export function subscriptionPriceForPlan(plan, env = process.env) {
   const prices = {
     starter: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER', 'STRIPE_PRICE_ID_STARTER_MONTHLY', 'STRIPE_STARTER_PRICE_ID', 'STELLAR_STARTER', 'StellarStarter'),
     'starter-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER_ANNUAL', 'STRIPE_PRICE_ID_STARTER_YEARLY', 'STRIPE_STARTER_ANNUAL_PRICE_ID', 'STELLAR_STARTER_YEAR', 'StellarStarterYear'),
-    plus: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_LITE'),
-    'plus-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
-    lite: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_LITE'),
-    'lite-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
-    pro: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO'),
-    'pro-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO_ANNUAL'),
+    plus: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY', 'STRIPE_PLUS_PRICE_ID', 'STRIPE_PRICE_ID_LITE'),
+    'plus-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY', 'STRIPE_PLUS_ANNUAL_PRICE_ID', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
+    lite: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY', 'STRIPE_PLUS_PRICE_ID', 'STRIPE_PRICE_ID_LITE'),
+    'lite-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY', 'STRIPE_PLUS_ANNUAL_PRICE_ID', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
+    pro: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO', 'STRIPE_PRICE_ID_PRO_MONTHLY', 'STRIPE_PRO_PRICE_ID'),
+    'pro-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO_ANNUAL', 'STRIPE_PRICE_ID_PRO_YEARLY', 'STRIPE_PRO_ANNUAL_PRICE_ID'),
   };
   return prices[plan] || '';
 }
 
 function missingPlanMessage(plan) {
-  if (plan === 'starter') return 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.';
-  if (plan === 'starter-annual') return 'Starter annual checkout is not configured yet. Add the Starter annual Stripe price ID, then redeploy.';
-  return 'That plan is not available.';
+  const messages = {
+    starter: 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.',
+    'starter-annual': 'Starter annual checkout is not configured yet. Add the Starter annual Stripe price ID, then redeploy.',
+    plus: 'Plus monthly checkout is not configured yet. Add the Plus monthly Stripe price ID, then redeploy.',
+    'plus-annual': 'Plus annual checkout is not configured yet. Add the Plus annual Stripe price ID, then redeploy.',
+    pro: 'Pro monthly checkout is not configured yet. Add the Pro monthly Stripe price ID, then redeploy.',
+    'pro-annual': 'Pro annual checkout is not configured yet. Add the Pro annual Stripe price ID, then redeploy.',
+  };
+  return messages[plan] || 'That plan is not available.';
 }
 
 export default async function handler(req, res) {

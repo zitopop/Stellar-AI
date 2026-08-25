@@ -6434,11 +6434,12 @@
         method: 'POST',
         headers: apiHeaders(),
         body: JSON.stringify({ plan })
-      }).then(r => r.json()).then(data => {
-        if (data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
+      }).then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (response.ok && data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
         restore();
-        showCheckoutError(data.error);
-      }).catch(() => { restore(); showCheckoutError(); });
+        showCheckoutError(data.error || `Checkout could not start (${response.status}). Please try again.`);
+      }).catch(() => { restore(); showCheckoutError('Could not reach checkout. Please check your connection and try again.'); });
     }
     function showCheckoutError(msg) {
       const m = msg || 'Could not reach checkout. Please try again in a moment.';
