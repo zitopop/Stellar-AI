@@ -4024,7 +4024,7 @@
     const Store = {
       get() {
         const s = localStorage.getItem('stellar-store');
-        return s ? JSON.parse(s) : { mode: 'dark', plan: 'free', chats: [], currentChat: null };
+        return s ? JSON.parse(s) : { mode: 'light', plan: 'free', chats: [], currentChat: null };
       },
       set(data) {
         const current = this.get();
@@ -6553,6 +6553,8 @@
     }
     const LIGHT_THEME_START_HOUR = 8;
     const DARK_THEME_START_HOUR = 20;
+    // Light is the reliable default so text and controls remain readable; the manual toggle still allows dark mode.
+    const LIGHT_FIRST_WORKSPACE = true;
     function automaticMode(date = new Date()) {
       const hour = date.getHours();
       return hour >= LIGHT_THEME_START_HOUR && hour < DARK_THEME_START_HOUR ? 'light' : 'dark';
@@ -6580,7 +6582,7 @@
     }
 
     function startAutomaticTheme() {
-      setMode(automaticMode(), 'automatic');
+      setMode(LIGHT_FIRST_WORKSPACE ? 'light' : automaticMode(), 'automatic');
       const checkAtNextHour = () => {
         const now = new Date();
         const nextHour = new Date(now);
