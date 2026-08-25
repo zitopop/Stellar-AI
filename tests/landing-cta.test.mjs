@@ -155,6 +155,11 @@ test('Task 184/190 keeps the framework rail close to the hero without removing t
   assert.match(landingHtml, /\.framework-rail \{ display: block; padding: 19px; margin-top: 42px; \}/);
 });
 
+test('the landing navigation remains sticky across viewport sizes', () => {
+  assert.match(landingHtml, /\.site-header \{ position: -webkit-sticky; position: sticky; inset-block-start: 0; z-index: 30; width: 100%;/);
+  assert.match(landingHtml, /<header class="site-header">/);
+});
+
 test('Task 186 keeps landing hash navigation visible beneath the sticky header', () => {
   assert.match(landingHtml, /html \{ overflow-x: hidden; scroll-padding-top: 96px; \}/);
   assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="capabilities"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
