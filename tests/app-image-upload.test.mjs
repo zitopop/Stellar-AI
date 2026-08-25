@@ -207,6 +207,17 @@ test('Task 82 closes an open sign-in dialog with Escape through the existing dis
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+const welcomeModal = document\.getElementById\('welcome-modal'\);\s+if \(!welcomeModal \|\| welcomeModal\.classList\.contains\('hidden'\)\) return;[\s\S]*?if \(event\.key !== 'Escape'\) return;\s+event\.preventDefault\(\);\s+dismissWelcome\(\);/);
 });
 
+test('achievement settings use tappable badge cards with clear locked and unlocked states', () => {
+  assert.match(appHtml, /id="set-achievements" class="set-group achievement-grid"/);
+  assert.match(appHtml, /<button type="button" class="achievement-badge ' \+ \(unlocked \? 'is-unlocked' : 'is-locked'\)/);
+  assert.match(appHtml, /aria-label="' \+ state \+ ': ' \+ label/);
+  assert.match(appHtml, /function toggleAchievementBadge\(button\)/);
+  assert.match(appHtml, /button\.classList\.toggle\('is-selected', !selected\)/);
+  assert.match(appHtml, /\.achievement-badge\.is-unlocked \{ border-color: rgba\(16,163,127,\.55\)/);
+  assert.match(appHtml, /body\.light \.achievement-badge-description \{ color: #374151; \}/);
+  assert.match(appHtml, /body\.light #settings-modal \.set-key \{ color: #1f2937 !important; \}/);
+});
+
 test('Task 83 gives the plans, usage, and settings modal cards explicit labelled dialog semantics', () => {
   assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="plans-modal-heading"[\s\S]*?id="plans-modal-heading"[\s\S]*?>Choose your plan<\//);
   assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="settings-modal-heading" class="set-card[\s\S]*?id="settings-modal-heading" class="settings-title">Settings<\//);

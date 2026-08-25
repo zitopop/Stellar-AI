@@ -3015,6 +3015,39 @@
     }
     body.light #plans-modal [style*="color:rgba(255,255,255"], body.light #settings-modal [style*="color:rgba(255,255,255"], body.light #usage-modal [style*="color:rgba(255,255,255"] { color: #4b4658 !important; }
     body.light #plans-modal [style*="color:#fff"], body.light #settings-modal [style*="color:#fff"], body.light #usage-modal [style*="color:#ffffff"] { color: #18181b !important; }
+
+    /* Achievement badges: compact, scannable, and genuinely tappable. */
+    .achievement-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; padding: 10px !important; }
+    .achievement-badge { display: flex; align-items: flex-start; gap: 10px; width: 100%; min-height: 86px; padding: 13px !important; border: 1px solid #3f355a !important; border-radius: 14px !important; color: #e4e4e7 !important; background: #181428 !important; text-align: left; cursor: pointer; transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease; }
+    .achievement-badge:hover, .achievement-badge:focus-visible { border-color: #a78bfa !important; background: #211a38 !important; transform: translateY(-1px); outline: none; }
+    .achievement-badge:active { transform: scale(.985); }
+    .achievement-badge.is-unlocked { border-color: rgba(16,163,127,.55) !important; background: rgba(16,163,127,.10) !important; }
+    .achievement-badge.is-unlocked:hover, .achievement-badge.is-unlocked:focus-visible { border-color: #34d399 !important; background: rgba(16,163,127,.16) !important; }
+    .achievement-badge.is-selected { box-shadow: 0 0 0 2px rgba(167,139,250,.22); }
+    .achievement-badge-icon { display: grid; flex: none; width: 32px; height: 32px; place-items: center; border: 1px solid #5b4b7e; border-radius: 10px; color: #c4b5fd; background: #241c3e; font-size: 17px; font-weight: 900; }
+    .achievement-badge.is-unlocked .achievement-badge-icon { border-color: rgba(52,211,153,.5); color: #34d399; background: rgba(16,163,127,.16); }
+    .achievement-badge-copy { display: block; min-width: 0; flex: 1; }
+    .achievement-badge-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .achievement-badge-name { color: #fafafa; font-size: 13px; font-weight: 850; line-height: 1.25; }
+    .achievement-badge-state { flex: none; color: #a78bfa; font-size: 9px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .achievement-badge.is-unlocked .achievement-badge-state { color: #34d399; }
+    .achievement-badge-description { display: block; margin-top: 5px; color: #a1a1aa; font-size: 11px; font-weight: 600; line-height: 1.4; }
+    body.light #settings-modal .set-key { color: #1f2937 !important; }
+    body.light #settings-modal .set-item:not(.set-click) .set-key { color: #374151 !important; }
+    body.light #settings-modal .set-val, body.light #settings-modal .set-val.dim { color: #334155 !important; }
+    body.light #settings-modal .profile-sub, body.light #settings-modal .so-sub, body.light #settings-modal .set-note { color: #374151 !important; }
+    body.light #settings-modal .set-label { color: #6d28d9 !important; }
+    body.light .achievement-badge { border-color: #c7c9d1 !important; color: #1f2937 !important; background: #ffffff !important; }
+    body.light .achievement-badge:hover, body.light .achievement-badge:focus-visible { border-color: #6d28d9 !important; background: #f5f3ff !important; }
+    body.light .achievement-badge.is-unlocked { border-color: #6ee7b7 !important; background: #ecfdf5 !important; }
+    body.light .achievement-badge.is-unlocked:hover, body.light .achievement-badge.is-unlocked:focus-visible { border-color: #059669 !important; background: #d1fae5 !important; }
+    body.light .achievement-badge-icon { border-color: #c4b5fd; color: #5b21b6; background: #f5f3ff; }
+    body.light .achievement-badge.is-unlocked .achievement-badge-icon { border-color: #6ee7b7; color: #047857; background: #d1fae5; }
+    body.light .achievement-badge-name { color: #111827; }
+    body.light .achievement-badge-state { color: #6d28d9; }
+    body.light .achievement-badge.is-unlocked .achievement-badge-state { color: #047857; }
+    body.light .achievement-badge-description { color: #374151; }
+    @media (max-width: 767px) { .achievement-grid { grid-template-columns: 1fr !important; padding: 8px !important; } .achievement-badge { min-height: 78px; } }
   </style>
 <script type="application/ld+json">
 {
@@ -3485,7 +3518,7 @@
       </div>
       <div id="set-achievements-section" style="display:none;margin-top:16px;">
         <div class="set-label">Achievements</div>
-        <div id="set-achievements" class="set-group" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"></div>
+        <div id="set-achievements" class="set-group achievement-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"></div>
       </div>
 
       </div>
@@ -6078,6 +6111,16 @@
       el('u-paid-line').style.display = paid > 0 ? '' : 'none';
       el('u-switch').classList.toggle('on', creditsOn());
     }
+    function toggleAchievementBadge(button) {
+      if (!button) return;
+      const selected = button.getAttribute('aria-pressed') === 'true';
+      document.querySelectorAll('.achievement-badge[aria-pressed="true"]').forEach((badge) => {
+        badge.setAttribute('aria-pressed', 'false');
+        badge.classList.remove('is-selected');
+      });
+      button.setAttribute('aria-pressed', String(!selected));
+      button.classList.toggle('is-selected', !selected);
+    }
     function setTab(name) {
       document.querySelectorAll('.set-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
       document.querySelectorAll('.set-panel').forEach(p => { p.style.display = (p.dataset.panel === name) ? '' : 'none'; });
@@ -6317,10 +6360,14 @@
         const achievements = Array.isArray(s.achievements) ? s.achievements : [];
         achievementGrid.innerHTML = achievements.map((achievement) => {
           const unlocked = Boolean(achievement.unlockedAt);
-          return '<div style="padding:10px;border:1px solid ' + (unlocked ? 'rgba(16,163,127,.35)' : 'rgba(255,255,255,.08)') + ';border-radius:10px;background:' + (unlocked ? 'rgba(16,163,127,.08)' : 'rgba(255,255,255,.025)') + ';min-width:0;">'
-            + '<div style="font-size:12px;font-weight:850;color:' + (unlocked ? '#10a37f' : 'rgba(255,255,255,.5)') + '">' + (unlocked ? '✓ ' : '○ ') + escapeHtml(achievement.label || 'Achievement') + '</div>'
-            + '<div style="margin-top:3px;font-size:10px;line-height:1.35;color:rgba(255,255,255,.48);">' + escapeHtml(achievement.description || '') + '</div></div>';
-        }).join('') || '<div class="set-note" style="margin:0;grid-column:1/-1;">Your first generated script unlocks a badge here.</div>';
+          const label = escapeHtml(achievement.label || 'Achievement');
+          const description = escapeHtml(achievement.description || '');
+          const state = unlocked ? 'Unlocked' : 'Locked';
+          return '<button type="button" class="achievement-badge ' + (unlocked ? 'is-unlocked' : 'is-locked') + '" aria-pressed="false" aria-label="' + state + ': ' + label + '" onclick="toggleAchievementBadge(this)">'
+            + '<span class="achievement-badge-icon" aria-hidden="true">' + (unlocked ? '✓' : '○') + '</span>'
+            + '<span class="achievement-badge-copy"><span class="achievement-badge-top"><span class="achievement-badge-name">' + label + '</span><span class="achievement-badge-state">' + state + '</span></span>'
+            + '<span class="achievement-badge-description">' + description + '</span></span></button>';
+        }).join('') || '<div class="set-note" style="margin:0;grid-column:1/-1;">Generate a script to unlock your first badge.</div>';
       }
       if (isOwner()) {
         document.getElementById('set-plan').textContent = '👑 Owner';
