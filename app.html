@@ -3180,11 +3180,10 @@
       <main id="chat" class="flex-1 overflow-y-auto p-6" aria-label="Chat conversation" aria-busy="false">
         <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
         <div class="greet-wrap">
-          <div class="welcome-kicker">Workspace ready</div>
-          <div class="greet-hi" id="greet-hi">Hello</div>
-          <p class="welcome-sub">Choose a starter or describe what you want to build. Refine it here.</p>
-          <div class="roblox-world-links"><a href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer">✦ Play Stellar Strike ↗</a><a href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer">S Play Stellar Simulator ↗</a><a href="https://www.roblox.com/communities/433084698/StellarHQ#!/about" target="_blank" rel="noopener noreferrer">StellarHQ community ↗</a></div>
-          <div class="welcome-next-step" role="note"><span class="welcome-next-step-label">First build</span><p><strong>Choose a starter,</strong> make it yours, then review and test the files.</p><a href="/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→</span></a></div>
+          <div class="greet-hi" id="greet-hi">${timeGreeting()}</div>
+          <p class="welcome-sub">Start with a prompt or choose a starter.</p>
+          <div class="roblox-world-links"><a href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer">Strike ↗</a><a href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer">Simulator ↗</a></div>
+          <div class="welcome-next-step" role="note"><span class="welcome-next-step-label">Next</span><p><strong>Choose a starter,</strong> then review the files.</p><a href="/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→</span></a></div>
           <div id="welcome-starters-heading" class="welcome-starters-label">Choose a starting point</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
             <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job with an F6 menu</span></button>
@@ -3514,18 +3513,18 @@
       <div class="set-label">Usage</div>
       <div class="set-group">
         <div class="set-item">
-          <div class="set-key"><i class="sk-ico t-blue"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart"/></svg></i>Used this window</div>
+          <div class="set-key"><i class="sk-ico t-blue"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart"/></svg></i>Used</div>
           <div class="set-val set-usage-val">
             <div class="set-meter"><div id="set-meter-fill" class="set-meter-fill" style="width:100%"></div></div>
             <span id="set-usage-pct">0%</span>
           </div>
         </div>
         <div class="set-item">
-          <div class="set-key"><i class="sk-ico t-amber"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clock"/></svg></i>Refreshes in</div>
+          <div class="set-key"><i class="sk-ico t-amber"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clock"/></svg></i>Resets in</div>
           <div class="set-val" id="set-usage-reset">6h 0m</div>
         </div>
         <div class="set-item set-click" id="set-usage-wallet-row" style="display:none" onclick="closeSettings(); openTopup()">
-          <div class="set-key"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wallet"/></svg></i>Your balance</div>
+          <div class="set-key"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wallet"/></svg></i>Balance</div>
           <div class="set-val" id="set-usage-wallet">£0.00</div><div class="set-chev" aria-hidden="true">›</div>
         </div>
         <div class="set-item set-click" onclick="toggleCreditsOn()">
@@ -3537,7 +3536,7 @@
           <div class="set-chev" aria-hidden="true">›</div>
         </div>
         <div class="set-item set-click" onclick="closeSettings(); openRedeem()">
-          <div class="set-key"><i class="sk-ico t-pink"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg></i>Redeem a code</div>
+          <div class="set-key"><i class="sk-ico t-pink"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg></i>Redeem</div>
           <div class="set-chev" aria-hidden="true">›</div>
         </div>
         <div class="set-item set-click" id="set-owner-row" role="button" tabindex="0" aria-haspopup="dialog" onclick="openOwner()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openOwner(); }" style="display:none">
@@ -3545,8 +3544,6 @@
           <div class="set-chev" aria-hidden="true">›</div>
         </div>
       </div>
-      <div class="set-note">Your allowance refreshes automatically on the schedule above. A short answer uses the least; longer scripts and generated images use more, because they take more to produce. Credit is only used once your plan allowance runs out, and free credit is always spent first.</div>
-
       </div>
 
       <div class="set-panel" data-panel="look" style="display:none">
@@ -3717,7 +3714,7 @@
     ">
       <!-- Header -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.07);">
-        <div id="usage-modal-heading" style="font-size:16px;font-weight:900;letter-spacing:-0.3px;color:#ffffff;">Plan usage limits</div>
+        <div id="usage-modal-heading" style="font-size:16px;font-weight:900;letter-spacing:-0.3px;color:#ffffff;">Usage</div>
         <button id="usage-modal-close" onclick="closeUsage()" aria-label="Close usage limits" title="Close usage limits" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;color:rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;">×</button>
       </div>
 
@@ -3728,22 +3725,21 @@
         <!-- Usage section -->
         <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Current session</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.5);">Starts when a message is sent</div>
+            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Used</div>
           </div>
           <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;margin-bottom:10px;">
             <div id="u-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#10a37f);border-radius:99px;transition:width 0.5s ease;"></div>
           </div>
           <div style="display:flex;justify-content:space-between;">
             <div style="font-size:13px;font-weight:900;color:#ffffff;" id="u-pct">0% used</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.55);" id="u-reset">Refreshes in 6h 0m</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.55);" id="u-reset">Resets in 6h 0m</div>
           </div>
         </div>
 
         <!-- Balance section -->
         <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Your balance</div>
+            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Balance</div>
             <div style="font-size:16px;font-weight:900;color:#ffffff;" id="u-total">£0.00</div>
           </div>
           <div id="u-promo-line" style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:6px;">
@@ -3760,7 +3756,6 @@
           <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleCreditsOn()">
             <div>
               <div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:3px;">Usage credit</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.55);">Keep going with your credit when your allowance runs out.</div>
             </div>
             <div class="u-switch" id="u-switch" style="flex:none;margin-left:16px;"><div class="u-knob"></div></div>
           </div>
@@ -3769,7 +3764,7 @@
         <!-- Upgrade CTA for free users -->
         <div id="u-upgrade-cta" style="display:none;text-align:center;margin-bottom:20px;">
           <button onclick="closeUsage(); openPlans();" style="width:100%;padding:11px;border-radius:10px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:rgba(139,92,246,0.9);font-weight:800;font-size:13px;cursor:pointer;">
-            ⚡ Upgrade for more usage →
+            Upgrade →
           </button>
         </div>
 
@@ -4841,11 +4836,10 @@
     function greetingMarkup() {
       return `
         <div class="greet-wrap">
-          <div class="welcome-kicker">Workspace ready</div>
           <div class="greet-hi" id="greet-hi">${timeGreeting()}</div>
-          <p class="welcome-sub">Choose a starter or describe what you want to build. Refine it here.</p>
-          <div class="roblox-world-links"><a href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer">✦ Play Stellar Strike ↗</a><a href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer">S Play Stellar Simulator ↗</a><a href="https://www.roblox.com/communities/433084698/StellarHQ#!/about" target="_blank" rel="noopener noreferrer">StellarHQ community ↗</a></div>
-          <div class="welcome-next-step" role="note"><span class="welcome-next-step-label">First build</span><p><strong>Choose a starter,</strong> make it yours, then review and test the files.</p><a href="/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→</span></a></div>
+          <p class="welcome-sub">Start with a prompt or choose a starter.</p>
+          <div class="roblox-world-links"><a href="https://www.roblox.com/games/103753262214310/Stellar-Strike" target="_blank" rel="noopener noreferrer">Strike ↗</a><a href="https://www.roblox.com/games/17874928076/Stellar-Simulator" target="_blank" rel="noopener noreferrer">Simulator ↗</a></div>
+          <div class="welcome-next-step" role="note"><span class="welcome-next-step-label">Next</span><p><strong>Choose a starter,</strong> then review the files.</p><a href="/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→</span></a></div>
           <div id="welcome-starters-heading" class="welcome-starters-label">Choose a starting point</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
             <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job with an F6 menu</span></button>

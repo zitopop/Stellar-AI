@@ -210,7 +210,7 @@ test('Task 82 closes an open sign-in dialog with Escape through the existing dis
 test('Task 83 gives the plans, usage, and settings modal cards explicit labelled dialog semantics', () => {
   assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="plans-modal-heading"[\s\S]*?id="plans-modal-heading"[\s\S]*?>Choose your plan<\//);
   assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="settings-modal-heading" class="set-card[\s\S]*?id="settings-modal-heading" class="settings-title">Settings<\//);
-  assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="usage-modal-heading"[\s\S]*?id="usage-modal-heading"[\s\S]*?>Plan usage limits<\//);
+  assert.match(appHtml, /role="dialog" aria-modal="true" aria-labelledby="usage-modal-heading"[\s\S]*?id="usage-modal-heading"[\s\S]*?>Usage<\//);
 });
 
 test('Task 84 gives every scoped utility-dialog close control a specific accessible name', () => {

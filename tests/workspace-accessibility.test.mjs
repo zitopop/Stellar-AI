@@ -143,7 +143,7 @@ test('chat workspace refinement keeps the model picker descriptive, flat, and be
 });
 
 test('workspace welcome states keep first-use guidance and Guides discovery consistent', () => {
-  const orientation = /<div class="welcome-next-step" role="note"><span class="welcome-next-step-label">First build<\/span><p><strong>Choose a starter,<\/strong> make it yours, then review and test the files\.<\/p><a href="\/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→<\/span><\/a><\/div>/g;
+  const orientation = /<div class="welcome-next-step" role="note"><span class="welcome-next-step-label">Next<\/span><p><strong>Choose a starter,<\/strong> then review the files\.<\/p><a href="\/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→<\/span><\/a><\/div>/g;
   assert.equal(workspaceHtml.match(orientation)?.length, 2);
   assert.equal((workspaceHtml.match(/id="welcome-starters-heading" class="welcome-starters-label">Choose a starting point<\/div>/g) ?? []).length, 2);
   assert.equal((workspaceHtml.match(/id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading"/g) ?? []).length, 2);
