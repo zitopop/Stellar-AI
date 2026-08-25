@@ -49,6 +49,10 @@ test('checkout, auth and account contracts preserve Starter, founders and referr
   assert.match(getPlan, /achievementDefinitions/);
 });
 
+test('app Starter card preserves the approved early-builder offer and benefit order', () => {
+  assert.match(app, /id="plan-card-starter"[\s\S]*?Early builders who want more room for regular scripts\.[\s\S]*?id="plan-btn-starter"[^>]*>Get Starter<\/button>[\s\S]*?£67\/year · Save 30%[\s\S]*?Everything in Free, plus[\s\S]*?3× usage · 120 requests\/hour[\s\S]*?Priority queue[\s\S]*?Longer scripts[\s\S]*?Cancel anytime/);
+});
+
 test('workspace defaults to Star and protects its mobile modal experience', () => {
   assert.match(app, /s\.model \|\| 'smart'/);
   assert.match(app, /#plans-modal > div,[\s\S]*?max-height: 92dvh !important;[\s\S]*?-webkit-overflow-scrolling: touch !important;/);

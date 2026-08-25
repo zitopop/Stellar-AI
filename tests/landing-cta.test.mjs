@@ -170,7 +170,7 @@ test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consis
   assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Simple, transparent plans<\/div><h2>Choose the plan for how often you build\.<\/h2><p>Every plan supports FiveM and Roblox work\. Choose based on the amount of building and iteration you need\.<\/p><\/div>/);
   assert.match(landingHtml, /<p class="plan-compare">Start Free to try Stellar or fix something smaller\.[\s\S]*server-enforced hourly requests and you can cancel any time\.<\/p>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room for regular scripts<\/h3><p class="plan-desc">Early builders who want more room for regular scripts\.<\/p>/);
-  assert.match(landingHtml, /<li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul><p class="plan-compare">Everything in Free, plus<\/p>/);
+  assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span><\/div><a href="\/app" class="button button-secondary" aria-label="Choose the Starter plan">Get Starter<\/a><div class="annual">£67\/year · Save 30%<\/div><div class="plan-includes">Everything in Free, plus<\/div><ul><li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul>/);
   assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">Most popular<\/div><div class="plan-label">Plus<\/div>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For complete games<\/div><div class="plan-label">Pro<\/div>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
