@@ -2,6 +2,7 @@
 import crypto from 'crypto';
 import { createSession } from '../lib/auth.js';
 import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, validReferralCode } from '../lib/profile.js';
+import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js';
 
 function fragment(values) {
   return new URLSearchParams(values).toString();
@@ -95,7 +96,7 @@ export default async function handler(req, res) {
       isNew = true;
       const now = Date.now();
       const authRecord = { discord: true, discordId: profile.id, discordUsername: profile.username, createdAt: now };
-      user = { plan: 'free', walletPence: 100, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord' };
+      user = { plan: 'free', walletPence: 100, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord', funnel: initialFunnelState(now) };
       await kvPipeline(kvUrl, kvToken, [
         ['SET', authKey, JSON.stringify(authRecord)],
         ['SET', userKey, JSON.stringify(user)],
@@ -110,6 +111,7 @@ export default async function handler(req, res) {
       try { await applyReferralReward(kvUrl, kvToken, email, referralCode); } catch (error) { console.error('Discord referral reward failed', error?.message || error); }
     }
 
+    if (isNew) void recordFunnelSignup({ url: kvUrl, token: kvToken, email });
     const session = createSession(email);
     const name = String(profile.global_name || profile.username || email.split('@')[0]).slice(0, 100);
     const fragmentValue = fragment({

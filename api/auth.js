@@ -2,6 +2,7 @@
 import crypto from 'crypto';
 import { createSession, readSession } from '../lib/auth.js';
 import { applyReferralReward, ensureReferralProfile, kvGet, kvSet } from '../lib/profile.js';
+import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';
 
@@ -100,6 +101,7 @@ async function ensureUser(url, token, email, source) {
     welcomeCreditAt: Date.now(),
     createdAt: Date.now(),
     signInSource: source,
+    funnel: initialFunnelState(),
   };
   await kvSet(url, token, userKey, user);
   const profile = await ensureReferralProfile(url, token, email, user);
@@ -132,7 +134,10 @@ export default async function handler(req, res) {
       const googleUser = await verifyGoogleCredential(credential);
       const { isNew } = await ensureUser(url, token, googleUser.email, 'google');
       const referral = await awardReferralIfEligible(url, token, googleUser.email, referralCode, isNew);
-      if (isNew) void sendWelcomeEmail(googleUser.email);
+      if (isNew) {
+        void sendWelcomeEmail(googleUser.email);
+        void recordFunnelSignup({ url, token, email: googleUser.email });
+      }
       return res.status(200).json({ ok: true, user: googleUser, session: createSession(googleUser.email), isNew, referralAwarded: Boolean(referral?.applied) });
     }
 
@@ -181,6 +186,7 @@ export default async function handler(req, res) {
       const { isNew } = await ensureUser(url, token, normalizedEmail, 'password');
       const referral = await awardReferralIfEligible(url, token, normalizedEmail, referralCode, isNew);
       void sendWelcomeEmail(normalizedEmail);
+      void recordFunnelSignup({ url, token, email: normalizedEmail });
       return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail), referralAwarded: Boolean(referral?.applied) });
     }
 

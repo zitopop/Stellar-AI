@@ -788,6 +788,7 @@ export default async function handler(req, res) {
 
     const reader = upstream.body.getReader();
     const decoder = new TextDecoder();
+    let streamCompleted = false;
 
     try {
       while (true) {
@@ -797,9 +798,10 @@ export default async function handler(req, res) {
       }
       res.write(decoder.decode());
       res.end();
+      streamCompleted = true;
     } finally {
       reader.releaseLock();
-      if (session?.email && KV_URL && KV_TOKEN) {
+      if (streamCompleted && session?.email && KV_URL && KV_TOKEN) {
         recordScriptGenerated(KV_URL, KV_TOKEN, session.email).catch((error) => console.error('Could not record script achievement', error?.message || error));
         const country = req.headers['x-vercel-ip-country'] || req.headers['cf-ipcountry'] || '';
         recordCountryActivity(KV_URL, KV_TOKEN, country).catch((error) => console.error('Could not record aggregate country activity', error?.message || error));

@@ -3682,8 +3682,10 @@
       <div class="own-panel" data-opanel="metrics" style="display:none">
         <div class="own-label">Today’s verified Stripe funnel</div>
         <div class="own-note" style="margin-bottom:12px">Counts are aggregate only. Successful payments come from signed Stripe webhooks; cancelled or expired checkouts may arrive later from Stripe.</div>
-        <button class="side-new w-full" style="font-size:12px;padding:8px 12px;" onclick="loadConversionMetrics()">↻ Refresh conversion totals</button>
-        <div id="metrics-out" class="own-note" style="margin-top:12px;line-height:1.75">Open this tab to load today’s private totals.</div>
+        <button class="side-new w-full" style="font-size:12px;padding:8px 12px;" onclick="loadConversionMetrics()">↻ Refresh private funnel totals</button>
+        <div id="metrics-out" class="own-note" style="margin-top:12px;line-height:1.75">Open this tab to load today’s private Stripe totals.</div>
+        <div class="own-label" style="margin-top:16px">Activation and return cohorts</div>
+        <div id="funnel-out" class="own-note" style="margin-top:8px;line-height:1.75">New cohort measurement starts after this release. No individual user data is shown here.</div>
       </div>
 
       </div>
@@ -4419,11 +4421,17 @@
 
     async function loadConversionMetrics() {
       const out = document.getElementById('metrics-out');
-      if (!out) return;
+      const funnelOut = document.getElementById('funnel-out');
+      if (!out || !funnelOut) return;
       out.textContent = 'Loading verified Stripe totals…';
+      funnelOut.textContent = 'Loading activation cohorts…';
       try {
-        const { response, data } = await ownerRequest('/api/broadcast', { action: 'conversionMetrics' });
-        if (!response.ok || !data.ok || !data.metrics) throw new Error(data.error || 'Could not load metrics.');
+        const [conversion, funnel] = await Promise.all([
+          ownerRequest('/api/broadcast', { action: 'conversionMetrics' }),
+          ownerRequest('/api/broadcast', { action: 'funnelMetrics' }),
+        ]);
+        const { response, data } = conversion;
+        if (!response.ok || !data.ok || !data.metrics) throw new Error(data.error || 'Could not load conversion metrics.');
         const m = data.metrics;
         out.innerHTML = `
           <div><strong>${m.checkoutStarted}</strong> checkout starts</div>
@@ -4433,8 +4441,26 @@
           <div><strong>${m.checkoutCancelledOrExpired}</strong> cancelled or expired</div>
           <div><strong>${money(m.revenuePence)}</strong> successful first-payment revenue</div>
           <div style="margin-top:6px;color:#64748b;font-size:11px;">${m.date} · private aggregate data, not a revenue forecast</div>`;
+
+        const { response: funnelResponse, data: funnelData } = funnel;
+        if (!funnelResponse.ok || !funnelData.ok) throw new Error(funnelData.error || 'Could not load activation cohorts.');
+        const historical = funnelData.historical || {};
+        const cohort = [...(funnelData.cohorts || [])].reverse().find((item) => Number(item.signups) > 0);
+        const pct = (value, base) => base > 0 ? Math.round((Number(value) / Number(base)) * 100) + '%' : '—';
+        const cohortLines = cohort
+          ? `<div style="margin-top:8px"><strong>${cohort.signups}</strong> signups on ${cohort.date}</div>
+             <div><strong>${cohort.activatedWithin24h}</strong> activated within 24h (${pct(cohort.activatedWithin24h, cohort.signups)})</div>
+             <div><strong>${cohort.secondSessionsWithin7d}</strong> second successful-use sessions within 7d (${pct(cohort.secondSessionsWithin7d, cohort.signups)})</div>
+             <div><strong>${cohort.retainedD1}</strong> D1 active (${pct(cohort.retainedD1, cohort.signups)}) · <strong>${cohort.retainedD7}</strong> D7 active (${pct(cohort.retainedD7, cohort.signups)})</div>`
+          : '<div style="margin-top:8px">No post-release signup cohort yet. This is expected until a new account is created.</div>';
+        funnelOut.innerHTML = `
+          <div><strong>${historical.accounts || 0}</strong> stored accounts · <strong>${historical.everGenerated || 0}</strong> have ever completed a generation</div>
+          <div style="color:#64748b;font-size:11px;">Historical counts are context only; cohort rates begin after instrumentation.</div>
+          ${cohortLines}
+          <div style="margin-top:6px;color:#64748b;font-size:11px;">Private aggregate data only. D1 and D7 values remain immature until their observation windows have elapsed.</div>`;
       } catch (error) {
-        out.textContent = error.message || 'Could not load conversion totals.';
+        out.textContent = error.message || 'Could not load private funnel totals.';
+        funnelOut.textContent = 'Could not load activation cohorts.';
       }
     }
 

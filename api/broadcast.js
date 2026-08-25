@@ -1,6 +1,7 @@
 // api/broadcast.js — owner-authorized email broadcast
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
+import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -34,6 +35,11 @@ export default async function handler(req, res) {
   if (req.body?.action === 'conversionMetrics') {
     const requestedDate = /^\d{4}-\d{2}-\d{2}$/.test(String(req.body?.date || '')) ? new Date(`${req.body.date}T00:00:00.000Z`) : new Date();
     const result = await readConversionMetrics(requestedDate);
+    return res.status(result.ok ? 200 : 500).json(result);
+  }
+
+  if (req.body?.action === 'funnelMetrics') {
+    const result = await readFunnelMetrics({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN });
     return res.status(result.ok ? 200 : 500).json(result);
   }
 

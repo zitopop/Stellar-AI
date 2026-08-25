@@ -37,6 +37,12 @@ test('chat keeps all requested legacy aliases safely mapped and uses atomic serv
   assert.match(usage, /\['EXPIRE', key, seconds, 'NX'\]/);
 });
 
+test('successful-generation records require a completed stream', () => {
+  assert.match(chat, /let streamCompleted = false;/);
+  assert.match(chat, /res\.end\(\);\s+streamCompleted = true;/);
+  assert.match(chat, /if \(streamCompleted && session\?\.email && KV_URL && KV_TOKEN\) \{\s+recordScriptGenerated/);
+});
+
 test('checkout, auth and account contracts preserve Starter, founders and referral safety', () => {
   assert.match(checkout, /STRIPE_PRICE_ID_STARTER/);
   assert.match(checkout, /STRIPE_PRICE_ID_STARTER_ANNUAL/);
