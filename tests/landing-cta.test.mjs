@@ -190,9 +190,13 @@ test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consis
 });
 
 test('Task 188 keeps Roblox games and groups visible with approved destinations', () => {
-  assert.match(landingHtml, /<div class="roblox-directory" aria-label="Stellar Roblox games and groups">[\s\S]*Find the right world fast[\s\S]*Stellar Strike[\s\S]*Stellar Simulator[\s\S]*StellarHQ[\s\S]*zitos gang[\s\S]*<\/div>/);
-  assert.match(landingHtml, /src="\/assets\/stellar-strike-mark\.png"[^>]*alt="Stellar Strike game mark"/);
-  assert.match(landingHtml, /src="\/assets\/stellar-simulator-mark\.png"[^>]*alt="Stellar Simulator game mark"/);
+  assert.match(landingHtml, /<div class="roblox-directory" aria-label="Stellar Roblox games and groups">[\s\S]*Choose a world[\s\S]*Stellar Strike[\s\S]*Stellar Simulator[\s\S]*StellarHQ[\s\S]*zitos gang[\s\S]*<\/div>/);
+  assert.match(landingHtml, /src="\/assets\/stellar-strike-thumb\.png"[^>]*alt="Stellar Strike lightning star thumbnail"/);
+  assert.match(landingHtml, /src="\/assets\/stellar-simulator-thumb\.png"[^>]*alt="Stellar Simulator orbital planet thumbnail"/);
+  assert.match(landingHtml, /Stellar Strike<\/h3><p><strong>Fast PvP rounds\.<\/strong>/);
+  assert.match(landingHtml, /Stellar Simulator<\/h3><p><strong>Build, upgrade, repeat\.<\/strong>/);
+  assert.match(landingHtml, /class="roblox-game-badge">Fast PvP action<\/span>/);
+  assert.match(landingHtml, /class="roblox-game-badge">Collect &amp; upgrade<\/span>/);
   assert.match(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.capability-map, \.why-stellar-section, \.plans, \.faq-layout, \.final-cta'\)/);
   assert.doesNotMatch(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.roblox-worlds, \.plans/);
   assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike/);
