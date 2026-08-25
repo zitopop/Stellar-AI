@@ -226,6 +226,16 @@ test('Task 189 keeps Roblox destinations explicitly labelled for assistive techn
   assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community"/);
 });
 
+test('landing polish keeps the first screen organised and hides only secondary repetition', () => {
+  assert.match(landingHtml, /\.hero \{ padding-top: clamp\(72px, 9vw, 118px\); \}/);
+  assert.match(landingHtml, /\.hero-copy h1 \{ max-width: 10\.5ch; line-height: \.98; \}/);
+  assert.match(landingHtml, /\.proof-note, \.framework-copy, \.hero-capabilities-intro span, \.launch-deck-copy p,/);
+  assert.match(landingHtml, /#how-it-works \.section-heading > p, #how-it-works \.workflow-note,/);
+  assert.match(landingHtml, /#capabilities \.section-heading > p \{ display: none !important; \}/);
+  assert.match(landingHtml, /From game idea to complete files/);
+  for (const cta of ['Generate your first script free', 'See the 4-step workflow']) assert.match(landingHtml, new RegExp(cta));
+});
+
 test('Task 190 keeps the landing hero-to-framework spacing compact without changing mobile spacing', () => {
   assert.match(landingHtml, /\.hero \{ position: relative; padding: 84px 0 24px; \}/);
   assert.match(landingHtml, /\.framework-rail \{ display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 23px 28px; margin-top: 16px;/);
