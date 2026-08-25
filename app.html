@@ -3060,9 +3060,15 @@
     .set-collapsible > summary span { color: #a78bfa; font-size: 17px; font-weight: 500; transition: transform .16s ease; }
     .set-collapsible[open] > summary span { transform: rotate(45deg); }
     .set-collapsible > .set-group { margin: 0 8px 8px; }
+    .set-motivation { margin: 0 0 14px; padding: 12px 14px; border: 1px solid rgba(167,139,250,.34); border-radius: 14px; background: linear-gradient(135deg, rgba(124,58,237,.16), rgba(16,163,127,.08)); }
+    .set-motivation-title { color: #c4b5fd; font-size: 11px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    .set-motivation-copy { margin-top: 4px; color: #e4e4e7; font-size: 12px; font-weight: 700; line-height: 1.45; }
     body.light .set-collapsible { border-color: #d1d5db; background: #f8fafc; }
     body.light .set-collapsible > summary { color: #1f2937; }
     body.light .set-collapsible > summary span { color: #6d28d9; }
+    body.light .set-motivation { border-color: #c4b5fd; background: linear-gradient(135deg, #f5f3ff, #ecfdf5); }
+    body.light .set-motivation-title { color: #5b21b6; }
+    body.light .set-motivation-copy { color: #1f2937; }
     /* The starter prompts already explain the first action; keep the workspace calm. */
     .greet-wrap .welcome-next-step, #settings-modal .so-sub { display: none !important; }
   </style>
@@ -3493,6 +3499,10 @@
           <div class="profile-name" id="profile-name">Guest</div>
           <div class="profile-sub" id="profile-sub">Not signed in</div>
         </div>
+      </div>
+      <div id="set-motivation" class="set-motivation" style="display:none;">
+        <div class="set-motivation-title">Keep building</div>
+        <div id="set-motivation-copy">Your next badge is waiting.</div>
       </div>
       <div class="set-label">Account</div>
       <div class="set-group">
@@ -6373,6 +6383,21 @@
       const achievementGrid = document.getElementById('set-achievements');
       if (achievementGrid) {
         const achievements = Array.isArray(s.achievements) ? s.achievements : [];
+        const motivation = document.getElementById('set-motivation');
+        const motivationCopy = document.getElementById('set-motivation-copy');
+        if (motivation) motivation.style.display = signedIn ? '' : 'none';
+        if (motivationCopy && signedIn) {
+          const next = achievements.find((achievement) => !achievement.unlockedAt);
+          motivationCopy.textContent = next ? ({
+            'First Script': 'One build unlocks your first badge.',
+            'Builder': 'Keep going — 10 scripts unlock Builder.',
+            'Power Builder': 'You are on a run — 50 scripts unlock Power Builder.',
+            'Elite Builder': 'Big milestone ahead — 100 scripts unlock Elite Builder.',
+            'Return Builder': 'Come back for another session to unlock Return Builder.',
+            'Referral Builder': 'Invite a builder to unlock Referral Builder.',
+            'First Upgrade': 'Ready for more room? Your first paid plan unlocks First Upgrade.'
+          }[next.label] || ('Next up: ' + next.label + '.')) : 'You unlocked every badge. Keep shipping.';
+        }
         achievementGrid.innerHTML = achievements.map((achievement) => {
           const unlocked = Boolean(achievement.unlockedAt);
           const label = escapeHtml(achievement.label || 'Achievement');

@@ -55,6 +55,17 @@ test('checkout, auth and account contracts preserve Starter, founders and referr
   assert.match(getPlan, /achievementDefinitions/);
 });
 
+test('achievement progression exposes the expanded milestones and real unlock paths', () => {
+  for (const achievement of ['hundred-scripts', 'return-builder', 'referral-builder']) assert.match(profile, new RegExp(`'${achievement}'`));
+  assert.match(profile, /count >= 100/);
+  assert.match(profile, /startsNewSession && Number\(prior\.sessionCount\) >= 1/);
+  assert.match(profile, /const achievements = \{ \.\.\.\(user\.achievements \|\| \{\}\) \};/);
+  assert.match(profile, /'referral-builder': now/);
+  assert.match(app, /id="set-motivation" class="set-motivation"/);
+  assert.match(app, /Keep building/);
+  assert.match(app, /set-motivation-copy/);
+});
+
 test('app Starter card preserves the approved early-builder offer and benefit order', () => {
   assert.match(app, /id="plan-card-starter"[\s\S]*?When Free is useful but you keep hitting the ceiling on regular scripts.[\s\S]*?id="plan-btn-starter"[^>]*>Get Starter<\/button>[\s\S]*?£67\/year · Save 30%[\s\S]*?Everything in Free, plus[\s\S]*?3× usage · 120 requests\/hour[\s\S]*?Priority queue[\s\S]*?Longer scripts[\s\S]*?Cancel anytime/);
 });

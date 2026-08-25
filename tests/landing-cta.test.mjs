@@ -184,6 +184,12 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
   assert.match(landingHtml, /window\.addEventListener\('hashchange', \(\) => revealHashTarget\(window\.location\.hash\)\)/);
 });
 
+test('landing pricing cards stay scannable without removing commercial facts', () => {
+  assert.match(landingHtml, /\.plan-fit \{ display: none !important; \}/);
+  for (const price of ['£0', '£8', '£20', '£75', '£67\/year', '£168\/year', '£630\/year']) assert.match(landingHtml, new RegExp(price));
+  for (const cta of ['Start free', 'Get Starter', 'Get Plus', 'Get Pro']) assert.match(landingHtml, new RegExp(cta));
+});
+
 test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consistent', () => {
   assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Writing scripts most weeks\?[\s\S]*Starter gives you longer scripts and more breathing room\.[\s\S]*Plus is the practical middle for bigger weekly builds\.[\s\S]*Pro is for the large jobs where waiting gets old\./);
   assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Straightforward pricing<\/div><h2>Pay for the room you actually need\.<\/h2><p>Try the workflow for free\. Upgrade when your scripts get longer, your builds get bigger or you simply need more headroom\.<\/p><\/div>/);
