@@ -7449,6 +7449,37 @@
     body.light #model-btn { color: #ffffff !important; border-color: #18181b !important; background: #18181b !important; box-shadow: 0 7px 16px rgba(24,24,27,.14) !important; }
     body.light #model-btn:hover, body.light #model-btn[aria-expanded="true"] { border-color: #087d60 !important; background: #25252a !important; }
   </style>
+<style>
+    /* Cohesive final polish: less dead space, stronger grouping, and a calmer action path. */
+    #chat { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+    #chat::-webkit-scrollbar { width: 8px; }
+    #chat::-webkit-scrollbar-thumb { border-radius: 99px; background: rgba(255,255,255,.18); }
+    .greet-wrap { padding-top: clamp(48px, 8vh, 88px) !important; padding-bottom: 34px !important; }
+    #suggestion-chips { grid-template-columns: repeat(2, minmax(0,1fr)) !important; align-items: stretch; }
+    #suggestion-chips .sug-chip:last-child { grid-column: 1 / -1; }
+    .sug-chip { position: relative; overflow: hidden; }
+    .sug-chip::after { content: '→'; margin-left: auto; color: rgba(143,232,207,.75); font-size: 15px; opacity: .55; transform: translateX(-3px); transition: opacity .16s ease, transform .16s ease; }
+    .sug-chip:hover::after { opacity: 1; transform: translateX(0); }
+    .side-foot { position: relative; margin-inline: 0 !important; padding: 14px 2px 2px !important; border-top: 0 !important; }
+    .side-foot::before { content: ''; position: absolute; top: 0; left: 2px; right: 2px; height: 1px; background: linear-gradient(90deg, transparent, rgba(143,232,207,.28), transparent); }
+    .side-row-2, .side-row-3 { gap: 7px !important; }
+    .side-act { min-height: 40px !important; }
+    .side-guides-link { min-height: 40px !important; }
+    .composer-foot { padding-inline: 2px; }
+    .composer-foot .credits-btn { color: #d1d1d7 !important; border-color: rgba(143,232,207,.24) !important; background: rgba(143,232,207,.05) !important; }
+    body.light #chat { scrollbar-color: rgba(24,24,27,.22) transparent; }
+    body.light #chat::-webkit-scrollbar-thumb { background: rgba(24,24,27,.22); }
+    body.light .side-foot::before { background: linear-gradient(90deg, transparent, rgba(8,125,96,.28), transparent); }
+    body.light .composer-foot .credits-btn { color: #087d60 !important; border-color: #a9d8ca !important; background: #effaf6 !important; }
+    @media (max-width: 767px) {
+      .greet-wrap { padding-top: 34px !important; padding-bottom: 24px !important; }
+      #suggestion-chips .sug-chip:last-child { grid-column: auto; }
+      .sug-chip::after { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .sug-chip::after { transition: none !important; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
