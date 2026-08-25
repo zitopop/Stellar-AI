@@ -40,7 +40,7 @@ test('public pricing copy and structured offers agree on current GBP pricing', (
   assert.match(termsHtml, /Signed-in users can buy one-off credit top-ups from 50p to £200/);
   assert.match(termsHtml, /The current referral offer awards £1 promotional credit to an eligible new user and £1 to the referrer/);
   assert.match(termsHtml, /Signed-in chat history is stored in account storage/);
-  assert.match(termsHtml, /Working draft — have a qualified lawyer review before relying on it/);
+  assert.doesNotMatch(termsHtml, /Working draft — have a qualified lawyer review before relying on it/);
 });
 
 test('repository-owned pricing setup notes document the canonical four-plan billing configuration', () => {
