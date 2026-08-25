@@ -6947,6 +6947,122 @@
   <img src="https://smollaunch.com/badges/featured.svg" alt="Stellar AI — Featured on Smol Launch" loading="lazy" width="125" height="30" />
 </a>
 
+<style>
+    /* Calm workspace polish: reduce visual noise without changing interaction contracts. */
+    :root {
+      --workspace-ink: #f4f4f5;
+      --workspace-muted: #a1a1aa;
+      --workspace-panel: #151515;
+      --workspace-panel-hover: #1d1d1d;
+      --workspace-line: rgba(255,255,255,.09);
+    }
+    #sidebar {
+      width: 248px !important;
+      padding: 20px 14px calc(14px + env(safe-area-inset-bottom)) !important;
+      background: #111111 !important;
+      border-right-color: rgba(255,255,255,.08) !important;
+    }
+    .brand-title { padding: 0 8px; font-size: 15px !important; letter-spacing: -.025em; }
+    #sidebar > .mb-6 { margin-bottom: 24px !important; }
+    .side-new {
+      min-height: 42px !important;
+      margin-bottom: 12px !important;
+      border: 1px solid rgba(255,255,255,.12) !important;
+      border-radius: 11px !important;
+      color: #f4f4f5 !important;
+      background: #1d1d1d !important;
+      box-shadow: none !important;
+      font-size: 13px !important;
+      letter-spacing: -.01em;
+    }
+    .side-new:hover { background: #262626 !important; border-color: rgba(255,255,255,.2) !important; }
+    #search {
+      height: 38px;
+      margin-bottom: 20px !important;
+      border: 1px solid rgba(255,255,255,.07) !important;
+      background: rgba(255,255,255,.035) !important;
+      color: #e4e4e7 !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+    }
+    .chats-label { margin: 0 8px 8px !important; color: #71717a !important; font-size: 10px !important; letter-spacing: .16em !important; }
+    #chats-list { padding-inline: 2px; }
+    .acct-box { margin: 16px 2px 0 !important; padding: 10px 8px !important; border: 1px solid rgba(255,255,255,.07) !important; border-radius: 12px !important; background: rgba(255,255,255,.025) !important; }
+    .acct-in { gap: 8px !important; }
+    .acct-name { font-size: 12px !important; }
+    .acct-email { max-width: 128px; font-size: 10px !important; }
+    .acct-out-btn { padding: 5px 7px !important; font-size: 10px !important; }
+    .side-foot { margin-top: 16px !important; padding-top: 12px !important; border-top-color: rgba(255,255,255,.07) !important; }
+    .side-row-2, .side-row-3 { gap: 6px !important; }
+    .side-row-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .side-row-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 6px !important; }
+    .side-act {
+      min-height: 38px !important;
+      padding: 8px 6px !important;
+      border: 1px solid rgba(255,255,255,.07) !important;
+      border-radius: 10px !important;
+      color: #a1a1aa !important;
+      background: transparent !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      box-shadow: none !important;
+    }
+    .side-act:hover { color: #f4f4f5 !important; border-color: rgba(255,255,255,.16) !important; background: rgba(255,255,255,.055) !important; }
+    .side-act .ico { color: currentColor !important; }
+    .side-guides-link { margin-top: 6px !important; }
+    .topbar { min-height: 56px !important; background: rgba(15,15,15,.92) !important; border-bottom-color: rgba(255,255,255,.08) !important; }
+    #chat-title { color: #e4e4e7 !important; font-size: 13px !important; }
+    .top-theme-toggle { min-height: 34px !important; padding: 0 10px !important; border-color: rgba(255,255,255,.1) !important; background: rgba(255,255,255,.04) !important; color: #a1a1aa !important; font-size: 11px !important; }
+    .greet-wrap { width: min(100%, 780px); margin-inline: auto; padding: 56px 20px 28px !important; }
+    .greet-hi { max-width: 100% !important; color: #f4f4f5 !important; background: none !important; -webkit-text-fill-color: currentColor !important; font-size: clamp(30px, 3vw, 40px) !important; letter-spacing: -.045em !important; }
+    .welcome-sub { margin-top: 9px !important; color: #8b8b93 !important; font-size: 13px !important; }
+    .roblox-world-links { margin-top: 12px !important; opacity: .72; }
+    #suggestion-chips { max-width: 680px !important; gap: 8px !important; margin-top: 22px !important; }
+    .welcome-starters-label { margin-bottom: 7px !important; color: #71717a !important; font-size: 10px !important; letter-spacing: .15em !important; }
+    .sug-chip {
+      min-height: 54px !important;
+      padding: 11px 13px !important;
+      border: 1px solid rgba(255,255,255,.08) !important;
+      border-radius: 11px !important;
+      color: #d4d4d8 !important;
+      background: #171717 !important;
+      font-size: 12px !important;
+      box-shadow: none !important;
+    }
+    .sug-chip span:first-child { width: 30px !important; height: 30px !important; border-color: rgba(255,255,255,.08) !important; background: rgba(255,255,255,.05) !important; font-size: 14px !important; }
+    .sug-chip:hover { color: #fafafa !important; border-color: rgba(255,255,255,.18) !important; background: #202020 !important; box-shadow: none !important; transform: none !important; }
+    .input-area { padding: 14px 20px calc(16px + env(safe-area-inset-bottom)) !important; background: rgba(15,15,15,.92) !important; border-top-color: rgba(255,255,255,.08) !important; }
+    .input-area > .flex { width: min(100%, 780px); margin-inline: auto; gap: 8px !important; }
+    #txt { min-height: 52px; border: 1px solid rgba(255,255,255,.13) !important; border-radius: 14px !important; background: #181818 !important; color: #f4f4f5 !important; box-shadow: none !important; font-size: 14px !important; }
+    #txt:focus { border-color: rgba(255,255,255,.28) !important; box-shadow: 0 0 0 3px rgba(255,255,255,.04) !important; }
+    #send-btn { min-width: 78px; border-radius: 14px !important; background: #f4f4f5 !important; color: #18181b !important; }
+    .composer-foot { width: min(100%, 780px); margin: 8px auto 0 !important; color: #71717a !important; }
+    .keyboard-hint { font-size: 10px !important; opacity: .9; }
+    .credits-btn, .ws-toggle, .model-pill { border-color: rgba(255,255,255,.08) !important; background: transparent !important; color: #a1a1aa !important; box-shadow: none !important; }
+    .credits-btn:hover, .ws-toggle:hover, .model-pill:hover { border-color: rgba(255,255,255,.18) !important; background: rgba(255,255,255,.055) !important; color: #f4f4f5 !important; }
+    #free-upgrade-nudge { border-color: rgba(255,255,255,.1) !important; background: #181818 !important; }
+    body.light #sidebar, body.light .topbar, body.light .input-area { background: #f4f4f5 !important; border-color: #dedee3 !important; }
+    body.light .side-new { color: #18181b !important; background: #ffffff !important; border-color: #d7d7dc !important; }
+    body.light .side-new:hover, body.light .sug-chip:hover { background: #ececef !important; border-color: #bdbdc5 !important; }
+    body.light .side-act, body.light .credits-btn, body.light .ws-toggle, body.light .model-pill { color: #52525b !important; border-color: #d9d9df !important; background: transparent !important; }
+    body.light .side-act:hover, body.light .credits-btn:hover, body.light .ws-toggle:hover, body.light .model-pill:hover { color: #18181b !important; background: #e9e9ed !important; }
+    body.light #txt { background: #ffffff !important; border-color: #cfcfd6 !important; color: #18181b !important; }
+    body.light #send-btn { background: #18181b !important; color: #ffffff !important; }
+    body.light .greet-hi { color: #18181b !important; }
+    body.light .sug-chip { color: #3f3f46 !important; background: #ffffff !important; border-color: #dedee3 !important; }
+    @media (max-width: 767px) {
+      #sidebar { width: min(86vw, 292px) !important; padding: 16px 12px calc(12px + env(safe-area-inset-bottom)) !important; }
+      .greet-wrap { padding: 32px 10px 20px !important; }
+      .greet-hi { font-size: 28px !important; }
+      #suggestion-chips { grid-template-columns: 1fr !important; margin-top: 18px !important; }
+      .sug-chip { min-height: 50px !important; }
+      .input-area { padding: 10px 12px calc(12px + env(safe-area-inset-bottom)) !important; }
+      .composer-foot { gap: 6px !important; }
+      .keyboard-hint { display: none !important; }
+      .image-attach-label, .top-theme-label { display: none !important; }
+      #send-btn { min-width: 52px !important; padding-inline: 14px !important; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
