@@ -18,6 +18,12 @@ test('Starter checkout accepts documented compatibility names and trims deployme
   assert.equal(subscriptionPriceForPlan('starter-annual', { STRIPE_PRICE_ID_STARTER_YEARLY: ' price_starter_yearly ' }), 'price_starter_yearly');
 });
 
+test('Starter checkout supports the existing Vercel StellarStarter names without a tier fallback', () => {
+  const env = { StellarStarter: 'price_starter_monthly', StellarStarterYear: 'price_starter_yearly' };
+  assert.equal(subscriptionPriceForPlan('starter', env), 'price_starter_monthly');
+  assert.equal(subscriptionPriceForPlan('starter-annual', env), 'price_starter_yearly');
+});
+
 test('missing Starter prices never fall through to Plus or Pro checkout', () => {
   const env = { STRIPE_PRICE_ID_PLUS: 'price_plus_monthly', STRIPE_PRICE_ID_PRO: 'price_pro_monthly' };
   assert.equal(subscriptionPriceForPlan('starter', env), '');

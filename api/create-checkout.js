@@ -27,8 +27,8 @@ export function subscriptionPriceForPlan(plan, env = process.env) {
   // Canonical names are listed first. The Starter aliases make configuration
   // resilient to common dashboard naming while never substituting another tier.
   const prices = {
-    starter: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER', 'STRIPE_PRICE_ID_STARTER_MONTHLY', 'STRIPE_STARTER_PRICE_ID'),
-    'starter-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER_ANNUAL', 'STRIPE_PRICE_ID_STARTER_YEARLY', 'STRIPE_STARTER_ANNUAL_PRICE_ID'),
+    starter: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER', 'STRIPE_PRICE_ID_STARTER_MONTHLY', 'STRIPE_STARTER_PRICE_ID', 'STELLAR_STARTER', 'StellarStarter'),
+    'starter-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER_ANNUAL', 'STRIPE_PRICE_ID_STARTER_YEARLY', 'STRIPE_STARTER_ANNUAL_PRICE_ID', 'STELLAR_STARTER_YEAR', 'StellarStarterYear'),
     plus: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_LITE'),
     'plus-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
     lite: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_LITE'),
