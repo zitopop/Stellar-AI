@@ -4445,8 +4445,16 @@
         const { response: funnelResponse, data: funnelData } = funnel;
         if (!funnelResponse.ok || !funnelData.ok) throw new Error(funnelData.error || 'Could not load activation cohorts.');
         const historical = funnelData.historical || {};
+        const recentUsage = funnelData.recentUsage || {};
         const cohort = [...(funnelData.cohorts || [])].reverse().find((item) => Number(item.signups) > 0);
         const pct = (value, base) => base > 0 ? Math.round((Number(value) / Number(base)) * 100) + '%' : '—';
+        const recentUsageLines = recentUsage.signups
+          ? `<div style="margin-top:8px"><strong>${recentUsage.signups}</strong> signups in the last ${recentUsage.windowDays || 30} days · <strong>${recentUsage.accountsWithAcceptedRequests || 0}</strong> sent at least one accepted request (${pct(recentUsage.accountsWithAcceptedRequests, recentUsage.signups)})</div>
+             <div><strong>${recentUsage.accountsWithSuccessfulGeneration || 0}</strong> completed a generation (${pct(recentUsage.accountsWithSuccessfulGeneration, recentUsage.signups)}) · <strong>${recentUsage.totalAcceptedRequests || 0}</strong> accepted requests total</div>
+             <div><strong>${recentUsage.averageMinutesToFirstRequest || 0} min</strong> average to first request · <strong>${recentUsage.averageMinutesToFirstGeneration || 0} min</strong> average to first successful generation</div>
+             <div><strong>${recentUsage.totalObservedSessions || 0}</strong> observed sessions · <strong>${recentUsage.averageObservedSessionSpanMinutes || 0} min</strong> average observed activity span · <strong>${recentUsage.longestObservedSessionSpanMinutes || 0} min</strong> longest observed span</div>
+             <div style="color:#64748b;font-size:11px;">Usage means accepted hourly-meter requests. Wallet grants and top-ups are not debited by chat; observed session spans begin with this measurement release.</div>`
+          : '<div style="margin-top:8px">No recent signup usage records yet. New accepted requests will appear here without exposing individual accounts.</div>';
         const cohortLines = cohort
           ? `<div style="margin-top:8px"><strong>${cohort.signups}</strong> signups on ${cohort.date}</div>
              <div><strong>${cohort.activatedWithin24h}</strong> activated within 24h (${pct(cohort.activatedWithin24h, cohort.signups)})</div>
@@ -4456,6 +4464,8 @@
         funnelOut.innerHTML = `
           <div><strong>${historical.accounts || 0}</strong> stored accounts · <strong>${historical.everGenerated || 0}</strong> have ever completed a generation</div>
           <div style="color:#64748b;font-size:11px;">Historical counts are context only; cohort rates begin after instrumentation.</div>
+          <div style="margin-top:8px;"><strong>Recent signup usage</strong></div>
+          ${recentUsageLines}
           ${cohortLines}
           <div style="margin-top:6px;color:#64748b;font-size:11px;">Private aggregate data only. D1 and D7 values remain immature until their observation windows have elapsed.</div>`;
       } catch (error) {

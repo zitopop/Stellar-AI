@@ -5,6 +5,7 @@ import {
   applySuccessfulGenerationFunnel,
   initialFunnelState,
   recordFunnelSignup,
+  summarizeRecentUsage,
 } from '../lib/funnel-metrics.js';
 
 const originalFetch = globalThis.fetch;
@@ -58,6 +59,40 @@ test('pre-instrumentation accounts remain legacy observers instead of receiving 
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+test('recent usage summary reports requests and observed session spans without identities', () => {
+  const now = Date.UTC(2026, 7, 25, 12, 0, 0);
+  const signupAt = now - (2 * DAY_MS);
+  const summary = summarizeRecentUsage([
+    {
+      email: 'private@example.com',
+      createdAt: signupAt,
+      scriptCount: 2,
+      funnel: { firstGenerationAt: signupAt + (20 * 60 * 1000), secondSessionAt: 0 },
+      usage: {
+        acceptedRequests: 4,
+        firstRequestAt: signupAt + (15 * 60 * 1000),
+        lastRequestAt: signupAt + (2 * 60 * 60 * 1000),
+        currentSessionStartedAt: signupAt + (15 * 60 * 1000),
+        sessionCount: 1,
+        closedSessionDurationMs: 0,
+        longestClosedSessionMs: 0,
+      },
+    },
+  ], now);
+
+  assert.equal(summary.signups, 1);
+  assert.equal(summary.accountsWithAcceptedRequests, 1);
+  assert.equal(summary.accountsWithSuccessfulGeneration, 1);
+  assert.equal(summary.totalAcceptedRequests, 4);
+  assert.equal(summary.averageMinutesToFirstRequest, 15);
+  assert.equal(summary.averageMinutesToFirstGeneration, 20);
+  assert.equal(summary.averageObservedSessionSpanMinutes, 105);
+  assert.equal(summary.longestObservedSessionSpanMinutes, 105);
+  assert.equal(summary.totalObservedSessions, 1);
+  assert.equal(summary.walletCredits.tracked, false);
+  assert.match(summary.walletCredits.note, /hourly request meter/);
+  assert.doesNotMatch(JSON.stringify(summary), /private@example\.com/);
+});
 
 test('owner-only funnel metrics return aggregate cohorts and reject ordinary accounts', async (t) => {
   t.after(() => {

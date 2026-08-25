@@ -4,7 +4,7 @@
 import { isIP } from 'node:net';
 import { isOwnerEmail, readSession } from '../lib/auth.js';
 import { PLAN_DEFINITIONS, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
-import { recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
+import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
 import { consumeUsage } from '../lib/usage.js';
 
 const DOMAIN = 'https://trystellarai.com';
@@ -750,6 +750,14 @@ export default async function handler(req, res) {
       error: `You have reached your ${usage.limit} requests per hour allowance. Upgrade when you need more room, or try again after the reset.`,
       usage,
     });
+  }
+
+  if (session?.email && KV_URL && KV_TOKEN) {
+    try {
+      await recordAcceptedRequest(KV_URL, KV_TOKEN, session.email);
+    } catch (error) {
+      console.error('Could not record accepted request telemetry', error?.message || error);
+    }
   }
 
   const route = resolveRoute(model, role, plan);
