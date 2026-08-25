@@ -4067,7 +4067,14 @@
     function renderChatList() {
       const s = Store.get();
       chats = s.chats;
-      const q = (document.getElementById('search')?.value || '').toLowerCase();
+      const searchEl = document.getElementById('search');
+      const hasChats = chats.length > 0;
+      if (searchEl) {
+        searchEl.hidden = !hasChats;
+        searchEl.setAttribute('aria-hidden', String(!hasChats));
+        if (!hasChats) searchEl.value = '';
+      }
+      const q = (searchEl?.value || '').toLowerCase();
       const container = document.getElementById('chats-list');
       container.innerHTML = '';
       const sorted = [...chats].sort((a, b) => (b.pinned === true) - (a.pinned === true));
@@ -7174,6 +7181,29 @@
     body.light #plans-modal > div > div[style*="text-align:center"] button { color: #52525b !important; }
     body.light #plans-modal > div > div[style*="text-align:center"] button span { color: #6948b8 !important; }
     body.light #plans-modal > div > div[style*="border-top"] { color: #65656e !important; }
+  </style>
+<style>
+    /* Final workspace cleanup: keep the core path visible and quiet everything secondary. */
+    #search[hidden] { display: none !important; }
+    .acct-box { background: transparent !important; border-color: rgba(255,255,255,.06) !important; }
+    .acct-email { color: #77777f !important; }
+    .acct-out-btn { color: #a1a1aa !important; background: transparent !important; border-color: rgba(255,255,255,.10) !important; }
+    .acct-out-btn:hover { color: #f4f4f5 !important; background: rgba(255,255,255,.06) !important; }
+    .roblox-world-links { display: none !important; }
+    #keyboard-hint { display: none !important; }
+    #rec-btn:not(.active) { opacity: .34 !important; transform: scale(.78) !important; transform-origin: top right; }
+    #rec-btn.active { opacity: 1 !important; }
+    .side-foot { display: grid !important; grid-template-columns: 1fr; gap: 6px !important; }
+    .side-row-2, .side-row-3 { margin: 0 !important; }
+    .side-guides-link { margin-top: 0 !important; }
+    body.light .acct-box { background: transparent !important; border-color: rgba(0,0,0,.07) !important; }
+    body.light .acct-email { color: #77777f !important; }
+    body.light .acct-out-btn { color: #52525b !important; border-color: #d9d9df !important; }
+    body.light .acct-out-btn:hover { color: #18181b !important; background: #e9e9ed !important; }
+    @media (max-width: 767px) {
+      #rec-btn:not(.active) { opacity: .22 !important; transform: scale(.7) !important; }
+      .side-foot { gap: 5px !important; }
+    }
   </style>
 <script src="/currency.js"></script>
 </body>
