@@ -166,10 +166,10 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
 });
 
 test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consistent', () => {
-  assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Starter adds 3× usage and longer scripts\.[\s\S]*Plus supports full game systems\.[\s\S]*Pro unlocks Nova and complete games\./);
-  assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Simple, transparent plans<\/div><h2>Choose the plan for how often you build\.<\/h2><p>Every plan supports FiveM and Roblox work\. Choose based on the amount of building and iteration you need\.<\/p><\/div>/);
-  assert.match(landingHtml, /<p class="plan-compare">Start Free to try Stellar or fix something smaller\.[\s\S]*server-enforced hourly requests and you can cancel any time\.<\/p>/);
-  assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room for regular scripts<\/h3><p class="plan-desc">Early builders who want more room for regular scripts\.<\/p>/);
+  assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Writing scripts regularly\?[\s\S]*Starter gives you more headroom\.[\s\S]*Plus keeps larger builds moving\.[\s\S]*Pro gives you the biggest runway\./);
+  assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Straightforward pricing<\/div><h2>Pick the plan that matches how you actually build\.<\/h2><p>Start free\. Move up when you need more room—not because a pricing page pushed you there\.<\/p><\/div>/);
+  assert.match(landingHtml, /<p class="plan-compare">No credit maze\. No surprise tiers\.[\s\S]*freedom to cancel when you need to\.<\/p>/);
+  assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room\. Same simple workflow\.<\/h3><p class="plan-desc">Best for early builders needing regular-script capacity\.<\/p>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span><\/div><a href="\/app" class="button button-secondary" aria-label="Choose the Starter plan">Get Starter<\/a><div class="annual">£67\/year · Save 30%<\/div><div class="plan-includes">Everything in Free, plus<\/div><ul><li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul>/);
   assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">Most popular<\/div><div class="plan-label">Plus<\/div>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For complete games<\/div><div class="plan-label">Pro<\/div>/);
@@ -179,7 +179,9 @@ test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consis
 });
 
 test('Task 188 keeps Roblox games and groups visible with approved destinations', () => {
-  assert.match(landingHtml, /<div class="roblox-directory" aria-label="Stellar Roblox games and groups">[\s\S]*Roblox games &amp; groups[\s\S]*Stellar Strike[\s\S]*Stellar Simulator[\s\S]*StellarHQ[\s\S]*zitos gang[\s\S]*<\/div>/);
+  assert.match(landingHtml, /<div class="roblox-directory" aria-label="Stellar Roblox games and groups">[\s\S]*Find the right world fast[\s\S]*Stellar Strike[\s\S]*Stellar Simulator[\s\S]*StellarHQ[\s\S]*zitos gang[\s\S]*<\/div>/);
+  assert.match(landingHtml, /src="\/assets\/stellar-strike-mark\.png"[^>]*alt="Stellar Strike game mark"/);
+  assert.match(landingHtml, /src="\/assets\/stellar-simulator-mark\.png"[^>]*alt="Stellar Simulator game mark"/);
   assert.match(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.capability-map, \.why-stellar-section, \.plans, \.faq-layout, \.final-cta'\)/);
   assert.doesNotMatch(landingHtml, /querySelectorAll\('\.framework-rail, \.launch-deck, \.section-heading, \.capability, \.scenario, \.roblox-worlds, \.plans/);
   assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike/);
@@ -189,8 +191,8 @@ test('Task 188 keeps Roblox games and groups visible with approved destinations'
 });
 
 test('Task 189 keeps Roblox destinations explicitly labelled for assistive technology', () => {
-  assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike[^>]*aria-label="Open Stellar Strike on Roblox"/);
-  assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator[^>]*aria-label="Open Stellar Simulator on Roblox"/);
+  assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike[^>]*aria-label="Play Stellar Strike on Roblox"/);
+  assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator[^>]*aria-label="Play Stellar Simulator on Roblox"/);
   assert.match(landingHtml, /communities\/433084698\/StellarHQ[^>]*aria-label="Open the StellarHQ Roblox community"/);
   assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community"/);
 });
@@ -273,10 +275,10 @@ test('Task 198 removes the unavailable Jarvis public presentation from landing, 
 });
 
 test('Task 198 keeps current Pro positioning and approved plan prices after removing Jarvis', () => {
-  assert.match(landingHtml, /Turn a first idea or broken script into a useful starting point\./);
-  assert.match(landingHtml, /Early builders who want more room for regular scripts\./);
-  assert.match(landingHtml, /The highest usage allowance for complete FiveM or Roblox games and complex resources\./);
-  assert.match(landingHtml, /Best when you are building larger games, returning to complex projects often, or need Nova\./);
+  assert.match(landingHtml, /Use it for a first build, a small feature or the bug that has been winding you up all evening\./);
+  assert.match(landingHtml, /Best for early builders needing regular-script capacity\./);
+  assert.match(landingHtml, /The biggest allowance for complete games, tougher systems and builders who do not want to wait around\./);
+  assert.match(landingHtml, /Best when you need Nova and the space to keep a larger game moving\./);
   assert.match(landingHtml, /<strong>£0<\/strong><span>\/ forever<\/span>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);

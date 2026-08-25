@@ -49,9 +49,10 @@ test('Task 171 keeps the Plans sidebar control an explicit non-submit button', (
   assert.doesNotMatch(workspaceHtml, /<button onclick="openPlans\(\)" class="side-act side-act-key">/);
 });
 
-test('Task 172 keeps the Theme sidebar control an explicit non-submit button', () => {
-  assert.match(workspaceHtml, /<button type="button" id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="side-act" aria-pressed="false" aria-label="Switch to light theme">/);
+test('Task 172 keeps the global Theme control an explicit non-submit button with automatic scheduling', () => {
+  assert.match(workspaceHtml, /<button type="button" id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="ws-toggle top-theme-toggle" aria-pressed="false" aria-label="Switch to light theme"/);
   assert.match(workspaceHtml, /const themeToggle = document\.getElementById\('side-theme-toggle'\);[\s\S]*?themeToggle\.setAttribute\('aria-pressed', String\(light\)\)/);
+  assert.match(workspaceHtml, /function startAutomaticTheme\(\)/);
   assert.doesNotMatch(workspaceHtml, /<button\s+id="side-theme-toggle"\s+onclick="toggleDarkMode\(\)"/);
 });
 

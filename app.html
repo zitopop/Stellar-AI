@@ -3151,7 +3151,6 @@
           <button type="button" onclick="openPlans()" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg></span>Plans</button>
         </div>
         <div class="side-row-3">
-          <button type="button" id="side-theme-toggle" onclick="toggleDarkMode()" class="side-act" aria-pressed="false" aria-label="Switch to light theme"><span class="ico" id="side-theme-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></span>Theme</button>
           <a href="/terms.html" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>Terms</a>
           <button type="button" onclick="openSettings()" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"/></svg></span>Settings</button>
         </div>
@@ -3168,7 +3167,7 @@
           <button id="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar" class="menu-btn-mobile w-10 h-10 items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">☰</button>
           <div id="chat-title" class="font-black tracking-[-0.3px]">Stellar AI</div>
         </div>
-
+        <button type="button" id="side-theme-toggle" onclick="toggleDarkMode()" class="ws-toggle top-theme-toggle" aria-pressed="false" aria-label="Switch to light theme" title="Theme changes automatically by hour"><span class="ico" id="side-theme-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="top-theme-label">Theme</span></button>
       </div>
 
       <div id="workspace" class="hidden">
@@ -6332,24 +6331,41 @@
         if (b) b.classList.toggle('on', k === s);
       });
     }
-    function setMode(mode) {
-      document.body.classList.toggle('light', mode === 'light');
+    function automaticMode() {
+      const hour = new Date().getHours();
+      return hour >= 8 && hour < 20 ? 'light' : 'dark';
+    }
+
+    function setMode(mode, source = 'manual') {
+      const light = mode === 'light';
+      document.body.classList.toggle('light', light);
+      document.body.dataset.themeSource = source;
       const s = document.getElementById('side-theme-ico');
       if (s) s.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'
-        + (mode === 'light' ? 'sun' : 'moon') + '"/></svg>';
+        + (light ? 'sun' : 'moon') + '"/></svg>';
       const themeToggle = document.getElementById('side-theme-toggle');
       if (themeToggle) {
-        const light = mode === 'light';
         themeToggle.setAttribute('aria-pressed', String(light));
-        themeToggle.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+        themeToggle.setAttribute('aria-label', light ? 'Switch to dark theme. Theme normally changes automatically by hour.' : 'Switch to light theme. Theme normally changes automatically by hour.');
+        themeToggle.title = source === 'automatic' ? `Automatic theme: ${light ? 'light until 20:00' : 'dark until 08:00'}` : 'Temporary theme override; automatic schedule resumes on the next hour.';
       }
       Store.set({ mode });
     }
 
     function toggleDarkMode() {
-      const s = Store.get();
-      const newMode = s.mode === 'dark' ? 'light' : 'dark';
-      setMode(newMode);
+      const newMode = document.body.classList.contains('light') ? 'dark' : 'light';
+      setMode(newMode, 'manual');
+    }
+
+    function startAutomaticTheme() {
+      setMode(automaticMode(), 'automatic');
+      const checkAtNextHour = () => {
+        const now = new Date();
+        const nextHour = new Date(now);
+        nextHour.setHours(now.getHours() + 1, 0, 2, 0);
+        window.setTimeout(() => { setMode(automaticMode(), 'automatic'); checkAtNextHour(); }, nextHour.getTime() - now.getTime());
+      };
+      checkAtNextHour();
     }
 
     function checkout(plan) {
@@ -6452,7 +6468,7 @@
 
       const s = Store.get();
       chats = s.chats;
-      setMode(s.mode || 'dark');
+      startAutomaticTheme();
       const mLabels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
       const mCur = (s.model === 'ultra' && s.plan !== 'pro') ? 'smart' : (s.model || 'smart');
       document.getElementById('model-btn').innerHTML = mLabels[mCur] || mLabels.smart;

@@ -459,11 +459,12 @@ test('Task 150 synchronizes appearance segments with their selected settings sta
   assert.match(appHtml, /document\.getElementById\('seg-light'\)\.setAttribute\('aria-pressed', String\(light\)\);/);
 });
 
-test('Task 151 synchronizes the sidebar theme control state and action label', () => {
-  assert.match(appHtml, /<button type="button" id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="side-act" aria-pressed="false" aria-label="Switch to light theme">/);
+test('Task 151 keeps an accessible global theme control with the automatic hour-based schedule', () => {
+  assert.match(appHtml, /<button type="button" id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="ws-toggle top-theme-toggle" aria-pressed="false" aria-label="Switch to light theme" title="Theme changes automatically by hour">/);
   assert.match(appHtml, /const themeToggle = document\.getElementById\('side-theme-toggle'\);/);
   assert.match(appHtml, /themeToggle\.setAttribute\('aria-pressed', String\(light\)\);/);
-  assert.match(appHtml, /themeToggle\.setAttribute\('aria-label', light \? 'Switch to dark theme' : 'Switch to light theme'\);/);
+  assert.match(appHtml, /function automaticMode\(\) \{[\s\S]*hour >= 8 && hour < 20 \? 'light' : 'dark';/);
+  assert.match(appHtml, /function startAutomaticTheme\(\) \{[\s\S]*setMode\(automaticMode\(\), 'automatic'\);/);
 });
 
 test('Task 152 exposes both existing Terms destinations as native links', () => {
