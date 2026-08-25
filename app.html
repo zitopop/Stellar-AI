@@ -7063,6 +7063,77 @@
       #send-btn { min-width: 52px !important; padding-inline: 14px !important; }
     }
   </style>
+<style>
+    /* Plans modal polish: clearer scan path, fewer nested boxes, stronger action hierarchy. */
+    #plans-modal { background: rgba(5,5,7,.76) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; }
+    #plans-modal > div {
+      width: min(1120px, calc(100vw - 48px)) !important;
+      max-width: 1120px !important;
+      padding: 30px !important;
+      border: 1px solid rgba(255,255,255,.12) !important;
+      border-radius: 24px !important;
+      background: #151515 !important;
+      box-shadow: 0 30px 100px rgba(0,0,0,.58), inset 0 1px rgba(255,255,255,.05) !important;
+    }
+    #plans-modal-heading { color: #f4f4f5 !important; font-size: 27px !important; letter-spacing: -.045em !important; }
+    #plans-modal-heading + div { max-width: 720px; color: #8f8f98 !important; font-size: 12px !important; line-height: 1.5 !important; }
+    #plans-modal .plans-choice-guide { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 9px !important; margin: 0 0 22px !important; }
+    #plans-modal .plans-choice-guide span { min-height: 56px; padding: 11px 12px !important; border-color: rgba(255,255,255,.08) !important; border-radius: 11px !important; background: #1b1b1b !important; color: #96969e !important; font-size: 10px !important; }
+    #plans-modal .plans-choice-guide b { margin-bottom: 4px !important; color: #e4e4e7 !important; font-size: 9px !important; letter-spacing: .08em; }
+    #plans-grid-inner { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 12px !important; margin-bottom: 22px !important; }
+    #plans-grid-inner > div { min-width: 0 !important; min-height: 476px; padding: 22px !important; border: 1px solid rgba(255,255,255,.10) !important; border-radius: 17px !important; background: #191919 !important; box-shadow: none !important; }
+    #plans-grid-inner > div:hover { border-color: rgba(255,255,255,.2) !important; background: #1d1d1d !important; }
+    #plan-card-starter { border-color: rgba(164,132,255,.52) !important; background: #1c1b22 !important; }
+    #plan-card-plus { border-color: rgba(82,225,181,.42) !important; background: #18201e !important; }
+    #plan-card-pro { border-color: rgba(251,191,36,.38) !important; background: #211e18 !important; }
+    #plans-grid-inner > div > div:first-child { letter-spacing: .16em !important; }
+    #plan-card-free > div:nth-child(2), #plan-card-starter > div:nth-child(2), #plan-card-plus > div:nth-child(3), #plan-card-pro > div:nth-child(3) { margin-top: 2px !important; font-size: 34px !important; letter-spacing: -.055em !important; }
+    #plans-modal .plan-fit-line { display: block !important; min-height: 0 !important; margin: 2px 0 18px !important; padding: 11px 0 15px !important; border: 0 !important; border-bottom: 1px solid rgba(255,255,255,.09) !important; border-radius: 0 !important; color: #a8a8b0 !important; background: transparent !important; font-size: 11px !important; line-height: 1.55 !important; }
+    #plans-modal .plan-fit-line b { display: block; margin-bottom: 4px; color: #7e7e87 !important; font-size: 8px !important; letter-spacing: .12em !important; }
+    #plan-card-plus .plan-fit-line { border-bottom-color: rgba(82,225,181,.18) !important; color: #c4e9df !important; background: transparent !important; }
+    #plan-card-pro .plan-fit-line { border-bottom-color: rgba(251,191,36,.18) !important; color: #eadcb9 !important; background: transparent !important; }
+    #plans-grid-inner > div > div[style*="letter-spacing:.1em"] { margin-bottom: 5px !important; color: #77777f !important; font-size: 9px !important; }
+    #plans-grid-inner > div > div[style*="display:flex;flex-direction:column"] { gap: 8px !important; }
+    #plans-grid-inner > div > div[style*="display:flex;align-items:center"] { color: #c9c9ce !important; font-size: 12px !important; line-height: 1.45 !important; }
+    #plan-card-free button, #plan-card-starter button, #plan-card-plus button, #plan-card-pro button { min-height: 42px !important; border-radius: 10px !important; font-size: 12px !important; transition: transform .16s ease, filter .16s ease, background .16s ease !important; }
+    #plan-card-free button { margin-top: 4px !important; }
+    #plan-card-starter button:first-of-type, #plan-card-plus button:first-of-type, #plan-card-pro button:first-of-type { margin-top: 4px !important; }
+    #plan-card-starter button:hover, #plan-card-plus button:hover, #plan-card-pro button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    #plan-btn-starter-annual, #plan-btn-plus-annual, #plan-btn-pro-annual { min-height: 38px !important; margin-bottom: 18px !important; font-size: 11px !important; }
+    #plans-modal > div > div[style*="text-align:center"] { margin-top: 2px !important; }
+    #plans-modal > div > div[style*="text-align:center"] button { color: #8f8f98 !important; font-size: 12px !important; }
+    #plans-modal > div > div[style*="text-align:center"] button span { color: #d4d4d8 !important; }
+    #plans-modal > div > div[style*="border-top"] { padding-top: 14px !important; border-top-color: rgba(255,255,255,.08) !important; color: #73737c !important; }
+    body.light #plans-modal > div { background: #fafafa !important; border-color: #dedee3 !important; box-shadow: 0 24px 70px rgba(24,24,27,.18) !important; }
+    body.light #plans-modal-heading { color: #18181b !important; }
+    body.light #plans-modal-heading + div { color: #71717a !important; }
+    body.light #plans-modal .plans-choice-guide span { background: #f1f1f3 !important; border-color: #dedee3 !important; color: #71717a !important; }
+    body.light #plans-modal .plans-choice-guide b { color: #27272a !important; }
+    body.light #plans-grid-inner > div { background: #ffffff !important; border-color: #dedee3 !important; }
+    body.light #plan-card-starter { background: #faf8ff !important; border-color: #b7a0ef !important; }
+    body.light #plan-card-plus { background: #f6fcfa !important; border-color: #9dd9c5 !important; }
+    body.light #plan-card-pro { background: #fffbf1 !important; border-color: #e4c677 !important; }
+    body.light #plans-modal .plan-fit-line { color: #5f5f68 !important; border-bottom-color: #e5e5e8 !important; }
+    body.light #plans-grid-inner > div > div[style*="display:flex;align-items:center"] { color: #44444b !important; }
+    @media (max-width: 767px) {
+      #plans-modal { align-items: flex-end !important; }
+      #plans-modal > div { width: 100% !important; max-width: 100% !important; max-height: 94dvh !important; padding: 22px 16px calc(18px + env(safe-area-inset-bottom)) !important; border-radius: 22px 22px 0 0 !important; overflow-y: auto !important; }
+      #plans-modal-heading { font-size: 23px !important; }
+      #plans-modal .plans-choice-guide { grid-template-columns: 1fr 1fr !important; gap: 7px !important; margin-bottom: 16px !important; }
+      #plans-modal .plans-choice-guide span { min-height: 48px; padding: 9px 10px !important; }
+      #plans-grid-inner { grid-template-columns: 1fr !important; gap: 10px !important; margin-bottom: 14px !important; }
+      #plans-grid-inner > div { min-height: 0 !important; padding: 18px !important; }
+      #plans-grid-inner > div > div[style*="display:flex;flex-direction:column"] { gap: 7px !important; }
+      #plan-card-free > div:nth-child(2), #plan-card-starter > div:nth-child(2), #plan-card-plus > div:nth-child(3), #plan-card-pro > div:nth-child(3) { font-size: 31px !important; }
+      #plans-modal .plan-fit-line { margin-bottom: 14px !important; }
+      #plan-btn-starter-annual, #plan-btn-plus-annual, #plan-btn-pro-annual { margin-bottom: 14px !important; }
+    }
+    @media (min-width: 768px) and (max-width: 1100px) {
+      #plans-modal > div { width: min(96vw, 960px) !important; padding: 24px !important; }
+      #plans-grid-inner > div { padding: 16px !important; }
+      #plan-card-free > div:nth-child(2), #plan-card-starter > div:nth-child(2), #plan-card-plus > div:nth-child(3), #plan-card-pro > div:nth-child(3) { font-size: 29px !important; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
