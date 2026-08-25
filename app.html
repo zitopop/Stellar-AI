@@ -4838,12 +4838,20 @@
         method: 'POST',
         headers: apiHeaders(),
         body: JSON.stringify({ plan: 'topup', qty })
-      }).then(r => r.json()).then(data => {
-        if (data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
+      }).then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (response.status === 401) {
+          restore();
+          closeTopup();
+          recoverExpiredSession();
+          showCheckoutError('Your secure sign-in expired. Please sign in again to buy credit.');
+          return;
+        }
+        if (response.ok && data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
         restore();
         closeTopup();
-        showCheckoutError(data.error);
-      }).catch(() => { restore(); closeTopup(); showCheckoutError(); });
+        showCheckoutError(data.error || `Credit checkout could not start (${response.status}). Please try again.`);
+      }).catch(() => { restore(); closeTopup(); showCheckoutError('Could not reach credit checkout. Please check your connection and try again.'); });
     }
     setInterval(renderMeter, 30000);
 

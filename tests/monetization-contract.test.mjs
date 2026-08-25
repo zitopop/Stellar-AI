@@ -12,6 +12,17 @@ test('Stripe returns identify payment state and purchased plan', () => {
   assert.match(checkout, /encodeURIComponent\(plan\)/);
 });
 
+test('credit top-up checkout remains one-time, bounded, and actionable on failure', () => {
+  assert.match(checkout, /if \(plan === 'topup'\)/);
+  assert.match(checkout, /mode: 'payment'/);
+  assert.match(checkout, /unit_amount: pence/);
+  assert.match(checkout, /pence < TOPUP_MIN_PENCE \|\| pence > TOPUP_MAX_PENCE/);
+  assert.match(app, /if \(response\.ok && data\.url\)/);
+  assert.match(app, /response\.status === 401/);
+  assert.match(app, /Credit checkout could not start/);
+  assert.match(app, /Could not reach credit checkout/);
+});
+
 test('checkout exposes specific monthly and annual configuration failures', () => {
   for (const label of ['Starter', 'Plus', 'Pro']) assert.match(checkout, new RegExp(`${label} (monthly|annual) checkout is not configured yet`));
   assert.match(checkout, /STRIPE_PRICE_MODE_MISMATCH/);
