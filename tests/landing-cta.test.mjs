@@ -177,10 +177,10 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
 });
 
 test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consistent', () => {
-  assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Writing scripts regularly\?[\s\S]*Starter gives you more headroom\.[\s\S]*Plus keeps larger builds moving\.[\s\S]*Pro gives you the biggest runway\./);
-  assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Straightforward pricing<\/div><h2>Pick the plan that matches how you actually build\.<\/h2><p>Start free\. Move up when you need more room—not because a pricing page pushed you there\.<\/p><\/div>/);
+  assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Writing scripts most weeks\?[\s\S]*Starter gives you longer scripts and more breathing room\.[\s\S]*Plus is the practical middle for bigger weekly builds\.[\s\S]*Pro is for the large jobs where waiting gets old\./);
+  assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Straightforward pricing<\/div><h2>Pay for the room you actually need\.<\/h2><p>Try the workflow for free\. Upgrade when your scripts get longer, your builds get bigger or you simply need more headroom\.<\/p><\/div>/);
   assert.match(landingHtml, /<p class="plan-compare">No credit maze\. No surprise tiers\.[\s\S]*freedom to cancel when you need to\.<\/p>/);
-  assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room\. Same simple workflow\.<\/h3><p class="plan-desc">Best for early builders needing regular-script capacity\.<\/p>/);
+  assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room for regular scripts\.<\/h3><p class="plan-desc">For when Free is useful but you keep hitting the ceiling on normal builds\.<\/p>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span><\/div><a href="\/app" class="button button-secondary" aria-label="Choose the Starter plan">Get Starter<\/a><div class="annual">£67\/year · Save 30%<\/div><div class="plan-includes">Everything in Free, plus<\/div><ul><li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul>/);
   assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">Most popular<\/div><div class="plan-label">Plus<\/div>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For complete games<\/div><div class="plan-label">Pro<\/div>/);
@@ -290,10 +290,10 @@ test('Task 198 removes the unavailable Jarvis public presentation from landing, 
 });
 
 test('Task 198 keeps current Pro positioning and approved plan prices after removing Jarvis', () => {
-  assert.match(landingHtml, /Use it for a first build, a small feature or the bug that has been winding you up all evening\./);
-  assert.match(landingHtml, /Best for early builders needing regular-script capacity\./);
-  assert.match(landingHtml, /The biggest allowance for complete games, tougher systems and builders who do not want to wait around\./);
-  assert.match(landingHtml, /Best when you need Nova and the space to keep a larger game moving\./);
+  assert.match(landingHtml, /Use it for a first build, a small feature or the bug that has been winding you up all evening\. No card, no sales pitch\./);
+  assert.match(landingHtml, /The straightforward upgrade for early builders who are using Stellar regularly\./);
+  assert.match(landingHtml, /The most room for complete games, complicated systems and projects that are too large for a quick experiment\./);
+  assert.match(landingHtml, /Choose this when you need Nova and do not want your larger build squeezed into a smaller allowance\./);
   assert.match(landingHtml, /<strong>£0<\/strong><span>\/ forever<\/span>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
