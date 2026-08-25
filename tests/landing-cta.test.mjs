@@ -155,6 +155,12 @@ test('Task 184/190 keeps the framework rail close to the hero without removing t
   assert.match(landingHtml, /\.framework-rail \{ display: block; padding: 19px; margin-top: 42px; \}/);
 });
 
+test('landing cards use neutral white and grey hover feedback', () => {
+  assert.match(landingHtml, /:root \{ --review-card: #181818; --review-card-hover: #222222; --review-border: #343434; --review-border-hover: #a1a1aa; \}/);
+  assert.match(landingHtml, /\.hero-capability:hover, \.launch-card:hover, \.capability:hover, \.capability-map-card:hover, \.difference-item:hover, \.proof-card:hover, \.plan:hover, \.faq-item:hover, \.roblox-card:hover \{ transform: translateY\(-2px\) !important; border-color: var\(--review-border-hover\) !important; background: var\(--review-card-hover\) !important;/);
+  assert.match(landingHtml, /body\.light \.hero-capability:hover, body\.light \.launch-card:hover, body\.light \.capability:hover, body\.light \.capability-map-card:hover, body\.light \.difference-item:hover, body\.light \.proof-card:hover, body\.light \.plan:hover, body\.light \.faq-item:hover, body\.light \.roblox-card:hover \{ border-color: #71717a !important; background: #f4f4f5 !important;/);
+});
+
 test('the landing navigation remains sticky across viewport sizes', () => {
   assert.match(landingHtml, /\.site-header \{ position: -webkit-sticky; position: sticky; inset-block-start: 0; z-index: 30; width: 100%;/);
   assert.match(landingHtml, /<header class="site-header">/);
