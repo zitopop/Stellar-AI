@@ -848,14 +848,14 @@ end)</div></div>
           </div>
           </div>
         </div>
-        <section class="section" aria-labelledby="proof-title" style="padding:28px 0 10px;">
-          <div class="section-heading center" style="margin-bottom:18px;"><div class="eyebrow">Built in the open</div><h2 id="proof-title" style="font-size:clamp(28px,3vw,38px);">Progress you can see.</h2></div>
-          <div class="proof-strip" aria-label="Live Stellar AI activity">
-            <div class="proof-card"><div class="proof-number" data-stat="scriptsGenerated">—</div><div class="proof-label">scripts generated</div></div>
-            <div class="proof-card"><div class="proof-number" data-stat="serversPowered">—</div><div class="proof-label">builder accounts creating projects</div></div>
-            <div class="proof-card"><div class="proof-number" data-stat="countriesReached">—</div><div class="proof-label">countries reached</div></div>
+        <section class="section" id="proof-section" aria-labelledby="proof-title" style="padding:28px 0 10px;">
+          <div class="section-heading center" style="margin-bottom:18px;"><div class="eyebrow" id="proof-eyebrow">Start with a real build</div><h2 id="proof-title" style="font-size:clamp(28px,3vw,38px);">Everything you need to make the first version useful.</h2></div>
+          <div class="proof-strip" aria-label="Stellar AI builder benefits">
+            <div class="proof-card"><div class="proof-number" data-stat="scriptsGenerated">Full files</div><div class="proof-label" data-stat-label="scriptsGenerated">Clear structure to review, test and download</div></div>
+            <div class="proof-card"><div class="proof-number" data-stat="serversPowered">FiveM + Roblox</div><div class="proof-label" data-stat-label="serversPowered">One workspace for both game-building workflows</div></div>
+            <div class="proof-card"><div class="proof-number" data-stat="countriesReached">No card upfront</div><div class="proof-label" data-stat-label="countriesReached">Free credit is there when you are ready to try it</div></div>
           </div>
-          <p class="proof-note">Activity counters are generated from Stellar’s recorded product activity and update when data is available.</p>
+          <p class="proof-note" id="proof-note">Verified activity counters replace these build benefits once recorded product data is available.</p>
         </section>
         <div class="framework-rail" aria-label="Supported build contexts">
           <div class="framework-copy">Built for the frameworks and game workflows Stellar supports.</div>
@@ -1090,10 +1090,25 @@ end)</div></div>
           serversPowered: Number(stats.serversPowered),
           countriesReached: Number(stats.countriesReached),
         };
+        if (!Object.values(values).some((value) => Number.isFinite(value) && value >= 1)) return;
+        const labels = {
+          scriptsGenerated: 'scripts generated',
+          serversPowered: 'builder accounts creating projects',
+          countriesReached: 'countries reached',
+        };
+        document.getElementById('proof-section')?.setAttribute('data-proof-state', 'verified');
+        const eyebrow = document.getElementById('proof-eyebrow');
+        const title = document.getElementById('proof-title');
+        const note = document.getElementById('proof-note');
+        if (eyebrow) eyebrow.textContent = 'Built in the open';
+        if (title) title.textContent = 'Progress you can see.';
+        if (note) note.textContent = 'Activity counters are generated from Stellar’s recorded product activity and update when data is available.';
         Object.entries(values).forEach(([key, value]) => {
           const node = document.querySelector('[data-stat="' + key + '"]');
+          const label = document.querySelector('[data-stat-label="' + key + '"]');
           if (!node || !Number.isFinite(value) || value < 1) return;
           node.textContent = new Intl.NumberFormat('en-GB', { notation: value >= 10000 ? 'compact' : 'standard', maximumFractionDigits: 1 }).format(value) + (value >= 1000 ? '+' : '');
+          if (label) label.textContent = labels[key];
         });
       } catch {
         // The landing page deliberately keeps unverified counters hidden during an outage.

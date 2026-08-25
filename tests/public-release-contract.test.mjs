@@ -81,6 +81,14 @@ test('public and workspace styles include the flat minimal presentation guard', 
   assert.match(appHtml, /body, body \*, body \*::before, body \*::after \{ background-image: none !important; \}/);
 });
 
+test('landing page uses transparent build benefits until verified activity exists', () => {
+  assert.match(indexHtml, /id="proof-section"[\s\S]*Start with a real build[\s\S]*Everything you need to make the first version useful\./);
+  assert.match(indexHtml, /Full files[\s\S]*FiveM \+ Roblox[\s\S]*No card upfront/);
+  assert.match(indexHtml, /Verified activity counters replace these build benefits once recorded product data is available\./);
+  assert.match(indexHtml, /if \(!Object\.values\(values\)\.some\(\(value\) => Number\.isFinite\(value\) && value >= 1\)\) return;/);
+  assert.match(indexHtml, /document\.getElementById\('proof-section'\)\?\.setAttribute\('data-proof-state', 'verified'\);/);
+});
+
 test('the public support address remains a one-line mail link in settings', () => {
   assert.match(appHtml, /href="mailto:support@trystellarai\.com"[^>]*white-space:nowrap[^>]*>support@trystellarai\.com<\/a>/);
 });
