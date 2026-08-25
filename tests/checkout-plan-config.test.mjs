@@ -56,6 +56,18 @@ test('Plus and Pro checkout accept monthly/yearly deployment aliases', () => {
   assert.equal(subscriptionPriceForPlan('pro-annual', env), 'price_pro_yearly');
 });
 
+test('currency-specific Stripe prices are opt-in and fall back safely to GBP', () => {
+  const env = {
+    STRIPE_PRICE_ID_STARTER: 'price_starter_gbp',
+    STRIPE_PRICE_ID_STARTER_USD: 'price_starter_usd',
+    STRIPE_PRICE_ID_STARTER_ANNUAL_USD: 'price_starter_annual_usd',
+  };
+  assert.equal(subscriptionPriceForPlan('starter', env, 'USD'), 'price_starter_usd');
+  assert.equal(subscriptionPriceForPlan('starter-annual', env, 'USD'), 'price_starter_annual_usd');
+  assert.equal(subscriptionPriceForPlan('starter', env, 'EUR'), 'price_starter_gbp');
+  assert.equal(subscriptionPriceForPlan('starter', env, 'GBP'), 'price_starter_gbp');
+});
+
 test('missing Starter prices never fall through to Plus or Pro checkout', () => {
   const env = { STRIPE_PRICE_ID_PLUS: 'price_plus_monthly', STRIPE_PRICE_ID_PRO: 'price_pro_monthly' };
   assert.equal(subscriptionPriceForPlan('starter', env), '');

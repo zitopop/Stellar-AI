@@ -23,18 +23,20 @@ function firstConfiguredPrice(env, ...keys) {
   return '';
 }
 
-export function subscriptionPriceForPlan(plan, env = process.env) {
-  // Canonical names are listed first. The Starter aliases make configuration
-  // resilient to common dashboard naming while never substituting another tier.
+export function subscriptionPriceForPlan(plan, env = process.env, currency = 'GBP') {
+  // Local prices are opt-in. Never guess a price, reuse another tier, or trust a client to set billing.
+  const code = String(currency || 'GBP').trim().toUpperCase().replace(/[^A-Z]/g, '');
+  const suffix = code && code !== 'GBP' ? `_${code}` : '';
+  const local = (base, localBase) => firstConfiguredPrice(env, ...localBase.map((key) => `${key}${suffix}`), ...base);
   const prices = {
-    starter: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER', 'STRIPE_PRICE_ID_STARTER_MONTHLY', 'STRIPE_STARTER_PRICE_ID', 'STELLAR_STARTER', 'StellarStarter'),
-    'starter-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER_ANNUAL', 'STRIPE_PRICE_ID_STARTER_YEARLY', 'STRIPE_STARTER_ANNUAL_PRICE_ID', 'STELLAR_STARTER_YEAR', 'StellarStarterYear'),
-    plus: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY', 'STRIPE_PLUS_PRICE_ID', 'STRIPE_PRICE_ID_LITE'),
-    'plus-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY', 'STRIPE_PLUS_ANNUAL_PRICE_ID', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
-    lite: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY', 'STRIPE_PLUS_PRICE_ID', 'STRIPE_PRICE_ID_LITE'),
-    'lite-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY', 'STRIPE_PLUS_ANNUAL_PRICE_ID', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
-    pro: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO', 'STRIPE_PRICE_ID_PRO_MONTHLY', 'STRIPE_PRO_PRICE_ID'),
-    'pro-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO_ANNUAL', 'STRIPE_PRICE_ID_PRO_YEARLY', 'STRIPE_PRO_ANNUAL_PRICE_ID'),
+    starter: local(['STRIPE_PRICE_ID_STARTER', 'STRIPE_PRICE_ID_STARTER_MONTHLY', 'STRIPE_STARTER_PRICE_ID', 'STELLAR_STARTER', 'StellarStarter'], ['STRIPE_PRICE_ID_STARTER', 'STRIPE_PRICE_ID_STARTER_MONTHLY']),
+    'starter-annual': local(['STRIPE_PRICE_ID_STARTER_ANNUAL', 'STRIPE_PRICE_ID_STARTER_YEARLY', 'STRIPE_STARTER_ANNUAL_PRICE_ID', 'STELLAR_STARTER_YEAR', 'StellarStarterYear'], ['STRIPE_PRICE_ID_STARTER_ANNUAL', 'STRIPE_PRICE_ID_STARTER_YEARLY']),
+    plus: local(['STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY', 'STRIPE_PLUS_PRICE_ID', 'STRIPE_PRICE_ID_LITE'], ['STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY']),
+    'plus-annual': local(['STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY', 'STRIPE_PLUS_ANNUAL_PRICE_ID', 'STRIPE_PRICE_ID_LITE_ANNUAL'], ['STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY']),
+    lite: local(['STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY', 'STRIPE_PLUS_PRICE_ID', 'STRIPE_PRICE_ID_LITE'], ['STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_PLUS_MONTHLY']),
+    'lite-annual': local(['STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY', 'STRIPE_PLUS_ANNUAL_PRICE_ID', 'STRIPE_PRICE_ID_LITE_ANNUAL'], ['STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_PLUS_YEARLY']),
+    pro: local(['STRIPE_PRICE_ID_PRO', 'STRIPE_PRICE_ID_PRO_MONTHLY', 'STRIPE_PRO_PRICE_ID'], ['STRIPE_PRICE_ID_PRO', 'STRIPE_PRICE_ID_PRO_MONTHLY']),
+    'pro-annual': local(['STRIPE_PRICE_ID_PRO_ANNUAL', 'STRIPE_PRICE_ID_PRO_YEARLY', 'STRIPE_PRO_ANNUAL_PRICE_ID'], ['STRIPE_PRICE_ID_PRO_ANNUAL', 'STRIPE_PRICE_ID_PRO_YEARLY']),
   };
   return prices[plan] || '';
 }
@@ -58,7 +60,11 @@ export default async function handler(req, res) {
 
   const sessionUser = requireSession(req, res);
   if (!sessionUser) return;
-  const { plan, amount, qty } = req.body || {};
+  const { plan, amount, qty, currency: requestedCurrency, country: requestedCountry } = req.body || {};
+  const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
+  const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
+  const allowedCurrencies = new Set(['GBP', 'USD', 'EUR', 'CAD', 'AUD', 'NZD', 'CHF', 'NOK', 'SEK', 'DKK', 'PLN', 'CZK', 'HUF', 'INR', 'SGD', 'HKD', 'JPY', 'KRW', 'AED', 'SAR', 'ZAR', 'BRL', 'MXN', 'ISK']);
+  const currency = allowedCurrencies.has(String(requestedCurrency || '').toUpperCase()) ? String(requestedCurrency).toUpperCase() : 'GBP';
   if (!plan) return res.status(400).json({ error: 'Choose a plan before continuing.' });
 
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
@@ -103,8 +109,8 @@ export default async function handler(req, res) {
 
     // Price IDs are server-owned. Historic Plus aliases remain supported, but a
     // missing Starter ID must never silently charge a Plus or Pro price.
-    const price = subscriptionPriceForPlan(plan);
-    if (!price) return res.status(400).json({ error: missingPlanMessage(plan), code: 'PLAN_PRICE_NOT_CONFIGURED' });
+    const price = subscriptionPriceForPlan(plan, process.env, currency);
+    if (!price) return res.status(400).json({ error: missingPlanMessage(plan) + (currency !== 'GBP' ? ` No ${currency} Stripe price is configured for this plan, so use GBP or configure the ${currency} price ID.` : ''), code: 'PLAN_PRICE_NOT_CONFIGURED', country, currency });
 
     const attemptId = crypto.randomUUID();
     await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
@@ -116,7 +122,7 @@ export default async function handler(req, res) {
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       client_reference_id: attemptId,
-      metadata: { email: sessionUser.email, plan },
+      metadata: { email: sessionUser.email, plan, country, currency },
     });
 
     await incrementConversionMetric('checkout-started');

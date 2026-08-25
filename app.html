@@ -3441,7 +3441,7 @@
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;">
         <div>
           <div id="plans-modal-heading" style="font-size:22px;font-weight:900;letter-spacing:-0.5px;">Choose your plan</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Upgrade any time · Cancel any time · Billed in GBP</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Upgrade any time · Cancel any time · Prices adapt to your country · Stripe checkout uses a configured local price or GBP fallback · <span data-country-currency>GB · GBP</span></div>
         </div>
         <button id="plans-modal-close" onclick="closePlans()" class="modal-x" aria-label="Close plans">×</button>
       </div>
@@ -4921,7 +4921,7 @@
       fetch('/api/create-checkout', {
         method: 'POST',
         headers: apiHeaders(),
-        body: JSON.stringify({ plan: 'topup', qty })
+        body: JSON.stringify({ plan: 'topup', qty, ...((window.StellarCurrency && StellarCurrency.getCheckoutLocale()) || {}) })
       }).then(async (response) => {
         const data = await response.json().catch(() => ({}));
         if (response.status === 401) {
@@ -6606,7 +6606,7 @@
       fetch('/api/create-checkout', {
         method: 'POST',
         headers: apiHeaders(),
-        body: JSON.stringify({ plan })
+        body: JSON.stringify({ plan, ...((window.StellarCurrency && StellarCurrency.getCheckoutLocale()) || {}) })
       }).then(async (response) => {
         const data = await response.json().catch(() => ({}));
         if (response.ok && data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
@@ -6947,5 +6947,6 @@
   <img src="https://smollaunch.com/badges/featured.svg" alt="Stellar AI — Featured on Smol Launch" loading="lazy" width="125" height="30" />
 </a>
 
+<script src="/currency.js"></script>
 </body>
 </html>
