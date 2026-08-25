@@ -35,9 +35,12 @@ test('public pricing copy and structured offers agree on current GBP pricing', (
     assert.match(html, /£168\/year/);
     assert.match(html, /£630\/year/);
   }
-  assert.match(termsHtml, /Starter \(£8 per month or £67 per year\), Plus \(£20 per month or £168 per year\), and Pro \(£75 per month or £630 per year\)/);
-  assert.match(termsHtml, /everything in Free, plus 3× usage \(120 requests per hour\), priority queueing, longer scripts and cancellation at any time/);
-  assert.match(termsHtml, /A paid checkout is available only when its corresponding Stripe price is configured for the active Stripe mode; if it is unavailable, no payment is taken\./);
+  assert.match(termsHtml, /The current plans are Free \(£0\), Starter \(£8 per month or £67 per year\), Plus \(£20 per month or £168 per year\), and Pro \(£75 per month or £630 per year\)/);
+  assert.match(termsHtml, /The hourly request allowances are 40, 120, 400, and 1,600 respectively/);
+  assert.match(termsHtml, /Signed-in users can buy one-off credit top-ups from 50p to £200/);
+  assert.match(termsHtml, /The current referral offer awards £1 promotional credit to an eligible new user and £1 to the referrer/);
+  assert.match(termsHtml, /Signed-in chat history is stored in account storage/);
+  assert.match(termsHtml, /Working draft — have a qualified lawyer review before relying on it/);
 });
 
 test('repository-owned pricing setup notes document the canonical four-plan billing configuration', () => {
