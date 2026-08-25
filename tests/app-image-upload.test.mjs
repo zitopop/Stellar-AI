@@ -207,6 +207,17 @@ test('Task 82 closes an open sign-in dialog with Escape through the existing dis
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+const welcomeModal = document\.getElementById\('welcome-modal'\);\s+if \(!welcomeModal \|\| welcomeModal\.classList\.contains\('hidden'\)\) return;[\s\S]*?if \(event\.key !== 'Escape'\) return;\s+event\.preventDefault\(\);\s+dismissWelcome\(\);/);
 });
 
+test('Settings keeps essential controls visible and secondary sections collapsible', () => {
+  assert.match(appHtml, /id="settings-modal-heading" class="settings-title">Settings<\/div>/);
+  assert.doesNotMatch(appHtml, /Workspace preferences/);
+  assert.doesNotMatch(appHtml, /Make Stellar feel right for the way you build\./);
+  assert.match(appHtml, /#settings-modal #set-name-row, #settings-modal #set-email-row \{ display: none !important; \}/);
+  assert.match(appHtml, /<details id="set-referral-section" class="set-collapsible"/);
+  assert.match(appHtml, /<details id="set-achievements-section" class="set-collapsible"/);
+  assert.match(appHtml, /summary>Invite &amp; earn <span aria-hidden="true">＋<\/span>/);
+  assert.match(appHtml, /summary>Achievements <span aria-hidden="true">＋<\/span>/);
+});
+
 test('achievement settings use tappable badge cards with clear locked and unlocked states', () => {
   assert.match(appHtml, /id="set-achievements" class="set-group achievement-grid"/);
   assert.match(appHtml, /<button type="button" class="achievement-badge ' \+ \(unlocked \? 'is-unlocked' : 'is-locked'\)/);

@@ -3048,6 +3048,21 @@
     body.light .achievement-badge.is-unlocked .achievement-badge-state { color: #047857; }
     body.light .achievement-badge-description { color: #374151; }
     @media (max-width: 767px) { .achievement-grid { grid-template-columns: 1fr !important; padding: 8px !important; } .achievement-badge { min-height: 78px; } }
+
+    /* Settings stays focused: show the essentials first, keep secondary sections one tap away. */
+    #settings-modal .settings-kicker, #settings-modal .settings-subtitle, #settings-modal .set-ava-wrap { display: none !important; }
+    #settings-modal .set-head { margin-bottom: 14px !important; }
+    #settings-modal .settings-title { font-size: 22px !important; }
+    #settings-modal #set-name-row, #settings-modal #set-email-row { display: none !important; }
+    .set-collapsible { border: 1px solid rgba(255,255,255,.09); border-radius: 14px; background: rgba(255,255,255,.025); overflow: hidden; }
+    .set-collapsible > summary { display: flex; align-items: center; justify-content: space-between; min-height: 48px; padding: 0 14px; color: #e4e4e7; font-size: 12px; font-weight: 850; cursor: pointer; list-style: none; }
+    .set-collapsible > summary::-webkit-details-marker { display: none; }
+    .set-collapsible > summary span { color: #a78bfa; font-size: 17px; font-weight: 500; transition: transform .16s ease; }
+    .set-collapsible[open] > summary span { transform: rotate(45deg); }
+    .set-collapsible > .set-group { margin: 0 8px 8px; }
+    body.light .set-collapsible { border-color: #d1d5db; background: #f8fafc; }
+    body.light .set-collapsible > summary { color: #1f2937; }
+    body.light .set-collapsible > summary span { color: #6d28d9; }
   </style>
 <script type="application/ld+json">
 {
@@ -3453,9 +3468,7 @@
     <div onclick="event.stopImmediatePropagation()" role="dialog" aria-modal="true" aria-labelledby="settings-modal-heading" class="set-card glass rounded-3xl w-full max-w-md mx-4 p-8">
       <div class="set-head flex justify-between mb-6">
         <div>
-          <div class="settings-kicker">Workspace preferences</div>
           <div id="settings-modal-heading" class="settings-title">Settings</div>
-          <div class="settings-subtitle">Make Stellar feel right for the way you build.</div>
         </div>
         <button id="settings-modal-close" onclick="closeSettings()" class="modal-x" aria-label="Close settings" title="Close settings">×</button>
       </div>
@@ -3506,20 +3519,20 @@
         </div>
       </div>
 
-      <div id="set-referral-section" style="display:none;margin-top:16px;">
-        <div class="set-label">Invite &amp; earn</div>
+      <details id="set-referral-section" class="set-collapsible" style="display:none;margin-top:14px;">
+        <summary>Invite &amp; earn <span aria-hidden="true">＋</span></summary>
         <div class="set-group">
           <div class="set-item" style="align-items:flex-start;gap:10px;">
-            <div class="set-key" style="min-width:0;flex:1;"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-send"/></svg></i><span>Give a friend £1 credit. You earn £1 when they join.</span></div>
+            <div class="set-key" style="min-width:0;flex:1;"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-send"/></svg></i><span>You both get £1 when they join.</span></div>
             <button id="set-referral-copy" type="button" onclick="copyReferralLink()" class="set-val" style="min-height:36px;padding:0 10px;border:1px solid rgba(16,163,127,.35);border-radius:9px;background:rgba(16,163,127,.12);color:#10a37f;font-weight:800;cursor:pointer;white-space:nowrap;">Copy link</button>
           </div>
           <div id="set-referral-link" class="set-note" style="margin:0;padding:10px 12px;word-break:break-all;">Your referral link is loading…</div>
         </div>
-      </div>
-      <div id="set-achievements-section" style="display:none;margin-top:16px;">
-        <div class="set-label">Achievements</div>
+      </details>
+      <details id="set-achievements-section" class="set-collapsible" style="display:none;margin-top:14px;">
+        <summary>Achievements <span aria-hidden="true">＋</span></summary>
         <div id="set-achievements" class="set-group achievement-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"></div>
-      </div>
+      </details>
 
       </div>
 
