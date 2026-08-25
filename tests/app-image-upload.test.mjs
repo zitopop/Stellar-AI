@@ -463,8 +463,12 @@ test('Task 151 keeps an accessible global theme control with the automatic hour-
   assert.match(appHtml, /<button type="button" id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="ws-toggle top-theme-toggle" aria-pressed="false" aria-label="Switch to light theme" title="Theme changes automatically by hour">/);
   assert.match(appHtml, /const themeToggle = document\.getElementById\('side-theme-toggle'\);/);
   assert.match(appHtml, /themeToggle\.setAttribute\('aria-pressed', String\(light\)\);/);
-  assert.match(appHtml, /function automaticMode\(\) \{[\s\S]*hour >= 8 && hour < 20 \? 'light' : 'dark';/);
+  assert.match(appHtml, /const LIGHT_THEME_START_HOUR = 8;\s+const DARK_THEME_START_HOUR = 20;/);
+  assert.match(appHtml, /function automaticMode\(date = new Date\(\)\) \{[\s\S]*hour >= LIGHT_THEME_START_HOUR && hour < DARK_THEME_START_HOUR \? 'light' : 'dark';/);
+  assert.match(appHtml, /function toggleDarkMode\(\) \{[\s\S]*setMode\(newMode, 'manual'\);/);
   assert.match(appHtml, /function startAutomaticTheme\(\) \{[\s\S]*setMode\(automaticMode\(\), 'automatic'\);/);
+  assert.match(appHtml, /Manual override active; automatic schedule resumes at the next hour\./);
+  assert.match(appHtml, /nextHour\.setHours\(now\.getHours\(\) \+ 1, 0, 0, 0\);/);
 });
 
 test('Task 152 exposes both existing Terms destinations as native links', () => {

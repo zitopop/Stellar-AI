@@ -1044,9 +1044,11 @@ end)</div></div>
 
       const root = document.body;
       const toggle = document.getElementById('theme-toggle');
-      const automaticTheme = () => {
-        const hour = new Date().getHours();
-        return hour >= 8 && hour < 20 ? 'light' : 'dark';
+      const LIGHT_THEME_START_HOUR = 8;
+      const DARK_THEME_START_HOUR = 20;
+      const automaticTheme = (date = new Date()) => {
+        const hour = date.getHours();
+        return hour >= LIGHT_THEME_START_HOUR && hour < DARK_THEME_START_HOUR ? 'light' : 'dark';
       };
       const applyTheme = (mode, source = 'automatic') => {
         const light = mode === 'light';
@@ -1055,7 +1057,7 @@ end)</div></div>
         if (toggle) {
           toggle.setAttribute('aria-pressed', String(light));
           toggle.setAttribute('aria-label', light ? 'Switch to dark mode. Theme normally changes automatically by hour.' : 'Switch to light mode. Theme normally changes automatically by hour.');
-          toggle.title = source === 'automatic' ? `Automatic theme: ${light ? 'light until 20:00' : 'dark until 08:00'}` : 'Temporary theme override; automatic schedule resumes on the next hour.';
+          toggle.title = source === 'automatic' ? `Automatic theme: ${light ? 'light from 08:00 to 20:00' : 'dark from 20:00 to 08:00'}` : 'Manual override active; automatic schedule resumes at the next hour.';
           toggle.querySelector('.theme-icon').textContent = light ? '☀' : '☾';
         }
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f5fc' : '#0d0720');
@@ -1068,8 +1070,8 @@ end)</div></div>
       const scheduleNextThemeCheck = () => {
         const now = new Date();
         const nextHour = new Date(now);
-        nextHour.setHours(now.getHours() + 1, 0, 2, 0);
-        window.setTimeout(() => { applyTheme(automaticTheme()); scheduleNextThemeCheck(); }, nextHour.getTime() - now.getTime());
+        nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+        window.setTimeout(() => { applyTheme(automaticTheme()); scheduleNextThemeCheck(); }, Math.max(1000, nextHour.getTime() - now.getTime()));
       };
       scheduleNextThemeCheck();
       const revealTargets = document.querySelectorAll('.framework-rail, .launch-deck, .section-heading, .capability, .scenario, .capability-map, .why-stellar-section, .plans, .faq-layout, .final-cta');

@@ -161,6 +161,14 @@ test('landing cards use neutral white and grey hover feedback', () => {
   assert.match(landingHtml, /body\.light \.hero-capability:hover, body\.light \.launch-card:hover, body\.light \.capability:hover, body\.light \.capability-map-card:hover, body\.light \.difference-item:hover, body\.light \.proof-card:hover, body\.light \.plan:hover, body\.light \.faq-item:hover, body\.light \.roblox-card:hover \{ border-color: #71717a !important; background: #f4f4f5 !important;/);
 });
 
+test('landing theme follows 08:00–20:00 light and 20:00–08:00 dark schedule with manual override', () => {
+  assert.match(landingHtml, /const LIGHT_THEME_START_HOUR = 8;\s+const DARK_THEME_START_HOUR = 20;/);
+  assert.match(landingHtml, /const automaticTheme = \(date = new Date\(\)\) => \{[\s\S]*hour >= LIGHT_THEME_START_HOUR && hour < DARK_THEME_START_HOUR \? 'light' : 'dark';/);
+  assert.match(landingHtml, /applyTheme\(next, 'manual'\)/);
+  assert.match(landingHtml, /Manual override active; automatic schedule resumes at the next hour\./);
+  assert.match(landingHtml, /nextHour\.setHours\(now\.getHours\(\) \+ 1, 0, 0, 0\);/);
+});
+
 test('the landing navigation remains sticky across viewport sizes', () => {
   assert.match(landingHtml, /\.site-header \{ position: -webkit-sticky; position: sticky; inset-block-start: 0; z-index: 30; width: 100%;/);
   assert.match(landingHtml, /<header class="site-header">/);
