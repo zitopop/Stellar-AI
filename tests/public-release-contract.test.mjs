@@ -81,11 +81,13 @@ test('public and workspace styles include the flat minimal presentation guard', 
   assert.match(appHtml, /body, body \*, body \*::before, body \*::after \{ background-image: none !important; \}/);
 });
 
-test('landing page uses transparent build benefits until verified activity exists', () => {
+test('landing page uses transparent build benefits until verified activity reaches a meaningful sample', () => {
   assert.match(indexHtml, /id="proof-section"[\s\S]*Start with a real build[\s\S]*Everything you need to make the first version useful\./);
   assert.match(indexHtml, /Full files[\s\S]*FiveM \+ Roblox[\s\S]*No card upfront/);
-  assert.match(indexHtml, /Verified activity counters replace these build benefits once recorded product data is available\./);
-  assert.match(indexHtml, /if \(!Object\.values\(values\)\.some\(\(value\) => Number\.isFinite\(value\) && value >= 1\)\) return;/);
+  assert.match(indexHtml, /Verified activity counters replace these build benefits once Stellar has a meaningful recorded product sample\./);
+  assert.match(indexHtml, /const publicProofMinimums = \{[\s\S]*scriptsGenerated: 25[\s\S]*serversPowered: 10[\s\S]*countriesReached: 3[\s\S]*\};/);
+  assert.match(indexHtml, /const hasMeaningfulVerifiedSample = Object\.entries\(publicProofMinimums\)\.every/);
+  assert.match(indexHtml, /if \(!hasMeaningfulVerifiedSample\) return;/);
   assert.match(indexHtml, /document\.getElementById\('proof-section'\)\?\.setAttribute\('data-proof-state', 'verified'\);/);
 });
 

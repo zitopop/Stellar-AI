@@ -855,7 +855,7 @@ end)</div></div>
             <div class="proof-card"><div class="proof-number" data-stat="serversPowered">FiveM + Roblox</div><div class="proof-label" data-stat-label="serversPowered">One workspace for both game-building workflows</div></div>
             <div class="proof-card"><div class="proof-number" data-stat="countriesReached">No card upfront</div><div class="proof-label" data-stat-label="countriesReached">Free credit is there when you are ready to try it</div></div>
           </div>
-          <p class="proof-note" id="proof-note">Verified activity counters replace these build benefits once recorded product data is available.</p>
+          <p class="proof-note" id="proof-note">Verified activity counters replace these build benefits once Stellar has a meaningful recorded product sample.</p>
         </section>
         <div class="framework-rail" aria-label="Supported build contexts">
           <div class="framework-copy">Built for the frameworks and game workflows Stellar supports.</div>
@@ -1090,7 +1090,9 @@ end)</div></div>
           serversPowered: Number(stats.serversPowered),
           countriesReached: Number(stats.countriesReached),
         };
-        if (!Object.values(values).some((value) => Number.isFinite(value) && value >= 1)) return;
+        const publicProofMinimums = { scriptsGenerated: 25, serversPowered: 10, countriesReached: 3 };
+        const hasMeaningfulVerifiedSample = Object.entries(publicProofMinimums).every(([key, minimum]) => Number.isFinite(values[key]) && values[key] >= minimum);
+        if (!hasMeaningfulVerifiedSample) return;
         const labels = {
           scriptsGenerated: 'scripts generated',
           serversPowered: 'builder accounts creating projects',
