@@ -169,7 +169,8 @@ test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consis
   assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Starter adds 3× usage and longer scripts\.[\s\S]*Plus supports full game systems\.[\s\S]*Pro unlocks Nova and complete games\./);
   assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Simple, transparent plans<\/div><h2>Choose the plan for how often you build\.<\/h2><p>Every plan supports FiveM and Roblox work\. Choose based on the amount of building and iteration you need\.<\/p><\/div>/);
   assert.match(landingHtml, /<p class="plan-compare">Start Free to try Stellar or fix something smaller\.[\s\S]*server-enforced hourly requests and you can cancel any time\.<\/p>/);
-  assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>Build more often<\/h3>/);
+  assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room for regular scripts<\/h3><p class="plan-desc">Early builders who want more room for regular scripts\.<\/p>/);
+  assert.match(landingHtml, /<li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul><p class="plan-compare">Everything in Free, plus<\/p>/);
   assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">Most popular<\/div><div class="plan-label">Plus<\/div>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For complete games<\/div><div class="plan-label">Pro<\/div>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
@@ -273,7 +274,7 @@ test('Task 198 removes the unavailable Jarvis public presentation from landing, 
 
 test('Task 198 keeps current Pro positioning and approved plan prices after removing Jarvis', () => {
   assert.match(landingHtml, /Turn a first idea or broken script into a useful starting point\./);
-  assert.match(landingHtml, /More room for regular FiveM and Roblox script work without jumping to a full system plan\./);
+  assert.match(landingHtml, /Early builders who want more room for regular scripts\./);
   assert.match(landingHtml, /The highest usage allowance for complete FiveM or Roblox games and complex resources\./);
   assert.match(landingHtml, /Best when you are building larger games, returning to complex projects often, or need Nova\./);
   assert.match(landingHtml, /<strong>£0<\/strong><span>\/ forever<\/span>/);
