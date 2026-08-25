@@ -142,6 +142,13 @@ test('chat workspace refinement keeps the model picker descriptive, flat, and be
   assert.match(workspaceHtml, /\*, \*::before, \*::after \{ animation: none !important; transition: none !important; box-shadow: none !important;/);
 });
 
+test('workspace keeps the starter UI calm without removing its underlying guidance contract', () => {
+  assert.match(workspaceHtml, /\.greet-wrap \.welcome-next-step, #settings-modal \.so-sub \{ display: none !important; \}/);
+  assert.match(workspaceHtml, /class="welcome-next-step" role="note"/);
+  assert.match(workspaceHtml, /class="welcome-guide-link">Guides/);
+  assert.match(workspaceHtml, /class="so-sub">Sign in to keep your plan and credit safe/);
+});
+
 test('workspace welcome states keep first-use guidance and Guides discovery consistent', () => {
   const orientation = /<div class="welcome-next-step" role="note"><span class="welcome-next-step-label">Next<\/span><p><strong>Choose a starter,<\/strong> then review the files\.<\/p><a href="\/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→<\/span><\/a><\/div>/g;
   assert.equal(workspaceHtml.match(orientation)?.length, 2);
