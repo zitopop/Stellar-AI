@@ -1,6 +1,7 @@
 // api/auth.js — email/password and verified Google sign-in for Stellar AI
 import crypto from 'crypto';
 import { createSession, readSession } from '../lib/auth.js';
+import { applyReferralReward, ensureReferralProfile, kvGet, kvSet } from '../lib/profile.js';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';
 
@@ -21,31 +22,6 @@ function validEmail(value) {
 
 function hashPassword(password, salt) {
   return crypto.pbkdf2Sync(String(password), salt, 150000, 32, 'sha256').toString('hex');
-}
-
-function parseStoredValue(result) {
-  if (!result) return null;
-  try { return JSON.parse(result); } catch { return null; }
-}
-
-async function kvGet(url, token, key) {
-  const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!response.ok) throw new Error('Database read failed');
-  return parseStoredValue((await response.json()).result);
-}
-
-async function kvSet(url, token, key, value, seconds) {
-  const command = seconds
-    ? ['SET', key, JSON.stringify(value), 'EX', seconds]
-    : ['SET', key, JSON.stringify(value)];
-  const response = await fetch(`${url}/pipeline`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify([command]),
-  });
-  if (!response.ok) throw new Error('Database write failed');
 }
 
 function decodeBase64Url(value) {
@@ -101,7 +77,7 @@ async function sendWelcomeEmail(email) {
         from: 'Stellar AI <support@trystellarai.com>',
         to: [email],
         subject: 'Welcome to Stellar AI',
-        html: `<p>Welcome, ${displayName}.</p><p>Your £1 starter credit is ready. Open <a href="https://trystellarai.com/app">Stellar AI</a> to build your first script.</p>`,
+        html: `<p>Welcome, ${displayName}.</p><p>Your £1 starter credit is ready. Open <a href="https://trystellarai.com/app">Stellar AI</a> to build your first script.</p><p>— The Stellar AI Team 🚀</p>`,
       }),
     });
   } catch {
@@ -112,7 +88,10 @@ async function sendWelcomeEmail(email) {
 async function ensureUser(url, token, email, source) {
   const userKey = `stellar:user:${email}`;
   const existing = await kvGet(url, token, userKey);
-  if (existing) return { user: existing, isNew: false };
+  if (existing) {
+    const user = await ensureReferralProfile(url, token, email, existing);
+    return { user, isNew: false };
+  }
 
   const user = {
     plan: 'free',
@@ -123,7 +102,18 @@ async function ensureUser(url, token, email, source) {
     signInSource: source,
   };
   await kvSet(url, token, userKey, user);
-  return { user, isNew: true };
+  const profile = await ensureReferralProfile(url, token, email, user);
+  return { user: profile, isNew: true };
+}
+
+async function awardReferralIfEligible(url, token, email, referralCode, isNew) {
+  if (!isNew || !referralCode) return null;
+  try {
+    return await applyReferralReward(url, token, email, referralCode);
+  } catch (error) {
+    console.error('Referral reward failed', error?.message || error);
+    return null;
+  }
 }
 
 export default async function handler(req, res) {
@@ -135,14 +125,15 @@ export default async function handler(req, res) {
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return res.status(500).json({ error: 'Account storage is not configured.' });
 
-  const { action, email, password, credential, code } = req.body || {};
+  const { action, email, password, credential, code, referralCode } = req.body || {};
 
   try {
     if (action === 'googleLogin') {
       const googleUser = await verifyGoogleCredential(credential);
       const { isNew } = await ensureUser(url, token, googleUser.email, 'google');
+      const referral = await awardReferralIfEligible(url, token, googleUser.email, referralCode, isNew);
       if (isNew) void sendWelcomeEmail(googleUser.email);
-      return res.status(200).json({ ok: true, user: googleUser, session: createSession(googleUser.email), isNew });
+      return res.status(200).json({ ok: true, user: googleUser, session: createSession(googleUser.email), isNew, referralAwarded: Boolean(referral?.applied) });
     }
 
     const normalizedEmail = String(email || '').toLowerCase().trim();
@@ -169,8 +160,10 @@ export default async function handler(req, res) {
         updatedAt: Date.now(),
       };
       const updatedGift = { ...gift, used: true, usedBy: normalizedEmail, usedAt: Date.now() };
-      await kvSet(url, token, userKey, updatedUser);
-      await kvSet(url, token, codeKey, updatedGift);
+      await Promise.all([
+        kvSet(url, token, userKey, updatedUser),
+        kvSet(url, token, codeKey, updatedGift),
+      ]);
       return res.status(200).json({ ok: true, walletPence: updatedUser.walletPence, amount });
     }
 
@@ -185,9 +178,10 @@ export default async function handler(req, res) {
       if (existingAuth) return res.status(409).json({ error: 'That email already has an account. Try signing in instead.' });
       const salt = crypto.randomBytes(16).toString('hex');
       await kvSet(url, token, authKey, { salt, hash: hashPassword(password, salt), createdAt: Date.now() });
-      await ensureUser(url, token, normalizedEmail, 'password');
+      const { isNew } = await ensureUser(url, token, normalizedEmail, 'password');
+      const referral = await awardReferralIfEligible(url, token, normalizedEmail, referralCode, isNew);
       void sendWelcomeEmail(normalizedEmail);
-      return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail) });
+      return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail), referralAwarded: Boolean(referral?.applied) });
     }
 
     if (!existingAuth) return res.status(404).json({ error: 'No account found with that email. Create one first.' });

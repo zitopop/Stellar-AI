@@ -19,25 +19,32 @@ test('public Simulator destinations use the approved Roblox game ID everywhere',
 });
 
 test('public pricing copy and structured offers agree on current GBP pricing', () => {
+  assert.match(indexHtml, /"name":"Starter monthly","price":"8","priceCurrency":"GBP"/);
+  assert.match(indexHtml, /"name":"Starter yearly","price":"67","priceCurrency":"GBP"/);
   assert.match(indexHtml, /"name":"Plus monthly","price":"20","priceCurrency":"GBP"/);
   assert.match(indexHtml, /"name":"Plus yearly","price":"168","priceCurrency":"GBP"/);
   assert.match(indexHtml, /"name":"Pro monthly","price":"75","priceCurrency":"GBP"/);
   assert.match(indexHtml, /"name":"Pro yearly","price":"630","priceCurrency":"GBP"/);
+  assert.match(appHtml, /"name": "Starter", "price": "8", "priceCurrency": "GBP"/);
   assert.match(appHtml, /"name": "Plus", "price": "20", "priceCurrency": "GBP"/);
   assert.match(appHtml, /"name": "Pro", "price": "75", "priceCurrency": "GBP"/);
   for (const html of [indexHtml, appHtml]) {
+    assert.match(html, /£8/);
     assert.match(html, /£20/);
     assert.match(html, /£75/);
     assert.match(html, /£168\/year/);
     assert.match(html, /£630\/year/);
   }
-  assert.match(termsHtml, /Plus \(£20 per month or £168 per year\) and Pro \(£75 per month or £630 per year\)/);
+  assert.match(termsHtml, /Starter \(£8 per month or £67 per year\), Plus \(£20 per month or £168 per year\), and Pro \(£75 per month or £630 per year\)/);
 });
 
-test('repository-owned pricing setup notes do not preserve obsolete Plus or Pro subscriptions', () => {
-  assert.match(launchKit, /Plans: Free · Plus £20\/mo · Pro £75\/mo/);
-  assert.match(launchKit, /Price: \*\*£20\.00\*\*/);
-  assert.match(launchKit, /Price: \*\*£75\.00\*\*/);
+test('repository-owned pricing setup notes document the canonical four-plan billing configuration', () => {
+  assert.match(launchKit, /Starter \| £8 \| £67/);
+  assert.match(launchKit, /Plus \| £20 \| £168/);
+  assert.match(launchKit, /Pro \| £75 \| £630/);
+  assert.match(launchKit, /STRIPE_PRICE_ID_STARTER/);
+  assert.match(launchKit, /STRIPE_PRICE_ID_PLUS/);
+  assert.match(launchKit, /STRIPE_PRICE_ID_PRO/);
   assert.doesNotMatch(launchKit, /Plus £10\/mo|Pro £30\/mo|Price: \*\*£10\.00\*\*|Price: \*\*£30\.00\*\*/);
 });
 
@@ -54,7 +61,7 @@ test('directory-facing metadata describes current Stellar features without claim
 
 test('Free users receive only a dismissible local every-third-message upgrade reminder', () => {
   assert.match(appHtml, /id="free-upgrade-nudge" hidden role="status" aria-live="polite"/);
-  assert.match(appHtml, /Enjoying Stellar\?<\/strong> Upgrade to Plus for 10× more usage — £20\/mo\./);
+  assert.match(appHtml, /Enjoying Stellar\?<\/strong> Starter gives you 3× more usage and longer scripts for £8\/mo\./);
   assert.doesNotMatch(appHtml, /id="free-upgrade-nudge"[^>]*style="display:flex/);
   assert.match(appHtml, /#free-upgrade-nudge:not\(\[hidden\]\) \{ display: flex !important; \}/);
   assert.match(appHtml, /function countFreePlanSentMessages\(\)/);
@@ -78,7 +85,7 @@ test('the public support address remains a one-line mail link in settings', () =
 
 test('all published standalone blog articles have non-empty page titles and descriptions', () => {
   const blogFiles = readdirSync(root).filter((name) => /^blog-.*\.html$/.test(name));
-  assert.equal(blogFiles.length, 59);
+  assert.equal(blogFiles.length, 60);
   for (const file of blogFiles) {
     const html = read(file);
     assert.match(html, /<title>[^<]+<\/title>/, `${file} requires a title`);
@@ -92,7 +99,8 @@ test('approved long-form public guides have discovery links', () => {
   const guides = [
     ['blog-qbcore-police-job-script-free.html', 'https://trystellarai.com/blog-qbcore-police-job-script-free.html', /QBCore Police Job Script Free/],
     ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog-roblox-tapping-simulator-script.html', /Roblox Tapping Simulator Script/],
-    ['blog-stellar-ai-vs-swisserai-qbcore-roblox.html', 'https://trystellarai.com/blog-stellar-ai-vs-swisserai-qbcore-roblox.html', /Stellar AI vs SwisserAI/]
+    ['blog-stellar-ai-vs-swisserai-qbcore-roblox.html', 'https://trystellarai.com/blog-stellar-ai-vs-swisserai-qbcore-roblox.html', /Stellar AI vs SwisserAI/],
+    ['blog-stellar-ai-vs-enderdevelopment.html', 'https://trystellarai.com/blog-stellar-ai-vs-enderdevelopment.html', /Stellar AI vs EnderDevelopment/]
   ];
   for (const [file, canonical, title] of guides) {
     const html = read(file);
@@ -104,6 +112,13 @@ test('approved long-form public guides have discovery links', () => {
     assert.match(sitemap, new RegExp(canonical.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(hub, new RegExp(canonical.replace('https://trystellarai.com', '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
+});
+
+test('the EnderDevelopment comparison article names its public pricing source without unsupported universal superiority claims', () => {
+  const enderComparisonHtml = read('blog-stellar-ai-vs-enderdevelopment.html');
+  assert.match(enderComparisonHtml, /https:\/\/enderdevelopment\.com\/pricing/);
+  assert.match(enderComparisonHtml, /Redstone at €8\/month, Obsidian at €38\/month and Bedrock at €120\/month/);
+  assert.doesNotMatch(enderComparisonHtml, /always better|outperforms every/i);
 });
 
 test('the SwisserAI comparison article names its source scope without unsupported universal superiority claims', () => {

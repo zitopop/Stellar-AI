@@ -46,7 +46,7 @@ function validEmail(email) {
 }
 
 function validPlan(plan) {
-  return ['free', 'lite', 'pro'].includes(plan);
+  return ['free', 'starter', 'plus', 'pro', 'lite'].includes(plan);
 }
 
 export default async function handler(req, res) {

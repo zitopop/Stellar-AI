@@ -5,8 +5,8 @@ import test from 'node:test';
 const landingHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 test('Task 199 keeps the direct hero explanation and primary CTA honest, free, and routed to the workspace', () => {
-  assert.match(landingHtml, /<h1>Build and fix FiveM &amp; Roblox scripts <span class="gradient-text">you can test\.<\/span><\/h1>/);
-  assert.match(landingHtml, /<p class="hero-lead">Describe the system you want, get a clear file-based starting point, then keep improving it in a workspace built for QBCore, ESX and Roblox\.<\/p>/);
+  assert.match(landingHtml, /<h1>From game idea to complete files — <span class="gradient-text">for FiveM &amp; Roblox\.<\/span><\/h1>/);
+  assert.match(landingHtml, /<p class="hero-lead">Tell Stellar what you want to build\. It plans the system, writes the files, explains what changed and stays with the next revision for QBCore, ESX and Roblox\.<\/p>/);
   assert.match(landingHtml, /<a href="\/app" class="button button-primary">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
   assert.match(landingHtml, /<a href="#how-it-works" class="button button-secondary">See the 4-step workflow<\/a>/);
   assert.match(landingHtml, /<div class="hero-footnote"><span>No card needed to begin<\/span><span>Free starting credit<\/span><span>Review and test every script<\/span><\/div>/);
@@ -166,12 +166,13 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
 });
 
 test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consistent', () => {
-  assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Plus adds more room for regular work\.[\s\S]*Pro gives you the largest usage allowance and Nova\./);
+  assert.match(landingHtml, /<div class="plan-decider" aria-label="How to choose a Stellar AI plan">[\s\S]*Starter adds 3× usage and longer scripts\.[\s\S]*Plus supports full game systems\.[\s\S]*Pro unlocks Nova and complete games\./);
   assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Simple, transparent plans<\/div><h2>Choose the plan for how often you build\.<\/h2><p>Every plan supports FiveM and Roblox work\. Choose based on the amount of building and iteration you need\.<\/p><\/div>/);
-  assert.match(landingHtml, /<p class="plan-compare">Start with Free if you are trying Stellar or fixing something smaller\.[\s\S]*one-off credit instead of subscribing\.<\/p>/);
-  assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For regular building<\/div><div class="plan-label">Plus<\/div>/);
-  assert.doesNotMatch(landingHtml, /<div class="plan-badge">Most popular<\/div>/);
-  assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">For larger systems<\/div><div class="plan-label">Pro<\/div>/);
+  assert.match(landingHtml, /<p class="plan-compare">Start Free to try Stellar or fix something smaller\.[\s\S]*server-enforced hourly requests and you can cancel any time\.<\/p>/);
+  assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>Build more often<\/h3>/);
+  assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">Most popular<\/div><div class="plan-label">Plus<\/div>/);
+  assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For complete games<\/div><div class="plan-label">Pro<\/div>/);
+  assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });
@@ -272,10 +273,11 @@ test('Task 198 removes the unavailable Jarvis public presentation from landing, 
 
 test('Task 198 keeps current Pro positioning and approved plan prices after removing Jarvis', () => {
   assert.match(landingHtml, /Turn a first idea or broken script into a useful starting point\./);
-  assert.match(landingHtml, /Keep regular FiveM or Roblox work moving without running out of room as quickly\./);
-  assert.match(landingHtml, /The largest usage allowance for bigger FiveM and Roblox systems\./);
-  assert.match(landingHtml, /Best when you are building longer resources, returning to complex projects often, or need the strongest available model\./);
+  assert.match(landingHtml, /More room for regular FiveM and Roblox script work without jumping to a full system plan\./);
+  assert.match(landingHtml, /The highest usage allowance for complete FiveM or Roblox games and complex resources\./);
+  assert.match(landingHtml, /Best when you are building larger games, returning to complex projects often, or need Nova\./);
   assert.match(landingHtml, /<strong>£0<\/strong><span>\/ forever<\/span>/);
+  assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /£168\/year · Save 30%/);
@@ -283,7 +285,7 @@ test('Task 198 keeps current Pro positioning and approved plan prices after remo
 });
 
 test('Task 198 keeps the remaining current pricing cards mobile-safe after removing the Jarvis section', () => {
-  assert.match(landingHtml, /\.capability-grid, \.capability-map-grid, \.plans, \.plan-decider \{ grid-template-columns: 1fr; \}/);
+  assert.match(landingHtml, /\.capability-grid, \.capability-map-grid, \.plans, \.plan-decider, \.proof-strip \{ grid-template-columns: 1fr; \}/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
 });

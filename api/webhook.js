@@ -3,6 +3,7 @@
 
 import Stripe from 'stripe';
 import { topupBonusPence, normalisePlan } from '../lib/pricing.js';
+import { recordFirstUpgrade } from '../lib/profile.js';
 import { incrementConversionMetric, recordCheckoutCompletion, recordCheckoutExpiry } from '../lib/conversion-metrics.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
@@ -111,6 +112,7 @@ export default async function handler(req, res) {
               incrementConversionMetric('checkout-completed'),
               incrementConversionMetric('subscription-completed'),
               incrementConversionMetric('revenue-pence', Number(session.amount_total || 0)),
+              recordFirstUpgrade(KV_URL, KV_TOKEN, email),
             ]);
           } else {
             console.error('Stripe checkout completed with an unknown plan', checkoutPlan, session.id);

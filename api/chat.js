@@ -3,6 +3,9 @@
 // current-model routing, safe fallbacks, and signed-session plan enforcement.
 import { isIP } from 'node:net';
 import { isOwnerEmail, readSession } from '../lib/auth.js';
+import { PLAN_DEFINITIONS, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
+import { recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
+import { consumeUsage } from '../lib/usage.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -229,19 +232,15 @@ const MODEL_TIER_BY_ID = {
   'claude-opus-4-8': 'nova',
 };
 
-const PLAN_LIMITS = {
-  free: { requestsPerHour: 40, maxTokens: 2000, models: ['spark', 'star', 'comet'] },
-  lite: { requestsPerHour: 400, maxTokens: 5000, models: ['spark', 'star', 'comet'] },
-  plus: { requestsPerHour: 400, maxTokens: 5000, models: ['spark', 'star', 'comet'] },
-  pro: { requestsPerHour: 1600, maxTokens: 8000, models: ['spark', 'star', 'comet', 'nova'] },
-  owner: { requestsPerHour: 99999, maxTokens: 8000, models: ['spark', 'star', 'comet', 'nova'] },
-};
+const PLAN_LIMITS = PLAN_DEFINITIONS;
 
 const STELLAR_SYSTEM_PROMPT = `You are Stellar, a precise senior game-scripting assistant. You help people build, improve and debug FiveM and Roblox projects. Be direct, capable and honest. Never claim that code was run, tested, installed or deployed when it was not.
 
 WORKING METHOD
 - First identify the platform and framework from the request and conversation. Ask one concise clarification only when it is genuinely necessary to produce safe, working code.
-- For a new feature, begin with a short build summary (one or two sentences). Then provide the complete set of files that the requested feature actually needs.
+- For every implementation request, begin with a compact numbered plan and state key assumptions before code. Then provide the complete set of files that the requested feature actually needs.
+- Never silently truncate a solution. If response space is tight, prioritise complete critical files and say exactly which optional material should continue in the next message.
+- After code, explain what was built and finish with the next practical setup, testing, or iteration steps.
 - For a bug, start with a one-sentence diagnosis that names the likely cause. Then give the smallest complete fix and clearly state any assumption.
 - Think through failure paths before responding: repeated events, invalid or missing data, a player disconnecting, a player dying, permissions, server authority, and duplicate rewards or purchases.
 - Prefer a small correct solution over a large speculative one. Do not invent APIs, exports, events or library functions. If an API is uncertain, say so and use a documented conservative pattern.
@@ -324,23 +323,32 @@ async function getPlanFromServer(email) {
   const normalizedEmail = String(email).toLowerCase().trim();
   if (isOwnerEmail(normalizedEmail)) return 'owner';
   const user = await kvGet(`stellar:user:${normalizedEmail}`);
-  return user && PLAN_LIMITS[user.plan] ? user.plan : 'free';
+  return normalisePlan(user?.plan) || 'free';
 }
 
-async function checkRate(ip, plan) {
-  const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-  const key = `rl:${ip}:${plan}`;
-  const windowSeconds = 60 * 60;
-  const record = (await kvGet(key)) || { count: 0, resetAt: Date.now() + windowSeconds * 1000 };
+function usageIdentity(session, ip) {
+  return session?.email ? `email:${String(session.email).toLowerCase().trim()}` : `ip:${ip}`;
+}
 
-  if (Date.now() > record.resetAt) {
-    record.count = 0;
-    record.resetAt = Date.now() + windowSeconds * 1000;
+function applyUsageHeaders(res, usage) {
+  if (!usage) return;
+  res.setHeader('X-RateLimit-Limit', String(usage.limit));
+  res.setHeader('X-RateLimit-Remaining', String(usage.remaining));
+  res.setHeader('X-RateLimit-Reset', usage.resetAt);
+  res.setHeader('X-Stellar-Plan', usage.plan);
+}
+
+async function consumeServerUsage(session, ip, plan) {
+  if (plan === 'owner') {
+    return { plan: 'owner', limit: PLAN_LIMITS.owner.requestsPerHour, used: 0, remaining: PLAN_LIMITS.owner.requestsPerHour, resetAt: new Date(Date.now() + (60 * 60 * 1000)).toISOString(), allowed: true };
   }
-
-  record.count += 1;
-  await kvSet(key, record, windowSeconds);
-  return record.count <= limits.requestsPerHour;
+  if (!KV_URL || !KV_TOKEN) throw new Error('Usage storage is not configured.');
+  return consumeUsage({
+    url: KV_URL,
+    token: KV_TOKEN,
+    identity: usageIdentity(session, ip),
+    plan,
+  });
 }
 
 function normaliseClientIp(forwardedFor) {
@@ -727,10 +735,21 @@ export default async function handler(req, res) {
 
   const session = readSession(req);
   const plan = await getPlanFromServer(session?.email);
-  const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
+  const limits = getPlanDefinition(plan);
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);
-  if (!await checkRate(ip, plan)) {
-    return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' });
+  let usage;
+  try {
+    usage = await consumeServerUsage(session, ip, plan);
+    applyUsageHeaders(res, usage);
+  } catch (error) {
+    console.error('Usage enforcement failed', error?.message || error);
+    return res.status(503).json({ error: 'Usage checks are temporarily unavailable. Please try again shortly.' });
+  }
+  if (!usage.allowed) {
+    return res.status(429).json({
+      error: `You have reached your ${usage.limit} requests per hour allowance. Upgrade when you need more room, or try again after the reset.`,
+      usage,
+    });
   }
 
   const route = resolveRoute(model, role, plan);
@@ -780,6 +799,11 @@ export default async function handler(req, res) {
       res.end();
     } finally {
       reader.releaseLock();
+      if (session?.email && KV_URL && KV_TOKEN) {
+        recordScriptGenerated(KV_URL, KV_TOKEN, session.email).catch((error) => console.error('Could not record script achievement', error?.message || error));
+        const country = req.headers['x-vercel-ip-country'] || req.headers['cf-ipcountry'] || '';
+        recordCountryActivity(KV_URL, KV_TOKEN, country).catch((error) => console.error('Could not record aggregate country activity', error?.message || error));
+      }
     }
   } catch (error) {
     if (!res.headersSent) {
@@ -796,4 +820,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, buildSystemPrompt, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, toForgeMessages };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };

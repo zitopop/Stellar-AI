@@ -1,104 +1,123 @@
-# 🚀 STELLAR AI — LAUNCH KIT (updated 20 July 2026)
+# Stellar AI Launch Kit
 
-Your app is COMPLETE. This kit has everything left: flipping the money switch, filming the proof clip, and posting. Work through it top to bottom.
-
----
-
-## ✅ WHAT'S LIVE RIGHT NOW
-
-- Chat app with 4 models: ✨ Spark · ⭐ Star · ☄️ Comet (Plus) · 🚀 Nova (Pro)
-- Message allowance refreshed every 6 hours, live meter + countdown in the app
-- Free waits for the reset · Plus/Pro buy top-ups: packs or custom 10–100 messages (3p each, 50p min)
-- 📁 Workspace panel — every script becomes a named, downloadable file
-- Google sign-in (done) · owner mode (you get everything free)
-- Installable app (Add to Home Screen → your star icon, full screen)
-- Stop button, thinking-star animation, posh dark UI, business-tone AI
-- Plans: Free · Plus £20/mo · Pro £75/mo — confetti thank-you after purchase
-- Terms & Privacy page at /terms.html
-- Landing page at /landing.html
+This checklist documents the production configuration required to launch the current Stellar AI plan ladder safely. Complete it in test mode first, verify the Stripe webhooks and server-side entitlements, then switch only the intended production price IDs.
 
 ---
 
-## 💰 STEP 1 — THE MONEY SWITCH (15 minutes, one time)
+## What is live in the current build
 
-### A. Create 2 products in Stripe
-Go to **dashboard.stripe.com** → log in → **Product catalogue** (or "Products") → **+ Add product**. Create these two, exactly:
-
-1. **Stellar Plus**
-   - Price: **£20.00**
-   - Billing: **Recurring — Monthly**
-2. **Stellar Pro**
-   - Price: **£75.00**
-   - Billing: **Recurring — Monthly**
-
-(Top-ups need NO product — the app prices them automatically: 3p per message, 50p minimum, packs from 10 to 100.)
-
-### B. Copy the 2 price codes
-Open each product you just made. Each has a price with a code starting **`price_...`** — copy both somewhere safe (Notes app is fine). Label which is which!
-
-### C. Paste them into Vercel
-Go to **vercel.com** → your **stellar-ai** project → **Settings** → **Environment Variables** → add these two (Name → Value):
-
-| Name | Value |
+| Product area | Current behaviour |
 |---|---|
-| `STRIPE_PRICE_ID_LITE` | the Plus price_ code |
-| `STRIPE_PRICE_ID_PRO` | the Pro price_ code |
+| Platforms | FiveM QBCore, ESX, ox_lib, standalone workflows, and Roblox Luau |
+| Default model | Star; Spark and Comet remain available, while Nova is Pro-only |
+| Plans | Free, Starter, Plus, and Pro |
+| Server enforcement | Requests are metered in Redis per signed-in account per UTC hour; the browser only displays the server snapshot |
+| Growth features | Referral links, £1 validated referral rewards, achievement badges, social proof and SEO content |
+| Billing safety | Stripe Checkout and webhook confirmation own paid entitlement changes; the browser cannot grant a plan |
 
-Save both.
-
-### D. Redeploy
-Vercel → **Deployments** → newest deployment → **⋯ menu → Redeploy**. Wait for green **Ready**.
-
-### E. Test it
-Open your app → Plans → tap **Get Plus**. Stripe checkout should open. Use Stripe's test card if you're in test mode: **4242 4242 4242 4242**, any future date, any 3 digits. Complete it → you should land back in the app with CONFETTI. 🎉
-
-**That's the switch flipped. Every buy button is now real income.**
+> **Do not mark a plan as paid from the browser or by changing local storage.** Billing entitlement changes must arrive through the verified Stripe webhook or an authenticated owner grant.
 
 ---
 
-## 🎬 STEP 2 — THE PROOF CLIP (60 seconds, phone screen-record)
+## 1. Create the Stripe price products
 
-The clip that sells: show it WORKING.
+Create recurring Stripe prices in the Stripe dashboard for the following plan intervals. Use the exact displayed amount, label each price clearly, and keep test and production price IDs separate.
 
-1. Open Stellar on your phone (the installed app — star icon visible on your home screen first = flex)
-2. Type: **"make a FiveM shop NPC that sells water for $10"**
-3. Let the star spin → code streams in
-4. Show the code pasted into a server + it working in-game (the money shot)
-5. End on the app: tap the model picker (Spark/Star/Nova), flash the Plans page
+| Plan | Monthly price | Annual price | Required variables |
+|---|---:|---:|---|
+| Starter | £8 | £67 | `STRIPE_PRICE_ID_STARTER`, `STRIPE_PRICE_ID_STARTER_ANNUAL` |
+| Plus | £20 | £168 | `STRIPE_PRICE_ID_PLUS`, `STRIPE_PRICE_ID_PLUS_ANNUAL` |
+| Pro | £75 | £630 | `STRIPE_PRICE_ID_PRO`, `STRIPE_PRICE_ID_PRO_ANNUAL` |
 
-Keep it fast. No talking needed — captions do the work.
-
----
-
-## 📣 STEP 3 — CAPTIONS (copy-paste)
-
-**TikTok / Instagram (@stellaraiapp):**
-> Server owners: you don't need a scripter anymore. Type what you want → working FiveM script in seconds. Free to try — link in bio. #fivem #fivemscripts #roblox #gtarp
-
-**Reddit (r/FiveM etc — be human, not salesy):**
-> Built a little AI tool that writes working QBCore scripts from plain English. Free tier if anyone wants to test it and tell me what breaks: trystellarai.com
-
-**YouTube Shorts:**
-> POV: your server needed a shop NPC and you built it in 30 seconds. Stellar AI — link in description.
-
-Post the SAME clip everywhere. One clip, four platforms.
+The Free plan does not require a Stripe product. Keep historic `STRIPE_PRICE_ID_LITE` variables only while existing Plus subscribers still depend on them; new checkout uses the canonical Plus names.
 
 ---
 
-## 📋 LAUNCH CHECKLIST
+## 2. Configure production environment variables
 
-- [ ] 2 Stripe products created (Plus £20/mo, Pro £75/mo)
-- [ ] 2 price codes into Vercel
-- [ ] Redeployed → green Ready
-- [ ] Test purchase → confetti seen
-- [ ] Proof clip filmed
-- [ ] Posted: TikTok · Instagram · Reddit · YouTube Shorts
-- [ ] First £10 → **Rule One: mum's £80 first** 💙
+In the Vercel project’s production environment, add or confirm the following values. Never commit real values into the repository.
+
+```text
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+STRIPE_PRICE_ID_STARTER
+STRIPE_PRICE_ID_STARTER_ANNUAL
+STRIPE_PRICE_ID_PLUS
+STRIPE_PRICE_ID_PLUS_ANNUAL
+STRIPE_PRICE_ID_PRO
+STRIPE_PRICE_ID_PRO_ANNUAL
+KV_REST_API_URL
+KV_REST_API_TOKEN
+JWT_SECRET
+ANTHROPIC_API_KEY
+```
+
+Configure a Stripe webhook to the deployed `/api/webhook` route. The signing secret must be stored in `STRIPE_WEBHOOK_SECRET`. A completed checkout should grant the canonical `starter`, `plus`, or `pro` plan only after the webhook verifies the event.
 
 ---
 
-## 🔧 IF SOMETHING BREAKS
+## 3. Test every purchase path before launch
 
-- Buy button says "Payments are not set up yet" → an env var name is misspelled or missing → check the table in Step 1C, then Redeploy.
-- Checkout opens but wrong price → you copied the wrong price_ code → swap it in Vercel, Redeploy.
-- Anything else → screenshot it and send it to me. We fix, same as always.
+Use Stripe test mode and a test account. Confirm the following sequence for every monthly and annual price:
+
+1. Sign in with a non-owner account.
+2. Open Plans and start checkout for the intended tier.
+3. Complete a Stripe test payment.
+4. Confirm the return page shows the correct tier message.
+5. Confirm `/api/get-plan` reports the new plan and the correct hourly allowance.
+6. Confirm the user can see only the models and features their tier allows; Nova must remain unavailable except on Pro.
+7. Confirm an attempted second paid checkout is blocked with the account-management message.
+8. Confirm a cancellation leaves the existing access intact until the already-paid period ends.
+
+Use Stripe’s published test card details only in test mode. Do not use a real card to test a production configuration unless you intentionally want a real charge.
+
+---
+
+## 4. Verify the plan contract
+
+| Plan | Requests per hour | Core product promise |
+|---|---:|---|
+| Free | 40 | £1 credit, no card, Spark/Star/Comet, full scripts and downloads |
+| Starter | 120 | 3× usage, priority queue, longer scripts, cancel anytime |
+| Plus | 400 | 10× usage, full game systems, priority access, cancel anytime |
+| Pro | 1,600 | 40× usage, Nova, complete games, fastest access, cancel anytime |
+
+All request limits are enforced by `api/chat.js` through Redis. The Settings usage display must show requests remaining and reset time from the server response; it is informational and must not be treated as the authority for access control.
+
+---
+
+## 5. Verify referrals, achievements, and public counters
+
+Create two test accounts and validate the complete growth loop:
+
+1. Copy the first account’s Settings referral link.
+2. Open it in a clean browser session and sign up as the second account.
+3. Confirm that each eligible account receives exactly £1 promotional credit once.
+4. Confirm the referral claim is stored under `stellar:referral:email:<email>` and that a repeat sign-up cannot duplicate the reward.
+5. Generate scripts and confirm the first-script, 10-scripts and 50-scripts badge progression.
+6. Complete a paid checkout and confirm the first-upgrade badge.
+7. Confirm landing counters only show aggregate data and remain blank rather than inventing a number if storage is unavailable.
+
+---
+
+## 6. Release checklist
+
+- [ ] Test and production Stripe prices are not mixed.
+- [ ] Stripe webhook signing secret is configured and verified.
+- [ ] Starter monthly and annual price IDs are configured.
+- [ ] Server-side request limits are correct for Free, Starter, Plus and Pro.
+- [ ] Nova is Pro-only for non-owner accounts.
+- [ ] Owner access works only for `deadlyfox10@gmail.com` and `tobi@trystellarai.com`, plus any deliberately configured additional owners.
+- [ ] Referral awards cannot be self-awarded or duplicated.
+- [ ] The landing, app, terms, README and sitemap show the same four plans.
+- [ ] The EnderDevelopment comparison and affiliate page are listed in the sitemap and linked from public navigation.
+- [ ] A mobile review confirms bottom-sheet dialogs, 44px close targets, readable plan text and an unobstructed iPhone composer.
+- [ ] Run `node --test tests/*.test.mjs` and resolve all failures before merging.
+
+---
+
+## If something breaks
+
+If checkout reports a missing price, check the exact environment-variable name and the correct Stripe mode, then redeploy. If a payment completes but the plan does not change, check the Stripe webhook delivery log and signing secret before altering any account record. If the usage display looks wrong, inspect the `api/get-plan` response and the hourly Redis key; do not attempt to repair access from browser storage.
+
+© 2026 Stellar AI

@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'Stellar AI <support@trystellarai.com>',
         to: [email],
-        subject: 'Welcome to Stellar AI 🐢',
+        subject: 'Welcome to Stellar AI',
         html: `
 <!DOCTYPE html>
 <html>
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     </div>
 
     <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;">
-      <h1 style="font-size:24px;font-weight:900;color:#ffffff;margin:0 0 12px;letter-spacing:-0.5px;">Welcome, ${displayName} 🐢</h1>
+      <h1 style="font-size:24px;font-weight:900;color:#ffffff;margin:0 0 12px;letter-spacing:-0.5px;">Welcome, ${displayName}</h1>
       <p style="font-size:15px;color:rgba(255,255,255,0.6);margin:0 0 24px;line-height:1.6;">
         You've got <strong style="color:#10a37f;">£1 free credit</strong> ready to go. That's enough to generate your first complete FiveM script right now.
       </p>
@@ -69,6 +69,7 @@ export default async function handler(req, res) {
     </div>
 
     <div style="text-align:center;margin-top:24px;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0 0 8px;">— The Stellar AI Team 🚀</p>
       <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0;">
         Stellar AI · <a href="https://trystellarai.com/terms.html" style="color:rgba(255,255,255,0.25);">Terms</a> · <a href="mailto:support@trystellarai.com" style="color:rgba(255,255,255,0.25);">support@trystellarai.com</a>
       </p>

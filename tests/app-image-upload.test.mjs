@@ -419,7 +419,9 @@ test('Task 121 keeps the mobile model menu scrollable within a bounded viewport'
 });
 
 test('Task 122 refreshes existing selected-model indicators immediately after a permitted choice', () => {
-  assert.match(appHtml, /function pickModel\(m\) \{[\s\S]*?if \(\['researcher', 'security', 'tester'\]\.includes\(m\) && !\(s\.plan === 'lite' \|\| s\.plan === 'pro' \|\| isOwner\(\)\)\) \{ openPlans\(\); return; \}\s+Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);/);
+  assert.match(appHtml, /function pickModel\(m\) \{/);
+  assert.match(appHtml, /\['researcher', 'security', 'tester'\]\.includes\(m\) && !\(s\.plan === 'plus' \|\| s\.plan === 'lite' \|\| s\.plan === 'pro' \|\| isOwner\(\)\)/);
+  assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);/);
 });
 
 test('Task 145 lets keyboard users jump to the first or last visible model-menu option', () => {

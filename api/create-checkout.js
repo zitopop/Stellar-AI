@@ -65,10 +65,16 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: checkout.url });
     }
 
+    // Price IDs are server-owned. Keep historic LITE variables as a fallback so
+    // existing Plus subscriptions and deployments cannot be broken by a rename.
     const prices = {
-      lite: process.env.STRIPE_PRICE_ID_LITE,
+      starter: process.env.STRIPE_PRICE_ID_STARTER,
+      'starter-annual': process.env.STRIPE_PRICE_ID_STARTER_ANNUAL,
+      plus: process.env.STRIPE_PRICE_ID_PLUS || process.env.STRIPE_PRICE_ID_LITE,
+      'plus-annual': process.env.STRIPE_PRICE_ID_PLUS_ANNUAL || process.env.STRIPE_PRICE_ID_LITE_ANNUAL,
+      lite: process.env.STRIPE_PRICE_ID_PLUS || process.env.STRIPE_PRICE_ID_LITE,
+      'lite-annual': process.env.STRIPE_PRICE_ID_PLUS_ANNUAL || process.env.STRIPE_PRICE_ID_LITE_ANNUAL,
       pro: process.env.STRIPE_PRICE_ID_PRO,
-      'lite-annual': process.env.STRIPE_PRICE_ID_LITE_ANNUAL,
       'pro-annual': process.env.STRIPE_PRICE_ID_PRO_ANNUAL,
     };
     const price = prices[plan];

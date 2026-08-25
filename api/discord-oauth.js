@@ -1,8 +1,42 @@
 // api/discord-oauth.js — Discord OAuth callback with signed Stellar session
+import crypto from 'crypto';
 import { createSession } from '../lib/auth.js';
+import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, validReferralCode } from '../lib/profile.js';
 
 function fragment(values) {
   return new URLSearchParams(values).toString();
+}
+
+function stateSecret() {
+  return process.env.DISCORD_STATE_SECRET || process.env.AUTH_SESSION_SECRET || process.env.OWNER_SECRET || '';
+}
+
+function createState(referralCode) {
+  const secret = stateSecret();
+  if (!secret) return '';
+  const payload = Buffer.from(JSON.stringify({
+    ref: validReferralCode(referralCode) ? String(referralCode).toUpperCase() : '',
+    exp: Date.now() + (10 * 60 * 1000),
+    nonce: crypto.randomBytes(12).toString('base64url'),
+  })).toString('base64url');
+  const signature = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
+  return `${payload}.${signature}`;
+}
+
+function readState(state) {
+  const secret = stateSecret();
+  const [payload, signature] = String(state || '').split('.');
+  if (!secret || !payload || !signature) return '';
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
+  const actual = Buffer.from(expected);
+  const provided = Buffer.from(signature);
+  if (actual.length !== provided.length || !crypto.timingSafeEqual(actual, provided)) return '';
+  try {
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return decoded?.exp > Date.now() && validReferralCode(decoded?.ref) ? decoded.ref : '';
+  } catch {
+    return '';
+  }
 }
 
 export default async function handler(req, res) {
@@ -11,7 +45,7 @@ export default async function handler(req, res) {
   const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://trystellarai.com/api/discord-oauth';
   const kvUrl = process.env.KV_REST_API_URL;
   const kvToken = process.env.KV_REST_API_TOKEN;
-  const { code, error } = req.query;
+  const { code, error, state, ref } = req.query;
 
   if (!code && !error) {
     if (!clientId) return res.status(500).json({ error: 'Discord is not configured.' });
@@ -21,6 +55,8 @@ export default async function handler(req, res) {
       response_type: 'code',
       scope: 'identify email',
     });
+    const signedState = createState(ref);
+    if (signedState) params.set('state', signedState);
     return res.redirect(`https://discord.com/oauth2/authorize?${params}`);
   }
 
@@ -51,24 +87,27 @@ export default async function handler(req, res) {
 
     const authKey = `stellar:auth:${email}`;
     const userKey = `stellar:user:${email}`;
-    const storedResponse = await fetch(`${kvUrl}/get/${encodeURIComponent(authKey)}`, {
-      headers: { Authorization: `Bearer ${kvToken}` },
-    });
-    const storedResult = (await storedResponse.json()).result;
+    const existingAuth = await kvGet(kvUrl, kvToken, authKey);
+    let isNew = false;
+    let user;
 
-    if (!storedResult) {
+    if (!existingAuth) {
+      isNew = true;
       const now = Date.now();
       const authRecord = { discord: true, discordId: profile.id, discordUsername: profile.username, createdAt: now };
-      const userRecord = { plan: 'free', walletPence: 100, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord' };
-      const write = await fetch(`${kvUrl}/pipeline`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify([
-          ['SET', authKey, JSON.stringify(authRecord)],
-          ['SET', userKey, JSON.stringify(userRecord)],
-        ]),
-      });
-      if (!write.ok) throw new Error('Account creation failed');
+      user = { plan: 'free', walletPence: 100, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord' };
+      await kvPipeline(kvUrl, kvToken, [
+        ['SET', authKey, JSON.stringify(authRecord)],
+        ['SET', userKey, JSON.stringify(user)],
+      ]);
+    } else {
+      user = await kvGet(kvUrl, kvToken, userKey) || { plan: 'free', createdAt: Date.now(), signInSource: 'discord' };
+    }
+
+    user = await ensureReferralProfile(kvUrl, kvToken, email, user);
+    const referralCode = readState(state);
+    if (isNew && referralCode) {
+      try { await applyReferralReward(kvUrl, kvToken, email, referralCode); } catch (error) { console.error('Discord referral reward failed', error?.message || error); }
     }
 
     const session = createSession(email);

@@ -5,6 +5,8 @@ import { EventEmitter } from 'node:events';
 process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
 process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+process.env.KV_REST_API_URL = 'https://kv.test';
+process.env.KV_REST_API_TOKEN = 'test-kv-token';
 
 const { addImageToLastUserMessage, buildSystemPrompt, default: chatHandler, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
@@ -518,7 +520,9 @@ test('Task 66 clears the request timeout and disconnect listener after a streame
   };
 
   try {
-    globalThis.fetch = async () => new Response('data: [DONE]\n\n', { status: 200 });
+    globalThis.fetch = async (url) => String(url).startsWith('https://kv.test/')
+      ? new Response(JSON.stringify([{ result: 1 }, { result: 1 }]), { status: 200 })
+      : new Response('data: [DONE]\n\n', { status: 200 });
     globalThis.setTimeout = () => timeoutHandle;
     globalThis.clearTimeout = (handle) => clearedTimeouts.push(handle);
     await chatHandler({
@@ -559,7 +563,9 @@ test('Task 66 clears the request timeout and disconnect listener after an upstre
   };
 
   try {
-    globalThis.fetch = async () => new Response(JSON.stringify({ error: { message: 'Provider unavailable' } }), { status: 503 });
+    globalThis.fetch = async (url) => String(url).startsWith('https://kv.test/')
+      ? new Response(JSON.stringify([{ result: 1 }, { result: 1 }]), { status: 200 })
+      : new Response(JSON.stringify({ error: { message: 'Provider unavailable' } }), { status: 503 });
     globalThis.setTimeout = () => timeoutHandle;
     globalThis.clearTimeout = (handle) => clearedTimeouts.push(handle);
     await chatHandler({

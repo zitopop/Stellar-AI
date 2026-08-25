@@ -15,9 +15,13 @@ test('top-up limits are clamped to the checkout contract', () => {
   assert.equal(clampTopupPence(1250), 1250);
 });
 
-test('annual and monthly prices normalize to the same plan access tier', () => {
-  assert.equal(normalisePlan('lite'), 'lite');
-  assert.equal(normalisePlan('lite-annual'), 'lite');
+test('annual and monthly prices normalize to the canonical plan access tier', () => {
+  assert.equal(normalisePlan('starter'), 'starter');
+  assert.equal(normalisePlan('starter-annual'), 'starter');
+  assert.equal(normalisePlan('plus'), 'plus');
+  assert.equal(normalisePlan('plus-annual'), 'plus');
+  assert.equal(normalisePlan('lite'), 'plus');
+  assert.equal(normalisePlan('lite-annual'), 'plus');
   assert.equal(normalisePlan('pro-annual'), 'pro');
   assert.equal(normalisePlan('unknown'), null);
 });
