@@ -329,8 +329,14 @@ test('Task 100 closes only the open allowance-limit dialog with an unhandled Esc
 });
 
 test('Task 101 gives the credit top-up modal explicit labelled dialog semantics', () => {
-  assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card topup-card" role="dialog" aria-modal="true" aria-labelledby="topup-modal-heading">/);
+  assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card topup-card" role="dialog" aria-modal="true" aria-labelledby="topup-modal-heading" aria-describedby="topup-modal-note">/);
   assert.match(appHtml, /<div id="topup-modal-heading" class="topup-title">Add credit<\/div>/);
+  assert.match(appHtml, /<div id="topup-modal-note" class="topup-sub">Buy once\. Use anytime\.<\/div>/);
+});
+
+test('credit top-up modal keeps clean Cancel and close actions visible', () => {
+  assert.match(appHtml, /class="topup-close" onclick="closeTopup\(\)" aria-label="Cancel credit purchase">×<\/button>/);
+  assert.match(appHtml, /onclick="closeTopup\(\)" class="plan-btn glass w-full mt-2 topup-cancel">Cancel<\/button>/);
 });
 
 test('Task 102 manages focus for the credit top-up dialog lifecycle', () => {

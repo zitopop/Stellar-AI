@@ -130,7 +130,7 @@ test('Task 185 keeps top-up credit controls explicit non-submit buttons', () => 
     assert.match(workspaceHtml, new RegExp(`<button type="button" onclick="pickTopup\\(${amount}\\)" data-amt="${amount}" class="pack`));
   }
   assert.match(workspaceHtml, /<button type="button" id="topup-buy" onclick="buyTopup\(document\.getElementById\('topup-range'\)\.value\)"/);
-  assert.match(workspaceHtml, /<button type="button" onclick="closeTopup\(\)" class="plan-btn glass w-full mt-2">Cancel<\/button>/);
+  assert.match(workspaceHtml, /<button type="button" onclick="closeTopup\(\)" class="plan-btn glass w-full mt-2 topup-cancel">Cancel<\/button>/);
 });
 
 test('chat workspace refinement keeps the model picker descriptive, flat, and behavior-preserving', () => {
