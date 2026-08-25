@@ -3659,7 +3659,7 @@
         </div>
         <div class="set-item set-click" id="set-usage-wallet-row" style="display:none" onclick="closeSettings(); openTopup()">
           <div class="set-key"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wallet"/></svg></i>Balance</div>
-          <div class="set-val" id="set-usage-wallet">£0.00</div><div class="set-chev" aria-hidden="true">›</div>
+          <div class="set-val" id="set-usage-wallet">£0.00 credit</div><div class="set-chev" aria-hidden="true">›</div>
         </div>
         <div class="set-item set-click" onclick="toggleCreditsOn()">
           <div class="set-key"><i class="sk-ico t-amber"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg></i>Usage credit</div>
@@ -3874,13 +3874,13 @@
         <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Balance</div>
-            <div style="font-size:16px;font-weight:900;color:#ffffff;" id="u-total">£0.00</div>
+            <div style="font-size:16px;font-weight:900;color:#ffffff;" id="u-total">£0.00 credit</div>
           </div>
           <div id="u-promo-line" style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:6px;">
-            <span>🎁 Free credit</span><span id="u-promo">£0.00</span>
+            <span>🎁 Free credit</span><span id="u-promo">£0.00 credit</span>
           </div>
           <div id="u-paid-line" style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:14px;">
-            <span>💳 Credit you bought</span><span id="u-paid">£0.00</span>
+            <span>💳 Credit you bought</span><span id="u-paid">£0.00 credit</span>
           </div>
           <button onclick="closeUsage(); openTopup()" style="width:100%;padding:10px;border-radius:10px;background:#7c3aed;border:none;color:#fff;font-weight:800;font-size:13px;cursor:pointer;">Add credit</button>
         </div>
@@ -4765,7 +4765,9 @@
         const lowNow = left <= Math.max(3, Math.ceil(allow * 0.1));
         const guest = !Store.get().user && !isOwner();
         cb.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> '
-          + (guest ? '40 requests/hr' : escapeHtml(left + ' left'));
+          + (guest ? '40 requests/hr' : escapeHtml(moneyShort(wallet) + ' credit · ' + left + ' left'));
+        cb.setAttribute('aria-label', guest ? '40 requests per hour' : moneyShort(wallet) + ' account credit, ' + left + ' requests left');
+        cb.setAttribute('title', guest ? '40 requests per hour' : moneyShort(wallet) + ' account credit · ' + left + ' requests left');
         cb.classList.toggle('credits-low', lowNow);
       }
       const sfill = document.getElementById('set-meter-fill');
@@ -4779,8 +4781,8 @@
         sp.textContent = left + ' of ' + allow + ' left';
         document.getElementById('set-usage-reset').textContent = refillTimeStr();
         const wr = document.getElementById('set-usage-wallet-row');
-        wr.style.display = (wallet > 0) ? '' : 'none';
-        document.getElementById('set-usage-wallet').textContent = moneyShort(wallet);
+        wr.style.display = (wallet > 0 || Store.get().user || isOwner()) ? '' : 'none';
+        document.getElementById('set-usage-wallet').textContent = moneyShort(wallet) + ' credit';
       }
     }
     let limitDialogTrigger = null;
@@ -6219,9 +6221,9 @@
       if (cta) cta.style.display = (Store.get().plan === 'free' || !Store.get().plan) ? 'block' : 'none';
       el('u-reset').textContent = 'Resets in ' + refillTimeStr();
       const promo = u.promoBalance || 0, paid = u.balance || 0;
-      el('u-total').textContent = moneyShort(promo + paid);
-      el('u-promo').textContent = moneyShort(promo);
-      el('u-paid').textContent = moneyShort(paid);
+      el('u-total').textContent = moneyShort(promo + paid) + ' credit';
+      el('u-promo').textContent = moneyShort(promo) + ' credit';
+      el('u-paid').textContent = moneyShort(paid) + ' credit';
       el('u-promo-line').style.display = promo > 0 ? '' : 'none';
       el('u-paid-line').style.display = paid > 0 ? '' : 'none';
       el('u-switch').classList.toggle('on', creditsOn());
