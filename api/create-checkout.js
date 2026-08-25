@@ -15,6 +15,36 @@ function setCors(req, res) {
   res.setHeader('Vary', 'Origin');
 }
 
+function firstConfiguredPrice(env, ...keys) {
+  for (const key of keys) {
+    const value = String(env?.[key] || '').trim();
+    if (value) return value;
+  }
+  return '';
+}
+
+export function subscriptionPriceForPlan(plan, env = process.env) {
+  // Canonical names are listed first. The Starter aliases make configuration
+  // resilient to common dashboard naming while never substituting another tier.
+  const prices = {
+    starter: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER', 'STRIPE_PRICE_ID_STARTER_MONTHLY', 'STRIPE_STARTER_PRICE_ID'),
+    'starter-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_STARTER_ANNUAL', 'STRIPE_PRICE_ID_STARTER_YEARLY', 'STRIPE_STARTER_ANNUAL_PRICE_ID'),
+    plus: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_LITE'),
+    'plus-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
+    lite: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS', 'STRIPE_PRICE_ID_LITE'),
+    'lite-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PLUS_ANNUAL', 'STRIPE_PRICE_ID_LITE_ANNUAL'),
+    pro: firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO'),
+    'pro-annual': firstConfiguredPrice(env, 'STRIPE_PRICE_ID_PRO_ANNUAL'),
+  };
+  return prices[plan] || '';
+}
+
+function missingPlanMessage(plan) {
+  if (plan === 'starter') return 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.';
+  if (plan === 'starter-annual') return 'Starter annual checkout is not configured yet. Add the Starter annual Stripe price ID, then redeploy.';
+  return 'That plan is not available.';
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -65,20 +95,10 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: checkout.url });
     }
 
-    // Price IDs are server-owned. Keep historic LITE variables as a fallback so
-    // existing Plus subscriptions and deployments cannot be broken by a rename.
-    const prices = {
-      starter: process.env.STRIPE_PRICE_ID_STARTER,
-      'starter-annual': process.env.STRIPE_PRICE_ID_STARTER_ANNUAL,
-      plus: process.env.STRIPE_PRICE_ID_PLUS || process.env.STRIPE_PRICE_ID_LITE,
-      'plus-annual': process.env.STRIPE_PRICE_ID_PLUS_ANNUAL || process.env.STRIPE_PRICE_ID_LITE_ANNUAL,
-      lite: process.env.STRIPE_PRICE_ID_PLUS || process.env.STRIPE_PRICE_ID_LITE,
-      'lite-annual': process.env.STRIPE_PRICE_ID_PLUS_ANNUAL || process.env.STRIPE_PRICE_ID_LITE_ANNUAL,
-      pro: process.env.STRIPE_PRICE_ID_PRO,
-      'pro-annual': process.env.STRIPE_PRICE_ID_PRO_ANNUAL,
-    };
-    const price = prices[plan];
-    if (!price) return res.status(400).json({ error: 'That plan is not available.' });
+    // Price IDs are server-owned. Historic Plus aliases remain supported, but a
+    // missing Starter ID must never silently charge a Plus or Pro price.
+    const price = subscriptionPriceForPlan(plan);
+    if (!price) return res.status(400).json({ error: missingPlanMessage(plan), code: 'PLAN_PRICE_NOT_CONFIGURED' });
 
     const attemptId = crypto.randomUUID();
     await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
@@ -97,6 +117,10 @@ export default async function handler(req, res) {
     return res.status(200).json({ url: checkout.url });
   } catch (error) {
     console.error('Stripe checkout error', error?.message || error);
+    const message = String(error?.message || '');
+    if (/No such price|price_[^\s]+ does not exist/i.test(message)) {
+      return res.status(400).json({ error: 'This Stripe price was not found in the current Stripe mode. Check that the price ID and STRIPE_SECRET_KEY are both test or both live, then redeploy.', code: 'STRIPE_PRICE_MODE_MISMATCH' });
+    }
     return res.status(500).json({ error: 'Could not start checkout. Please try again.' });
   }
 }

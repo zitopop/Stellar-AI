@@ -36,6 +36,8 @@ test('public pricing copy and structured offers agree on current GBP pricing', (
     assert.match(html, /£630\/year/);
   }
   assert.match(termsHtml, /Starter \(£8 per month or £67 per year\), Plus \(£20 per month or £168 per year\), and Pro \(£75 per month or £630 per year\)/);
+  assert.match(termsHtml, /everything in Free, plus 3× usage \(120 requests per hour\), priority queueing, longer scripts and cancellation at any time/);
+  assert.match(termsHtml, /A paid checkout is available only when its corresponding Stripe price is configured for the active Stripe mode; if it is unavailable, no payment is taken\./);
 });
 
 test('repository-owned pricing setup notes document the canonical four-plan billing configuration', () => {
