@@ -7480,6 +7480,77 @@
       .sug-chip::after { transition: none !important; }
     }
   </style>
+<style>
+    /* Usage modal polish: account value first, controls second, no cramped labels. */
+    #usage-modal { background: rgba(4,5,8,.72) !important; backdrop-filter: blur(14px) !important; -webkit-backdrop-filter: blur(14px) !important; }
+    #usage-modal > div {
+      width: min(440px, calc(100vw - 32px)) !important;
+      max-width: 440px !important;
+      margin: 16px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(143,232,207,.22) !important;
+      border-radius: 24px !important;
+      background: linear-gradient(155deg, #18181b, #121215) !important;
+      box-shadow: 0 30px 90px rgba(0,0,0,.48), 0 0 0 1px rgba(255,255,255,.025) !important;
+    }
+    #usage-modal > div > div:first-child { padding: 22px 24px !important; border-bottom-color: rgba(255,255,255,.09) !important; }
+    #usage-modal-heading { color: #fafafa !important; font-size: 20px !important; letter-spacing: -.04em !important; }
+    #usage-modal-close { width: 40px !important; height: 40px !important; border-radius: 12px !important; border-color: rgba(143,232,207,.38) !important; color: #d8d8dd !important; background: rgba(143,232,207,.06) !important; }
+    #usage-modal-close:hover, #usage-modal-close:focus-visible { color: #ffffff !important; border-color: #8fe8cf !important; background: rgba(143,232,207,.14) !important; }
+    #usage-modal > div > div:nth-child(2) { padding: 20px 24px 24px !important; }
+    #u-plan { margin-bottom: 10px !important; color: #8fe8cf !important; font-size: 10px !important; letter-spacing: .18em !important; }
+    #u-usage-card, #u-usage-card + div, #u-usage-card ~ div:not(#u-upgrade-cta) {
+      border: 1px solid rgba(255,255,255,.10) !important;
+      border-radius: 16px !important;
+      background: rgba(255,255,255,.045) !important;
+      box-shadow: none !important;
+    }
+    #u-usage-card { margin-bottom: 12px !important; padding: 16px !important; }
+    #u-usage-card > div:first-child { margin-bottom: 12px !important; }
+    #u-usage-card > div:first-child > div:first-child { color: #e7e7ea !important; font-size: 12px !important; font-weight: 800 !important; }
+    #u-fill { background: linear-gradient(90deg, #8fe8cf, #5bb7ff) !important; }
+    #u-pct { color: #fafafa !important; }
+    #u-reset { color: #a6a6af !important; }
+    #u-usage-card + div { margin-bottom: 12px !important; padding: 16px !important; }
+    #u-usage-card + div > div:first-child { margin-bottom: 14px !important; }
+    #u-usage-card + div > div:first-child > div:first-child { color: #e7e7ea !important; font-size: 12px !important; font-weight: 800 !important; }
+    #u-total { color: #ffffff !important; font-size: 21px !important; letter-spacing: -.03em !important; }
+    #u-promo-line, #u-paid-line { align-items: center !important; gap: 14px !important; color: #b9b9c1 !important; }
+    #u-promo-line span:first-child, #u-paid-line span:first-child { flex: 1 1 auto; min-width: 0; }
+    #u-promo, #u-paid { flex: 0 0 auto; color: #e6e6ea !important; font-weight: 800 !important; white-space: nowrap; }
+    #u-usage-card + div button { min-height: 44px !important; margin-top: 2px !important; border: 1px solid rgba(143,232,207,.36) !important; border-radius: 11px !important; background: linear-gradient(135deg, #087d60, #0e9f7a) !important; color: #ffffff !important; box-shadow: 0 8px 18px rgba(8,125,96,.20) !important; }
+    #u-usage-card + div button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    #u-usage-card ~ div:not(#u-upgrade-cta) { margin-bottom: 12px !important; padding: 14px 16px !important; }
+    #u-usage-card ~ div:not(#u-upgrade-cta) > div:first-child { cursor: pointer; }
+    #u-usage-card ~ div:not(#u-upgrade-cta) > div:first-child > div:first-child { color: #eeeeef !important; font-size: 12px !important; font-weight: 800 !important; }
+    #u-switch { min-width: 42px !important; width: 42px !important; height: 24px !important; border-radius: 99px !important; border-color: rgba(143,232,207,.55) !important; background: rgba(143,232,207,.12) !important; }
+    #u-switch .u-knob { width: 18px !important; height: 18px !important; background: #f4f4f5 !important; box-shadow: 0 2px 7px rgba(0,0,0,.22); }
+    #u-upgrade-cta { margin: 0 0 4px !important; }
+    #u-upgrade-cta button { min-height: 44px !important; border: 1px solid rgba(143,232,207,.30) !important; border-radius: 11px !important; color: #bdf1e2 !important; background: rgba(143,232,207,.08) !important; }
+    body.light #usage-modal { background: rgba(24,24,27,.34) !important; }
+    body.light #usage-modal > div { border-color: #c5ded5 !important; background: linear-gradient(155deg, #ffffff, #f6faf8) !important; box-shadow: 0 30px 90px rgba(24,24,27,.22) !important; }
+    body.light #usage-modal > div > div:first-child { border-bottom-color: #e5e7eb !important; }
+    body.light #usage-modal-heading { color: #18181b !important; }
+    body.light #usage-modal-close { border-color: #9bd6c5 !important; color: #35554d !important; background: #effaf6 !important; }
+    body.light #u-plan { color: #087d60 !important; }
+    body.light #u-usage-card, body.light #u-usage-card + div, body.light #u-usage-card ~ div:not(#u-upgrade-cta) { border-color: #d7e3df !important; background: #ffffff !important; }
+    body.light #u-usage-card > div:first-child > div:first-child, body.light #u-usage-card + div > div:first-child > div:first-child, body.light #u-usage-card ~ div:not(#u-upgrade-cta) > div:first-child > div:first-child { color: #303238 !important; }
+    body.light #u-pct, body.light #u-total { color: #18181b !important; }
+    body.light #u-reset, body.light #u-promo-line, body.light #u-paid-line { color: #626872 !important; }
+    body.light #u-promo, body.light #u-paid { color: #303238 !important; }
+    body.light #u-usage-card + div button { background: linear-gradient(135deg, #087d60, #0e9f7a) !important; color: #ffffff !important; }
+    body.light #u-usage-card ~ div:not(#u-upgrade-cta) { color: #303238 !important; }
+    body.light #u-upgrade-cta button { color: #087d60 !important; border-color: #9bd6c5 !important; background: #effaf6 !important; }
+    @media (max-width: 767px) {
+      #usage-modal { align-items: flex-end !important; }
+      #usage-modal > div { width: 100% !important; max-width: 100% !important; max-height: 90dvh !important; margin: 0 !important; border-radius: 22px 22px 0 0 !important; overflow-y: auto !important; }
+      #usage-modal > div > div:first-child { padding: 18px 18px !important; }
+      #usage-modal > div > div:nth-child(2) { padding: 16px 18px calc(18px + env(safe-area-inset-bottom)) !important; }
+      #usage-modal-heading { font-size: 19px !important; }
+      #u-total { font-size: 19px !important; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
