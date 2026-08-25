@@ -328,6 +328,13 @@ test('Task 100 closes only the open allowance-limit dialog with an unhandled Esc
   assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const limitModal = document\.getElementById\('limit-modal'\);\s+if \(!limitModal \|\| limitModal\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeLimit\(\);\s+\}\);/);
 });
 
+test('workspace responsive sizing keeps phone and iPad controls usable', () => {
+  assert.match(appHtml, /@media \(min-width: 768px\) and \(max-width: 1180px\) \{[\s\S]*?#sidebar \{ width: 220px !important; \}[\s\S]*?#chat \{ width: min\(100%, 720px\) !important;/);
+  assert.match(appHtml, /@media \(max-width: 767px\) \{[\s\S]*?#txt \{ min-width: 0 !important; width: 100% !important; min-height: 48px !important;/);
+  assert.match(appHtml, /#send-btn \{ flex: 0 0 48px !important; width: 48px !important; min-width: 48px !important; min-height: 48px !important;/);
+  assert.match(appHtml, /\.modal-x, #usage-modal-close \{ width: 44px !important; min-width: 44px !important; height: 44px !important; min-height: 44px !important;/);
+});
+
 test('Task 101 gives the credit top-up modal explicit labelled dialog semantics', () => {
   assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card topup-card" role="dialog" aria-modal="true" aria-labelledby="topup-modal-heading" aria-describedby="topup-modal-note">/);
   assert.match(appHtml, /<div id="topup-modal-heading" class="topup-title">Add credit<\/div>/);

@@ -226,6 +226,12 @@ test('Task 189 keeps Roblox destinations explicitly labelled for assistive techn
   assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community"/);
 });
 
+test('landing responsive sizing keeps phone and iPad layouts balanced', () => {
+  assert.match(landingHtml, /@media \(min-width: 761px\) and \(max-width: 1180px\) \{[\s\S]*?\.container \{ width: min\(calc\(100% - 56px\), 980px\); \}[\s\S]*?\.hero-grid \{ grid-template-columns: minmax\(0, \.94fr\) minmax\(0, 1\.06fr\);/);
+  assert.match(landingHtml, /@media \(max-width: 760px\) \{[\s\S]*?\.hero-actions \{ display: grid; grid-template-columns: 1fr; gap: 8px; \}[\s\S]*?\.hero-actions \.button \{ width: 100%; min-height: 48px; \}/);
+  assert.match(landingHtml, /@media \(max-width: 430px\) \{[\s\S]*?\.container \{ width: min\(calc\(100% - 24px\), 560px\); \}/);
+});
+
 test('landing polish keeps the first screen organised and hides only secondary repetition', () => {
   assert.match(landingHtml, /\.hero \{ padding-top: clamp\(72px, 9vw, 118px\); \}/);
   assert.match(landingHtml, /\.hero-copy h1 \{ max-width: 10\.5ch; line-height: \.98; \}/);
