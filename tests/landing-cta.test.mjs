@@ -226,6 +226,13 @@ test('Task 189 keeps Roblox destinations explicitly labelled for assistive techn
   assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community"/);
 });
 
+test('landing page keeps only the essential visitor journey visible', () => {
+  assert.match(landingHtml, /#proof-section, \.framework-rail, \.hero-capabilities, \.launch-deck \{ display: none !important; \}/);
+  assert.match(landingHtml, /\.comparison-head > p, \.roblox-head > p, \.difference-note, \.pricing-note,/);
+  for (const id of ['how-it-works', 'capabilities', 'roblox-worlds', 'why-stellar', 'comparison', 'plans']) assert.match(landingHtml, new RegExp(`id="${id}"`));
+  for (const cta of ['Generate your first script free', 'Start free', 'Get Starter', 'Get Plus', 'Get Pro']) assert.match(landingHtml, new RegExp(cta));
+});
+
 test('landing responsive sizing keeps phone and iPad layouts balanced', () => {
   assert.match(landingHtml, /@media \(min-width: 761px\) and \(max-width: 1180px\) \{[\s\S]*?\.container \{ width: min\(calc\(100% - 56px\), 980px\); \}[\s\S]*?\.hero-grid \{ grid-template-columns: minmax\(0, \.94fr\) minmax\(0, 1\.06fr\);/);
   assert.match(landingHtml, /@media \(max-width: 760px\) \{[\s\S]*?\.hero-actions \{ display: grid; grid-template-columns: 1fr; gap: 8px; \}[\s\S]*?\.hero-actions \.button \{ width: 100%; min-height: 48px; \}/);
