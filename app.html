@@ -3589,10 +3589,6 @@
           <div class="profile-sub" id="profile-sub">Not signed in</div>
         </div>
       </div>
-      <div id="set-motivation" class="set-motivation" style="display:none;">
-        <div class="set-motivation-title">Keep building</div>
-        <div id="set-motivation-copy">Your next badge is waiting.</div>
-      </div>
       <div class="set-label">Account</div>
       <div class="set-group">
         <div class="set-item" id="set-name-row">
@@ -3633,10 +3629,6 @@
       <details id="set-skill-tree-section" class="set-collapsible skill-tree-section" style="display:none;margin-top:14px;" open>
         <summary>Builder skill tree <span aria-hidden="true">✦</span></summary>
         <div id="set-skill-tree" class="skill-tree-shell" aria-live="polite"></div>
-      </details>
-      <details id="set-achievements-section" class="set-collapsible" style="display:none;margin-top:14px;">
-        <summary>Achievements <span aria-hidden="true">＋</span></summary>
-        <div id="set-achievements" class="set-group achievement-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"></div>
       </details>
 
       </div>
@@ -6461,11 +6453,11 @@
       const state = new Map((Array.isArray(achievements) ? achievements : []).map((item) => [item.id, Boolean(item.unlockedAt)]));
       const nodes = [
         { id: 'first-script', icon: '✦', label: 'First build', detail: 'Generate your first script.', accent: 'mint' },
-        { id: 'ten-scripts', icon: '↗', label: 'Builder', detail: 'Generate 10 scripts.', accent: 'violet' },
+        { id: 'ten-scripts', icon: '↗', label: 'Builder', detail: 'Generate 10 scripts.', accent: 'mint' },
         { id: 'fifty-scripts', icon: '◆', label: 'Power Builder', detail: 'Generate 50 scripts.', accent: 'blue' },
         { id: 'hundred-scripts', icon: '♛', label: 'Elite Builder', detail: 'Generate 100 scripts.', accent: 'gold' },
         { id: 'return-builder', icon: '↻', label: 'Return Builder', detail: 'Come back for a second build session.', accent: 'mint' },
-        { id: 'referral-builder', icon: '♧', label: 'Referral Builder', detail: 'Bring a builder to Stellar.', accent: 'pink' },
+        { id: 'referral-builder', icon: '♧', label: 'Referral Builder', detail: 'Bring a builder to Stellar.', accent: 'slate' },
         { id: 'first-upgrade', icon: '↑', label: 'First Upgrade', detail: 'Start your first paid plan.', accent: 'gold' },
       ];
       const unlockedCount = nodes.filter((node) => state.get(node.id)).length;
@@ -6537,44 +6529,13 @@
       document.getElementById('set-auth-key').textContent = su ? 'Sign out' : 'Sign in with Google';
       document.getElementById('set-plan-desc').textContent = p[1];
       const referralSection = document.getElementById('set-referral-section');
-      const achievementSection = document.getElementById('set-achievements-section');
       const referralUrl = s.referralUrl || '';
       const skillTreeSection = document.getElementById('set-skill-tree-section');
       if (skillTreeSection) skillTreeSection.style.display = signedIn ? '' : 'none';
       if (referralSection) referralSection.style.display = signedIn && referralUrl ? '' : 'none';
       const referralLink = document.getElementById('set-referral-link');
       if (referralLink) referralLink.textContent = referralUrl || 'Your referral link will appear after sign-in.';
-      if (achievementSection) achievementSection.style.display = signedIn ? '' : 'none';
-      const achievementGrid = document.getElementById('set-achievements');
-      if (achievementGrid) {
-        const achievements = Array.isArray(s.achievements) ? s.achievements : [];
-        renderSkillTree(achievements, signedIn);
-        const motivation = document.getElementById('set-motivation');
-        const motivationCopy = document.getElementById('set-motivation-copy');
-        if (motivation) motivation.style.display = signedIn ? '' : 'none';
-        if (motivationCopy && signedIn) {
-          const next = achievements.find((achievement) => !achievement.unlockedAt);
-          motivationCopy.textContent = next ? ({
-            'First Script': 'One build unlocks your first badge.',
-            'Builder': 'Keep going — 10 scripts unlock Builder.',
-            'Power Builder': 'You are on a run — 50 scripts unlock Power Builder.',
-            'Elite Builder': 'Big milestone ahead — 100 scripts unlock Elite Builder.',
-            'Return Builder': 'Come back for another session to unlock Return Builder.',
-            'Referral Builder': 'Invite a builder to unlock Referral Builder.',
-            'First Upgrade': 'Ready for more room? Your first paid plan unlocks First Upgrade.'
-          }[next.label] || ('Next up: ' + next.label + '.')) : 'You unlocked every badge. Keep shipping.';
-        }
-        achievementGrid.innerHTML = achievements.map((achievement) => {
-          const unlocked = Boolean(achievement.unlockedAt);
-          const label = escapeHtml(achievement.label || 'Achievement');
-          const description = escapeHtml(achievement.description || '');
-          const state = unlocked ? 'Unlocked' : 'Locked';
-          return '<button type="button" class="achievement-badge ' + (unlocked ? 'is-unlocked' : 'is-locked') + '" aria-pressed="false" aria-label="' + state + ': ' + label + '" onclick="toggleAchievementBadge(this)">'
-            + '<span class="achievement-badge-icon" aria-hidden="true">' + (unlocked ? '✓' : '○') + '</span>'
-            + '<span class="achievement-badge-copy"><span class="achievement-badge-top"><span class="achievement-badge-name">' + label + '</span><span class="achievement-badge-state">' + state + '</span></span>'
-            + '<span class="achievement-badge-description">' + description + '</span></span></button>';
-        }).join('') || '<div class="set-note" style="margin:0;grid-column:1/-1;">Generate a script to unlock your first badge.</div>';
-      }
+      renderSkillTree(Array.isArray(s.achievements) ? s.achievements : [], signedIn);
       if (isOwner()) {
         document.getElementById('set-plan').textContent = '👑 Owner';
         document.getElementById('set-plan-desc').textContent = 'Unlimited · All 4 models';
@@ -7699,6 +7660,64 @@
     #settings-modal .set-signedout {
       background: linear-gradient(135deg, rgba(97,230,191,.11), rgba(255,255,255,.035)) !important;
       border-color: rgba(143,232,207,.28) !important;
+    }
+  </style>
+<style>
+    /* Consolidated Skill Tree: one premium progression surface, no duplicate badge panel. */
+    #settings-modal .skill-tree-shell {
+      padding: 18px !important;
+      border: 1px solid rgba(143,232,207,.24) !important;
+      border-radius: 22px !important;
+      background: linear-gradient(145deg, rgba(97,230,191,.10), rgba(255,255,255,.035) 52%, rgba(255,255,255,.018)) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 42px -28px rgba(0,0,0,.86) !important;
+    }
+    #settings-modal .skill-tree-overview { align-items: center; gap: 18px; }
+    #settings-modal .skill-tree-kicker { color: #8fe8cf !important; letter-spacing: .18em; }
+    #settings-modal .skill-tree-overview strong { font-size: 18px !important; letter-spacing: -.04em; }
+    #settings-modal .skill-tree-caption { color: #aeb9b6 !important; max-width: 260px; line-height: 1.5; }
+    #settings-modal .skill-tree-balance {
+      min-width: 112px; padding: 11px 12px; border-radius: 15px;
+      border-color: rgba(143,232,207,.28) !important; background: rgba(0,0,0,.24) !important;
+    }
+    #settings-modal .skill-tree-balance strong { color: #cffff0 !important; font-size: 15px; }
+    #settings-modal .skill-tree-progress { height: 7px; margin: 18px 0 14px; background: rgba(255,255,255,.09) !important; }
+    #settings-modal .skill-tree-progress span { background: linear-gradient(90deg, #61e6bf, #bdf1e2) !important; }
+    #settings-modal .skill-tree-next {
+      min-height: 58px; margin-bottom: 16px; padding: 11px 12px; border-radius: 15px;
+      border-color: rgba(143,232,207,.30) !important; background: rgba(97,230,191,.075) !important;
+    }
+    #settings-modal .skill-tree-next-icon { width: 31px; height: 31px; border-radius: 10px; background: #a4f2dc !important; }
+    #settings-modal .skill-tree-next b { font-size: 12px; color: #eafff8 !important; }
+    #settings-modal .skill-tree-next small { color: #b8cbc5 !important; }
+    #settings-modal .skill-tree-next button { min-height: 34px; padding: 0 12px; border-radius: 10px; background: #8fe8cf !important; }
+    #settings-modal .skill-node {
+      min-height: 62px; padding: 10px 11px; border-radius: 15px;
+      border-color: rgba(255,255,255,.11) !important; background: rgba(255,255,255,.035) !important;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+    #settings-modal .skill-node:hover { transform: translateX(2px); border-color: rgba(143,232,207,.32) !important; background: rgba(255,255,255,.06) !important; }
+    #settings-modal .skill-node.is-unlocked { border-color: rgba(143,232,207,.34) !important; background: rgba(97,230,191,.075) !important; }
+    #settings-modal .skill-node.is-next { border-color: rgba(143,232,207,.66) !important; box-shadow: 0 0 0 3px rgba(97,230,191,.07) !important; }
+    #settings-modal .skill-node-marker { width: 32px; height: 32px; border-radius: 11px; }
+    #settings-modal .skill-node.is-locked .skill-node-marker { color: #a9b2b0; background: rgba(255,255,255,.055); }
+    #settings-modal .skill-node.is-unlocked .skill-node-marker,
+    #settings-modal .skill-node.is-next .skill-node-marker { color: #06231b; background: #8fe8cf; border-color: #8fe8cf; }
+    #settings-modal .skill-node-top strong { font-size: 12px; }
+    #settings-modal .skill-node-top span { letter-spacing: .08em; text-transform: uppercase; }
+    #settings-modal .skill-node p { color: #aeb9b6 !important; margin-top: 4px; }
+    #settings-modal .skill-connector { height: 10px; margin-left: 25px; background: rgba(255,255,255,.12) !important; }
+    #settings-modal .skill-connector.is-complete { background: #61e6bf !important; }
+    @media (max-width: 767px) {
+      #settings-modal .skill-tree-shell { padding: 14px !important; border-radius: 18px !important; }
+      #settings-modal .skill-tree-overview { align-items: flex-start; gap: 10px; }
+      #settings-modal .skill-tree-overview strong { font-size: 16px !important; }
+      #settings-modal .skill-tree-caption { max-width: 180px; }
+      #settings-modal .skill-tree-balance { min-width: 94px; padding: 9px 10px; }
+      #settings-modal .skill-tree-next { align-items: flex-start; }
+      #settings-modal .skill-tree-next button { margin-left: 40px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #settings-modal .skill-node { transition: none !important; }
     }
   </style>
 <script src="/currency.js"></script>

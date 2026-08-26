@@ -165,7 +165,7 @@ test('workspace sidebar retains an accessible persistent Guides-hub route', () =
 });
 
 
-test('skill tree keeps progression and credit value explicit without replacing achievements', () => {
+test('skill tree is the single progression surface with explicit credit value', () => {
   assert.match(workspaceHtml, /id="set-skill-tree-section" class="set-collapsible skill-tree-section"/);
   assert.match(workspaceHtml, /id="set-skill-tree" class="skill-tree-shell" aria-live="polite"/);
   for (const id of ['first-script', 'ten-scripts', 'fifty-scripts', 'hundred-scripts', 'return-builder', 'referral-builder', 'first-upgrade']) {
@@ -175,8 +175,9 @@ test('skill tree keeps progression and credit value explicit without replacing a
   assert.match(workspaceHtml, /Account credit/);
   assert.match(workspaceHtml, /role="progressbar" aria-valuemin/);
   assert.match(workspaceHtml, /closeSettings\(\);document\.getElementById.*?focus.*?Build next/);
-  assert.match(workspaceHtml, /id="set-achievements-section" class="set-collapsible"/);
-  assert.match(workspaceHtml, /body\.light \.skill-tree-shell/);
+  assert.doesNotMatch(workspaceHtml, /id="set-achievements-section"/);
+  assert.doesNotMatch(workspaceHtml, /id="set-motivation"/);
+  assert.match(workspaceHtml, /renderSkillTree\(Array\.isArray\(s\.achievements\) \? s\.achievements : \[\], signedIn\)/);
   assert.match(workspaceHtml, /@media \(max-width: 767px\) \{[\s\S]*?\.skill-tree-shell/);
 });
 
@@ -197,4 +198,5 @@ test('skill tree never substitutes request allowance for monetary credit balance
 
 test('skill tree follows reduced-motion guidance', () => {
   assert.match(workspaceHtml, /@media \(prefers-reduced-motion: reduce\) \{ \.skill-tree-progress span \{ transition:none !important; \} \}/);
+  assert.match(workspaceHtml, /#settings-modal \.skill-node \{ transition: none !important; \}/);
 });

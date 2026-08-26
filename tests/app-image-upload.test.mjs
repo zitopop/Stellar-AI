@@ -213,20 +213,20 @@ test('Settings keeps essential controls visible and secondary sections collapsib
   assert.doesNotMatch(appHtml, /Make Stellar feel right for the way you build\./);
   assert.match(appHtml, /#settings-modal #set-name-row, #settings-modal #set-email-row \{ display: none !important; \}/);
   assert.match(appHtml, /<details id="set-referral-section" class="set-collapsible"/);
-  assert.match(appHtml, /<details id="set-achievements-section" class="set-collapsible"/);
+  assert.match(appHtml, /<details id="set-skill-tree-section" class="set-collapsible skill-tree-section"/);
   assert.match(appHtml, /summary>Invite &amp; earn <span aria-hidden="true">＋<\/span>/);
-  assert.match(appHtml, /summary>Achievements <span aria-hidden="true">＋<\/span>/);
+  assert.match(appHtml, /summary>Builder skill tree <span aria-hidden="true">✦<\/span>/);
+  assert.doesNotMatch(appHtml, /id="set-achievements-section"|summary>Achievements/);
 });
 
-test('achievement settings use tappable badge cards with clear locked and unlocked states', () => {
-  assert.match(appHtml, /id="set-achievements" class="set-group achievement-grid"/);
-  assert.match(appHtml, /<button type="button" class="achievement-badge ' \+ \(unlocked \? 'is-unlocked' : 'is-locked'\)/);
-  assert.match(appHtml, /aria-label="' \+ state \+ ': ' \+ label/);
-  assert.match(appHtml, /function toggleAchievementBadge\(button\)/);
-  assert.match(appHtml, /button\.classList\.toggle\('is-selected', !selected\)/);
-  assert.match(appHtml, /\.achievement-badge\.is-unlocked \{ border-color: rgba\(16,163,127,\.55\)/);
-  assert.match(appHtml, /body\.light \.achievement-badge-description \{ color: #374151; \}/);
-  assert.match(appHtml, /body\.light #settings-modal \.set-key \{ color: #1f2937 !important; \}/);
+test('Settings progression uses one premium Skill Tree surface', () => {
+  assert.match(appHtml, /id="set-skill-tree" class="skill-tree-shell" aria-live="polite"/);
+  assert.match(appHtml, /function renderSkillTree\(achievements, signedIn\)/);
+  assert.match(appHtml, /Available value/);
+  assert.match(appHtml, /Account credit/);
+  assert.match(appHtml, /class="skill-tree-progress" role="progressbar"/);
+  assert.match(appHtml, /Consolidated Skill Tree: one premium progression surface/);
+  assert.doesNotMatch(appHtml, /id="set-achievements"|class="achievement-badge/);
 });
 
 test('Task 83 gives the plans, usage, and settings modal cards explicit labelled dialog semantics', () => {
@@ -483,27 +483,23 @@ test('Task 149 returns focus to the model chooser after choosing a model', () =>
   assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);[\s\S]*?modelButton\.innerHTML = labels\[m\] \|\| labels\.smart;/);
 });
 
-test('Task 150 synchronizes appearance segments with their selected settings state', () => {
-  assert.match(appHtml, /id="seg-dark" class="seg" onclick="setMode\('dark'\); refreshSettings\(\)" aria-pressed="true"/);
-  assert.match(appHtml, /id="seg-light" class="seg" onclick="setMode\('light'\); refreshSettings\(\)" aria-pressed="false"/);
+test('Task 150 keeps the appearance controls dark-only while preserving text-size settings', () => {
+  assert.match(appHtml, /<span id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only<\/span>/);
+  assert.doesNotMatch(appHtml, /id="seg-light"/);
   assert.match(appHtml, /id="seg-txt-sm" class="seg" onclick="setTextSize\('sm'\)" aria-pressed="false"/);
   assert.match(appHtml, /id="seg-txt-md" class="seg" onclick="setTextSize\('md'\)" aria-pressed="true"/);
   assert.match(appHtml, /id="seg-txt-lg" class="seg" onclick="setTextSize\('lg'\)" aria-pressed="false"/);
   assert.match(appHtml, /b\.setAttribute\('aria-pressed', String\(active\)\);/);
-  assert.match(appHtml, /document\.getElementById\('seg-dark'\)\.setAttribute\('aria-pressed', String\(!light\)\);/);
-  assert.match(appHtml, /document\.getElementById\('seg-light'\)\.setAttribute\('aria-pressed', String\(light\)\);/);
+  assert.match(appHtml, /darkToggle\.setAttribute\('aria-pressed', 'true'\);/);
 });
 
-test('Task 151 keeps an accessible global theme control with the automatic hour-based schedule', () => {
-  assert.match(appHtml, /<button type="button" id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="ws-toggle top-theme-toggle" aria-pressed="false" aria-label="Switch to light theme" title="Theme changes automatically by hour">/);
-  assert.match(appHtml, /const themeToggle = document\.getElementById\('side-theme-toggle'\);/);
-  assert.match(appHtml, /themeToggle\.setAttribute\('aria-pressed', String\(light\)\);/);
-  assert.match(appHtml, /const LIGHT_THEME_START_HOUR = 8;\s+const DARK_THEME_START_HOUR = 20;/);
-  assert.match(appHtml, /function automaticMode\(date = new Date\(\)\) \{[\s\S]*hour >= LIGHT_THEME_START_HOUR && hour < DARK_THEME_START_HOUR \? 'light' : 'dark';/);
-  assert.match(appHtml, /function toggleDarkMode\(\) \{[\s\S]*setMode\(newMode, 'manual'\);/);
-  assert.match(appHtml, /function startAutomaticTheme\(\) \{[\s\S]*setMode\(automaticMode\(\), 'automatic'\);/);
-  assert.match(appHtml, /Manual override active; automatic schedule resumes at the next hour\./);
-  assert.match(appHtml, /nextHour\.setHours\(now\.getHours\(\) \+ 1, 0, 0, 0\);/);
+test('Task 151 keeps the workspace dark-only without automatic light scheduling', () => {
+  assert.doesNotMatch(appHtml, /id="side-theme-toggle"|title="Theme changes automatically by hour"/);
+  assert.match(appHtml, /id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only<\/span>/);
+  assert.match(appHtml, /function toggleDarkMode\(\) \{[\s\S]*setMode\('dark', 'dark-only'\);/);
+  assert.match(appHtml, /function startAutomaticTheme\(\) \{[\s\S]*setMode\('dark', 'dark-only'\);/);
+  assert.doesNotMatch(appHtml, /LIGHT_THEME_START_HOUR|DARK_THEME_START_HOUR|automaticMode\(/);
+  assert.doesNotMatch(appHtml, /Manual override active; automatic schedule resumes at the next hour\./);
 });
 
 test('Task 152 exposes both existing Terms destinations as native links', () => {
