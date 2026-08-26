@@ -557,7 +557,8 @@
     body.light .framework-rail, body.light .launch-deck, body.light .final-cta { box-shadow: 0 18px 46px rgba(74,54,128,.08); }
     body.light .capability:hover, body.light .scenario:hover, body.light .roblox-card:hover, body.light .launch-card:hover { background: #f4f4f5; box-shadow: 0 18px 46px rgba(24,24,27,.08); }
     body.light .footer-copy, body.light .footer-meta { color: #716a82; } body.light .footer-links a { color: #574e6d; } body.light .footer-links a:hover { color: #211a35; }
-    @media (max-width: 760px) { .theme-toggle { min-height: 44px; padding-inline: 10px; } .theme-label { display: none; } }
+    .theme-status { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 11px; border: 1px solid var(--border); border-radius: 12px; color: var(--muted-strong); background: rgba(255,255,255,.035); font-size: 12px; font-weight: 800; white-space: nowrap; }
+    @media (max-width: 760px) { .theme-status { min-width: 44px; min-height: 44px; justify-content: center; padding-inline: 10px; } .theme-status { font-size: 0; } .theme-status:first-letter { font-size: 16px; } }
     @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none !important; } .theme-toggle { transition: none !important; } }
 
     /* NAV + FEATURE DISCOVERY UPDATE */
@@ -936,7 +937,7 @@
         </div>
         <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-controls="mobile-nav" aria-expanded="false"><span aria-hidden="true">☰</span></button>
         <div class="nav-actions">
-          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Theme</span></button>
+          <span class="theme-status" aria-label="Dark mode only">☾ Dark</span>
           <a href="/app" class="nav-login">Sign in</a>
           <a href="/app" class="button button-primary nav-cta">Try it free <span class="button-arrow">→</span></a>
         </div>
@@ -1166,37 +1167,9 @@ end)</div></div>
       }
 
       const root = document.body;
-      const toggle = document.getElementById('theme-toggle');
-      const LIGHT_THEME_START_HOUR = 8;
-      const DARK_THEME_START_HOUR = 20;
-      const automaticTheme = (date = new Date()) => {
-        const hour = date.getHours();
-        return hour >= LIGHT_THEME_START_HOUR && hour < DARK_THEME_START_HOUR ? 'light' : 'dark';
-      };
-      const applyTheme = (mode, source = 'automatic') => {
-        const light = mode === 'light';
-        root.classList.toggle('light', light);
-        root.dataset.themeSource = source;
-        if (toggle) {
-          toggle.setAttribute('aria-pressed', String(light));
-          toggle.setAttribute('aria-label', light ? 'Switch to dark mode. Theme normally changes automatically by hour.' : 'Switch to light mode. Theme normally changes automatically by hour.');
-          toggle.title = source === 'automatic' ? `Automatic theme: ${light ? 'light from 08:00 to 20:00' : 'dark from 20:00 to 08:00'}` : 'Manual override active; automatic schedule resumes at the next hour.';
-          toggle.querySelector('.theme-icon').textContent = light ? '☀' : '☾';
-        }
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f5fc' : '#0d0720');
-      };
-      applyTheme(automaticTheme());
-      toggle?.addEventListener('click', () => {
-        const next = root.classList.contains('light') ? 'dark' : 'light';
-        applyTheme(next, 'manual');
-      });
-      const scheduleNextThemeCheck = () => {
-        const now = new Date();
-        const nextHour = new Date(now);
-        nextHour.setHours(now.getHours() + 1, 0, 0, 0);
-        window.setTimeout(() => { applyTheme(automaticTheme()); scheduleNextThemeCheck(); }, Math.max(1000, nextHour.getTime() - now.getTime()));
-      };
-      scheduleNextThemeCheck();
+      root.classList.remove('light');
+      root.dataset.themeSource = 'dark-only';
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0d0720');
       const revealTargets = document.querySelectorAll('.framework-rail, .launch-deck, .section-heading, .capability, .scenario, .capability-map, .why-stellar-section, .plans, .faq-layout, .final-cta');
       revealTargets.forEach((element, index) => { element.classList.add('reveal'); if (index % 4 === 1) element.classList.add('reveal-delay-1'); if (index % 4 === 2) element.classList.add('reveal-delay-2'); if (index % 4 === 3) element.classList.add('reveal-delay-3'); });
       if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { revealTargets.forEach((element) => element.classList.add('is-visible')); return; }
@@ -1418,7 +1391,8 @@ end)</div></div>
 <style>
     /* Pricing alignment: keep comparable information on comparable rows. */
     @media (min-width: 761px) {
-      .plans .plan { height: 100%; min-height: 500px !important; }
+      .plans { align-items: stretch; }
+      .plans .plan { height: 100%; min-height: 520px !important; }
       .plans .plan > .plan-label { order: 1; min-height: 16px; }
       .plans .plan > h3 { order: 2; min-height: 58px; display: flex; align-items: flex-start; }
       .plans .plan > .plan-desc { order: 3; min-height: 72px; }
@@ -1430,7 +1404,7 @@ end)</div></div>
       .plans .plan > .button { order: 9; margin-top: auto; }
     }
     @media (max-width: 760px) {
-      .plans .plan { min-height: 0 !important; }
+      .plans .plan { height: auto; min-height: 0 !important; }
       .plans .plan > h3, .plans .plan > .plan-desc, .plans .plan > .price, .plans .plan > ul { min-height: 0; }
       .plans .plan > .button { margin-top: 0; }
     }

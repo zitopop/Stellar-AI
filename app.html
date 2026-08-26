@@ -3308,7 +3308,7 @@
           <button id="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar" class="menu-btn-mobile w-10 h-10 items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">☰</button>
           <div id="chat-title" class="font-black tracking-[-0.3px]">Stellar AI</div>
         </div>
-        <button type="button" id="side-theme-toggle" onclick="toggleDarkMode()" class="ws-toggle top-theme-toggle" aria-pressed="false" aria-label="Switch to light theme" title="Theme changes automatically by hour"><span class="ico" id="side-theme-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="top-theme-label">Theme</span></button>
+        <span class="ws-toggle top-theme-toggle" aria-label="Dark mode only"><span class="ico" id="side-theme-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="top-theme-label">Dark</span></span>
       </div>
 
       <div id="workspace" class="hidden">
@@ -3703,8 +3703,7 @@
         <div class="set-item">
           <div class="set-key"><i class="sk-ico t-pink"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-palette"/></svg></i>Theme</div>
           <div class="seg-wrap">
-            <button type="button" id="seg-dark" class="seg" onclick="setMode('dark'); refreshSettings()" aria-pressed="true">🌙 Dark</button>
-            <button type="button" id="seg-light" class="seg" onclick="setMode('light'); refreshSettings()" aria-pressed="false">☀️ Light</button>
+            <span id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only</span>
           </div>
         </div>
         <div class="set-item">
@@ -3716,7 +3715,7 @@
           </div>
         </div>
       </div>
-      <div class="set-note">Your theme and text size are saved on this device.</div>
+      <div class="set-note">Stellar uses a focused dark interface. Text size is saved on this device.</div>
 
       </div>
 
@@ -6580,11 +6579,12 @@
         document.getElementById('set-plan').textContent = '👑 Owner';
         document.getElementById('set-plan-desc').textContent = 'Unlimited · All 4 models';
       }
-      const light = document.body.classList.contains('light');
-      document.getElementById('seg-dark').classList.toggle('on', !light);
-      document.getElementById('seg-light').classList.toggle('on', light);
-      document.getElementById('seg-dark').setAttribute('aria-pressed', String(!light));
-      document.getElementById('seg-light').setAttribute('aria-pressed', String(light));
+      document.body.classList.remove('light');
+      const darkToggle = document.getElementById('seg-dark');
+      if (darkToggle) {
+        darkToggle.classList.add('on');
+        darkToggle.setAttribute('aria-pressed', 'true');
+      }
     }
     async function copyReferralLink() {
       const url = Store.get().referralUrl;
@@ -6613,45 +6613,20 @@
         if (b) b.classList.toggle('on', k === s);
       });
     }
-    const LIGHT_THEME_START_HOUR = 8;
-    const DARK_THEME_START_HOUR = 20;
-    // Light is the reliable default so text and controls remain readable; the manual toggle still allows dark mode.
-    const LIGHT_FIRST_WORKSPACE = true;
-    function automaticMode(date = new Date()) {
-      const hour = date.getHours();
-      return hour >= LIGHT_THEME_START_HOUR && hour < DARK_THEME_START_HOUR ? 'light' : 'dark';
-    }
-
-    function setMode(mode, source = 'manual') {
-      const light = mode === 'light';
-      document.body.classList.toggle('light', light);
-      document.body.dataset.themeSource = source;
+    function setMode(mode = 'dark', source = 'dark-only') {
+      document.body.classList.remove('light');
+      document.body.dataset.themeSource = 'dark-only';
       const s = document.getElementById('side-theme-ico');
-      if (s) s.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'
-        + (light ? 'sun' : 'moon') + '"/></svg>';
-      const themeToggle = document.getElementById('side-theme-toggle');
-      if (themeToggle) {
-        themeToggle.setAttribute('aria-pressed', String(light));
-        themeToggle.setAttribute('aria-label', light ? 'Switch to dark theme. Theme normally changes automatically by hour.' : 'Switch to light theme. Theme normally changes automatically by hour.');
-        themeToggle.title = source === 'automatic' ? `Automatic theme: ${light ? 'light from 08:00 to 20:00' : 'dark from 20:00 to 08:00'}` : 'Manual override active; automatic schedule resumes at the next hour.';
-      }
-      Store.set({ mode });
+      if (s) s.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg>';
+      Store.set({ mode: 'dark' });
     }
 
     function toggleDarkMode() {
-      const newMode = document.body.classList.contains('light') ? 'dark' : 'light';
-      setMode(newMode, 'manual');
+      setMode('dark', 'dark-only');
     }
 
     function startAutomaticTheme() {
-      setMode(LIGHT_FIRST_WORKSPACE ? 'light' : automaticMode(), 'automatic');
-      const checkAtNextHour = () => {
-        const now = new Date();
-        const nextHour = new Date(now);
-        nextHour.setHours(now.getHours() + 1, 0, 0, 0);
-        window.setTimeout(() => { setMode(automaticMode(), 'automatic'); checkAtNextHour(); }, Math.max(1000, nextHour.getTime() - now.getTime()));
-      };
-      checkAtNextHour();
+      setMode('dark', 'dark-only');
     }
 
     function checkout(plan) {
@@ -7234,6 +7209,10 @@
     #plans-modal > div > div[style*="text-align:center"] button { color: #c4c4ca !important; }
     #plans-modal > div > div[style*="text-align:center"] button span { color: #e2d6ff !important; }
     #plans-modal > div > div[style*="border-top"] { color: #aeb0b8 !important; }
+    #plans-grid-inner { align-items: stretch !important; }
+    #plans-grid-inner > div[id^="plan-card-"] { min-height: 540px !important; height: 100% !important; box-sizing: border-box !important; }
+    #plans-grid-inner > div[id^="plan-card-"] > div:last-child { margin-top: auto !important; }
+    @media (max-width: 900px) { #plans-grid-inner > div[id^="plan-card-"] { min-height: 0 !important; height: auto !important; } #plans-grid-inner > div[id^="plan-card-"] > div:last-child { margin-top: 0 !important; } }
     body.light #plans-modal-heading + div { color: #55555d !important; }
     body.light #plans-modal .plans-choice-guide span { color: #55555d !important; }
     body.light #plans-modal .plans-choice-guide b { color: #24242a !important; }

@@ -49,11 +49,12 @@ test('Task 171 keeps the Plans sidebar control an explicit non-submit button', (
   assert.doesNotMatch(workspaceHtml, /<button onclick="openPlans\(\)" class="side-act side-act-key">/);
 });
 
-test('Task 172 keeps the global Theme control an explicit non-submit button with automatic scheduling', () => {
-  assert.match(workspaceHtml, /<button type="button" id="side-theme-toggle" onclick="toggleDarkMode\(\)" class="ws-toggle top-theme-toggle" aria-pressed="false" aria-label="Switch to light theme"/);
-  assert.match(workspaceHtml, /const themeToggle = document\.getElementById\('side-theme-toggle'\);[\s\S]*?themeToggle\.setAttribute\('aria-pressed', String\(light\)\)/);
-  assert.match(workspaceHtml, /function startAutomaticTheme\(\)/);
-  assert.doesNotMatch(workspaceHtml, /<button\s+id="side-theme-toggle"\s+onclick="toggleDarkMode\(\)"/);
+test('Task 172 keeps the workspace dark-only with no theme toggle or automatic light scheduling', () => {
+  assert.match(workspaceHtml, /<span class="ws-toggle top-theme-toggle" aria-label="Dark mode only"/);
+  assert.match(workspaceHtml, /function startAutomaticTheme\(\)\s*\{\s*setMode\('dark', 'dark-only'\);\s*\}/);
+  assert.match(workspaceHtml, /document\.body\.classList\.remove\('light'\)/);
+  assert.doesNotMatch(workspaceHtml, /id="side-theme-toggle"/);
+  assert.doesNotMatch(workspaceHtml, /LIGHT_THEME_START_HOUR/);
 });
 
 test('Task 173 keeps the Settings sidebar control an explicit non-submit button', () => {
@@ -95,13 +96,11 @@ test('Task 178 keeps every Settings tab an explicit non-submit button', () => {
   assert.match(workspaceHtml, /document\.querySelectorAll\('\.set-tab'\)\.forEach\(t => t\.classList\.toggle\('active', t\.dataset\.tab === name\)\)/);
 });
 
-test('Task 179 keeps Dark and Light appearance controls explicit non-submit buttons', () => {
-  assert.match(workspaceHtml, /<button type="button" id="seg-dark" class="seg" onclick="setMode\('dark'\); refreshSettings\(\)" aria-pressed="true">🌙 Dark<\/button>/);
-  assert.match(workspaceHtml, /<button type="button" id="seg-light" class="seg" onclick="setMode\('light'\); refreshSettings\(\)" aria-pressed="false">☀️ Light<\/button>/);
-  assert.match(workspaceHtml, /document\.getElementById\('seg-dark'\)\.setAttribute\('aria-pressed', String\(!light\)\)/);
-  assert.match(workspaceHtml, /document\.getElementById\('seg-light'\)\.setAttribute\('aria-pressed', String\(light\)\)/);
-  assert.doesNotMatch(workspaceHtml, /<button id="seg-dark" class="seg"/);
-  assert.doesNotMatch(workspaceHtml, /<button id="seg-light" class="seg"/);
+test('Task 179 keeps Settings dark-only and removes the Light appearance control', () => {
+  assert.match(workspaceHtml, /<span id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only<\/span>/);
+  assert.match(workspaceHtml, /const darkToggle = document\.getElementById\('seg-dark'\);[\s\S]*?darkToggle\.setAttribute\('aria-pressed', 'true'\)/);
+  assert.doesNotMatch(workspaceHtml, /id="seg-light"/);
+  assert.doesNotMatch(workspaceHtml, /setMode\('light'\)/);
 });
 
 test('Task 180 keeps Small, Normal, and Large text-size controls explicit non-submit buttons', () => {
