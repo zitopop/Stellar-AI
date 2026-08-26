@@ -3218,6 +3218,15 @@
   ]
 }
 </script>
+<style>
+    .starter-ready { display: inline-flex; align-items: center; gap: 9px; width: fit-content; max-width: 100%; margin: 14px auto 0; padding: 9px 12px; border: 1px solid rgba(16,163,127,.28); border-radius: 999px; background: rgba(16,163,127,.08); color: #b7d8cf; font-size: 11px; line-height: 1.35; }
+    .starter-ready strong { color: #f4fffb; font-weight: 900; }
+    .starter-ready-dot { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: #10a37f; box-shadow: 0 0 0 4px rgba(16,163,127,.12); }
+    body.light .starter-ready { border-color: #b9e6d8; background: #effaf6; color: #356056; }
+    body.light .starter-ready strong { color: #123a31; }
+    @media (max-width: 640px) { .starter-ready { width: 100%; justify-content: center; border-radius: 12px; text-align: center; } }
+    @media (prefers-reduced-motion: no-preference) { .starter-ready { animation: starter-ready-in .22s ease-out both; } @keyframes starter-ready-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } } }
+  </style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -3325,6 +3334,10 @@
             <button type="button" onclick="useSuggestion('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist')" class="sug-chip"><span>🎮</span><span>Build a Roblox system pack</span></button>
             <button type="button" onclick="useSuggestion('Roblox Fix & Review: diagnose this Luau system, check client/server boundaries, RemoteEvent validation, DataStore error handling and Studio setup, then return complete corrected files and a test matrix')" class="sug-chip"><span>🛡️</span><span>Fix and review Roblox code</span></button>
             <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix a broken script or error</span></button>
+          </div>
+          <div id="starter-ready" class="starter-ready" role="status" aria-live="polite" hidden>
+            <span class="starter-ready-dot" aria-hidden="true"></span>
+            <span><strong>Ready to build.</strong> Review the prompt, then press Send.</span>
           </div>
         </div>
 
@@ -5014,6 +5027,10 @@
             <button type="button" onclick="useSuggestion('Roblox Fix & Review: diagnose this Luau system, check client/server boundaries, RemoteEvent validation, DataStore error handling and Studio setup, then return complete corrected files and a test matrix')" class="sug-chip"><span>🛡️</span><span>Fix and review Roblox code</span></button>
             <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix a broken script or error</span></button>
           </div>
+          <div id="starter-ready" class="starter-ready" role="status" aria-live="polite" hidden>
+            <span class="starter-ready-dot" aria-hidden="true"></span>
+            <span><strong>Ready to build.</strong> Review the prompt, then press Send.</span>
+          </div>
         </div>`;
     }
     function useSuggestion(text) {
@@ -5025,6 +5042,8 @@
       txt.style.height = txt.scrollHeight + 'px';
       const chips = document.getElementById('suggestion-chips');
       if (chips) chips.style.display = 'none';
+      const ready = document.getElementById('starter-ready');
+      if (ready) ready.hidden = false;
     }
     function scrollChatToEnd() {
       const el = document.getElementById('chat');
