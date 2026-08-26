@@ -3617,6 +3617,10 @@
           <div id="set-referral-link" class="set-note" style="margin:0;padding:10px 12px;word-break:break-all;">Your referral link is loading…</div>
         </div>
       </details>
+      <details id="set-skill-tree-section" class="set-collapsible skill-tree-section" style="display:none;margin-top:14px;" open>
+        <summary>Builder skill tree <span aria-hidden="true">✦</span></summary>
+        <div id="set-skill-tree" class="skill-tree-shell" aria-live="polite"></div>
+      </details>
       <details id="set-achievements-section" class="set-collapsible" style="display:none;margin-top:14px;">
         <summary>Achievements <span aria-hidden="true">＋</span></summary>
         <div id="set-achievements" class="set-group achievement-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"></div>
@@ -6430,6 +6434,42 @@
       event.preventDefault();
       openUtilityDialog[1]();
     });
+    function renderSkillTree(achievements, signedIn) {
+      const mount = document.getElementById('set-skill-tree');
+      const section = document.getElementById('set-skill-tree-section');
+      if (!mount || !section) return;
+      section.style.display = signedIn ? '' : 'none';
+      if (!signedIn) { mount.innerHTML = ''; return; }
+      const state = new Map((Array.isArray(achievements) ? achievements : []).map((item) => [item.id, Boolean(item.unlockedAt)]));
+      const nodes = [
+        { id: 'first-script', icon: '✦', label: 'First build', detail: 'Generate your first script.', accent: 'mint' },
+        { id: 'ten-scripts', icon: '↗', label: 'Builder', detail: 'Generate 10 scripts.', accent: 'violet' },
+        { id: 'fifty-scripts', icon: '◆', label: 'Power Builder', detail: 'Generate 50 scripts.', accent: 'blue' },
+        { id: 'hundred-scripts', icon: '♛', label: 'Elite Builder', detail: 'Generate 100 scripts.', accent: 'gold' },
+        { id: 'return-builder', icon: '↻', label: 'Return Builder', detail: 'Come back for a second build session.', accent: 'mint' },
+        { id: 'referral-builder', icon: '♧', label: 'Referral Builder', detail: 'Bring a builder to Stellar.', accent: 'pink' },
+        { id: 'first-upgrade', icon: '↑', label: 'First Upgrade', detail: 'Start your first paid plan.', accent: 'gold' },
+      ];
+      const unlockedCount = nodes.filter((node) => state.get(node.id)).length;
+      const nextIndex = nodes.findIndex((node) => !state.get(node.id));
+      const next = nextIndex >= 0 ? nodes[nextIndex] : null;
+      const balancePence = Number(Store.get().usage?.balance) || 0;
+      const balance = typeof moneyShort === 'function' ? moneyShort(balancePence) : ('£' + (balancePence / 100).toFixed(2));
+      const safe = (value) => escapeHtml(String(value));
+      const nodeHtml = nodes.map((node, index) => {
+        const unlocked = Boolean(state.get(node.id));
+        const isNext = !unlocked && index === nextIndex;
+        const classes = 'skill-node ' + (unlocked ? 'is-unlocked' : 'is-locked') + (isNext ? ' is-next' : '') + ' accent-' + node.accent;
+        return '<div class="' + classes + '" role="listitem" aria-label="' + safe(unlocked ? 'Unlocked: ' + node.label : (isNext ? 'Next: ' : 'Locked: ') + node.label) + '">'
+          + '<div class="skill-node-marker" aria-hidden="true">' + (unlocked ? '✓' : safe(node.icon)) + '</div>'
+          + '<div class="skill-node-copy"><div class="skill-node-top"><strong>' + safe(node.label) + '</strong><span>' + (unlocked ? 'Unlocked' : (isNext ? 'Next up' : 'Locked')) + '</span></div><p>' + safe(node.detail) + '</p></div>'
+          + '</div>' + (index < nodes.length - 1 ? '<div class="skill-connector ' + (state.get(node.id) ? 'is-complete' : '') + '" aria-hidden="true"></div>' : '');
+      }).join('');
+      mount.innerHTML = '<div class="skill-tree-overview"><div><span class="skill-tree-kicker">Builder path</span><strong>' + unlockedCount + ' of ' + nodes.length + ' unlocked</strong><span class="skill-tree-caption">Unlock progress by building, returning, sharing, and upgrading.</span></div><div class="skill-tree-balance"><span>Available value</span><strong>' + safe(balance) + ' credit</strong><small>Account credit</small></div></div>'
+        + '<div class="skill-tree-progress" role="progressbar" aria-valuemin="0" aria-valuemax="' + nodes.length + '" aria-valuenow="' + unlockedCount + '" aria-label="' + unlockedCount + ' of ' + nodes.length + ' builder milestones unlocked"><span style="width:' + Math.round((unlockedCount / nodes.length) * 100) + '%"></span></div>'
+        + '<div class="skill-tree-next">' + (next ? '<span class="skill-tree-next-icon">→</span><span><b>Next unlock: ' + safe(next.label) + '</b><small>' + safe(next.detail) + '</small></span>' : '<span class="skill-tree-next-icon">✓</span><span><b>Full tree unlocked</b><small>Keep building — there is always another system to ship.</small></span>') + '<button type="button" onclick="closeSettings();document.getElementById(\'txt\')?.focus({preventScroll:true})">Build next</button></div>'
+        + '<div class="skill-tree-map" role="list">' + nodeHtml + '</div>';
+    }
     function refreshSettings() {
       (function(){ const t = Store.get().textSize || 'md';
         ['sm','md','lg'].forEach(k => { const b = document.getElementById('seg-txt-' + k); if (b) { const active = k === t; b.classList.toggle('on', active); b.setAttribute('aria-pressed', String(active)); } }); })();
@@ -6481,6 +6521,8 @@
       const referralSection = document.getElementById('set-referral-section');
       const achievementSection = document.getElementById('set-achievements-section');
       const referralUrl = s.referralUrl || '';
+      const skillTreeSection = document.getElementById('set-skill-tree-section');
+      if (skillTreeSection) skillTreeSection.style.display = signedIn ? '' : 'none';
       if (referralSection) referralSection.style.display = signedIn && referralUrl ? '' : 'none';
       const referralLink = document.getElementById('set-referral-link');
       if (referralLink) referralLink.textContent = referralUrl || 'Your referral link will appear after sign-in.';
@@ -6488,6 +6530,7 @@
       const achievementGrid = document.getElementById('set-achievements');
       if (achievementGrid) {
         const achievements = Array.isArray(s.achievements) ? s.achievements : [];
+        renderSkillTree(achievements, signedIn);
         const motivation = document.getElementById('set-motivation');
         const motivationCopy = document.getElementById('set-motivation-copy');
         if (motivation) motivation.style.display = signedIn ? '' : 'none';
@@ -7550,6 +7593,70 @@
       #usage-modal-heading { font-size: 19px !important; }
       #u-total { font-size: 19px !important; }
     }
+  </style>
+  <style>
+    /* Builder skill tree: progression first, money always explicit. */
+    .skill-tree-section > summary { color: #f4f4f5 !important; }
+    .skill-tree-shell { padding: 12px 12px 14px; border: 1px solid rgba(143,232,207,.20); border-radius: 18px; background: linear-gradient(145deg, rgba(143,232,207,.08), rgba(124,58,237,.08)); }
+    .skill-tree-overview { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; }
+    .skill-tree-kicker { display:block; color:#8fe8cf; font-size:9px; font-weight:900; letter-spacing:.15em; text-transform:uppercase; margin-bottom:5px; }
+    .skill-tree-overview strong { display:block; color:#fff; font-size:15px; letter-spacing:-.02em; }
+    .skill-tree-caption { display:block; max-width:220px; margin-top:4px; color:#a9a9b2; font-size:11px; line-height:1.4; }
+    .skill-tree-balance { flex:0 0 auto; min-width:96px; padding:9px 10px; border:1px solid rgba(143,232,207,.22); border-radius:12px; background:rgba(0,0,0,.16); text-align:right; }
+    .skill-tree-balance span, .skill-tree-balance small { display:block; color:#a9a9b2; font-size:9px; }
+    .skill-tree-balance strong { color:#bdf1e2; font-size:14px; white-space:nowrap; }
+    .skill-tree-progress { height:5px; margin:14px 0 12px; overflow:hidden; border-radius:99px; background:rgba(255,255,255,.10); }
+    .skill-tree-progress span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#8fe8cf,#8b5cf6); transition:width .25s ease; }
+    .skill-tree-next { display:flex; align-items:center; gap:9px; min-height:48px; margin-bottom:12px; padding:9px 10px; border:1px solid rgba(143,232,207,.24); border-radius:13px; background:rgba(143,232,207,.08); }
+    .skill-tree-next-icon { display:grid; place-items:center; width:27px; height:27px; flex:none; border-radius:9px; color:#0b3228; background:#8fe8cf; font-weight:900; }
+    .skill-tree-next span:nth-child(2) { min-width:0; flex:1; }
+    .skill-tree-next b, .skill-tree-next small { display:block; }
+    .skill-tree-next b { color:#eafff8; font-size:11px; }
+    .skill-tree-next small { margin-top:2px; color:#b7c8c3; font-size:10px; line-height:1.35; }
+    .skill-tree-next button { min-height:32px; padding:0 10px; border:1px solid rgba(143,232,207,.38); border-radius:9px; color:#08251e; background:#8fe8cf; font-size:10px; font-weight:900; white-space:nowrap; }
+    .skill-tree-map { display:flex; flex-direction:column; }
+    .skill-node { display:flex; align-items:center; gap:10px; min-height:54px; padding:8px 9px; border:1px solid rgba(255,255,255,.10); border-radius:13px; background:rgba(255,255,255,.045); }
+    .skill-node.is-unlocked { border-color:rgba(143,232,207,.30); background:rgba(143,232,207,.08); }
+    .skill-node.is-next { border-color:rgba(143,232,207,.56); box-shadow:0 0 0 2px rgba(143,232,207,.08); }
+    .skill-node-marker { display:grid; place-items:center; width:29px; height:29px; flex:none; border:1px solid rgba(255,255,255,.16); border-radius:10px; color:#c5c5cb; background:rgba(255,255,255,.07); font-size:13px; font-weight:900; }
+    .skill-node.is-unlocked .skill-node-marker { color:#07271f; border-color:#8fe8cf; background:#8fe8cf; }
+    .skill-node.is-next .skill-node-marker { color:#08251e; border-color:#8fe8cf; background:#bdf1e2; }
+    .skill-node-copy { min-width:0; flex:1; }
+    .skill-node-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .skill-node-top strong { color:#f4f4f5; font-size:11px; }
+    .skill-node-top span { color:#9aa1a8; font-size:9px; font-weight:800; }
+    .skill-node.is-unlocked .skill-node-top span { color:#8fe8cf; }
+    .skill-node p { margin:3px 0 0; color:#a9a9b2; font-size:10px; line-height:1.35; }
+    .skill-connector { width:2px; height:8px; margin:0 0 0 23px; background:rgba(255,255,255,.13); }
+    .skill-connector.is-complete { background:#8fe8cf; }
+    body.light .skill-tree-section > summary { color:#25252a !important; }
+    body.light .skill-tree-shell { border-color:#b9e6d8; background:linear-gradient(145deg,#effaf6,#f7f2ff); }
+    body.light .skill-tree-kicker { color:#087d60; }
+    body.light .skill-tree-overview strong, body.light .skill-node-top strong { color:#18181b; }
+    body.light .skill-tree-caption, body.light .skill-tree-balance span, body.light .skill-tree-balance small, body.light .skill-node p { color:#626872; }
+    body.light .skill-tree-balance { border-color:#b9e6d8; background:#ffffff; }
+    body.light .skill-tree-balance strong { color:#087d60; }
+    body.light .skill-tree-progress { background:#e5e7eb; }
+    body.light .skill-tree-next { border-color:#9bd6c5; background:#effaf6; }
+    body.light .skill-tree-next b { color:#174e41; }
+    body.light .skill-tree-next small { color:#527168; }
+    body.light .skill-node { border-color:#e2e4e7; background:#ffffff; }
+    body.light .skill-node.is-unlocked { border-color:#9bd6c5; background:#f0fbf7; }
+    body.light .skill-node.is-next { border-color:#087d60; box-shadow:0 0 0 2px rgba(8,125,96,.08); }
+    body.light .skill-node-marker { border-color:#d5d7db; color:#686b73; background:#f6f7f8; }
+    body.light .skill-node-top span { color:#737780; }
+    body.light .skill-node.is-unlocked .skill-node-top span { color:#087d60; }
+    body.light .skill-connector { background:#d5d7db; }
+    body.light .skill-connector.is-complete { background:#087d60; }
+    @media (max-width: 767px) {
+      .skill-tree-shell { padding:11px 10px 12px; }
+      .skill-tree-overview { gap:9px; }
+      .skill-tree-caption { max-width:170px; }
+      .skill-tree-balance { min-width:88px; }
+      .skill-tree-next { align-items:flex-start; flex-wrap:wrap; }
+      .skill-tree-next button { margin-left:36px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .skill-tree-progress span { transition:none !important; } }
   </style>
 <script src="/currency.js"></script>
 </body>

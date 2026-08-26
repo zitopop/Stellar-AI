@@ -164,3 +164,38 @@ test('workspace sidebar retains an accessible persistent Guides-hub route', () =
   assert.match(workspaceHtml, /\.side-guides-link \{ flex-direction: row !important; justify-content: center; gap: 7px !important; min-height: 38px !important;/);
   assert.match(workspaceHtml, /body\.light \.side-guides-link \{ color: #4b4658 !important; \}/);
 });
+
+
+test('skill tree keeps progression and credit value explicit without replacing achievements', () => {
+  assert.match(workspaceHtml, /id="set-skill-tree-section" class="set-collapsible skill-tree-section"/);
+  assert.match(workspaceHtml, /id="set-skill-tree" class="skill-tree-shell" aria-live="polite"/);
+  for (const id of ['first-script', 'ten-scripts', 'fifty-scripts', 'hundred-scripts', 'return-builder', 'referral-builder', 'first-upgrade']) {
+    assert.match(workspaceHtml, new RegExp(`id: '${id}'`));
+  }
+  assert.match(workspaceHtml, /Available value/);
+  assert.match(workspaceHtml, /Account credit/);
+  assert.match(workspaceHtml, /role="progressbar" aria-valuemin/);
+  assert.match(workspaceHtml, /closeSettings\(\);document\.getElementById.*?focus.*?Build next/);
+  assert.match(workspaceHtml, /id="set-achievements-section" class="set-collapsible"/);
+  assert.match(workspaceHtml, /body\.light \.skill-tree-shell/);
+  assert.match(workspaceHtml, /@media \(max-width: 767px\) \{[\s\S]*?\.skill-tree-shell/);
+});
+
+
+test('skill tree renderer uses server-supplied achievement unlock timestamps', () => {
+  assert.match(workspaceHtml, /const state = new Map\(\(Array\.isArray\(achievements\) \? achievements : \[\]\)\.map/);
+  assert.match(workspaceHtml, /Boolean\(item\.unlockedAt\)/);
+  assert.match(workspaceHtml, /renderSkillTree\(achievements, signedIn\)/);
+});
+
+
+test('skill tree never substitutes request allowance for monetary credit balance', () => {
+  assert.match(workspaceHtml, /const balancePence = Number\(Store\.get\(\)\.usage\?\.balance\) \|\| 0/);
+  assert.match(workspaceHtml, /moneyShort\(balancePence\)/);
+  assert.match(workspaceHtml, /' credit'/);
+});
+
+
+test('skill tree follows reduced-motion guidance', () => {
+  assert.match(workspaceHtml, /@media \(prefers-reduced-motion: reduce\) \{ \.skill-tree-progress span \{ transition:none !important; \} \}/);
+});
