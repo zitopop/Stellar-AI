@@ -171,21 +171,15 @@
     }
   </style>
 <script>
-  // Match whatever theme the app is set to
+  // Stellar AI is intentionally dark-only across public pages.
   (function () {
-    try {
-      var raw = localStorage.getItem('stellar-store');
-      var mode = raw ? (JSON.parse(raw).mode || 'light') : 'light';
-      if (mode === 'light') {
-        document.documentElement.classList.add('light');
-        document.addEventListener('DOMContentLoaded', function () {
-          document.body.classList.add('light');
-        });
-        if (document.body) document.body.classList.add('light');
-      }
-    } catch (e) {}
+    document.documentElement.classList.remove('light');
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.classList.remove('light');
+    });
   })();
 </script>
+  <link rel="stylesheet" href="/site-polish.css">
 </head>
 <body>
   <button class="terms-x" onclick="history.back()" aria-label="Close">&times;</button>
