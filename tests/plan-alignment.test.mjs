@@ -33,3 +33,10 @@ test('pricing alignment uses equal desktop heights with a mobile fallback', () =
   assert.match(appHtml, /#plans-grid-inner > \.plan-card \{[\s\S]*?min-height: 480px !important;[\s\S]*?height: 100% !important;/);
   assert.match(appHtml, /@media \(max-width: 767px\) \{[\s\S]*?#plans-grid-inner > \.plan-card \{ min-height: 0 !important; height: auto !important; \}/);
 });
+
+test('pricing modal uses comfortable iPad columns and contained phone cards', () => {
+  assert.match(appHtml, /@media \(min-width: 768px\) and \(max-width: 1100px\)/);
+  assert.match(appHtml, /#plans-grid-inner \{\s+grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important;/);
+  assert.match(appHtml, /@media \(max-width: 767px\) \{[\s\S]*?#plans-grid-inner \{\s+display: flex !important;\s+flex-direction: column !important;/);
+  assert.match(appHtml, /#plans-grid-inner > \.plan-card \{\s+box-sizing: border-box !important;\s+width: 100% !important;/);
+});

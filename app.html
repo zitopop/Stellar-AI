@@ -8129,6 +8129,61 @@
       color: #e5e7eb !important;
     }
   </style>
+  <style>
+    /* Responsive pricing sizing: two comfortable columns on iPad, one full-width card on phones. */
+    @media (min-width: 768px) and (max-width: 1100px) {
+      #plans-modal { padding: 16px !important; }
+      #plans-modal > div {
+        width: calc(100vw - 32px) !important;
+        max-width: 960px !important;
+        max-height: 92dvh !important;
+        margin: 0 !important;
+        padding: 28px 24px !important;
+      }
+      #plans-grid-inner {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+      #plans-grid-inner > .plan-card {
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        padding: 20px !important;
+      }
+      #plans-grid-inner > .plan-card .plan-head-fit { min-height: 72px !important; }
+    }
+    @media (max-width: 767px) {
+      #plans-modal > div {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      #plans-grid-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+      }
+      #plans-grid-inner > .plan-card {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        padding: 18px !important;
+      }
+      #plans-modal .plan-head-price { font-size: 34px !important; }
+      #plans-modal .plan-fit-line { font-size: 12px !important; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
