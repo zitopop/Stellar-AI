@@ -64,16 +64,15 @@ test('directory-facing metadata describes current Stellar features without claim
   assert.doesNotMatch(indexHtml, /Used by FiveM and Roblox builders worldwide/);
 });
 
-test('Free users receive only a dismissible local every-third-message upgrade reminder', () => {
+test('Free users receive one dismissible post-generation Starter offer', () => {
   assert.match(appHtml, /id="free-upgrade-nudge" hidden role="status" aria-live="polite"/);
-  assert.match(appHtml, /Enjoying Stellar\?<\/strong> Starter gives you 3× more usage and longer scripts for £8\/mo\./);
-  assert.doesNotMatch(appHtml, /id="free-upgrade-nudge"[^>]*style="display:flex/);
-  assert.match(appHtml, /#free-upgrade-nudge:not\(\[hidden\]\) \{ display: flex !important; \}/);
-  assert.match(appHtml, /function countFreePlanSentMessages\(\)/);
-  assert.match(appHtml, /sent > 0 && sent % 3 === 0/);
+  assert.match(appHtml, /You just built this\.<\/strong> Unlock 3× more usage and longer scripts with Starter for £8\/mo\./);
+  assert.match(appHtml, /Unlock Starter/);
+  assert.match(appHtml, /function maybeShowFreeUpgradeNudge\(\)/);
+  assert.match(appHtml, /stellar_post_generation_upgrade_shown/);
+  assert.match(appHtml, /setGenerationStatus\('Generation completed\.'\);\s+maybeShowFreeUpgradeNudge\(\);/);
+  assert.doesNotMatch(appHtml, /sent > 0 && sent % 3 === 0/);
   assert.match(appHtml, /function dismissFreeUpgradeNudge\(\)/);
-  assert.match(appHtml, /Store\.set\(\{ freeUpgradeNudgeDismissedAt: sent \}\)/);
-  assert.match(appHtml, /consumeMsg\(\);\s+maybeShowFreeUpgradeNudge\(\);/);
   assert.doesNotMatch(appHtml, /fetch\(['"]\/api\/upgrade/);
 });
 

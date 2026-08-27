@@ -3343,9 +3343,9 @@
 
       </main>
       <div class="input-area p-6 glass border-t border-white/10" role="form" aria-label="Message composer">
-        <div id="free-upgrade-nudge" hidden role="status" aria-live="polite" style="align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:0 auto 10px;padding:10px 12px;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:#18131f;color:#f5f3f7;font-size:12px;line-height:1.4;">
-          <span><strong>Enjoying Stellar?</strong> Starter gives you 3× more usage and longer scripts for £8/mo.</span>
-          <span style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><button type="button" onclick="openPlansFromFreeUpgradeNudge()" style="min-height:36px;padding:0 10px;border:1px solid #f5f3f7;border-radius:8px;background:#f5f3f7;color:#171219;font:inherit;font-weight:800;cursor:pointer;">View plans</button><button type="button" onclick="dismissFreeUpgradeNudge()" aria-label="Dismiss upgrade reminder" title="Dismiss upgrade reminder" style="width:36px;height:36px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:transparent;color:#f5f3f7;font-size:18px;cursor:pointer;">×</button></span>
+        <div id="free-upgrade-nudge" hidden role="status" aria-live="polite" style="align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:0 auto 10px;padding:11px 13px;border:1px solid rgba(143,232,207,.30);border-radius:12px;background:linear-gradient(100deg,rgba(82,225,181,.12),rgba(255,255,255,.04));color:#f5f3f7;font-size:12px;line-height:1.4;box-shadow:inset 0 1px rgba(255,255,255,.04);">
+          <span><strong>You just built this.</strong> Unlock 3× more usage and longer scripts with Starter for £8/mo.</span>
+          <span style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><button type="button" onclick="openPlansFromFreeUpgradeNudge()" style="min-height:36px;padding:0 11px;border:1px solid #bdf5e2;border-radius:9px;background:#bdf5e2;color:#06251d;font:inherit;font-weight:800;cursor:pointer;">Unlock Starter</button><button type="button" onclick="dismissFreeUpgradeNudge()" aria-label="Dismiss Starter offer" title="Dismiss Starter offer" style="width:36px;height:36px;border:1px solid rgba(143,232,207,.26);border-radius:9px;background:transparent;color:#f5f3f7;font-size:18px;cursor:pointer;">×</button></span>
         </div>
         <div id="img-preview-bar" style="display:none;padding:8px 0;margin-bottom:6px;">
           <div class="image-preview-card">
@@ -5583,14 +5583,16 @@
       const state = Store.get();
       const nudge = document.getElementById('free-upgrade-nudge');
       if (!nudge) return;
-      const sent = countFreePlanSentMessages();
       const isFree = (state.plan || 'free') === 'free' && !isOwner();
-      const shouldShow = isFree && sent > 0 && sent % 3 === 0 && Number(state.freeUpgradeNudgeDismissedAt || 0) !== sent;
-      nudge.hidden = !shouldShow;
+      let alreadyShown = false;
+      try { alreadyShown = sessionStorage.getItem('stellar_post_generation_upgrade_shown') === '1'; } catch {}
+      nudge.hidden = !(isFree && !alreadyShown);
+      if (isFree && !alreadyShown) {
+        try { sessionStorage.setItem('stellar_post_generation_upgrade_shown', '1'); } catch {}
+      }
     }
     function dismissFreeUpgradeNudge() {
-      const sent = countFreePlanSentMessages();
-      Store.set({ freeUpgradeNudgeDismissedAt: sent });
+      try { sessionStorage.setItem('stellar_post_generation_upgrade_shown', '1'); } catch {}
       const nudge = document.getElementById('free-upgrade-nudge');
       if (nudge) nudge.hidden = true;
     }
@@ -5682,7 +5684,6 @@
         return;
       }
       consumeMsg();
-      maybeShowFreeUpgradeNudge();
       if (pastedBlock) {
         text = text + '\n\n--- pasted content ---\n' + pastedBlock;
         clearPaste();
@@ -5818,6 +5819,7 @@
           scrollChatToEnd();
           saveChatsToServer();
           setGenerationStatus('Generation completed.');
+          maybeShowFreeUpgradeNudge();
         }
       } catch (error) {
         clearInterval(autoScroll);
