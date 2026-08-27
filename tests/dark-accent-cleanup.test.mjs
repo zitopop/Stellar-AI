@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
+const indexHtml = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 
 test('dark app shell removes the legacy purple edge accent', () => {
   assert.match(appHtml, /body:not\(\.light\) #main-col \{[\s\S]*?background: #0b0d11 !important;[\s\S]*?border-left: 0 !important;[\s\S]*?outline: 0 !important;/);
@@ -19,6 +20,12 @@ test('strict dark UI removes blue and purple active accents', () => {
   assert.match(appHtml, /Strict monochrome dark UI: keep all website chrome black, grey, and white/);
   assert.match(appHtml, /body:not\(\.light\) #u-fill,\s+body:not\(\.light\) #u-fill\.unlimited \{ background: #d7d9de !important; \}/);
   assert.match(appHtml, /body:not\(\.light\) \.sug-chip > span:first-child \{ filter: grayscale\(1\) saturate\(0\) !important; \}/);
+});
+
+test('landing page removes colored section backgrounds in the final monochrome pass', () => {
+  assert.match(indexHtml, /Final monochrome surface pass: remove blue\/cyan\/purple-tinted backgrounds/);
+  assert.match(indexHtml, /body:not\(\.light\) \.pricing-wrap,[\s\S]*?background: #17191d !important;/);
+  assert.match(indexHtml, /body:not\(\.light\) \.roblox-game-mark \{[\s\S]*?background: #e5e7eb !important;/);
 });
 
 test('dark Settings terms link has no browser-blue underline', () => {
