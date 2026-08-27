@@ -7592,6 +7592,182 @@
       body:not(.light) #settings-modal .seg { min-height: 44px !important; }
     }
   </style>
+  <style>
+    /* Premium Settings modal: visual-only polish; existing controls and handlers remain unchanged. */
+    #settings-modal {
+      background: rgba(3, 5, 8, .78) !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+    }
+    #settings-modal > .set-card {
+      width: min(100%, 520px) !important;
+      max-width: 520px !important;
+      margin: 24px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(255,255,255,.13) !important;
+      border-radius: 24px !important;
+      background: linear-gradient(155deg, #151820 0%, #0f1218 58%, #0b0e13 100%) !important;
+      box-shadow: 0 32px 90px rgba(0,0,0,.56), 0 0 0 1px rgba(97,230,191,.04) inset !important;
+    }
+    #settings-modal .set-head {
+      min-height: 78px !important;
+      margin: 0 !important;
+      padding: 23px 26px 20px !important;
+      align-items: center !important;
+      border-bottom: 1px solid rgba(255,255,255,.09) !important;
+      background: linear-gradient(110deg, rgba(97,230,191,.08), rgba(255,255,255,.015) 55%, transparent) !important;
+    }
+    #settings-modal .settings-title {
+      color: #fafafa !important;
+      font-size: 24px !important;
+      font-weight: 900 !important;
+      letter-spacing: -.035em !important;
+      line-height: 1 !important;
+    }
+    #settings-modal .modal-x {
+      width: 42px !important;
+      height: 42px !important;
+      border: 1px solid rgba(255,255,255,.14) !important;
+      border-radius: 12px !important;
+      color: #aeb4c0 !important;
+      background: rgba(255,255,255,.045) !important;
+      transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease !important;
+    }
+    #settings-modal .modal-x:hover,
+    #settings-modal .modal-x:focus-visible {
+      color: #f4f4f5 !important;
+      border-color: rgba(97,230,191,.45) !important;
+      background: rgba(97,230,191,.12) !important;
+      transform: translateY(-1px) !important;
+    }
+    #settings-modal .set-body {
+      padding: 22px 24px 26px !important;
+    }
+    #settings-modal .set-tabs {
+      display: grid !important;
+      grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+      gap: 5px !important;
+      margin-bottom: 22px !important;
+      padding: 5px !important;
+      border: 1px solid rgba(255,255,255,.10) !important;
+      border-radius: 15px !important;
+      background: rgba(255,255,255,.035) !important;
+    }
+    #settings-modal .set-tab {
+      min-height: 54px !important;
+      padding: 8px 4px !important;
+      border: 1px solid transparent !important;
+      border-radius: 11px !important;
+      color: #9298a5 !important;
+      font-size: 10px !important;
+      font-weight: 800 !important;
+      letter-spacing: .01em !important;
+      transition: color .16s ease, background .16s ease, border-color .16s ease, transform .16s ease !important;
+    }
+    #settings-modal .set-tab i {
+      margin-bottom: 5px !important;
+      color: #747b88 !important;
+    }
+    #settings-modal .set-tab:hover,
+    #settings-modal .set-tab:focus-visible {
+      color: #f1f3f5 !important;
+      border-color: rgba(255,255,255,.10) !important;
+      background: rgba(255,255,255,.06) !important;
+    }
+    #settings-modal .set-tab.active {
+      color: #eafff8 !important;
+      border-color: rgba(97,230,191,.40) !important;
+      background: linear-gradient(155deg, rgba(97,230,191,.22), rgba(97,230,191,.09)) !important;
+      box-shadow: 0 8px 20px rgba(0,0,0,.18), inset 0 1px rgba(255,255,255,.10) !important;
+    }
+    #settings-modal .set-tab.active i { color: #8fe8cf !important; }
+    #settings-modal .profile-head {
+      display: flex !important;
+      align-items: center !important;
+      gap: 16px !important;
+      min-height: 98px !important;
+      margin-bottom: 24px !important;
+      padding: 19px 20px !important;
+      border: 1px solid rgba(97,230,191,.22) !important;
+      border-radius: 18px !important;
+      background: linear-gradient(120deg, rgba(97,230,191,.13), rgba(255,255,255,.045) 58%, rgba(255,255,255,.018)) !important;
+      box-shadow: inset 0 1px rgba(255,255,255,.08), 0 14px 32px rgba(0,0,0,.16) !important;
+    }
+    #settings-modal .profile-av {
+      width: 58px !important;
+      height: 58px !important;
+      flex: 0 0 58px !important;
+      border: 1px solid rgba(164,242,220,.58) !important;
+      border-radius: 17px !important;
+      color: #08251d !important;
+      background: linear-gradient(145deg, #a4f2dc, #61e6bf) !important;
+      box-shadow: 0 12px 22px rgba(0,0,0,.22), 0 0 0 4px rgba(97,230,191,.08) !important;
+      font-size: 22px !important;
+      font-weight: 950 !important;
+    }
+    #settings-modal .profile-meta { min-width: 0 !important; }
+    #settings-modal .profile-name {
+      color: #f8fafb !important;
+      font-size: 17px !important;
+      font-weight: 900 !important;
+      letter-spacing: -.02em !important;
+    }
+    #settings-modal .profile-sub {
+      margin-top: 5px !important;
+      color: #aeb7c1 !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+    }
+    #settings-modal .set-label {
+      margin: 0 3px 10px !important;
+      color: #75d9bc !important;
+      font-size: 10px !important;
+      font-weight: 900 !important;
+      letter-spacing: .16em !important;
+    }
+    #settings-modal .set-label::after { background: linear-gradient(90deg, rgba(97,230,191,.28), transparent) !important; }
+    #settings-modal .set-group {
+      margin-bottom: 22px !important;
+      border: 1px solid rgba(255,255,255,.11) !important;
+      border-radius: 17px !important;
+      background: rgba(255,255,255,.035) !important;
+      box-shadow: inset 0 1px rgba(255,255,255,.035) !important;
+    }
+    #settings-modal .set-item {
+      min-height: 66px !important;
+      padding: 15px 17px !important;
+    }
+    #settings-modal .set-item + .set-item { border-top-color: rgba(255,255,255,.075) !important; }
+    #settings-modal .set-key { color: #e7eaf0 !important; font-size: 13px !important; font-weight: 800 !important; }
+    #settings-modal .set-val { color: #b7bec9 !important; font-size: 12px !important; font-weight: 750 !important; }
+    #settings-modal .set-chev { color: #7d8793 !important; }
+    #settings-modal .set-click:hover { background: rgba(97,230,191,.055) !important; }
+    #settings-modal .set-signedout {
+      margin: 10px !important;
+      padding: 15px 16px !important;
+      border: 1px solid rgba(97,230,191,.22) !important;
+      border-radius: 13px !important;
+      background: rgba(97,230,191,.07) !important;
+    }
+    #settings-modal .so-title { color: #eafff8 !important; font-weight: 850 !important; }
+    #settings-modal .so-sub { margin-top: 5px !important; color: #a9c8bf !important; line-height: 1.5 !important; }
+    @media (max-width: 767px) {
+      #settings-modal > .set-card {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        max-height: 94dvh !important;
+        border-radius: 24px 24px 0 0 !important;
+      }
+      #settings-modal .set-head { min-height: 72px !important; padding: 17px 18px 15px !important; }
+      #settings-modal .set-body { padding: 18px 16px calc(22px + env(safe-area-inset-bottom)) !important; }
+      #settings-modal .set-tabs { margin-bottom: 18px !important; }
+      #settings-modal .set-tab { min-height: 52px !important; font-size: 9px !important; }
+      #settings-modal .profile-head { min-height: 88px !important; margin-bottom: 20px !important; padding: 15px !important; }
+      #settings-modal .profile-av { width: 52px !important; height: 52px !important; flex-basis: 52px !important; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
