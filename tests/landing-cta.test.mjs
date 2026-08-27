@@ -161,8 +161,8 @@ test('landing cards use neutral white and grey hover feedback', () => {
   assert.match(landingHtml, /body\.light \.hero-capability:hover, body\.light \.launch-card:hover, body\.light \.capability:hover, body\.light \.capability-map-card:hover, body\.light \.difference-item:hover, body\.light \.proof-card:hover, body\.light \.plan:hover, body\.light \.faq-item:hover, body\.light \.roblox-card:hover \{ border-color: #71717a !important; background: #f4f4f5 !important;/);
 });
 
-test('landing page stays explicit and consistent with the dark-only theme', () => {
-  assert.match(landingHtml, /<span class="theme-status" aria-label="Dark mode only">☾ Dark only<\/span>/);
+test('landing page stays explicit and consistent with the dark-only theme without a visible theme label', () => {
+  assert.doesNotMatch(landingHtml, /<span class="theme-status" aria-label="Dark mode only">☾ Dark only<\/span>/);
   assert.doesNotMatch(landingHtml, /LIGHT_THEME_START_HOUR|DARK_THEME_START_HOUR|automaticTheme\(/);
   assert.doesNotMatch(landingHtml, /Manual override active; automatic schedule resumes at the next hour\./);
 });
