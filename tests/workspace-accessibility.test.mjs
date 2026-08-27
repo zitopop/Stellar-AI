@@ -50,7 +50,7 @@ test('Task 171 keeps the Plans sidebar control an explicit non-submit button', (
 });
 
 test('Task 172 keeps the workspace dark-only with no theme toggle or automatic light scheduling', () => {
-  assert.match(workspaceHtml, /<span class="ws-toggle top-theme-toggle" aria-label="Dark mode only"/);
+  assert.doesNotMatch(workspaceHtml, /top-theme-toggle|top-theme-label|seg-dark|seg-light/);
   assert.doesNotMatch(workspaceHtml, /function startAutomaticTheme\(/);
   assert.match(workspaceHtml, /chats = s\.chats;\s+setMode\('dark', 'dark-only'\);/);
   assert.match(workspaceHtml, /document\.body\.classList\.remove\('light'\)/);
@@ -97,10 +97,9 @@ test('Task 178 keeps every Settings tab an explicit non-submit button', () => {
   assert.match(workspaceHtml, /document\.querySelectorAll\('\.set-tab'\)\.forEach\(t => t\.classList\.toggle\('active', t\.dataset\.tab === name\)\)/);
 });
 
-test('Task 179 keeps Settings dark-only and removes the Light appearance control', () => {
-  assert.match(workspaceHtml, /<span id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only<\/span>/);
-  assert.match(workspaceHtml, /const darkToggle = document\.getElementById\('seg-dark'\);[\s\S]*?darkToggle\.setAttribute\('aria-pressed', 'true'\)/);
-  assert.doesNotMatch(workspaceHtml, /id="seg-light"/);
+test('Task 179 removes the Settings Theme control while preserving dark-only initialization', () => {
+  assert.doesNotMatch(workspaceHtml, /id="seg-dark"|id="seg-light"|>Theme<\/div>/);
+  assert.doesNotMatch(workspaceHtml, /const darkToggle = document\.getElementById\('seg-dark'\)/);
   assert.doesNotMatch(workspaceHtml, /setMode\('light'\)/);
 });
 

@@ -3268,7 +3268,6 @@
           <button id="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar" class="menu-btn-mobile w-10 h-10 items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">☰</button>
           <div id="chat-title" class="font-black tracking-[-0.3px]">Stellar AI</div>
         </div>
-        <span class="ws-toggle top-theme-toggle" aria-label="Dark mode only"><span class="ico" id="side-theme-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="top-theme-label">Dark</span></span>
       </div>
 
       <div id="workspace" class="hidden">
@@ -3643,12 +3642,6 @@
       <div class="set-panel" data-panel="look" style="display:none">
       <div class="set-label">Appearance</div>
       <div class="set-group">
-        <div class="set-item">
-          <div class="set-key"><i class="sk-ico t-pink"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-palette"/></svg></i>Theme</div>
-          <div class="seg-wrap">
-            <span id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only</span>
-          </div>
-        </div>
         <div class="set-item">
           <div class="set-key"><i class="sk-ico t-blue"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-type"/></svg></i>Text size</div>
           <div class="seg-wrap">
@@ -6444,11 +6437,6 @@
         document.getElementById('set-plan-desc').textContent = 'Unlimited · All 4 models';
       }
       document.body.classList.remove('light');
-      const darkToggle = document.getElementById('seg-dark');
-      if (darkToggle) {
-        darkToggle.classList.add('on');
-        darkToggle.setAttribute('aria-pressed', 'true');
-      }
     }
     async function copyReferralLink() {
       const url = Store.get().referralUrl;
@@ -6480,13 +6468,7 @@
     function setMode(mode = 'dark', source = 'dark-only') {
       document.body.classList.remove('light');
       document.body.dataset.themeSource = 'dark-only';
-      const s = document.getElementById('side-theme-ico');
-      if (s) s.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg>';
       Store.set({ mode: 'dark' });
-    }
-
-    function toggleDarkMode() {
-      setMode('dark', 'dark-only');
     }
 
     function checkout(plan) {
@@ -6942,7 +6924,6 @@
     .side-guides-link { margin-top: 6px !important; }
     .topbar { min-height: 56px !important; background: rgba(15,15,15,.92) !important; border-bottom-color: rgba(255,255,255,.08) !important; }
     #chat-title { color: #e4e4e7 !important; font-size: 13px !important; }
-    .top-theme-toggle { min-height: 34px !important; padding: 0 10px !important; border-color: rgba(255,255,255,.1) !important; background: rgba(255,255,255,.04) !important; color: #a1a1aa !important; font-size: 11px !important; }
     .greet-wrap { width: min(100%, 780px); margin-inline: auto; padding: 56px 20px 28px !important; }
     .greet-hi { max-width: 100% !important; color: #f4f4f5 !important; background: none !important; -webkit-text-fill-color: currentColor !important; font-size: clamp(30px, 3vw, 40px) !important; letter-spacing: -.045em !important; }
     .welcome-sub { margin-top: 9px !important; color: #8b8b93 !important; font-size: 13px !important; }
@@ -6989,7 +6970,7 @@
       .input-area { padding: 10px 12px calc(12px + env(safe-area-inset-bottom)) !important; }
       .composer-foot { gap: 6px !important; }
       .keyboard-hint { display: none !important; }
-      .image-attach-label, .top-theme-label { display: none !important; }
+      .image-attach-label { display: none !important; }
       #send-btn { min-width: 52px !important; padding-inline: 14px !important; }
     }
   </style>
@@ -7198,8 +7179,6 @@
     #chat-title { color: var(--premium-ink) !important; font-size: 14px !important; }
     .menu-btn-mobile { border: 1px solid transparent; color: #b5b5bd !important; }
     .menu-btn-mobile:hover { border-color: var(--premium-border); background: rgba(255,255,255,.05) !important; }
-    .top-theme-toggle { min-height: 38px !important; border-color: rgba(255,255,255,.14) !important; color: #d2d2d7 !important; background: rgba(255,255,255,.05) !important; }
-    .top-theme-toggle:hover { border-color: rgba(143,232,207,.38) !important; color: var(--premium-ink) !important; background: rgba(143,232,207,.08) !important; }
     .greet-wrap { width: min(100%, 820px) !important; padding: clamp(72px, 11vh, 126px) 24px 44px !important; }
     .greet-hi { font-size: clamp(34px, 4vw, 52px) !important; letter-spacing: -.055em !important; text-shadow: 0 10px 35px rgba(0,0,0,.25); }
     .welcome-sub { margin-top: 12px !important; color: #a5a5ae !important; font-size: 14px !important; }
@@ -7237,7 +7216,6 @@
     body.light .side-act-key .ico { color: #087d60 !important; }
     body.light .topbar, body.light .input-area { background: rgba(247,247,248,.90) !important; }
     body.light #chat-title, body.light .greet-hi { color: #18181b !important; }
-    body.light .top-theme-toggle { color: #3f3f46 !important; border-color: #d0d0d7 !important; background: #ffffff !important; }
     body.light .welcome-sub { color: #62626b !important; }
     body.light .welcome-next-step { border-color: #b9e6d8; color: #3d6258; background: #effaf6; }
     body.light .welcome-guide-link { color: #18181b !important; }

@@ -479,20 +479,16 @@ test('Task 149 returns focus to the model chooser after choosing a model', () =>
   assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);[\s\S]*?modelButton\.innerHTML = labels\[m\] \|\| labels\.smart;/);
 });
 
-test('Task 150 keeps the appearance controls dark-only while preserving text-size settings', () => {
-  assert.match(appHtml, /<span id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only<\/span>/);
-  assert.doesNotMatch(appHtml, /id="seg-light"/);
+test('Task 150 removes theme controls while preserving text-size settings', () => {
+  assert.doesNotMatch(appHtml, /id="seg-dark"|id="seg-light"|top-theme-toggle|top-theme-label/);
   assert.match(appHtml, /id="seg-txt-sm" class="seg" onclick="setTextSize\('sm'\)" aria-pressed="false"/);
   assert.match(appHtml, /id="seg-txt-md" class="seg" onclick="setTextSize\('md'\)" aria-pressed="true"/);
   assert.match(appHtml, /id="seg-txt-lg" class="seg" onclick="setTextSize\('lg'\)" aria-pressed="false"/);
   assert.match(appHtml, /b\.setAttribute\('aria-pressed', String\(active\)\);/);
-  assert.match(appHtml, /darkToggle\.setAttribute\('aria-pressed', 'true'\);/);
 });
 
 test('Task 151 keeps the workspace dark-only without automatic light scheduling', () => {
-  assert.doesNotMatch(appHtml, /id="side-theme-toggle"|title="Theme changes automatically by hour"/);
-  assert.match(appHtml, /id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only<\/span>/);
-  assert.match(appHtml, /function toggleDarkMode\(\) \{[\s\S]*setMode\('dark', 'dark-only'\);/);
+  assert.doesNotMatch(appHtml, /id="side-theme-toggle"|title="Theme changes automatically by hour"|function toggleDarkMode\(/);
   assert.doesNotMatch(appHtml, /function startAutomaticTheme\(/);
   assert.match(appHtml, /chats = s\.chats;\s+setMode\('dark', 'dark-only'\);/);
   assert.doesNotMatch(appHtml, /LIGHT_THEME_START_HOUR|DARK_THEME_START_HOUR|automaticMode\(/);
