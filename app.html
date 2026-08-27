@@ -3884,7 +3884,7 @@
       <!-- PAGE: SIGN IN -->
       <div id="page-signin" class="auth-page">
         <div class="welcome-title">Welcome back</div>
-        <div class="welcome-sub">Sign in to keep your chats and plan on every device.</div>
+        <div class="welcome-sub">Pick up where you left off — your chats and plan stay synced.</div>
         <div id="g-signin-main" class="welcome-btn-wrap"></div>
         <a href="/api/discord-oauth" class="welcome-btn-wrap" style="display:block;text-decoration:none;margin-top:8px;">
           <div style="display:flex;align-items:center;justify-content:center;gap:10px;background:#5865F2;color:#fff;font-size:14px;font-weight:800;padding:11px 16px;border-radius:10px;width:100%;cursor:pointer;">
@@ -3903,7 +3903,7 @@
       <!-- PAGE: CREATE ACCOUNT -->
       <div id="page-signup" class="auth-page hidden">
         <div class="welcome-title">Create your account</div>
-        <div class="welcome-sub">Free to start — save your chats and keep your plan everywhere.</div>
+        <div class="welcome-sub">Start free with £1 credit, then keep your chats and plan everywhere.</div>
         <div id="g-signup-main" class="welcome-btn-wrap"></div>
         <div class="auth-or"><span>or</span></div>
         <input id="su-email" class="own-input" type="email" placeholder="your@email.com" aria-label="Email address" autocomplete="email">
@@ -3913,7 +3913,7 @@
         <div class="auth-switch">Already have an account? <button onclick="authPage('login')">Sign in</button></div>
       </div>
 
-      <button onclick="dismissWelcome()" class="welcome-skip">Continue without an account</button>
+      <button onclick="dismissWelcome()" class="welcome-skip">Continue without signing in</button>
       <div class="welcome-legal">By continuing you agree to our <a href="/terms.html">Terms &amp; Privacy</a>.</div>
     </div>
   </div>
@@ -7915,6 +7915,122 @@
     body:not(.light) #plan-btn-plus-annual,
     body:not(.light) #plan-btn-pro-annual { background: rgba(255,255,255,.08) !important; border-color: rgba(255,255,255,.22) !important; color: #e5e7eb !important; }
     body:not(.light) .sug-chip > span:first-child { filter: grayscale(1) saturate(0) !important; }
+  </style>
+<style>
+    /* Account access polish: welcoming hierarchy, calm spacing, and premium dark controls. */
+    #welcome-modal {
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+      background: rgba(0,0,0,.78) !important;
+      backdrop-filter: blur(12px);
+    }
+    #welcome-modal .welcome-card {
+      width: min(100%, 430px) !important;
+      max-height: min(92dvh, 720px) !important;
+      overflow-y: auto !important;
+      padding: 30px 28px 24px !important;
+      border: 1px solid rgba(255,255,255,.16) !important;
+      border-radius: 24px !important;
+      background: linear-gradient(155deg, #16181d 0%, #101216 58%, #0b0d11 100%) !important;
+      box-shadow: 0 28px 80px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.03) inset !important;
+    }
+    #welcome-modal .welcome-star {
+      width: 46px !important;
+      height: 46px !important;
+      margin: 0 auto 18px !important;
+      display: grid !important;
+      place-items: center !important;
+      border: 1px solid rgba(255,255,255,.22) !important;
+      border-radius: 14px !important;
+      background: rgba(255,255,255,.08) !important;
+      color: #ffffff !important;
+      font-size: 22px !important;
+      box-shadow: 0 10px 26px rgba(0,0,0,.24) !important;
+    }
+    #welcome-modal .welcome-title {
+      color: #ffffff !important;
+      font-size: clamp(24px, 5vw, 30px) !important;
+      font-weight: 900 !important;
+      letter-spacing: -.045em !important;
+      line-height: 1.08 !important;
+      text-align: center !important;
+    }
+    #welcome-modal .welcome-sub {
+      max-width: 320px !important;
+      margin: 10px auto 22px !important;
+      color: #a7aab1 !important;
+      font-size: 13px !important;
+      line-height: 1.55 !important;
+      text-align: center !important;
+    }
+    #welcome-modal .welcome-btn-wrap { width: 100% !important; margin-top: 10px !important; }
+    #welcome-modal .welcome-btn-wrap > div {
+      min-height: 48px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid rgba(255,255,255,.18) !important;
+      border-radius: 13px !important;
+      background: #24262b !important;
+      color: #f8f8f8 !important;
+      box-shadow: none !important;
+      transition: background .16s ease, border-color .16s ease, transform .16s ease !important;
+    }
+    #welcome-modal .welcome-btn-wrap > div:hover,
+    #welcome-modal .welcome-btn-wrap > div:focus-visible {
+      background: #303238 !important;
+      border-color: rgba(255,255,255,.32) !important;
+      transform: translateY(-1px);
+    }
+    #welcome-modal .auth-or { margin: 18px 0 12px !important; color: #777b83 !important; }
+    #welcome-modal .own-input {
+      width: 100% !important;
+      min-height: 48px !important;
+      margin-top: 8px !important;
+      padding: 0 14px !important;
+      border: 1px solid rgba(255,255,255,.14) !important;
+      border-radius: 13px !important;
+      outline: none !important;
+      background: #0d0f13 !important;
+      color: #f5f5f6 !important;
+      caret-color: #ffffff !important;
+      box-shadow: inset 0 1px rgba(255,255,255,.025) !important;
+    }
+    #welcome-modal .own-input::placeholder { color: #777b83 !important; }
+    #welcome-modal .own-input:focus { border-color: rgba(255,255,255,.38) !important; box-shadow: 0 0 0 3px rgba(255,255,255,.06) !important; }
+    #welcome-modal .side-new {
+      min-height: 48px !important;
+      margin-top: 12px !important;
+      padding: 0 16px !important;
+      border: 1px solid rgba(255,255,255,.24) !important;
+      border-radius: 13px !important;
+      background: #e7e8eb !important;
+      color: #0b0d11 !important;
+      font-size: 13px !important;
+      font-weight: 900 !important;
+      box-shadow: 0 10px 22px rgba(0,0,0,.18) !important;
+    }
+    #welcome-modal .side-new:hover { background: #ffffff !important; border-color: #ffffff !important; transform: translateY(-1px); }
+    #welcome-modal .auth-switch { margin-top: 20px !important; color: #a7aab1 !important; font-size: 12px !important; text-align: center !important; }
+    #welcome-modal .auth-switch button,
+    #welcome-modal .welcome-legal a { color: #f2f2f3 !important; text-decoration: underline !important; text-underline-offset: 3px; }
+    #welcome-modal .welcome-skip {
+      display: block !important;
+      width: 100% !important;
+      margin-top: 20px !important;
+      padding: 10px !important;
+      border: 0 !important;
+      background: transparent !important;
+      color: #c4c6cb !important;
+      font-size: 12px !important;
+      font-weight: 800 !important;
+    }
+    #welcome-modal .welcome-skip:hover { color: #ffffff !important; }
+    #welcome-modal .welcome-legal { margin-top: 12px !important; color: #737780 !important; font-size: 10px !important; line-height: 1.45 !important; text-align: center !important; }
+    @media (max-width: 520px) {
+      #welcome-modal { align-items: flex-end !important; padding: 0 !important; }
+      #welcome-modal .welcome-card { width: 100% !important; max-height: 94dvh !important; padding: 26px 20px calc(20px + env(safe-area-inset-bottom)) !important; border-radius: 24px 24px 0 0 !important; border-bottom: 0 !important; }
+      #welcome-modal .welcome-star { margin-bottom: 14px !important; }
+    }
   </style>
 <script src="/currency.js"></script>
 </body>
