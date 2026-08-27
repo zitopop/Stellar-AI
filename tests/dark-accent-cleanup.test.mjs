@@ -15,6 +15,12 @@ test('active dark workspace accents use neutral and emerald styling', () => {
   assert.match(appHtml, /body:not\(\.light\) ::-webkit-scrollbar-thumb \{ background: rgba\(255,255,255,\.22\) !important; \}/);
 });
 
+test('strict dark UI removes blue and purple active accents', () => {
+  assert.match(appHtml, /Strict monochrome dark UI: keep all website chrome black, grey, and white/);
+  assert.match(appHtml, /body:not\(\.light\) #u-fill,\s+body:not\(\.light\) #u-fill\.unlimited \{ background: #d7d9de !important; \}/);
+  assert.match(appHtml, /body:not\(\.light\) \.sug-chip > span:first-child \{ filter: grayscale\(1\) saturate\(0\) !important; \}/);
+});
+
 test('dark Settings terms link has no browser-blue underline', () => {
   assert.match(appHtml, /body:not\(\.light\) #settings-modal \.set-item,\s+body:not\(\.light\) #settings-modal \.set-item a,[\s\S]*?text-decoration: none !important;/);
   assert.match(appHtml, /#settings-modal \.set-item\[href="\/terms\.html"\] \{[\s\S]*?color: #e7eaf0 !important;[\s\S]*?text-decoration: none !important;/);
