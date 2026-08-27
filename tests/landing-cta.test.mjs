@@ -26,9 +26,9 @@ test('Task 141 keeps the phone-sized hero preview focused on its readable worksp
 });
 
 test('Task 144 gives each existing pricing action an explicit plan-oriented name', () => {
-  assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Start with the Free plan">Start free<\/a>/);
-  assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Choose the Plus plan">Get Plus <span class="button-arrow">→<\/span><\/a>/);
-  assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Choose the Pro plan">Get Pro<\/a>/);
+  assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Start free — Start with the Free plan">Start free<\/a>/);
+  assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Get Plus — Choose the Plus plan">Get Plus <span class="button-arrow">→<\/span><\/a>/);
+  assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Get Pro — Choose the Pro plan">Get Pro<\/a>/);
 });
 
 test('Task 124 lets keyboard visitors skip the landing navigation and focus main content', () => {
@@ -97,7 +97,7 @@ test('Task 162 keeps the FiveM server-validation FAQ visible and aligned with st
 });
 
 test('Task 147 gives the final free-generation action an explicit accessible name', () => {
-  assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
+  assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Generate your first script free — Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
 });
 
 test('Task 154 sends each existing project quick start into the workspace with only a named starter key', () => {
@@ -145,7 +145,7 @@ test('Task 182 keeps every landing FAQ disclosure control an explicit non-submit
 
 test('Task 183 keeps the mobile landing navigation keyboard-accessible and destination-stable', () => {
   assert.match(landingHtml, /<button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-controls="mobile-nav" aria-expanded="false">/);
-  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true"><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#capabilities">Capabilities<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
+  assert.match(landingHtml, /<div class="mobile-nav" id="mobile-nav" aria-hidden="true" inert><div class="mobile-nav-inner container"><a href="#how-it-works">How it works<\/a><a href="#why-stellar">Why Stellar<\/a><a href="#capabilities">Capabilities<\/a><a href="#plans">Pricing<\/a><a href="#roblox-worlds">Roblox worlds<\/a><a href="\/blog">Guides<\/a><a href="\/terms\.html">Terms<\/a><\/div><\/div>/);
   assert.match(landingHtml, /navToggle\?\.addEventListener\('click', \(\) => \{ const open = navToggle\.getAttribute\('aria-expanded'\) === 'true';/);
   assert.match(landingHtml, /mobileNav\?\.querySelectorAll\('a'\)\.forEach\(\(link\) => link\.addEventListener\('click', closeMobileNav\)\)/);
   assert.match(landingHtml, /\.nav-toggle \{ display: none; min-width: 44px; min-height: 44px;/);
@@ -203,7 +203,7 @@ test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consis
   assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Straightforward pricing<\/div><h2>Pay for the room you actually need\.<\/h2><p>Try the workflow for free\. Upgrade when your scripts get longer, your builds get bigger or you simply need more headroom\.<\/p><\/div>/);
   assert.match(landingHtml, /<p class="plan-compare">No credit maze\. No surprise tiers\.[\s\S]*freedom to cancel when you need to\.<\/p>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room for regular scripts\.<\/h3><p class="plan-desc">For when Free is useful but you keep hitting the ceiling on normal builds\.<\/p>/);
-  assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span><\/div><a href="\/app" class="button button-secondary" aria-label="Choose the Starter plan">Get Starter<\/a><div class="annual">£67\/year · Save 30%<\/div><div class="plan-includes">Everything in Free, plus<\/div><ul><li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul>/);
+  assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span><\/div><a href="\/app" class="button button-secondary" aria-label="Get Starter — Choose the Starter plan">Get Starter<\/a><div class="annual">£67\/year · Save 30%<\/div><div class="plan-includes">Everything in Free, plus<\/div><ul><li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul>/);
   assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">Most popular<\/div><div class="plan-label">Plus<\/div>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For complete games<\/div><div class="plan-label">Pro<\/div>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
@@ -228,10 +228,10 @@ test('Task 188 keeps Roblox games and groups visible with approved destinations'
 });
 
 test('Task 189 keeps Roblox destinations explicitly labelled for assistive technology', () => {
-  assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike[^>]*aria-label="Play Stellar Strike on Roblox"/);
-  assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator[^>]*aria-label="Play Stellar Simulator on Roblox"/);
-  assert.match(landingHtml, /communities\/433084698\/StellarHQ[^>]*aria-label="Open the StellarHQ Roblox community"/);
-  assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community"/);
+  assert.match(landingHtml, /games\/103753262214310\/Stellar-Strike[^>]*aria-label="Play Stellar Strike on Roblox — Stellar Strike"/);
+  assert.match(landingHtml, /games\/17874928076\/Stellar-Simulator[^>]*aria-label="Play Stellar Simulator on Roblox — Stellar Simulator"/);
+  assert.match(landingHtml, /communities\/433084698\/StellarHQ[^>]*aria-label="Open the StellarHQ Roblox community — StellarHQ Open community"/);
+  assert.match(landingHtml, /communities\/222055052\/zitos-gang[^>]*aria-label="Open the zitos gang Roblox community — zitos gang Open community"/);
 });
 
 test('landing page keeps only the essential visitor journey visible', () => {
