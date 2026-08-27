@@ -1579,6 +1579,24 @@ end)</div></div>
       }
     }
   </style>
+  <style>
+    /* Pricing hover: quiet lift and neutral contrast, never a coloured glow. */
+    body:not(.light) .plans .plan { transition: transform .22s ease, background-color .22s ease, border-color .22s ease, box-shadow .22s ease; }
+    @media (hover: hover) and (pointer: fine) {
+      body:not(.light) .plans .plan:hover,
+      body:not(.light) .plans .plan.featured:hover {
+        transform: translateY(-3px) !important;
+        background: #202226 !important;
+        border-color: rgba(255,255,255,.36) !important;
+        box-shadow: 0 12px 28px rgba(0,0,0,.24) !important;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body:not(.light) .plans .plan { transition: none !important; }
+      body:not(.light) .plans .plan:hover,
+      body:not(.light) .plans .plan.featured:hover { transform: none !important; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
