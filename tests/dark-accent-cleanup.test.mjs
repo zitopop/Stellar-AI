@@ -25,6 +25,8 @@ test('strict dark UI removes blue and purple active accents', () => {
 test('landing page removes colored section backgrounds in the final monochrome pass', () => {
   assert.match(indexHtml, /Final monochrome surface pass: remove blue\/cyan\/purple-tinted backgrounds/);
   assert.match(indexHtml, /body:not\(\.light\) \.pricing-wrap,[\s\S]*?background: #17191d !important;/);
+  assert.match(indexHtml, /body:not\(\.light\) \.product-main \{[\s\S]*?background: #0f1115 !important;/);
+  assert.match(indexHtml, /body:not\(\.light\) \.preview-nav\.active,[\s\S]*?background: #e5e7eb !important;/);
   assert.match(indexHtml, /body:not\(\.light\) \.roblox-game-mark \{[\s\S]*?background: #e5e7eb !important;/);
 });
 
