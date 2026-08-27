@@ -22,6 +22,12 @@ test('pricing cards expose shared alignment rows', () => {
   assert.match(appHtml, /class="plan-annual-spacer" aria-hidden="true"/);
 });
 
+test('pricing cards use a shared monochrome treatment', () => {
+  assert.match(appHtml, /Monochrome pricing cards: no yellow or green plan accents/);
+  assert.match(appHtml, /body:not\(\.light\) #plans-modal #plan-btn-starter,[\s\S]*?background: #e5e7eb !important;[\s\S]*?color: #0b0d11 !important;/);
+  assert.match(appHtml, /body:not\(\.light\) #plans-modal #plan-btn-starter-annual,[\s\S]*?background: rgba\(255,255,255,\.08\) !important;[\s\S]*?color: #e5e7eb !important;/);
+});
+
 test('pricing alignment uses equal desktop heights with a mobile fallback', () => {
   assert.match(appHtml, /Pricing alignment: shared baselines and equal-height plan cards/);
   assert.match(appHtml, /#plans-grid-inner > \.plan-card \{[\s\S]*?min-height: 480px !important;[\s\S]*?height: 100% !important;/);
