@@ -1547,6 +1547,38 @@ end)</div></div>
       body:not(.light) .comparison { padding: 18px; }
     }
   </style>
+  <style>
+    /* Hero motion: quiet, short, and disabled for reduced-motion users. */
+    @keyframes heroCopyIn {
+      from { opacity: 0; filter: blur(4px); }
+      to { opacity: 1; filter: blur(0); }
+    }
+    @keyframes heroVisualIn {
+      from { opacity: 0; filter: blur(3px); }
+      to { opacity: 1; filter: blur(0); }
+    }
+    @keyframes heroOrbitPulse {
+      0%, 100% { opacity: .52; }
+      50% { opacity: .82; }
+    }
+    @keyframes heroLivePulse {
+      0%, 100% { opacity: .65; }
+      50% { opacity: 1; }
+    }
+    body:not(.light) .hero-copy { animation: heroCopyIn .55s ease-out both; }
+    body:not(.light) .hero-visual { animation: heroVisualIn .7s .08s ease-out both; }
+    body:not(.light) .hero-orbit { animation: heroOrbitPulse 8s ease-in-out 1s infinite; }
+    body:not(.light) .product-live::before { animation: heroLivePulse 2.8s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      body:not(.light) .hero-copy,
+      body:not(.light) .hero-visual,
+      body:not(.light) .hero-orbit,
+      body:not(.light) .product-live::before {
+        animation: none !important;
+        filter: none !important;
+      }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
