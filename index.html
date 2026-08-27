@@ -1440,6 +1440,44 @@ end)</div></div>
       .roblox-side .roblox-card { min-height: 84px !important; }
     }
   </style>
+  <style>
+    /* Final iPhone header guard: keep navigation above content and below the status-bar safe area. */
+    .site-header {
+      position: -webkit-sticky !important;
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1000 !important;
+      isolation: isolate;
+      width: 100%;
+      padding-top: env(safe-area-inset-top) !important;
+      background: rgba(8, 8, 10, .98) !important;
+    }
+    .site-header > .nav {
+      position: relative;
+      z-index: 1001;
+    }
+    .site-header::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      background: rgba(8, 8, 10, .98);
+    }
+    @media (max-width: 760px) {
+      .site-header > .nav {
+        min-height: 58px !important;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+      }
+      .site-header .nav-toggle,
+      .site-header .nav-cta,
+      .site-header .nav-login {
+        position: relative;
+        z-index: 1002;
+      }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>

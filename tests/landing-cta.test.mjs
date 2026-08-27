@@ -172,6 +172,14 @@ test('the landing navigation remains sticky across viewport sizes', () => {
   assert.match(landingHtml, /<header class="site-header">/);
 });
 
+test('the landing header has a final iPhone-safe stacking and inset guard', () => {
+  assert.match(landingHtml, /\.site-header \{\s+position: -webkit-sticky !important;\s+position: sticky !important;\s+top: 0 !important;\s+z-index: 1000 !important;/);
+  assert.match(landingHtml, /width: 100%;\s+padding-top: env\(safe-area-inset-top\) !important;/);
+  assert.match(landingHtml, /\.site-header > \.nav \{\s+position: relative;\s+z-index: 1001;/);
+  assert.match(landingHtml, /\.site-header::before \{[\s\S]*?inset: 0;[\s\S]*?pointer-events: none;/);
+  assert.match(landingHtml, /\.site-header > \.nav \{\s+min-height: 58px !important;\s+padding-top: 12px !important;/);
+});
+
 test('Task 186 keeps landing hash navigation visible beneath the sticky header', () => {
   assert.match(landingHtml, /html \{ overflow-x: hidden; scroll-padding-top: 96px; \}/);
   assert.match(landingHtml, /\[id="how-it-works"\], \[id="why-stellar"\], \[id="capabilities"\], \[id="plans"\], \[id="roblox-worlds"\] \{ scroll-margin-top: 96px; \}/);
