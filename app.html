@@ -6499,10 +6499,6 @@
       setMode('dark', 'dark-only');
     }
 
-    function startAutomaticTheme() {
-      setMode('dark', 'dark-only');
-    }
-
     function checkout(plan) {
       if (!Store.get().user && !isOwner()) { closePlans(); openWelcome(); return; }
       // Prevent duplicate subscriptions. Subscription changes must happen through Stripe billing management.
@@ -6621,7 +6617,7 @@
 
       const s = Store.get();
       chats = s.chats;
-      startAutomaticTheme();
+      setMode('dark', 'dark-only');
       const mLabels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
       const mCur = (s.model === 'ultra' && s.plan !== 'pro') ? 'smart' : (s.model || 'smart');
       document.getElementById('model-btn').innerHTML = mLabels[mCur] || mLabels.smart;

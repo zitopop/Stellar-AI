@@ -493,7 +493,8 @@ test('Task 151 keeps the workspace dark-only without automatic light scheduling'
   assert.doesNotMatch(appHtml, /id="side-theme-toggle"|title="Theme changes automatically by hour"/);
   assert.match(appHtml, /id="seg-dark" class="seg on" aria-label="Dark mode only" aria-pressed="true">🌙 Dark only<\/span>/);
   assert.match(appHtml, /function toggleDarkMode\(\) \{[\s\S]*setMode\('dark', 'dark-only'\);/);
-  assert.match(appHtml, /function startAutomaticTheme\(\) \{[\s\S]*setMode\('dark', 'dark-only'\);/);
+  assert.doesNotMatch(appHtml, /function startAutomaticTheme\(/);
+  assert.match(appHtml, /chats = s\.chats;\s+setMode\('dark', 'dark-only'\);/);
   assert.doesNotMatch(appHtml, /LIGHT_THEME_START_HOUR|DARK_THEME_START_HOUR|automaticMode\(/);
   assert.doesNotMatch(appHtml, /Manual override active; automatic schedule resumes at the next hour\./);
 });

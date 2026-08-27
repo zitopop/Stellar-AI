@@ -51,7 +51,8 @@ test('Task 171 keeps the Plans sidebar control an explicit non-submit button', (
 
 test('Task 172 keeps the workspace dark-only with no theme toggle or automatic light scheduling', () => {
   assert.match(workspaceHtml, /<span class="ws-toggle top-theme-toggle" aria-label="Dark mode only"/);
-  assert.match(workspaceHtml, /function startAutomaticTheme\(\)\s*\{\s*setMode\('dark', 'dark-only'\);\s*\}/);
+  assert.doesNotMatch(workspaceHtml, /function startAutomaticTheme\(/);
+  assert.match(workspaceHtml, /chats = s\.chats;\s+setMode\('dark', 'dark-only'\);/);
   assert.match(workspaceHtml, /document\.body\.classList\.remove\('light'\)/);
   assert.doesNotMatch(workspaceHtml, /id="side-theme-toggle"/);
   assert.doesNotMatch(workspaceHtml, /LIGHT_THEME_START_HOUR/);
