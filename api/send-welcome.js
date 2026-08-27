@@ -47,7 +47,7 @@ export default async function handler(req, res) {
     <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;">
       <h1 style="font-size:24px;font-weight:900;color:#ffffff;margin:0 0 12px;letter-spacing:-0.5px;">Welcome, ${displayName}</h1>
       <p style="font-size:15px;color:rgba(255,255,255,0.6);margin:0 0 24px;line-height:1.6;">
-        You've got <strong style="color:#10a37f;">£1 free credit</strong> ready to go. That's enough to generate your first complete FiveM script right now.
+        You've got <strong style="color:#61e6bf;">£1 free credit</strong> ready to go. Stellar AI turns a plain-English game idea into a structured starting point for FiveM and Roblox, with files, explanations and follow-up revisions.
       </p>
 
       <div style="margin-bottom:24px;">
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
         </div>
       </div>
 
-      <a href="https://trystellarai.com/app" style="display:block;background:#10a37f;color:#000;font-weight:800;font-size:15px;text-align:center;padding:14px;border-radius:10px;text-decoration:none;">
+      <a href="https://trystellarai.com/app?welcome=1" style="display:block;background:#61e6bf;color:#061c16;font-weight:800;font-size:15px;text-align:center;padding:14px;border-radius:10px;text-decoration:none;">
         Open Stellar AI →
       </a>
     </div>

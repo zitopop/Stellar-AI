@@ -7,7 +7,7 @@ const landingHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf
 test('Task 199 keeps the direct hero explanation and primary CTA honest, free, and routed to the workspace', () => {
   assert.match(landingHtml, /<h1>From game idea to complete files — <span class="gradient-text">for FiveM &amp; Roblox\.<\/span><\/h1>/);
   assert.match(landingHtml, /<p class="hero-lead">Tell Stellar what you want to build\. It plans the system, writes the files, explains what changed and stays with the next revision for QBCore, ESX and Roblox\.<\/p>/);
-  assert.match(landingHtml, /<a href="\/app" class="button button-primary">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
+  assert.match(landingHtml, /<a href="\/app\?welcome=1" class="button button-primary">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
   assert.match(landingHtml, /<a href="#how-it-works" class="button button-secondary">See the 4-step workflow<\/a>/);
   assert.match(landingHtml, /<div class="hero-footnote"><span>No card needed to begin<\/span><span>Free starting credit<\/span><span>Review and test every script<\/span><\/div>/);
 });

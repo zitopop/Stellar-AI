@@ -70,6 +70,7 @@ async function sendWelcomeEmail(email) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   const displayName = email.split('@')[0].replace(/[._-]+/g, ' ');
+  const safeName = displayName.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]);
   try {
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -78,7 +79,18 @@ async function sendWelcomeEmail(email) {
         from: 'Stellar AI <support@trystellarai.com>',
         to: [email],
         subject: 'Welcome to Stellar AI',
-        html: `<p>Welcome, ${displayName}.</p><p>Your £1 starter credit is ready. Open <a href="https://trystellarai.com/app">Stellar AI</a> to build your first script.</p><p>— The Stellar AI Team 🚀</p>`,
+        reply_to: 'support@trystellarai.com',
+        html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#09090b;color:#f4f4f5;line-height:1.6;">
+          <div style="font-size:20px;font-weight:900;margin-bottom:24px;">✦ Stellar AI</div>
+          <h1 style="font-size:26px;line-height:1.15;margin:0 0 12px;">Welcome, ${safeName}.</h1>
+          <p style="color:#d4d4d8;">Stellar AI turns a plain-English game idea into a structured starting point for FiveM and Roblox. It plans the system, writes the files, explains what changed, and helps you revise the next version.</p>
+          <p style="color:#61e6bf;font-weight:800;">Your £1 free credit is ready.</p>
+          <h2 style="font-size:16px;margin:24px 0 8px;">Generate your first script</h2>
+          <ol style="padding-left:22px;color:#d4d4d8;"><li>Open <a href="https://trystellarai.com/app?welcome=1" style="color:#61e6bf;">Stellar AI</a>.</li><li>Tell it what you want to build, for example: “Build a QBCore police job with an F6 menu and jail timer.”</li><li>Review the file list, dependencies and server-side checks, then test the result privately in your own environment.</li></ol>
+          <p style="color:#a1a1aa;">You can ask follow-up questions in the same chat to change a requirement, fix an error or improve the next version.</p>
+          <a href="https://trystellarai.com/app?welcome=1" style="display:block;text-align:center;background:#61e6bf;color:#061c16;font-weight:900;padding:14px 18px;border-radius:10px;text-decoration:none;margin-top:24px;">Generate your first script free →</a>
+          <p style="color:#71717a;font-size:12px;text-align:center;margin-top:28px;">— The Stellar AI Team · <a href="mailto:support@trystellarai.com" style="color:#a1a1aa;">support@trystellarai.com</a></p>
+        </div>`,
       }),
     });
   } catch {

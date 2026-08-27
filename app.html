@@ -4550,8 +4550,12 @@
         if (!funnelResponse.ok || !funnelData.ok) throw new Error(funnelData.error || 'Could not load activation cohorts.');
         const historical = funnelData.historical || {};
         const recentUsage = funnelData.recentUsage || {};
+        const todayActivation = funnelData.today || null;
         const cohort = [...(funnelData.cohorts || [])].reverse().find((item) => Number(item.signups) > 0);
         const pct = (value, base) => base > 0 ? Math.round((Number(value) / Number(base)) * 100) + '%' : '—';
+        const todayActivationLines = todayActivation
+          ? `<div style="margin-top:8px"><strong>Today’s activation</strong>: <strong>${todayActivation.firstGenerations || 0}</strong> of <strong>${todayActivation.signups || 0}</strong> signups completed a first generation (${todayActivation.rate === null || todayActivation.rate === undefined ? '—' : todayActivation.rate + '%'}) · ${todayActivation.date}</div>`
+          : '<div style="margin-top:8px"><strong>Today’s activation</strong> is unavailable until account storage is connected.</div>';
         const recentUsageLines = recentUsage.signups
           ? `<div style="margin-top:8px"><strong>${recentUsage.signups}</strong> signups in the last ${recentUsage.windowDays || 30} days · <strong>${recentUsage.accountsWithAcceptedRequests || 0}</strong> sent at least one accepted request (${pct(recentUsage.accountsWithAcceptedRequests, recentUsage.signups)})</div>
              <div><strong>${recentUsage.accountsWithSuccessfulGeneration || 0}</strong> completed a generation (${pct(recentUsage.accountsWithSuccessfulGeneration, recentUsage.signups)}) · <strong>${recentUsage.totalAcceptedRequests || 0}</strong> accepted requests total</div>
@@ -4568,6 +4572,7 @@
         funnelOut.innerHTML = `
           <div><strong>${historical.accounts || 0}</strong> stored accounts · <strong>${historical.everGenerated || 0}</strong> have ever completed a generation</div>
           <div style="color:#64748b;font-size:11px;">Historical counts are context only; cohort rates begin after instrumentation.</div>
+          ${todayActivationLines}
           <div style="margin-top:8px;"><strong>Recent signup usage</strong></div>
           ${recentUsageLines}
           ${cohortLines}
@@ -6554,6 +6559,23 @@
       roblox: 'Build a Roblox game system with server-safe remotes, UI and progression.'
     });
 
+    function applyWelcomeEntry() {
+      const params = new URLSearchParams(location.search);
+      if (params.get('welcome') !== '1') return;
+      params.delete('welcome');
+      const remainingQuery = params.toString();
+      history.replaceState(null, '', location.pathname + (remainingQuery ? '?' + remainingQuery : '') + location.hash);
+      const greeting = document.getElementById('greet-hi');
+      const sub = document.querySelector('.greet-wrap .welcome-sub');
+      if (greeting) greeting.textContent = 'Welcome to Stellar AI';
+      if (sub) sub.textContent = 'Tell me what you want to build, then review and test the files I create.';
+      const signInSub = document.querySelector('#page-signin .welcome-sub');
+      const signUpSub = document.querySelector('#page-signup .welcome-sub');
+      if (signInSub) signInSub.textContent = 'Welcome — sign in to start building and keep your chats saved.';
+      if (signUpSub) signUpSub.textContent = 'Welcome — create a free account and generate your first script with £1 credit.';
+      setGenerationStatus('Welcome to Stellar AI. Tell me what you want to build.');
+    }
+
     function applyLandingStarterPrompt() {
       const params = new URLSearchParams(location.search);
       const starterKey = params.get('starter');
@@ -6665,6 +6687,7 @@
       setTextSize(Store.get().textSize || 'md');
       updateSignedOutHint();
       syncSidebarAccessibility();
+      applyWelcomeEntry();
       maybeShowWelcome();
       applyLandingStarterPrompt();
     }

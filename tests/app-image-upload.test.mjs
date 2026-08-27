@@ -75,7 +75,7 @@ test('Task 154 accepts only named landing starters and pre-fills a non-persisten
   assert.match(appHtml, /params\.delete\('starter'\);/);
   assert.match(appHtml, /input\.value = starterPrompt;[\s\S]*?input\.dispatchEvent\(new Event\('input', \{ bubbles: true \}\)\);/);
   assert.match(appHtml, /setGenerationStatus\('Starter prompt ready to edit\.'\);/);
-  assert.match(appHtml, /maybeShowWelcome\(\);\s+applyLandingStarterPrompt\(\);/);
+  assert.match(appHtml, /applyWelcomeEntry\(\);\s+maybeShowWelcome\(\);\s+applyLandingStarterPrompt\(\);/);
 });
 
 test('Task 155 focuses a landing starter only after guest continuation, preserving explicit welcome-dialog trigger restoration', () => {
@@ -88,7 +88,7 @@ test('Task 155 focuses a landing starter only after guest continuation, preservi
 test('Task 159 removes a closed mobile sidebar from the accessibility tree without hiding desktop navigation', () => {
   assert.match(appHtml, /function syncSidebarAccessibility\(\) \{\s+const sidebar = document\.getElementById\('sidebar'\);\s+if \(!sidebar\) return;\s+const isMobile = window\.matchMedia\('\(max-width: 767px\)'\)\.matches;\s+const mobileSidebarIsClosed = isMobile && !sidebar\.classList\.contains\('open'\);\s+sidebar\.setAttribute\('aria-hidden', String\(mobileSidebarIsClosed\)\);/);
   assert.match(appHtml, /syncSidebarAccessibility\(\);\s+\}\s+\s+window\.addEventListener\('resize', syncSidebarAccessibility\);/);
-  assert.match(appHtml, /updateSignedOutHint\(\);\s+syncSidebarAccessibility\(\);\s+maybeShowWelcome\(\);/);
+  assert.match(appHtml, /updateSignedOutHint\(\);\s+syncSidebarAccessibility\(\);\s+applyWelcomeEntry\(\);\s+maybeShowWelcome\(\);/);
 });
 
 test('Task 160 gives the existing redeem-code field an explicit accessible name', () => {
