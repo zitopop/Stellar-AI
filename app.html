@@ -3420,13 +3420,14 @@
       <div id="plans-grid-inner" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
 
         <!-- FREE -->
-        <div style="border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;" id="plan-card-free">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;">Free</div>
-          <div style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;">£0</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">forever</div>
-          <div class="plan-fit-line"><b>BEST FOR</b><span>Trying a real build, fixing a script or seeing if Stellar fits your workflow.</span></div>
+        <div style="border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;" id="plan-card-free" class="plan-card">
+          <div class="plan-head-name" style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;">Free</div>
+          <div class="plan-head-price" style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;">£0</div>
+          <div class="plan-head-per" style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">forever</div>
+          <div class="plan-fit-line plan-head-fit"><b>BEST FOR</b><span>Trying a real build, fixing a script or seeing if Stellar fits your workflow.</span></div>
           <button id="plan-btn-free" disabled style="width:100%;padding:11px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-weight:800;font-size:13px;cursor:not-allowed;margin-bottom:20px;">Current plan</button>
-          <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="plan-annual-spacer" aria-hidden="true"></div>
+          <div class="plan-features" style="display:flex;flex-direction:column;gap:10px;">
             <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:4px;">Includes</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.65);"><span style="color:#10a37f;font-weight:900;">✓</span>£1 free credit to start</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.65);"><span style="color:#10a37f;font-weight:900;">✓</span>No card required</div>
@@ -3437,14 +3438,14 @@
         </div>
 
         <!-- STARTER -->
-        <div style="border:1px solid rgba(139,92,246,0.48);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;position:relative;background:rgba(139,92,246,0.05);" id="plan-card-starter">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:12px;">Starter</div>
-          <div style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fff;">£8</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
-          <div class="plan-fit-line"><b>BEST FOR</b><span>When Free is useful but you keep hitting the ceiling on regular scripts.</span></div>
+        <div style="border:1px solid rgba(139,92,246,0.48);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;position:relative;background:rgba(139,92,246,0.05);" id="plan-card-starter" class="plan-card">
+          <div class="plan-head-name" style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:12px;">Starter</div>
+          <div class="plan-head-price" style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fff;">£8</div>
+          <div class="plan-head-per" style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
+          <div class="plan-fit-line plan-head-fit"><b>BEST FOR</b><span>When Free is useful but you keep hitting the ceiling on regular scripts.</span></div>
           <button id="plan-btn-starter" onclick="checkout('starter')" style="width:100%;padding:11px;border-radius:12px;background:#8b5cf6;border:none;color:#fff;font-weight:900;font-size:13px;cursor:pointer;margin-bottom:8px;">Get Starter</button>
           <button id="plan-btn-starter-annual" onclick="checkout('starter-annual')" style="width:100%;padding:9px;border-radius:12px;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);color:#c4b5fd;font-weight:800;font-size:11px;cursor:pointer;margin-bottom:20px;">£67/year · Save 30%</button>
-          <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="plan-features" style="display:flex;flex-direction:column;gap:10px;">
             <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(196,181,253,0.7);margin-bottom:4px;">Everything in Free, plus</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.8);"><span style="color:#a78bfa;font-weight:900;">✓</span>3× usage · 120 requests/hour</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.8);"><span style="color:#a78bfa;font-weight:900;">✓</span>Priority queue</div>
@@ -3454,15 +3455,15 @@
         </div>
 
         <!-- PLUS -->
-        <div style="border:1px solid rgba(16,163,127,0.5);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;position:relative;background:rgba(16,163,127,0.04);" id="plan-card-plus">
+        <div style="border:1px solid rgba(16,163,127,0.5);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;position:relative;background:rgba(16,163,127,0.04);" id="plan-card-plus" class="plan-card">
           <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:#10a37f;color:#000;font-size:10px;font-weight:900;letter-spacing:.1em;padding:4px 12px;border-radius:0 0 10px 10px;white-space:nowrap;">MOST POPULAR</div>
-          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#10a37f;margin-bottom:12px;margin-top:12px;">Plus</div>
-          <div style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fff;">£20</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
-          <div class="plan-fit-line"><b>BEST FOR</b><span>Shipping full systems or coming back to the same FiveM or Roblox build every week.</span></div>
+          <div class="plan-head-name" style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#10a37f;margin-bottom:12px;margin-top:12px;">Plus</div>
+          <div class="plan-head-price" style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fff;">£20</div>
+          <div class="plan-head-per" style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
+          <div class="plan-fit-line plan-head-fit"><b>BEST FOR</b><span>Shipping full systems or coming back to the same FiveM or Roblox build every week.</span></div>
           <button id="plan-btn-plus" onclick="checkout('plus')" style="width:100%;padding:11px;border-radius:12px;background:#10a37f;border:none;color:#000;font-weight:900;font-size:13px;cursor:pointer;margin-bottom:8px;">Get Plus</button>
           <button id="plan-btn-plus-annual" onclick="checkout('plus-annual')" style="width:100%;padding:9px;border-radius:12px;background:rgba(16,163,127,0.12);border:1px solid rgba(16,163,127,0.3);color:#10a37f;font-weight:800;font-size:11px;cursor:pointer;margin-bottom:20px;">£168/year · Save 30%</button>
-          <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="plan-features" style="display:flex;flex-direction:column;gap:10px;">
             <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(16,163,127,0.5);margin-bottom:4px;">Everything in Starter, plus</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.8);"><span style="color:#10a37f;font-weight:900;">✓</span>10× usage · 400 requests/hour</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.8);"><span style="color:#10a37f;font-weight:900;">✓</span>Full game systems</div>
@@ -3472,15 +3473,15 @@
         </div>
 
         <!-- PRO -->
-        <div style="border:1px solid rgba(251,191,36,0.4);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;position:relative;background:rgba(251,191,36,0.03);" id="plan-card-pro">
+        <div style="border:1px solid rgba(251,191,36,0.4);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:0;position:relative;background:rgba(251,191,36,0.03);" id="plan-card-pro" class="plan-card">
           <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#f59e0b,#d97706);color:#000;font-size:10px;font-weight:900;letter-spacing:.1em;padding:4px 12px;border-radius:0 0 10px 10px;white-space:nowrap;">BEST VALUE</div>
-          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fbbf24;margin-bottom:12px;margin-top:12px;">Pro</div>
-          <div style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fbbf24;">£75</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
-          <div class="plan-fit-line"><b>BEST FOR</b><span>Large systems, complete games or projects where waiting around is not the plan.</span></div>
+          <div class="plan-head-name" style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fbbf24;margin-bottom:12px;margin-top:12px;">Pro</div>
+          <div class="plan-head-price" style="font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1;color:#fbbf24;">£75</div>
+          <div class="plan-head-per" style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;margin-bottom:12px;">per month</div>
+          <div class="plan-fit-line plan-head-fit"><b>BEST FOR</b><span>Large systems, complete games or projects where waiting around is not the plan.</span></div>
           <button id="plan-btn-pro" onclick="checkout('pro')" style="width:100%;padding:11px;border-radius:12px;background:linear-gradient(90deg,#f59e0b,#d97706);border:none;color:#000;font-weight:900;font-size:13px;cursor:pointer;margin-bottom:8px;">Get Pro</button>
           <button id="plan-btn-pro-annual" onclick="checkout('pro-annual')" style="width:100%;padding:9px;border-radius:12px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:#fbbf24;font-weight:800;font-size:11px;cursor:pointer;margin-bottom:20px;">£630/year · Save 30%</button>
-          <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="plan-features" style="display:flex;flex-direction:column;gap:10px;">
             <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(251,191,36,0.4);margin-bottom:4px;">Everything in Plus, plus</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.8);"><span style="color:#fbbf24;font-weight:900;">✓</span>40× usage · 1,600 requests/hour</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.8);"><span style="color:#fbbf24;font-weight:900;">★</span>Nova — strongest model</div>
@@ -8030,6 +8031,54 @@
       #welcome-modal { align-items: flex-end !important; padding: 0 !important; }
       #welcome-modal .welcome-card { width: 100% !important; max-height: 94dvh !important; padding: 26px 20px calc(20px + env(safe-area-inset-bottom)) !important; border-radius: 24px 24px 0 0 !important; border-bottom: 0 !important; }
       #welcome-modal .welcome-star { margin-bottom: 14px !important; }
+    }
+  </style>
+<style>
+    /* Pricing alignment: shared baselines and equal-height plan cards. */
+    @media (min-width: 768px) {
+      #plans-grid-inner { align-items: stretch !important; }
+      #plans-grid-inner > .plan-card {
+        min-height: 480px !important;
+        height: 100% !important;
+        box-sizing: border-box !important;
+      }
+      #plans-grid-inner > .plan-card .plan-head-name {
+        min-height: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      #plans-grid-inner > .plan-card .plan-head-price {
+        min-height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      #plans-grid-inner > .plan-card .plan-head-per {
+        min-height: 18px !important;
+      }
+      #plans-grid-inner > .plan-card .plan-head-fit {
+        min-height: 82px !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      #plans-grid-inner > .plan-card > button {
+        min-height: 40px !important;
+        box-sizing: border-box !important;
+      }
+      #plans-grid-inner > .plan-card .plan-annual-spacer {
+        height: 40px !important;
+        margin-bottom: 20px !important;
+        flex: none !important;
+      }
+      #plans-grid-inner > .plan-card .plan-features {
+        margin-top: auto !important;
+        min-height: 142px !important;
+      }
+    }
+    @media (max-width: 767px) {
+      #plans-grid-inner > .plan-card { min-height: 0 !important; height: auto !important; }
+      #plans-grid-inner > .plan-card .plan-head-fit { min-height: 0 !important; }
+      #plans-grid-inner > .plan-card .plan-annual-spacer { display: none !important; }
+      #plans-grid-inner > .plan-card .plan-features { min-height: 0 !important; }
     }
   </style>
 <script src="/currency.js"></script>
