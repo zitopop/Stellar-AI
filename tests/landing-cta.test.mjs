@@ -75,8 +75,10 @@ test('Task 200 removes the empty saved-tools surface and its unused browser-stor
 
 test('Task 131 keeps decorative FAQ plus icons out of control names', () => {
   const icons = landingHtml.match(/<span class="faq-plus" aria-hidden="true">\+<\/span>/g) ?? [];
-  assert.equal(icons.length, 6);
+  assert.equal(icons.length, 8);
   assert.match(landingHtml, /\.faq-button\[aria-expanded="true"\] \.faq-plus/);
+  assert.match(landingHtml, /id="faq-free-button"[\s\S]*id="faq-free-answer"/);
+  assert.match(landingHtml, /id="faq-files-button"[\s\S]*id="faq-files-answer"/);
 });
 
 test('Task 132 keeps FAQ structured data aligned with additional visible landing-page answers', () => {
