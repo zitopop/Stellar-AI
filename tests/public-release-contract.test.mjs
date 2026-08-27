@@ -99,7 +99,7 @@ test('the public support address remains a one-line mail link in settings', () =
 
 test('all published standalone blog articles have non-empty page titles and descriptions', () => {
   const blogFiles = readdirSync(root).filter((name) => /^blog-.*\.html$/.test(name));
-  assert.equal(blogFiles.length, 60);
+  assert.equal(blogFiles.length, 63);
   for (const file of blogFiles) {
     const html = read(file);
     assert.match(html, /<title>[^<]+<\/title>/, `${file} requires a title`);

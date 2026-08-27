@@ -12,7 +12,7 @@ const contentPages = readdirSync(root.pathname)
 const sharedCss = readFileSync(join(root.pathname, 'site-polish.css'), 'utf8');
 
  test('all public content pages load the shared dark-only polish layer', () => {
-  assert.equal(contentPages.length, 63);
+  assert.equal(contentPages.length, 66);
   for (const filename of contentPages) {
     const html = readFileSync(join(root.pathname, filename), 'utf8');
     assert.match(html, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), filename);
@@ -20,6 +20,13 @@ const sharedCss = readFileSync(join(root.pathname, 'site-polish.css'), 'utf8');
   assert.match(sharedCss, /color-scheme:\s*dark/);
   assert.match(sharedCss, /html,\s*\nhtml\.light/);
   assert.match(sharedCss, /body,\s*\nbody\.light/);
+});
+
+test('sticky public navigation reserves the iPhone status-bar safe area', () => {
+  const landing = readFileSync(join(root.pathname, 'index.html'), 'utf8');
+  assert.match(landing, /<meta name="viewport" content="[^"]*viewport-fit=cover[^"]*">/);
+  assert.match(sharedCss, /body > nav \{[\s\S]*?padding-top: max\(13px, env\(safe-area-inset-top\)\);/);
+  assert.match(sharedCss, /\.site-header \{\s*padding-top: env\(safe-area-inset-top\);\s*\}/);
 });
 
 test('landing and workspace keep the dark-only contract without visible Light controls', () => {

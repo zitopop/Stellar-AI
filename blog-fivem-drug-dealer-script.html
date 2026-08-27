@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Drug Dealer Script: Design a Better RP Economy | Stellar AI</title>
+  <meta name="description" content="Plan a secure FiveM drug dealer script with sourcing, processing, deliveries, police risk, cooldowns, server-side validation and a fair roleplay economy.">
+  <meta name="keywords" content="fivem drug dealer script, fivem drug script, qbcore drug dealer, fivem drug system">
+  <meta property="og:title" content="FiveM Drug Dealer Script: Design a Better RP Economy">
+  <meta property="og:description" content="A practical guide to building a believable and secure drug-dealer system for a FiveM roleplay server.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-drug-dealer-script">
+  <link rel="stylesheet" href="/site-polish.css">
+  <style>
+    :root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}
+  </style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM · Roleplay systems</div>
+  <h1>FiveM drug dealer script: build a tense RP economy without making it exploitable</h1>
+  <div class="meta">Updated August 2026 · 9 min read · Stellar AI</div>
+  <p class="intro">A strong <strong>FiveM drug dealer script</strong> should create decisions, not just a button that turns an item into cash. The best systems give players a chain of risk: sourcing, processing, finding buyers, moving product, managing heat and deciding whether the payout is worth the exposure.</p>
+
+  <p>Drug-dealer gameplay is popular because it naturally creates conflict between civilians, gangs, police and the wider server economy. It can also become one of the easiest systems to exploit if the client is allowed to choose the item, quantity, reward or delivery result. Treat the feature as an economy system with a roleplay layer, not as a collection of client events.</p>
+  <p>Before you write code, decide what your server is trying to encourage. Do you want short street-level interactions, longer supply chains, territory conflict, police investigations or a mixture? The answer determines whether your script needs simple NPC buyers or a full pipeline with suppliers, processing locations, deliveries, evidence and risk.</p>
+
+  <h2>Design the loop in five understandable stages</h2>
+  <p>A good first version can use five stages: acquire, process, find a buyer, complete the sale and manage the consequences. Each stage should have a clear input and output. If the player receives a raw item, processing should change it into a defined product. If a buyer asks for a product, the server should generate or validate that order. If police risk increases, the player should understand why.</p>
+  <table>
+    <thead><tr><th>Stage</th><th>Player experience</th><th>Server responsibility</th></tr></thead>
+    <tbody>
+      <tr><td>Acquire</td><td>Find a supplier, collect a package or negotiate a source.</td><td>Choose the allowed item and amount; never trust the client’s inventory claim.</td></tr>
+      <tr><td>Process</td><td>Use a location and wait through a meaningful interaction.</td><td>Check distance, cooldown, materials and active job state.</td></tr>
+      <tr><td>Find buyer</td><td>Receive a lead or approach a buyer in a riskier area.</td><td>Generate the order and reward from server configuration.</td></tr>
+      <tr><td>Sell</td><td>Confirm the handoff and receive a fair payout.</td><td>Consume the correct item and calculate the payout atomically.</td></tr>
+      <tr><td>Heat</td><td>Deal with witnesses, alerts, cooldowns or police attention.</td><td>Rate-limit reports and prevent repeated reward events.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Keep the economy believable</h2>
+  <p>The payout should be meaningful without becoming the only profitable activity on the server. Set a baseline reward, add controlled variation, and consider a risk multiplier rather than huge random numbers. Your configuration should make it easy to balance the system after observing real play: minimum and maximum quantity, base payout, police requirement, cooldown, processing time, item requirements and the chance of a report.</p>
+  <p>A common mistake is to add a “bonus” for every risk event. If a player can force a police alert and then immediately sell for a larger reward, the optimal strategy may be to spam the same loop. Instead, use risk as a trade-off. A dangerous location could have better margins, but it should also have a longer cooldown, more evidence or a greater chance of a response.</p>
+  <p>Build an economy table before writing the UI. For example, list the item cost, processing loss, expected sale value, average time per run and expected police pressure. Compare that result with legal jobs on your server. The aim is not perfect mathematical balance on day one; it is a loop that can be tuned without rewriting the resource.</p>
+
+  <div class="tip"><strong>Prompt for a safer first draft</strong><p>In <a href="https://trystellarai.com/app">Stellar AI</a>, ask for a FiveM drug-dealer system with configurable suppliers, processing, buyer orders, cooldowns, police alerts and server-side inventory and payout validation. Ask for separate client and server files, an event threat model, and a manual test matrix. State whether your server uses QBCore, ESX or another framework.</p></div>
+
+  <h2>Never trust client-side sales</h2>
+  <p>FiveM’s official security guidance explains that networked events can be triggered by clients and recommends validating money, inventory, position, state, experience, permissions and roles on the server.<sup><a href="#references">[1]</a></sup> This matters especially for a drug system because the profitable operation is usually a server event such as “sell item”.</p>
+  <p>The client may request a sale, but it should not decide what was sold or how much the player earned. The server should retrieve the player object, verify the item exists in the configured product list, validate the player’s position or active order, check the cooldown, remove the item, calculate the reward and write the result. If any check fails, return without granting money.</p>
+  <pre><code>RegisterNetEvent('dealer:server:completeSale', function(orderId)
+    local src = source
+    local player = QBCore.Functions.GetPlayer(src)
+    local order = activeOrders[src]
+    if not player or not order or order.id ~= orderId then return end
+    if os.time() &lt; order.cooldownUntil or not isWithinBuyerRange(src, order) then return end
+    if not player.Functions.RemoveItem(order.item, order.quantity) then return end
+    local payout = calculatePayout(order)
+    player.Functions.AddMoney('cash', payout, 'dealer-sale')
+    activeOrders[src] = nil
+end)</code></pre>
+  <p>This is deliberately a shape rather than a drop-in script. Framework exports and inventory functions differ between servers. The important point is the order of authority: the server owns the active order, the quantity, the item check and the payout.</p>
+
+  <h2>Add evidence and cooldowns carefully</h2>
+  <p>Evidence can make the loop more interesting without turning it into a frustrating punishment. A sale could create a short-lived dispatch marker, a shell casing equivalent, a phone lead or a vehicle description. Make the result readable and give police a fair chance to respond. Avoid hidden random alerts that feel arbitrary; explain enough that players can learn the risk.</p>
+  <p>Cooldowns should protect the economy and the server, not simply stop players from playing. Apply them per player, location or order type. Clear active state on disconnect and remove abandoned orders after a timeout. If multiple players can use one buyer, give the server a lock or order ownership so two callbacks cannot both pay for the same transaction.</p>
+
+  <h2>Test the resource as an attacker and a roleplayer</h2>
+  <p>Start with a normal run: acquire an item, process it, receive a buyer, travel to the location and sell. Then test the edges. Try changing the item name in the client request, changing the quantity, moving away from the location, triggering the event twice, selling after the order expires, disconnecting mid-process, restarting the resource and having two players target the same buyer. Also test a player with the wrong job, wrong gang, insufficient inventory or insufficient police presence.</p>
+  <p>Log rejected actions during development, but keep production logs useful rather than noisy. Record the reason for a rejected sale and the server-side order ID without logging private player data unnecessarily. Balance from observed outcomes: average time per successful run, payout distribution, police response frequency and how often players abandon the chain.</p>
+
+  <h2>Use AI for structure, then review the risk</h2>
+  <p>AI can help you turn a feature brief into a complete resource structure, but it cannot know your exact framework version, inventory exports, database conventions or economy balance unless you provide them. Give it the locations, item names, framework, dependency list, event diagram and acceptance tests. Ask it to explain every server-side trust boundary.</p>
+  <p><a href="https://trystellarai.com/app">Stellar AI</a> is useful for generating a first pass, reviewing an existing FiveM resource and turning errors into a testable repair plan. Keep the output on a development server until you have checked every reward event yourself.</p>
+
+  <div class="cta-box"><h2>Plan a safer dealer system</h2><p>Describe your framework, items, locations, police rules and economy targets. Build a reviewable structure before you put it on a live server.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+
+  <section class="refs" id="references"><h2>References</h2><p>[1] <a href="https://docs.fivem.net/docs/developers/server-security/">Cfx.re: Secure Your Events</a>.</p><p>[2] <a href="https://docs.fivem.net/docs/scripting-reference/events/server-events/">Cfx.re: Server Events</a>.</p></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

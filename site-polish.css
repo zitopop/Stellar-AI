@@ -37,11 +37,17 @@ body.light::before {
 body > nav {
   min-height: 66px;
   padding: 13px max(20px, 5vw);
+  padding-top: max(13px, env(safe-area-inset-top));
   border-bottom: 1px solid var(--stellar-border) !important;
   background: rgba(9,9,11,.86) !important;
   box-shadow: 0 12px 34px rgba(0,0,0,.16);
   -webkit-backdrop-filter: blur(16px) saturate(1.1);
   backdrop-filter: blur(16px) saturate(1.1);
+}
+
+/* Keep sticky public navigation below iPhone’s status-bar safe area. */
+.site-header {
+  padding-top: env(safe-area-inset-top);
 }
 
 body > nav .nav-logo,

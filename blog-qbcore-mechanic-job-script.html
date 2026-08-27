@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Mechanic Job Script: Build, Secure and Test One Properly | Stellar AI</title>
+  <meta name="description" content="Learn how to plan a reliable QBCore mechanic job script for FiveM, including duty states, repair bays, vehicle checks, payments, server validation and testing.">
+  <meta name="keywords" content="qbcore mechanic job script, fivem mechanic job, qb-mechanicjob, qbcore mechanic script">
+  <meta property="og:title" content="QBCore Mechanic Job Script: Build, Secure and Test One Properly">
+  <meta property="og:description" content="A practical guide to designing a QBCore mechanic job script that is enjoyable to use and difficult to exploit.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-mechanic-job-script">
+  <link rel="stylesheet" href="/site-polish.css">
+  <style>
+    :root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}
+  </style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM · QBCore guide</div>
+  <h1>QBCore mechanic job script: build a garage players actually enjoy</h1>
+  <div class="meta">Updated August 2026 · 9 min read · Stellar AI</div>
+  <p class="intro">A good <strong>QBCore mechanic job script</strong> is more than a repair menu. It gives a player a clear shift, a believable garage workflow, useful progression and enough server-side validation that one bad client cannot print money or repair every vehicle on the map.</p>
+
+  <p>Mechanic jobs are one of the best ways to give a FiveM roleplay server a reliable everyday loop. Players bring damaged cars to a shop, mechanics diagnose the problem, parts are consumed, payments are recorded and the job creates reasons for other players to interact. The official QBCore mechanic resource describes the familiar building blocks: duty and clock-in locations, job vehicles, a stash, repair areas and vehicle-part status values.<sup><a href="#references">[1]</a></sup> The challenge is joining those pieces into a resource that feels coherent on a live server.</p>
+
+  <h2>Start with the job loop, not the menu</h2>
+  <p>Before writing Lua, write down what a complete mechanic shift looks like. A practical loop might begin with the player clocking in, checking the workshop board, taking a service vehicle or opening a repair bay, inspecting a customer vehicle, quoting a price, completing the repair and clocking out. Each step should have a reason to exist. If the mechanic can teleport into a menu and click “repair all”, the job will feel like a command rather than a role.</p>
+  <p>Decide which parts are simulated. A lightweight script can focus on engine and body health. A deeper version can add brakes, clutch, axle, radiator and fuel components. Keep the first release readable: show the part, its current condition, the required item and the time or interaction needed. Players should understand what they are paying for without reading your source code.</p>
+
+  <table>
+    <thead><tr><th>System</th><th>Good first version</th><th>Common mistake</th></tr></thead>
+    <tbody>
+      <tr><td>Duty</td><td>Clock in near the garage and expose job actions only while on duty.</td><td>Trusting a client flag that says the player is working.</td></tr>
+      <tr><td>Repair</td><td>Require a vehicle, a valid bay and the correct repair item.</td><td>Accepting vehicle IDs, prices or item counts from the client.</td></tr>
+      <tr><td>Payment</td><td>Calculate the quote on the server and log the transaction.</td><td>Letting the client choose the reward amount.</td></tr>
+      <tr><td>Progression</td><td>Use ranks, unlocks or reputation after successful jobs.</td><td>Giving rewards every time an event is fired.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Plan the QBCore data contract</h2>
+  <p>Write the data contract before the event names. You need to know what the server must remember: the player source, citizen ID, active duty state, shop or garage, the vehicle being serviced, the selected part, the quote, the start time and whether the repair is already complete. An active repair record should belong to the server and expire if the player leaves, disconnects or abandons the bay.</p>
+  <p>Keep configuration separate from runtime state. Configuration can contain garage coordinates, authorized job grades, available vehicles, repair items, prices and animation timings. Runtime state should live in a table keyed by player source or a server-generated repair ID. Never edit a “currently attached vehicle” field in configuration as if it were a permanent setting; live state belongs in memory or a datastore designed for it.</p>
+
+  <div class="tip"><strong>Useful prompt for generating a first structure</strong><p>Ask <a href="https://trystellarai.com/app">Stellar AI</a> for a complete QBCore mechanic job script with <code>fxmanifest.lua</code>, separate client and server files, config-driven garages, duty state, repair bays, item costs, server-side validation, cleanup on disconnect and a test checklist. State the exact framework version and dependencies before asking for code.</p></div>
+
+  <h2>Security belongs on the server</h2>
+  <p>FiveM clients can trigger networked events, so a mechanic resource must assume that every client argument can be changed. Cfx.re’s security guidance recommends server-side checks for money, inventory, position, state, experience, permissions and roles.<sup><a href="#references">[2]</a></sup> In practice, that means the server should retrieve the player object, confirm the mechanic job and grade, verify the player is near the garage, check that the target vehicle is valid, check that the player owns or is authorised to service it, and calculate the cost itself.</p>
+  <p>For example, a client can request “start repair on engine”, but the server decides whether the source is on duty, whether the vehicle is within the repair bay, whether engine repair is enabled, whether the required item exists and what the repair duration and price are. The client can display progress; it should not be the authority that grants items, cash or permanent status.</p>
+  <pre><code>-- server-side shape, not a drop-in resource
+RegisterNetEvent('mechanic:server:startRepair', function(repairId, part)
+    local src = source
+    local player = QBCore.Functions.GetPlayer(src)
+    if not player or player.PlayerData.job.name ~= 'mechanic' then return end
+    if not isOnDuty(src) or not isValidBay(src, repairId) then return end
+    if not Config.Parts[part] then return end
+    -- Re-read inventory, price and vehicle state here.
+    beginRepairForSource(src, repairId, part)
+end)</code></pre>
+
+  <h2>Make the garage feel like a real workplace</h2>
+  <p>Small details create the roleplay. Use a clear shop identity, a compact dispatch board, a mechanic-only stash and a vehicle list that reflects the server’s economy. Give the player a visible reason to move around: one interaction for duty, one for parts, one for bays and one for vehicles. Avoid covering the screen with five overlapping menus. A simple interaction flow is usually more premium than a long settings panel.</p>
+  <p>For customers, make the quote and outcome obvious. Show which part is being repaired, what the estimated price is, and whether the mechanic is using a shop item or a customer-supplied item. For staff, show active work and completed jobs. If you add reputation, reward completed validated repairs rather than raw event counts so players cannot farm progress by repeatedly triggering the same callback.</p>
+
+  <h2>Test it like a server owner</h2>
+  <p>Test the happy path first, then test the resource as if you were trying to break it. Check clock-in and clock-out, reconnects, death, vehicle deletion, two mechanics using the same bay, missing items, wrong job grades, invalid part names, long distances, duplicate repair requests and a player leaving mid-repair. Also test a server restart: configuration should load cleanly and no stale repair record should grant a reward after the restart.</p>
+  <p>Keep a short release checklist with the exact dependencies, resource start order, database requirements, coordinates, item names and commands. The official QBCore mechanic documentation includes configuration examples for vehicles, locations, repair costs and authorised commands, which makes it a useful compatibility reference even when your resource is custom.<sup><a href="#references">[1]</a></sup></p>
+
+  <h2>Generate a better first draft with a precise brief</h2>
+  <p>If you are using AI to create the first version of a <strong>QBCore mechanic job script</strong>, do not ask for “a mechanic job” and hope the missing details appear. Ask for the framework, dependencies, exact files, event names, item names, garage coordinates, payment rules, job grades, test cases and security assumptions. Then review the output file by file. An AI-generated script is a starting structure, not proof that the resource is secure or compatible with your server.</p>
+  <p>You can use <a href="https://trystellarai.com/app">Stellar AI’s scripting workspace</a> to plan the system, generate complete files, ask follow-up questions and request a test matrix before installing it. Keep the generated resource private until you have tested it on a separate development server.</p>
+
+  <div class="cta-box"><h2>Need the first structure?</h2><p>Describe your garage locations, job grades, parts and payment rules. Stellar AI can help you turn that brief into a reviewable QBCore resource.</p><a href="https://trystellarai.com/app">Build a mechanic system →</a></div>
+
+  <section class="refs" id="references"><h2>References</h2><p>[1] <a href="https://docs.qbcore.org/qbcore-documentation/qbcore-resources/qb-mechanicjob">QBCore: qb-mechanicjob documentation</a>.</p><p>[2] <a href="https://docs.fivem.net/docs/developers/server-security/">Cfx.re: Secure Your Events</a>.</p></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

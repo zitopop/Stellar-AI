@@ -213,20 +213,16 @@ test('Settings keeps essential controls visible and secondary sections collapsib
   assert.doesNotMatch(appHtml, /Make Stellar feel right for the way you build\./);
   assert.match(appHtml, /#settings-modal #set-name-row, #settings-modal #set-email-row \{ display: none !important; \}/);
   assert.match(appHtml, /<details id="set-referral-section" class="set-collapsible"/);
-  assert.match(appHtml, /<details id="set-skill-tree-section" class="set-collapsible skill-tree-section"/);
   assert.match(appHtml, /summary>Invite &amp; earn <span aria-hidden="true">＋<\/span>/);
-  assert.match(appHtml, /summary>Builder skill tree <span aria-hidden="true">✦<\/span>/);
+  assert.doesNotMatch(appHtml, /set-skill-tree-section|skill-tree|Builder skill tree/);
   assert.doesNotMatch(appHtml, /id="set-achievements-section"|summary>Achievements/);
 });
 
-test('Settings progression uses one premium Skill Tree surface', () => {
-  assert.match(appHtml, /id="set-skill-tree" class="skill-tree-shell" aria-live="polite"/);
-  assert.match(appHtml, /function renderSkillTree\(achievements, signedIn\)/);
-  assert.match(appHtml, /Available value/);
-  assert.match(appHtml, /Account credit/);
-  assert.match(appHtml, /class="skill-tree-progress" role="progressbar"/);
-  assert.match(appHtml, /Consolidated Skill Tree: one premium progression surface/);
+test('Settings progression remains intentionally simplified without Skill Tree UI', () => {
+  assert.doesNotMatch(appHtml, /set-skill-tree|renderSkillTree|skill-tree|Builder skill tree/);
   assert.doesNotMatch(appHtml, /id="set-achievements"|class="achievement-badge/);
+  assert.match(appHtml, /id="set-referral-section"/);
+  assert.match(appHtml, /id="set-plan-desc"/);
 });
 
 test('Task 83 gives the plans, usage, and settings modal cards explicit labelled dialog semantics', () => {

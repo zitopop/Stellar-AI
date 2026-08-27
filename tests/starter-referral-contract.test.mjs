@@ -55,14 +55,17 @@ test('checkout, auth and account contracts preserve Starter, founders and referr
   assert.match(getPlan, /achievementDefinitions/);
 });
 
-test('achievement progression powers the consolidated Skill Tree unlock paths', () => {
+test('achievement progression remains server-side while the removed Skill Tree leaves no UI hooks', () => {
   for (const achievement of ['hundred-scripts', 'return-builder', 'referral-builder']) assert.match(profile, new RegExp(`'${achievement}'`));
   assert.match(profile, /count >= 100/);
   assert.match(profile, /startsNewSession && Number\(prior\.sessionCount\) >= 1/);
   assert.match(profile, /const achievements = \{ \.\.\.\(user\.achievements \|\| \{\}\) \};/);
   assert.match(profile, /'referral-builder': now/);
-  assert.match(app, /function renderSkillTree\(achievements, signedIn\)/);
-  assert.match(app, /renderSkillTree\(Array\.isArray\(s\.achievements\) \? s\.achievements : \[\], signedIn\)/);
+  assert.doesNotMatch(app, /function renderSkillTree\(/);
+  assert.doesNotMatch(app, /renderSkillTree\(/);
+  assert.doesNotMatch(app, /id="set-skill-tree-section"/);
+  assert.doesNotMatch(app, /id="set-skill-tree"/);
+  assert.doesNotMatch(app, /class="skill-tree/);
   assert.doesNotMatch(app, /id="set-motivation"/);
   assert.doesNotMatch(app, /id="set-achievements-section"/);
   assert.doesNotMatch(app, /class="achievement-badge/);
