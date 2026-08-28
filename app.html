@@ -8374,6 +8374,27 @@
       body:not(.light) #chat .message.msg-user { max-width: 92%; }
     }
   </style>
+  <style>
+    /* Responsive alignment pass: equal plan and action controls at every width. */
+    body:not(.light) #plans-grid-inner { align-items: stretch !important; }
+    body:not(.light) #plans-grid-inner > .plan-card { height: 100% !important; box-sizing: border-box; display: flex; flex-direction: column; }
+    body:not(.light) #plans-grid-inner > .plan-card .plan-features { flex: 1 1 auto; }
+    body:not(.light) #plans-grid-inner > .plan-card > button { min-height: 44px !important; display: flex; align-items: center; justify-content: center; text-align: center; white-space: normal; }
+    body:not(.light) .composer-foot { align-items: center !important; gap: 8px !important; }
+    body:not(.light) .composer-foot > button,
+    body:not(.light) .composer-foot .tool-btn { min-height: 40px; }
+    body:not(.light) .topbar button { min-height: 40px; }
+    @media (min-width: 768px) and (max-width: 1100px) {
+      body:not(.light) #plans-grid-inner { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
+    }
+    @media (max-width: 767px) {
+      body:not(.light) #plans-grid-inner { grid-template-columns: 1fr !important; gap: 10px !important; }
+      body:not(.light) #plans-grid-inner > .plan-card { width: 100% !important; }
+      body:not(.light) #plans-grid-inner > .plan-card > button { width: 100% !important; }
+      body:not(.light) .composer-foot { flex-wrap: wrap !important; }
+      body:not(.light) .composer-foot #send-btn { margin-left: auto; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>

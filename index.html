@@ -1822,6 +1822,27 @@ end)</div></div>
       body:not(.light) .builder-feedback .review-card { min-height: 0; }
     }
   </style>
+  <style>
+    /* Responsive alignment pass: equal button rows at every supported width. */
+    body:not(.light) .hero-actions { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: stretch; gap: 10px; }
+    body:not(.light) .hero-actions .button { min-height: 46px; display: flex; align-items: center; justify-content: center; text-align: center; }
+    body:not(.light) .nav-actions { align-items: center; }
+    body:not(.light) .nav-actions .button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    body:not(.light) .plans { align-items: stretch; }
+    body:not(.light) .plan { height: 100%; box-sizing: border-box; }
+    body:not(.light) .plan .button { min-height: 44px; display: flex; align-items: center; justify-content: center; text-align: center; }
+    @media (min-width: 761px) and (max-width: 1050px) {
+      body:not(.light) .plans { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      body:not(.light) .plan { min-height: 0; }
+    }
+    @media (max-width: 760px) {
+      body:not(.light) .hero-actions { grid-template-columns: 1fr; gap: 8px; }
+      body:not(.light) .hero-actions .button { width: 100%; }
+      body:not(.light) .nav-actions .nav-login { display: none; }
+      body:not(.light) .nav-actions .nav-cta { min-width: 108px; }
+      body:not(.light) .plan .button { width: 100%; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
