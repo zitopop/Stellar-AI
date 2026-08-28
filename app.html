@@ -5939,7 +5939,7 @@
       utilityDialogTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
-    function openPlans() { captureUtilityDialogTrigger(); refreshPlans(); document.getElementById('plans-modal').classList.remove('hidden'); focusUtilityDialogClose('plans-modal-close');
+    function openPlans() { captureUtilityDialogTrigger(); refreshPlans(); const modal = document.getElementById('plans-modal'); modal.classList.remove('hidden'); const sheet = modal.firstElementChild; if (sheet) sheet.scrollTop = 0; requestAnimationFrame(() => { if (sheet) sheet.scrollTop = 0; }); focusUtilityDialogClose('plans-modal-close');
       setTimeout(initPlansScroll, 100); }
     function initPlansScroll() {
       const grid = document.getElementById('plans-grid-inner');
@@ -7087,7 +7087,8 @@
       #plans-modal .plans-choice-guide { grid-template-columns: 1fr 1fr !important; gap: 7px !important; margin-bottom: 16px !important; }
       #plans-modal .plans-choice-guide span { min-height: 48px; padding: 9px 10px !important; }
       #plans-grid-inner { grid-template-columns: 1fr !important; gap: 10px !important; margin-bottom: 14px !important; }
-      #plans-grid-inner > div { min-height: 0 !important; padding: 18px !important; }
+      #plans-grid-inner > div { height: auto !important; min-height: 0 !important; padding: 18px !important; }
+      #plans-grid-inner > div .plan-features { flex: initial !important; }
       #plans-grid-inner > div > div[style*="display:flex;flex-direction:column"] { gap: 7px !important; }
       #plan-card-free > div:nth-child(2), #plan-card-starter > div:nth-child(2), #plan-card-plus > div:nth-child(3), #plan-card-pro > div:nth-child(3) { font-size: 31px !important; }
       #plans-modal .plan-fit-line { margin-bottom: 14px !important; }
