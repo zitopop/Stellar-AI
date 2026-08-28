@@ -1677,6 +1677,86 @@ end)</div></div>
       .footer-status { gap: 10px 14px; line-height: 1.4; }
     }
   </style>
+  <style>
+    /* Compact premium polish: monochrome dark surfaces, clearer hierarchy, less visual noise. */
+    body:not(.light) {
+      --bg: #080808;
+      --bg-deep: #050505;
+      --surface: #111214;
+      --surface-strong: #17181b;
+      --border: rgba(255,255,255,.13);
+      --border-hover: rgba(255,255,255,.34);
+      --muted: #a1a1aa;
+      --muted-strong: #e4e4e7;
+      background: #080808 !important;
+      color: #f4f4f5;
+    }
+    body:not(.light) .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(8,8,8,.86);
+      border-bottom: 1px solid rgba(255,255,255,.09);
+      backdrop-filter: blur(16px);
+    }
+    body:not(.light) .hero { padding-top: 72px; padding-bottom: 62px; }
+    body:not(.light) .hero h1 { max-width: 760px; letter-spacing: -.065em; line-height: .98; }
+    body:not(.light) .hero-lead { max-width: 540px; font-size: 16px; line-height: 1.55; }
+    body:not(.light) .section { padding-top: 68px; padding-bottom: 68px; }
+    body:not(.light) .section h2 { letter-spacing: -.05em; }
+    body:not(.light) .plan {
+      border: 1px solid rgba(255,255,255,.13) !important;
+      border-radius: 18px;
+      background: #111214 !important;
+      box-shadow: none !important;
+      padding: 22px !important;
+    }
+    body:not(.light) .plan.featured {
+      border-color: rgba(255,255,255,.34) !important;
+      background: #18191c !important;
+    }
+    body:not(.light) .plan:hover {
+      border-color: rgba(255,255,255,.42) !important;
+      background: #1b1c1f !important;
+      transform: translateY(-2px);
+    }
+    body:not(.light) .plan-label,
+    body:not(.light) .plan-badge { color: #d4d4d8 !important; }
+    body:not(.light) .plan h3 { font-size: 20px; line-height: 1.12; letter-spacing: -.035em; }
+    body:not(.light) .plan-desc,
+    body:not(.light) .plan-fit { color: #a1a1aa; font-size: 12px; line-height: 1.5; }
+    body:not(.light) .plan ul { gap: 8px; margin-top: 16px; }
+    body:not(.light) .plan li { color: #d4d4d8; font-size: 12px; }
+    body:not(.light) .button-primary,
+    body:not(.light) .plan.featured .button {
+      color: #090909 !important;
+      background: #f4f4f5 !important;
+      border-color: #f4f4f5 !important;
+      box-shadow: none !important;
+    }
+    body:not(.light) .button-secondary {
+      color: #f4f4f5 !important;
+      background: #1a1b1e !important;
+      border-color: rgba(255,255,255,.18) !important;
+    }
+    body:not(.light) .button-secondary:hover,
+    body:not(.light) .button-primary:hover { background: #ffffff !important; border-color: #ffffff !important; }
+    @media (hover: hover) and (pointer: fine) {
+      body:not(.light) .plan { transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+    }
+    @media (max-width: 760px) {
+      body:not(.light) .hero { padding-top: 44px; padding-bottom: 42px; }
+      body:not(.light) .hero h1 { font-size: clamp(38px, 11vw, 58px); }
+      body:not(.light) .hero-lead { font-size: 15px; }
+      body:not(.light) .section { padding-top: 48px; padding-bottom: 48px; }
+      body:not(.light) .plan { padding: 19px !important; }
+      body:not(.light) .plan h3 { font-size: 19px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body:not(.light) .plan { transition: none !important; }
+      body:not(.light) .plan:hover { transform: none; }
+    }
+  </style>
 <script src="/currency.js"></script>
 </body>
 </html>
