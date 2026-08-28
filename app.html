@@ -2862,6 +2862,17 @@
     .message.msg-ai .msg-content { padding: 3px 0 !important; border: 0 !important; border-radius: 0 !important; color: inherit !important; background: transparent !important; box-shadow: none !important; }
     .message.msg-ai .msg-content > :first-child { margin-top: 0 !important; }
     .message.msg-ai .msg-content > :last-child { margin-bottom: 0 !important; }
+    .assistant-response-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 10px; color:#a1a1aa; font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .assistant-response-kicker { color:#f4f4f5; }
+    .assistant-response-state { color:#71717a; letter-spacing:.06em; }
+    .assistant-response-shell { min-width:0; }
+    .assistant-response-shell .msg-content { max-width:78ch; }
+    .assistant-response-shell .msg-content h2, .assistant-response-shell .msg-content h3 { margin-top:18px !important; }
+    .completion-sound-row { align-items:center; }
+    .completion-sound-toggle { min-width:58px; min-height:36px; padding:0 12px; border:1px solid #3f3f46; border-radius:9px; background:#181818; color:#f4f4f5; font:inherit; font-size:12px; font-weight:800; cursor:pointer; }
+    .completion-sound-toggle[aria-pressed="false"] { color:#a1a1aa; background:#111113; }
+    .completion-sound-toggle:focus-visible { outline:2px solid #f4f4f5; outline-offset:2px; }
+    @media (max-width:640px) { .assistant-response-head { margin-bottom:8px; } .assistant-response-shell .msg-content { max-width:none; } }
     .input-area.glass { padding: 16px 20px calc(18px + env(safe-area-inset-bottom)) !important; border-top-color: rgba(255,255,255,.06) !important; background: #0d0720 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
     .input-area > .flex { width: min(100%, 760px) !important; max-width: 760px !important; margin-inline: auto !important; padding: 5px !important; border: 1px solid rgba(255,255,255,.11) !important; border-radius: 20px !important; background: #17102b !important; box-shadow: none !important; }
     #txt, .input-area textarea { min-height: 46px !important; padding: 12px 13px !important; border: 0 !important; border-radius: 15px !important; color: #f2eff8 !important; background: transparent !important; box-shadow: none !important; font-size: 14px !important; font-weight: 500 !important; }
@@ -3641,6 +3652,10 @@
       <div class="set-panel" data-panel="look" style="display:none">
       <div class="set-label">Appearance</div>
       <div class="set-group">
+        <div class="set-item completion-sound-row">
+          <div class="set-key"><i class="sk-ico t-slate"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-volume"/></svg></i>Completion sound</div>
+          <button type="button" id="completion-sound-toggle" class="completion-sound-toggle" onclick="toggleCompletionSound()" aria-pressed="true">On</button>
+        </div>
         <div class="set-item">
           <div class="set-key"><i class="sk-ico t-blue"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-type"/></svg></i>Text size</div>
           <div class="seg-wrap">
@@ -5052,6 +5067,7 @@
           // Make plain text safe, then add clickable links and light formatting
           content = inlineFmt(content);
           content = content.replace(/\uE000CODE(\d+)\uE000/g, (m, i) => codeHtml[+i]);
+          if (msg.role !== 'user') content = `<div class="assistant-response-head"><span class="assistant-response-kicker">Stellar · Response</span><span class="assistant-response-state">Complete</span></div>${content}`;
           const isUserMessage = msg.role === 'user';
           return isUserMessage
             ? `<article class="message msg-user"><div class="msg-content">${content}</div></article>`
@@ -5762,6 +5778,7 @@
           saveChatsToServer();
           setGenerationStatus('Generation completed.');
           maybeShowFreeUpgradeNudge();
+          playCompletionTone();
         }
       } catch (error) {
         clearInterval(autoScroll);
@@ -6379,6 +6396,7 @@
       openUtilityDialog[1]();
     });
     function refreshSettings() {
+      refreshCompletionSoundToggle();
       (function(){ const t = Store.get().textSize || 'md';
         ['sm','md','lg'].forEach(k => { const b = document.getElementById('seg-txt-' + k); if (b) { const active = k === t; b.classList.toggle('on', active); b.setAttribute('aria-pressed', String(active)); } }); })();
       const s = Store.get();
@@ -6453,6 +6471,42 @@
       if (!t) return;
       const signedIn = !!Store.get().user || isOwner();
       t.placeholder = 'Ask Stellar…';
+    }
+    function completionSoundEnabled() {
+      return Store.get().completionSound !== false;
+    }
+    function refreshCompletionSoundToggle() {
+      const button = document.getElementById('completion-sound-toggle');
+      if (!button) return;
+      const enabled = completionSoundEnabled();
+      button.textContent = enabled ? 'On' : 'Off';
+      button.setAttribute('aria-pressed', String(enabled));
+      button.setAttribute('aria-label', 'Completion sound ' + (enabled ? 'on' : 'off'));
+    }
+    function toggleCompletionSound() {
+      Store.set({ completionSound: !completionSoundEnabled() });
+      refreshCompletionSoundToggle();
+      if (completionSoundEnabled()) playCompletionTone();
+    }
+    function playCompletionTone() {
+      if (!completionSoundEnabled() || !(window.AudioContext || window.webkitAudioContext)) return;
+      try {
+        const AudioCtor = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtor();
+        const now = ctx.currentTime;
+        const gain = ctx.createGain();
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(660, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.045, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.24);
+        osc.addEventListener('ended', () => { if (ctx.close) ctx.close(); }, { once:true });
+      } catch (e) { /* Optional enhancement; never block a response. */ }
     }
     function setTextSize(size) {
       const s = ['sm','md','lg'].includes(size) ? size : 'md';
