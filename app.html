@@ -8479,13 +8479,19 @@
     body:not(.light) #settings-modal #discord-signin-btn { background: #191919 !important; border-color: #303030 !important; }
     body:not(.light) #settings-modal #discord-signin-btn span { color: #d4d4d4 !important; }
     body:not(.light) #settings-modal #discord-signin-btn svg { fill: #bdbdbd !important; }
+    /* Settings navigation stability: explicit icon/text rows prevent overlap at every zoom and breakpoint. */
+    body:not(.light) #settings-modal .set-tabs { display: flex !important; flex-direction: column !important; gap: 6px !important; min-width: 0 !important; }
+    body:not(.light) #settings-modal .set-tab { display: flex !important; flex-direction: row !important; align-items: center !important; flex: 0 0 auto !important; width: 100% !important; min-width: 0 !important; min-height: 44px !important; gap: 10px !important; padding: 0 12px !important; line-height: 1.2 !important; white-space: nowrap !important; }
+    body:not(.light) #settings-modal .set-tab i { display: inline-flex !important; align-items: center !important; justify-content: center !important; flex: 0 0 20px !important; width: 20px !important; height: 20px !important; line-height: 1 !important; }
+    body:not(.light) #settings-modal .set-tab .ic { display: block !important; width: 18px !important; height: 18px !important; }
     @media (max-width: 680px) {
       body:not(.light) #settings-modal { padding: 12px !important; align-items: flex-end !important; }
       body:not(.light) #settings-modal > .set-card { max-height: calc(100vh - 24px) !important; border-radius: 18px 18px 0 0 !important; }
       body:not(.light) #settings-modal .set-body { grid-template-columns: 1fr !important; gap: 16px !important; padding: 18px 16px calc(20px + env(safe-area-inset-bottom)) !important; }
       body:not(.light) #settings-modal .set-ava-wrap { grid-column: 1; grid-row: 1; padding: 0 4px 12px !important; }
-      body:not(.light) #settings-modal .set-tabs { grid-column: 1; grid-row: 2; flex-direction: row !important; overflow-x: auto !important; padding-bottom: 2px !important; }
-      body:not(.light) #settings-modal .set-tab { min-width: 92px !important; min-height: 44px !important; justify-content: center !important; flex-direction: column !important; gap: 3px !important; padding: 5px 8px !important; font-size: 10px !important; }
+      body:not(.light) #settings-modal .set-tabs { grid-column: 1; grid-row: 2; flex-direction: row !important; overflow-x: auto !important; padding-bottom: 4px !important; gap: 6px !important; }
+      body:not(.light) #settings-modal .set-tab { flex: 0 0 auto !important; width: auto !important; min-width: 104px !important; min-height: 44px !important; justify-content: center !important; gap: 7px !important; padding: 0 10px !important; font-size: 11px !important; }
+      body:not(.light) #settings-modal .set-tab i { flex-basis: 18px !important; width: 18px !important; }
       body:not(.light) #settings-modal .set-panel { grid-column: 1; grid-row: 3; }
     }
     /* Full-screen composition: use the viewport deliberately without dead space. */
