@@ -6936,7 +6936,28 @@
   <button class="rec-btn" id="rec-btn" onclick="toggleRecording()" aria-pressed="false" aria-label="Start recording mode" title="Start recording mode">● REC</button>
 
 <script>
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js').catch(function(){}); }
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      var hadController = Boolean(navigator.serviceWorker.controller);
+      var showUpdate = function (version) {
+        if (!hadController || document.getElementById('stellar-update-prompt')) return;
+        if (sessionStorage.getItem('stellar-sw-prompted') === version) return;
+        sessionStorage.setItem('stellar-sw-prompted', version);
+        var prompt = document.createElement('div');
+        prompt.id = 'stellar-update-prompt';
+        prompt.setAttribute('role', 'status');
+        prompt.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(24,24,27,.98);box-shadow:0 18px 50px rgba(0,0,0,.38);color:#f4f4f5;font:600 13px/1.3 system-ui,sans-serif;';
+        prompt.innerHTML = '<span>A fresh Stellar update is ready.</span><button type="button" style="min-height:40px;padding:0 14px;border:0;border-radius:10px;background:linear-gradient(90deg,#b8eee4,#dfd4ff);color:#101414;font:800 12px system-ui,sans-serif;cursor:pointer;">Refresh</button>';
+        prompt.querySelector('button').addEventListener('click', function () { window.location.reload(); });
+        document.body.appendChild(prompt);
+      };
+      navigator.serviceWorker.addEventListener('message', function (event) {
+        if (event.data && event.data.type === 'STELLAR_SW_UPDATED') showUpdate(event.data.version || 'latest');
+      });
+      navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(function (registration) {
+        return registration.update();
+      }).catch(function () {});
+    }());
   </script>
 <a href="https://smollaunch.com" target="_blank" rel="noopener" style="position:fixed;bottom:8px;right:8px;z-index:10;opacity:0.7">
   <img src="https://smollaunch.com/badges/featured.svg" alt="Stellar AI — Featured on Smol Launch" loading="lazy" width="125" height="30" />
