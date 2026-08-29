@@ -8529,6 +8529,30 @@
       background: linear-gradient(180deg, rgba(255,255,255,.045), transparent); opacity: .65;
     }
     body:not(.light) #sidebar .side-new { background: rgba(255,255,255,.92) !important; color: #111 !important; box-shadow: 0 8px 22px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.45) !important; }
+    @media (hover: hover) and (pointer: fine) {
+      body:not(.light) #sidebar .side-new,
+      body:not(.light) #sidebar .side-act,
+      body:not(.light) #sidebar .side-guides-link,
+      body:not(.light) #sidebar .acct-signin-btn,
+      body:not(.light) #sidebar .acct-out-btn {
+        transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease !important;
+        will-change: transform;
+      }
+      body:not(.light) #sidebar .side-new:hover,
+      body:not(.light) #sidebar .side-act:hover,
+      body:not(.light) #sidebar .side-guides-link:hover,
+      body:not(.light) #sidebar .acct-signin-btn:hover,
+      body:not(.light) #sidebar .acct-out-btn:hover {
+        transform: translateX(2px);
+      }
+      body:not(.light) #sidebar .side-new:hover { box-shadow: 0 10px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.5) !important; }
+      body:not(.light) #sidebar .side-act:hover .ico,
+      body:not(.light) #sidebar .side-guides-link:hover .ico { transform: scale(1.06); color: #f4f4f5; }
+      body:not(.light) #sidebar .ico { transition: transform .18s ease, color .18s ease !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body:not(.light) #sidebar *, body:not(.light) #sidebar *::before, body:not(.light) #sidebar *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
     body:not(.light) #sidebar .side-act { background: rgba(255,255,255,.035) !important; border: 1px solid rgba(255,255,255,.065) !important; }
     body:not(.light) #sidebar .side-act:hover,
     body:not(.light) #sidebar .side-act:focus-visible { background: rgba(255,255,255,.085) !important; border-color: rgba(255,255,255,.14) !important; }
