@@ -8789,6 +8789,36 @@
     .input-area #model-btn { height: 44px !important; }
     body:not(.light) .input-area #send-btn { min-width: 68px; min-height: 44px !important; height: 44px !important; }
   }
+  /* Installed iOS/PWA modal safety: keep close controls visible above the status area. */
+  @media (display-mode: standalone) {
+    #plans-modal > div, #settings-modal > div, #usage-modal > div, #owner-modal > div,
+    #redeem-modal > div, #topup-modal > div, #thanks-modal > div, #limit-modal > div {
+      max-height: min(88svh, 760px) !important;
+      padding-top: max(20px, calc(20px + env(safe-area-inset-top))) !important;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+      overscroll-behavior: contain !important;
+    }
+    .modal-x, #usage-modal-close {
+      position: sticky !important;
+      top: max(4px, env(safe-area-inset-top)) !important;
+      z-index: 40 !important;
+      flex: 0 0 44px !important;
+      background: rgba(28, 28, 31, .96) !important;
+      box-shadow: 0 4px 18px rgba(0,0,0,.24) !important;
+    }
+    #plans-modal > div > div:first-child, #settings-modal .set-head {
+      min-height: 44px !important;
+      align-items: flex-start !important;
+    }
+  }
+  @media (display-mode: standalone) and (max-width: 767px) {
+    #plans-modal > div, #settings-modal > div, #usage-modal > div, #owner-modal > div,
+    #redeem-modal > div, #topup-modal > div, #thanks-modal > div, #limit-modal > div {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      border-radius: 22px 22px 0 0 !important;
+    }
+  }
 </style>
 </body>
 </html>
