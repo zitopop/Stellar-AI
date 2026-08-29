@@ -1231,6 +1231,18 @@
       body:not(.light) .footer-main { gap: 18px !important; }
     }
   </style>
+  <style>
+    /* Narrow-phone fit pass: keep the brand, menu, and CTA inside 320px. */
+    html, body { max-width: 100%; overflow-x: hidden; }
+    @media (max-width: 380px) {
+      .nav.container { width: 100%; max-width: none; padding-inline: 12px; gap: 6px; }
+      .brand { min-width: 0; flex: 1 1 auto; gap: 6px; font-size: 14px; white-space: nowrap; }
+      .brand-mark { width: 24px; height: 24px; border-radius: 8px; }
+      .nav-actions { flex: 0 0 auto; gap: 0; }
+      .nav-actions .nav-cta { width: 96px; max-width: 96px; min-width: 0; padding-inline: 6px; gap: 4px; font-size: 11px; white-space: nowrap; }
+      .nav-actions .nav-cta .button-arrow { font-size: 14px; }
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
