@@ -1130,6 +1130,20 @@
       body:not(.light) .plans { gap: 10px !important; padding: 4px 16px 12px !important; margin-inline: -16px !important; width: calc(100% + 32px); scroll-padding-inline: 16px; }
       body:not(.light) .plans .plan { flex: 0 0 min(82vw, 310px) !important; min-width: min(82vw, 310px) !important; min-height: 488px !important; padding: 20px !important; }
     }
+    /* Smooth Plans swipe feedback: focus the card nearest the viewport centre. */
+    body:not(.light) .plans { scroll-behavior: smooth; }
+    body:not(.light) .plans .plan {
+      transition: transform .28s cubic-bezier(.22,1,.36,1), opacity .24s ease, border-color .24s ease, box-shadow .24s ease !important;
+      transform-origin: center center;
+    }
+    @media (max-width: 1100px) {
+      body:not(.light) .plans .plan { opacity: .72; transform: scale(.975); }
+      body:not(.light) .plans .plan.plan-card-current { opacity: 1; transform: scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body:not(.light) .plans { scroll-behavior: auto !important; }
+      body:not(.light) .plans .plan { transition: none !important; transform: none !important; opacity: 1 !important; }
+    }
     /* Minimal visitor journey: show only the content that explains, proves, prices, or starts Stellar. */
     body:not(.light) #proof-section,
     body:not(.light) #builder-feedback,
@@ -1513,6 +1527,29 @@ end)</div></div>
       }
     }
     loadPublicStats();
+    const plansTrack = document.querySelector('.plans');
+    const planCards = Array.from(plansTrack?.querySelectorAll('.plan') || []);
+    if (plansTrack && planCards.length) {
+      const updatePlanFocus = () => {
+        const trackCenter = plansTrack.scrollLeft + (plansTrack.clientWidth / 2);
+        let activeIndex = 0;
+        let closestDistance = Infinity;
+        planCards.forEach((card, index) => {
+          const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+          const distance = Math.abs(cardCenter - trackCenter);
+          if (distance < closestDistance) { closestDistance = distance; activeIndex = index; }
+        });
+        planCards.forEach((card, index) => card.classList.toggle('plan-card-current', index === activeIndex));
+      };
+      let planFrame = 0;
+      updatePlanFocus();
+      plansTrack.addEventListener('scroll', () => {
+        if (planFrame) cancelAnimationFrame(planFrame);
+        planFrame = requestAnimationFrame(() => { planFrame = 0; updatePlanFocus(); });
+      }, { passive: true });
+      plansTrack.addEventListener('scrollend', updatePlanFocus, { passive: true });
+      window.addEventListener('resize', updatePlanFocus, { passive: true });
+    }
     document.querySelectorAll('.faq-button').forEach((button) => {
       button.addEventListener('click', () => {
         const item = button.closest('.faq-item');

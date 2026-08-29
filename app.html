@@ -3640,7 +3640,7 @@
           <div class="set-chev" aria-hidden="true">›</div>
         </div>
         <div class="set-item set-click" onclick="closeSettings(); openRedeem()">
-          <div class="set-key"><i class="sk-ico t-pink"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg></i>Redeem</div>
+          <div class="set-key"><i class="sk-ico t-pink"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg></i>Rewards &amp; codes</div>
           <div class="set-chev" aria-hidden="true">›</div>
         </div>
         <div class="set-item set-click" id="set-owner-row" role="button" tabindex="0" aria-haspopup="dialog" onclick="openOwner()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openOwner(); }" style="display:none">
@@ -3792,9 +3792,9 @@
   <!-- REDEEM CODE -->
   <div id="redeem-modal" onclick="if (event.target.id === 'redeem-modal') closeRedeem()" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
     <div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card" role="dialog" aria-modal="true" aria-labelledby="redeem-modal-heading">
-      <div class="redeem-icon">🎟️</div>
+      <div class="redeem-icon">✦</div>
       <div id="redeem-modal-heading" class="text-2xl font-black mb-2">Redeem a gift code</div>
-      <div class="text-sm font-bold text-[#94a3b8] mb-5">Enter your code to add free credit.</div>
+      <div class="text-sm font-bold text-[#94a3b8] mb-5">Enter a code. Valid credit is added instantly.</div>
       <input id="redeem-input" class="redeem-input" placeholder="STELLAR-XXXXXX-XXX-XXXX" aria-label="Gift code" autocomplete="off">
       <div id="redeem-msg" class="redeem-msg"></div>
       <button onclick="doRedeem()" class="side-new w-full mt-3">Redeem</button>
@@ -5944,11 +5944,29 @@
     function initPlansScroll() {
       const grid = document.getElementById('plans-grid-inner');
       const dots = document.querySelectorAll('.plans-dot');
-      if (!grid || !dots.length) return;
+      const cards = Array.from(grid?.querySelectorAll('.plan-card') || []);
+      if (!grid || !dots.length || !cards.length) return;
+      const update = () => {
+        const gridCenter = grid.scrollLeft + (grid.clientWidth / 2);
+        let activeIndex = 0;
+        let closestDistance = Infinity;
+        cards.forEach((card, index) => {
+          const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+          const distance = Math.abs(cardCenter - gridCenter);
+          if (distance < closestDistance) { closestDistance = distance; activeIndex = index; }
+        });
+        cards.forEach((card, index) => card.classList.toggle('plan-card-current', index === activeIndex));
+        dots.forEach((dot, index) => dot.classList.toggle('active', index === activeIndex));
+      };
+      update();
+      if (grid.dataset.planMotionReady === 'true') return;
+      grid.dataset.planMotionReady = 'true';
+      let frame = 0;
       grid.addEventListener('scroll', () => {
-        const idx = Math.round(grid.scrollLeft / (grid.clientWidth * 0.78));
-        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        if (frame) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => { frame = 0; update(); });
       }, { passive: true });
+      grid.addEventListener('scrollend', update, { passive: true });
     }
 
     function closePlans() {
@@ -8678,6 +8696,50 @@
       }
       body:not(.light) #plans-grid-inner button { min-height: 46px !important; }
       body:not(.light) #plans-scroll-dots { display: flex !important; }
+    }
+    /* Smooth Plans swipe feedback and simplified colourful rewards. */
+    body:not(.light) #plans-grid-inner { scroll-behavior: smooth; }
+    body:not(.light) #plans-grid-inner > .plan-card {
+      transition: transform .28s cubic-bezier(.22,1,.36,1), opacity .24s ease, border-color .24s ease, box-shadow .24s ease !important;
+      transform-origin: center center;
+    }
+    @media (max-width: 1100px) {
+      body:not(.light) #plans-grid-inner > .plan-card { opacity: .72; transform: scale(.975); }
+      body:not(.light) #plans-grid-inner > .plan-card.plan-card-current { opacity: 1; transform: scale(1); }
+    }
+    body:not(.light) #redeem-modal > div {
+      position: relative !important;
+      overflow: hidden !important;
+      border-color: rgba(203,184,255,.24) !important;
+      background: linear-gradient(160deg, rgba(203,184,255,.10), rgba(112,214,193,.055) 44%, #151517 76%) !important;
+      box-shadow: 0 26px 74px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.05) !important;
+    }
+    body:not(.light) #redeem-modal > div::after {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: linear-gradient(90deg, #70d6c1, #cbb8ff, #f0b8a6);
+      pointer-events: none;
+    }
+    body:not(.light) #redeem-modal .redeem-icon {
+      display: grid !important;
+      width: 52px;
+      height: 52px;
+      place-items: center;
+      border: 1px solid rgba(203,184,255,.30);
+      border-radius: 16px;
+      color: #dfd4ff;
+      background: linear-gradient(145deg, rgba(203,184,255,.14), rgba(112,214,193,.08));
+      box-shadow: 0 12px 30px rgba(0,0,0,.20);
+    }
+    body:not(.light) #redeem-modal .redeem-input:focus { border-color: #cbb8ff !important; box-shadow: 0 0 0 3px rgba(203,184,255,.12) !important; }
+    body:not(.light) #redeem-modal button.side-new { border-color: transparent !important; color: #101414 !important; background: linear-gradient(90deg, #b8eee4, #dfd4ff) !important; }
+    body:not(.light) #redeem-modal .redeem-msg.good { color: #b8eee4 !important; }
+    body:not(.light) #redeem-modal .redeem-msg.bad { color: #f7b8b8 !important; }
+    @media (prefers-reduced-motion: reduce) {
+      body:not(.light) #plans-grid-inner { scroll-behavior: auto !important; }
+      body:not(.light) #plans-grid-inner > .plan-card { transition: none !important; transform: none !important; opacity: 1 !important; }
     }
     /* Full-screen composition: use the viewport deliberately without dead space. */
     body:not(.light) #chat { padding-top: 18px !important; padding-bottom: 18px !important; }
