@@ -8594,6 +8594,86 @@
       body:not(.light) .plan-card { border-width: 1px !important; }
       body:not(.light) #sidebar .side-act::after { top: 12px; bottom: 12px; }
     }
+    /* Horizontal colourful Plans: one premium sideways row at every breakpoint. */
+    body:not(.light) #plans-grid-inner {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: stretch !important;
+      gap: 12px !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      padding: 6px 4px 14px !important;
+      margin: 0 0 14px !important;
+      scroll-snap-type: x proximity;
+      scroll-padding-inline: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: #45454d transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+    body:not(.light) #plans-grid-inner::-webkit-scrollbar { display: block !important; height: 6px; }
+    body:not(.light) #plans-grid-inner::-webkit-scrollbar-track { background: transparent; }
+    body:not(.light) #plans-grid-inner::-webkit-scrollbar-thumb { border-radius: 999px; background: #45454d; }
+    body:not(.light) #plans-grid-inner > .plan-card {
+      position: relative !important;
+      overflow: hidden !important;
+      flex: 0 0 calc((100% - 36px) / 4) !important;
+      width: auto !important;
+      min-width: 238px !important;
+      min-height: 500px !important;
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+    }
+    body:not(.light) #plans-grid-inner > .plan-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      pointer-events: none;
+    }
+    body:not(.light) #plan-card-free { border-color: rgba(112,214,193,.30) !important; background: linear-gradient(180deg, rgba(112,214,193,.075), #18191c 28%) !important; }
+    body:not(.light) #plan-card-starter { border-color: rgba(203,184,255,.34) !important; background: linear-gradient(180deg, rgba(203,184,255,.09), #19191d 30%) !important; }
+    body:not(.light) #plan-card-plus { border-color: rgba(157,185,255,.38) !important; background: linear-gradient(180deg, rgba(157,185,255,.10), #191a1e 30%) !important; box-shadow: 0 0 0 1px rgba(157,185,255,.14), 0 18px 44px -28px rgba(157,185,255,.45) !important; }
+    body:not(.light) #plan-card-pro { border-color: rgba(240,184,166,.36) !important; background: linear-gradient(180deg, rgba(240,184,166,.09), #1a191a 30%) !important; }
+    body:not(.light) #plan-card-free::before { background: #70d6c1; }
+    body:not(.light) #plan-card-starter::before { background: #cbb8ff; }
+    body:not(.light) #plan-card-plus::before { background: #9db9ff; }
+    body:not(.light) #plan-card-pro::before { background: linear-gradient(90deg, #f0b8a6, #e7c77a); }
+    body:not(.light) #plan-card-free .plan-head-name,
+    body:not(.light) #plan-card-free .plan-head-price { color: #b8eee4 !important; }
+    body:not(.light) #plan-card-starter .plan-head-name,
+    body:not(.light) #plan-card-starter .plan-head-price { color: #dfd4ff !important; }
+    body:not(.light) #plan-card-plus .plan-head-name,
+    body:not(.light) #plan-card-plus .plan-head-price { color: #d1ddff !important; }
+    body:not(.light) #plan-card-pro .plan-head-name,
+    body:not(.light) #plan-card-pro .plan-head-price { color: #f7d0c4 !important; }
+    body:not(.light) #plan-btn-free { border-color: rgba(112,214,193,.28) !important; color: #b8eee4 !important; background: rgba(112,214,193,.08) !important; }
+    body:not(.light) #plan-btn-starter { border-color: transparent !important; color: #17131f !important; background: #cbb8ff !important; }
+    body:not(.light) #plan-btn-starter-annual { border-color: rgba(203,184,255,.30) !important; color: #dfd4ff !important; background: rgba(203,184,255,.10) !important; }
+    body:not(.light) #plan-btn-plus { border-color: transparent !important; color: #11151d !important; background: #9db9ff !important; }
+    body:not(.light) #plan-btn-plus-annual { border-color: rgba(157,185,255,.30) !important; color: #d1ddff !important; background: rgba(157,185,255,.10) !important; }
+    body:not(.light) #plan-btn-pro { border-color: transparent !important; color: #1b1311 !important; background: linear-gradient(90deg, #f0b8a6, #e7c77a) !important; }
+    body:not(.light) #plan-btn-pro-annual { border-color: rgba(240,184,166,.30) !important; color: #f7d0c4 !important; background: rgba(240,184,166,.10) !important; }
+    @media (min-width: 768px) and (max-width: 1100px) {
+      body:not(.light) #plans-grid-inner > .plan-card { flex-basis: 270px !important; min-width: 270px !important; }
+    }
+    @media (max-width: 767px) {
+      body:not(.light) #plans-grid-inner {
+        gap: 10px !important;
+        padding: 4px 16px 12px !important;
+        margin-inline: -16px !important;
+        width: calc(100% + 32px) !important;
+        scroll-padding-inline: 16px;
+      }
+      body:not(.light) #plans-grid-inner > .plan-card {
+        flex-basis: min(82vw, 310px) !important;
+        min-width: min(82vw, 310px) !important;
+        min-height: 488px !important;
+        padding: 20px !important;
+      }
+      body:not(.light) #plans-scroll-dots { display: flex !important; }
+    }
     /* Full-screen composition: use the viewport deliberately without dead space. */
     body:not(.light) #chat { padding-top: 18px !important; padding-bottom: 18px !important; }
     body:not(.light) #chat > .greet-wrap { min-height: 0 !important; padding: 30px 0 18px !important; }
