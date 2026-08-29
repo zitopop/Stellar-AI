@@ -5962,11 +5962,22 @@
       if (grid.dataset.planMotionReady === 'true') return;
       grid.dataset.planMotionReady = 'true';
       let frame = 0;
+      let settleTimer = 0;
       grid.addEventListener('scroll', () => {
+        grid.classList.add('plans-is-scrolling');
         if (frame) cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => { frame = 0; update(); });
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(() => {
+          grid.classList.remove('plans-is-scrolling');
+          update();
+        }, 110);
       }, { passive: true });
-      grid.addEventListener('scrollend', update, { passive: true });
+      grid.addEventListener('scrollend', () => {
+        clearTimeout(settleTimer);
+        grid.classList.remove('plans-is-scrolling');
+        update();
+      }, { passive: true });
     }
 
     function closePlans() {
@@ -8681,18 +8692,21 @@
     }
     @media (max-width: 767px) {
       body:not(.light) #plans-grid-inner {
+        --mobile-plan-width: min(82vw, 310px);
+        --mobile-plan-edge: max(16px, calc((100% - var(--mobile-plan-width)) / 2));
         gap: 10px !important;
-        padding: 4px 16px 12px !important;
-        margin-inline: -16px !important;
         width: calc(100% + 32px) !important;
-        scroll-padding-inline: 16px;
+        margin-inline: -16px !important;
+        padding: 4px var(--mobile-plan-edge) 14px !important;
+        scroll-padding-inline: var(--mobile-plan-edge);
       }
       body:not(.light) #plans-grid-inner > .plan-card {
-        flex-basis: min(82vw, 310px) !important;
-        min-width: min(82vw, 310px) !important;
+        flex-basis: var(--mobile-plan-width) !important;
+        min-width: var(--mobile-plan-width) !important;
         min-height: 488px !important;
         padding: 20px !important;
-        scroll-snap-align: start !important;
+        scroll-snap-align: center !important;
+        scroll-snap-stop: normal;
       }
       body:not(.light) #plans-grid-inner button { min-height: 46px !important; }
       body:not(.light) #plans-scroll-dots { display: flex !important; }
@@ -8704,8 +8718,9 @@
       transform-origin: center center;
     }
     @media (max-width: 1100px) {
-      body:not(.light) #plans-grid-inner > .plan-card { opacity: .72; transform: scale(.975); }
+      body:not(.light) #plans-grid-inner > .plan-card { opacity: .82; transform: scale(.985); }
       body:not(.light) #plans-grid-inner > .plan-card.plan-card-current { opacity: 1; transform: scale(1); }
+      body:not(.light) #plans-grid-inner.plans-is-scrolling > .plan-card { will-change: transform, opacity; }
     }
     body:not(.light) #redeem-modal > div {
       position: relative !important;

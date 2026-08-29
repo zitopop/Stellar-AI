@@ -1127,8 +1127,23 @@
       body:not(.light) .plans .plan { flex: 0 0 286px !important; min-width: 286px !important; }
     }
     @media (max-width: 760px) {
-      body:not(.light) .plans { gap: 10px !important; padding: 4px 16px 12px !important; margin-inline: -16px !important; width: calc(100% + 32px); scroll-padding-inline: 16px; }
-      body:not(.light) .plans .plan { flex: 0 0 min(82vw, 310px) !important; min-width: min(82vw, 310px) !important; min-height: 488px !important; padding: 20px !important; }
+      body:not(.light) .plans {
+        --mobile-plan-width: min(82vw, 310px);
+        --mobile-plan-edge: max(16px, calc((100% - var(--mobile-plan-width)) / 2));
+        gap: 10px !important;
+        width: calc(100% + 32px);
+        margin-inline: -16px !important;
+        padding: 4px var(--mobile-plan-edge) 14px !important;
+        scroll-padding-inline: var(--mobile-plan-edge);
+      }
+      body:not(.light) .plans .plan {
+        flex: 0 0 var(--mobile-plan-width) !important;
+        min-width: var(--mobile-plan-width) !important;
+        min-height: 488px !important;
+        padding: 20px !important;
+        scroll-snap-align: center;
+        scroll-snap-stop: normal;
+      }
     }
     /* Smooth Plans swipe feedback: focus the card nearest the viewport centre. */
     body:not(.light) .plans { scroll-behavior: smooth; }
@@ -1137,8 +1152,9 @@
       transform-origin: center center;
     }
     @media (max-width: 1100px) {
-      body:not(.light) .plans .plan { opacity: .72; transform: scale(.975); }
+      body:not(.light) .plans .plan { opacity: .82; transform: scale(.985); }
       body:not(.light) .plans .plan.plan-card-current { opacity: 1; transform: scale(1); }
+      body:not(.light) .plans.plans-is-scrolling .plan { will-change: transform, opacity; }
     }
     @media (prefers-reduced-motion: reduce) {
       body:not(.light) .plans { scroll-behavior: auto !important; }
@@ -1560,12 +1576,23 @@ end)</div></div>
         planCards.forEach((card, index) => card.classList.toggle('plan-card-current', index === activeIndex));
       };
       let planFrame = 0;
+      let planSettleTimer = 0;
       updatePlanFocus();
       plansTrack.addEventListener('scroll', () => {
+        plansTrack.classList.add('plans-is-scrolling');
         if (planFrame) cancelAnimationFrame(planFrame);
         planFrame = requestAnimationFrame(() => { planFrame = 0; updatePlanFocus(); });
+        clearTimeout(planSettleTimer);
+        planSettleTimer = setTimeout(() => {
+          plansTrack.classList.remove('plans-is-scrolling');
+          updatePlanFocus();
+        }, 110);
       }, { passive: true });
-      plansTrack.addEventListener('scrollend', updatePlanFocus, { passive: true });
+      plansTrack.addEventListener('scrollend', () => {
+        clearTimeout(planSettleTimer);
+        plansTrack.classList.remove('plans-is-scrolling');
+        updatePlanFocus();
+      }, { passive: true });
       window.addEventListener('resize', updatePlanFocus, { passive: true });
     }
     document.querySelectorAll('.faq-button').forEach((button) => {
