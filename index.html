@@ -1144,6 +1144,26 @@
       body:not(.light) .plans { scroll-behavior: auto !important; }
       body:not(.light) .plans .plan { transition: none !important; transform: none !important; opacity: 1 !important; }
     }
+    /* Compact, source-scoped comparison directory. */
+    body:not(.light) #comparison { display: block !important; padding-top: 42px !important; padding-bottom: 42px !important; }
+    body:not(.light) #comparison .comparison { gap: 16px; padding: 24px !important; border-color: rgba(203,184,255,.20) !important; background: linear-gradient(145deg, rgba(203,184,255,.055), rgba(112,214,193,.035)), #141518 !important; }
+    body:not(.light) #comparison .comparison-head h2 { font-size: clamp(28px, 3.4vw, 40px) !important; }
+    body:not(.light) #comparison .comparison-head p { color: #a1a1aa !important; }
+    .comparison-directory { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .comparison-choice { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 116px; padding: 17px; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; background: #191a1d; }
+    .comparison-choice b { display: block; margin-bottom: 6px; color: #f4f4f5; font-size: 14px; }
+    .comparison-choice span { display: block; max-width: 41ch; color: #a1a1aa; font-size: 11px; line-height: 1.55; }
+    .comparison-choice a { flex: none; color: #b8eee4; font-size: 10px; font-weight: 800; white-space: nowrap; }
+    .comparison-choice-stellar { border-color: rgba(112,214,193,.27); background: linear-gradient(145deg, rgba(112,214,193,.08), #191a1d 55%); }
+    .comparison-choice-ender { border-color: rgba(203,184,255,.23); }
+    .comparison-choice-swisser { border-color: rgba(157,185,255,.24); }
+    .comparison-choice-general { border-color: rgba(240,184,166,.22); }
+    @media (max-width: 760px) {
+      body:not(.light) #comparison { padding-top: 30px !important; padding-bottom: 30px !important; }
+      body:not(.light) #comparison .comparison { padding: 18px !important; }
+      .comparison-directory { grid-template-columns: 1fr; }
+      .comparison-choice { min-height: 0; }
+    }
     /* Minimal visitor journey: show only the content that explains, proves, prices, or starts Stellar. */
     body:not(.light) #proof-section,
     body:not(.light) #builder-feedback,
@@ -1153,7 +1173,6 @@
     body:not(.light) #capabilities,
     body:not(.light) .scenario,
     body:not(.light) #roblox-worlds,
-    body:not(.light) #comparison,
     body:not(.light) .final-cta,
     body:not(.light) .plan-decider,
     body:not(.light) .plan-compare,
@@ -1374,16 +1393,15 @@ end)</div></div>
 
       <section class="section container" id="comparison" aria-labelledby="comparison-title">
         <div class="comparison">
-          <div class="comparison-head"><div><div class="eyebrow">A focused alternative</div><h2 id="comparison-title">Why FiveM and Roblox builders choose Stellar AI.</h2></div><p>Stellar is built around conversational planning, complete file packages and both FiveM and Roblox workflows—so you can go from a brief to a reviewable build without switching tools.</p></div>
-          <div class="comparison-points" aria-label="Stellar AI feature highlights"><span>FiveM + Roblox in one workspace</span><span>Plan, files and revisions together</span><span>Clear hourly allowances by plan</span></div>
-          <div class="comparison-grid" role="group" aria-label="Stellar AI and EnderDevelopment comparison">
-            <div class="comparison-title">Capability</div><div class="comparison-title stellar-yes">Stellar AI</div><div class="comparison-title">EnderDevelopment</div>
-            <div>Game-platform focus</div><div class="stellar-yes">FiveM and Roblox workflows</div><div>Minecraft and FiveM plugins</div>
-            <div>Included-use model</div><div class="stellar-yes">Clear hourly request allowance by plan</div><div>Credits-based usage</div>
-            <div>Build workflow</div><div class="stellar-yes">Conversational planning, complete files and follow-up revisions</div><div>Plugin generation workflow</div>
-            <div>Published paid plans</div><div class="stellar-yes">Starter £8 · Plus £20 · Pro £75</div><div>Redstone €8 · Obsidian €38 · Bedrock €120</div>
+          <div class="comparison-head"><div><div class="eyebrow">Compare before choosing</div><h2 id="comparison-title">Stellar AI vs other AI tools.</h2></div><p>No tool is best for every developer. Stellar is designed for builders who want FiveM and Roblox planning, complete files and follow-up revisions in one focused workspace.</p></div>
+          <div class="comparison-points" aria-label="Stellar AI feature highlights"><span>FiveM + Roblox together</span><span>Plan, files and revisions</span><span>Clear hourly allowances</span></div>
+          <div class="comparison-directory" aria-label="AI scripting tool comparisons">
+            <article class="comparison-choice comparison-choice-stellar"><div><b>Stellar AI</b><span>Focused on FiveM and Roblox builds, complete file sets and continued revisions.</span></div><a href="/app?welcome=1">Try free →</a></article>
+            <article class="comparison-choice comparison-choice-ender"><div><b>EnderDevelopment</b><span>Its public scope covers Minecraft and FiveM plugin generation with credit-based plans.</span></div><a href="/blog-stellar-ai-vs-enderdevelopment.html">Read comparison →</a></article>
+            <article class="comparison-choice comparison-choice-swisser"><div><b>SwisserAI</b><span>Its reviewed public pages focus deeply on FiveM tools, frameworks and asset workflows.</span></div><a href="/blog-stellar-ai-vs-swisserai-qbcore-roblox.html">Read comparison →</a></article>
+            <article class="comparison-choice comparison-choice-general"><div><b>General AI assistants</b><span>Useful for broad coding questions; product workflows, file handling and limits vary by provider.</span></div><a href="/blog#compare">See comparison guides →</a></article>
           </div>
-          <p class="comparison-foot">Competitor details are based on EnderDevelopment’s public pricing page, checked 25 August 2026. Product capabilities and prices can change; verify them before deciding. <a href="https://enderdevelopment.com/pricing" target="_blank" rel="noopener noreferrer">View its pricing page</a>.</p>
+          <p class="comparison-foot">Competitor products and prices can change. The linked guides state their source scope and where another tool may be a better fit; compare a small real task before subscribing.</p>
         </div>
       </section>
 
