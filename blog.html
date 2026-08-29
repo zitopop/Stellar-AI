@@ -2,286 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FiveM & Roblox Guides — Stellar AI Blog</title>
-  <meta name="description" content="FiveM QBCore tutorials and Roblox scripting guides from Stellar AI. Learn how to plan systems, install resources, build simulator games and more.">
-  <meta name="keywords" content="fivem guides, qbcore tutorial, roblox scripting guide, roblox simulator game, fivem lua scripts, how to install fivem scripts, qbcore police job">
-  <meta property="og:title" content="FiveM & Roblox Guides — Stellar AI Blog">
-  <meta property="og:description" content="Practical FiveM QBCore and Roblox scripting guides from Stellar AI.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FiveM & Roblox Guides | Stellar AI</title>
+  <meta name="description" content="Practical FiveM QBCore and Roblox scripting guides from Stellar AI. Learn how to plan, secure, test and improve game systems without the clutter.">
+  <meta name="keywords" content="fivem guides, qbcore tutorial, roblox scripting guide, roblox simulator game, fivem lua scripts, qbcore police job">
+  <meta property="og:title" content="FiveM & Roblox Guides | Stellar AI">
+  <meta property="og:description" content="Clear FiveM and Roblox scripting guides for building, testing and fixing game systems.">
   <meta property="og:image" content="https://trystellarai.com/og-image.png">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <meta property="og:url" content="https://trystellarai.com/blog">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://trystellarai.com/blog">
-  <link rel="icon" href="/icon-192.png">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;}
-    .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-header{margin-bottom:48px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    .blog-title{font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;letter-spacing:-0.5px;}
-    h3{font-size:17px;font-weight:800;margin:28px 0 10px;color:rgba(255,255,255,0.9);}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);}
-    .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:linear-gradient(135deg,rgba(16,163,127,0.1),rgba(16,163,127,0.05));border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;}
-    .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    .related{margin-top:48px;padding-top:32px;border-top:1px solid var(--border);}
-    .related h2{font-size:18px;margin-bottom:20px;}
-    .related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
-    .related-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
-    .related-card h4{font-size:13px;font-weight:800;margin-bottom:6px;}
-    .related-card p{font-size:11px;color:var(--muted);margin:0;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;}
-    .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <style>
-    /* Editorial polish: make the guide feel like a clear product resource, not a raw text dump. */
-    :root {
-      --bg: #09090b;
-      --surface: #111114;
-      --surface-raised: #17171b;
-      --surface-soft: rgba(255,255,255,.035);
-      --border: rgba(255,255,255,.11);
-      --border-strong: rgba(255,255,255,.18);
-      --text: #f4f4f5;
-      --muted: #a1a1aa;
-      --muted-strong: #d4d4d8;
-      --green: #61e6bf;
-      --green-deep: #0d6b56;
-      --purple: #a78bfa;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      background:
-        radial-gradient(circle at 50% -10%, rgba(112,76,214,.16), transparent 34rem),
-        var(--bg);
-      color: var(--text);
-      font-size: 15px;
-    }
-    nav {
-      min-height: 66px;
-      padding: 14px max(20px, 5vw);
-      border-bottom-color: rgba(255,255,255,.10);
-      background: rgba(9,9,11,.84);
-    }
-    .nav-logo { letter-spacing: -.035em; }
-    .nav-logo span { color: var(--green); }
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      min-height: 40px;
-      padding: 0 16px;
-      border: 1px solid rgba(97,230,191,.34);
-      border-radius: 999px;
-      color: #061c16;
-      background: var(--green);
-      box-shadow: 0 8px 24px rgba(97,230,191,.13);
-      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
-    }
-    .nav-cta:hover { transform: translateY(-1px); background: #8af0d0; box-shadow: 0 12px 30px rgba(97,230,191,.2); }
-    .container { max-width: 980px; padding: 72px 24px 88px; }
-    .blog-header { max-width: 760px; margin: 0 auto 44px; }
-    .blog-tag { color: var(--green); font-size: 10px; letter-spacing: .18em; }
-    .blog-title { font-size: clamp(36px, 6vw, 62px); letter-spacing: -.065em; line-height: .99; }
-    .blog-meta { display: inline-flex; margin-bottom: 24px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); background: var(--surface-soft); font-size: 11px; }
-    .blog-intro { margin: 0; padding: 22px 0 28px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--muted-strong); font-size: 17px; line-height: 1.7; }
-    .related { max-width: 920px; margin: 0 auto 54px; padding: 24px; border: 1px solid var(--border); border-radius: 20px; background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018)); }
-    .related[style] { margin-top: 0 !important; padding-top: 24px !important; border-top: 1px solid var(--border) !important; }
-    .related h2 { margin: 0 0 17px; color: var(--text); font-size: 14px; letter-spacing: .02em; }
-    .related-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-    .related-card { min-height: 102px; padding: 15px; border-color: var(--border); border-radius: 13px; background: var(--surface-soft); transition: transform .2s ease, border-color .2s ease, background .2s ease; }
-    .related-card:hover { transform: translateY(-2px); border-color: var(--border-strong); background: rgba(255,255,255,.07); }
-    .related-card h4 { color: var(--text); font-size: 12px; line-height: 1.35; }
-    .related-card p { color: var(--muted); font-size: 11px; line-height: 1.45; }
-    .container > h2, .container > h3, .container > p, .container > .code-block, .container > .tip-box, .container > .cta-box { max-width: 760px; margin-right: auto; margin-left: auto; }
-    h2 { margin-top: 56px; margin-bottom: 14px; color: var(--text); font-size: clamp(22px, 3vw, 28px); letter-spacing: -.04em; line-height: 1.15; }
-    h3 { margin-top: 30px; margin-bottom: 8px; color: var(--text); font-size: 16px; letter-spacing: -.015em; }
-    p { color: var(--muted-strong); font-size: 15px; line-height: 1.75; }
-    p strong { color: var(--text) !important; }
-    .code-block {
-      position: relative;
-      margin-top: 18px;
-      margin-bottom: 24px;
-      padding: 19px 21px;
-      border-color: rgba(97,230,191,.22);
-      border-radius: 13px;
-      color: #c9f9e8;
-      background: #0d1715;
-      box-shadow: inset 3px 0 var(--green-deep);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-    .tip-box { margin-top: 26px; margin-bottom: 30px; padding: 20px 22px; border-color: rgba(97,230,191,.28); border-radius: 15px; background: rgba(97,230,191,.07); box-shadow: inset 3px 0 var(--green); }
-    .tip-box strong { color: var(--green); font-size: 12px; letter-spacing: .01em; }
-    .tip-box p { color: #d9f8ed; font-size: 14px; line-height: 1.65; }
-    .cta-box { margin-top: 58px; margin-bottom: 58px; padding: 34px 28px; border-color: rgba(97,230,191,.32); border-radius: 20px; background: radial-gradient(circle at 50% 0%, rgba(97,230,191,.13), transparent 24rem), #101b18; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
-    .cta-box h3 { margin-top: 0; margin-bottom: 10px; font-size: 23px; letter-spacing: -.04em; }
-    .cta-box p { max-width: 52ch; margin: 0 auto 22px; color: var(--muted-strong); }
-    .cta-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 22px; border: 1px solid rgba(97,230,191,.4); border-radius: 999px; color: #061c16; background: var(--green); box-shadow: 0 10px 26px rgba(97,230,191,.16); transition: transform .2s ease, background .2s ease; }
-    .cta-btn:hover { transform: translateY(-2px); background: #8af0d0; }
-    footer { padding: 24px max(20px, 5vw); border-top-color: var(--border); background: rgba(255,255,255,.018); }
-    .footer-links { flex-wrap: wrap; }
-    .footer-links a:hover { color: var(--text); }
-    body.light { --bg: #f7f7f8; --surface: #ffffff; --surface-raised: #ffffff; --surface-soft: rgba(24,24,27,.035); --border: #dedee3; --border-strong: #b8b8c1; --text: #18181b; --muted: #62626b; --muted-strong: #3f3f46; --green: #087d60; --green-deep: #b7e8da; }
-    body.light nav { background: rgba(247,247,248,.88); }
-    body.light .nav-cta, body.light .cta-btn { color: #ffffff; background: #087d60; border-color: #087d60; }
-    body.light .related { background: #ffffff; }
-    body.light .related-card { background: #fafafa; }
-    body.light .related-card:hover { background: #f1f1f3; }
-    body.light .code-block { color: #075b47; background: #effaf6; border-color: #b9e6d8; box-shadow: inset 3px 0 #6acbb0; }
-    body.light .tip-box { background: #effaf6; border-color: #a9decf; }
-    body.light .tip-box p { color: #28564b; }
-    body.light .cta-box { background: #eaf8f3; border-color: #9cd8c7; box-shadow: 0 18px 48px rgba(24,24,27,.08); }
-    body.light .cta-box p { color: #3f3f46; }
-    @media (max-width: 760px) {
-      nav { padding-inline: 16px; }
-      .container { padding: 48px 16px 64px; }
-      .blog-title { font-size: clamp(34px, 11vw, 50px); }
-      .blog-intro { font-size: 16px; }
-      .related { margin-bottom: 40px; padding: 18px; border-radius: 16px; }
-      .related-grid { grid-template-columns: 1fr; }
-      .related-card { min-height: 0; }
-      h2 { margin-top: 44px; }
-      p { font-size: 14px; }
-      .code-block { padding: 16px; font-size: 12px; }
-      .cta-box { padding: 28px 18px; }
-      .cta-btn { width: 100%; }
-      footer { align-items: flex-start; padding-inline: 16px; }
-    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#09090b;color:#f4f4f5;font-family:Manrope,system-ui,sans-serif}a{color:inherit;text-decoration:none}
+    nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;min-height:66px;padding:12px max(20px,5vw);border-bottom:1px solid rgba(255,255,255,.10);background:rgba(9,9,11,.88);backdrop-filter:blur(16px)}
+    .nav-logo{font-size:16px;font-weight:800;letter-spacing:-.04em}.nav-logo span{color:#b8eee4}.nav-cta{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border-radius:999px;background:#b8eee4;color:#101414;font-size:13px;font-weight:800}
+    .guide-hub{width:min(calc(100% - 40px),1040px);margin:auto;padding:82px 0 96px}
+    .hub-hero{max-width:720px;margin-bottom:60px}.eyebrow{color:#a8e8dc;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.hub-hero h1{margin:12px 0 18px;font-size:clamp(42px,7vw,72px);line-height:.98;letter-spacing:-.065em}.hub-hero p{max-width:600px;margin:0;color:#b0b0b8;font-size:17px;line-height:1.7}
+    .hub-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.hub-links a{padding:8px 12px;border:1px solid rgba(255,255,255,.13);border-radius:999px;color:#d4d4d8;background:#111114;font-size:12px;font-weight:700}
+    .guide-section{padding:42px 0;border-top:1px solid rgba(255,255,255,.10)}.guide-section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px}.guide-section h2{margin:0;font-size:clamp(25px,4vw,34px);letter-spacing:-.045em}.guide-section-head p{max-width:410px;margin:0;color:#8f8f98;font-size:13px;line-height:1.55;text-align:right}
+    .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.guide-card{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;min-height:128px;padding:20px;border:1px solid rgba(255,255,255,.11);border-radius:16px;background:#111114;transition:transform .18s ease,border-color .18s ease,background .18s ease}.guide-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.24);background:#17171b}.guide-card b{display:block;margin-bottom:7px;color:#f4f4f5;font-size:15px;line-height:1.35}.guide-card span{display:block;color:#a1a1aa;font-size:12px;line-height:1.55}.guide-card i{flex:none;color:#70d6c1;font-style:normal;font-size:17px}.guide-card.roblox i{color:#cbb8ff}.guide-card.compare i{color:#e7c77a}
+    .hub-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:48px;padding:28px;border:1px solid rgba(112,214,193,.25);border-radius:18px;background:linear-gradient(135deg,rgba(112,214,193,.08),rgba(203,184,255,.05))}.hub-cta h2{margin:0 0 6px;font-size:23px;letter-spacing:-.04em}.hub-cta p{margin:0;color:#a1a1aa;font-size:13px}.hub-cta a{flex:none;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 19px;border-radius:999px;background:#b8eee4;color:#101414;font-size:13px;font-weight:800}
+    footer{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px max(20px,5vw);border-top:1px solid rgba(255,255,255,.10);color:#8f8f98;font-size:12px}.footer-links{display:flex;flex-wrap:wrap;gap:14px}.footer-links a:hover{color:#f4f4f5}
+    @media(max-width:700px){.guide-hub{width:min(calc(100% - 32px),1040px);padding:54px 0 68px}.hub-hero{margin-bottom:42px}.hub-hero h1{font-size:clamp(38px,12vw,56px)}.hub-hero p{font-size:15px}.guide-section{padding:34px 0}.guide-section-head{display:block}.guide-section-head p{margin-top:8px;text-align:left}.guide-grid{grid-template-columns:1fr}.guide-card{min-height:0;padding:18px}.hub-cta{display:block;padding:22px}.hub-cta a{width:100%;margin-top:18px}footer{align-items:flex-start;flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
   </style>
   <link rel="stylesheet" href="/site-polish.css">
 </head>
 <body>
+  <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
+  <main class="guide-hub">
+    <header class="hub-hero">
+      <div class="eyebrow">Stellar build guides</div>
+      <h1>Clear guides for your next build.</h1>
+      <p>Pick a FiveM or Roblox system. Learn the important parts, avoid common mistakes and leave with a practical test plan.</p>
+      <div class="hub-links" aria-label="Guide categories"><a href="#fivem">FiveM</a><a href="#roblox">Roblox</a><a href="#compare">Compare tools</a></div>
+    </header>
 
-<nav>
-  <a href="/" class="nav-logo">✦ Stellar <span>AI</span></a>
-  <a href="/app" class="nav-cta">Try free →</a>
-</nav>
-
-<div class="container">
-
-  <div class="blog-header">
-    <div class="blog-tag">FiveM Guide</div>
-    <h1 class="blog-title">How to Install a QBCore Police Job on Your FiveM Server</h1>
-    <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-    <p class="blog-intro">Setting up a police job on your QBCore FiveM server doesn't have to be complicated. This guide walks you through everything — from getting the script files to testing it in game. No coding experience required.</p>
-  </div>
-
-  <section class="related" style="margin-top:0;padding-top:0;border-top:0;">
-    <h2>Latest FiveM &amp; Roblox build guides</h2>
-    <div class="related-grid">
-      <a class="related-card" href="/blog-qbcore-police-job-script-free.html"><h4>QBCore police job script: plan and test safely</h4><p>Use job data, server-side validation and a private test checklist.</p></a>
-      <a class="related-card" href="/blog-roblox-tapping-simulator-script.html"><h4>Roblox tapping simulator script</h4><p>Build a server-authoritative tap loop with saves and upgrades.</p></a>
-      <a class="related-card" href="/blog-stellar-ai-vs-enderdevelopment.html"><h4>Stellar AI vs EnderDevelopment</h4><p>Compare pricing, complete files and FiveM + Roblox workflows.</p></a>
-      <a class="related-card" href="/blog-stellar-ai-vs-swisserai-qbcore-roblox.html"><h4>Stellar AI vs SwisserAI</h4><p>A source-linked guide for FiveM QBCore and Roblox builders.</p></a>
-      <a class="related-card" href="/blog/roblox-simulator-game-guide"><h4>How to make a Roblox simulator game</h4><p>Plan currency, upgrades, rebirths, saving and UI in the right order.</p></a>
-      <a class="related-card" href="/app"><h4>Need a starting structure?</h4><p>Describe a game system in Stellar AI and refine it while you test.</p></a>
-    </div>
-  </section>
-
-  <h2>What you need before starting</h2>
-  <p>Before installing any script on your FiveM server, make sure you have the following set up 👇</p>
-  <p><strong style="color:#fff;">QBCore framework</strong> — your server needs to be running QBCore. If you're on ESX, the steps are similar but the exports will differ.</p>
-  <p><strong style="color:#fff;">txAdmin or file access</strong> — you need to be able to upload files to your server's resources folder. Most hosting providers like ZAP-Hosting give you a file manager.</p>
-  <p><strong style="color:#fff;">oxmysql</strong> — QBCore uses oxmysql for database queries. Make sure it's installed and running.</p>
-
-  <h2>Step 1 — Get your police job script</h2>
-  <p>You have two options here — download a pre-made script or generate one with AI.</p>
-  <p>If you want a custom police job built exactly how you want it — specific F6 menu options, cuffing animations, MDT system, jail timer — you can describe it in plain English and Stellar AI will write all the files for you in seconds.</p>
-
-  <div class="tip-box">
-    <strong>💡 Try this prompt in Stellar AI:</strong>
-    <p style="margin-top:8px;">"Make a QBCore police job with F6 menu, handcuffing players, escorting, jailing with a 10 minute timer, issuing fines, a police MDT to search player records, and spawning a police car. Include fxmanifest, client.lua, server.lua and config.lua"</p>
-  </div>
-
-  <h2>Step 2 — Upload the files to your server</h2>
-  <p>Once you have your script files, you need to get them onto your server. Here's how 👇</p>
-  <p>Open your server's file manager (ZAP-Hosting, Pterodactyl, WinSCP etc) and navigate to your <strong style="color:#fff;">resources</strong> folder. Create a new folder with your script name — for example <strong style="color:#fff;">qb-police</strong>.</p>
-  <p>Upload these files into that folder 👇</p>
-  <div class="code-block">resources/
-└── qb-police/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-
-  <h2>Step 3 — Add to server.cfg</h2>
-  <p>Open your <strong style="color:#fff;">server.cfg</strong> file and add the ensure line for your new script. It should go after qb-core loads 👇</p>
-  <div class="code-block">ensure qb-core
-ensure qb-police</div>
-  <p>The order matters — always ensure qb-core before any scripts that depend on it.</p>
-
-  <h2>Step 4 — Run the SQL (if needed)</h2>
-  <p>Some police scripts need a database table. If your script includes an <strong style="color:#fff;">install.sql</strong> file, open your database manager (HeidiSQL, phpMyAdmin or your hosting panel) and run that SQL file.</p>
-  <p>If there's no SQL file, skip this step — not all scripts need one.</p>
-
-  <h2>Step 5 — Restart and test</h2>
-  <p>Restart your server and join. To test the police job 👇</p>
-  <div class="code-block">/setjob [yourname] police 5</div>
-  <p>This sets your character's job to police with grade 5. Then press F6 to open the police menu and check everything works — cuffing, MDT, vehicles etc.</p>
-
-  <h2>Common errors and how to fix them</h2>
-  <h3>Error: "No such export in resource qb-core"</h3>
-  <p>This usually means qb-core is loading after your script. Move your ensure line below ensure qb-core in server.cfg and restart.</p>
-  <h3>Error: "attempt to index a nil value"</h3>
-  <p>The script can't find QBCore. Make sure your script uses the correct init pattern — either GetSharedObject() or GetCoreObject() depending on your QBCore version.</p>
-  <h3>F6 menu not showing</h3>
-  <p>Check you're actually set to the police job. Run /setjob again and make sure the job name matches exactly what's in config.lua.</p>
-
-  <div class="cta-box">
-    <h3>Don't want to set this up manually?</h3>
-    <p>Describe your perfect police job in plain English and Stellar AI writes all 4 files — fxmanifest, client, server and config — ready to drop in. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my police job →</a>
-  </div>
-
-  <div class="related">
-    <h2>More FiveM guides</h2>
-    <div class="related-grid">
-      <div class="related-card">
-        <h4>How to set up a QBCore drug system</h4>
-        <p>Weed, coke, hidden spots and dealer NPCs explained.</p>
+    <section class="guide-section" id="fivem">
+      <div class="guide-section-head"><h2>FiveM</h2><p>Plan reliable QBCore and server systems with security and testing in mind.</p></div>
+      <div class="guide-grid">
+        <a class="guide-card" href="/blog-qbcore-police-job-script-free.html"><div><b>QBCore Police Job Script Free</b><span>Structure the job, validate events and test the complete resource safely.</span></div><i>→</i></a>
+        <a class="guide-card" href="/blog-qbcore-mechanic-job-script.html"><div><b>QBCore mechanic job script</b><span>Build duty, repairs, payments and garage progression properly.</span></div><i>→</i></a>
+        <a class="guide-card" href="/blog-fivem-drug-dealer-script.html"><div><b>FiveM drug dealer script</b><span>Design a controlled dealer loop with server-side validation.</span></div><i>→</i></a>
+        <a class="guide-card" href="/blog-fivem-errors.html"><div><b>Fix common FiveM errors</b><span>Find load-order, export, nil-value and dependency problems faster.</span></div><i>→</i></a>
       </div>
-      <div class="related-card">
-        <h4>FiveM bank heist script guide</h4>
-        <p>Set up a Fleeca heist with police alerts and vault timers.</p>
+    </section>
+
+    <section class="guide-section" id="roblox">
+      <div class="guide-section-head"><h2>Roblox</h2><p>Build game loops that separate client presentation from server authority.</p></div>
+      <div class="guide-grid">
+        <a class="guide-card roblox" href="/blog-roblox-simulator-script-lua.html"><div><b>Roblox simulator script Lua</b><span>Plan currency, upgrades, rebirths and saving in the right order.</span></div><i>→</i></a>
+        <a class="guide-card roblox" href="/blog-roblox-tapping-simulator-script.html"><div><b>Roblox Tapping Simulator Script</b><span>Create a secure tap loop with progression and persistent data.</span></div><i>→</i></a>
+        <a class="guide-card roblox" href="/blog-roblox-datastore.html"><div><b>Roblox DataStore guide</b><span>Save player progress reliably and handle failures safely.</span></div><i>→</i></a>
+        <a class="guide-card roblox" href="/blog-roblox-remote-events.html"><div><b>Roblox RemoteEvents</b><span>Use clear server checks and avoid trusting client requests.</span></div><i>→</i></a>
       </div>
-      <div class="related-card">
-        <h4>Installing ox_lib on QBCore</h4>
-        <p>Get menus, progress bars and notifications working.</p>
+    </section>
+
+    <section class="guide-section" id="compare">
+      <div class="guide-section-head"><h2>Compare tools</h2><p>Choose a scripting workflow using published features and pricing.</p></div>
+      <div class="guide-grid">
+        <a class="guide-card compare" href="/blog-stellar-ai-vs-enderdevelopment.html"><div><b>Stellar AI vs EnderDevelopment</b><span>Compare supported games, usage models, files and pricing.</span></div><i>→</i></a>
+        <a class="guide-card compare" href="/blog-stellar-ai-vs-swisserai-qbcore-roblox.html"><div><b>Stellar AI vs SwisserAI</b><span>A source-linked comparison for FiveM and Roblox builders.</span></div><i>→</i></a>
       </div>
-    </div>
-  </div>
+    </section>
 
-</div>
-
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links">
-    <a href="/">Home</a>
-    <a href="/app">App</a>
-    <a href="/affiliate.html">For server owners</a>
-    <a href="/terms.html">Terms</a>
-    <a href="https://discord.gg/e6uRAV9HGA">Discord</a>
-  </div>
-</footer>
-
+    <section class="hub-cta" aria-label="Try Stellar AI"><div><h2>Ready to build?</h2><p>Describe the system and start with free credit. No card required.</p></div><a href="/app?welcome=1">Open Stellar →</a></section>
+  </main>
+  <footer><span>© 2026 Stellar AI</span><div class="footer-links"><a href="/">Home</a><a href="/app">App</a><a href="/terms.html">Terms</a><a href="mailto:support@trystellarai.com">Support</a></div></footer>
 </body>
 </html>
