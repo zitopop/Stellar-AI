@@ -1040,6 +1040,46 @@
       body:not(.light) .hero-visual .product-frame { box-shadow: 0 0 0 1px rgba(255,255,255,.04) !important; }
     }
   </style>
+  <style>
+    /* Horizontal Plans: preserve readable card widths instead of stacking or squashing tiers. */
+    body:not(.light) .plans {
+      display: flex !important;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 16px !important;
+      overflow-x: auto;
+      overflow-y: visible;
+      padding: 6px 4px 12px;
+      margin-inline: -4px;
+      scroll-snap-type: x proximity;
+      scrollbar-width: thin;
+      scrollbar-color: #3f3f46 transparent;
+    }
+    body:not(.light) .plans::-webkit-scrollbar { height: 6px; }
+    body:not(.light) .plans::-webkit-scrollbar-track { background: transparent; }
+    body:not(.light) .plans::-webkit-scrollbar-thumb { border-radius: 999px; background: #3f3f46; }
+    body:not(.light) .plans .plan {
+      flex: 0 0 calc((100% - 48px) / 4);
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+    @media (min-width: 761px) and (max-width: 1180px) {
+      body:not(.light) .plans .plan { flex-basis: 286px; }
+    }
+    @media (max-width: 760px) {
+      body:not(.light) .plans {
+        gap: 12px !important;
+        padding: 4px 16px 12px;
+        margin-inline: -16px;
+        scroll-padding-inline: 16px;
+      }
+      body:not(.light) .plans .plan {
+        flex-basis: min(82vw, 310px);
+        min-height: 470px !important;
+      }
+      body:not(.light) .plans .plan > .button { min-height: 46px; }
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
