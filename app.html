@@ -8810,6 +8810,12 @@
     .input-area #model-btn { height: 44px !important; }
     body:not(.light) .input-area #send-btn { min-width: 68px; min-height: 44px !important; height: 44px !important; }
   }
+  /* Let the nested Plans track receive horizontal swipes instead of inheriting a pan-y/none lock from the modal sheet. */
+  @media (max-width: 1100px) {
+    body:not(.light) #plans-modal,
+    body:not(.light) #plans-modal > div { touch-action: auto !important; }
+    body:not(.light) #plans-modal #plans-grid-inner { touch-action: pan-x !important; pointer-events: auto !important; }
+  }
   /* Installed iOS/PWA modal safety: keep close controls visible above the status area. */
   @media (display-mode: standalone) {
     #plans-modal > div, #settings-modal > div, #usage-modal > div, #owner-modal > div,
