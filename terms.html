@@ -180,6 +180,31 @@
   })();
 </script>
   <link rel="stylesheet" href="/site-polish.css">
+  <style>
+    /* Final dark-only legal surface: keep Terms & Privacy consistent with the app. */
+    html, html.light { background: #080808 !important; color-scheme: dark !important; }
+    body, body.light { background: transparent !important; color: #d4d4d8 !important; }
+    body::before { opacity: .16 !important; }
+    .sheet { width: min(100%, 760px) !important; background: rgba(18,18,20,.96) !important; border-color: rgba(255,255,255,.14) !important; box-shadow: 0 24px 70px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06) !important; }
+    h1, h2 { color: #fafafa !important; }
+    h2 .n { color: #9cebd8 !important; background: rgba(16,163,127,.12) !important; border-color: rgba(16,163,127,.28) !important; }
+    p { color: #b8b8c0 !important; }
+    .updated { color: #9cebd8 !important; background: rgba(16,163,127,.10) !important; border-color: rgba(16,163,127,.28) !important; }
+    .legal-draft { color: #e8d79a !important; background: rgba(194,164,65,.10) !important; border-color: rgba(194,164,65,.28) !important; }
+    section { border-bottom-color: rgba(255,255,255,.08) !important; }
+    a { color: #b8a8ff !important; text-decoration-color: rgba(184,168,255,.48) !important; }
+    a:hover, a:focus-visible { color: #d8d0ff !important; }
+    .terms-x { background: rgba(28,28,31,.96) !important; color: #f4f4f5 !important; border-color: rgba(255,255,255,.2) !important; }
+    .terms-x:hover, .terms-x:focus-visible { background: rgba(255,255,255,.12) !important; color: #ffffff !important; border-color: rgba(255,255,255,.35) !important; }
+    .back { color: #090909 !important; background: linear-gradient(135deg, #9cebd8, #b8a8ff) !important; border-color: transparent !important; box-shadow: 0 10px 26px rgba(16,163,127,.16) !important; }
+    .back:hover, .back:focus-visible { color: #090909 !important; filter: brightness(1.08); }
+    .copyright { color: #85858e !important; }
+    @media (max-width: 700px) {
+      body { padding: calc(24px + env(safe-area-inset-top)) 14px calc(58px + env(safe-area-inset-bottom)) !important; }
+      .sheet { padding: 22px 18px !important; }
+      .terms-x { top: calc(10px + env(safe-area-inset-top)) !important; right: 10px !important; }
+    }
+  </style>
 </head>
 <body>
   <button class="terms-x" onclick="history.back()" aria-label="Close">&times;</button>

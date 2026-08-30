@@ -8854,6 +8854,27 @@
       border-radius: 22px 22px 0 0 !important;
     }
   }
+  /* Final main-chat polish: clear hierarchy, stable mobile sizing, and no accidental surface drift. */
+  #chat { min-width: 0 !important; }
+  .composer-wrap, .input-area { min-width: 0 !important; }
+  .input-area { border-color: rgba(255,255,255,.14) !important; background: rgba(18,18,20,.94) !important; box-shadow: 0 12px 36px rgba(0,0,0,.22) !important; }
+  .input-area textarea { min-width: 0 !important; color: #f4f4f5 !important; line-height: 1.45 !important; }
+  .input-area textarea::placeholder { color: #85858e !important; }
+  .starter-chip { border-color: rgba(255,255,255,.12) !important; background: rgba(255,255,255,.045) !important; color: #d4d4d8 !important; }
+  .starter-chip:hover, .starter-chip:focus-visible { border-color: rgba(156,235,216,.34) !important; background: rgba(156,235,216,.08) !important; color: #f4f4f5 !important; }
+  .msg-inner { max-width: min(780px, 100%) !important; overflow-wrap: anywhere !important; }
+  .message.msg-user .msg-inner { background: rgba(255,255,255,.08) !important; border-color: rgba(255,255,255,.12) !important; }
+  @media (max-width: 767px) {
+    #chat { padding-inline: 14px !important; }
+    .composer-wrap { width: 100% !important; max-width: 100% !important; }
+    .input-area { width: 100% !important; border-radius: 18px !important; }
+    .input-area textarea { min-height: 44px !important; max-height: 132px !important; }
+    .starter-chip { max-width: calc(100vw - 28px) !important; white-space: normal !important; }
+  }
+  @media (min-width: 768px) and (max-width: 1100px) {
+    #chat { padding-inline: 24px !important; }
+    .composer-wrap { width: min(100%, 760px) !important; }
+  }
 </style>
 </body>
 </html>
