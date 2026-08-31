@@ -38,6 +38,16 @@ test('Task 68 exposes a visible desktop keyboard hint without squashing mobile c
   assert.match(appHtml, /@media \(max-width: 640px\) \{\s+\.composer-foot \{ gap: 6px; justify-content: flex-start; \}\s+\.keyboard-hint \{ display: none; \}/);
 });
 
+test('generation retries one transient empty attempt with a clear checking-again status', () => {
+  assert.match(appHtml, /function isRetryableGenerationFailure\(error\)/);
+  assert.match(appHtml, /async function sendMessage\(retryContext = null\)/);
+  assert.match(appHtml, /const isRetry = Boolean\(retryContext\?\.text\);/);
+  assert.match(appHtml, /if \(!isRetry\) \{/);
+  assert.match(appHtml, /else if \(!isRetry && !full && isRetryableGenerationFailure\(error\)\)/);
+  assert.match(appHtml, /That attempt did not complete — checking again…/);
+  assert.match(appHtml, /window\.setTimeout\(\(\) => sendMessage\(\{ text \}\), 450\)/);
+});
+
 test('Task 69 exposes live generation status for thinking, completion, stop, and failure outcomes', () => {
   assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(appHtml, /function setGenerationStatus\(label\)/);

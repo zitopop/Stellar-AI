@@ -206,6 +206,12 @@ const MAX_NORMALISED_MESSAGE_COUNT = 40;
 const MAX_NORMALISED_MESSAGE_CONTENT_LENGTH = 100_000;
 const BASE64_DATA_PATTERN = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
+const UNCERTAINTY_RECOVERY_GUIDANCE = `UNCERTAINTY RECOVERY
+- Never end a coding request with a generic “I don't know”, “I can't help”, or “try again” message when useful analysis is still possible.
+- If the framework, API, or cause is unclear, say: “I’m not fully sure yet — I’ll check this again step by step.” Then make one bounded second pass: inspect the supplied code and context, check names and assumptions against the platform guidance, compare the likely causes, and choose the safest answer.
+- Do not invent an API or claim certainty after the second pass. If the issue remains blocked, explain exactly what is missing, give the most useful next diagnostic step, and ask for only the specific file, error, or framework detail needed.
+- For a transient provider or empty-response failure, the application may retry once, but never loop indefinitely or charge for a response that was not produced.`;
+
 const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
   implementer: 'ROLE OUTPUT CONTRACT: Provide complete destination-labelled files, setup steps, and a short validation checklist. Do not omit critical logic or claim execution.',
@@ -245,6 +251,8 @@ WORKING METHOD
 - For a bug, start with a one-sentence diagnosis that names the likely cause. Then give the smallest complete fix and clearly state any assumption.
 - Think through failure paths before responding: repeated events, invalid or missing data, a player disconnecting, a player dying, permissions, server authority, and duplicate rewards or purchases.
 - Prefer a small correct solution over a large speculative one. Do not invent APIs, exports, events or library functions. If an API is uncertain, say so and use a documented conservative pattern.
+
+${UNCERTAINTY_RECOVERY_GUIDANCE}
 
 FIVEM QUALITY
 - Match the named framework. For QBCore, use valid QBCore patterns such as GetCoreObject, server-side player checks, callbacks, and correctly named client/server events. For ESX, use the appropriate ESX patterns. Keep money, rewards, permissions and important validation server-side.
@@ -831,4 +839,4 @@ export default async function handler(req, res) {
 }
 
 
-export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
+export { FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };

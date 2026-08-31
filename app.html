@@ -5546,6 +5546,10 @@
 
 
     let sendLock = false;
+    function isRetryableGenerationFailure(error) {
+      const message = String(error?.message || error || '').toLowerCase();
+      return /connection error|temporarily unavailable|empty response|no text|did not return a response|failed to fetch|load failed|networkerror|\b(408|409|425|429|5\d\d)\b/.test(message);
+    }
     function countFreePlanSentMessages() {
       return (Store.get().chats || []).reduce((total, chat) => total + (chat.messages || []).filter(message => message.role === 'user').length, 0);
     }
@@ -5570,7 +5574,7 @@
       dismissFreeUpgradeNudge();
       openPlans();
     }
-    async function sendMessage() {
+    async function sendMessage(retryContext = null) {
       const chips = document.getElementById('suggestion-chips');
       if (chips) chips.style.display = 'none';
       const gw = document.querySelector('.greet-wrap');
@@ -5578,22 +5582,25 @@
       if (currentAbort || sendLock) return;
       sendLock = true;
       const input = document.getElementById('txt');
-      let text = input.value.trim();
+      const isRetry = Boolean(retryContext?.text);
+      let text = isRetry ? retryContext.text : input.value.trim();
       if (!text || !currentChatId) { sendLock = false; return; }
-      // api/chat.js owns allowance enforcement. The browser only renders the latest server usage snapshot.
-      commitPendingChat();
       const s = Store.get();
       const chat = s.chats.find(c => c.id === currentChatId);
-      chat.messages.push({ role: 'user', content: text, t: Date.now() });
-      if (chat.name === 'New chat') {
-        chat.name = text.substring(0, 28) + (text.length > 28 ? '…' : '');
-        document.getElementById('chat-title').textContent = chat.name;
+      if (!isRetry) {
+        // api/chat.js owns allowance enforcement. The browser only renders the latest server usage snapshot.
+        commitPendingChat();
+        chat.messages.push({ role: 'user', content: text, t: Date.now() });
+        if (chat.name === 'New chat') {
+          chat.name = text.substring(0, 28) + (text.length > 28 ? '…' : '');
+          document.getElementById('chat-title').textContent = chat.name;
+        }
+        Store.set({ chats: s.chats });
+        loadChat(currentChatId);
+        input.value = '';
+        removeImage();
+        input.style.height = 'auto';
       }
-      Store.set({ chats: s.chats });
-      loadChat(currentChatId);
-      input.value = '';
-      removeImage();
-      input.style.height = 'auto';
 
       const chatEl = document.getElementById('chat');
       chatEl.setAttribute('aria-busy', 'true');
@@ -5802,6 +5809,9 @@
           }
           loadChat(currentChatId);
           setGenerationStatus('Generation stopped.');
+        } else if (!isRetry && !full && isRetryableGenerationFailure(error)) {
+          setGenerationStatus('That attempt did not complete — checking again…');
+          window.setTimeout(() => sendMessage({ text }), 450);
         } else {
           const msg = (error && error.message && !/failed to fetch|load failed|networkerror/i.test(error.message))
             ? error.message : 'Connection error — try again.';
