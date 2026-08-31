@@ -3439,7 +3439,7 @@
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;">
         <div>
           <div id="plans-modal-heading" style="font-size:22px;font-weight:900;letter-spacing:-0.5px;">Choose your plan</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Upgrade any time · Cancel any time · Prices adapt to your country · Stripe checkout uses a configured local price or GBP fallback · <span data-country-currency>GB · GBP</span></div>
+          <div class="plans-modal-subtitle" style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Cancel anytime · Local pricing when available · Secure Stripe checkout · <span data-country-currency>GB · GBP</span></div>
         </div>
         <button id="plans-modal-close" onclick="closePlans()" class="modal-x" aria-label="Close plans">×</button>
       </div>
@@ -3531,14 +3531,14 @@
       </div>
 
       <!-- Pay as you go -->
-      <div style="text-align:center;margin-bottom:16px;">
+      <div class="plans-topup" style="text-align:center;margin-bottom:16px;">
         <button onclick="closePlans(); openTopup()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:13px;cursor:pointer;font-weight:600;">
           Prefer pay-as-you-go? <span style="color:rgba(139,92,246,0.8);">Add credit →</span>
         </button>
       </div>
 
       <!-- Footer -->
-      <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;">
+      <div class="plans-payment-note" style="text-align:center;font-size:11px;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;">
         🔒 Secure payment by Stripe · Cancel any time · Usage varies by request length
       </div>
 
@@ -9045,5 +9045,156 @@
     #settings-modal > .set-card { max-width: calc(100vw - 48px) !important; }
   }
 </style>
+  <style>
+    /* Plans sheet: compact, viewport-aware mobile composition. */
+    @media (max-width: 767px) {
+      #plans-modal {
+        align-items: flex-end !important;
+        justify-content: stretch !important;
+        padding: 0 !important;
+      }
+      #plans-modal > div {
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 0 !important;
+        height: auto !important;
+        max-height: min(92dvh, 760px) !important;
+        margin: 0 !important;
+        padding: max(18px, calc(18px + env(safe-area-inset-top))) 16px calc(16px + env(safe-area-inset-bottom)) !important;
+        border-radius: 24px 24px 0 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain !important;
+      }
+      #plans-modal > div > div:first-child {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 44px !important;
+        align-items: start !important;
+        gap: 12px !important;
+        min-height: 44px !important;
+        margin-bottom: 16px !important;
+      }
+      #plans-modal > div > div:first-child > div:first-child { min-width: 0 !important; }
+      #plans-modal-heading {
+        font-size: clamp(22px, 7vw, 28px) !important;
+        line-height: 1.05 !important;
+        letter-spacing: -0.6px !important;
+        white-space: normal !important;
+      }
+      #plans-modal .plans-modal-subtitle {
+        max-width: 100% !important;
+        margin-top: 8px !important;
+        color: rgba(255,255,255,.66) !important;
+        font-size: 11px !important;
+        line-height: 1.42 !important;
+        overflow-wrap: anywhere !important;
+      }
+      #plans-modal .modal-x {
+        position: static !important;
+        width: 44px !important;
+        min-width: 44px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        margin: 0 !important;
+      }
+      #plans-modal .plans-choice-guide { display: none !important; }
+      #plans-modal .plans-choice-guide {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        margin: 0 0 16px !important;
+      }
+      #plans-modal .plans-choice-guide span {
+        min-width: 0 !important;
+        min-height: 0 !important;
+        padding: 10px 11px !important;
+        font-size: 10px !important;
+        line-height: 1.25 !important;
+        overflow-wrap: anywhere !important;
+      }
+      #plans-modal .plans-choice-guide b {
+        display: block !important;
+        margin-bottom: 4px !important;
+        font-size: 9px !important;
+        line-height: 1.15 !important;
+      }
+      body:not(.light) #plans-modal #plans-grid-inner {
+        --mobile-plan-width: min(88vw, 320px);
+        flex: 0 0 auto !important;
+        height: auto !important;
+        min-height: max-content !important;
+        max-height: none !important;
+        --mobile-plan-edge: max(16px, calc((100% - var(--mobile-plan-width)) / 2));
+        display: flex !important;
+        grid-template-columns: none !important;
+        gap: 12px !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 4px var(--mobile-plan-edge) 14px !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        align-items: flex-start !important;
+        scroll-padding-inline: var(--mobile-plan-edge) !important;
+        scroll-snap-type: x mandatory !important;
+        overscroll-behavior-x: contain !important;
+        scrollbar-width: none !important;
+        touch-action: pan-x !important;
+      }
+      #plans-modal #plans-grid-inner::-webkit-scrollbar { display: none !important; }
+      body:not(.light) #plans-modal #plans-grid-inner > .plan-card {
+        flex: 0 0 var(--mobile-plan-width) !important;
+        width: var(--mobile-plan-width) !important;
+        min-width: var(--mobile-plan-width) !important;
+        max-width: var(--mobile-plan-width) !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        padding: 18px !important;
+        scroll-snap-align: center !important;
+        box-sizing: border-box !important;
+      }
+      body:not(.light) #plans-modal #plans-grid-inner > .plan-card .plan-head-price { font-size: 36px !important; }
+      body:not(.light) #plans-modal #plans-grid-inner > .plan-card { min-height: 0 !important; height: auto !important; max-height: none !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-head-fit { min-height: 0 !important; line-height: 1.38 !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-features { gap: 8px !important; }
+      #plans-modal #plans-grid-inner > .plan-card button { min-height: 44px !important; }
+      #plans-modal #plans-scroll-dots {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        min-height: 12px !important;
+        margin: 0 0 14px !important;
+      }
+      #plans-modal .plans-topup { margin: 0 0 14px !important; }
+      #plans-modal .plans-topup button {
+        max-width: 100% !important;
+        min-height: 44px !important;
+        padding: 8px 4px !important;
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+      }
+      #plans-modal .plans-payment-note {
+        margin-top: 0 !important;
+        padding-top: 14px !important;
+        font-size: 10.5px !important;
+        line-height: 1.4 !important;
+      }
+    }
+    @media (max-width: 380px) {
+      #plans-modal > div { padding-inline: 12px !important; }
+      #plans-modal .plans-choice-guide { display: none !important; }
+      #plans-modal .plans-choice-guide { gap: 6px !important; }
+      #plans-modal .plans-choice-guide span { padding-inline: 9px !important; font-size: 9.5px !important; }
+      #plans-modal #plans-grid-inner { --mobile-plan-width: min(90vw, 292px); --mobile-plan-edge: max(12px, calc((100% - var(--mobile-plan-width)) / 2)); }
+      #plans-modal #plans-grid-inner > .plan-card { padding: 16px !important; }
+    }
+    @media (min-width: 768px) and (max-width: 1100px) {
+      #plans-modal { padding: 24px !important; }
+      #plans-modal > div { max-width: min(100%, 920px) !important; max-height: 90dvh !important; padding: 28px !important; }
+      #plans-modal .plans-modal-subtitle { max-width: 680px !important; line-height: 1.45 !important; }
+      #plans-modal #plans-grid-inner { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
+      #plans-modal #plans-grid-inner > .plan-card { min-width: 0 !important; padding: 20px !important; }
+    }
+  </style>
 </body>
 </html>
