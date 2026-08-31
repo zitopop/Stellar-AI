@@ -3402,8 +3402,9 @@
     
     <!-- GLASS SIDEBAR -->
     <div id="sidebar" class="w-72 glass border-r border-white/10 flex flex-col p-4" role="navigation" aria-label="Workspace navigation">
-      <div class="mb-6">
+      <div class="mb-6 sidebar-brand-row">
         <div class="brand-title"><span class="brand-star" id="logo-star">✦</span> <span class="brand-grad">Stellar AI</span></div>
+        <button type="button" class="sidebar-close" onclick="toggleSidebar()" aria-label="Close navigation">×</button>
       </div>
 
       <button type="button" onclick="newChat()" class="side-new w-full mb-4 transition-all active:scale-[0.985]">
@@ -9347,6 +9348,54 @@
       #plans-modal .plans-modal-subtitle { max-width: 680px !important; line-height: 1.45 !important; }
       #plans-modal #plans-grid-inner { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
       #plans-modal #plans-grid-inner > .plan-card { min-width: 0 !important; padding: 20px !important; }
+    }
+  </style>
+  <style id="responsive-app-frame-fix">
+    /* Keep touch layouts inside the viewport: chat scrolls, composer remains reachable. */
+    @media (hover: none) and (pointer: coarse), (min-width: 768px) and (max-width: 1100px) {
+      html, body { min-height: 100%; }
+      body { overflow: hidden !important; }
+      div.h-screen { height: 100dvh !important; min-height: 100dvh !important; }
+      #main-col {
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      #main-col > .topbar { flex: 0 0 auto !important; }
+      #main-col > #chat {
+        flex: 1 1 auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overscroll-behavior-y: contain !important;
+      }
+      #main-col > .input-area {
+        flex: 0 0 auto !important;
+        min-height: 0 !important;
+        position: relative !important;
+        z-index: 6 !important;
+      }
+      #main-col .input-area > .flex { min-width: 0 !important; }
+      #main-col .input-area #model-btn,
+      #main-col .input-area #send-btn { flex: 0 0 auto !important; }
+    }
+    .sidebar-brand-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .sidebar-close { display: none; }
+    @media (hover: none) and (pointer: coarse), (max-width: 1100px) {
+      #rec-btn { display: none !important; }
+    }
+    @media (max-width: 1100px) {
+      #mobile-menu-toggle { width: 44px !important; min-width: 44px !important; height: 44px !important; min-height: 44px !important; }
+      .sidebar-brand-row { margin-bottom: 18px !important; }
+      .sidebar-close { display: inline-flex; width: 44px; min-width: 44px; height: 44px; min-height: 44px; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.14); border-radius: 12px; background: #202020; color: #f4f4f5; font-size: 24px; line-height: 1; cursor: pointer; }
+      .sidebar-close:hover, .sidebar-close:focus-visible { background: #2b2b2b; border-color: rgba(184,238,228,.55); outline: none; }
+    }
+    @media (min-width: 768px) and (max-width: 1100px) {
+      #main-col { width: 100% !important; margin-left: 0 !important; }
+      #overlay { pointer-events: auto !important; }
+      #mobile-menu-toggle { position: relative !important; z-index: 52 !important; }
     }
   </style>
   <script>
