@@ -10,6 +10,16 @@ process.env.KV_REST_API_TOKEN = 'test-kv-token';
 
 const { addImageToLastUserMessage, buildSystemPrompt, default: chatHandler, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
+test('Stellar identifies as a capable FiveM and Roblox coding expert', () => {
+  const prompt = buildSystemPrompt('', 'mixed', 'general', 'unknown', 'implementer');
+  assert.match(prompt, /expert senior game-scripting engineer for FiveM and Roblox/);
+  assert.match(prompt, /FiveM QBCore, ESX, ox_lib and standalone/);
+  assert.match(prompt, /Roblox Studio, Luau/);
+  assert.match(prompt, /do not say that you do not know how to code/);
+  assert.match(prompt, /complete destination-labelled files/);
+  assert.match(prompt, /Never replace an actionable coding answer with a generic refusal/);
+});
+
 test('uncertain coding requests use a bounded recovery contract instead of giving up', () => {
   assert.match(UNCERTAINTY_RECOVERY_GUIDANCE, /Never end a coding request with a generic/);
   assert.match(UNCERTAINTY_RECOVERY_GUIDANCE, /I’m not fully sure yet/);
