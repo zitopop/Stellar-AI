@@ -1,6 +1,6 @@
 // Stellar AI service worker — network-first, with an explicit update signal.
 // Deliberately avoids caching app HTML so each deployment can be fetched fresh.
-const SW_VERSION = 'stellar-sw-2026-08-29-1';
+const SW_VERSION = 'stellar-sw-2026-08-31-pwa-1';
 
 self.addEventListener('install', () => self.skipWaiting());
 
