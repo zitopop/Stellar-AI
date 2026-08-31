@@ -9196,5 +9196,46 @@
       #plans-modal #plans-grid-inner > .plan-card { min-width: 0 !important; padding: 20px !important; }
     }
   </style>
+  <script>
+    (() => {
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      const apple = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      const android = /android/i.test(navigator.userAgent);
+      if (standalone || (!apple && !android)) return;
+      let deferred = null;
+      let banner = null;
+      const dismissed = Number(localStorage.getItem('stellar-install-dismissed-at') || 0);
+      if (dismissed > Date.now() - 30 * 24 * 60 * 60 * 1000) return;
+      const close = () => { banner?.remove(); banner = null; };
+      const show = () => {
+        if (banner || standalone || (!deferred && !apple)) return;
+        const style = document.createElement('style');
+        style.textContent = '#stellar-install-prompt{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:1100;display:flex;align-items:center;gap:12px;padding:14px 14px 14px 16px;border:1px solid rgba(112,214,193,.28);border-radius:18px;background:rgba(18,18,20,.98);box-shadow:0 22px 60px rgba(0,0,0,.44);color:#f4f4f5;font:600 13px/1.35 system-ui,sans-serif}#stellar-install-prompt .stellar-install-copy{min-width:0;flex:1}#stellar-install-prompt strong{display:block;margin-bottom:3px;color:#b8eee4;font-size:14px}#stellar-install-prompt span{display:block;color:#a1a1aa}#stellar-install-prompt button{flex:0 0 auto;min-height:42px;padding:0 14px;border:0;border-radius:11px;background:linear-gradient(90deg,#b8eee4,#dfd4ff);color:#101414;font:800 12px system-ui,sans-serif;cursor:pointer}#stellar-install-prompt [data-dismiss]{width:32px;min-width:32px;padding:0;background:transparent;color:#a1a1aa;font-size:20px}';
+        document.head.appendChild(style);
+        banner = document.createElement('aside');
+        banner.id = 'stellar-install-prompt';
+        banner.setAttribute('role', 'dialog');
+        banner.setAttribute('aria-label', 'Install Stellar AI');
+        banner.innerHTML = '<div class="stellar-install-copy"><strong>Install Stellar AI</strong><span data-copy>' + (apple ? 'Add Stellar to your Home Screen for a faster app-like launch.' : 'Install Stellar for a faster, full-screen workspace.') + '</span></div><button type="button" data-install>' + (apple ? 'How to install' : 'Install app') + '</button><button type="button" data-dismiss aria-label="Dismiss install prompt">×</button>';
+        document.body.appendChild(banner);
+        banner.querySelector('[data-dismiss]').addEventListener('click', () => { localStorage.setItem('stellar-install-dismissed-at', String(Date.now())); close(); });
+        banner.querySelector('[data-install]').addEventListener('click', async () => {
+          if (deferred) {
+            deferred.prompt();
+            await deferred.userChoice.catch(() => null);
+            deferred = null;
+            close();
+            return;
+          }
+          banner.querySelector('[data-copy]').textContent = 'In Safari, tap Share, then choose “Add to Home Screen”.';
+          banner.querySelector('[data-install]').textContent = 'Got it';
+          banner.querySelector('[data-install]').addEventListener('click', () => { localStorage.setItem('stellar-install-dismissed-at', String(Date.now())); close(); }, { once: true });
+        });
+      };
+      window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); deferred = event; });
+      window.addEventListener('appinstalled', () => { deferred = null; close(); });
+      window.setTimeout(show, 30000);
+    })();
+  </script>
 </body>
 </html>

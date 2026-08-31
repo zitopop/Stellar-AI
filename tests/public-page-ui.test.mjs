@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const root = new URL('../', import.meta.url);
-const excluded = new Set(['app.html', 'index.html', 'broadcast-template.html']);
+const excluded = new Set(['app.html', 'index.html', 'broadcast-template.html', 'offline.html']);
 const marker = '<link rel="stylesheet" href="/site-polish.css">';
 const contentPages = readdirSync(root.pathname)
   .filter((filename) => filename.endsWith('.html') && !excluded.has(filename))
