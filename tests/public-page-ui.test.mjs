@@ -6,9 +6,10 @@ import assert from 'node:assert/strict';
 const root = new URL('../', import.meta.url);
 const excluded = new Set(['app.html', 'index.html', 'broadcast-template.html', 'offline.html']);
 const marker = '<link rel="stylesheet" href="/site-polish.css">';
-const contentPages = readdirSync(root.pathname)
-  .filter((filename) => filename.endsWith('.html') && !excluded.has(filename))
-  .sort();
+const contentPages = [
+  ...readdirSync(root.pathname).filter((filename) => filename.endsWith('.html') && !excluded.has(filename)),
+  ...readdirSync(join(root.pathname, 'blog')).filter((filename) => filename.endsWith('.html')).map((filename) => join('blog', filename)),
+].sort();
 const sharedCss = readFileSync(join(root.pathname, 'site-polish.css'), 'utf8');
 
  test('all public content pages load the shared dark-only polish layer', () => {

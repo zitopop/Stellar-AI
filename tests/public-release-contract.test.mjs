@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const root = new URL('../', import.meta.url);
-const read = (name) => readFileSync(new URL(`../${name}`, import.meta.url), 'utf8');
+const read = (name) => readFileSync(new URL(name.startsWith('blog-') ? `../blog/${name}` : `../${name}`, import.meta.url), 'utf8');
 const indexHtml = read('index.html');
 const appHtml = read('app.html');
 const termsHtml = read('terms.html');
@@ -98,7 +98,7 @@ test('the public support address remains a one-line mail link in settings', () =
 });
 
 test('all published standalone blog articles have non-empty page titles and descriptions', () => {
-  const blogFiles = readdirSync(root).filter((name) => /^blog-.*\.html$/.test(name));
+  const blogFiles = readdirSync(new URL('../blog/', import.meta.url)).filter((name) => /^blog-.*\.html$/.test(name));
   assert.equal(blogFiles.length, 63);
   for (const file of blogFiles) {
     const html = read(file);
@@ -111,10 +111,10 @@ test('approved long-form public guides have discovery links', () => {
   const sitemap = read('sitemap.xml');
   const hub = read('blog.html');
   const guides = [
-    ['blog-qbcore-police-job-script-free.html', 'https://trystellarai.com/blog-qbcore-police-job-script-free.html', /QBCore Police Job Script Free/],
-    ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog-roblox-tapping-simulator-script.html', /Roblox Tapping Simulator Script/],
-    ['blog-stellar-ai-vs-swisserai-qbcore-roblox.html', 'https://trystellarai.com/blog-stellar-ai-vs-swisserai-qbcore-roblox.html', /Stellar AI vs SwisserAI/],
-    ['blog-stellar-ai-vs-enderdevelopment.html', 'https://trystellarai.com/blog-stellar-ai-vs-enderdevelopment.html', /Stellar AI vs EnderDevelopment/]
+    ['blog-qbcore-police-job-script-free.html', 'https://trystellarai.com/blog/qbcore-police-job-script-free', /QBCore Police Job Script Free/],
+    ['blog-roblox-tapping-simulator-script.html', 'https://trystellarai.com/blog/roblox-tapping-simulator-script', /Roblox Tapping Simulator Script/],
+    ['blog-stellar-ai-vs-swisserai-qbcore-roblox.html', 'https://trystellarai.com/blog/stellar-ai-vs-swisserai-qbcore-roblox', /Stellar AI vs SwisserAI/],
+    ['blog-stellar-ai-vs-enderdevelopment.html', 'https://trystellarai.com/blog/stellar-ai-vs-enderdevelopment', /Stellar AI vs EnderDevelopment/]
   ];
   for (const [file, canonical, title] of guides) {
     const html = read(file);
