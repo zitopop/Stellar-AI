@@ -6216,6 +6216,7 @@
       return '/api/discord-oauth' + (referral ? '?ref=' + encodeURIComponent(referral) : '');
     }
     async function completeSignIn(user, sessionToken = '') {
+      let firstSignIn = false;
       if (sessionToken) Store.set({ session: sessionToken, owner: false });
       // Restore this user's saved data if they've signed in before
       if (user && user.email) {
@@ -6234,6 +6235,7 @@
             });
             renderChatList();
           } else {
+            firstSignIn = true;
             Store.set({ user });
             // Welcome credit is now issued only after server-verified sign-in.
           }
@@ -6242,6 +6244,7 @@
         try {
           const serverChats = await loadChatsFromServer();
           if (serverChats && serverChats.length > 0) {
+            firstSignIn = false;
             const local = Store.get().chats || [];
             // Merge: prefer server chats, keep any local-only ones
             const serverIds = new Set(serverChats.map(c => c.id));
@@ -6252,6 +6255,7 @@
             renderChatList();
           }
         } catch {}
+        if (firstSignIn) showFirstSignInOnboarding(user);
       } else {
         Store.set({ user });
       }
@@ -6831,6 +6835,35 @@
       setGenerationStatus('Welcome to Stellar AI. Tell me what you want to build.');
     }
 
+    function showFirstSignInOnboarding(user) {
+      if (!user || !user.email) return;
+      const key = 'stellar-first-signin-onboarding-v1-' + String(user.email).trim().toLowerCase();
+      let alreadyShown = false;
+      try { alreadyShown = localStorage.getItem(key) === '1'; } catch {}
+      if (alreadyShown) return;
+      const wrap = document.querySelector('#chat .greet-wrap');
+      if (!wrap) return;
+      try { localStorage.setItem(key, '1'); } catch {}
+      wrap.classList.add('first-signin-welcome');
+      const sub = wrap.querySelector('.welcome-sub');
+      if (sub) {
+        sub.textContent = 'Type what you want to build — police job, drug system, heist — and Stellar will write the complete code.';
+        sub.classList.add('welcome-first-signin');
+        sub.style.color = '#d7fff6';
+        sub.style.fontWeight = '800';
+      }
+      const next = wrap.querySelector('.welcome-next-step');
+      if (next) {
+        const label = next.querySelector('.welcome-next-step-label');
+        const copy = next.querySelector('p');
+        next.style.setProperty('display', 'grid', 'important');
+        if (label) label.textContent = 'Start here';
+        if (copy) copy.innerHTML = '<strong>Type a request</strong> or tap a starter below.';
+      }
+      const starters = wrap.querySelector('.welcome-starters-label');
+      if (starters) starters.textContent = 'Or start with an example';
+      setGenerationStatus('Welcome. Type what you want to build, or tap a starter example.');
+    }
     function applyLandingStarterPrompt() {
       const params = new URLSearchParams(location.search);
       const starterKey = params.get('starter');

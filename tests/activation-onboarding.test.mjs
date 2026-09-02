@@ -23,6 +23,17 @@ test('welcome entry gives new visitors an actionable first-build message and rem
   assert.match(appHtml, /applyWelcomeEntry\(\);\s+maybeShowWelcome\(\);/);
 });
 
+test('first signed-in users see an unmistakable first-build instruction once per account', () => {
+  assert.match(appHtml, /let firstSignIn = false;/);
+  assert.match(appHtml, /firstSignIn = true;/);
+  assert.match(appHtml, /function showFirstSignInOnboarding\(user\) \{/);
+  assert.match(appHtml, /stellar-first-signin-onboarding-v1-/);
+  assert.match(appHtml, /Type what you want to build — police job, drug system, heist — and Stellar will write the complete code\./);
+  assert.match(appHtml, /Type a request<\/strong> or tap a starter below\./);
+  assert.match(appHtml, /Or start with an example/);
+  assert.match(appHtml, /Welcome\. Type what you want to build, or tap a starter example\./);
+});
+
 test('password and Google signups send a complete onboarding email', () => {
   assert.equal((authJs.match(/void sendWelcomeEmail\(/g) || []).length, 2);
   assert.match(authJs, /Stellar AI turns a plain-English game idea into a structured starting point for FiveM and Roblox/);
