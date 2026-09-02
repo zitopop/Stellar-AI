@@ -7,7 +7,7 @@ const read = (name) => readFileSync(new URL(name.startsWith('blog-') ? `../blog/
 const indexHtml = read('index.html');
 const appHtml = read('app.html');
 const termsHtml = read('terms.html');
-const launchKit = read('LAUNCH-KIT.md');
+const launchKit = read('archive/docs/LAUNCH-KIT.md');
 const simulatorBlogHtml = read('blog-roblox-simulator-game.html');
 const comparisonBlogHtml = read('blog-stellar-ai-vs-swisserai-qbcore-roblox.html');
 
@@ -144,7 +144,7 @@ test('the SwisserAI comparison article names its source scope without unsupporte
 });
 
 test('the unsent feature announcement broadcast draft preserves its review notice and official destination', () => {
-  const email = read('broadcast-template.html');
+  const email = read('archive/templates/broadcast-template.html');
   assert.match(email, /A cleaner, flatter workspace with simpler controls and fewer distractions\./);
   assert.match(email, /Specialist planning, research, security and testing roles for structured work\./);
   assert.match(email, /Plus \(£20\/mo\) and Pro \(£75\/mo\) pricing\./);

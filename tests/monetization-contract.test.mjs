@@ -4,7 +4,7 @@ import fs from 'node:fs';
 
 const checkout = fs.readFileSync(new URL('../api/create-checkout.js', import.meta.url), 'utf8');
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-const policy = fs.readFileSync(new URL('../MONETIZATION_APPROVAL.md', import.meta.url), 'utf8');
+const policy = fs.readFileSync(new URL('../archive/docs/MONETIZATION_APPROVAL.md', import.meta.url), 'utf8');
 
 test('Stripe returns identify payment state and purchased plan', () => {
   assert.match(checkout, /payment=success/);
