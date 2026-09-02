@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
+const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+
 const root = new URL('../', import.meta.url);
 const read = (name) => readFileSync(new URL(name.startsWith('blog-') ? `../blog/${name}` : `../${name}`, import.meta.url), 'utf8');
 const indexHtml = read('index.html');
@@ -95,6 +97,17 @@ test('landing page keeps factual build benefits without exposing internal placeh
 
 test('the public support address remains a one-line mail link in settings', () => {
   assert.match(appHtml, /href="mailto:support@trystellarai\.com"[^>]*white-space:nowrap[^>]*>support@trystellarai\.com<\/a>/);
+});
+
+test('Vercel routes clean blog slugs into the moved blog directory', () => {
+  const catchAll = vercel.rewrites.find(({ source }) => source === '/blog/:slug');
+  assert.deepEqual(catchAll, {
+    source: '/blog/:slug',
+    destination: '/blog/blog-:slug.html',
+  });
+  for (const slug of ['qbcore-police-job-script-free', 'roblox-tapping-simulator-script', 'stellar-ai-vs-enderdevelopment']) {
+    assert.ok(vercel.rewrites.some(({ source }) => source === `/blog/${slug}`), `${slug} requires an explicit clean route`);
+  }
 });
 
 test('all published standalone blog articles have non-empty page titles and descriptions', () => {
