@@ -3370,6 +3370,25 @@
     @media (max-width: 640px) { .starter-ready { width: 100%; justify-content: center; border-radius: 12px; text-align: center; } }
     @media (prefers-reduced-motion: no-preference) { .starter-ready { animation: starter-ready-in .22s ease-out both; } @keyframes starter-ready-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } } }
   </style>
+<style>
+    /* Final simple Settings pass: calm hierarchy, compact rhythm, dark-only surfaces. */
+    body:not(.light) #settings-modal { background: rgba(0,0,0,.72) !important; }
+    body:not(.light) #settings-modal .set-card { max-width: 620px !important; padding: 24px !important; border: 1px solid rgba(255,255,255,.12) !important; border-radius: 22px !important; background: #101011 !important; box-shadow: 0 24px 80px rgba(0,0,0,.42) !important; }
+    #settings-modal .settings-subtitle { margin-top: 4px; color: #8f8f98; font-size: 12px; line-height: 1.4; }
+    body:not(.light) #settings-modal .set-body { gap: 18px !important; }
+    body:not(.light) #settings-modal .set-tabs { gap: 4px !important; margin-bottom: 4px !important; }
+    body:not(.light) #settings-modal .set-tab { min-height: 40px !important; border-radius: 8px !important; }
+    body:not(.light) #settings-modal .set-group { gap: 1px !important; border-color: rgba(255,255,255,.10) !important; background: #151516 !important; }
+    body:not(.light) #settings-modal .set-item { min-height: 52px !important; padding-inline: 14px !important; background: transparent !important; }
+    body:not(.light) #settings-modal .set-item:hover { background: #1b1b1d !important; }
+    body:not(.light) #settings-modal .set-label { margin-bottom: 8px !important; color: #d7d7dc !important; font-size: 10px !important; letter-spacing: .12em !important; }
+    @media (max-width: 640px) {
+      body:not(.light) #settings-modal .set-card { width: calc(100% - 24px) !important; margin-inline: 12px !important; padding: 18px !important; border-radius: 18px !important; }
+      #settings-modal .settings-subtitle { font-size: 11px; }
+      body:not(.light) #settings-modal .set-tabs { overflow-x: auto !important; }
+      body:not(.light) #settings-modal .set-tab { min-width: 92px !important; }
+    }
+  </style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -3706,6 +3725,7 @@
       <div class="set-head flex justify-between mb-6">
         <div>
           <div id="settings-modal-heading" class="settings-title">Settings</div>
+          <div class="settings-subtitle">Account, plan and display.</div>
         </div>
         <button id="settings-modal-close" onclick="closeSettings()" class="modal-x" aria-label="Close settings" title="Close settings">×</button>
       </div>
