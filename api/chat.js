@@ -35,9 +35,9 @@ const FORGE_MODELS = new Set([
 const ROUTING_ROLES = {
   planner: { model: 'gpt-5-mini', instruction: 'Return a compact implementation plan, assumptions, exact file tree, dependencies, and acceptance checks before code.' },
   implementer: { model: 'claude-sonnet-4-6', instruction: 'You are in IMPLEMENTER mode. Write complete production-ready code immediately. Every file complete. No placeholders. No explanations before code. Just build it perfectly.' },
-  researcher: { model: 'claude-sonnet-4-6', instruction: 'You are in RESEARCH mode. Before writing any code, search your knowledge for the most current FiveM/Roblox APIs and conventions. Cite which framework version you are using. Label anything you are uncertain about. Check for common pitfalls in this specific framework. Then write the complete verified code.' },
-  security: { model: 'claude-opus-4-6', instruction: 'You are in SECURITY mode. Analyse the request for security vulnerabilities first. Check: server authority validation, client trust issues, SQL injection, exploit paths, duplicate request handling, economy exploits, remote event abuse. Report severity (LOW/MEDIUM/HIGH/CRITICAL) for each issue found. Then write secure code with all vulnerabilities fixed.' },
-  tester: { model: 'claude-opus-4-6', instruction: 'You are in TEST mode. Write the complete script AND a comprehensive test checklist: edge cases (player disconnect mid-action, duplicate triggers, negative values, missing inventory items, server restart), common failure points, and step-by-step testing instructions. Format: Code first, then TEST CHECKLIST section.' },
+  researcher: { model: 'gemini-3-flash-preview', instruction: 'You are in RESEARCH mode. Before writing any code, search your knowledge for the most current FiveM/Roblox APIs and conventions. Cite which framework version you are using. Label anything you are uncertain about. Check for common pitfalls in this specific framework. Then write the complete verified code.' },
+  security: { model: 'gpt-5', instruction: 'You are in SECURITY mode. Analyse the request for security vulnerabilities first. Check: server authority validation, client trust issues, SQL injection, exploit paths, duplicate request handling, economy exploits, remote event abuse. Report severity (LOW/MEDIUM/HIGH/CRITICAL) for each issue found. Then write secure code with all vulnerabilities fixed.' },
+  tester: { model: 'claude-opus-4-7', instruction: 'You are in TEST mode. Write the complete script AND a comprehensive test checklist: edge cases (player disconnect mid-action, duplicate triggers, negative values, missing inventory items, server restart), common failure points, and step-by-step testing instructions. Format: Code first, then TEST CHECKLIST section.' },
 };
 
 const ROLE_RESPONSE_SCHEMAS = {
@@ -391,6 +391,10 @@ function getModelCandidates(tier) {
 
 function resolveRoute(requestedModel, requestedRole, plan) {
   const requested = normaliseRoutingInput(requestedModel);
+  const normalizedPlan = String(plan || '').trim().toLowerCase() === 'owner'
+    ? 'owner'
+    : normalisePlan(plan) || 'free';
+  const hasPrivilegedPlan = plan === 'pro' || plan === 'owner';
   const roleKey = normaliseRoutingInput(requestedRole);
   const matchedRole = Object.hasOwn(ROUTING_ROLES, roleKey) ? ROUTING_ROLES[roleKey] : undefined;
   const role = matchedRole || ROUTING_ROLES.implementer;
@@ -398,12 +402,12 @@ function resolveRoute(requestedModel, requestedRole, plan) {
   const candidate = matchedRole || roleKey ? role.model : requested;
   if (FORGE_URL && FORGE_KEY && FORGE_MODELS.has(candidate)) {
     if ((candidate === 'gpt-5' || candidate === 'gpt-5.5' || candidate === 'gemini-3.1-pro-preview' || candidate === 'claude-opus-4-7')
-      && !['pro', 'owner'].includes(plan)) {
-      return { provider: 'anthropic', tier: resolveModelTier('star', plan), role: resolvedRole, instruction: role.instruction };
+      && !hasPrivilegedPlan) {
+      return { provider: 'anthropic', tier: resolveModelTier('star', normalizedPlan), role: resolvedRole, instruction: role.instruction };
     }
-    return { provider: 'forge', model: candidate, fallbackTier: resolveModelTier('star', plan), role: resolvedRole, instruction: role.instruction };
+    return { provider: 'forge', model: candidate, fallbackTier: resolveModelTier('star', normalizedPlan), role: resolvedRole, instruction: role.instruction };
   }
-  return { provider: 'anthropic', tier: resolveModelTier(candidate, plan), role: resolvedRole, instruction: role.instruction };
+  return { provider: 'anthropic', tier: resolveModelTier(candidate, normalizedPlan), role: resolvedRole, instruction: role.instruction };
 }
 
 function normaliseMessages(messages) {

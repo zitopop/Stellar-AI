@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
 test('Task 49 exposes an accessible validated image-upload control in the workspace composer', () => {
-  assert.match(appHtml, /id="image-upload-input"[^>]*type="file"[^>]*accept="image\/png,image\/jpeg,image\/gif,image\/webp"/);
+  assert.match(appHtml, /id="image-upload-input"[^>]*type="file"[^>]*accept="image\/png,image\/jpeg,image\/gif,image\/webp,[^"]+"/);
   assert.match(appHtml, /id="image-upload-btn"[^>]*aria-label="Attach an image"/);
   assert.match(appHtml, /id="image-upload-status"[^>]*role="status"[^>]*aria-live="polite"/);
   assert.match(appHtml, /const UPLOAD_IMAGE_MAX_BYTES = 3_000_000;/);
