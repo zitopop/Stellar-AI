@@ -5829,6 +5829,13 @@
       openPlans();
     }
     async function sendMessage(retryContext = null) {
+      // Recover from an interrupted request or preflight exception that left the
+      // lock set without an active AbortController. Never strand the composer.
+      if (sendLock && !currentAbort) {
+        sendLock = false;
+        setSendControl('Send', 'Send message');
+        setGenerationStatus('Ready to build.');
+      }
       const chips = document.getElementById('suggestion-chips');
       if (chips) chips.style.display = 'none';
       const gw = document.querySelector('.greet-wrap');
