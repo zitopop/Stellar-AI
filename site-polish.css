@@ -549,3 +549,130 @@ body > .container:has(.blog-header) .cta-box {
     padding: 24px 18px !important;
   }
 }
+
+
+/* Final shared public-page polish: important content first, restrained accents everywhere. */
+:root {
+  --stellar-lavender: #cbb8ff;
+  --stellar-periwinkle: #a9c2ff;
+  --stellar-mint: #8fe8cf;
+  --stellar-coral: #efb184;
+}
+
+body {
+  background:
+    radial-gradient(circle at 84% -10%, rgba(203,184,255,.07), transparent 25rem),
+    radial-gradient(circle at 8% 18%, rgba(143,232,207,.04), transparent 22rem),
+    var(--stellar-bg) !important;
+}
+
+body > nav,
+.site-header {
+  border-bottom-color: rgba(203,184,255,.16) !important;
+}
+
+body > nav a:not(.nav-cta):not([href="/app"]),
+.site-header a:not(.button):not(.button-primary):not(.button-secondary) {
+  color: #b9b4c7;
+}
+
+body > nav a:not(.nav-cta):not([href="/app"]):hover,
+.site-header a:not(.button):not(.button-primary):not(.button-secondary):hover {
+  color: var(--stellar-ink) !important;
+}
+
+.blog-header,
+.blog-page-header,
+.guides-header,
+.page-header {
+  position: relative;
+}
+
+.blog-header::after,
+.blog-page-header::after,
+.guides-header::after,
+.page-header::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 3px;
+  margin-top: 20px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--stellar-lavender), var(--stellar-mint));
+}
+
+.blog-tag,
+.blog-header .eyebrow,
+.guides-header .eyebrow,
+.page-header .eyebrow,
+.eyebrow {
+  color: var(--stellar-mint) !important;
+}
+
+.guide-card,
+.post-card,
+.related-card,
+.card,
+.sheet,
+.cta-box,
+.tip-box,
+.callout {
+  background: linear-gradient(145deg, rgba(203,184,255,.065), rgba(255,255,255,.018)) !important;
+}
+
+.guide-card:nth-child(4n+2),
+.post-card:nth-child(4n+2),
+.related-card:nth-child(4n+2) {
+  border-color: rgba(169,194,255,.22) !important;
+}
+
+.guide-card:nth-child(4n+3),
+.post-card:nth-child(4n+3),
+.related-card:nth-child(4n+3) {
+  border-color: rgba(143,232,207,.22) !important;
+}
+
+.guide-card:nth-child(4n+4),
+.post-card:nth-child(4n+4),
+.related-card:nth-child(4n+4) {
+  border-color: rgba(239,177,132,.20) !important;
+}
+
+.back,
+.cta-btn,
+.cta-box .button,
+.page-header + .button,
+a[href="/app"].button,
+a[href="/app?welcome=1"].button {
+  background: linear-gradient(135deg, #f5f3ff, #cbb8ff) !important;
+  color: #14131d !important;
+  border-color: rgba(203,184,255,.56) !important;
+  box-shadow: 0 10px 26px rgba(203,184,255,.14) !important;
+}
+
+.back:hover,
+.cta-btn:hover,
+.cta-box .button:hover,
+a[href="/app"].button:hover,
+a[href="/app?welcome=1"].button:hover {
+  background: linear-gradient(135deg, #ffffff, #d9ceff) !important;
+  transform: translateY(-1px);
+}
+
+footer {
+  border-top-color: rgba(203,184,255,.14) !important;
+}
+
+@media (max-width: 700px) {
+  body > nav,
+  .site-header {
+    min-height: 60px;
+  }
+
+  .blog-header::after,
+  .blog-page-header::after,
+  .guides-header::after,
+  .page-header::after {
+    margin-top: 16px;
+  }
+}
