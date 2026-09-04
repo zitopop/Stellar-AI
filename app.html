@@ -577,6 +577,13 @@
       background: rgba(255,255,255,0.08) !important;
     }
 
+    .chat-list-empty {
+      padding: 10px 8px 14px;
+      color: rgba(255,255,255,.38);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
     .sidebar-item { 
       transition: all 0.2s ease;
       font-weight: 700;
@@ -4287,9 +4294,13 @@
 
     function renderChatList() {
       const s = Store.get();
-      chats = s.chats;
+      chats = Array.isArray(s.chats) ? s.chats : [];
+      // Empty drafts are temporary workspace state, not saved conversations.
+      // Filter them at render time as well as during init so legacy empty chats
+      // can never clutter the sidebar again.
+      const savedChats = chats.filter(chat => chat && Array.isArray(chat.messages) && chat.messages.length > 0);
       const searchEl = document.getElementById('search');
-      const hasChats = chats.length > 0;
+      const hasChats = savedChats.length > 0;
       if (searchEl) {
         searchEl.hidden = !hasChats;
         searchEl.setAttribute('aria-hidden', String(!hasChats));
@@ -4298,7 +4309,13 @@
       const q = (searchEl?.value || '').toLowerCase();
       const container = document.getElementById('chats-list');
       container.innerHTML = '';
-      const sorted = [...chats].sort((a, b) => (b.pinned === true) - (a.pinned === true));
+      const sorted = [...savedChats].sort((a, b) => (b.pinned === true) - (a.pinned === true));
+      if (!sorted.length) {
+        const empty = document.createElement('div');
+        empty.className = 'chat-list-empty';
+        empty.textContent = 'No saved chats yet';
+        container.appendChild(empty);
+      }
       sorted.forEach(chat => {
         if (q && !(chat.name || '').toLowerCase().includes(q)) return;
         const div = document.createElement('div');
