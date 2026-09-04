@@ -26,10 +26,11 @@
     try { return new Intl.NumberFormat(navigator.language || 'en-GB', { style: 'currency', currency, maximumFractionDigits: currency === 'JPY' || currency === 'KRW' || currency === 'HUF' ? 0 : 2 }).format(amount); }
     catch (_) { return `${currency} ${amount.toFixed(2)}`; }
   }
+  // Stripe checkout is configured in GBP for the subscription price IDs.
+  // Keep the visible plan price aligned with the payable amount; locale detection
+  // remains available for checkout metadata and future regional price tables.
   function moneyLabel(gbp) {
-    const country = detectCountry();
-    const currency = detectCurrency(country);
-    return currency === 'GBP' ? `£${Number(gbp).toFixed(2)}` : `${formatLocalFromGbp(gbp, currency)} (≈ £${Number(gbp).toFixed(2)})`;
+    return `£${Number(gbp || 0).toFixed(2)}`;
   }
   function getCheckoutLocale() { const country = detectCountry(); return { country, currency: detectCurrency(country) }; }
 
