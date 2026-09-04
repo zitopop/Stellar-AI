@@ -37,6 +37,7 @@ blog/               FiveM and Roblox guides, including competitor comparisons
 affiliate.html       FiveM server-owner and sharing information
 archive/              Historical documents, prompts, reports, and local audit material
 lib/assets/           Runtime visual assets used by the landing page
+lib/assets/pwa/        PWA favicon, app icons and splash screens
 manifest.json       installable app config
 sw.js               service worker
 vercel.json         hosting config + security headers

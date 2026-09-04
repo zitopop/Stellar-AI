@@ -6,8 +6,8 @@ const OFFLINE_URL = '/offline.html';
 const PRECACHE = [
   OFFLINE_URL,
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
+  '/lib/assets/pwa/icon-192.png',
+  '/lib/assets/pwa/icon-512.png',
 ];
 
 self.addEventListener('install', (event) => {
