@@ -33,8 +33,10 @@ Static HTML/CSS/JS · Vercel serverless functions · AI API · Stripe payments �
 app.html            the chat app
 index.html          landing page
 terms.html          terms & privacy
-blog*.html          FiveM and Roblox guides, including competitor comparisons
+blog/               FiveM and Roblox guides, including competitor comparisons
 affiliate.html       FiveM server-owner and sharing information
+archive/              Historical documents, prompts, reports, and local audit material
+lib/assets/           Runtime visual assets used by the landing page
 manifest.json       installable app config
 sw.js               service worker
 vercel.json         hosting config + security headers
