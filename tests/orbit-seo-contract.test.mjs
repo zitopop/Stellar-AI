@@ -24,7 +24,7 @@ test('blog hub is statically crawlable and uses clean canonical links',()=>{
   assert.equal(staticCards,66);
   assert.doesNotMatch(blog,/href="\/blog\/blog-/);
   assert.match(blog,/data-guide-itemlist/);
-  assert.match(blog,/66 guides available/);
+  assert.match(blog,/id="total-count">66<\/strong><span>guides available<\/span>/);
 });
 
 test('all sitemap blog URLs resolve to an on-disk canonical html file',()=>{
