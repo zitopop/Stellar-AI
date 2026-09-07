@@ -60,5 +60,27 @@
       node.textContent = `${country} · ${currency}`;
     });
   }
+
+  function loadStellarOrbit() {
+    if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
+    // Presentation-only enhancement. Failing to load it must never block chat,
+    // pricing labels, authentication, checkout, or model routing.
+    if (!document.querySelector('link[data-stellar-orbit-theme]')) {
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = '/stellar-orbit.css?v=2';
+      style.dataset.stellarOrbitTheme = 'v2';
+      document.head.appendChild(style);
+    }
+    if (!document.querySelector('script[data-stellar-orbit-ui]')) {
+      const script = document.createElement('script');
+      script.src = '/stellar-orbit.js?v=2';
+      script.defer = true;
+      script.dataset.stellarOrbitUi = 'v2';
+      document.head.appendChild(script);
+    }
+  }
+
+  loadStellarOrbit();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyCurrencyLabels, { once: true }); else applyCurrencyLabels();
 })();
