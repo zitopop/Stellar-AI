@@ -1,0 +1,367 @@
+/* Stellar Settings v4 — authoritative presentation layer for Settings only. */
+
+@media (min-width: 768px) {
+  #settings-modal {
+    padding: 24px !important;
+    background: rgba(0, 0, 0, .72) !important;
+    backdrop-filter: blur(16px) saturate(115%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(115%) !important;
+  }
+
+  #settings-modal .set-card {
+    display: flex !important;
+    flex-direction: column !important;
+    width: min(940px, calc(100vw - 56px)) !important;
+    max-width: 940px !important;
+    height: min(720px, calc(100dvh - 48px)) !important;
+    max-height: min(720px, calc(100dvh - 48px)) !important;
+    min-height: 560px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255,255,255,.11) !important;
+    border-radius: 20px !important;
+    background: #111113 !important;
+    box-shadow: 0 28px 90px rgba(0,0,0,.52) !important;
+  }
+
+  #settings-modal .set-card::before,
+  #settings-modal .set-head::before,
+  #settings-modal .set-ava-wrap,
+  #settings-modal .stellar-settings-hero {
+    display: none !important;
+  }
+
+  #settings-modal .set-head {
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 20px 24px !important;
+    border-bottom: 1px solid rgba(255,255,255,.075) !important;
+    background: #111113 !important;
+  }
+
+  #settings-modal .settings-title {
+    color: #f5f5f7 !important;
+    font-size: 21px !important;
+    font-weight: 760 !important;
+    line-height: 1.2 !important;
+    letter-spacing: -.025em !important;
+  }
+
+  #settings-modal .settings-subtitle {
+    margin-top: 3px !important;
+    color: #909099 !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    line-height: 1.45 !important;
+  }
+
+  #settings-modal .modal-x {
+    width: 34px !important;
+    height: 34px !important;
+    border: 0 !important;
+    border-radius: 9px !important;
+    color: #a6a6ad !important;
+    background: transparent !important;
+    font-size: 19px !important;
+  }
+  #settings-modal .modal-x:hover,
+  #settings-modal .modal-x:focus-visible {
+    color: #fff !important;
+    background: rgba(255,255,255,.075) !important;
+  }
+
+  #settings-modal .set-body {
+    display: grid !important;
+    grid-template-columns: 190px minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) !important;
+    column-gap: 26px !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 18px 24px 22px !important;
+    overflow: hidden !important;
+    background: #111113 !important;
+  }
+
+  #settings-modal .set-tabs {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: stretch !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 18px 0 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-right: 1px solid rgba(255,255,255,.075) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  #settings-modal .set-tab {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    padding: 0 11px !important;
+    border: 1px solid transparent !important;
+    border-radius: 9px !important;
+    color: #a1a1aa !important;
+    background: transparent !important;
+    font-size: 13px !important;
+    font-weight: 590 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0 !important;
+    text-align: left !important;
+    transform: none !important;
+  }
+  #settings-modal .set-tab i {
+    display: grid !important;
+    width: 19px !important;
+    height: 19px !important;
+    flex: 0 0 19px !important;
+    place-items: center !important;
+    color: #898993 !important;
+  }
+  #settings-modal .set-tab i .ic {
+    width: 17px !important;
+    height: 17px !important;
+  }
+  #settings-modal .set-tab:hover,
+  #settings-modal .set-tab:focus-visible {
+    color: #ededf0 !important;
+    border-color: transparent !important;
+    background: rgba(255,255,255,.055) !important;
+    transform: none !important;
+  }
+  #settings-modal .set-tab.active {
+    color: #fff !important;
+    border-color: rgba(255,255,255,.06) !important;
+    background: #252528 !important;
+    box-shadow: none !important;
+  }
+  #settings-modal .set-tab.active i { color: #d6d6dc !important; }
+
+  #settings-modal .set-panel {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    padding: 2px 5px 12px 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255,255,255,.16) transparent !important;
+  }
+  #settings-modal .set-panel::-webkit-scrollbar { width: 8px !important; }
+  #settings-modal .set-panel::-webkit-scrollbar-track { background: transparent !important; }
+  #settings-modal .set-panel::-webkit-scrollbar-thumb {
+    border: 2px solid transparent !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,.16) !important;
+    background-clip: padding-box !important;
+  }
+
+  #settings-modal .profile-head {
+    margin: 0 0 22px !important;
+    padding: 15px !important;
+    border: 1px solid rgba(255,255,255,.085) !important;
+    border-radius: 12px !important;
+    background: #171719 !important;
+    box-shadow: none !important;
+  }
+  #settings-modal .profile-av {
+    width: 42px !important;
+    height: 42px !important;
+    border: 1px solid rgba(255,255,255,.10) !important;
+    background: #222225 !important;
+    box-shadow: none !important;
+    font-size: 14px !important;
+  }
+  #settings-modal .profile-name {
+    color: #f2f2f4 !important;
+    font-size: 14px !important;
+    font-weight: 680 !important;
+  }
+  #settings-modal .profile-sub {
+    margin-top: 2px !important;
+    color: #8f8f98 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+  }
+
+  #settings-modal .set-label {
+    margin: 22px 2px 8px !important;
+    color: #b9b9c0 !important;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+  }
+  #settings-modal .set-label:first-child { margin-top: 0 !important; }
+
+  #settings-modal .set-group,
+  #settings-modal .set-collapsible {
+    gap: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255,255,255,.085) !important;
+    border-radius: 12px !important;
+    background: #171719 !important;
+    box-shadow: none !important;
+  }
+
+  #settings-modal .set-item {
+    min-height: 56px !important;
+    padding: 12px 14px !important;
+    gap: 14px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+  #settings-modal .set-item + .set-item {
+    border-top: 1px solid rgba(255,255,255,.065) !important;
+  }
+  #settings-modal .set-item:hover { background: rgba(255,255,255,.035) !important; }
+
+  #settings-modal .set-key {
+    min-width: 0 !important;
+    color: #ececef !important;
+    font-size: 13.5px !important;
+    font-weight: 560 !important;
+    line-height: 1.35 !important;
+  }
+  #settings-modal .sk-ico {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 8px !important;
+  }
+  #settings-modal .set-val {
+    max-width: 58% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    color: #9898a1 !important;
+    background: transparent !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    text-align: right !important;
+  }
+  #settings-modal .set-chev {
+    color: #777780 !important;
+    font-size: 20px !important;
+  }
+
+  #settings-modal .seg-wrap {
+    min-height: 36px !important;
+    padding: 3px !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+    border-radius: 9px !important;
+    background: #101012 !important;
+  }
+  #settings-modal .seg {
+    min-height: 30px !important;
+    padding: 0 10px !important;
+    border-radius: 7px !important;
+    color: #9b9ba4 !important;
+    font-size: 11.5px !important;
+    font-weight: 560 !important;
+  }
+  #settings-modal .seg.active,
+  #settings-modal .seg.on {
+    color: #fff !important;
+    background: #303034 !important;
+    box-shadow: none !important;
+  }
+
+  #settings-modal .set-note,
+  #settings-modal .set-signedout {
+    border: 1px solid rgba(255,255,255,.075) !important;
+    border-radius: 10px !important;
+    color: #96969f !important;
+    background: #151517 !important;
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+  }
+
+  #settings-modal :focus-visible {
+    outline: 2px solid rgba(126,232,209,.75) !important;
+    outline-offset: 2px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1050px) {
+  #settings-modal { padding: 18px !important; }
+  #settings-modal .set-card {
+    width: min(850px, calc(100vw - 36px)) !important;
+    height: min(680px, calc(100dvh - 36px)) !important;
+    max-height: min(680px, calc(100dvh - 36px)) !important;
+    min-height: 520px !important;
+  }
+  #settings-modal .set-body {
+    grid-template-columns: 166px minmax(0,1fr) !important;
+    column-gap: 20px !important;
+    padding: 16px 20px 20px !important;
+  }
+  #settings-modal .set-tabs { padding-right: 14px !important; }
+  #settings-modal .set-tab { font-size: 12.5px !important; }
+}
+
+@media (min-width: 1400px) {
+  #settings-modal .set-card {
+    width: min(1000px, calc(100vw - 96px)) !important;
+    max-width: 1000px !important;
+    height: min(760px, calc(100dvh - 64px)) !important;
+    max-height: min(760px, calc(100dvh - 64px)) !important;
+  }
+  #settings-modal .set-body {
+    grid-template-columns: 205px minmax(0,1fr) !important;
+    column-gap: 30px !important;
+    padding: 20px 28px 26px !important;
+  }
+}
+
+body.light #settings-modal .set-card,
+body.light #settings-modal .set-head,
+body.light #settings-modal .set-body { background: #fff !important; }
+body.light #settings-modal .set-tabs { border-right-color: rgba(0,0,0,.09) !important; }
+body.light #settings-modal .settings-title,
+body.light #settings-modal .set-key,
+body.light #settings-modal .profile-name { color: #202124 !important; }
+body.light #settings-modal .settings-subtitle,
+body.light #settings-modal .profile-sub,
+body.light #settings-modal .set-val { color: #707078 !important; }
+body.light #settings-modal .set-tab { color: #66666d !important; }
+body.light #settings-modal .set-tab:hover { color: #202124 !important; background: #f3f3f4 !important; }
+body.light #settings-modal .set-tab.active { color: #202124 !important; background: #ececee !important; border-color: #e2e2e4 !important; }
+body.light #settings-modal .profile-head,
+body.light #settings-modal .set-group,
+body.light #settings-modal .set-collapsible,
+body.light #settings-modal .set-note,
+body.light #settings-modal .set-signedout { border-color: #e5e5e7 !important; background: #fafafa !important; }
+body.light #settings-modal .set-item + .set-item { border-top-color: #e8e8ea !important; }
+body.light #settings-modal .set-item:hover { background: #f5f5f6 !important; }
+body.light #settings-modal .seg-wrap { border-color: #e1e1e4 !important; background: #f3f3f4 !important; }
+body.light #settings-modal .seg.active,
+body.light #settings-modal .seg.on { color: #202124 !important; background: #fff !important; box-shadow: 0 1px 3px rgba(0,0,0,.08) !important; }
+
+@media (max-width: 767px) {
+  /* Mobile stays with the existing bottom-sheet layout. */
+  #settings-modal .stellar-settings-hero { display: none !important; }
+}
