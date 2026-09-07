@@ -1,0 +1,108 @@
+name: Verify live Stellar app interaction hotfix v2
+
+on:
+  push:
+    branches:
+      - audit/app-interaction-hotfix-v2
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium
+      - name: Exercise production UI in Chromium
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          const sleep = ms => new Promise(r => setTimeout(r, ms));
+          const hard = (promise, ms, label) => Promise.race([
+            promise,
+            sleep(ms).then(() => { throw new Error(`TIMEOUT ${label} ${ms}ms`); })
+          ]);
+          let browser;
+          async function timerCheck(page, label) {
+            const delay = await hard(page.evaluate(() => new Promise(resolve => {
+              const start = performance.now();
+              setTimeout(() => resolve(performance.now() - start), 60);
+            })), 2500, label);
+            console.log(`${label}: ${delay.toFixed(1)}ms`);
+            if (delay > 750) throw new Error(`${label} main-thread delay ${delay}ms`);
+          }
+          async function run() {
+            browser = await chromium.launch({ headless:true });
+            const page = await browser.newPage({ viewport:{ width:1440, height:900 } });
+            page.setDefaultTimeout(3000);
+            const pageErrors=[];
+            page.on('pageerror', e => pageErrors.push(String(e)));
+            page.on('console', m => { if (m.type()==='error') console.log('console-error:',m.text()); });
+
+            console.log('STAGE goto');
+            await hard(page.goto('https://trystellarai.com/app', { waitUntil:'domcontentloaded', timeout:15000 }), 18000, 'goto');
+            await page.waitForTimeout(1000);
+
+            console.log('STAGE health');
+            const health = await hard(page.evaluate(() => ({ growth:window.__stellarGrowthHealth || null, orbit:window.__stellarOrbitHealth || null })), 2500, 'health');
+            console.log('health:', JSON.stringify(health));
+            if (health.growth?.version !== 'safe-v2' || health.growth?.observers !== 0) throw new Error('growth hotfix missing '+JSON.stringify(health.growth));
+            if (health.orbit?.version !== 'safe-v4' || health.orbit?.observers !== 0) throw new Error('orbit hotfix missing '+JSON.stringify(health.orbit));
+            await timerCheck(page,'timer-before-interaction');
+
+            console.log('STAGE guest-overlay');
+            const guest = page.getByRole('button', { name:'Continue without signing in' });
+            const guestVisible = await hard(guest.isVisible().catch(() => false), 1500, 'guest-visible');
+            console.log('guest-visible:', guestVisible);
+            if (guestVisible) {
+              await hard(guest.click({ timeout:2500 }), 3000, 'guest-click');
+              await page.waitForTimeout(250);
+            }
+
+            console.log('STAGE prompt');
+            const input = page.locator('#txt');
+            await hard(input.click({ timeout:2500 }), 3000, 'prompt-click');
+            await hard(input.fill('Stellar interaction audit'), 3000, 'prompt-fill');
+            if ((await input.inputValue()) !== 'Stellar interaction audit') throw new Error('prompt did not accept input');
+            await input.fill('');
+
+            console.log('STAGE model-picker');
+            const modelButton = page.locator('#model-btn');
+            await hard(modelButton.click({ timeout:2500 }), 3000, 'model-click');
+            await page.waitForTimeout(150);
+            const panel = page.locator('.stellar-reasoning-panel');
+            if (!(await hard(panel.isVisible().catch(() => false),1500,'panel-visible'))) throw new Error('reasoning panel did not open');
+            await hard(page.locator('[data-growth-level="smart"]').click({ timeout:2500 }),3000,'star-click');
+            await page.keyboard.press('Escape').catch(() => {});
+            await page.waitForTimeout(100);
+
+            console.log('STAGE new-build');
+            await hard(page.locator('#sidebar .side-new').click({ timeout:2500 }),3000,'new-build-click');
+
+            console.log('STAGE projects');
+            const createProject = page.locator('[data-new-project]');
+            if (!(await hard(createProject.isVisible().catch(() => false),1500,'project-button-visible'))) throw new Error('Projects control not visible');
+
+            console.log('STAGE final-responsiveness');
+            await timerCheck(page,'timer-after-interaction');
+            const pointer = await hard(page.evaluate(() => getComputedStyle(document.body).pointerEvents),2000,'pointer');
+            console.log('body-pointer-events:', pointer);
+            if (pointer === 'none') throw new Error('body pointer events disabled');
+
+            const fatal = pageErrors.filter(e => /maximum call stack|too much recursion|out of memory|mutation/i.test(e));
+            if (fatal.length) throw new Error('fatal page errors: '+fatal.join(' | '));
+            if (pageErrors.length) console.log('nonfatal-page-errors:', pageErrors.join(' | '));
+            console.log('LIVE APP INTERACTION AUDIT PASSED');
+          }
+          hard(run(),45000,'whole-audit')
+            .then(async()=>{ if(browser) await browser.close(); })
+            .catch(async e=>{ console.error(e); if(browser) await browser.close().catch(()=>{}); process.exit(1); });
+          NODE
