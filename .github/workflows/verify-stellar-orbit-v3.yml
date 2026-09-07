@@ -1,0 +1,41 @@
+name: Verify Stellar Orbit v3
+
+on:
+  push:
+    branches:
+      - ui/stellar-orbit-sidebar-v3
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax and contract checks
+        run: |
+          node --check stellar-orbit.js
+          node <<'NODE'
+          const fs=require('fs');
+          const js=fs.readFileSync('stellar-orbit.js','utf8');
+          const css=fs.readFileSync('stellar-orbit.css','utf8');
+          const extras=fs.readFileSync('stellar-orbit-extras.css','utf8');
+          const app=fs.readFileSync('app.html','utf8');
+          for(const token of ['Spark','Star','Comet','Nova','Fast','Balanced','Deep','Max','stellar-power-meter','stellar-orbit-primary','stellar-settings-hero']) {
+            if(!js.includes(token) && !css.includes(token) && !extras.includes(token)) throw new Error('Missing Orbit contract: '+token);
+          }
+          if(!app.includes('/stellar-orbit.css?v=2') || !app.includes('/stellar-orbit-extras.css?v=2') || !app.includes('/stellar-orbit.js?v=2')) throw new Error('App no longer loads Orbit assets directly');
+          if(!css.includes('@media (max-width: 767px)')) throw new Error('Missing mobile sidebar/model rules');
+          if(!css.includes('prefers-reduced-motion')) throw new Error('Missing reduced-motion handling');
+          for(const forbidden of ['create-checkout','STRIPE_SECRET','API_KEY','walletBalance','authToken']) {
+            if(js.includes(forbidden)) throw new Error('Sensitive/backend mutation token found in Orbit JS: '+forbidden);
+          }
+          console.log('Orbit UI contract checks passed');
+          NODE
+      - name: Existing workspace accessibility regressions
+        run: |
+          node --test tests/workspace-accessibility.test.mjs tests/app-image-upload.test.mjs
