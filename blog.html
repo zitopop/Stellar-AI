@@ -1,105 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-  <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>FiveM & Roblox Guides | Stellar AI</title>
-  <meta name="description" content="Practical FiveM QBCore and Roblox scripting guides from Stellar AI. Learn how to plan, secure, test and improve game systems without the clutter.">
-  <meta name="keywords" content="fivem guides, qbcore tutorial, roblox scripting guide, roblox simulator game, fivem lua scripts, qbcore police job">
-  <meta property="og:title" content="FiveM & Roblox Guides | Stellar AI">
-  <meta property="og:description" content="Clear FiveM and Roblox scripting guides for building, testing and fixing game systems.">
-  <meta property="og:image" content="https://trystellarai.com/og-image.png">
-  <meta property="og:url" content="https://trystellarai.com/blog">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://trystellarai.com/blog">
-  <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#09090b;color:#f4f4f5;font-family:Manrope,system-ui,sans-serif}a{color:inherit;text-decoration:none}
-    nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;min-height:66px;padding:12px max(20px,5vw);border-bottom:1px solid rgba(255,255,255,.10);background:rgba(9,9,11,.88);backdrop-filter:blur(16px)}
-    .nav-logo{font-size:16px;font-weight:800;letter-spacing:-.04em}.nav-logo span{color:#b8eee4}.nav-cta{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border-radius:999px;background:#b8eee4;color:#101414;font-size:13px;font-weight:800}
-    .guide-hub{width:min(calc(100% - 40px),1040px);margin:auto;padding:82px 0 96px}
-    .hub-hero{max-width:720px;margin-bottom:60px}.eyebrow{color:#a8e8dc;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.hub-hero h1{margin:12px 0 18px;font-size:clamp(42px,7vw,72px);line-height:.98;letter-spacing:-.065em}.hub-hero p{max-width:600px;margin:0;color:#b0b0b8;font-size:17px;line-height:1.7}
-    .hub-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.hub-links a{padding:8px 12px;border:1px solid rgba(255,255,255,.13);border-radius:999px;color:#d4d4d8;background:#111114;font-size:12px;font-weight:700}
-    .guide-section{padding:42px 0;border-top:1px solid rgba(255,255,255,.10)}.guide-section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px}.guide-section h2{margin:0;font-size:clamp(25px,4vw,34px);letter-spacing:-.045em}.guide-section-head p{max-width:410px;margin:0;color:#8f8f98;font-size:13px;line-height:1.55;text-align:right}
-    .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.guide-card{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;min-height:128px;padding:20px;border:1px solid rgba(255,255,255,.11);border-radius:16px;background:#111114;transition:transform .18s ease,border-color .18s ease,background .18s ease}.guide-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.24);background:#17171b}.guide-card b{display:block;margin-bottom:7px;color:#f4f4f5;font-size:15px;line-height:1.35}.guide-card span{display:block;color:#a1a1aa;font-size:12px;line-height:1.55}.guide-card i{flex:none;color:#70d6c1;font-style:normal;font-size:17px}.guide-card.roblox i{color:#cbb8ff}.guide-card.compare i{color:#e7c77a}
-    .hub-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:48px;padding:28px;border:1px solid rgba(112,214,193,.25);border-radius:18px;background:linear-gradient(135deg,rgba(112,214,193,.08),rgba(203,184,255,.05))}.hub-cta h2{margin:0 0 6px;font-size:23px;letter-spacing:-.04em}.hub-cta p{margin:0;color:#a1a1aa;font-size:13px}.hub-cta a{flex:none;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 19px;border-radius:999px;background:#b8eee4;color:#101414;font-size:13px;font-weight:800}
-    footer{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px max(20px,5vw);border-top:1px solid rgba(255,255,255,.10);color:#8f8f98;font-size:12px}.footer-links{display:flex;flex-wrap:wrap;gap:14px}.footer-links a:hover{color:#f4f4f5}
-    @media(max-width:700px){.guide-hub{width:min(calc(100% - 32px),1040px);padding:54px 0 68px}.hub-hero{margin-bottom:42px}.hub-hero h1{font-size:clamp(38px,12vw,56px)}.hub-hero p{font-size:15px}.guide-section{padding:34px 0}.guide-section-head{display:block}.guide-section-head p{margin-top:8px;text-align:left}.guide-grid{grid-template-columns:1fr}.guide-card{min-height:0;padding:18px}.hub-cta{display:block;padding:22px}.hub-cta a{width:100%;margin-top:18px}footer{align-items:flex-start;flex-direction:column}}
-    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
-</head>
-<body>
-  <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-  <main class="guide-hub">
-    <header class="hub-hero">
-      <div class="eyebrow">Build guides</div>
-      <h1>Build with a clearer plan.</h1>
-      <p>Short, practical guides for FiveM and Roblox systems.</p>
-      <div class="hub-links" aria-label="Guide categories"><a href="#fivem">FiveM</a><a href="#roblox">Roblox</a><a href="#compare">Compare</a></div>
-    </header>
-
-    <section class="guide-section" id="fivem">
-      <div class="guide-section-head"><h2>FiveM</h2><p>QBCore systems, server logic and safer releases.</p></div>
-      <div class="guide-grid">
-        <a class="guide-card" href="/blog/qbcore-police-job-script-free"><div><b>QBCore Police Job Script Free</b><span>Structure, validate and test the resource.</span></div><i>→</i></a>
-        <a class="guide-card" href="/blog/qbcore-mechanic-job-script"><div><b>QBCore mechanic job script</b><span>Duty, repairs, payments and garages.</span></div><i>→</i></a>
-        <a class="guide-card" href="/blog/fivem-drug-dealer-script"><div><b>FiveM drug dealer script</b><span>A controlled dealer loop with server checks.</span></div><i>→</i></a>
-        <a class="guide-card" href="/blog/common-fivem-errors-guide"><div><b>Fix common FiveM errors</b><span>Fix load order, exports and dependencies faster.</span></div><i>→</i></a>
-      </div>
-    </section>
-
-    <section class="guide-section" id="roblox">
-      <div class="guide-section-head"><h2>Roblox</h2><p>Luau systems, progression and server-safe game loops.</p></div>
-      <div class="guide-grid">
-        <a class="guide-card roblox" href="/blog/roblox-simulator-script-lua"><div><b>Roblox simulator script Lua</b><span>Currency, upgrades, rebirths and saving.</span></div><i>→</i></a>
-        <a class="guide-card roblox" href="/blog/roblox-tapping-simulator-script"><div><b>Roblox Tapping Simulator Script</b><span>Secure taps, progression and saved data.</span></div><i>→</i></a>
-        <a class="guide-card roblox" href="/blog/roblox-datastore-tutorial"><div><b>Roblox DataStore guide</b><span>Reliable saves and failure handling.</span></div><i>→</i></a>
-        <a class="guide-card roblox" href="/blog/roblox-remote-events-tutorial"><div><b>Roblox RemoteEvents</b><span>Server checks for safer remotes.</span></div><i>→</i></a>
-      </div>
-    </section>
-
-    <section class="guide-section" id="compare">
-      <div class="guide-section-head"><h2>Compare</h2><p>See how Stellar fits your build workflow.</p></div>
-      <div class="guide-grid">
-        <a class="guide-card compare" href="/blog/stellar-ai-vs-enderdevelopment"><div><b>Stellar AI vs EnderDevelopment</b><span>Compare supported games, usage models, files and pricing.</span></div><i>→</i></a>
-        <a class="guide-card compare" href="/blog/stellar-ai-vs-swisserai-qbcore-roblox"><div><b>Stellar AI vs SwisserAI</b><span>A source-linked comparison for FiveM and Roblox builders.</span></div><i>→</i></a>
-        <a class="guide-card compare" href="/#comparison"><div><b>Stellar AI vs other AI tools</b><span>Compare a focused game-scripting workspace with broad coding assistants.</span></div><i>→</i></a>
-      </div>
-    </section>
-
-    <section class="hub-cta" aria-label="Try Stellar AI"><div><h2>Ready to build?</h2><p>Start with free credit. No card required.</p></div><a href="/app?welcome=1">Open Stellar →</a></section>
-  </main>
-  <footer><span>© 2026 Stellar AI</span><div class="footer-links"><a href="/">Home</a><a href="/app">App</a><a href="/terms.html">Terms</a><a href="mailto:support@trystellarai.com">Support</a></div></footer>
-</body>
-</html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Roblox & FiveM Development Guides | Stellar AI</title>
+<meta name="description" content="Practical Roblox Luau and FiveM development guides from Stellar AI: game systems, QBCore, ESX, security, DataStores, RemoteEvents and AI-assisted workflows.">
+<link rel="canonical" href="https://trystellarai.com/blog"><link rel="manifest" href="/manifest.json"><link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#09090b;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}a{color:inherit;text-decoration:none}.wrap{width:min(1100px,calc(100% - 36px));margin:auto}nav{position:sticky;top:0;z-index:5;background:rgba(9,9,11,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.09)}.nav{height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900}.brand i{font-style:normal;color:#69dbc0}.cta{padding:10px 15px;border-radius:10px;background:#fff;color:#09090b;font-size:13px;font-weight:800}.hero{padding:78px 0 48px}.eyebrow{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#9f94ff;font-weight:900}.hero h1{font-size:clamp(42px,7vw,72px);line-height:.98;letter-spacing:-3px;margin:12px 0 18px;max-width:820px}.hero p{max-width:650px;color:#aaaab5;font-size:17px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:25px}.chips a{padding:8px 11px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:#121216;color:#d7d7de;font-size:12px;font-weight:700}.featured{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:26px 0 60px}.feature{padding:22px;border:1px solid rgba(255,255,255,.11);border-radius:17px;background:#111116}.feature small{color:#76dcc4;text-transform:uppercase;font-weight:900;letter-spacing:1px}.feature h2{font-size:21px;line-height:1.15;margin:9px 0}.feature p{color:#a6a6b0;font-size:13px}.section{padding:42px 0;border-top:1px solid rgba(255,255,255,.09)}.section-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:18px}.section h2{font-size:30px;letter-spacing:-1px;margin:0}.section-head p{color:#888895;font-size:13px;max-width:430px;text-align:right}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.card{padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:#111116;display:flex;justify-content:space-between;gap:20px}.card b{display:block;font-size:15px;margin-bottom:5px}.card span{color:#a6a6af;font-size:12px}.arrow{color:#8176ef;font-weight:900}.end{margin:58px 0 80px;padding:30px;border:1px solid rgba(129,118,239,.27);border-radius:18px;background:#111116;text-align:center}.end h2{font-size:30px;margin:0 0 9px}.end p{color:#a4a4af}.end .cta{display:inline-flex;margin-top:10px}footer{border-top:1px solid rgba(255,255,255,.09);padding:28px 0;color:#858592;font-size:12px}.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.links{display:flex;gap:15px;flex-wrap:wrap}@media(max-width:780px){.featured{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.section-head{display:block}.section-head p{text-align:left;margin-top:7px}.hero{padding-top:54px}.hero h1{letter-spacing:-2px}}
+</style></head><body>
+<nav><div class="wrap nav"><a class="brand" href="/"><i>✦</i> Stellar AI</a><a class="cta" href="/app?welcome=1">Try free →</a></div></nav>
+<main class="wrap"><header class="hero"><div class="eyebrow">Developer guides</div><h1>Build Roblox and FiveM systems with fewer blind spots.</h1><p>Practical guides for planning, securing, testing and improving game systems—plus focused AI-assisted workflows you can actually use inside Stellar.</p><div class="chips"><a href="#roblox">Roblox</a><a href="#fivem">FiveM</a><a href="#security">Security</a><a href="#ai">AI workflows</a></div></header>
+<section class="featured" aria-label="Featured guides"><a class="feature" href="/blog/roblox-ai-game-builder"><small>New · Roblox</small><h2>How to use AI to build a Roblox game without vibe-coding it</h2><p>Architecture, server authority, testing, project files and how to turn a big brief into staged implementation.</p></a><a class="feature" href="/blog/fivem-ai-script-generator"><small>New · FiveM</small><h2>FiveM AI script generator: what a production-ready workflow should include</h2><p>Go beyond one Lua snippet: fxmanifest, client/server separation, config, security and private testing.</p></a><a class="feature" href="/blog/qbcore-ai-script-generator"><small>New · QBCore</small><h2>QBCore AI script generator: build jobs and systems with server-side checks</h2><p>A practical structure for jobs, inventories, payments, events and framework-aware validation.</p></a></section>
+<section class="section" id="roblox"><div class="section-head"><h2>Roblox</h2><p>Luau, DataStores, RemoteEvents, progression and systems that keep the server authoritative.</p></div><div class="grid"><a class="card" href="/blog/roblox-ai-game-builder"><div><b>AI Roblox game builder workflow</b><span>Build large projects in milestones instead of generating a giant untested code dump.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/roblox-datastore-tutorial"><div><b>Roblox DataStore guide</b><span>Reliable saves, retries and safer player progression.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/roblox-remote-events-tutorial"><div><b>Roblox RemoteEvents</b><span>Validate client requests on the server and reduce exploit surface.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/roblox-gamepass-script"><div><b>Roblox Game Pass scripting</b><span>Ownership checks, purchase prompts and server-side entitlements.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/roblox-simulator-script-lua"><div><b>Roblox simulator script architecture</b><span>Currency, upgrades, rebirths and persistence.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/roblox-gui-tutorial"><div><b>Roblox GUI guide</b><span>Build interfaces that stay usable on PC, mobile and controller.</span></div><div class="arrow">→</div></a></div></section>
+<section class="section" id="fivem"><div class="section-head"><h2>FiveM</h2><p>QBCore, ESX and standalone resources with clearer client/server boundaries and safer releases.</p></div><div class="grid"><a class="card" href="/blog/fivem-ai-script-generator"><div><b>FiveM AI script generator workflow</b><span>From brief to complete resource files and private testing.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/qbcore-ai-script-generator"><div><b>QBCore AI script generator workflow</b><span>Plan jobs, permissions, rewards and events around server-side checks.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/qbcore-police-job-script-free"><div><b>QBCore police job</b><span>Structure a police resource before you install it.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/qbcore-mechanic-job-script"><div><b>QBCore mechanic job</b><span>Duty, repairs, payments and garages.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/common-fivem-errors-guide"><div><b>Common FiveM errors</b><span>Diagnose exports, dependencies and load-order problems.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/fivem-server-optimisation"><div><b>FiveM server optimisation</b><span>Measure resource cost before guessing at performance fixes.</span></div><div class="arrow">→</div></a></div></section>
+<section class="section" id="security"><div class="section-head"><h2>Security & testing</h2><p>Generated code still needs validation, private tests and a rollback path.</p></div><div class="grid"><a class="card" href="/blog/fivem-anticheat-guide"><div><b>FiveM anti-cheat fundamentals</b><span>Reduce trust in client-supplied state and design layered checks.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/roblox-remote-events-tutorial"><div><b>Roblox remote security</b><span>Keep money, inventory and damage decisions on the server.</span></div><div class="arrow">→</div></a></div></section>
+<section class="section" id="ai"><div class="section-head"><h2>AI-assisted development</h2><p>Use AI for planning, implementation and review without pretending generated code is automatically production-ready.</p></div><div class="grid"><a class="card" href="/blog/stellar-ai-vs-enderdevelopment"><div><b>Stellar AI vs EnderDevelopment</b><span>Compare the workflows and where each tool fits.</span></div><div class="arrow">→</div></a><a class="card" href="/blog/stellar-ai-vs-swisserai-qbcore-roblox"><div><b>Stellar AI vs SwisserAI</b><span>A source-linked comparison for FiveM and Roblox builders.</span></div><div class="arrow">→</div></a></div></section>
+<section class="end"><h2>Have a real project to build?</h2><p>Open Stellar with a Roblox or FiveM starter and turn the guide into actual project files.</p><a class="cta" href="/app?welcome=1">Start building free →</a></section></main>
+<footer><div class="wrap foot"><span>© 2026 Stellar AI</span><div class="links"><a href="/">Home</a><a href="/app">App</a><a href="/terms.html">Terms</a><a href="mailto:support@trystellarai.com">Support</a></div></div></footer></body></html>
