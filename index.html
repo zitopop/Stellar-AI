@@ -3,584 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Generate complete FiveM QBCore, ESX and Roblox scripts with conversational AI. Start free.">
-  <title>FiveM & Roblox AI Script Generator | Stellar AI</title>
+  <meta name="description" content="Stellar AI is an AI development workspace for Roblox Luau and FiveM. Plan systems, generate complete project files, fix code and keep iterating from one workspace. Start free.">
+  <meta name="theme-color" content="#0a0a0d">
+  <meta property="og:title" content="Stellar AI — AI development workspace for Roblox & FiveM">
+  <meta property="og:description" content="Turn a game brief into organised Roblox Luau or FiveM project files, then keep fixing and improving them in one workspace.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://trystellarai.com/">
+  <meta property="og:image" content="https://trystellarai.com/og-image.png">
+  <link rel="canonical" href="https://trystellarai.com/">
   <link rel="icon" href="/favicon.png">
   <link rel="manifest" href="/manifest.json">
+  <title>Roblox & FiveM AI Development Workspace | Stellar AI</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: #0a0a0a;
-      color: rgba(255,255,255,0.75);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
+    :root {
+      --bg:#09090b; --panel:#111116; --panel2:#15151b; --line:rgba(255,255,255,.09);
+      --text:#f7f7fb; --muted:#a7a7b5; --soft:#777786; --accent:#8b7cff; --accent2:#62d7ba;
+      --max:1120px;
     }
-
-    /* NAV */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: #0a0a0a;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      padding: 0 24px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-brand {
-      font-size: 16px;
-      font-weight: 800;
-      color: #ffffff;
-      text-decoration: none;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 24px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: rgba(255,255,255,0.45);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .nav-links a:hover { color: #fff; }
-
-    .nav-cta {
-      background: #ffffff !important;
-      color: #000000 !important;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .nav-cta { display: block; }
-    }
-
-    /* HERO */
-    .hero {
-      max-width: 640px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 90px 24px 70px;
-    }
-
-    .hero-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,0.3);
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-
-    .hero h1 {
-      font-size: clamp(32px, 6vw, 56px);
-      font-weight: 900;
-      color: #ffffff;
-      line-height: 1.05;
-      letter-spacing: -1px;
-      margin-bottom: 20px;
-    }
-
-    .hero p {
-      font-size: 17px;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 32px;
-      max-width: 440px;
-      margin-inline: auto;
-    }
-
-    .hero-btns {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      background: #ffffff;
-      color: #000000;
-      padding: 13px 24px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-primary:hover { background: rgba(255,255,255,0.88); }
-
-    .btn-secondary {
-      background: transparent;
-      color: rgba(255,255,255,0.55);
-      padding: 13px 24px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.12);
-      display: inline-block;
-    }
-    .btn-secondary:hover { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); }
-
-    .hero-badges {
-      margin-top: 20px;
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .hero-badge {
-      font-size: 12px;
-      color: rgba(255,255,255,0.3);
-    }
-
-    /* SECTION */
-    section {
-      padding: 70px 24px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,0.25);
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    section h2 {
-      font-size: clamp(24px, 4vw, 38px);
-      font-weight: 800;
-      color: #ffffff;
-      text-align: center;
-      margin-bottom: 40px;
-      line-height: 1.15;
-    }
-
-    /* FEATURE GRID */
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
-    @media (max-width: 768px) { .grid-3 { grid-template-columns: 1fr; } }
-
-    .card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      padding: 24px;
-    }
-    .card h3 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 8px;
-    }
-    .card p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.45);
-      line-height: 1.6;
-    }
-
-    /* PLANS */
-    .plans-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-top: 16px;
-    }
-    @media (max-width: 900px) { .plans-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 560px) { .plans-grid { grid-template-columns: 1fr; } }
-
-    .plan-card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .plan-name {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,0.35);
-      text-transform: uppercase;
-    }
-
-    .plan-price {
-      font-size: 32px;
-      font-weight: 900;
-      color: #ffffff;
-      line-height: 1;
-    }
-    .plan-period { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 2px; }
-
-    .plan-desc {
-      font-size: 12px;
-      color: rgba(255,255,255,0.4);
-      line-height: 1.5;
-      flex: 1;
-    }
-
-    .plan-features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .plan-features li {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-    }
-    .plan-features li::before { content: "✓ "; color: rgba(255,255,255,0.35); }
-
-    .plan-btn {
-      display: block;
-      text-align: center;
-      padding: 11px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      background: #ffffff;
-      color: #000000;
-    }
-    .plan-btn:hover { background: rgba(255,255,255,0.88); }
-    .plan-btn-ghost {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.45);
-    }
-
-    /* DIVIDER */
-    .divider {
-      border: none;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      margin: 0 24px;
-    }
-
-    /* FAQ */
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-    .faq-item {
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding: 18px 0;
-    }
-    .faq-item h3 {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 8px;
-    }
-    .faq-item p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-    }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 40px 24px;
-      max-width: 1000px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    footer span { font-size: 12px; color: rgba(255,255,255,0.25); }
-    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-    .footer-links a { font-size: 12px; color: rgba(255,255,255,0.3); text-decoration: none; }
-    .footer-links a:hover { color: rgba(255,255,255,0.6); }
-  
-    /* ═══════════════════════════════════
-       MOBILE & TABLET
-    ═══════════════════════════════════ */
-
-    /* Phone (up to 640px) */
-    @media (max-width: 640px) {
-      nav { padding: 0 16px; }
-      .nav-links { display: none !important; }
-      #mobile-cta { display: block !important; }
-
-      .hero { padding: 60px 16px 50px; }
-      .hero h1 { font-size: 32px; letter-spacing: -0.5px; }
-      .hero p { font-size: 15px; }
-      .hero-btns { flex-direction: column; align-items: center; }
-      .btn-primary, .btn-secondary { width: 100%; text-align: center; }
-      .hero-badges { gap: 8px; }
-
-      section { padding: 50px 16px; }
-      section h2 { font-size: 24px; }
-
-      .grid-3 { grid-template-columns: 1fr !important; gap: 10px; }
-      .plans-grid { grid-template-columns: 1fr !important; gap: 10px; }
-
-      .card { padding: 18px; }
-      .plan-card { padding: 18px; }
-      .plan-price { font-size: 28px; }
-
-      .faq-item h3 { font-size: 13px; }
-      .faq-item p { font-size: 12px; }
-
-      footer { 
-        flex-direction: column; 
-        align-items: flex-start;
-        padding: 30px 16px;
-        gap: 16px;
-      }
-      .footer-links { gap: 14px; }
-
-      .divider { margin: 0 16px; }
-    }
-
-    /* Tablet (641px to 900px) */
-    @media (min-width: 641px) and (max-width: 900px) {
-      .hero { padding: 70px 24px 60px; }
-      .hero h1 { font-size: 42px; }
-
-      .grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
-      .plans-grid { grid-template-columns: repeat(2, 1fr) !important; }
-
-      section { padding: 60px 24px; }
-    }
-</style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;line-height:1.55}
+    a{color:inherit}
+    img{display:block;max-width:100%}
+    .skip-link{position:absolute;left:14px;top:10px;z-index:999;transform:translateY(-160%);background:#fff;color:#000;padding:10px 14px;border-radius:9px;font-weight:800;text-decoration:none}
+    .skip-link:focus,.skip-link:focus-visible{transform:translateY(0);outline:3px solid rgba(98,215,186,.92);outline-offset:3px}
+    .container{width:min(var(--max),calc(100% - 40px));margin:0 auto}
+    nav{position:sticky;top:0;z-index:50;background:rgba(9,9,11,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .nav-inner{height:66px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{text-decoration:none;font-weight:900;letter-spacing:-.3px}.brand i{color:var(--accent2);font-style:normal}
+    .nav-links{display:flex;align-items:center;gap:22px}.nav-links>a:not(.nav-cta){font-size:13px;color:var(--muted);text-decoration:none}.nav-links>a:hover{color:#fff}
+    .nav-cta,.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:11px;text-decoration:none;font-weight:800;font-size:14px;border:1px solid transparent;transition:.18s ease}
+    .nav-cta,.button-primary{background:#fff;color:#08080a}.nav-cta:hover,.button-primary:hover{transform:translateY(-1px);background:#ececf2}
+    .button-secondary{border-color:var(--line);background:rgba(255,255,255,.03);color:#e7e7ee}.button-secondary:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18)}
+    .hero{padding:92px 0 62px}.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:56px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(139,124,255,.25);background:rgba(139,124,255,.08);font-size:11px;font-weight:800;color:#c8c0ff;text-transform:uppercase;letter-spacing:1.3px;margin-bottom:20px}
+    .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 16px rgba(98,215,186,.7)}
+    h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-3px;margin-bottom:22px}.gradient{background:linear-gradient(95deg,#fff 5%,#bbb4ff 58%,#70dec3);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero-lead{max-width:650px;color:var(--muted);font-size:18px;line-height:1.7;margin-bottom:28px}
+    .hero-actions{display:flex;gap:11px;flex-wrap:wrap}.hero-footnote{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px;color:var(--soft);font-size:12px}.hero-footnote span::before{content:"✓";margin-right:6px;color:var(--accent2);font-weight:900}
+    .workspace{position:relative;border:1px solid rgba(255,255,255,.12);background:linear-gradient(160deg,#17171d,#0f0f14);border-radius:22px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.42)}
+    .workspace-top{height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line);font-size:11px;color:var(--soft)}
+    .dots{display:flex;gap:6px}.dots i{width:8px;height:8px;border-radius:50%;background:#35353e}.workspace-body{display:grid;grid-template-columns:150px 1fr;min-height:340px}.filebar{padding:16px 12px;border-right:1px solid var(--line);background:rgba(0,0,0,.15)}
+    .filebar strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1.1px;color:#777786;margin-bottom:12px}.file{font-size:11px;color:#aaaab7;padding:7px 8px;border-radius:7px;margin-bottom:3px}.file.active{background:rgba(139,124,255,.12);color:#dad6ff}
+    .workpane{padding:20px;display:flex;flex-direction:column}.prompt{font-size:12px;color:#d4d4dc;padding:12px 13px;background:#1b1b22;border:1px solid var(--line);border-radius:10px;margin-bottom:16px}.status{display:inline-flex;align-items:center;gap:7px;font-size:10px;color:#77dfc6;font-weight:800;margin-bottom:14px}.status i{width:7px;height:7px;border-radius:50%;background:#62d7ba}
+    .code{flex:1;background:#0b0b0e;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.75;color:#8d8d9a}.code b{color:#c8c0ff;font-weight:500}.compose{margin-top:13px;border:1px solid var(--line);border-radius:10px;padding:10px 11px;color:#777786;font-size:10px;display:flex;justify-content:space-between}.send{color:#d8d4ff;font-weight:800}
+    .frameworks{padding:20px 0 6px}.framework-rail{border:1px solid var(--line);border-radius:14px;padding:17px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;background:rgba(255,255,255,.02)}.framework-rail p{font-size:12px;color:var(--soft)}.framework-list{display:flex;gap:20px;flex-wrap:wrap;justify-content:flex-end}.framework-list b{font-size:12px;color:#d7d7df}
+    section{padding:78px 0}.section-head{max-width:720px;margin:0 auto 34px;text-align:center}.kicker{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800;color:#9e93ff;margin-bottom:9px}.section-head h2{font-size:clamp(30px,4vw,46px);letter-spacing:-1.8px;line-height:1.08;margin-bottom:13px}.section-head p{color:var(--muted);font-size:15px}
+    .starter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.launch-card{display:flex;min-height:110px;flex-direction:column;justify-content:space-between;padding:18px;border-radius:15px;border:1px solid var(--line);background:var(--panel);text-decoration:none;transition:.18s ease}.launch-card:hover{transform:translateY(-3px);border-color:rgba(139,124,255,.42);background:#17171d}.launch-card strong{font-size:15px}.launch-card span{font-size:12px;color:var(--muted);margin-top:7px}.launch-card em{font-style:normal;font-size:18px;margin-bottom:14px}.launch-guides{text-align:center;margin-top:18px;color:var(--soft);font-size:12px}.launch-guides a{color:#c8c0ff;text-decoration:none;font-weight:700}
+    .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.proof-card{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--panel)}.proof-media{aspect-ratio:16/9;background:#0d0d11;overflow:hidden}.proof-media img{width:100%;height:100%;object-fit:cover}.proof-copy{padding:20px}.proof-label{font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:900}.proof-copy h3{font-size:20px;margin:6px 0}.proof-copy p{font-size:13px;color:var(--muted)}.proof-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.proof-meta span{font-size:10px;border:1px solid var(--line);padding:5px 8px;border-radius:999px;color:#bcbcca}
+    .difference-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.difference{padding:22px;border:1px solid var(--line);border-radius:15px;background:var(--panel)}.difference .num{font-size:11px;color:#9589ff;font-weight:900}.difference h3{font-size:16px;margin:11px 0 7px}.difference p{font-size:13px;color:var(--muted)}
+    .workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step{padding:20px;border-top:1px solid rgba(255,255,255,.14)}.step b{display:block;color:#8f84ff;font-size:11px;margin-bottom:13px}.step h3{font-size:16px;margin-bottom:7px}.step p{font-size:12px;color:var(--muted)}
+    .pricing{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.plan{position:relative;padding:22px;border:1px solid var(--line);border-radius:17px;background:var(--panel);display:flex;flex-direction:column;min-height:360px}.plan.recommended{border-color:rgba(139,124,255,.42);background:linear-gradient(180deg,rgba(139,124,255,.08),#111116 40%)}.recommend{position:absolute;right:14px;top:14px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;color:#c7c0ff}.plan-name{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:#8c8c9b;font-weight:900}.price{font-size:34px;font-weight:900;letter-spacing:-1.5px;margin:10px 0 3px}.period{font-size:11px;color:#737382}.plan-copy{font-size:12px;color:var(--muted);min-height:44px;margin:15px 0}.features{list-style:none;display:grid;gap:8px;margin:5px 0 20px;flex:1}.features li{font-size:12px;color:#b7b7c3}.features li::before{content:"✓";color:var(--accent2);font-weight:900;margin-right:7px}.plan .button{width:100%}
+    .faq{max-width:780px;margin:0 auto;border-top:1px solid var(--line)}.faq-item{border-bottom:1px solid var(--line)}.faq-button{width:100%;background:none;border:0;color:#efeff4;font:inherit;font-weight:750;text-align:left;padding:18px 2px;display:flex;justify-content:space-between;gap:20px;cursor:pointer}.faq-plus{color:#777786;font-size:20px;line-height:1}.faq-answer{display:none;padding:0 36px 18px 2px;color:var(--muted);font-size:13px}.faq-item.open .faq-answer{display:block}.faq-button[aria-expanded="true"] .faq-plus{transform:rotate(45deg)}
+    .final-cta{padding:42px;border:1px solid rgba(139,124,255,.25);border-radius:22px;background:radial-gradient(circle at 80% 10%,rgba(98,215,186,.08),transparent 35%),radial-gradient(circle at 10% 80%,rgba(139,124,255,.13),transparent 38%),var(--panel);text-align:center}.final-cta h2{font-size:clamp(30px,4vw,46px);letter-spacing:-1.5px;margin-bottom:10px}.final-cta p{color:var(--muted);margin:0 auto 22px;max-width:620px;font-size:14px}
+    footer{border-top:1px solid var(--line);padding:34px 0 44px;color:var(--soft);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.footer-links a{text-decoration:none}.footer-links a:hover{color:#fff}
+    @media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:38px}.hero{padding-top:66px}.starter-grid,.workflow,.pricing{grid-template-columns:repeat(2,1fr)}.workspace{max-width:680px}.difference-grid{grid-template-columns:1fr}.proof-grid{grid-template-columns:1fr}}
+    @media(max-width:680px){.container{width:min(100% - 28px,var(--max))}.nav-links>a:not(.nav-cta){display:none}.hero{padding:54px 0 46px}h1{letter-spacing:-2px}.hero-lead{font-size:16px}.workspace-body{grid-template-columns:1fr}.filebar{display:none}.workspace-body{min-height:300px}.framework-rail{align-items:flex-start;flex-direction:column}.framework-list{justify-content:flex-start}.starter-grid,.workflow,.pricing{grid-template-columns:1fr}.proof-copy{padding:17px}.final-cta{padding:30px 20px}.hero-actions .button{width:100%}.nav-cta{padding:0 13px}.nav-inner{height:62px}}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"Stellar AI",
+    "applicationCategory":"DeveloperApplication",
+    "operatingSystem":"Web",
+    "url":"https://trystellarai.com/",
+    "description":"AI development workspace for Roblox Luau and FiveM projects.",
+    "offers":{"@type":"AggregateOffer","lowPrice":"0","highPrice":"75","priceCurrency":"GBP"}
+  }
+  </script>
 </head>
 <body>
-
-  <!-- NAV -->
-  <nav>
-    <a href="/" class="nav-brand">✦ Stellar AI</a>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a class="brand" href="/" aria-label="Stellar AI home"><i>✦</i> Stellar AI</a>
     <div class="nav-links">
-      <a href="#how">How it works</a>
+      <a href="#proof">Demo builds</a>
+      <a href="#why">Why Stellar</a>
       <a href="#plans">Pricing</a>
       <a href="/blog">Guides</a>
-      <a href="/terms.html">Terms</a>
-      <a href="/app" class="nav-cta">Try it free →</a>
-    </div>
-    <a href="/app" class="nav-cta" style="display:none;" id="mobile-cta">Try free</a>
-  </nav>
-  <script>
-    if(window.innerWidth <= 640) document.getElementById('mobile-cta').style.display='block';
-  </script>
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-label">Made for FiveM & Roblox builders</div>
-    <h1>Type it.<br>Stellar builds it.</h1>
-    <p>Write complete FiveM and Roblox scripts from plain English. No coding needed. Free to start.</p>
-    <div class="hero-btns">
-      <a href="/app?welcome=1" class="btn-primary">Generate your first script free →</a>
-      <a href="#how" class="btn-secondary">How it works</a>
-    </div>
-    <div class="hero-badges">
-      <span class="hero-badge">No card needed</span>
-      <span class="hero-badge">·</span>
-      <span class="hero-badge">£1 free credit</span>
-      <span class="hero-badge">·</span>
-      <span class="hero-badge">QBCore · ESX · Roblox</span>
+      <a class="nav-cta" href="/app?welcome=1">Try free →</a>
     </div>
   </div>
+</nav>
 
-  <hr class="divider">
+<main id="main-content" tabindex="-1">
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Built for Roblox & FiveM developers</div>
+        <h1>Build game systems, not just <span class="gradient">code snippets.</span></h1>
+        <p class="hero-lead">Tell Stellar what you want to build. It turns the brief into organised Roblox Luau or FiveM project files, then stays with you while you test, fix and improve the result.</p>
+        <div class="hero-actions">
+          <a href="/app?welcome=1" class="button button-primary">Build something free →</a>
+          <a href="#proof" class="button button-secondary">See demo builds</a>
+        </div>
+        <div class="hero-footnote"><span>No card to begin</span><span>£1 starting credit</span><span>Roblox · QBCore · ESX · ox_lib</span></div>
+      </div>
+      <div class="workspace" role="img" aria-label="Illustrated Stellar AI project workspace showing generated Roblox and FiveM files">
+        <div class="workspace-top"><div class="dots"><i></i><i></i><i></i></div><span>Stellar workspace</span><span>Star</span></div>
+        <div class="workspace-body">
+          <aside class="filebar"><strong>Project files</strong><div class="file active">server.lua</div><div class="file">client.lua</div><div class="file">config.lua</div><div class="file">fxmanifest.lua</div><div class="file">README.md</div></aside>
+          <div class="workpane">
+            <div class="prompt">Build a secure police evidence system with server validation and configurable storage.</div>
+            <div class="status"><i></i> Generating project files</div>
+            <div class="code"><b>-- server.lua</b><br>RegisterNetEvent('stellar:evidence:store', function(item)<br>&nbsp;&nbsp;local src = source<br>&nbsp;&nbsp;-- validate server-side state<br>&nbsp;&nbsp;local player = GetPlayer(src)<br>&nbsp;&nbsp;if not player then return end<br>&nbsp;&nbsp;...<br>end)</div>
+            <div class="compose"><span>Ask Stellar to change anything…</span><span class="send">Send</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container frameworks"><div class="framework-rail"><p>Purpose-built context for the stacks your players actually use.</p><div class="framework-list"><b>Roblox Luau</b><b>QBCore</b><b>ESX</b><b>ox_lib</b><b>Standalone FiveM</b></div></div></div>
+  </header>
 
-  <!-- HOW IT WORKS -->
-  <section id="how">
-    <div class="section-label">How it works</div>
-    <h2>Four steps. Complete files.</h2>
-    <div class="grid-3" style="grid-template-columns:repeat(4,1fr);">
-      <div class="card">
-        <h3>01 — Describe</h3>
-        <p>Tell Stellar what you want to build in plain English.</p>
+  <section aria-labelledby="quick-title">
+    <div class="container">
+      <div class="section-head"><div class="kicker">Start with a real job</div><h2 id="quick-title">Skip the blank chat.</h2><p>Open Stellar with a focused starter and see how it handles the kind of work you actually need.</p></div>
+      <div class="starter-grid">
+        <a class="launch-card" href="/app?starter=roblox" aria-label="Open Stellar with a Roblox game starter prompt"><div><em>🎮</em><strong>Roblox game</strong><span>Start a server-authoritative Luau system or game loop.</span></div><span>Open starter →</span></a>
+        <a class="launch-card" href="/app?starter=police" aria-label="Open Stellar with a Police job starter prompt"><div><em>🚓</em><strong>Police job</strong><span>Plan a QBCore resource with client, server and config files.</span></div><span>Open starter →</span></a>
+        <a class="launch-card" href="/app?starter=heist" aria-label="Open Stellar with a Heist system starter prompt"><div><em>💼</em><strong>Heist system</strong><span>Build a multi-file event flow with server-side validation.</span></div><span>Open starter →</span></a>
+        <a class="launch-card" href="/app?starter=fix" aria-label="Open Stellar with a Fix an error starter prompt"><div><em>🛠️</em><strong>Fix an error</strong><span>Bring broken code or an error message and iterate from there.</span></div><span>Open starter →</span></a>
       </div>
-      <div class="card">
-        <h3>02 — Generate</h3>
-        <p>Get complete files — fxmanifest, client, server, config.</p>
-      </div>
-      <div class="card">
-        <h3>03 — Test</h3>
-        <p>Review the files and test in your own server or place.</p>
-      </div>
-      <div class="card">
-        <h3>04 — Improve</h3>
-        <p>Bring back errors or changes and keep building.</p>
+      <p class="launch-guides">Need a walkthrough first? <a href="/blog">Browse FiveM &amp; Roblox guides →</a></p>
+    </div>
+  </section>
+
+  <section id="proof" aria-labelledby="proof-title">
+    <div class="container">
+      <div class="section-head"><div class="kicker">Product proof</div><h2 id="proof-title">See the kind of project Stellar is built to help with.</h2><p>These are Stellar demo builds from this project—not fabricated customer testimonials. Use them as examples of the product direction, then try your own brief.</p></div>
+      <div class="proof-grid">
+        <article class="proof-card"><div class="proof-media"><img src="/lib/assets/stellar-strike-thumb.png" alt="Stellar Strike demo build artwork" loading="lazy"></div><div class="proof-copy"><div class="proof-label">Roblox demo build</div><h3>Stellar Strike</h3><p>A game-system example showing how Stellar can work from a larger Roblox brief rather than a single isolated snippet.</p><div class="proof-meta"><span>Luau</span><span>multi-file</span><span>game systems</span></div></div></article>
+        <article class="proof-card"><div class="proof-media"><img src="/lib/assets/stellar-simulator-thumb.png" alt="Stellar Simulator demo build artwork" loading="lazy"></div><div class="proof-copy"><div class="proof-label">Roblox demo build</div><h3>Stellar Simulator</h3><p>A structured Roblox project example covering progression-style systems and the files that support them.</p><div class="proof-meta"><span>Luau</span><span>progression</span><span>project files</span></div></div></article>
       </div>
     </div>
   </section>
 
-  <hr class="divider">
+  <section id="why" aria-labelledby="why-title">
+    <div class="container">
+      <div class="section-head"><div class="kicker">Why Stellar</div><h2 id="why-title">Specialised enough to be useful.</h2><p>Generic AI can write Lua. Stellar is designed around the workflow of actually shipping and maintaining Roblox and FiveM projects.</p></div>
+      <div class="difference-grid">
+        <div class="difference"><div class="num">01</div><h3>Project-shaped output</h3><p>Ask for the manifest, client, server, configuration, modules and documentation together instead of stitching isolated answers together yourself.</p></div>
+        <div class="difference"><div class="num">02</div><h3>Stack-aware context</h3><p>Work in Roblox Luau, QBCore, ESX, ox_lib or standalone FiveM without re-explaining the basics every time.</p></div>
+        <div class="difference"><div class="num">03</div><h3>Fix and iterate</h3><p>Bring the error back, request a change and keep building. The useful workflow continues after the first generation.</p></div>
+      </div>
+    </div>
+  </section>
 
-  <!-- WHAT IT SUPPORTS -->
+  <section id="how-it-works" aria-labelledby="how-title">
+    <div class="container">
+      <div class="section-head"><div class="kicker">Workflow</div><h2 id="how-title">Four steps from brief to better build.</h2></div>
+      <div class="workflow">
+        <div class="step"><b>01 — Describe</b><h3>Give Stellar the job.</h3><p>Explain the system, framework, constraints and what you already have.</p></div>
+        <div class="step"><b>02 — Generate</b><h3>Get organised files.</h3><p>Stellar produces the relevant project files instead of only a loose code block.</p></div>
+        <div class="step"><b>03 — Test</b><h3>Run it privately.</h3><p>Review dependencies, permissions and server-side checks before production.</p></div>
+        <div class="step"><b>04 — Improve</b><h3>Bring back what changed.</h3><p>Fix errors, tune behaviour and extend the system without starting from zero.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plans" aria-labelledby="plans-title">
+    <div class="container">
+      <div class="section-head"><div class="kicker">Pricing</div><h2 id="plans-title">Pick the level of building you actually need.</h2><p>Start free. Upgrade when your projects need more room, longer outputs or higher-capability models.</p></div>
+      <div class="pricing">
+        <article class="plan"><div class="plan-name">Free</div><div class="price">£0</div><div class="period">forever</div><p class="plan-copy">Try a real build before paying.</p><ul class="features"><li>£1 starting credit</li><li>40 requests/hour</li><li>Spark, Star & Comet</li><li>Full files & downloads</li></ul><a href="/app?welcome=1" class="button button-secondary" aria-label="Start with the Free plan">Start free</a></article>
+        <article class="plan"><div class="plan-name">Starter</div><div class="price">£8</div><div class="period">per month · £67/year</div><p class="plan-copy">For regular scripts and smaller ongoing projects.</p><ul class="features"><li>120 requests/hour</li><li>Priority queue</li><li>Longer scripts</li><li>Cancel anytime</li></ul><a href="/app" class="button button-secondary" aria-label="Choose the Starter plan">Get Starter</a></article>
+        <article class="plan recommended"><div class="recommend">Most useful</div><div class="plan-name">Plus</div><div class="price">£20</div><div class="period">per month · £168/year</div><p class="plan-copy">For full systems and developers who build every week.</p><ul class="features"><li>400 requests/hour</li><li>Full game systems</li><li>Priority access</li><li>Cancel anytime</li></ul><a href="/app" class="button button-primary" aria-label="Choose the Plus plan">Get Plus →</a></article>
+        <article class="plan"><div class="plan-name">Pro</div><div class="price">£75</div><div class="period">per month · £630/year</div><p class="plan-copy">For large multi-file projects and maximum model capability.</p><ul class="features"><li>1,600 requests/hour</li><li>Nova model access</li><li>Large project work</li><li>Cancel anytime</li></ul><a href="/app" class="button button-secondary" aria-label="Choose the Pro plan">Get Pro</a></article>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="faq-title">
+    <div class="container">
+      <div class="section-head"><div class="kicker">Questions</div><h2 id="faq-title">Know what you're getting.</h2></div>
+      <div class="faq">
+        <div class="faq-item"><button type="button" class="faq-button" aria-expanded="false"><span>Do I need to know how to code?</span><span class="faq-plus" aria-hidden="true">+</span></button><div class="faq-answer"><p>No. You can describe what you want in plain English. You should still review and test generated code before production, especially for permissions, economy, inventory and other server-authoritative systems.</p></div></div>
+        <div class="faq-item"><button type="button" class="faq-button" aria-expanded="false"><span>What does Stellar support?</span><span class="faq-plus" aria-hidden="true">+</span></button><div class="faq-answer"><p>Roblox Luau plus FiveM projects using QBCore, ESX, ox_lib and standalone resources.</p></div></div>
+        <div class="faq-item"><button type="button" class="faq-button" aria-expanded="false"><span>Can Stellar fix existing code?</span><span class="faq-plus" aria-hidden="true">+</span></button><div class="faq-answer"><p>Yes. Paste broken code or an error, explain what you expected, and continue iterating in the workspace.</p></div></div>
+        <div class="faq-item"><button type="button" class="faq-button" aria-expanded="false"><span>How should I test generated code?</span><span class="faq-plus" aria-hidden="true">+</span></button><div class="faq-answer"><p>Use a private development server or Roblox test place first. Verify dependencies, validate server-side security, test failure cases and keep a rollback before shipping changes live.</p></div></div>
+        <div class="faq-item"><button type="button" class="faq-button" aria-expanded="false"><span>Why not just use a generic AI chat?</span><span class="faq-plus" aria-hidden="true">+</span></button><div class="faq-answer"><p>Stellar is positioned around Roblox and FiveM development workflows: project-shaped outputs, framework context, downloadable files and continued fix-and-improve work.</p></div></div>
+        <div class="faq-item"><button type="button" class="faq-button" aria-expanded="false"><span>Can I cancel anytime?</span><span class="faq-plus" aria-hidden="true">+</span></button><div class="faq-answer"><p>Yes. Paid plans can be cancelled from account settings without a long-term contract.</p></div></div>
+      </div>
+    </div>
+  </section>
+
   <section>
-    <div class="section-label">Capabilities</div>
-    <h2>Everything you need to build.</h2>
-    <div class="grid-3">
-      <div class="card">
-        <h3>FiveM QBCore & ESX</h3>
-        <p>Police jobs, drug systems, heists, mechanics, economy, inventories — complete resource packages.</p>
-      </div>
-      <div class="card">
-        <h3>Roblox Luau</h3>
-        <p>DataStores, GUIs, RemoteEvents, progression systems, tycoons and game loops.</p>
-      </div>
-      <div class="card">
-        <h3>Fix & improve</h3>
-        <p>Paste broken code, get it fixed. Paste working code, get it improved.</p>
-      </div>
-    </div>
+    <div class="container final-cta"><h2>Give Stellar a real build.</h2><p>Start with a Roblox system, a FiveM resource or broken code you already have. The fastest way to judge the product is to make it do actual work.</p><a href="/app?welcome=1" class="button button-primary" aria-label="Generate your first Stellar AI project free">Generate your first project free →</a></div>
   </section>
+</main>
 
-  <hr class="divider">
+<footer><div class="container footer-inner"><span>© 2026 Stellar AI</span><div class="footer-links"><a href="/app">App</a><a href="#plans">Pricing</a><a href="/blog">Guides</a><a href="/terms.html">Terms</a><a href="mailto:support@trystellarai.com">Support</a><a href="https://discord.gg/e6uRAV9HGA">Discord</a><a href="https://www.tiktok.com/@stellaraiapp">TikTok</a></div></div></footer>
 
-  <!-- PRICING -->
-  <section id="plans">
-    <div class="section-label">Pricing</div>
-    <h2>Pay for what you need.</h2>
-    <div class="plans-grid">
-
-      <div class="plan-card">
-        <div class="plan-name">✦ Free</div>
-        <div>
-          <div class="plan-price">£0</div>
-          <div class="plan-period">forever</div>
-        </div>
-        <div class="plan-desc">Try a real build. No card needed.</div>
-        <ul class="plan-features">
-          <li>£1 starting credit</li>
-          <li>40 requests/hour</li>
-          <li>Spark, Star & Comet</li>
-          <li>Full files & downloads</li>
-        </ul>
-        <a href="/app" class="plan-btn plan-btn-ghost">Start free</a>
-      </div>
-
-      <div class="plan-card" style="border-color:rgba(255,255,255,0.15);">
-        <div class="plan-name">⚡ Starter</div>
-        <div>
-          <div class="plan-price">£8</div>
-          <div class="plan-period">per month · £67/yr</div>
-        </div>
-        <div class="plan-desc">More room for regular scripts.</div>
-        <ul class="plan-features">
-          <li>3× usage · 120 req/hr</li>
-          <li>Priority queue</li>
-          <li>Longer scripts</li>
-          <li>Cancel anytime</li>
-        </ul>
-        <a href="/app" class="plan-btn">Get Starter</a>
-      </div>
-
-      <div class="plan-card" style="border-color:rgba(255,255,255,0.18);">
-        <div class="plan-name" style="color:rgba(255,255,255,0.5);">🚀 Plus</div>
-        <div>
-          <div class="plan-price">£20</div>
-          <div class="plan-period">per month · £168/yr</div>
-        </div>
-        <div class="plan-desc">Full systems, weekly builds.</div>
-        <ul class="plan-features">
-          <li>10× usage · 400 req/hr</li>
-          <li>Full game systems</li>
-          <li>Priority access</li>
-          <li>Cancel anytime</li>
-        </ul>
-        <a href="/app" class="plan-btn">Get Plus</a>
-      </div>
-
-      <div class="plan-card" style="border-color:rgba(255,255,255,0.2);">
-        <div class="plan-name" style="color:rgba(255,255,255,0.6);">👑 Pro</div>
-        <div>
-          <div class="plan-price">£75</div>
-          <div class="plan-period">per month · £630/yr</div>
-        </div>
-        <div class="plan-desc">Complete games. Maximum power.</div>
-        <ul class="plan-features">
-          <li>40× usage · 1,600 req/hr</li>
-          <li>Nova — strongest model</li>
-          <li>Complete games</li>
-          <li>Cancel anytime</li>
-        </ul>
-        <a href="/app" class="plan-btn">Get Pro</a>
-      </div>
-
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- FAQ -->
-  <section>
-    <div class="section-label">Questions</div>
-    <h2>Good to know.</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <h3>What frameworks does it support?</h3>
-        <p>QBCore, ESX, ox_lib, standalone FiveM resources and Roblox Luau.</p>
-      </div>
-      <div class="faq-item">
-        <h3>Do I need to know how to code?</h3>
-        <p>No. Just describe what you want in plain English and Stellar writes the code.</p>
-      </div>
-      <div class="faq-item">
-        <h3>Can it fix broken scripts?</h3>
-        <p>Yes. Paste the error or broken code and Stellar will diagnose and fix it.</p>
-      </div>
-      <div class="faq-item">
-        <h3>Can I cancel anytime?</h3>
-        <p>Yes. No long-term contracts. Cancel from your account settings whenever you want.</p>
-      </div>
-      <div class="faq-item">
-        <h3>Is there a free trial?</h3>
-        <p>Yes. Start with £1 free credit, no card needed.</p>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- CTA -->
-  <section style="text-align:center;padding:70px 24px;">
-    <h2 style="margin-bottom:16px;">Start building for free.</h2>
-    <p style="margin-bottom:28px;color:rgba(255,255,255,0.4);font-size:15px;">No card needed. £1 free credit. FiveM & Roblox ready.</p>
-    <a href="/app?welcome=1" class="btn-primary">Generate your first script →</a>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <span>© 2026 Stellar AI</span>
-    <div class="footer-links">
-      <a href="/app">App</a>
-      <a href="#plans">Pricing</a>
-      <a href="/blog">Guides</a>
-      <a href="/terms.html">Terms</a>
-      <a href="mailto:support@trystellarai.com">Support</a>
-      <a href="https://discord.gg/e6uRAV9HGA">Discord</a>
-      <a href="https://www.tiktok.com/@stellaraiapp">TikTok</a>
-    </div>
-  </footer>
-
+<script>
+  document.querySelectorAll('.faq-button').forEach((button)=>{
+    button.addEventListener('click',()=>{
+      const item=button.closest('.faq-item');
+      const open=button.getAttribute('aria-expanded')==='true';
+      document.querySelectorAll('.faq-item.open').forEach((other)=>{
+        if(other!==item){other.classList.remove('open');other.querySelector('.faq-button').setAttribute('aria-expanded','false')}
+      });
+      item.classList.toggle('open',!open);
+      button.setAttribute('aria-expanded',String(!open));
+    });
+  });
+</script>
 </body>
 </html>
