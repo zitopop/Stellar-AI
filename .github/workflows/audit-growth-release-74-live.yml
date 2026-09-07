@@ -1,0 +1,53 @@
+name: Audit live Stellar growth release
+
+on:
+  push:
+    branches:
+      - audit/growth-release-74-live
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check app, growth assets and all 74 live guides
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          async function get(url){
+            try{
+              const r = await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(15000),headers:{'user-agent':'StellarGrowthReleaseAudit/1.0'}});
+              return {url,status:r.status,type:(r.headers.get('content-type')||'').toLowerCase(),body:await r.text(),final:r.url};
+            }catch(error){return {url,status:0,type:'',body:'',final:'',error:String(error)}}
+          }
+          (async()=>{
+            const failures=[];
+            const app=await get('https://trystellarai.com/app');
+            if(app.status!==200 || !app.type.startsWith('text/html') || !app.body.includes('Roblox &amp; FiveM AI Game Builder + Script Generator') || !app.body.includes('/stellar-growth-v1.js?v=1') || !app.body.includes('/stellar-growth-v1.css?v=1')) failures.push('APP '+JSON.stringify({status:app.status,type:app.type,final:app.final,error:app.error}));
+            for(const asset of ['https://trystellarai.com/stellar-growth-v1.js?v=1','https://trystellarai.com/stellar-growth-v1.css?v=1']){
+              const r=await get(asset);
+              if(r.status!==200 || !r.body.includes('stellar-')) failures.push('ASSET '+asset+' '+JSON.stringify({status:r.status,type:r.type,error:r.error}));
+            }
+            const hub=await get('https://trystellarai.com/blog');
+            if(hub.status!==200 || !hub.type.startsWith('text/html') || !hub.body.includes('74<small>guides available</small>')) failures.push('HUB '+JSON.stringify({status:hub.status,type:hub.type,error:hub.error}));
+            const sitemap=await get('https://trystellarai.com/sitemap.xml');
+            const urls=[...sitemap.body.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/loc>/g)].map(m=>m[1]);
+            const unique=[...new Set(urls)];
+            if(sitemap.status!==200 || unique.length!==74) failures.push(`SITEMAP status=${sitemap.status} blogUrls=${unique.length}`);
+            const results=await Promise.all(unique.map(get));
+            for(const r of results){
+              const canonical=`<link rel="canonical" href="${r.url}"`;
+              const ok=r.status===200 && r.type.startsWith('text/html') && /<title>/i.test(r.body) && (r.body.includes(canonical) || r.body.includes(`href="${r.url}" rel="canonical"`));
+              console.log(`${ok?'PASS':'FAIL'} | ${r.status} | ${r.type||'-'} | ${r.url}`);
+              if(!ok) failures.push('BLOG '+r.url+' '+JSON.stringify({status:r.status,type:r.type,final:r.final,error:r.error}));
+            }
+            console.log(`SUMMARY app=${app.status} hub=${hub.status} blogs=${unique.length-results.filter(r=>!(r.status===200 && r.type.startsWith('text/html') && /<title>/i.test(r.body) && (r.body.includes(`<link rel="canonical" href="${r.url}"`) || r.body.includes(`href="${r.url}" rel="canonical"`)))).length}/${unique.length} failures=${failures.length}`);
+            if(failures.length){ console.error(failures.join('\n')); process.exit(1); }
+          })();
+          NODE
