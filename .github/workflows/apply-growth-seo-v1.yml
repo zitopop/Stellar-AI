@@ -21,7 +21,18 @@ jobs:
         with:
           node-version: 22
       - name: Apply content and SEO changes
-        run: node scripts/apply-growth-seo-v1.mjs
+        run: |
+          node scripts/apply-growth-seo-v1.mjs
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('blog.html')
+          s=p.read_text()
+          s=s.replace('Browse all 66 Stellar AI','Browse all 74 Stellar AI')
+          s=s.replace('66 practical Roblox','74 practical Roblox')
+          s=s.replace('"numberOfItems":66','"numberOfItems":74')
+          s=s.replace('<div class="count">66<small>','<div class="count">74<small>')
+          p.write_text(s)
+          PY
       - name: Validate generated site
         shell: bash
         run: |
@@ -31,7 +42,7 @@ jobs:
           import re, pathlib, xml.etree.ElementTree as ET
           root=pathlib.Path('.')
           blog=(root/'blog.html').read_text()
-          assert '74<small>guides available' in blog
+          assert '<div class="count">74<small>guides available' in blog
           links=re.findall(r'href="(/blog/[^"#?]+)"', blog)
           assert len(set(links)) == 74, len(set(links))
           xml=ET.parse(root/'sitemap.xml')
