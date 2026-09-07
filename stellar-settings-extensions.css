@@ -1,0 +1,133 @@
+/* Stellar Settings extensions — user preferences only. */
+
+#settings-modal .stellar-ext-tab-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  font-style: normal;
+  font-size: 15px;
+  line-height: 1;
+}
+
+#settings-modal .stellar-pref-heading {
+  display: grid;
+  gap: 5px;
+  margin: 2px 0 22px;
+}
+
+#settings-modal .stellar-pref-heading strong {
+  color: #f3f1f6;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+
+#settings-modal .stellar-pref-heading span {
+  max-width: 620px;
+  color: #9b98a3;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+#settings-modal .stellar-pref-segments {
+  flex: 0 0 auto;
+}
+
+#settings-modal .stellar-pref-note {
+  margin-top: 12px !important;
+}
+
+#settings-modal .stellar-pref-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+#settings-modal .stellar-pref-reset {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 10px;
+  color: #c7c5cc;
+  background: rgba(255,255,255,.035);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+#settings-modal .stellar-pref-reset:hover,
+#settings-modal .stellar-pref-reset:focus-visible {
+  color: #fff;
+  border-color: rgba(190,173,255,.24);
+  background: rgba(178,154,255,.08);
+}
+
+body.stellar-sidebar-compact #sidebar .sidebar-item {
+  margin-bottom: 4px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+body.stellar-sidebar-compact #sidebar #chats-list {
+  gap: 2px !important;
+}
+
+body.stellar-code-wrap .code-body pre,
+body.stellar-code-wrap .code-block pre,
+body.stellar-code-wrap #chat pre {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+
+body:not(.stellar-code-wrap) .code-body pre,
+body:not(.stellar-code-wrap) .code-block pre,
+body:not(.stellar-code-wrap) #chat pre {
+  white-space: pre !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+body.stellar-reduce-motion *,
+body.stellar-reduce-motion *::before,
+body.stellar-reduce-motion *::after {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+  scroll-behavior: auto !important;
+}
+
+body.light #settings-modal .stellar-pref-heading strong { color: #25212b; }
+body.light #settings-modal .stellar-pref-heading span { color: #706b77; }
+body.light #settings-modal .stellar-pref-reset {
+  color: #5f5967;
+  border-color: rgba(55,45,75,.12);
+  background: rgba(55,45,75,.035);
+}
+
+@media (min-width: 768px) {
+  body.stellar-orbit-v3 #settings-modal .set-tabs:has([data-tab="preferences"]) {
+    grid-auto-rows: min-content;
+  }
+}
+
+@media (max-width: 767px) {
+  #settings-modal .stellar-pref-heading { margin-bottom: 16px; }
+  #settings-modal .stellar-pref-heading strong { font-size: 18px; }
+  #settings-modal .stellar-pref-row {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+  #settings-modal .stellar-pref-segments {
+    width: 100%;
+  }
+  #settings-modal .stellar-pref-segments .seg {
+    flex: 1 1 0;
+  }
+  #settings-modal .stellar-pref-actions {
+    justify-content: stretch;
+  }
+  #settings-modal .stellar-pref-reset {
+    width: 100%;
+  }
+}
