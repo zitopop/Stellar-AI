@@ -1,0 +1,94 @@
+name: Audit live app interaction hotfix
+
+on:
+  push:
+    branches:
+      - audit/app-interaction-hotfix-v1
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium
+      - name: Verify live app remains interactive
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+            const pageErrors = [];
+            page.on('pageerror', err => pageErrors.push(String(err)));
+            page.on('console', msg => { if (msg.type() === 'error') console.log('console-error:', msg.text()); });
+
+            await page.goto('https://trystellarai.com/app', { waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.waitForTimeout(2500);
+
+            const guest = page.getByRole('button', { name: 'Continue without signing in' });
+            if (await guest.isVisible().catch(() => false)) {
+              await guest.click({ timeout: 3000 });
+              await page.waitForTimeout(400);
+            }
+
+            const health = await page.evaluate(() => window.__stellarGrowthHealth || null);
+            console.log('growth-health:', JSON.stringify(health));
+            if (!health || health.version !== 'safe-v2' || health.observers !== 0) {
+              throw new Error('Safe growth hotfix is not active: ' + JSON.stringify(health));
+            }
+
+            const responsiveness = await page.evaluate(() => new Promise(resolve => {
+              const start = performance.now();
+              setTimeout(() => resolve(performance.now() - start), 60);
+            }));
+            console.log('timer-delay-ms:', responsiveness);
+            if (responsiveness > 1000) throw new Error('Main thread appears blocked; 60ms timer took ' + responsiveness + 'ms');
+
+            const input = page.locator('#txt');
+            await input.click({ timeout: 3000 });
+            await input.fill('interaction check');
+            const value = await input.inputValue();
+            if (value !== 'interaction check') throw new Error('Prompt input is not interactive');
+            await input.fill('');
+
+            const modelButton = page.locator('#model-btn');
+            await modelButton.click({ timeout: 3000 });
+            await page.waitForTimeout(150);
+            const panel = page.locator('.stellar-reasoning-panel');
+            if (!(await panel.isVisible().catch(() => false))) throw new Error('Reasoning picker did not open');
+
+            const star = page.locator('[data-growth-level="smart"]');
+            await star.click({ timeout: 3000 });
+            await page.waitForTimeout(150);
+
+            const newBuild = page.locator('#sidebar .side-new');
+            await newBuild.click({ timeout: 3000 });
+            await page.waitForTimeout(150);
+
+            const bodyPointer = await page.evaluate(() => getComputedStyle(document.body).pointerEvents);
+            console.log('body-pointer-events:', bodyPointer);
+            if (bodyPointer === 'none') throw new Error('Body pointer-events is disabled');
+
+            if (pageErrors.length) {
+              console.log('page-errors:', pageErrors.join(' | '));
+              const fatal = pageErrors.filter(e => /maximum call stack|out of memory|mutation|too much recursion/i.test(e));
+              if (fatal.length) throw new Error('Fatal page errors: ' + fatal.join(' | '));
+            }
+
+            console.log('LIVE APP INTERACTION AUDIT PASSED');
+            await browser.close();
+          })().catch(async err => {
+            console.error(err);
+            process.exit(1);
+          });
+          NODE
