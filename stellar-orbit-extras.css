@@ -1,2 +1,300 @@
-/* Stellar Orbit settings extras */
-.stellar-settings-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px;padding:14px 15px;border:1px solid rgba(203,190,255,.11);border-radius:14px;background:linear-gradient(135deg,rgba(154,126,255,.10),rgba(118,228,202,.035))}.stellar-settings-hero-copy strong{display:block;color:#f0ebfa;font-size:13px}.stellar-settings-hero-copy span{display:block;margin-top:3px;color:#8d8799;font-size:10px;line-height:1.45}.stellar-settings-shortcuts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}.stellar-settings-shortcuts button,.stellar-settings-shortcuts a{min-height:34px;display:inline-flex;align-items:center;padding:0 10px;border:1px solid rgba(210,200,255,.10);border-radius:9px;color:#c7c0d5!important;background:rgba(255,255,255,.025);font-size:10px;font-weight:800;text-decoration:none!important}.stellar-settings-shortcuts button:hover,.stellar-settings-shortcuts a:hover{color:#fff!important;border-color:rgba(190,172,255,.25);background:rgba(169,144,255,.08)}.stellar-orbit-rail-label{margin:12px 8px 6px;color:#716a7d;font-size:8px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.stellar-orbit-account-note{margin:8px 0 0;padding:9px 11px;border:1px solid rgba(120,230,207,.09);border-radius:10px;color:#8f889b;background:rgba(120,230,207,.025);font-size:9px;line-height:1.45}.stellar-orbit-account-note strong{color:#b8eee4}@media(max-width:680px){.stellar-settings-hero{display:block}.stellar-settings-shortcuts{justify-content:flex-start;margin-top:11px}.stellar-settings-shortcuts button,.stellar-settings-shortcuts a{min-height:38px}}
+/* Stellar Orbit v3 — Settings/control-centre presentation only. */
+.stellar-settings-hero {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+  padding: 15px;
+  border: 1px solid rgba(203,190,255,.13);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(178,154,255,.11), rgba(126,232,209,.04));
+}
+
+.stellar-settings-hero-main {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(220px, .62fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.stellar-settings-hero-copy {
+  min-width: 0;
+  padding: 2px 2px 0;
+}
+
+.stellar-settings-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #9d8ff1 !important;
+  font-size: 8px !important;
+  font-weight: 900;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.stellar-settings-hero-copy strong {
+  display: block;
+  color: #f5f1fc;
+  font-size: 15px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.stellar-settings-hero-copy > span:last-child {
+  display: block;
+  max-width: 470px;
+  margin-top: 6px;
+  color: #91899d;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.stellar-settings-model-card {
+  display: grid;
+  grid-template-columns: 34px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 68px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  background: rgba(7,5,13,.38);
+}
+
+.stellar-settings-model-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(190,173,255,.22);
+  border-radius: 10px;
+  color: #ddd1ff;
+  background: rgba(178,154,255,.09);
+  font-size: 14px;
+}
+
+.stellar-settings-model-card small {
+  display: block;
+  color: #746d80;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.stellar-settings-model-card strong {
+  display: block;
+  margin-top: 3px;
+  color: #eee9f6;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.stellar-settings-model-card button {
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid rgba(190,173,255,.17);
+  border-radius: 8px;
+  color: #d7ccf7;
+  background: rgba(178,154,255,.07);
+  font-size: 9px;
+  font-weight: 850;
+}
+.stellar-settings-model-card button:hover,
+.stellar-settings-model-card button:focus-visible {
+  border-color: rgba(190,173,255,.35);
+  color: #fff;
+  background: rgba(178,154,255,.13);
+}
+
+.stellar-settings-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 6px;
+}
+
+.stellar-settings-shortcuts button,
+.stellar-settings-shortcuts a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  border: 1px solid rgba(210,200,255,.10);
+  border-radius: 9px;
+  color: #c9c1d6 !important;
+  background: rgba(255,255,255,.025);
+  font-size: 9px;
+  font-weight: 850;
+  text-decoration: none !important;
+}
+.stellar-settings-shortcuts button:hover,
+.stellar-settings-shortcuts button:focus-visible,
+.stellar-settings-shortcuts a:hover,
+.stellar-settings-shortcuts a:focus-visible {
+  color: #fff !important;
+  border-color: rgba(190,172,255,.25);
+  background: rgba(178,154,255,.08);
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal {
+  background:
+    radial-gradient(circle at 16% 8%, rgba(148,124,255,.18), transparent 25rem),
+    radial-gradient(circle at 88% 90%, rgba(101,225,195,.08), transparent 28rem),
+    rgba(3,3,9,.84) !important;
+  backdrop-filter: blur(18px) saturate(118%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(118%) !important;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .set-card {
+  width: min(760px, calc(100vw - 34px)) !important;
+  max-width: 760px !important;
+  max-height: min(90dvh, 820px) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(203,188,255,.18) !important;
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 9% -4%, rgba(151,124,255,.15), transparent 18rem),
+    linear-gradient(170deg,#11101a,#0c0b13 64%,#090910) !important;
+  box-shadow: 0 36px 110px rgba(0,0,0,.58) !important;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .set-head {
+  position: relative;
+  margin: 0 !important;
+  padding: 23px 25px 18px !important;
+  border-bottom: 1px solid rgba(215,205,255,.09) !important;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .set-head::before {
+  content: "STELLAR ORBIT · SETTINGS";
+  display: block;
+  margin-bottom: 7px;
+  color: #9d8ff1;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .settings-title {
+  color: #fbf9ff !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+  letter-spacing: -.045em !important;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .set-body {
+  padding: 17px 23px 24px !important;
+  background: transparent !important;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .set-tabs {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0,1fr)) !important;
+  gap: 5px !important;
+  margin: 0 0 17px !important;
+  padding: 5px !important;
+  border: 1px solid rgba(213,201,255,.09) !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,.022) !important;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .set-tab {
+  min-width: 0 !important;
+  min-height: 45px !important;
+  border: 1px solid transparent !important;
+  border-radius: 9px !important;
+  color: #91899c !important;
+  background: transparent !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-tab:hover,
+body.stellar-orbit-v3:not(.light) #settings-modal .set-tab:focus-visible {
+  color: #ece6f6 !important;
+  background: rgba(178,154,255,.06) !important;
+  border-color: rgba(190,173,255,.11) !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-tab.active {
+  color: #fff !important;
+  border-color: rgba(190,173,255,.22) !important;
+  background: linear-gradient(145deg, rgba(178,154,255,.20), rgba(126,232,209,.04)) !important;
+}
+
+body.stellar-orbit-v3:not(.light) #settings-modal .profile-head,
+body.stellar-orbit-v3:not(.light) #settings-modal .set-group,
+body.stellar-orbit-v3:not(.light) #settings-modal .set-collapsible {
+  border-color: rgba(218,208,255,.10) !important;
+  background: rgba(255,255,255,.024) !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-group {
+  overflow: hidden !important;
+  border-radius: 14px !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-item {
+  min-height: 55px !important;
+  padding: 12px 14px !important;
+  background: transparent !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-item + .set-item {
+  border-top: 1px solid rgba(218,208,255,.065) !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-item:hover {
+  background: rgba(178,154,255,.045) !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-key { color: #e8e2ef !important; }
+body.stellar-orbit-v3:not(.light) #settings-modal .set-val {
+  max-width: 55%;
+  padding: 4px 8px;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 999px;
+  color: #aaa3b8 !important;
+  background: rgba(255,255,255,.025);
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .set-label {
+  color: #aa9bea !important;
+  font-size: 9px !important;
+  letter-spacing: .15em !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .seg-wrap {
+  border-color: rgba(218,208,255,.09) !important;
+  background: rgba(0,0,0,.20) !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal .seg.active,
+body.stellar-orbit-v3:not(.light) #settings-modal .seg.on {
+  color: #100c1c !important;
+  background: linear-gradient(135deg,#c8b8ff,#9a82f4 58%,#86e6d2 150%) !important;
+}
+body.stellar-orbit-v3:not(.light) #settings-modal :focus-visible {
+  outline: 2px solid rgba(126,232,209,.72) !important;
+  outline-offset: 2px !important;
+}
+
+body.stellar-orbit-v3.light .stellar-settings-hero {
+  border-color: rgba(92,75,135,.13);
+  background: linear-gradient(135deg,rgba(126,101,255,.07),rgba(58,190,164,.04));
+}
+body.stellar-orbit-v3.light .stellar-settings-hero-copy strong,
+body.stellar-orbit-v3.light .stellar-settings-model-card strong { color: #2b2435; }
+body.stellar-orbit-v3.light .stellar-settings-hero-copy > span:last-child,
+body.stellar-orbit-v3.light .stellar-settings-model-card small { color: #746b80; }
+
+@media (max-width: 720px) {
+  .stellar-settings-hero-main { grid-template-columns: 1fr; }
+  .stellar-settings-shortcuts { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  body.stellar-orbit-v3 #settings-modal .set-card {
+    width: calc(100% - 20px) !important;
+    margin-inline: 10px !important;
+    border-radius: 18px !important;
+  }
+  body.stellar-orbit-v3 #settings-modal .set-head { padding: 18px 17px 14px !important; }
+  body.stellar-orbit-v3 #settings-modal .set-body { padding: 14px 14px 18px !important; }
+  body.stellar-orbit-v3 #settings-modal .set-tabs {
+    display: flex !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+  }
+  body.stellar-orbit-v3 #settings-modal .set-tabs::-webkit-scrollbar { display: none; }
+  body.stellar-orbit-v3 #settings-modal .set-tab {
+    flex: 0 0 auto;
+    min-width: 94px !important;
+  }
+}
