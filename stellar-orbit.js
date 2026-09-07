@@ -1,16 +1,27 @@
 (() => {
   'use strict';
-  if (window.__stellarOrbitV3) return;
-  window.__stellarOrbitV3 = true;
+  if (window.__stellarOrbitV4Safe) return;
+  window.__stellarOrbitV4Safe = true;
 
   const TIERS = Object.freeze({
-    fabie:  { name:'Spark', mode:'Fast',     symbol:'✦', desc:'Quick drafts, small fixes and lightweight work.', power:1 },
-    smart:  { name:'Star',  mode:'Balanced', symbol:'★', desc:'Recommended for most Roblox and FiveM builds.', power:2, recommended:true },
-    comet:  { name:'Comet', mode:'Deep',     symbol:'☄', desc:'Architecture, debugging and larger multi-file systems.', power:3 },
-    ultra:  { name:'Nova',  mode:'Max',      symbol:'✺', desc:'Highest-capability Stellar tier for difficult project work.', power:4, pro:true }
+    fabie: { name:'Spark', mode:'Fast', symbol:'✦', desc:'Quick drafts, small fixes and lightweight work.', power:1 },
+    smart: { name:'Star', mode:'Balanced', symbol:'★', desc:'Recommended for most Roblox and FiveM builds.', power:2, recommended:true },
+    comet: { name:'Comet', mode:'Deep', symbol:'☄', desc:'Architecture, debugging and larger multi-file systems.', power:3 },
+    ultra: { name:'Nova', mode:'Max', symbol:'✺', desc:'Highest-capability Stellar tier for difficult project work.', power:4, pro:true }
   });
 
   const state = { selected:'smart', syncing:false };
+  const safeRun = (fn) => { try { fn(); } catch (error) { console.warn('[Stellar Orbit]', error); } };
+  const setText = (node, value) => {
+    if (!node) return;
+    const next = String(value ?? '');
+    if (node.textContent !== next) node.textContent = next;
+  };
+  const setAttr = (node, name, value) => {
+    if (!node) return;
+    const next = String(value ?? '');
+    if (node.getAttribute(name) !== next) node.setAttribute(name, next);
+  };
 
   function selectedKey() {
     const checked = document.querySelector('#model-menu [data-model-choice][aria-checked="true"]');
@@ -30,38 +41,47 @@
   }
 
   function decorateTierButtons() {
-    Object.entries(TIERS).forEach(([key, t]) => {
+    Object.entries(TIERS).forEach(([key, tier]) => {
       const button = document.querySelector(`#model-menu [data-model-choice="${key}"]`);
       if (!button) return;
-      button.dataset.stellarTier = t.mode.toLowerCase();
-      button.dataset.stellarPower = String(t.power);
-      button.setAttribute('aria-label', `Select ${t.name} — ${t.mode}. ${t.desc}${t.pro ? ' Pro plan.' : ''}`);
-      button.setAttribute('title', `${t.name} · ${t.mode} — ${t.desc}`);
+      if (button.dataset.stellarTier !== tier.mode.toLowerCase()) button.dataset.stellarTier = tier.mode.toLowerCase();
+      if (button.dataset.stellarPower !== String(tier.power)) button.dataset.stellarPower = String(tier.power);
+      setAttr(button, 'aria-label', `Select ${tier.name} — ${tier.mode}. ${tier.desc}${tier.pro ? ' Pro plan.' : ''}`);
+      setAttr(button, 'title', `${tier.name} · ${tier.mode} — ${tier.desc}`);
       const copy = button.firstElementChild;
       if (copy && !copy.querySelector('.stellar-model-line')) copy.innerHTML = tierMarkup(key);
     });
   }
 
   function updatePowerUI(tier) {
-    document.querySelectorAll('[data-stellar-power-meter]').forEach(meter => {
-      meter.querySelectorAll('span').forEach((bar, index) => bar.classList.toggle('is-on', index < tier.power));
-    });
-    document.querySelectorAll('.stellar-model-ladder').forEach(ladder => {
-      ladder.querySelectorAll('span').forEach((bar, index) => {
-        bar.classList.toggle('is-on', index < tier.power);
-        bar.classList.toggle('is-current', index === tier.power - 1);
+    document.querySelectorAll('[data-stellar-power-meter]').forEach((meter) => {
+      meter.querySelectorAll('span').forEach((bar, index) => {
+        const active = index < tier.power;
+        if (bar.classList.contains('is-on') !== active) bar.classList.toggle('is-on', active);
       });
     });
-    document.querySelectorAll('[data-stellar-power-label]').forEach(n => n.textContent = `${tier.mode} power`);
+    document.querySelectorAll('.stellar-model-ladder').forEach((ladder) => {
+      ladder.querySelectorAll('span').forEach((bar, index) => {
+        const active = index < tier.power;
+        const current = index === tier.power - 1;
+        if (bar.classList.contains('is-on') !== active) bar.classList.toggle('is-on', active);
+        if (bar.classList.contains('is-current') !== current) bar.classList.toggle('is-current', current);
+      });
+    });
+    document.querySelectorAll('[data-stellar-power-label]').forEach((n) => setText(n, `${tier.mode} power`));
   }
 
   function decorateMenu() {
     const menu = document.getElementById('model-menu');
     if (!menu) return;
-    menu.setAttribute('aria-label', 'Choose Stellar model power');
+    setAttr(menu, 'aria-label', 'Choose Stellar model power');
 
     const heading = menu.querySelector('.model-menu-heading');
-    if (heading) heading.innerHTML = '<span>Model power</span><span>Fast → Max depth</span>';
+    const growthOwnsHeading = !!menu.querySelector('.stellar-reasoning-panel');
+    if (heading && !growthOwnsHeading) {
+      const markup = '<span>Model power</span><span>Fast → Max depth</span>';
+      if (heading.innerHTML !== markup) heading.innerHTML = markup;
+    }
 
     if (!menu.querySelector('.stellar-model-ladder')) {
       const ladder = document.createElement('div');
@@ -75,12 +95,34 @@
       const note = document.createElement('div');
       note.className = 'stellar-model-note';
       note.innerHTML = '<strong>How power works:</strong> higher levels spend more effort on harder builds. Your existing plan still controls which Stellar tiers are available.';
-      const plans = [...menu.querySelectorAll('button')].find(b => /see all plans/i.test(b.textContent || ''));
+      const plans = [...menu.querySelectorAll('button')].find((button) => /see all plans/i.test(button.textContent || ''));
       if (plans) plans.insertAdjacentElement('beforebegin', note);
       else menu.appendChild(note);
     }
 
     decorateTierButtons();
+  }
+
+  function closeSidebarOnMobile() {
+    if (window.innerWidth > 767) return;
+    const toggle = document.getElementById('mobile-menu-toggle');
+    if (toggle?.getAttribute('aria-expanded') === 'true') {
+      try { if (typeof toggleSidebar === 'function') toggleSidebar(); } catch {}
+    }
+  }
+
+  function openModelPickerFromOrbit() {
+    closeSidebarOnMobile();
+    const open = () => {
+      const button = document.getElementById('model-btn');
+      const menu = document.getElementById('model-menu');
+      if (!button || !menu) return;
+      if (button.getAttribute('aria-expanded') !== 'true') button.click();
+      window.setTimeout(() => {
+        menu.querySelector('[data-model-choice][aria-checked="true"]')?.focus({ preventScroll:true });
+      }, 30);
+    };
+    window.setTimeout(open, window.innerWidth <= 767 ? 170 : 0);
   }
 
   function ensureSpaceStrip() {
@@ -132,13 +174,13 @@
         <a class="stellar-orbit-primary-link" href="/blog">
           <span class="stellar-orbit-primary-icon" aria-hidden="true">⌁</span>
           <span class="stellar-orbit-primary-copy"><strong>Guides</strong><span>Roblox, FiveM and QBCore tutorials</span></span>
-          <span class="stellar-orbit-primary-meta">66</span>
+          <span class="stellar-orbit-primary-meta">74</span>
         </a>
       </div>`;
 
     nav.querySelector('[data-orbit-open-model]')?.addEventListener('click', openModelPickerFromOrbit);
     nav.querySelector('[data-orbit-open-files]')?.addEventListener('click', () => {
-      try { window.toggleWorkspace?.(); } catch {}
+      try { if (typeof toggleWorkspace === 'function') toggleWorkspace(); } catch {}
       closeSidebarOnMobile();
     });
     search.insertAdjacentElement('afterend', nav);
@@ -146,39 +188,15 @@
 
   function enhanceSidebarLabels() {
     const heading = document.getElementById('chats-heading');
-    if (heading) heading.textContent = 'Recent chats';
-  }
-
-  function closeSidebarOnMobile() {
-    if (window.innerWidth > 767) return;
-    const toggle = document.getElementById('mobile-menu-toggle');
-    const expanded = toggle?.getAttribute('aria-expanded') === 'true';
-    if (expanded) {
-      try { window.toggleSidebar?.(); } catch {}
-    }
-  }
-
-  function openModelPickerFromOrbit() {
-    closeSidebarOnMobile();
-    const open = () => {
-      const button = document.getElementById('model-btn');
-      const menu = document.getElementById('model-menu');
-      if (!button || !menu) return;
-      if (button.getAttribute('aria-expanded') !== 'true') button.click();
-      window.setTimeout(() => {
-        const selected = menu.querySelector('[data-model-choice][aria-checked="true"]');
-        selected?.focus({ preventScroll:true });
-      }, 30);
-    };
-    window.setTimeout(open, window.innerWidth <= 767 ? 170 : 0);
+    if (heading) setText(heading, 'Recent chats');
   }
 
   function enhanceSettings() {
     const modal = document.getElementById('settings-modal');
     if (!modal) return;
-    modal.setAttribute('data-stellar-orbit', 'v3');
+    setAttr(modal, 'data-stellar-orbit', 'v4');
     const subtitle = modal.querySelector('.settings-subtitle');
-    if (subtitle) subtitle.textContent = 'Your Stellar workspace, model power, appearance, usage and account controls.';
+    if (subtitle) setText(subtitle, 'Your Stellar workspace, model power, appearance, usage and account controls.');
 
     const card = modal.querySelector('.set-card');
     const head = modal.querySelector('.set-head');
@@ -208,14 +226,20 @@
 
     head.insertAdjacentElement('afterend', hero);
     hero.querySelector('[data-orbit-models]')?.addEventListener('click', () => {
-      try { window.closeSettings?.(); } catch {}
+      try { if (typeof closeSettings === 'function') closeSettings(); } catch {}
       window.setTimeout(openModelPickerFromOrbit, 50);
     });
     hero.querySelector('[data-orbit-usage]')?.addEventListener('click', () => {
-      try { window.closeSettings?.(); window.openUsage?.(); } catch {}
+      try {
+        if (typeof closeSettings === 'function') closeSettings();
+        if (typeof openUsage === 'function') openUsage();
+      } catch {}
     });
     hero.querySelector('[data-orbit-plans]')?.addEventListener('click', () => {
-      try { window.closeSettings?.(); window.openPlans?.(); } catch {}
+      try {
+        if (typeof closeSettings === 'function') closeSettings();
+        if (typeof openPlans === 'function') openPlans();
+      } catch {}
     });
   }
 
@@ -228,42 +252,40 @@
     const text = `${tier.symbol} ${tier.name} · ${tier.mode} ▾`;
     if (button && button.textContent.trim() !== text && !state.syncing) {
       state.syncing = true;
-      button.textContent = text;
-      button.setAttribute('aria-label', `Choose Stellar model power. Current: ${tier.name}, ${tier.mode}.`);
-      button.setAttribute('title', `${tier.name} · ${tier.mode}`);
+      setText(button, text);
+      setAttr(button, 'aria-label', `Choose Stellar model power. Current: ${tier.name}, ${tier.mode}.`);
+      setAttr(button, 'title', `${tier.name} · ${tier.mode}`);
       state.syncing = false;
     }
 
-    document.querySelectorAll('[data-stellar-model]').forEach(n => n.textContent = `${tier.name} · ${tier.mode}`);
-    document.querySelectorAll('[data-stellar-side-model]').forEach(n => n.textContent = `${tier.name} · ${tier.mode}`);
-    document.querySelectorAll('[data-stellar-settings-model]').forEach(n => n.textContent = `${tier.name} · ${tier.mode}`);
-    document.querySelectorAll('[data-stellar-depth]').forEach(n => n.textContent = tier.mode);
+    document.querySelectorAll('[data-stellar-model]').forEach((n) => setText(n, `${tier.name} · ${tier.mode}`));
+    document.querySelectorAll('[data-stellar-side-model]').forEach((n) => setText(n, `${tier.name} · ${tier.mode}`));
+    document.querySelectorAll('[data-stellar-settings-model]').forEach((n) => setText(n, `${tier.name} · ${tier.mode}`));
+    document.querySelectorAll('[data-stellar-depth]').forEach((n) => setText(n, tier.mode));
     updatePowerUI(tier);
   }
 
-  function observe() {
+  function bindModelEvents() {
     const menu = document.getElementById('model-menu');
+    if (menu && !menu.dataset.stellarOrbitBound) {
+      menu.dataset.stellarOrbitBound = 'true';
+      menu.addEventListener('click', (event) => {
+        if (event.target.closest('[data-model-choice], [data-growth-level]')) window.setTimeout(syncLabel, 35);
+      });
+      menu.addEventListener('keydown', () => window.setTimeout(syncLabel, 35));
+    }
     const button = document.getElementById('model-btn');
-    if (menu) {
-      new MutationObserver(() => {
-        decorateTierButtons();
-        syncLabel();
-      }).observe(menu, { subtree:true, attributes:true, attributeFilter:['aria-checked'] });
+    if (button && !button.dataset.stellarOrbitBound) {
+      button.dataset.stellarOrbitBound = 'true';
+      button.addEventListener('click', () => window.setTimeout(syncLabel, 35));
     }
-    if (button) {
-      new MutationObserver(() => {
-        if (!state.syncing) syncLabel();
-      }).observe(button, { childList:true, characterData:true, subtree:true });
-    }
-    const settings = document.getElementById('settings-modal');
-    if (settings) new MutationObserver(() => enhanceSettings()).observe(settings, { subtree:true, childList:true });
   }
 
   function addSchema() {
     if (document.querySelector('script[data-stellar-app-schema]')) return;
     const script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.dataset.stellarAppSchema = 'v3';
+    script.dataset.stellarAppSchema = 'safe-v4';
     script.textContent = JSON.stringify({
       '@context':'https://schema.org',
       '@type':'SoftwareApplication',
@@ -277,16 +299,31 @@
     document.head.appendChild(script);
   }
 
+  function syncAll() {
+    if (document.hidden) return;
+    safeRun(decorateMenu);
+    safeRun(ensureSpaceStrip);
+    safeRun(ensureOrbitPrimaryNav);
+    safeRun(enhanceSidebarLabels);
+    safeRun(enhanceSettings);
+    safeRun(bindModelEvents);
+    safeRun(syncLabel);
+  }
+
   function init() {
     document.body.classList.add('stellar-orbit-v2', 'stellar-orbit-v3');
-    decorateMenu();
-    ensureSpaceStrip();
-    ensureOrbitPrimaryNav();
-    enhanceSidebarLabels();
-    enhanceSettings();
-    syncLabel();
-    observe();
-    addSchema();
+    safeRun(decorateMenu);
+    safeRun(ensureSpaceStrip);
+    safeRun(ensureOrbitPrimaryNav);
+    safeRun(enhanceSidebarLabels);
+    safeRun(enhanceSettings);
+    safeRun(bindModelEvents);
+    safeRun(syncLabel);
+    safeRun(addSchema);
+    window.addEventListener('focus', syncAll, { passive:true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) syncAll(); });
+    window.setInterval(syncAll, 2000);
+    window.__stellarOrbitHealth = { version:'safe-v4', observers:0, startedAt:Date.now() };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
