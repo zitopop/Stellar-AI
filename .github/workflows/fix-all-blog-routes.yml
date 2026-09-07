@@ -1,0 +1,38 @@
+name: Fix all Stellar blog routes
+
+on:
+  push:
+    branches:
+      - fix/all-blog-links-live-v1
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: ${{ !contains(github.event.head_commit.message, '[blog-routes-applied]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/all-blog-links-live-v1
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply and validate 66 routes
+        run: |
+          node scripts/fix-all-blog-routes.mjs
+          node --check scripts/fix-all-blog-routes.mjs
+          node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8')); console.log('vercel.json valid')"
+      - name: Commit repaired router
+        run: |
+          if git diff --quiet -- vercel.json; then
+            echo 'No router changes required.'
+            exit 0
+          fi
+          git config user.name 'stellar-maintenance-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add vercel.json
+          git commit -m 'Fix all 66 live blog routes [blog-routes-applied]'
+          git push origin HEAD:fix/all-blog-links-live-v1
