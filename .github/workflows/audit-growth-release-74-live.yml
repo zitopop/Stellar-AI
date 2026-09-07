@@ -26,28 +26,65 @@ jobs:
               return {url,status:r.status,type:(r.headers.get('content-type')||'').toLowerCase(),body:await r.text(),final:r.url};
             }catch(error){return {url,status:0,type:'',body:'',final:'',error:String(error)}}
           }
+          function blogUrls(xml){
+            return [...xml.matchAll(/<loc>\s*(https:\/\/trystellarai\.com\/blog\/[^<\s]+)\s*<\/loc>/g)].map(m=>m[1]);
+          }
+          function hubBlogUrls(html,base){
+            const urls=[];
+            for(const match of html.matchAll(/<a\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/gi)){
+              try{
+                const url=new URL(match[1].replaceAll('&amp;','&'),base);
+                if(url.origin==='https://trystellarai.com' && url.pathname.startsWith('/blog/') && !url.search && !url.hash) urls.push(url.href);
+              }catch{}
+            }
+            return urls;
+          }
+          function compareSets(label,actual,expected,failures){
+            const actualSet=new Set(actual);
+            const expectedSet=new Set(expected);
+            const missing=[...expectedSet].filter(url=>!actualSet.has(url));
+            const unexpected=[...actualSet].filter(url=>!expectedSet.has(url));
+            if(actual.length!==actualSet.size || missing.length || unexpected.length){
+              failures.push(label+' '+JSON.stringify({total:actual.length,unique:actualSet.size,missing,unexpected}));
+            }
+          }
           (async()=>{
             const failures=[];
+            const expected=blogUrls(fs.readFileSync('sitemap.xml','utf8'));
+            if(expected.length!==74 || new Set(expected).size!==74) failures.push(`EXPECTED_SITEMAP total=${expected.length} unique=${new Set(expected).size}`);
+
             const app=await get('https://trystellarai.com/app');
             if(app.status!==200 || !app.type.startsWith('text/html') || !app.body.includes('Roblox &amp; FiveM AI Game Builder + Script Generator') || !app.body.includes('/stellar-growth-v1.js?v=1') || !app.body.includes('/stellar-growth-v1.css?v=1')) failures.push('APP '+JSON.stringify({status:app.status,type:app.type,final:app.final,error:app.error}));
-            for(const asset of ['https://trystellarai.com/stellar-growth-v1.js?v=1','https://trystellarai.com/stellar-growth-v1.css?v=1']){
-              const r=await get(asset);
-              if(r.status!==200 || !r.body.includes('stellar-')) failures.push('ASSET '+asset+' '+JSON.stringify({status:r.status,type:r.type,error:r.error}));
+
+            const assets=[
+              {url:'https://trystellarai.com/stellar-growth-v1.js?v=1',types:['application/javascript','text/javascript'],marker:'window.__stellarGrowthV1'},
+              {url:'https://trystellarai.com/stellar-growth-v1.css?v=1',types:['text/css'],marker:'.stellar-reasoning-panel'}
+            ];
+            for(const asset of assets){
+              const r=await get(asset.url);
+              const validType=asset.types.some(type=>r.type.startsWith(type));
+              if(r.status!==200 || !validType || !r.body.includes(asset.marker)) failures.push('ASSET '+asset.url+' '+JSON.stringify({status:r.status,type:r.type,marker:asset.marker,error:r.error}));
             }
+
             const hub=await get('https://trystellarai.com/blog');
-            if(hub.status!==200 || !hub.type.startsWith('text/html') || !hub.body.includes('74<small>guides available</small>')) failures.push('HUB '+JSON.stringify({status:hub.status,type:hub.type,error:hub.error}));
+            if(hub.status!==200 || !hub.type.startsWith('text/html')) failures.push('HUB '+JSON.stringify({status:hub.status,type:hub.type,error:hub.error}));
+            const hubUrls=hubBlogUrls(hub.body,hub.final||'https://trystellarai.com/blog');
+            compareSets('HUB_LINKS',hubUrls,expected,failures);
+
             const sitemap=await get('https://trystellarai.com/sitemap.xml');
-            const urls=[...sitemap.body.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/loc>/g)].map(m=>m[1]);
-            const unique=[...new Set(urls)];
-            if(sitemap.status!==200 || unique.length!==74) failures.push(`SITEMAP status=${sitemap.status} blogUrls=${unique.length}`);
-            const results=await Promise.all(unique.map(get));
+            const liveUrls=blogUrls(sitemap.body);
+            if(sitemap.status!==200 || !['application/xml','text/xml'].some(type=>sitemap.type.startsWith(type))) failures.push('SITEMAP_RESPONSE '+JSON.stringify({status:sitemap.status,type:sitemap.type,error:sitemap.error}));
+            compareSets('SITEMAP_URLS',liveUrls,expected,failures);
+
+            const results=await Promise.all(expected.map(get));
             for(const r of results){
               const canonical=`<link rel="canonical" href="${r.url}"`;
               const ok=r.status===200 && r.type.startsWith('text/html') && /<title>/i.test(r.body) && (r.body.includes(canonical) || r.body.includes(`href="${r.url}" rel="canonical"`));
               console.log(`${ok?'PASS':'FAIL'} | ${r.status} | ${r.type||'-'} | ${r.url}`);
               if(!ok) failures.push('BLOG '+r.url+' '+JSON.stringify({status:r.status,type:r.type,final:r.final,error:r.error}));
             }
-            console.log(`SUMMARY app=${app.status} hub=${hub.status} blogs=${unique.length-results.filter(r=>!(r.status===200 && r.type.startsWith('text/html') && /<title>/i.test(r.body) && (r.body.includes(`<link rel="canonical" href="${r.url}"`) || r.body.includes(`href="${r.url}" rel="canonical"`)))).length}/${unique.length} failures=${failures.length}`);
+            const passed=results.filter(r=>r.status===200 && r.type.startsWith('text/html') && /<title>/i.test(r.body) && (r.body.includes(`<link rel="canonical" href="${r.url}"`) || r.body.includes(`href="${r.url}" rel="canonical"`))).length;
+            console.log(`SUMMARY app=${app.status} hub=${hub.status} hubLinks=${new Set(hubUrls).size}/${expected.length} blogs=${passed}/${expected.length} failures=${failures.length}`);
             if(failures.length){ console.error(failures.join('\n')); process.exit(1); }
           })();
           NODE
