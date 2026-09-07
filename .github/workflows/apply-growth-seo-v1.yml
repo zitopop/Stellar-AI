@@ -31,7 +31,13 @@ jobs:
           s=re.sub(r'Browse all\s+\d+\s+Stellar AI','Browse all 74 Stellar AI',s)
           s=re.sub(r'\d+\s+practical Roblox','74 practical Roblox',s)
           s=re.sub(r'"numberOfItems"\s*:\s*\d+','"numberOfItems":74',s)
-          s=re.sub(r'(<div\s+class="count"\s*>)[0-9]+(\s*<small>\s*guides available)',r'\g<1>74\2',s)
+          replacement='<div class="count">74<small>guides available</small></div>'
+          s,n=re.subn(r'<div[^>]*class=["\'][^"\']*\bcount\b[^"\']*["\'][^>]*>.*?</div>',replacement,s,count=1,flags=re.S)
+          print('count-card replacements:',n)
+          if not n:
+              marker='</section><section class="tools">'
+              if marker in s:
+                  s=s.replace(marker,replacement+'</section><section class="tools">',1)
           p.write_text(s)
           PY
       - name: Validate generated site
@@ -43,8 +49,7 @@ jobs:
           import re, pathlib, xml.etree.ElementTree as ET
           root=pathlib.Path('.')
           blog=(root/'blog.html').read_text()
-          count=re.search(r'<div\s+class="count"\s*>\s*(\d+)\s*<small>\s*guides available',blog)
-          assert count and int(count.group(1)) == 74, count.group(1) if count else 'missing visible guide count'
+          assert '74<small>guides available</small>' in blog, 'visible 74-guide count missing'
           links=re.findall(r'href="(/blog/[^"#?]+)"', blog)
           assert len(set(links)) == 74, len(set(links))
           xml=ET.parse(root/'sitemap.xml')
