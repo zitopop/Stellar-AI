@@ -72,6 +72,28 @@
     nav.innerHTML='<a class="stellar-orbit-link" href="/models"><span aria-hidden="true">✦</span> Models</a><a class="stellar-orbit-link" href="/blog"><span aria-hidden="true">⌁</span> Guides</a>';
     search.insertAdjacentElement('afterend',nav);
   }
+  function enhanceSettings(){
+    const modal=document.getElementById('settings-modal');
+    if(!modal)return;
+    modal.setAttribute('data-stellar-orbit','v2');
+    const subtitle=modal.querySelector('.settings-subtitle');
+    if(subtitle)subtitle.textContent='Account, models, usage and workspace preferences.';
+    const card=modal.querySelector('.set-card');
+    const head=modal.querySelector('.set-head');
+    if(card&&head&&!card.querySelector('.stellar-settings-hero')){
+      const hero=document.createElement('div');
+      hero.className='stellar-settings-hero';
+      hero.innerHTML='<div class="stellar-settings-hero-copy"><strong>🌌 Stellar Orbit</strong><span>Tune how Stellar looks, thinks and supports your builds.</span></div><div class="stellar-settings-shortcuts"><button type="button" data-orbit-models>AI & models</button><button type="button" data-orbit-usage>Usage</button><a href="/blog">Guides</a></div>';
+      head.insertAdjacentElement('afterend',hero);
+      hero.querySelector('[data-orbit-models]')?.addEventListener('click',()=>{
+        try{window.closeSettings?.();}catch{}
+        setTimeout(()=>document.getElementById('model-btn')?.click(),40);
+      });
+      hero.querySelector('[data-orbit-usage]')?.addEventListener('click',()=>{
+        try{window.closeSettings?.();window.openUsage?.();}catch{}
+      });
+    }
+  }
   function syncLabel(){
     const key=selectedKey(),t=TIERS[key]||TIERS.smart;state.selected=key;
     const b=document.getElementById('model-btn'),text=`${t.symbol} ${t.name} · ${t.mode} ▾`;
@@ -83,6 +105,8 @@
     const menu=document.getElementById('model-menu'),button=document.getElementById('model-btn');if(!menu)return;
     new MutationObserver(()=>{decorateTierButtons();syncLabel();}).observe(menu,{subtree:true,attributes:true,attributeFilter:['aria-checked']});
     if(button)new MutationObserver(()=>{if(!state.syncing)syncLabel();}).observe(button,{childList:true,characterData:true,subtree:true});
+    const settings=document.getElementById('settings-modal');
+    if(settings)new MutationObserver(()=>enhanceSettings()).observe(settings,{subtree:true,childList:true});
   }
   function addSchema(){
     if(document.querySelector('script[data-stellar-app-schema]'))return;
@@ -91,8 +115,7 @@
   }
   function init(){
     document.body.classList.add('stellar-orbit-v2');
-    decorateMenu();ensureSpaceStrip();ensureOrbitLinks();
-    document.getElementById('settings-modal')?.setAttribute('data-stellar-orbit','v2');
+    decorateMenu();ensureSpaceStrip();ensureOrbitLinks();enhanceSettings();
     syncLabel();observe();addSchema();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
