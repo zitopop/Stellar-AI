@@ -61,26 +61,19 @@
     });
   }
 
-  function loadStellarOrbit() {
+  function loadSettingsPresentation() {
     if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
-    // Presentation-only enhancement. Failing to load it must never block chat,
-    // pricing labels, authentication, checkout, or model routing.
-    if (!document.querySelector('link[data-stellar-orbit-theme]')) {
+    // app.html owns the Orbit runtime. currency.js only adds the final Settings
+    // presentation layer so it cannot accidentally inject a second Orbit bundle.
+    if (!document.querySelector('link[data-stellar-settings-v4]')) {
       const style = document.createElement('link');
       style.rel = 'stylesheet';
-      style.href = '/stellar-orbit.css?v=2';
-      style.dataset.stellarOrbitTheme = 'v2';
+      style.href = '/stellar-settings-v4.css?v=4';
+      style.dataset.stellarSettingsV4 = 'true';
       document.head.appendChild(style);
-    }
-    if (!document.querySelector('script[data-stellar-orbit-ui]')) {
-      const script = document.createElement('script');
-      script.src = '/stellar-orbit.js?v=2';
-      script.defer = true;
-      script.dataset.stellarOrbitUi = 'v2';
-      document.head.appendChild(script);
     }
   }
 
-  loadStellarOrbit();
+  loadSettingsPresentation();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyCurrencyLabels, { once: true }); else applyCurrencyLabels();
 })();
