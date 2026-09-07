@@ -1,0 +1,89 @@
+name: Audit live app stability v2
+
+on:
+  push:
+    branches:
+      - audit/live-app-stability-v2
+
+jobs:
+  audit:
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium
+      - name: Verify live app is clickable
+        shell: bash
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          const timeout = (promise, label, ms=7000) => Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms))
+          ]);
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            try {
+              const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+              page.setDefaultTimeout(5000);
+              page.setDefaultNavigationTimeout(10000);
+              const errors = [];
+              page.on('pageerror', err => errors.push(String(err)));
+              page.on('console', msg => { if (msg.type() === 'error') console.log('console-error:', msg.text()); });
+
+              await timeout(page.goto(`https://trystellarai.com/app?stability_check=${Date.now()}`, { waitUntil: 'commit', timeout: 10000 }), 'navigation', 12000);
+              await timeout(page.waitForSelector('#txt', { state: 'attached', timeout: 6000 }), 'prompt render', 7000);
+              await page.waitForTimeout(500);
+
+              const guest = page.getByRole('button', { name: 'Continue without signing in' });
+              if (await guest.isVisible().catch(() => false)) {
+                await timeout(guest.click({ timeout: 4000 }), 'guest continuation', 5000);
+                await page.waitForTimeout(250);
+              }
+
+              const delay = await timeout(page.evaluate(() => new Promise(resolve => {
+                const started = performance.now();
+                setTimeout(() => resolve(performance.now() - started), 60);
+              })), 'main-thread timer', 4000);
+              console.log('main-thread-delay-ms:', delay);
+              if (delay > 1000) throw new Error(`main thread blocked: ${delay}ms`);
+
+              const input = page.locator('#txt');
+              await timeout(input.click({ timeout: 4000 }), 'prompt click', 5000);
+              await timeout(input.fill('stability check'), 'prompt typing', 5000);
+              if (await input.inputValue() !== 'stability check') throw new Error('prompt did not accept typing');
+              await input.fill('');
+
+              const model = page.locator('#model-btn');
+              await timeout(model.click({ timeout: 4000 }), 'model picker click', 5000);
+              await page.waitForTimeout(150);
+              const expanded = await model.getAttribute('aria-expanded');
+              const menuVisible = await page.locator('#model-menu').isVisible().catch(() => false);
+              console.log('model-expanded:', expanded, 'menu-visible:', menuVisible);
+              if (expanded !== 'true' && !menuVisible) throw new Error('model picker did not open');
+
+              // Close the picker before clicking New Build if needed.
+              if (menuVisible) await model.click({ timeout: 4000 }).catch(() => {});
+              const newBuild = page.locator('#sidebar .side-new');
+              await timeout(newBuild.click({ timeout: 4000 }), 'New Build click', 5000);
+              await page.waitForTimeout(150);
+              await timeout(input.click({ timeout: 4000 }), 'post-New-Build prompt click', 5000);
+
+              const growthDisabled = await page.evaluate(() => window.__stellarGrowthV1DisabledForStability === true);
+              console.log('growth-disabled:', growthDisabled);
+              if (!growthDisabled) throw new Error('disabled growth runtime marker not active');
+
+              const fatal = errors.filter(e => /maximum call stack|too much recursion|out of memory/i.test(e));
+              if (fatal.length) throw new Error('fatal page errors: ' + fatal.join(' | '));
+              console.log('LIVE APP STABILITY V2 PASSED');
+            } finally {
+              await browser.close();
+            }
+          })().catch(err => { console.error(err); process.exit(1); });
+          NODE
