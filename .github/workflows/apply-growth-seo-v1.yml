@@ -24,13 +24,14 @@ jobs:
         run: |
           node scripts/apply-growth-seo-v1.mjs
           python - <<'PY'
+          import re
           from pathlib import Path
           p=Path('blog.html')
           s=p.read_text()
-          s=s.replace('Browse all 66 Stellar AI','Browse all 74 Stellar AI')
-          s=s.replace('66 practical Roblox','74 practical Roblox')
-          s=s.replace('"numberOfItems":66','"numberOfItems":74')
-          s=s.replace('<div class="count">66<small>','<div class="count">74<small>')
+          s=re.sub(r'Browse all\s+\d+\s+Stellar AI','Browse all 74 Stellar AI',s)
+          s=re.sub(r'\d+\s+practical Roblox','74 practical Roblox',s)
+          s=re.sub(r'"numberOfItems"\s*:\s*\d+','"numberOfItems":74',s)
+          s=re.sub(r'(<div\s+class="count"\s*>)[0-9]+(\s*<small>\s*guides available)',r'\g<1>74\2',s)
           p.write_text(s)
           PY
       - name: Validate generated site
@@ -42,7 +43,8 @@ jobs:
           import re, pathlib, xml.etree.ElementTree as ET
           root=pathlib.Path('.')
           blog=(root/'blog.html').read_text()
-          assert '<div class="count">74<small>guides available' in blog
+          count=re.search(r'<div\s+class="count"\s*>\s*(\d+)\s*<small>\s*guides available',blog)
+          assert count and int(count.group(1)) == 74, count.group(1) if count else 'missing visible guide count'
           links=re.findall(r'href="(/blog/[^"#?]+)"', blog)
           assert len(set(links)) == 74, len(set(links))
           xml=ET.parse(root/'sitemap.xml')
