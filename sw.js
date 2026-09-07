@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-08-31-pwa-2';
+const SW_VERSION = 'stellar-sw-2026-09-07-growth-hotfix-1';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -46,6 +46,26 @@ self.addEventListener('fetch', (event) => {
 
   const destination = request.destination;
   if (!['style', 'script', 'image', 'font', 'manifest'].includes(destination)) return;
+
+  // JavaScript is network-first so a bad UI bundle cannot remain pinned in a user's cache
+  // after a production hotfix. Fall back to cache only when the network is unavailable.
+  if (destination === 'script') {
+    event.respondWith((async () => {
+      const cached = await caches.match(request);
+      try {
+        const response = await fetch(request, { cache: 'no-cache' });
+        if (response.ok && response.type === 'basic') {
+          const cache = await caches.open(STATIC_CACHE);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      } catch {
+        return cached || Response.error();
+      }
+    })());
+    return;
+  }
+
   event.respondWith((async () => {
     const cached = await caches.match(request);
     if (cached) return cached;
@@ -53,7 +73,7 @@ self.addEventListener('fetch', (event) => {
       const response = await fetch(request);
       if (response.ok && response.type === 'basic') {
         const cache = await caches.open(STATIC_CACHE);
-        cache.put(request, response.clone());
+        await cache.put(request, response.clone());
       }
       return response;
     } catch {
