@@ -1,0 +1,55 @@
+name: Prove all Stellar blog preview URLs
+
+on:
+  push:
+    branches:
+      - fix/blog-clean-html-files-v3
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify all 66 preview URLs return the correct article
+        env:
+          PREVIEW_BASE: https://stellar-ai-git-fix-blog-clean-html-files-v3-tobi-s-projects12.vercel.app
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const xml = fs.readFileSync('sitemap.xml','utf8');
+          const paths = [...xml.matchAll(/<loc>https:\/\/trystellarai\.com(\/blog\/[^<]+)<\/loc>/g)].map(m=>m[1]);
+          if (paths.length !== 66) throw new Error(`Expected 66 sitemap blog URLs, got ${paths.length}`);
+          const sleep = ms => new Promise(r=>setTimeout(r,ms));
+          async function check(path) {
+            const url = process.env.PREVIEW_BASE + path;
+            let last = '';
+            for (let attempt=1; attempt<=8; attempt++) {
+              try {
+                const r = await fetch(url, {redirect:'follow', headers:{'user-agent':'StellarBlogRouteCheck/1.0'}});
+                const text = await r.text();
+                const canonical = `https://trystellarai.com${path}`;
+                if (r.status === 200 && text.includes(canonical) && /<title[ >]/i.test(text)) return {path,status:r.status};
+                last = `HTTP ${r.status}; canonical=${text.includes(canonical)}; title=${/<title[ >]/i.test(text)}`;
+              } catch (e) { last = String(e); }
+              await sleep(1500);
+            }
+            throw new Error(`${path}: ${last}`);
+          }
+          (async()=>{
+            const failures=[];
+            for (let i=0;i<paths.length;i+=6) {
+              const batch=paths.slice(i,i+6);
+              const results=await Promise.allSettled(batch.map(check));
+              for (let j=0;j<results.length;j++) {
+                const result=results[j];
+                if(result.status==='fulfilled') console.log(`PASS ${result.value.status} ${result.value.path}`);
+                else { console.error(`FAIL ${batch[j]} ${result.reason}`); failures.push(batch[j]); }
+              }
+            }
+            if(failures.length) throw new Error(`${failures.length} blog URLs failed: ${failures.join(', ')}`);
+            console.log(`PASS: all ${paths.length} clean blog URLs returned HTTP 200 with matching canonicals.`);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
