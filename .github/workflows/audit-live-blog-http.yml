@@ -1,0 +1,37 @@
+name: Audit live Stellar blog HTTP
+
+on:
+  push:
+    branches:
+      - audit/live-blog-http-v1
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit all 66 production blog URLs
+        shell: bash
+        run: |
+          set -u
+          mapfile -t urls < <(grep -oE '<loc>https://trystellarai\.com/blog/[^<]+</loc>' sitemap.xml | sed -E 's#</?loc>##g')
+          echo "URL count: ${#urls[@]}"
+          if [ "${#urls[@]}" -ne 66 ]; then echo 'Expected 66 sitemap blog URLs'; exit 2; fi
+          bad=0
+          : > /tmp/results.txt
+          for url in "${urls[@]}"; do
+            headers=$(mktemp)
+            body=$(mktemp)
+            code=$(curl -sS -L --connect-timeout 8 --max-time 20 -D "$headers" -o "$body" -w '%{http_code}' "$url" || echo 000)
+            ctype=$(awk 'BEGIN{IGNORECASE=1}/^content-type:/{v=$0}END{sub(/\r$/, "", v); sub(/^[^:]+:[ ]*/, "", v); print v}' "$headers")
+            canonical=$(grep -Fq "$url" "$body" && echo yes || echo no)
+            title=$(grep -Eqi '<title[ >]' "$body" && echo yes || echo no)
+            printf '%s | %s | %s | canonical=%s | title=%s\n' "$code" "$ctype" "$url" "$canonical" "$title" | tee -a /tmp/results.txt
+            if [ "$code" != 200 ] || [[ "$ctype" != text/html* ]] || [ "$canonical" != yes ] || [ "$title" != yes ]; then bad=$((bad+1)); fi
+            rm -f "$headers" "$body"
+          done
+          echo '--- summary ---'
+          echo "bad=$bad total=${#urls[@]}"
+          echo '--- failures ---'
+          awk -F' \| ' '$1 != "200" || $2 !~ /^text\/html/ || $4 != "canonical=yes" || $5 != "title=yes"' /tmp/results.txt || true
+          if [ "$bad" -ne 0 ]; then exit 1; fi
