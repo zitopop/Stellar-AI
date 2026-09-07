@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-07-growth-hotfix-1';
+const SW_VERSION = 'stellar-sw-2026-09-07-settings-desktop-v2';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -38,7 +38,10 @@ self.addEventListener('fetch', (event) => {
       try {
         return await fetch(request);
       } catch {
-        return (await caches.match(OFFLINE_URL)) || new Response('Stellar AI is offline. Please try again when you reconnect.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+        return (await caches.match(OFFLINE_URL)) || new Response('Stellar AI is offline. Please try again when you reconnect.', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        });
       }
     })());
     return;
@@ -47,9 +50,9 @@ self.addEventListener('fetch', (event) => {
   const destination = request.destination;
   if (!['style', 'script', 'image', 'font', 'manifest'].includes(destination)) return;
 
-  // JavaScript is network-first so a bad UI bundle cannot remain pinned in a user's cache
-  // after a production hotfix. Fall back to cache only when the network is unavailable.
-  if (destination === 'script') {
+  // UI code and styles are network-first. A bad or stale interface bundle must not
+  // remain pinned after a production fix. Cached copies are offline fallbacks only.
+  if (destination === 'script' || destination === 'style') {
     event.respondWith((async () => {
       const cached = await caches.match(request);
       try {
@@ -66,6 +69,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Images, fonts and the manifest are stable assets, so cache-first is appropriate.
   event.respondWith((async () => {
     const cached = await caches.match(request);
     if (cached) return cached;
