@@ -1,0 +1,28 @@
+name: Prove blog directory route
+
+on:
+  push:
+    branches:
+      - fix/blog-directory-route-proof
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify bank-heist preview route
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://stellar-ai-git-fix-blog-directory-route-proof-tobi-s-projects12.vercel.app/blog/fivem-bank-heist-script'
+          for attempt in $(seq 1 30); do
+            code=$(curl -sS -L -o /tmp/page.html -w '%{http_code}' "$url" || true)
+            if [ "$code" = '200' ] && grep -q 'How to Add a Bank Heist Script' /tmp/page.html; then
+              echo 'PASS: directory-index clean blog route returned HTTP 200 with expected article.'
+              exit 0
+            fi
+            echo "Attempt $attempt: HTTP $code"
+            sleep 4
+          done
+          echo 'FAIL: clean bank-heist route did not return the expected article.'
+          cat /tmp/page.html || true
+          exit 1
