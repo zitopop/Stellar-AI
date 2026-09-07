@@ -61,17 +61,31 @@
     });
   }
 
+  function ensureStylesheet(marker, href) {
+    if (document.querySelector(`link[${marker}]`)) return;
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = href;
+    style.setAttribute(marker, 'true');
+    document.head.appendChild(style);
+  }
+
+  function ensureScript(marker, src) {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement('script');
+    script.src = src;
+    script.defer = true;
+    script.setAttribute(marker, 'true');
+    document.head.appendChild(script);
+  }
+
   function loadSettingsPresentation() {
     if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
-    // app.html owns the Orbit runtime. currency.js only adds the final Settings
-    // presentation layer so it cannot accidentally inject a second Orbit bundle.
-    if (!document.querySelector('link[data-stellar-settings-v4]')) {
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = '/stellar-settings-v4.css?v=4';
-      style.dataset.stellarSettingsV4 = 'true';
-      document.head.appendChild(style);
-    }
+    // app.html owns the core Orbit runtime. currency.js only adds isolated
+    // Settings presentation/preferences so future Settings features stay modular.
+    ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=4');
+    ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
+    ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
   }
 
   loadSettingsPresentation();
