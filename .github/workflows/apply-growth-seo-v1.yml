@@ -1,0 +1,87 @@
+name: Apply Stellar growth SEO v1
+
+on:
+  push:
+    branches:
+      - growth/openai-style-app-v1
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: growth/openai-style-app-v1
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply content and SEO changes
+        run: |
+          node scripts/apply-growth-seo-v1.mjs
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          p=Path('blog.html')
+          s=p.read_text()
+          s=re.sub(r'Browse all\s+\d+\s+Stellar AI','Browse all 74 Stellar AI',s)
+          s=re.sub(r'\d+\s+practical Roblox','74 practical Roblox',s)
+          s=re.sub(r'"numberOfItems"\s*:\s*\d+','"numberOfItems":74',s)
+          replacement='<div class="count">74<small>guides available</small></div>'
+          s,n=re.subn(r'<div[^>]*class=["\'][^"\']*\bcount\b[^"\']*["\'][^>]*>.*?</div>',replacement,s,count=1,flags=re.S)
+          print('count-card replacements:',n)
+          if not n:
+              marker='</section><section class="tools">'
+              if marker in s:
+                  s=s.replace(marker,replacement+'</section><section class="tools">',1)
+          p.write_text(s)
+          PY
+      - name: Validate generated site
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check stellar-growth-v1.js
+          python - <<'PY'
+          import re, pathlib, xml.etree.ElementTree as ET
+          root=pathlib.Path('.')
+          blog=(root/'blog.html').read_text()
+          assert '74<small>guides available</small>' in blog, 'visible 74-guide count missing'
+          links=re.findall(r'href="(/blog/[^"#?]+)"', blog)
+          assert len(set(links)) == 74, len(set(links))
+          xml=ET.parse(root/'sitemap.xml')
+          urls=[n.text for n in xml.iter() if n.tag.endswith('loc') and '/blog/' in (n.text or '')]
+          assert len(set(urls)) == 74, len(set(urls))
+          for url in urls:
+              slug=url.rsplit('/',1)[-1]
+              f=root/'blog'/f'{slug}.html'
+              assert f.exists(), f
+              text=f.read_text()
+              assert f'<link rel="canonical" href="{url}"' in text or f'href="{url}" rel="canonical"' in text, (url,f)
+              assert '<title>' in text
+          app=(root/'app.html').read_text()
+          assert '/stellar-growth-v1.css?v=1' in app
+          assert '/stellar-growth-v1.js?v=1' in app
+          assert 'Roblox &amp; FiveM AI Game Builder + Script Generator' in app
+          growth=(root/'stellar-growth-v1.js').read_text()
+          for token in ['stellar-reasoning-panel','stellar-projects','stellar-usage-overview','Spark','Star','Comet','Nova','Fast','Balanced','Deep','Max']:
+              assert token in growth
+          for forbidden in ['STRIPE_SECRET','create-checkout','API_KEY','walletBalance =','authToken =']:
+              assert forbidden not in growth
+          print('Growth contract checks passed: 74/74 guides')
+          PY
+          node --test tests/workspace-accessibility.test.mjs tests/app-image-upload.test.mjs
+      - name: Commit generated site changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.html blog.html sitemap.xml blog/*.html
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit"
+          else
+            git commit -m "Add high-intent guides and growth UX wiring"
+            git push origin HEAD:growth/openai-style-app-v1
+          fi
