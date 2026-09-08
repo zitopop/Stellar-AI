@@ -1,1 +1,273 @@
-blog-real-time-map.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Set Up a Live Map for Your FiveM Server | Stellar AI</title>
+<meta name="description" content="A live map shows your players on a real-time browser map. This guide covers setting up a live map for your FiveM server so players can see each other online.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/fivem-live-map-setup">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Set Up a Live Map for Your FiveM Server">
+<meta property="og:description" content="A live map shows your players on a real-time browser map. This guide covers setting up a live map for your FiveM server so players can see each other online.">
+<meta property="og:url" content="https://trystellarai.com/blog/fivem-live-map-setup">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to Set Up a Live Map for Your FiveM Server", "description": "A live map shows your players on a real-time browser map. This guide covers setting up a live map for your FiveM server so players can see each other online.", "mainEntityOfPage": "https://trystellarai.com/blog/fivem-live-map-setup", "url": "https://trystellarai.com/blog/fivem-live-map-setup", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1310}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>How to Set Up a Live Map for Your FiveM Server</h1><p class="intro">A live map shows your players on a real-time browser map. This guide covers setting up a live map for your FiveM server so players can see each other online.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 6 min read</div></header>
+<div class="article-content"><p>A practical guide to how to set up a live map for your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<h2 id="section-1">Introduction: Why a Live Map Matters</h2>
+<p>
+    A live map improves player experience by showing real-time locations, vehicle states, and event annotations. For roleplay communities and competitive servers, a reliable map also helps admins monitor server health, reduce griefing, and coordinate staff. This guide explains architectures, secure data flow, server validation, and practical implementations for FiveM (QBCore/ESX/ox_lib) and Roblox (Luau) servers.
+  </p>
+<h2 id="section-2">Architecture Overview: Components and Responsibilities</h2>
+<p>
+    A live map typically has these components:
+  </p>
+<ul>
+<li>Game server(s): authoritative source of game state.</li>
+<li>Map backend: receives validated updates and broadcasts to clients (WebSocket or SSE).</li>
+<li>Frontend web client: renders tiles, markers, and interactions.</li>
+<li>Cache/persistence layer: Redis for ephemeral state, SQL/NoSQL for history.</li>
+</ul>
+<p>
+    Key principle: the game server is authoritative. Never trust client input; always validate on the server before broadcasting or persisting.
+  </p>
+<h2 id="section-3">Choosing a Real-Time Transport: WebSocket vs Polling vs SSE</h2>
+<p>
+    Use WebSockets for low-latency updates (player position, vehicle speed). Server push minimizes bandwidth and latency. Provide a fallback polling API for clients that cannot maintain sockets. Server-Sent Events (SSE) are simpler for unidirectional streams but do not handle bidirectional control messages as well as WebSockets.
+  </p>
+<p>
+    Consider these trade-offs:
+  </p>
+<ul>
+<li><strong>WebSocket</strong>: best for real-time, full-duplex communication; use authenticated, TLS-protected connections and rate-limiting.</li>
+<li><strong>Polling</strong>: simpler to implement, higher bandwidth/latency; suitable for low-traffic or mobile clients.</li>
+<li><strong>SSE</strong>: simpler for server-&gt;client streams; poor fit when clients must send frequent updates.</li>
+</ul>
+<h2 id="section-4">Security and Server Validation</h2>
+<p>
+    Security is critical. Do not accept or display raw client-sent positions or state without server-side verification. The server must:
+  </p>
+<ol>
+<li>Authenticate the player token/session on every update.</li>
+<li>Verify the player exists and is in the expected server instance.</li>
+<li>Enforce rate limits and sanity checks (no teleportation beyond physical constraints).</li>
+<li>Check ownership of vehicles/entities before showing sensitive data.</li>
+<li>Use TLS for all frontend-backend and backend-backend traffic.</li>
+</ol>
+<p>
+    Example WebSocket message schema (JSON) to be sent from the server to map clients:
+  </p>
+<pre><code>{
+  "type": "player_update",
+  "id": "server_player_id",
+  "pos": {"x": 123.4, "y": 456.7, "z": 78.9},
+  "heading": 180,
+  "meta": {"status":"alive","vehicle":null},
+  "ts": 1680000000000
+}</code></pre>
+<h2 id="section-5">FiveM Implementation (QBCore / ESX / ox_lib) — Server Side</h2>
+<p>
+    For FiveM, run validation inside the server runtime (Lua). Use exports or the framework event hooks to gather player state and push to your map backend via secure HTTP or a persistent WebSocket connection. Never rely on client-side scripts for authoritative data.
+  </p>
+<p>
+    Common pattern:
+  </p>
+<ol>
+<li>Server polls authoritative state at a safe interval (e.g., 1 update/sec for position). For performance-sensitive servers, aggregate updates.</li>
+<li>Sanitize and validate: clamp coordinates, verify player exists via source ID, confirm vehicle ownership using your database or framework exports.</li>
+<li>Send signed JWT or mTLS-authenticated message to the map backend.</li>
+</ol>
+<p>Example server-side validation snippet (FiveM Lua):</p>
+<pre><code>-- Server-side (FiveM)
+local http = require('socket.http') -- (or use PerformHttpRequest in FiveM)
+
+local function validateAndSend(source)
+  local player = QBCore.Functions.GetPlayer(source) -- or ESX.GetPlayerFromId
+  if not player then return end
+
+  local ped = GetPlayerPed(source)
+  local x, y, z = table.unpack(GetEntityCoords(ped))
+  -- Basic sanity checks
+  if math.abs(x) &gt; 100000 or math.abs(y) &gt; 100000 then return end
+  -- Check if server thinks the player is in a vehicle (do not trust client)
+  local vehicle = GetVehiclePedIsIn(ped, false)
+  local vehicleId = vehicle and NetworkGetNetworkIdFromEntity(vehicle) or nil
+
+  local payload = {
+    id = player.PlayerData.citizenid or player.identifier,
+    pos = {x=x, y=y, z=z},
+    vehicle = vehicleId
+  }
+  -- Sign or use server-to-server auth (example pseudocode)
+  PerformHttpRequest("https://map-backend.example/api/update", function() end, "POST", json.encode(payload), {["Authorization"]="Bearer XXXXX"})
+end</code></pre>
+<p>
+    Use framework-specific exports (ox_lib/exports, qb-commands) and ensure only server-triggered events supply map updates.
+  </p>
+<h3>QBCore / ESX Integration Notes</h3>
+<ul>
+<li>For QBCore, use QBCore.Functions.CreateCallback and server events to collect validated state.</li>
+<li>For ESX, use xPlayer identifiers and server events. Validate via ESX.GetPlayerFromId.</li>
+<li>ox_lib helpers can assist UI and utility code, but keep critical validation server-side.</li>
+</ul>
+<h2 id="section-6">Roblox Implementation (Luau): Authority and DataStore Handling</h2>
+<p>
+    In Roblox, server scripts are authoritative. LocalScripts can request location updates, but the server must validate and decide what to send to external systems (like a web map).
+    </p>
+<p>Key practices:</p>
+<ul>
+<li>Use RemoteEvents/RemoteFunctions only for client requests; perform validation on the server before processing.</li>
+<li>When writing to DataStores, wrap calls in pcall and implement exponential backoff retries, local caching, and failure handling.</li>
+<li>Never allow a client to dictate global state without server confirmation.</li>
+</ul>
+<p>Example server-side RemoteEvent handler and DataStore pattern (Luau):</p>
+<pre><code>-- ServerScript
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local DataStoreService = game:GetService("DataStoreService")
+local PlayerLocations = DataStoreService:GetDataStore("PlayerLocations")
+local UpdateEvent = script:WaitForChild("UpdateEvent")
+
+local function sendToMapBackend(playerId, pos)
+  local payload = HttpService:JSONEncode({id = playerId, pos = pos, ts = tick()})
+  -- Use HttpService with an API key; ensure backend validates
+  pcall(function()
+    HttpService:PostAsync("https://map-backend.example/api/update", payload, Enum.HttpContentType.ApplicationJson)
+  end)
+end
+
+UpdateEvent.OnServerEvent:Connect(function(player, pos)
+  -- Validate types and ranges strictly server-side
+  if typeof(pos) ~= "Vector3" then return end
+  if math.abs(pos.X) &gt; 1e5 then return end
+  -- Optionally rate-limit per-player
+  sendToMapBackend(player.UserId, {x=pos.X, y=pos.Y, z=pos.Z})
+  -- Save a lightweight cache; use DataStore for persistence with pcall retry logic
+  local success, err = pcall(function()
+    PlayerLocations:SetAsync(tostring(player.UserId), {x=pos.X, y=pos.Y, z=pos.Z, ts = tick()})
+  end)
+  if not success then
+    -- handle failures: queue retry, store in server memory, alert admins
+  end
+end)</code></pre>
+<h2 id="section-7">Frontend Map Options and Integration</h2>
+<p>
+    Popular mapping libraries: Leaflet (lightweight), Mapbox GL (vector tiles, high customization), and Google Maps (familiar, commercial). For game maps like GTA V, use custom tile sets or static map images and overlay a coordinate transform layer to map in-game coordinates to pixels.
+  </p>
+<p>
+    Implementation tips:
+  </p>
+<ul>
+<li>Expose a secure WebSocket endpoint that sends compact position updates. Messages should be signed or authenticated by the backend.</li>
+<li>Maintain a time-to-live (TTL) for markers to remove stale players (e.g., 30 seconds without updates).</li>
+<li>Offer clustering and velocity smoothing on the client to avoid jitter.</li>
+</ul>
+<p>
+    For a visual dashboard, you can integrate a secure embed or full SPA. If you want a management interface, consider linking to tools like <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI app</a> to coordinate deployments and monitoring.
+  </p>
+<h2 id="section-8">Testing, Load, and QA</h2>
+<p>
+    Test in stages:
+  </p>
+<ol>
+<li>Unit test server validation logic (sanity checks, ownership checks, rate-limits).</li>
+<li>Integration test map backend with simulated server updates over WebSocket.</li>
+<li>Load test: simulate many players sending updates (use gradually increasing frequency), measure CPU, Redis memory, and WebSocket connection handling.</li>
+<li>Security test: attempt replay attacks, forged messages, and unauthorized connections to ensure your auth scheme works.</li>
+</ol>
+<p>
+    Use staging environments to mimic production topologies and monitor metrics before full rollout.
+  </p>
+<h2 id="section-9">Deployment and Maintenance</h2>
+<p>
+    Recommended operational practices:
+  </p>
+<ul>
+<li>Run map backend in containers behind a reverse proxy (nginx) with TLS termination.</li>
+<li>Use mTLS or signed JWTs between game servers and map backends for server-to-server authentication.</li>
+<li>Use Redis for ephemeral state and PostgreSQL (or similar) for persistent audit logs if needed.</li>
+<li>Implement log aggregation and alerting for anomalies (sudden jump in updates, repeated validation failures).</li>
+</ul>
+<p>
+    For centralized management and observability, consider a control panel or orchestration tool and link admin tools to your workflow — you can manage deployments and monitor status through your chosen admin console such as <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI app</a>.
+  </p>
+<h2 id="section-10">Checklist: Practical Implementation Steps</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Priority</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Define authoritative data schema</td>
+<td>High</td>
+<td>Include id, pos, heading, ts, and entity ownership</td>
+</tr>
+<tr>
+<td>Implement server-side validation</td>
+<td>High</td>
+<td>Clamp coordinates, verify player/entity ownership</td>
+</tr>
+<tr>
+<td>Choose transport (WebSocket primary)</td>
+<td>High</td>
+<td>Provide polling fallback</td>
+</tr>
+<tr>
+<td>Secure server-to-server auth</td>
+<td>High</td>
+<td>Use mTLS or signed tokens</td>
+</tr>
+<tr>
+<td>Implement rate limits and TTL</td>
+<td>Medium</td>
+<td>Protect against spam and stale markers</td>
+</tr>
+<tr>
+<td>Set up caching (Redis)</td>
+<td>Medium</td>
+<td>Fast ephemeral state for frontend queries</td>
+</tr>
+<tr>
+<td>Load and security testing</td>
+<td>High</td>
+<td>Test replay, forged messages, large connections</td>
+</tr>
+<tr>
+<td>Monitoring and alerting</td>
+<td>High</td>
+<td>Track validation failures and spike patterns</td>
+</tr>
+<tr>
+<td>Document deployment steps and rollback</td>
+<td>Medium</td>
+<td>Keep runbooks and backups</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-11">Maintenance and Operational Tips</h2>
+<p>
+    Regularly review rate limits and validate thresholds as player counts change. Maintain a list of trusted server hosts and rotate keys periodically. Archive historical positional data at configurable intervals (e.g., aggregate per minute) to reduce storage while preserving useful analytics.
+  </p>
+<p>
+    For design inspiration and community articles about map UX and server monitoring, see the project blog: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">Stellar AI blog</a>.
+  </p>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Introduction: Why a Live Map Matters</a><a href="#section-2">Architecture Overview: Components and Responsibilities</a><a href="#section-3">Choosing a Real-Time Transport: WebSocket vs Polling vs SSE</a><a href="#section-4">Security and Server Validation</a><a href="#section-5">FiveM Implementation (QBCore / ESX / ox_lib) — Server Side</a><a href="#section-6">Roblox Implementation (Luau): Authority and DataStore Handling</a><a href="#section-7">Frontend Map Options and Integration</a><a href="#section-8">Testing, Load, and QA</a><a href="#section-9">Deployment and Maintenance</a><a href="#section-10">Checklist: Practical Implementation Steps</a><a href="#section-11">Maintenance and Operational Tips</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

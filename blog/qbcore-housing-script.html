@@ -1,1 +1,280 @@
-blog-housing.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Add a Housing System to Your QBCore FiveM Server | Stellar AI</title>
+<meta name="description" content="A housing system lets players buy and own properties on your FiveM server. This guide covers setting up a complete QBCore housing system with interior access, locks, stashes and furniture.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-housing-script">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Add a Housing System to Your QBCore FiveM Server">
+<meta property="og:description" content="A housing system lets players buy and own properties on your FiveM server. This guide covers setting up a complete QBCore housing system with interior access, locks, stashes and furniture.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-housing-script">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to Add a Housing System to Your QBCore FiveM Server", "description": "A housing system lets players buy and own properties on your FiveM server. This guide covers setting up a complete QBCore housing system with interior access, locks, stashes and furniture.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-housing-script", "url": "https://trystellarai.com/blog/qbcore-housing-script", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1558}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>How to Add a Housing System to Your QBCore FiveM Server</h1><p class="intro">A housing system lets players buy and own properties on your FiveM server. This guide covers setting up a complete QBCore housing system with interior access, locks, stashes and furniture.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 8 min read</div></header>
+<div class="article-content"><p>A practical guide to how to add a housing system to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<h2 id="section-1">Overview</h2>
+<p>
+    Adding a housing system to a QBCore FiveM server is a multi-layered task that touches on database design, server-side validation, interior streaming, permissions, and long-term maintenance. This guide focuses on architecture and practical implementation choices for FiveM (QBCore/ESX) and also includes a short section covering Roblox patterns for teams building similar persistent housing systems. It assumes you have basic familiarity with creating resources (fxmanifest.lua), registering server events, and working with a MySQL backend (oxmysql or similar).
+  </p>
+<h2 id="section-2">Architecture: server-first, authoritative design</h2>
+<p>
+    The single most important principle is server authority. Never trust the client for ownership, purchase confirmation, or permission checks. Architect the system so that the server owns the canonical state (who owns which house, lock status, inventory associations, visited metadata). The client should only send intent requests (e.g., "attempt to buy house X" or "request interior for house X") and the server must validate each request against its database and permission rules before responding.
+  </p>
+<p>
+    Typical components:
+  </p>
+<ul>
+<li>Server resource: housing logic, database queries, validation, scheduled tasks (rent, eviction, backups)</li>
+<li>Client resource: UI, animations, interior streaming triggers, local door physics — only rendered after server confirmation</li>
+<li>Database: houses table, ownership history, interior metadata, persistent storage for furniture or inventory</li>
+<li>Optional integrations: inventory systems, job permissions, gang ownerships, qb-phone or qb-menu UIs, ox_target/ox_lib for interaction</li>
+</ul>
+<p>
+    For design and prototyping of layouts consider visual tools or remote design environments to capture coordinates and interior models. If you want a quick prototyping tool for visuals or collaboration, try the Stellar AI app for design workflows: <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a>.
+  </p>
+<h2 id="section-3">Data model and schema recommendations</h2>
+<p>
+    A clear schema is critical for performance and maintainability. Use normalized tables where appropriate, and JSON columns for flexible metadata (furniture config, custom decorations) if your MySQL version supports it.
+  </p>
+<p>
+    Core tables:
+  </p>
+<ul>
+<li><strong>houses</strong> — id (PK), name, model, price, coords (vector as separate x,y,z or JSON), interior_id, created_at</li>
+<li><strong>house_owners</strong> — id, house_id (FK), owner_citizenid, purchased_at, access_level (owner, coowner, tenant)</li>
+<li><strong>house_metadata</strong> — house_id, key, value (JSON) — for furniture states, decorations</li>
+<li><strong>house_logs</strong> — action, actor, timestamp, details (audit trail for purchases/locks)</li>
+</ul>
+<p>
+    Indexing: add indexes on house_id, owner_citizenid. For common queries (fetch houses by owner), a composite index speeds up lookups.
+  </p>
+<pre><code>
+-- Example minimal SQL (MySQL syntax)
+CREATE TABLE houses (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  model VARCHAR(50),
+  price BIGINT,
+  coord_x DOUBLE,
+  coord_y DOUBLE,
+  coord_z DOUBLE,
+  interior_id VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE house_owners (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  house_id INT,
+  owner_citizenid VARCHAR(64),
+  purchased_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  access_level VARCHAR(20),
+  INDEX (house_id),
+  INDEX (owner_citizenid)
+);
+  </code></pre>
+<h2 id="section-4">Server-side validation and security best practices</h2>
+<p>
+    Security is not an afterthought. Implement these validation and hardening steps:
+  </p>
+<ol>
+<li>Always verify ownership server-side before awarding access or toggling locks. For example, when a client requests to open a door, check that the source player's citizenid matches an entry in house_owners with appropriate access.</li>
+<li>Use parameterized queries or the safe execution methods provided by your MySQL binding (oxmysql exports) to avoid SQL injection.</li>
+<li>Rate-limit potentially costly requests from the client (e.g., repeated purchase attempts). Implement server-side cooldowns or checks per player ID.</li>
+<li>Log sensitive actions (purchases, transfers, kicks) to a secure log with rotation. Keep an audit trail for debugging and abuse investigations.</li>
+<li>Validate any numeric values (prices, IDs) on the server — do not accept price or house id values directly from the client without re-fetching them from the DB.</li>
+<li>Use permissions/groups from QBCore or ESX to gate admin-only actions like force assignment, eviction, or global resets.</li>
+</ol>
+<p>
+    Example server validation rule: when processing a purchase, check that the house is not already owned in the database, ensure the player has enough money via server-side wallet APIs, then atomically insert or update owner records inside a single transaction (or use consistent checks to avoid race conditions).
+  </p>
+<h2 id="section-5">Implementation choices and integrations</h2>
+<p>
+    Decide early whether houses are static world objects with an exterior marker and separate interiors or entirely dynamic interiors streamed in. Common approaches:
+  </p>
+<ul>
+<li>Static exterior + prebuilt interior IPL: faster and simpler for fewer interior types; use object streaming via interior maps or YMAPs.</li>
+<li>Dynamic instance interiors: spawn a private instance per owner (more complex but supports unique furniture per player).</li>
+<li>Hybrid: shared interior templates with per-house metadata for furniture positions and decorations.</li>
+</ul>
+<p>
+    Useful QBCore/ESX/ox_lib integrations:
+  </p>
+<ul>
+<li>ox_target/ox_lib for interaction targeting on doors, safes, and fridges.</li>
+<li>qb-phone integration for notifications and remote management.</li>
+<li>inventory linking: store house-stored items under a container ID that maps to house_id.</li>
+</ul>
+<p>
+    For client UI and menu patterns, use server callbacks to fetch ownership and metadata. For example, qb-core-style callbacks should return only validated data and never rely on client-provided house IDs without server-side cross-checks.
+  </p>
+<p>
+    If you need a fast prototyping or visual planning tool for interiors, consider external design apps — some developers use collaborative design tools like the Stellar AI app for rapid iteration: <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a>.
+  </p>
+<h2 id="section-6">Roblox/Luau notes: server authority, RemoteEvents, and DataStore failure handling</h2>
+<p>
+    If you implement persistent housing on Roblox, the same server-first philosophy applies. Roblox servers should be authoritative: client requests for house actions must be validated on the server using RemoteEvents or RemoteFunctions. Never perform crucial state transitions only on the client.
+  </p>
+<p>
+    DataStore considerations:
+  </p>
+<ul>
+<li>Always wrap DataStore calls in pcall and implement retries with exponential backoff. DataStores can fail or return throttling errors; handle those gracefully and surface transient errors to the user with retry options.</li>
+<li>Prefer UpdateAsync for safe, atomic changes where possible. Use DataStore keys that are namespaced per-player or per-house to avoid conflicts.</li>
+<li>Implement a local server cache for frequently accessed house-lookups, backed by periodic persistence to the DataStore to reduce throttling pressure.</li>
+</ul>
+<p>
+    Example pattern for RemoteEvent handling: validate the player, verify ownership in server memory/cache, then perform DataStore writes with pcall and retry logic. If a DataStore write fails after retries, log the error, revert in-memory changes, and notify the player to try again later.
+  </p>
+<h2 id="section-7">Testing, QA, and debugging strategies</h2>
+<p>
+    Testing is essential before deploying to a live server. Focus on these areas:
+  </p>
+<ul>
+<li>Unit tests for server validation functions — e.g., owner lookup, permission checks.</li>
+<li>Integration tests for DB transactions (purchase flow, transfer flow) using a staging database.</li>
+<li>Simulated multi-player sessions: stress test concurrent purchases and entry requests to reveal race conditions.</li>
+<li>Security tests: attempt to spoof client requests and ensure server-side checks reject malformed or unauthorized actions.</li>
+<li>Performance profiling: measure common queries, identify slow JOINs, and add indexes or caching where necessary.</li>
+</ul>
+<p>
+    Maintain verbose debug logs behind a toggle so you can replicate an issue with detailed traces without spamming production logs in normal operation.
+  </p>
+<h2 id="section-8">Deployment, migrations, and maintenance</h2>
+<p>
+    Production readiness checklist and ongoing maintenance tasks:
+  </p>
+<ul>
+<li>Database migration strategy: include versioned SQL migrations, and test them on a staging DB before production.</li>
+<li>Backups: schedule regular DB backups and store backups off-site. Always test restores periodically.</li>
+<li>Rolling updates: when updating the housing resource, use a short maintenance window or staged restarts; persist transient state before restart.</li>
+<li>Monitor: track error rates from server logs and increase logging for new features to capture edge cases.</li>
+<li>User data portability: provide admin tools to transfer ownership or export house metadata if required by players or moderators.</li>
+</ul>
+<h3>Practical checklist</h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Priority</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server ownership verification</td>
+<td>High</td>
+<td>Implement atomic checks before granting access</td>
+</tr>
+<tr>
+<td>Parameterized DB queries</td>
+<td>High</td>
+<td>Use oxmysql or equivalent execute APIs</td>
+</tr>
+<tr>
+<td>Interior streaming strategy</td>
+<td>Medium</td>
+<td>Choose static IPLs or dynamic instances</td>
+</tr>
+<tr>
+<td>Data backups &amp; migrations</td>
+<td>High</td>
+<td>Versioned SQL and restore testing</td>
+</tr>
+<tr>
+<td>Integration with inventory/phone</td>
+<td>Medium</td>
+<td>Map house storage to container IDs</td>
+</tr>
+<tr>
+<td>Roblox DataStore retry logic</td>
+<td>High (Roblox)</td>
+<td>Wrap in pcall, backoff retries, UpdateAsync</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-9">Example server-side snippets</h2>
+<p>
+    Below are compact examples illustrating server validation patterns. Adapt these to your QBCore resource layout and MySQL binding.
+  </p>
+<pre><code>
+-- QBCore server: validated purchase example (Lua for fxserver)
+RegisterNetEvent('qb-housing:server:buyHouse', function(houseId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- server-only lookup: fetch house record
+  exports.oxmysql:execute("SELECT price FROM houses WHERE id = ?", {houseId}, function(result)
+    if not result or #result == 0 then
+      TriggerClientEvent('QBCore:Notify', src, 'House not available', 'error')
+      return
+    end
+    local price = result[1].price
+    -- check funds on server
+    if Player.Functions.RemoveMoney('bank', price) then
+      -- insert owner record safely
+      exports.oxmysql:execute("INSERT INTO house_owners (house_id, owner_citizenid, access_level) VALUES (?, ?, ?)",
+        {houseId, Player.PlayerData.citizenid, 'owner'}, function(insertResult)
+          TriggerClientEvent('QBCore:Notify', src, 'Purchase successful', 'success')
+          -- log and further server-side setup
+        end)
+    else
+      TriggerClientEvent('QBCore:Notify', src, 'Insufficient funds', 'error')
+    end
+  end)
+end)
+  </code></pre>
+<pre><code>
+-- Roblox server Lua sample (Luau)
+local Remote = game.ReplicatedStorage:WaitForChild("HouseRemote")
+
+Remote.OnServerEvent:Connect(function(player, action, houseId)
+  -- validate action and player on server
+  if action == "EnterHouse" then
+    -- validate ownership via server cache or DataStore lookup
+    local owner = serverCache:GetOwner(houseId)
+    if owner == player.UserId then
+      -- allow teleport to interior; do not trust client data
+      TeleportPlayerToInterior(player, houseId)
+    else
+      Remote:FireClient(player, "AccessDenied")
+    end
+  end
+end)
+
+-- DataStore write with retry
+local function SaveHouseData(key, data)
+  local attempts = 0
+  while attempts &lt; 3 do
+    local success, result = pcall(function()
+      return DataStore:SetAsync(key, data)
+    end)
+    if success then return true end
+    attempts = attempts + 1
+    wait(2 ^ attempts) -- exponential backoff
+  end
+  warn("Failed to save house data:", key)
+  return false
+end
+  </code></pre>
+<h2 id="section-10">Monitoring and rollback planning</h2>
+<p>
+    Plan for rollbacks: if a new housing update introduces data model changes, provide scripts to downgrade or migrate back safely. Maintain backward compatibility when possible and ensure migration scripts are idempotent. Monitor for anomalies after deployment (e.g., spike in failed purchases) and have a staged rollback plan.
+  </p>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Overview</a><a href="#section-2">Architecture: server-first, authoritative design</a><a href="#section-3">Data model and schema recommendations</a><a href="#section-4">Server-side validation and security best practices</a><a href="#section-5">Implementation choices and integrations</a><a href="#section-6">Roblox/Luau notes: server authority, RemoteEvents, and DataStore failure handling</a><a href="#section-7">Testing, QA, and debugging strategies</a><a href="#section-8">Deployment, migrations, and maintenance</a><a href="#section-9">Example server-side snippets</a><a href="#section-10">Monitoring and rollback planning</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

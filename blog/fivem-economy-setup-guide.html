@@ -1,1 +1,255 @@
-blog-fivem-economy.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Set Up a Balanced Economy on Your FiveM Server | Stellar AI</title>
+<meta name="description" content="Economy balance makes or breaks a FiveM server. This guide covers setting up job pay, item prices and money sinks to keep your economy healthy long-term.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/fivem-economy-setup-guide">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Set Up a Balanced Economy on Your FiveM Server">
+<meta property="og:description" content="Economy balance makes or breaks a FiveM server. This guide covers setting up job pay, item prices and money sinks to keep your economy healthy long-term.">
+<meta property="og:url" content="https://trystellarai.com/blog/fivem-economy-setup-guide">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to Set Up a Balanced Economy on Your FiveM Server", "description": "Economy balance makes or breaks a FiveM server. This guide covers setting up job pay, item prices and money sinks to keep your economy healthy long-term.", "mainEntityOfPage": "https://trystellarai.com/blog/fivem-economy-setup-guide", "url": "https://trystellarai.com/blog/fivem-economy-setup-guide", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1378}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>How to Set Up a Balanced Economy on Your FiveM Server</h1><p class="intro">Economy balance makes or breaks a FiveM server. This guide covers setting up job pay, item prices and money sinks to keep your economy healthy long-term.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 7 min read</div></header>
+<div class="article-content"><p>A practical guide to how to set up a balanced economy on your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<h2 id="section-1">Overview: Why a Balanced Economy Matters</h2>
+<p>
+    A balanced in-game economy keeps players engaged, prevents runaway inflation, and supports long-term content design. Whether you run a FiveM server (ESX, QBCore, ox_lib) or a Roblox experience, the same principles apply: control money supply, validate every transaction server-side, and provide meaningful sinks and sources. This guide gives actionable architecture patterns, security rules, implementation choices, testing methods, and deployment/maintenance practices to create a resilient economy.
+  </p>
+<h2 id="section-2">Architecture Choices: Centralized vs. Modular Economy</h2>
+<p>
+    Start by deciding whether the economy will be a single central service or modular subsystems. Centralized architectures simplify global invariants (total currency, global shop prices), while modular designs let jobs, shops, and shops/auctions be developed independently. For FiveM, a dedicated server-side economic resource (Lua/JS) backed by a single SQL table is common. For Roblox, use a server script module that exposes server-only APIs and persists via DataStores.
+  </p>
+<p>
+    Recommended pattern: a server authoritative "economy API" with minimal public surface. Clients call RemoteEvents/RemoteFunctions (Roblox) or trigger server events (FiveM) and the API performs validation, logs changes, and returns sanitized results.
+  </p>
+<h3>Data model basics</h3>
+<ul>
+<li>User table: id, balance, last_payout_ts, reserved_funds (for pending transactions)</li>
+<li>Transaction log: id, user_id, delta, type, reference_id, timestamp</li>
+<li>Shop/market table: item_id, base_price, dynamic_multiplier, last_update</li>
+<li>Global metrics: money_supply, sinks_total, sources_total (computed periodically)</li>
+</ul>
+<h2 id="section-3">Core Economic Design: Sources, Sinks, and Inflation Control</h2>
+<p>
+    A sustainable economy balances sources (job payouts, passive income, loots) and sinks (repairs, taxes, consumables, shop prices). Important levers:
+  </p>
+<ul>
+<li>Controlled job payouts: set base pay + performance modifiers with caps.</li>
+<li>Progressive taxes or fees: small regular taxes remove currency steadily.</li>
+<li>Durable services: vehicle repairs, house maintenance, and licenses consume money at scale.</li>
+<li>Dynamic pricing: adjust shop multipliers based on available supply or demand metrics.</li>
+</ul>
+<p>
+    Avoid hard-coding values in multiple places. Use a central config (JSON/Lua table) and support runtime overrides for tuning.
+  </p>
+<h2 id="section-4">Implementation: FiveM Server Patterns (ESX / QBCore / ox_lib)</h2>
+<p>
+    For FiveM, all critical economy logic must run on the server. Never trust client input. Use server-side event handlers and database transactions for atomicity. Example patterns:
+  </p>
+<h3>Atomic server-side transaction (pseudo-Lua)</h3>
+<pre><code>-- server.lua (FiveM)
+RegisterNetEvent('economy:purchaseItem', function(playerId, itemId, clientProvidedPrice)
+  local src = source
+  local userId = getPlayerIdentifier(src)
+
+  -- Fetch authoritative price from server DB or config
+  local price = GetItemPrice(itemId)
+  if not price then return end
+
+  -- Validate: ignore clientProvidedPrice entirely
+  if not HasSufficientFunds(userId, price) then
+    TriggerClientEvent('economy:purchaseFailed', src, 'insufficient_funds')
+    return
+  end
+
+  -- Begin DB transaction (use oxmysql/ghmattimysql or similar)
+  StartDbTransaction()
+  local success = DeductBalance(userId, price) and GiveItem(userId, itemId)
+  if success then
+    CommitDbTransaction()
+    LogTransaction(userId, -price, 'purchase', itemId)
+    TriggerClientEvent('economy:purchaseSuccess', src, itemId)
+  else
+    RollbackDbTransaction()
+    TriggerClientEvent('economy:purchaseFailed', src, 'internal_error')
+  end
+end)</code></pre>
+<p>
+    Use exports and server callbacks from your chosen framework when possible (QBCore.Functions, ESX callbacks). For ox_lib/oxmysql, prefer parameterized queries and prepared statements to avoid SQL injection and ensure type safety.
+  </p>
+<h3>Database schema tips</h3>
+<ul>
+<li>Store balance as integer cents to avoid floating-point issues.</li>
+<li>Use transaction logs for audits and player dispute resolution.</li>
+<li>Index user_id and timestamp for fast aggregation during analytics jobs.</li>
+</ul>
+<h2 id="section-5">Implementation: Roblox (Luau) Patterns</h2>
+<p>
+    Roblox enforces server authority through RemoteEvents/RemoteFunctions. Use server-only modules for the economy and never change client UI state based on optimistic client messages without server confirmation. Handle DataStore failures with exponential backoff and local caching.
+  </p>
+<h3>Server authority and RemoteEvents</h3>
+<p>
+    Clients should only request actions; the server responds with success/failure and the new balance. Example flow:
+  </p>
+<pre><code>-- Server module (Roblox Lua)
+local Economy = {}
+
+function Economy:Purchase(player, itemId)
+  local userKey = "balance_" .. player.UserId
+  local price = self:GetPrice(itemId)
+  local success, currentBalance = pcall(function()
+    return DataStore:GetAsync(userKey)
+  end)
+  if not success then
+    -- handle DataStore failure (retry or inform player)
+    return false, "datastore_error"
+  end
+  if currentBalance &lt; price then
+    return false, "insufficient_funds"
+  end
+  -- Deduct and update datastore with UpdateAsync or a transaction pattern
+  local ok, newBalance = UpdateBalance(player, -price)
+  if ok then
+    -- give item server-side
+    return true, newBalance
+  else
+    return false, "update_failed"
+  end
+end</code></pre>
+<h3>DataStore failure handling</h3>
+<ul>
+<li>Wrap DataStore calls in pcall() and implement retry with backoff.</li>
+<li>Persist ephemeral changes in a server-side cache when appropriate and flush on shutdown.</li>
+<li>Notify players with friendly messages when persistence fails instead of assuming success.</li>
+</ul>
+<h2 id="section-6">Security and Server Validation</h2>
+<p>
+    Security is a primary concern. Clients are hostile by default: cheat mods, packet manipulation, or modified client scripts can submit arbitrary requests. Protect your economy with defense-in-depth:
+  </p>
+<ul>
+<li>Server-side validation of all transactions; client-supplied prices or flags are untrusted.</li>
+<li>Rate-limit events and apply server-side cooldowns to expensive operations (job payouts, auctions).</li>
+<li>Use signed tokens or server-side session lookups rather than client-supplied identifiers.</li>
+<li>Log suspicious patterns and automatically suspend or flag accounts for manual review.</li>
+</ul>
+<p>
+    For FiveM specifically: enforce server-side checks for inventory limits, duplicate transactions, and item duplication exploits. For Roblox: validate RemoteEvent source with player instance and avoid exposing internal APIs via unsecured Remotes.
+  </p>
+<h2 id="section-7">Testing and Balancing Strategy</h2>
+<p>
+    Balancing is iterative. Combine automated simulations with live A/B testing:
+  </p>
+<ol>
+<li>Simulate player activity: spawn bots or scripts to emulate jobs, shop purchases, and marketplace trading for weeks of in-game time in hours of testing.</li>
+<li>Measure money supply and sink/source deltas daily using scheduled analytics jobs.</li>
+<li>Introduce small, reversible tuning changes and monitor player behavior for one week before large sweeps.</li>
+<li>Use feature flags or configuration toggles (stored server-side) to roll out changes safely.</li>
+</ol>
+<p>
+    Keep a sandbox server for experimental rules and periodically import metrics to tune production parameters.
+  </p>
+<h2 id="section-8">Deployment, Backups, and Maintenance</h2>
+<p>
+    Plan deployment carefully to avoid breaking the economy during migrations. Key practices:
+  </p>
+<ul>
+<li>Database backups before any schema change. Snapshot and verify restoration procedure.</li>
+<li>Migration scripts should be idempotent and versioned. Use transaction logs to rollback economic migrations if necessary.</li>
+<li>Maintain a configuration store for economic parameters that can be updated without code deploys (e.g., JSON stored in DB or an admin-only web UI).</li>
+<li>Notify players of significant changes and provide rollback plans for emergency hotfixes.</li>
+</ul>
+<p>
+    For continuous operations, add health checks for the economy service and alerts for abnormal money-supply growth, failed DB writes, or long RemoteEvent queues.
+  </p>
+<h2 id="section-9">Practical Checklist for Balanced Economy Setup</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Action</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Design</td>
+<td>Define sources &amp; sinks and a central config for values</td>
+<td>Prevents scattered magic numbers and eases tuning</td>
+</tr>
+<tr>
+<td>Server Authority</td>
+<td>Implement server-only economy API and validate all inputs</td>
+<td>Eliminates client-side manipulation</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>Store balances as integers and log every transaction</td>
+<td>Accurate accounting and easier audits</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>Rate-limit, cooldowns, and anomaly logging</td>
+<td>Reduces exploit surface and detects abuse early</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>Run load/simulation tests and sandbox experiments</td>
+<td>Finds economic edge cases before they hit live players</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Backups, migration scripts, and feature flags</td>
+<td>Safe rollouts and fast recovery on failures</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Daily money-supply reports and alerts</td>
+<td>Detects inflation/deflation early</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-10">Maintenance and Continuous Tuning</h2>
+<p>
+    Treat the economy as a live product. Weekly reviews of analytics and community feedback help prevent runaway issues. Use the following cadence:
+  </p>
+<ul>
+<li>Daily: automated checks for stuck transactions and DataStore errors (Roblox) or DB write failures (FiveM).</li>
+<li>Weekly: review money supply, top earners, and top spenders; check for price exploits.</li>
+<li>Monthly: tune job payouts, shop prices, and sink weights; run a “stress weekend” on the sandbox.</li>
+</ul>
+<p>
+    Consider exposing an admin dashboard to trusted staff showing aggregate metrics and allowing config changes that are logged and auditable.
+  </p>
+<h2 id="section-11">Operational Tools and Automation</h2>
+<p>
+    Automate routine tasks: scheduled purge of stale pending transactions, daily backups, and automated integrity checks that compare ledger totals to account balances. For FiveM, a periodic integrity script can reconcile transaction logs with balances and flag discrepancies. For Roblox, implement a reconciliation step when players reconnect after a long absence.
+  </p>
+<p>
+    If you want to pair operational tooling with analytics and dashboards, consider integrating with web admin tools or third-party observability platforms; keep your admin endpoints protected and served from a separate authenticated control plane.
+  </p>
+<h2 id="section-12">Further Reading and Community Resources</h2>
+<p>
+    To iterate rapidly on tuning and player analytics, teams often combine server-side simulation with community A/B testing and public changelogs. If you'd like product-oriented tooling for managing live features and experiments, check builder and deployment tooling available at <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI App</a>. For in-depth posts about iteration and running live features, see the guide collection at <a href="https://trystellarai.com/blog" rel="noopener noreferrer">Stellar AI Blog</a>.
+  </p>
+<p>
+    You can also use hosted developer tools to track metrics and push configs safely; explore the admin console at <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI App</a> for examples of feature flag workflows and rollout controls.
+  </p>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Overview: Why a Balanced Economy Matters</a><a href="#section-2">Architecture Choices: Centralized vs. Modular Economy</a><a href="#section-3">Core Economic Design: Sources, Sinks, and Inflation Control</a><a href="#section-4">Implementation: FiveM Server Patterns (ESX / QBCore / ox_lib)</a><a href="#section-5">Implementation: Roblox (Luau) Patterns</a><a href="#section-6">Security and Server Validation</a><a href="#section-7">Testing and Balancing Strategy</a><a href="#section-8">Deployment, Backups, and Maintenance</a><a href="#section-9">Practical Checklist for Balanced Economy Setup</a><a href="#section-10">Maintenance and Continuous Tuning</a><a href="#section-11">Operational Tools and Automation</a><a href="#section-12">Further Reading and Community Resources</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

@@ -1,1 +1,178 @@
-blog-prison.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QBCore Prison Script — Design, Implementation &amp; Best Practices | Stellar AI</title>
+<meta name="description" content="A practical, server-authoritative guide to designing and implementing a robust QBCore prison/jail script for FiveM. Includes architecture, security, qb-target integration, persistence,.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-prison-script">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QBCore Prison Script — Design, Implementation &amp; Best Practices">
+<meta property="og:description" content="A practical, server-authoritative guide to designing and implementing a robust QBCore prison/jail script for FiveM. Includes architecture, security, qb-target integration, persistence,.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-prison-script">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "QBCore Prison Script — Design, Implementation & Best Practices", "description": "A practical, server-authoritative guide to designing and implementing a robust QBCore prison/jail script for FiveM. Includes architecture, security, qb-target integration, persistence,.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-prison-script", "url": "https://trystellarai.com/blog/qbcore-prison-script", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 959}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>QBCore Prison Script — Design, Implementation &amp; Best Practices</h1><p class="intro">A practical, server-authoritative guide to designing and implementing a robust QBCore prison/jail script for FiveM. Includes architecture, security, qb-target integration, persistence,.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 5 min read</div></header>
+<div class="article-content"><p>A clean, secure prison system is a common server feature that must be server-authoritative, resilient to disconnects, and easy for admins to operate. This guide walks through design choices, persistence, escape prevention, admin commands and a sample implementation pattern that fits modern QBCore servers.</p>
+<h2 id="section-1">Overview &amp; implementation plan</h2>
+<p>This guide explains how to build a QBCore prison script that: enforces jail time server-side, persists jail state across disconnects, supports admin commands and qb-target interactions, and prevents exploits. Implementation plan:</p>
+<ol>
+<li>Decide data persistence (oxmysql or ghmattimysql) and schema changes.</li>
+<li>Create server-side APIs that validate permission and set jail state in the DB.</li>
+<li>Create a client script to teleport, limit controls, play animations and sync timers from the server.</li>
+<li>Integrate qb-target for in-world interactions and add safe admin commands.</li>
+<li>Test disconnect, reconnect, and failure scenarios.</li>
+</ol>
+<h3>Assumptions and framework dependencies</h3>
+<ul>
+<li>Server uses QBCore (v2+ or compatible). APIs like <code>QBCore.Functions.GetPlayer</code> exist.</li>
+<li>MySQL resource available (oxmysql or ghmattimysql). Examples use <em>exports.oxmysql:execute</em> but you can swap to your DB wrapper.</li>
+<li>qb-target or equivalent is installed for interaction targets.</li>
+<li>The users table stores a unique identifier (steam/fivem identifier). If your schema differs, adjust SQL and metadata keys accordingly.</li>
+</ul>
+<h2 id="section-2">Core design principles</h2>
+<p>Keep authority on the server. The server must be the source of truth for who is jailed and for how long. Clients should only present visuals and report input; they must not be trusted with countdown logic, granting parole, or modifying jail state.</p>
+<h3>Server responsibilities</h3>
+<ul>
+<li>Validate admin actions and permission checks.</li>
+<li>Record jail state in persistent storage.</li>
+<li>Emit events to clients to apply confinement (teleport, freeze).</li>
+<li>Run periodic timers and release players when time elapses.</li>
+</ul>
+<h3>Client responsibilities</h3>
+<ul>
+<li>Receive server events and apply local restrictions (disable controls, UI).</li>
+<li>Play animations or cell camera effects.</li>
+<li>Attempt reconnection gracefully and re-sync jail state on connect.</li>
+</ul>
+<h2 id="section-3">Minimal safe code example</h2>
+<p>Below is a compact pattern showing a server command to jail a player, persistent DB write, and an event emitted to the client. This is an illustrative example; update identifiers and SQL for your schema.</p>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+author 'YourName'
+description 'QBCore Prison Script'
+version '1.0.0'
+
+shared_script '@qb-core/import.lua'
+server_script 'server/server.lua'
+client_script 'client/client.lua'
+</code></pre>
+<pre><code>-- server/server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+QBCore.Commands.Add('jail', 'Jail a player', {{name='id', help='Player ID'}, {name='minutes', help='Minutes to jail'}}, true, function(source, args)
+  local src = source
+  local targetId = tonumber(args[1])
+  local minutes = tonumber(args[2]) or 5
+  local caller = QBCore.Functions.GetPlayer(src)
+  if not caller or not caller.PlayerData.job or caller.PlayerData.job.name ~= 'police' then
+    return TriggerClientEvent('QBCore:Notify', src, 'No permission', 'error')
+  end
+
+  local target = QBCore.Functions.GetPlayer(targetId)
+  if not target then
+    return TriggerClientEvent('QBCore:Notify', src, 'Player not online', 'error')
+  end
+
+  local identifier = target.PlayerData.citizenid or target.PlayerData.license
+  local jailTime = os.time() + (minutes * 60)
+
+  -- Persist jail state (example uses oxmysql)
+  exports.oxmysql:execute('UPDATE users SET jail = ?, jail_time = ? WHERE citizenid = ?', {1, jailTime, identifier})
+
+  -- Notify target client
+  TriggerClientEvent('qb-prison:client:setJailed', target.PlayerData.source, minutes)
+  TriggerClientEvent('QBCore:Notify', src, 'Player jailed for ' .. minutes .. ' minutes')
+end, 'police')
+
+-- On server start / player load: re-sync jailed players
+AddEventHandler('QBCore:Server:PlayerLoaded', function(playerId)
+  local src = playerId
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  local identifier = Player.PlayerData.citizenid
+  exports.oxmysql:execute('SELECT jail, jail_time FROM users WHERE citizenid = ?', {identifier}, function(result)
+    if result and result[1] and result[1].jail == 1 then
+      local remaining = math.max(0, result[1].jail_time - os.time())
+      if remaining &gt; 0 then
+        TriggerClientEvent('qb-prison:client:setJailed', src, math.floor(remaining / 60))
+      else
+        -- cleanup expired jail
+        exports.oxmysql:execute('UPDATE users SET jail = ?, jail_time = ? WHERE citizenid = ?', {0, 0, identifier})
+      end
+    end
+  end)
+end)
+</code></pre>
+<pre><code>-- client/client.lua
+local jailed = false
+
+RegisterNetEvent('qb-prison:client:setJailed', function(minutes)
+  jailed = true
+  -- simple example: teleport to cell, freeze and open UI
+  local ped = PlayerPedId()
+  DoScreenFadeOut(500)
+  Wait(600)
+  SetEntityCoords(ped, vector3(1790.0, 2570.0, 45.8)) -- adjust to your cell
+  FreezeEntityPosition(ped, true)
+  DoScreenFadeIn(500)
+  -- show countdown or UI driven by server
+end)
+
+-- Prevent actions while jailed
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(0)
+    if jailed then
+      DisableControlAction(0, 1, true) -- look
+      DisableControlAction(0, 2, true) -- move
+      -- keep network alive and short waits
+    else
+      Citizen.Wait(1000)
+    end
+  end
+end)
+</code></pre>
+<h2 id="section-4">Checklist: server vs client responsibilities</h2>
+<table>
+<thead>
+<tr><th>Responsibility</th><th>Server</th><th>Client</th></tr>
+</thead>
+<tbody>
+<tr><td>Validate admin action</td><td>✔️</td><td></td></tr>
+<tr><td>Persist jail state</td><td>✔️</td><td></td></tr>
+<tr><td>Timer and release</td><td>✔️</td><td>Display only</td></tr>
+<tr><td>Teleport &amp; freeze visuals</td><td>Trigger</td><td>Apply</td></tr>
+<tr><td>Escape detection</td><td>✔️ (pos checks)</td><td>Report pos</td></tr>
+</tbody>
+</table>
+<h2 id="section-5">Security considerations</h2>
+<p>Never rely on client-side timers or client requests to end jail. When you release someone, update the DB and then emit a release event. On reconnect the server must re-check DB state; do not trust a reconnecting client's memory. Monitor for teleport/vehicle exploits by periodically checking jailed players' coordinates server-side and re-teleport them if they leave the cell area.</p>
+<h3>Failure &amp; resilience</h3>
+<p>If your DB is temporarily unavailable, queue actions in memory with conservative defaults and refuse admin jail commands until persistence is confirmed, or show a clear admin error. On player load, if DB query fails, log a server warning and keep the player disconnected from jail areas until persistence is restored or an admin intervenes.</p>
+<h2 id="section-6">Operational tips &amp; integrations</h2>
+<p>Use qb-target to add interaction points in the prison (visiting, release desk) and register server callbacks (server-side validation for visit requests). Test disconnect/reconnect flows thoroughly. For quick scaffolding and to auto-generate file templates, consider using the Stellar AI app to produce destination-labelled files and iteration-ready plans: <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a>. When you want deeper design posts or implementation walkthroughs, read the Stellar AI blog: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">https://trystellarai.com/blog</a>.</p>
+<p>Stellar AI can help generate and revise the project files for this workflow. Describe your framework, existing dependencies, and one testable feature, then bring back errors for a focused revision. You remain responsible for running the tests and managing deployment in your own development environment.</p>
+<h2 id="section-7">Next steps</h2>
+<ul>
+<li>Implement periodic server-side checks that enforce position and release.</li>
+<li>Add an admin UI to inspect jailed players and remaining times.</li>
+<li>Extend with visitor systems, contraband detection, and jobs inside the prison.</li>
+</ul>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Overview &amp; implementation plan</a><a href="#section-2">Core design principles</a><a href="#section-3">Minimal safe code example</a><a href="#section-4">Checklist: server vs client responsibilities</a><a href="#section-5">Security considerations</a><a href="#section-6">Operational tips &amp; integrations</a><a href="#section-7">Next steps</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

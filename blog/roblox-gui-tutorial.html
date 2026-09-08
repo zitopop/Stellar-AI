@@ -1,1 +1,174 @@
-blog-roblox-gui.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Create a GUI in Roblox — Beginner Guide | Stellar AI</title>
+<meta name="description" content="GUIs let you show menus, health bars and custom interfaces in your Roblox game. This guide covers creating a ScreenGui with buttons and labels using scripts.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/roblox-gui-tutorial">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Create a GUI in Roblox — Beginner Guide">
+<meta property="og:description" content="GUIs let you show menus, health bars and custom interfaces in your Roblox game. This guide covers creating a ScreenGui with buttons and labels using scripts.">
+<meta property="og:url" content="https://trystellarai.com/blog/roblox-gui-tutorial">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to Create a GUI in Roblox — Beginner Guide", "description": "GUIs let you show menus, health bars and custom interfaces in your Roblox game. This guide covers creating a ScreenGui with buttons and labels using scripts.", "mainEntityOfPage": "https://trystellarai.com/blog/roblox-gui-tutorial", "url": "https://trystellarai.com/blog/roblox-gui-tutorial", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1062}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">Roblox · Practical guide</div><h1>How to Create a GUI in Roblox — Beginner Guide</h1><p class="intro">GUIs let you show menus, health bars and custom interfaces in your Roblox game. This guide covers creating a ScreenGui with buttons and labels using scripts.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 5 min read</div></header>
+<div class="article-content"><p>A practical guide to how to create a gui in roblox — beginner guide, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<p>This guide teaches you how to build a robust, secure GUI for Roblox with practical notes for FiveM-style projects (NUI) and server-side validation patterns. You'll learn architecture, implementation choices, networking patterns using RemoteEvents, DataStore failure handling, testing, deployment, and maintenance. Concrete code snippets and a practical checklist are included so you can go from prototype to a production-ready interface.</p>
+<h2 id="section-1">Architecture: separating concerns</h2>
+<p>A maintainable GUI is separated into clear layers:</p>
+<ul>
+<li><strong>Presentation (Client)</strong> — ScreenGui, Frames, Buttons, animations, and local logic (input, visual feedback).</li>
+<li><strong>Networking</strong> — RemoteEvents / RemoteFunctions for Roblox; NUI + server events for FiveM. Communication must be minimal and well-defined.</li>
+<li><strong>Server Authority</strong> — All game-critical changes, validation, and persistent storage (DataStore in Roblox; server-side DB or resource state in FiveM) occur on the server.</li>
+<li><strong>Persistence</strong> — DataStore (Roblox) or persistent storage (FiveM resource/database). Failure handling must be explicit.</li>
+</ul>
+<p>Design with the server as the single source of truth and the client as the render-and-input layer. This minimizes cheating and simplifies recovery from errors.</p>
+<h2 id="section-2">Roblox: basic GUI implementation (Luau)</h2>
+<p>Use StarterGui for templates but prefer building GUI elements in Studio and toggling visibility, or create them dynamically from code for programmatic interfaces. Example: creating a simple button and handling click locally.</p>
+<pre><code>-- LocalScript in StarterPlayerScripts
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0,200,0,50)
+button.Position = UDim2.new(0.5,-100,0.5,-25)
+button.Text = "Request Action"
+button.Parent = screenGui
+
+button.MouseButton1Click:Connect(function()
+    -- Trigger server request (do not trust client state)
+    game.ReplicatedStorage.RequestAction:FireServer("someAction")
+end)</code></pre>
+<p>Keep UI logic local (animations, sound, immediate feedback). For any change that affects game state, call a RemoteEvent and let the server validate and respond.</p>
+<h2 id="section-3">Server-side validation and RemoteEvents</h2>
+<p>Never trust client-provided data. On the server, validate the calling player and the payload. Use the implicit player parameter passed to OnServerEvent in Roblox to tie actions to a specific user and ignore client-supplied identifiers.</p>
+<pre><code>-- Server Script
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RequestAction = ReplicatedStorage:WaitForChild("RequestAction")
+
+RequestAction.OnServerEvent:Connect(function(player, actionName, params)
+    -- Validate player, actionName, and parameters
+    if type(actionName) ~= "string" then return end
+    if actionName == "someAction" then
+        -- perform server-side checks (inventory, cooldowns, position)
+        local canDo = serverChecks(player)
+        if not canDo then
+            -- Optionally send a restricted failure back to the client
+            RequestAction:FireClient(player, "Denied")
+            return
+        end
+        -- Apply authoritative change and persist
+        performActionAndSave(player, params)
+        RequestAction:FireClient(player, "Success")
+    end
+end)</code></pre>
+<p>Use authorities like player.UserId, server-side cooldowns, ownership checks, and spatial checks (are they close enough to interact?). Log suspicious activity for later review rather than making gameplay decisions client-side.</p>
+<h3>DataStore failure handling (Roblox)</h3>
+<p>DataStore calls can fail and are rate-limited. Wrap calls in pcall, implement retries with exponential backoff, and queue saves to minimize contention. Example:</p>
+<pre><code>local success, result = pcall(function()
+    return DataStore:SetAsync(key, data)
+end)
+if not success then
+    -- retry logic or cache in-memory and persist later
+end</code></pre>
+<p>Consider batching frequent writes and saving critical data on predictable events (player leave, periodic checkpoints). Inform players of save failures conservatively; never assume persistence succeeded.</p>
+<h2 id="section-4">Implementation choices: dynamic vs. static GUI</h2>
+<p>Choices to make early:</p>
+<ul>
+<li><strong>Studio-built GUI</strong> — Easier for designers, good for static screens and consistent layouts. Use bindable events or RemoteEvents when dynamic content is required.</li>
+<li><strong>Programmatic GUI</strong> — Useful when elements are numerous or dynamically generated from server data (inventory, leaderboards). Keeps templates small and generates items on demand.</li>
+<li><strong>Hybrid</strong> — Create templates in Studio (Frame templates, Button templates) and clone them at runtime. This offers the best designer-developer workflow.</li>
+</ul>
+<p>Prefer templates cloned on the client based on sanitized server data. Avoid rendering huge lists fully — use virtualization or pagination to maintain performance.</p>
+<h2 id="section-5">Testing, QA, and deployment</h2>
+<p>Test across scenarios and simulate failures:</p>
+<ul>
+<li>Network loss and reconnection. Ensure UI recovers or retries gracefully.</li>
+<li>DataStore failures and partial saves. Confirm you can reapply or rollback changes.</li>
+<li>Race conditions between multiple clients (concurrent purchases, shared resources).</li>
+<li>Security tests — attempt to send malformed events or spoofed data and verify server rejects them.</li>
+</ul>
+<p>Automate client and server tests where possible. Use playtests to measure perceived latency and usability. For FiveM, test NUI flows across different resolutions and input devices.</p>
+<h2 id="section-6">Performance and maintenance</h2>
+<p>Key ongoing maintenance tasks:</p>
+<ul>
+<li>Profile UI code to avoid expensive loops or expensive property writes each frame. Use TweenService for smooth transitions.</li>
+<li>Debounce user inputs to prevent event spamming.</li>
+<li>Garbage-collect cloned UI elements when not needed. Remove event listeners to avoid memory leaks.</li>
+<li>Monitor DataStore quotas and plan fallbacks if limits are hit.</li>
+</ul>
+<p>Keep a changelog for UI behavior changes. Communicate breaking UI updates to other developers who may depend on specific RemoteEvent signatures.</p>
+<h2 id="section-7">Practical checklist</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What to check</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Design UI mockup</td>
+<td>Layouts, accessibility, responsive scaling</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Implement local presentation</td>
+<td>Animations, sounds, immediate feedback</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Define network API</td>
+<td>Clear RemoteEvent/NUICallback schema and minimal payloads</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Server validation</td>
+<td>Ownership, cooldowns, sanity checks, re-calculate critical values</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Data persistence</td>
+<td>pcall, retries, backoff, batching</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>Network loss, concurrent actions, edge-case inputs</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Deploy and monitor</td>
+<td>Error logging, player reports, telemetry</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-8">Example end-to-end flow</h2>
+<p>Consider an inventory UI where the client requests to equip an item:</p>
+<ol>
+<li>Player clicks "Equip" — the client sends a minimal remote event: FireServer("Equip", itemId).</li>
+<li>The server receives the event, uses the implicit player parameter, verifies the item is in the player's inventory stored server-side, checks any slot/cooldown rules, and then updates authoritative state.</li>
+<li>The server persists the change safely (pcall + retry) and, on success, fires back a confirmation or updated inventory snapshot to the client.</li>
+<li>The client applies visual changes on confirmation; if the server sends a full snapshot, the client reconciles its display to match server state.</li>
+</ol>
+<p>Always design the client to be tolerant to "denied" responses — show clear feedback and avoid leaving the UI in a half-applied state.</p>
+<h2 id="section-9">Validate the interface with a new player</h2>
+<p>Ask someone unfamiliar with the project to complete the main action without verbal instructions. Watch which labels they read, whether they notice loading feedback, and what they do when an operation fails. Test the same screen using touch and keyboard navigation. Make important buttons large enough to activate comfortably and prevent repeated submissions while the first request is unresolved. Keep the server response visible long enough to understand. These small checks often reveal usability problems that a developer misses while testing a familiar happy path.</p></div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://create.roblox.com/docs/scripting/security/client-server-boundary">Roblox client-server security</a></li><li><a href="https://create.roblox.com/docs/cloud-services/data-stores">Roblox data stores</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/roblox-ai-game-builder">Roblox AI game builder: build without vibe-coding</a><a href="https://trystellarai.com/blog/roblox-datastore-tutorial">How to Use DataStoreService in Roblox — Complete Tutorial</a><a href="https://trystellarai.com/blog/roblox-gamepass-script">How to Add Game Passes to Your Roblox Game</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Architecture: separating concerns</a><a href="#section-2">Roblox: basic GUI implementation (Luau)</a><a href="#section-3">Server-side validation and RemoteEvents</a><a href="#section-4">Implementation choices: dynamic vs. static GUI</a><a href="#section-5">Testing, QA, and deployment</a><a href="#section-6">Performance and maintenance</a><a href="#section-7">Practical checklist</a><a href="#section-8">Example end-to-end flow</a><a href="#section-9">Validate the interface with a new player</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

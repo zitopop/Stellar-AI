@@ -1,1 +1,216 @@
-blog-racing.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QBCore Racing Script — Server-Authoritative Race and Lap Timer | Stellar AI</title>
+<meta name="description" content="Step-by-step guide to build a server-authoritative QBCore racing resource for FiveM. Includes a short plan, assumptions, complete destination-labelled files, validation and security.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-racing-script">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QBCore Racing Script — Server-Authoritative Race and Lap Timer">
+<meta property="og:description" content="Step-by-step guide to build a server-authoritative QBCore racing resource for FiveM. Includes a short plan, assumptions, complete destination-labelled files, validation and security.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-racing-script">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "QBCore Racing Script — Server-Authoritative Race and Lap Timer", "description": "Step-by-step guide to build a server-authoritative QBCore racing resource for FiveM. Includes a short plan, assumptions, complete destination-labelled files, validation and security.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-racing-script", "url": "https://trystellarai.com/blog/qbcore-racing-script", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1081}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>QBCore Racing Script — Server-Authoritative Race and Lap Timer</h1><p class="intro">Step-by-step guide to build a server-authoritative QBCore racing resource for FiveM. Includes a short plan, assumptions, complete destination-labelled files, validation and security.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 5 min read</div></header>
+<div class="article-content"><p>This guide shows how to implement a simple, server-authoritative racing script for QBCore-powered FiveM servers. It focuses on secure checkpoint sequencing, lap timing, and a minimal persistent best-time saving example. You’ll get a short implementation plan, assumptions, complete resource files (fxmanifest, client, server, config), installation steps, checks, and suggested next steps.</p>
+<h2 id="section-1">Overview</h2>
+<p>Racing scripts are a popular server activity, but naive client-side timers are easy to cheat. This guide builds a small QBCore resource where the server controls race state: players start, pass checkpoints in order, and the server computes lap and finish times. Clients only send checkpoint index events; the server validates order and stores best times. That design minimizes trust in the client while remaining performant and easy to extend.</p>
+<h2 id="section-2">Implementation plan (short)</h2>
+<ol>
+<li>Define checkpoint positions and lap count in config.lua.</li>
+<li>Client shows markers and detects local proximity; when a checkpoint is passed, send the index to the server.</li>
+<li>Server tracks per-player race state (next checkpoint, lap start time). Server computes lap/finish times and validates ordering.</li>
+<li>On finish, save best time to your DB using your available MySQL library (example uses oxmysql; replace if needed).</li>
+</ol>
+<h3>Assumptions &amp; dependencies</h3>
+<ul>
+<li>Your server runs QBCore (modern export: exports['qb-core']:GetCoreObject()).</li>
+<li>A MySQL driver is available for persistence. Example uses exports['oxmysql']:execute. Replace with ghmattimysql, mysql-async, or your chosen wrapper if different.</li>
+<li>This example is minimal: integrate qb-target, ox_lib, UI menus, or server-side race scheduling to suit your server.</li>
+</ul>
+<h2 id="section-3">Files (complete, destination-labelled)</h2>
+<p>Place these files in a resource folder named qb-racing (or your chosen name). Folder structure:</p>
+<ul>
+<li>qb-racing/fxmanifest.lua</li>
+<li>qb-racing/config.lua</li>
+<li>qb-racing/client/main.lua</li>
+<li>qb-racing/server/main.lua</li>
+</ul>
+<p>fxmanifest.lua</p>
+<pre><code>fx_version 'cerulean'
+games { 'gta5' }
+
+author 'YourName'
+description 'QBCore Racing Script'
+version '1.0.0'
+
+dependency 'qb-core'
+
+shared_script 'config.lua'
+client_scripts { 'client/main.lua' }
+server_scripts { 'server/main.lua' }
+</code></pre>
+<p>config.lua</p>
+<pre><code>Config = {}
+-- Simple sample: three checkpoints forming a short circuit
+Config.Checkpoints = {
+  { x = 215.0, y = -810.0, z = 29.73, radius = 6.0 },
+  { x = 255.0, y = -820.0, z = 29.73, radius = 6.0 },
+  { x = 240.0, y = -790.0, z = 29.73, radius = 6.0 }
+}
+Config.Laps = 3
+</code></pre>
+<p>client/main.lua</p>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local nextIndex = 1
+local racing = false
+local startTime = 0
+
+-- Draw simple markers and check proximity
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(500)
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    if not racing then
+      -- idle; no need to draw all markers every tick in production
+    else
+      local cp = Config.Checkpoints[nextIndex]
+      if cp then
+        DrawMarker(1, cp.x, cp.y, cp.z - 1.0, 0,0,0, 0,0,0, 2.0,2.0,1.0, 255,0,0,100, false, true, 2, nil, nil, false)
+        local dist = #(pos - vector3(cp.x, cp.y, cp.z))
+        if dist &lt;= cp.radius then
+          -- pass locally and notify server
+          TriggerServerEvent('qb-race:checkpoint', nextIndex)
+          nextIndex = nextIndex + 1
+          if nextIndex &gt; #Config.Checkpoints then
+            -- completed a lap locally; wrap
+            nextIndex = 1
+          end
+          Citizen.Wait(1000) -- simple debounce
+        end
+      end
+    end
+  end
+end)
+
+-- Commands for testing: start/stop
+RegisterCommand('startrace', function()
+  racing = true
+  nextIndex = 1
+  TriggerServerEvent('qb-race:start')
+  QBCore.Functions.Notify('Race started!')
+end)
+
+RegisterCommand('stoprace', function()
+  racing = false
+  nextIndex = 1
+  TriggerServerEvent('qb-race:stop')
+  QBCore.Functions.Notify('Race stopped')
+end)
+</code></pre>
+<p>server/main.lua</p>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local raceState = {} -- keyed by source while in race
+
+RegisterNetEvent('qb-race:start', function()
+  local src = source
+  local player = QBCore.Functions.GetPlayer(src)
+  if not player then return end
+  raceState[src] = {
+    nextIndex = 1,
+    lap = 1,
+    startTime = os.time()
+  }
+  TriggerClientEvent('QBCore:Notify', src, 'Server: race started')
+end)
+
+RegisterNetEvent('qb-race:stop', function()
+  local src = source
+  raceState[src] = nil
+end)
+
+RegisterNetEvent('qb-race:checkpoint', function(index)
+  local src = source
+  local state = raceState[src]
+  if not state then return end
+  -- validate order
+  if index ~= state.nextIndex then
+    -- out of order: ignore or punish
+    return
+  end
+  -- advance
+  state.nextIndex = state.nextIndex + 1
+  if state.nextIndex &gt; #Config.Checkpoints then
+    -- completed a lap
+    local now = os.time()
+    local lapTime = now - state.startTime
+    state.lap = state.lap + 1
+    state.startTime = now
+    state.nextIndex = 1
+    -- if finished all laps
+    if state.lap &gt; Config.Laps then
+      -- finished race
+      local player = QBCore.Functions.GetPlayer(src)
+      local citizenid = player.PlayerData.citizenid
+      -- Save best time example: replace with your DB method if needed
+      exports['oxmysql']:execute('INSERT INTO race_times (citizenid, time) VALUES (?, ?)',[citizenid, lapTime])
+      TriggerClientEvent('QBCore:Notify', src, ('Race finished! Final lap time: %s seconds'):format(lapTime))
+      raceState[src] = nil
+      return
+    else
+      TriggerClientEvent('QBCore:Notify', src, ('Lap complete! Lap time: %s seconds'):format(lapTime))
+    end
+  end
+end)
+</code></pre>
+<h2 id="section-4">Installation &amp; deployment</h2>
+<ol>
+<li>Create resource folder (qb-racing) and add the files above.</li>
+<li>Ensure fxmanifest.lua lists qb-core as dependency and your SQL wrapper is present on the server.</li>
+<li>Add your DB table (race_times) or change the save code to your existing schema. Do not store secrets in code.</li>
+<li>Add start/stop commands or a UI integration (qb-menu / qb-core exports) as you prefer.</li>
+<li>Start the resource and test with a client in a controlled environment.</li>
+</ol>
+<p>If you want a workspace to plan versions and generate destination-labelled files faster, consider generating the project plan in the Stellar AI app: <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a> — it helps structure file outputs and iterations. After you have a working prototype, you can import the plan again in the app to expand features: <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a>.</p>
+<h2 id="section-5">Validation, security &amp; best practices</h2>
+<ul>
+<li>Server-authoritative checks: never accept times from the client. The server must compute lap and finish times using server-time and checkpoint order.</li>
+<li>Order enforcement: server must reject checkpoint events that are out of order. Optionally log or ban repeated cheating attempts.</li>
+<li>Database calls: sanitize input using parameterized queries (the example uses parameter placeholders). Do not log or store raw player tokens or secrets.</li>
+<li>Performance: avoid checking distances every frame for all players. The sample checks every 500ms. For many players, consider partitioning or using qb-target to reduce overhead.</li>
+<li>Persistence: record best times per citizenid, but consider rate limits and aggregation if races run frequently.</li>
+</ul>
+<h3>Checklist</h3>
+<table>
+<thead>
+<tr><th>Task</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td>Config checkpoints</td><td>Define positions and radius in config.lua</td></tr>
+<tr><td>Server validation</td><td>Ensure server computes times and enforces checkpoint order</td></tr>
+<tr><td>DB integration</td><td>Replace example oxmysql call with your SQL library and test inserts</td></tr>
+<tr><td>Client UI</td><td>Add in-game start UI / qb-menu if needed</td></tr>
+<tr><td>Security test</td><td>Try sending out-of-order events from a client and verify rejection</td></tr>
+</tbody>
+</table>
+<h2 id="section-6">Next steps and tuning</h2>
+<p>After the basic server-authoritative loop works, you can add features: timed leaderboards, spectator mode, ghost replays, bet pools, or race lobbies. If you want help iterating your plan into full destination-labelled files or expanding to UI/menus, use the Stellar AI blog for inspiration: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">https://trystellarai.com/blog</a>, or import your requirements into the app to produce concrete file outputs and revisions.</p>
+<p>This guide aims to give a secure, minimal starting point. On production servers, test thoroughly with multiple players and review DB performance and anti-cheat logs before opening to the public.</p>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Overview</a><a href="#section-2">Implementation plan (short)</a><a href="#section-3">Files (complete, destination-labelled)</a><a href="#section-4">Installation &amp; deployment</a><a href="#section-5">Validation, security &amp; best practices</a><a href="#section-6">Next steps and tuning</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

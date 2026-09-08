@@ -1,1 +1,206 @@
-blog-jobs-system.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How the QBCore Job System Works — Complete Guide | Stellar AI</title>
+<meta name="description" content="Understanding the QBCore job system is essential for any server owner. This guide covers how jobs work, how to add new ones, set grades and configure pay.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-jobs-system">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How the QBCore Job System Works — Complete Guide">
+<meta property="og:description" content="Understanding the QBCore job system is essential for any server owner. This guide covers how jobs work, how to add new ones, set grades and configure pay.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-jobs-system">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How the QBCore Job System Works — Complete Guide", "description": "Understanding the QBCore job system is essential for any server owner. This guide covers how jobs work, how to add new ones, set grades and configure pay.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-jobs-system", "url": "https://trystellarai.com/blog/qbcore-jobs-system", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1267}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>How the QBCore Job System Works — Complete Guide</h1><p class="intro">Understanding the QBCore job system is essential for any server owner. This guide covers how jobs work, how to add new ones, set grades and configure pay.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 6 min read</div></header>
+<div class="article-content"><p>A practical guide to how the qbcore job system works — complete guide, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<h2 id="section-1">Overview</h2>
+<p>This guide explains how a QBCore job system works in a FiveM server, covering architecture, implementation choices, security and server validation, testing, and maintenance. It also highlights differences and important considerations for Roblox implementations (Luau) where relevant. The goal is practical: show patterns you can copy, validate, and maintain safely.</p>
+<h2 id="section-2">Core architecture of a QBCore job system</h2>
+<p>A robust job system separates responsibilities across layers. Typical components include:</p>
+<ul>
+<li><strong>Job definitions</strong> (shared data): names, grades, permissions, pay scales, and available tasks.</li>
+<li><strong>Server-side authority</strong>: job assignment, payout calculation, inventory changes, and database persistence.</li>
+<li><strong>Client-side UI</strong>: markers, menus, task progression visuals — strictly presentation only.</li>
+<li><strong>Persistence layer</strong>: MySQL or an ORM, with transactions for critical changes and backups for job-related payouts.</li>
+<li><strong>Integration layer</strong>: optional exports to ox_lib, ESX compatibility shims, and admin tools.</li>
+</ul>
+<p>Design principle: the server is authoritative. Never assume a client honestly reports job progress, money, or inventory changes.</p>
+<h2 id="section-3">QBCore components and job definitions</h2>
+<p>In QBCore, define jobs in a shared config file so both client and server can reference the same structure. Keep sensitive values (pay formula, limits) on the server only. Example definition elements:</p>
+<ul>
+<li>job name (string)</li>
+<li>grades (array: permissions, salary multiplier)</li>
+<li>actions (table: task identifiers mapped to server-side handlers)</li>
+<li>locations (coords used by clients for UI only)</li>
+</ul>
+<pre><code>-- shared/jobs.lua (example)
+Jobs = {
+  garbage = {
+    label = "Garbage Collector",
+    grades = { ['0'] = {pay = 50}, ['1'] = {pay = 75} },
+    tasks = { "collect_bin", "deliver_trash" },
+    locations = { start = vector3(10.0, 6500.0, 31.0) }
+  },
+  -- other jobs
+}
+</code></pre>
+<h2 id="section-4">Server-side validation &amp; security</h2>
+<p>Security is the most important part of a job system. Treat any client-sent event as untrusted input. The server must validate:</p>
+<ul>
+<li>Player identity and job name using QBCore.Functions.GetPlayer(source)</li>
+<li>That the player's job grade permits the requested action</li>
+<li>No modification of payout values from the client — compute payouts server-side</li>
+<li>Rate-limit high-value events and use anti-spam logic</li>
+<li>Use prepared statements / parameterized queries for DB writes</li>
+</ul>
+<p>Example server pattern (QBCore):</p>
+<pre><code>-- server/main.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('qb-jobs:server:completeTask', function(taskId)
+  local src = source
+  if not src then return end
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  local jobName = Player.PlayerData.job.name
+  -- validate job and task ownership on server
+  if jobName ~= 'garbage' then return end
+
+  -- map taskId to server-side reward &amp; checks
+  local task = Jobs.garbage.tasks[taskId]
+  if not task then return end
+
+  local reward = CalculateServerReward(jobName, Player.PlayerData.job.grade.level, taskId)
+  if reward &lt;= 0 then return end
+
+  -- apply money server-side and persist transaction
+  Player.Functions.AddMoney('cash', reward, "job-complete-" .. taskId)
+end)</code></pre>
+<p>Key points: perform all payout calculation and permission checks on the server. Log suspicious behavior and disconnect or flag for review instead of rewarding unexpected values.</p>
+<h2 id="section-5">Client-side behavior and UI</h2>
+<p>Client scripts should be thin: spawn markers, play animations, and send minimal events to the server indicating attempts or confirmations. Never send reward values, and avoid sending unobfuscated task progress that could be modified. When a client submits "task complete", the server should verify all aspects before any state change.</p>
+<p>Use client-side movement checks and simple visual validation for UX, but do not treat these as authoritative.</p>
+<h2 id="section-6">Integration choices: ox_lib, ESX, and interoperability</h2>
+<p>When integrating with ox_lib or providing an ESX compatibility layer, keep the QBCore server logic central and expose safe exports only. For example:</p>
+<ul>
+<li>Provide an export for reading job definitions (read-only)</li>
+<li>Expose server callbacks for admin tools that require permission checks</li>
+<li>Avoid exposing any function that directly mints currency on the client request — require server callbacks that perform permission checks</li>
+</ul>
+<p>If you must support ESX players, translate data at the server boundary and maintain one canonical job state; do not duplicate logic across frameworks.</p>
+<h2 id="section-7">Implementation choices: database, permissions, grades</h2>
+<p>Decisions you will need to make:</p>
+<ul>
+<li><strong>DB schema:</strong> store PlayerData.job.name and grade, job logs, and payout history. Use transactions when modifying both balance and job progress.</li>
+<li><strong>Grades &amp; permissions:</strong> implement a simple RBAC model — grades map to permission flags. Do not assume numeric grade implies permissions; check flags by name.</li>
+<li><strong>Task definitions:</strong> identify tasks by server-side IDs rather than client names; allow server to change task parameters without client updates.</li>
+</ul>
+<p>Maintain migrations for job schema changes to ensure upgrades don't break running servers.</p>
+<h2 id="section-8">Testing, debugging, and anti-cheat testing</h2>
+<p>Testing should include automated unit tests for server-side logic and manual scenario tests for client/server interactions.</p>
+<ul>
+<li>Simulate malicious clients by sending invalid events and verify the server rejects them.</li>
+<li>Unit test payout calculations and DB transactions.</li>
+<li>Use sandbox environments to test migrations and new job definitions before deploying to production.</li>
+</ul>
+<p>Log minimal, structured information on failures (error codes, player id, event name) and aggregate logs for pattern detection. If you use an external monitoring dashboard consider low-latency hooks; for example, a development tool or a hosted app can help visualize job activity — try the app here: <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI App</a>.</p>
+<h2 id="section-9">Roblox considerations: RemoteEvents and DataStore robustness</h2>
+<p>When porting job concepts to Roblox:</p>
+<ul>
+<li>RemoteEvents are the only acceptable client→server path. The first parameter for OnServerEvent is always the player — use it to validate identity.</li>
+<li>Never accept client-calculated rewards. Calculate on the server and then use RemoteEvent:FireClient to confirm.</li>
+<li>DataStore failures are common; wrap writes in pcall, implement exponential backoff, batched writes, and queuing for critical transactions. Avoid losing money changes on failure by keeping an in-memory queue with write retries.</li>
+<li>Rate-limit RemoteEvents per player and monitor for abnormal frequency.</li>
+</ul>
+<pre><code>-- Roblox server-side pattern (Luau)
+local Remote = game.ReplicatedStorage:WaitForChild("CompleteTask")
+Remote.OnServerEvent:Connect(function(player, taskId)
+  local playerJob = GetPlayerJob(player) -- server-side
+  if playerJob ~= "Delivery" then return end
+  local reward = CalculateRewardForTask(taskId, playerJob)
+  -- persist with DataStore, wrapped in pcall
+  local success, err = pcall(function()
+    -- DataStoreSet implementation
+  end)
+  if not success then
+    -- queue retry or inform player via RemoteEvent
+  else
+    GivePlayerMoney(player, reward)
+  end
+end)</code></pre>
+<h2 id="section-10">Deployment and maintenance</h2>
+<p>Deployment checklist:</p>
+<ul>
+<li>Use a CI pipeline to deploy server scripts and DB migrations.</li>
+<li>Keep configuration values for pay scales and limits in a versioned config file.</li>
+<li>Have a rollback plan: a migration that reverts job schema changes quickly.</li>
+<li>Monitor error logs, suspicious behavior alerts, and latency for DB writes.</li>
+</ul>
+<p>For centralized dashboards and operational workflows, you can integrate server logs or metrics into an external service. If you need a hosted monitoring and deployment assistant, the following app can be useful: <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI App</a>. For editorial updates and deeper articles on server architecture, see: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">Stellar AI Blog</a>.</p>
+<h2 id="section-11">Practical checklist</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Why it matters</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server-side job validation</td>
+<td>Prevents unauthorized rewards</td>
+<td>Verify job name and grade with QBCore.Functions.GetPlayer before actions</td>
+</tr>
+<tr>
+<td>Server-calculated payouts</td>
+<td>Clients can be manipulated</td>
+<td>Map taskId → server payout; ignore client-sent amounts</td>
+</tr>
+<tr>
+<td>DB transactions</td>
+<td>Atomicity for money &amp; progress changes</td>
+<td>Use transactional writes or rollback on failure</td>
+</tr>
+<tr>
+<td>Rate limiting</td>
+<td>Prevents spam and automated abuse</td>
+<td>Track last event timestamps per player and block rapid repeats</td>
+</tr>
+<tr>
+<td>Logging &amp; monitoring</td>
+<td>Detect exploits</td>
+<td>Log structured events; aggregate with dashboards</td>
+</tr>
+<tr>
+<td>Roblox DataStore retries</td>
+<td>Network errors are common</td>
+<td>Use pcall, retry with backoff, and queue unsaved changes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-12">Common pitfalls and how to avoid them</h2>
+<ul>
+<li><strong>Trusting client payloads:</strong> Never perform financial operations based on client values. The server should compute and execute.</li>
+<li><strong>Lack of auditing:</strong> Not logging job payouts or suspicious events makes it impossible to post-mortem exploits. Keep concise logs for important transactions.</li>
+<li><strong>Mixing frameworks without boundary:</strong> If you support both QBCore and ESX, keep a single authoritative module for job logic and only adapt interfaces per framework.</li>
+<li><strong>Ignoring DataStore retries (Roblox):</strong> Always handle failure paths; do not assume a write always succeeds.</li>
+</ul>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Overview</a><a href="#section-2">Core architecture of a QBCore job system</a><a href="#section-3">QBCore components and job definitions</a><a href="#section-4">Server-side validation &amp; security</a><a href="#section-5">Client-side behavior and UI</a><a href="#section-6">Integration choices: ox_lib, ESX, and interoperability</a><a href="#section-7">Implementation choices: database, permissions, grades</a><a href="#section-8">Testing, debugging, and anti-cheat testing</a><a href="#section-9">Roblox considerations: RemoteEvents and DataStore robustness</a><a href="#section-10">Deployment and maintenance</a><a href="#section-11">Practical checklist</a><a href="#section-12">Common pitfalls and how to avoid them</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

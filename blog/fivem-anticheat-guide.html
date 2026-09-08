@@ -1,103 +1,157 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-  <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Set Up Anti-Cheat on Your FiveM Server — Stellar AI</title>
-  <meta name="description" content="Cheaters can destroy a FiveM server quickly. This guide covers the best anti-cheat options for QBCore servers and how to configure them to catch exploiters.">
-  <meta name="keywords" content="fivem anticheat, fivem cheat protection, qbcore anticheat, fivem ban system, fivem exploit protection">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
-  <link rel="canonical" href="https://trystellarai.com/blog/fivem-anticheat-guide">
-  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Set Up Anti-Cheat on Your FiveM Server | Stellar AI</title>
+<meta name="description" content="Cheaters can destroy a FiveM server quickly. This guide covers the best anti-cheat options for QBCore servers and how to configure them to catch exploiters.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/fivem-anticheat-guide">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Set Up Anti-Cheat on Your FiveM Server">
+<meta property="og:description" content="Cheaters can destroy a FiveM server quickly. This guide covers the best anti-cheat options for QBCore servers and how to configure them to catch exploiters.">
+<meta property="og:url" content="https://trystellarai.com/blog/fivem-anticheat-guide">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to Set Up Anti-Cheat on Your FiveM Server", "description": "Cheaters can destroy a FiveM server quickly. This guide covers the best anti-cheat options for QBCore servers and how to configure them to catch exploiters.", "mainEntityOfPage": "https://trystellarai.com/blog/fivem-anticheat-guide", "url": "https://trystellarai.com/blog/fivem-anticheat-guide", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1114}</script>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>How to Set Up Anti-Cheat on Your FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Cheaters can destroy a FiveM server quickly. This guide covers the best anti-cheat options for QBCore servers and how to configure them to catch exploiters.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>How to Set Up Anti-Cheat on Your FiveM Server</h1><p class="intro">Cheaters can destroy a FiveM server quickly. This guide covers the best anti-cheat options for QBCore servers and how to configure them to catch exploiters.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 6 min read</div></header>
+<div class="article-content"><p>A practical guide to how to set up anti-cheat on your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<h2 id="section-1">Overview</h2>
+<p>Stellar AI can help generate and revise the project files for this workflow. Describe your framework, existing dependencies, and one testable feature, then bring back errors for a focused revision. You remain responsible for running the tests and managing deployment in your own development environment.</p>
+<h2 id="section-2">Architecture and Trust Model</h2>
+<p>Design anti-cheat as an architecture problem where the server is the single source of truth. Clients can be modified or spoofed, so their inputs are never authoritative. The architecture should separate detection, validation, mitigation, logging, and a human review path:</p>
+<ul>
+<li><strong>Server-side validation layer:</strong> Validate every game-changing action (money changes, inventory, weapon spawns, teleportation, health, vehicle spawns) on the server before applying it to authoritative state.</li>
+<li><strong>Detection agents:</strong> Lightweight server-side checks that flag abnormal patterns (impossible movement, inventory deltas, rapid money increments).</li>
+<li><strong>Mitigation services:</strong> Automated actions with conservative defaults (temporary session kicks, suspensions, or movement rollback) combined with a queue for manual review and escalation for permanent bans.</li>
+<li><strong>Logging and audit:</strong> Immutable, tamper-resistant logs of events, ideally exported to an external logging/alerting platform.</li>
+</ul>
+<h2 id="section-3">Key Anti-Cheat Strategies</h2>
+<p>Use a layered detection model that combines deterministic validation, anomaly detection, and rule-based blacklists.</p>
+<ul>
+<li><strong>Deterministic checks:</strong> Server-side rate limits, canonical state transitions, and verification of client requests against expected sequences (example: spawn weapon must be preceded by a purchase or authorized grant event).</li>
+<li><strong>Rule-based thresholds:</strong> Speed, teleportation distance between server ticks, damage per second exceeding plausible ranges for given weapon and vehicle state.</li>
+<li><strong>Behavioral analytics:</strong> Aggregate patterns across sessions to detect scripted or macroed activity (e.g., repetitive actions with identical timing across players).</li>
+<li><strong>Resource integrity monitoring:</strong> Track resource start times and signatures on the server; detect known exploit modules if feasible.</li>
+</ul>
+<h2 id="section-4">Implementation Choices with QBCore / ESX / ox_lib</h2>
+<p>Choose integration patterns that maintain server authority and minimize performance overhead. Use existing events and hooks provided by frameworks, but ensure validation happens before state mutation.</p>
+<ul>
+<li><strong>Interception points:</strong> Hook into item give/purchase handlers, vehicle creation handlers, and money transfer events within the server framework.</li>
+<li><strong>Middleware approach:</strong> Implement a validation middleware that every framework call passes through. For example, wrap QBCore's giveItem method on server-side to validate source and reason before completing the action.</li>
+<li><strong>ox_lib compatibility:</strong> ox_lib provides utilities for UI and server tasks; place anti-cheat validation in server callbacks and do not perform authoritative checks on client-side ox_lib functions.</li>
+<li><strong>Modular resources:</strong> Keep anti-cheat logic in a separate resource to allow independent updates and restarts without changing core gamemode resources.</li>
+</ul>
+<h3>Server-side Lua Example (FiveM) — Validation Skeleton</h3>
+<pre><code>-- server/validation.lua
+RegisterNetEvent('myserver:requestGiveItem')
+AddEventHandler('myserver:requestGiveItem', function(targetPlayer, item, amount)
+  local src = source
+  -- NEVER trust client data
+  if not PlayerHasPermission(src, 'admin') then
+    -- validate amount range, item exists, and source inventory can permit it
+    if amount &lt;= 0 or amount &gt; 1000 then
+      TriggerClientEvent('myserver:kickForCheat', src, 'invalid_amount')
+      return
+    end
+  end
+  if not IsValidItem(item) then
+    LogSuspicious(src, 'invalid_item:' .. tostring(item))
+    return
+  end
+  -- final authoritative operation on server side
+  GiveItemToPlayerServerSide(targetPlayer, item, amount)
+end)</code></pre>
+<p>Above, all decisive operations run on the server. Reject or log suspicious client requests and avoid state mutation until validation passes.</p>
+<h2 id="section-5">Detection, Mitigation, and Banning Strategy</h2>
+<p>Design mitigation to favor reversible actions when in doubt. Use an automated tiered-response system:</p>
+<ol>
+<li><strong>Tier 1 — Soft mitigation:</strong> Log, notify moderators, temporarily restrict session changes (freeze inventory changes), and place the player under increased validation.</li>
+<li><strong>Tier 2 — Hard mitigation:</strong> Kick or immediate session suspension and place the account in a review queue for manual inspection.</li>
+<li><strong>Tier 3 — Permanent action:</strong> Post-review ban with rationale logged and appeal mechanisms documented.</li>
+</ol>
+<p>Always include an appeals flow and human review before applying indefinite or permanent bans. Maintain a ban database and ensure lookups are performed on connection. For privacy and fairness, log the evidence used to ban and provide it to moderators in the review queue.</p>
+<h2 id="section-6">Testing and Monitoring</h2>
+<p>Detection code must be tested under controlled conditions. Build unit tests and deterministic integration tests that simulate common cheat patterns and legitimate edge cases.</p>
+<ul>
+<li><strong>Automated test scenarios:</strong> Simulate excessive money grants, teleport spam, and weapon spawns to ensure your rules trigger correctly and do not false-positive normal gameplay.</li>
+<li><strong>Staging environment:</strong> Run a copy of your server with a controlled population of test accounts and deploy changes there first.</li>
+<li><strong>Observability:</strong> Export events to a centralized system. Correlate suspicious events with player metadata and session history.</li>
+<li><strong>Alerting and dashboards:</strong> Set alerts for spikes in flags per minute, repeated flagging of the same user, or unusual command usage.</li>
+</ul>
+<p>For automated alert and incident correlation, integrate your logs with tooling such as the Stellar AI app to reduce manual triage time: <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a>. For deeper editorial content or case studies about server security operations, see our writeups at <a href="https://trystellarai.com/blog" rel="noopener noreferrer">https://trystellarai.com/blog</a>.</p>
+<h2 id="section-7">Deployment and Maintenance</h2>
+<p>Anti-cheat is not a one-off build. Treat it as a continuously updated service:</p>
+<ul>
+<li><strong>Incremental rollouts:</strong> Deploy new detection rules progressively (canary then global) to monitor false positive rates.</li>
+<li><strong>Hotfix capability:</strong> Keep the anti-cheat resource separate so you can push urgent fixes without restarting the entire server pool.</li>
+<li><strong>Logging retention and export:</strong> Keep detailed logs long enough to support appeals, but prune or archive to control storage costs.</li>
+<li><strong>Incident response playbooks:</strong> Document steps for containment, rollback, and communication when a widespread exploit appears.</li>
+</ul>
+<h2 id="section-8">Roblox-Specific Considerations</h2>
+<p>For Roblox, always enforce authority on the server (Script) and treat RemoteEvents/RemoteFunctions as untrusted channels. Key points:</p>
+<ul>
+<li><strong>Server authority:</strong> Validate and execute all game-state transitions on the server. Client should only request actions, which the server validates and then performs.</li>
+<li><strong>RemoteEvent patterns:</strong> Use simple, well-documented RemoteEvent signatures. On the server, validate argument types, ranges, and that the player is permitted to perform the action.</li>
+<li><strong>DataStore failure handling:</strong> Implement retries and exponential backoff when interacting with DataStores. Protect against partial failures by using versioned keys or idempotent operations and by saving checkpoints before critical state changes.</li>
+<li><strong>Rate limiting and debouncing:</strong> Prevent spam by limiting RemoteEvent calls per player per second and by debouncing repeated identical requests.</li>
+</ul>
+<h2 id="section-9">Practical Checklist</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Priority</th>
+<th>Owner</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Implement server-side validation middleware</td>
+<td>High</td>
+<td>Backend dev</td>
+<td>Wrap all authoritative state changes</td>
+</tr>
+<tr>
+<td>Integrate logging and alerting</td>
+<td>High</td>
+<td>DevOps</td>
+<td>Export to central system; include player session IDs</td>
+</tr>
+<tr>
+<td>Create staging tests for common exploits</td>
+<td>Medium</td>
+<td>QA</td>
+<td>Automate repeatable scenarios</td>
+</tr>
+<tr>
+<td>Deploy anti-cheat as separate resource</td>
+<td>Medium</td>
+<td>Backend dev</td>
+<td>Allows fast hotfixes</td>
+</tr>
+<tr>
+<td>Document appeals and review workflow</td>
+<td>Low</td>
+<td>Community mgr</td>
+<td>Store evidence with ban records</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-10">Maintenance: Logs, Updates, and Community Signals</h2>
+<p>Schedule periodic reviews of detection rules and false-positive rates. Use community reports as input to refine detection heuristics and always correlate reporter claims with server logs. Maintain a small changelog for anti-cheat updates so moderators understand why behavior changed and when new rules were introduced.</p>
 </div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
-</body>
-</html>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Overview</a><a href="#section-2">Architecture and Trust Model</a><a href="#section-3">Key Anti-Cheat Strategies</a><a href="#section-4">Implementation Choices with QBCore / ESX / ox_lib</a><a href="#section-5">Detection, Mitigation, and Banning Strategy</a><a href="#section-6">Testing and Monitoring</a><a href="#section-7">Deployment and Maintenance</a><a href="#section-8">Roblox-Specific Considerations</a><a href="#section-9">Practical Checklist</a><a href="#section-10">Maintenance: Logs, Updates, and Community Signals</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

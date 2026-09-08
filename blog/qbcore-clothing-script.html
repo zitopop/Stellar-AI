@@ -1,1 +1,198 @@
-blog-clothing.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QBCore Clothing Script — Design, Secure Storage, and Integration Guide | Stellar AI</title>
+<meta name="description" content="A practical guide to building a server-authoritative QBCore clothing/outfit script: planning, file layout, server validation, client hooks, MySQL storage, and safe integration with.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-clothing-script">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QBCore Clothing Script — Design, Secure Storage, and Integration Guide">
+<meta property="og:description" content="A practical guide to building a server-authoritative QBCore clothing/outfit script: planning, file layout, server validation, client hooks, MySQL storage, and safe integration with.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-clothing-script">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "QBCore Clothing Script — Design, Secure Storage, and Integration Guide", "description": "A practical guide to building a server-authoritative QBCore clothing/outfit script: planning, file layout, server validation, client hooks, MySQL storage, and safe integration with.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-clothing-script", "url": "https://trystellarai.com/blog/qbcore-clothing-script", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1044}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>QBCore Clothing Script — Design, Secure Storage, and Integration Guide</h1><p class="intro">A practical guide to building a server-authoritative QBCore clothing/outfit script: planning, file layout, server validation, client hooks, MySQL storage, and safe integration with.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 5 min read</div></header>
+<div class="article-content"><p>This guide walks a builder through creating a robust, server-authoritative clothing (outfit) script for QBCore-based FiveM servers. It focuses on safe server validation, data storage, and clean client/server APIs so outfits are saved, listed, and applied securely and compatibly with common appearance resources.</p>
+<p>Creating a QBCore clothing script that players trust requires a small set of design decisions: keep authority on the server, validate inputs, store outfits safely in MySQL, and integrate with the existing appearance/skinchanger on the client. This guide explains a pragmatic plan, gives complete destination-labelled files you can drop into a resource, and shows the security and validation you must include.</p>
+<h2 id="section-1">Implementation plan (short)</h2>
+<ul>
+<li>1) Decide the appearance provider on your server (fivem-appearance, skinchanger, custom). This guide assumes an appearance export that returns a serializable outfit table.</li>
+<li>2) Add a small resource with fxmanifest.lua, config.lua, server.lua and client.lua that registers a QBCore callback and a save/apply event.</li>
+<li>3) Create a MySQL table for outfits and use MySQL.Async to persist outfits server-side tied to identifiers (cid or identifier).</li>
+<li>4) Validate names, ownership, and limit counts on the server. Keep all enforcement server-side.</li>
+<li>5) Provide a simple client menu/command to call the save and apply flows, delegating actual ped changes to the appearance provider.</li>
+</ul>
+<h3>Assumptions and dependencies</h3>
+<ul>
+<li>QBCore 2.x style core: local QBCore = exports['qb-core']:GetCoreObject().</li>
+<li>MySQL.Async (mysql-async or oxmysql) available on the server. Adjust queries to your DB layer.</li>
+<li>An appearance resource exposes a safe export like exports['fivem-appearance']:GetCurrentSkin() and an ApplySkin(skin) function. If your server uses a different skinchanger, adapt accordingly.</li>
+<li>Optional: qb-target, qb-menu or ox_lib for nice client UI; the guide uses a command for simplicity.</li>
+</ul>
+<h2 id="section-2">Destination‑labelled files</h2>
+<p>Drop these files into a resource folder named qb-clothing (or similar). Update fxmanifest if you change names.</p>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore clothing script (save/apply outfits)'
+version '1.0.0'
+
+shared_script 'config.lua'
+server_scripts {
+  '@mysql-async/lib/MySQL.lua',
+  'server.lua'
+}
+client_scripts {
+  'client.lua'
+}
+</code></pre>
+<pre><code>-- config.lua
+Config = {}
+Config.MaxOutfits = 10 -- per player
+Config.MinNameLength = 3
+Config.MaxNameLength = 32
+</code></pre>
+<pre><code>-- server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+QBCore.Functions.CreateCallback('qb-clothing:getOutfits', function(source, cb)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then cb({}) return end
+  local cid = Player.PlayerData.citizenid
+  MySQL.Async.fetchAll('SELECT id, name, outfit FROM outfits WHERE cid = @cid', {['@cid'] = cid}, function(result)
+    local out = {}
+    for _, row in ipairs(result) do
+      table.insert(out, {id = row.id, name = row.name, outfit = json.decode(row.outfit)})
+    end
+    cb(out)
+  end)
+end)
+
+RegisterNetEvent('qb-clothing:saveOutfit', function(payload)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  local cid = Player.PlayerData.citizenid
+  local name = tostring(payload.name or '')
+  local outfit = payload.outfit
+
+  -- server-side validation
+  if #name &lt; Config.MinNameLength or #name &gt; Config.MaxNameLength then
+    TriggerClientEvent('QBCore:Notify', src, 'Invalid outfit name', 'error')
+    return
+  end
+  if type(outfit) ~= 'table' then
+    TriggerClientEvent('QBCore:Notify', src, 'Invalid outfit data', 'error')
+    return
+  end
+
+  -- enforce max outfits per player
+  local count = MySQL.Sync.fetchScalar('SELECT COUNT(*) FROM outfits WHERE cid = @cid', {['@cid'] = cid})
+  if count and tonumber(count) &gt;= Config.MaxOutfits then
+    TriggerClientEvent('QBCore:Notify', src, 'Outfit limit reached', 'error')
+    return
+  end
+
+  MySQL.Async.execute('INSERT INTO outfits (cid, name, outfit) VALUES (@cid, @name, @outfit)', {
+    ['@cid'] = cid,
+    ['@name'] = name,
+    ['@outfit'] = json.encode(outfit)
+  }, function(rows)
+    TriggerClientEvent('QBCore:Notify', src, 'Outfit saved', 'success')
+  end)
+end)
+
+RegisterNetEvent('qb-clothing:applyOutfit', function(outfitData)
+  local src = source
+  -- ensure player owns the outfit server-side
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  local cid = Player.PlayerData.citizenid
+  local row = MySQL.Sync.fetchAll('SELECT outfit FROM outfits WHERE id = @id AND cid = @cid', {['@id'] = outfitData.id, ['@cid'] = cid})
+  if not row or #row == 0 then
+    TriggerClientEvent('QBCore:Notify', src, 'Outfit not found', 'error')
+    return
+  end
+  local outfit = json.decode(row[1].outfit)
+  -- send outfit to client to apply via the appearance provider
+  TriggerClientEvent('qb-clothing:receiveApplyOutfit', src, outfit)
+end)
+</code></pre>
+<pre><code>-- client.lua (simplified))
+RegisterCommand('saveoutfit', function()
+  local name = exports['qb-input']:ShowInput({--[[grab name via UI]]});
+  -- ASSUMPTION: your appearance resource provides a serializable outfit
+  local outfit = exports['fivem-appearance']:GetCurrentSkin()
+  if not outfit then
+    QBCore.Functions.Notify('Cannot read current skin', 'error')
+    return
+  end
+  TriggerServerEvent('qb-clothing:saveOutfit', {name = name, outfit = outfit})
+end)
+
+RegisterNetEvent('qb-clothing:receiveApplyOutfit', function(outfit)
+  -- ASSUMPTION: appearance provider can apply a full outfit
+  exports['fivem-appearance']:ApplySkin(outfit)
+end)
+</code></pre>
+<h2 id="section-3">Database schema</h2>
+<p>Create a simple table to persist outfits. If you use oxmysql, keep syntax compatible.</p>
+<pre><code>CREATE TABLE `outfits` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cid` varchar(64) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `outfit` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+</code></pre>
+<h3>Checklist before deployment</h3>
+<table>
+<thead>
+<tr><th>Step</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td>Verify appearance provider</td><td>Confirm exports exist to GetCurrentSkin and ApplySkin</td></tr>
+<tr><td>Database</td><td>Create outfits table and test read/write</td></tr>
+<tr><td>Server validation</td><td>Test name length, ownership, and max outfits</td></tr>
+<tr><td>Client UI</td><td>Provide a safe input method for outfit names</td></tr>
+<tr><td>Permissions</td><td>Ensure only authenticated players call save/apply events</td></tr>
+</tbody>
+</table>
+<h2 id="section-4">Security and validation notes</h2>
+<ul>
+<li>Never apply trust to client-side data. The server must verify the caller's identity via QBCore.GetPlayer and tie outfits to a persistent identifier (citizenid or steam hex).</li>
+<li>Validate name length and character set server-side to prevent SQL or storage abuse.</li>
+<li>Enforce limits (max outfits) on the server, not the client.</li>
+<li>When sending outfit JSON to the client to apply, keep the payload minimal and avoid attaching arbitrary metadata.</li>
+<li>If your appearance provider performs sensitive model swaps, prefer to call its server-side checks when possible or sign payloads if you build a custom provider.</li>
+</ul>
+<h2 id="section-5">Integration tips</h2>
+<p>For production usability, integrate a UI: a save dialog with a preview, and an outfits menu showing thumbnails. Use qb-target on wardrobe props for a natural interaction. If you want automated backups or cross-server syncs, keep any sync authority server-side and rate-limit writes.</p>
+<p>Want a visual workflow or to generate full file trees and alternate providers quickly? Use the Stellar AI workspace for iterative code generation and export-ready files at https://trystellarai.com/app — it helps describe system inputs and outputs, plan files, and produce destination-labelled files for your resource. If you prefer to read implementation patterns and tips first, see the Stellar AI blog for related server patterns: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">Stellar AI blog</a>. When experimenting, you can also jump directly into the generator at https://trystellarai.com/app.</p>
+<h2 id="section-6">Next steps</h2>
+<ul>
+<li>Add thumbnails: generate small images server-side or store lookups for UI previews.</li>
+<li>Implement rename/delete events with server-side checks and cascading UI updates.</li>
+<li>Hook into job/wardrobe permissions: only certain jobs can access particular wardrobe props.</li>
+</ul>
+<p>Follow the listed checklist, test with multiple players, and keep enforcement on the server. This structure keeps your outfit system robust and compatible with common QBCore servers and appearance providers.</p>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Implementation plan (short)</a><a href="#section-2">Destination‑labelled files</a><a href="#section-3">Database schema</a><a href="#section-4">Security and validation notes</a><a href="#section-5">Integration tips</a><a href="#section-6">Next steps</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

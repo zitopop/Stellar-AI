@@ -1,1 +1,211 @@
-blog-atm-robbery.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QBCore ATM Robbery — Secure, Testable Implementation Guide | Stellar AI</title>
+<meta name="description" content="Design and implement a secure ATM robbery system for QBCore-based FiveM servers. Server-side validation, qb-target integration, cooldowns, police checks, and safe reward handling with.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-atm-robbery">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QBCore ATM Robbery — Secure, Testable Implementation Guide">
+<meta property="og:description" content="Design and implement a secure ATM robbery system for QBCore-based FiveM servers. Server-side validation, qb-target integration, cooldowns, police checks, and safe reward handling with.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-atm-robbery">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "QBCore ATM Robbery — Secure, Testable Implementation Guide", "description": "Design and implement a secure ATM robbery system for QBCore-based FiveM servers. Server-side validation, qb-target integration, cooldowns, police checks, and safe reward handling with.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-atm-robbery", "url": "https://trystellarai.com/blog/qbcore-atm-robbery", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 890}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>QBCore ATM Robbery — Secure, Testable Implementation Guide</h1><p class="intro">Design and implement a secure ATM robbery system for QBCore-based FiveM servers. Server-side validation, qb-target integration, cooldowns, police checks, and safe reward handling with.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 5 min read</div></header>
+<div class="article-content"><p>This guide walks you through a robust ATM robbery resource for QBCore. It covers design goals, server-authoritative checks, qb-target integration, anti-spoofing mitigations, and complete example files you can drop into a FiveM resource.</p>
+<h2 id="section-1">Why server authority matters</h2>
+<p>ATM robberies change player balances and trigger server-wide consequences (police alerts, cooldowns, item rewards). Keep authority server-side: reject all reward and state changes on the client. The client should only request actions and render effects. This reduces cheating and inconsistent state across players.</p>
+<h2 id="section-2">High-level implementation plan</h2>
+<ol>
+<li>Define ATM positions and per-ATM cooldowns in Config.</li>
+<li>Use qb-target on the client to make ATMs interactable.</li>
+<li>When a player starts a robbery, client sends the target ATM id and current coords to server.</li>
+<li>Server validates: police on duty, ATM not on cooldown, player is close to known ATM position (distance check), and player inventory (if required).</li>
+<li>On success, server marks ATM on cooldown, notifies police, gives reward via QBCore server API, and broadcasts a robbery in progress to nearby clients for particle/sound effects.</li>
+</ol>
+<h3>Assumptions and dependencies</h3>
+<ul>
+<li>Server uses QBCore export: exports['qb-core']:GetCoreObject().</li>
+<li>qb-target is available for interaction zones/models.</li>
+<li>You will add the resource to server.cfg and test on a dev server with a police job configured.</li>
+</ul>
+<h2 id="section-3">Example files (destination-labelled)</h2>
+<p>Below are minimal complete files. Place them in a resource folder named qb-atm-robbery/ and add to server.cfg with ensure qb-atm-robbery.</p>
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore ATM Robbery'
+version '1.0.0'
+
+shared_script 'config.lua'
+
+client_scripts {
+  'client/main.lua'
+}
+
+server_scripts {
+  '@oxmysql/lib/MySQL.lua', -- optional if you persist cooldowns
+  'server/main.lua'
+}
+
+dependencies {
+  'qb-core',
+  'qb-target'
+}
+</code></pre>
+<h3>config.lua</h3>
+<pre><code>Config = {}
+
+-- Example ATM positions, use real coordinates
+Config.ATMs = {
+  { id = 'atm_1', coords = vector3(89.75, 2.35, 69.63) },
+  { id = 'atm_2', coords = vector3(-386.23, -228.25, 37.08) }
+}
+
+Config.Cooldown = 600 -- seconds per ATM
+Config.RequiredPolice = 2
+Config.RewardMin = 200
+Config.RewardMax = 1000
+Config.MaxDistance = 3.5 -- meters allowed between player and ATM for validation
+</code></pre>
+<h3>server/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local atmCooldowns = {} -- { atmId = timestamp }
+
+local function policeCount()
+  local count = 0
+  for _, playerId in pairs(QBCore.Functions.GetPlayers()) do
+    local Player = QBCore.Functions.GetPlayer(playerId)
+    if Player and Player.PlayerData and Player.PlayerData.job and Player.PlayerData.job.name == 'police' then
+      count = count + 1
+    end
+  end
+  return count
+end
+
+local function findATMById(id)
+  for _, atm in ipairs(Config.ATMs) do
+    if atm.id == id then return atm end
+  end
+  return nil
+end
+
+RegisterNetEvent('qb-atm-robbery:server:startRobbery', function(atmId, clientCoords)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- basic police check
+  if policeCount() &lt; Config.RequiredPolice then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'Not enough police on duty')
+    return
+  end
+
+  local atm = findATMById(atmId)
+  if not atm then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'Invalid ATM')
+    return
+  end
+
+  -- cooldown check
+  local now = os.time()
+  if atmCooldowns[atmId] and atmCooldowns[atmId] &gt; now then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'ATM is still on cooldown')
+    return
+  end
+
+  -- distance validation (server trusts client-provided coords minimally)
+  local dx = atm.coords.x - clientCoords.x
+  local dy = atm.coords.y - clientCoords.y
+  local dz = atm.coords.z - clientCoords.z
+  local dist = math.sqrt(dx*dx + dy*dy + dz*dz)
+  if dist &gt; Config.MaxDistance then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'You are too far from the ATM')
+    return
+  end
+
+  -- mark cooldown
+  atmCooldowns[atmId] = now + Config.Cooldown
+
+  -- reward
+  local reward = math.random(Config.RewardMin, Config.RewardMax)
+  Player.Functions.AddMoney('cash', reward, 'atm-robbery')
+
+  -- alert police and broadcast
+  TriggerClientEvent('qb-atm-robbery:client:started', -1, atmId, atm.coords)
+  TriggerClientEvent('qb-atm-robbery:client:notify', src, 'Robbery successful, you got $' .. reward)
+end)
+</code></pre>
+<h3>client/main.lua (overview)</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+Citizen.CreateThread(function()
+  for _, atm in ipairs(Config.ATMs) do
+    exports['qb-target']:AddBoxZone(atm.id, atm.coords, 0.8, 0.8, {
+      name = atm.id,
+      heading = 0,
+      debugPoly = false,
+      minZ = atm.coords.z - 1.0,
+      maxZ = atm.coords.z + 1.0
+    }, {
+      options = {{
+        event = 'qb-atm-robbery:client:attemptRobbery',
+        icon = 'fas fa-hand-holding',
+        label = 'Rob ATM',
+        atmId = atm.id
+      }},
+      distance = 2.5
+    })
+  end
+end)
+
+RegisterNetEvent('qb-atm-robbery:client:attemptRobbery', function(data)
+  local ped = PlayerPedId()
+  local coords = GetEntityCoords(ped)
+  TriggerServerEvent('qb-atm-robbery:server:startRobbery', data.atmId, { x = coords.x, y = coords.y, z = coords.z })
+end)
+</code></pre>
+<h2 id="section-4">Security and validation notes</h2>
+<ul>
+<li>Distance checks using client-supplied coords are vulnerable to spoofing. Mitigate by sending the server periodic reliable position heartbeats or validating via server-side position syncing. At minimum, keep checks strict (small MaxDistance).</li>
+<li>Do server-side police count and cooldown logic (as shown). Never grant money on the client.</li>
+<li>If you persist cooldowns across restarts, store atmCooldowns in a database (oxmysql) and rehydrate on server start.</li>
+</ul>
+<h2 id="section-5">Testing checklist</h2>
+<table>
+<thead>
+<tr><th>Step</th><th>What to verify</th></tr>
+</thead>
+<tbody>
+<tr><td>Install</td><td>Place folder in resources, add ensure qb-atm-robbery to server.cfg</td></tr>
+<tr><td>Dependencies</td><td>qb-core and qb-target present and started</td></tr>
+<tr><td>Interaction</td><td>Approach ATM and see qb-target option</td></tr>
+<tr><td>Server validation</td><td>Trigger with insufficient police and confirm rejection</td></tr>
+<tr><td>Cooldown</td><td>Rob ATM, then try again and confirm cooldown prevents repeat</td></tr>
+<tr><td>Reward</td><td>Server adds cash; check server logs for authorisation string (atm-robbery)</td></tr>
+</tbody>
+</table>
+<h2 id="section-6">Next steps and integrations</h2>
+<p>Want a more polished robbery? Add a minigame on the client (keep outcome server-validated by the server issuing a signed token), animated police dispatch via qb-phone or dispatch resources, and persistent cooldowns with MySQL. If you prototype designs and file layout, Stellar AI can help generate complete resource files and iterate on tests — try the workspace at https://trystellarai.com/app. You can also import your design notes and get a refined implementation plan in the Stellar AI app at https://trystellarai.com/app.</p>
+<p>For broader server tips and related tutorials see the Stellar AI blog: https://trystellarai.com/blog.</p>
+<h3>References &amp; further reading</h3>
+<ul><li><a href="https://docs.fivem.net/" rel="noopener noreferrer">FiveM docs</a> — native references and server scripting guidance.</li><li><a href="https://github.com/qbcore-framework/qb-core" rel="noopener noreferrer">QBCore GitHub</a> — project and community examples.</li><li><a href="https://github.com/TargetResource/qb-target" rel="noopener noreferrer">qb-target repo</a> — setup and API.</li></ul>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Why server authority matters</a><a href="#section-2">High-level implementation plan</a><a href="#section-3">Example files (destination-labelled)</a><a href="#section-4">Security and validation notes</a><a href="#section-5">Testing checklist</a><a href="#section-6">Next steps and integrations</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

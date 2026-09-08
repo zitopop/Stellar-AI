@@ -1,1 +1,272 @@
-blog-roblox-leaderstats.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Add Leaderstats to a Roblox Game | Stellar AI</title>
+<meta name="description" content="Learn how to add Roblox leaderstats correctly: create a server-side leaderboard, update stats safely, save real player progression and test it in Studio.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/roblox-leaderstats-tutorial">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Add Leaderstats to a Roblox Game">
+<meta property="og:description" content="Learn how to add Roblox leaderstats correctly: create a server-side leaderboard, update stats safely, save real player progression and test it in Studio.">
+<meta property="og:url" content="https://trystellarai.com/blog/roblox-leaderstats-tutorial">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to Add Leaderstats to a Roblox Game", "description": "Learn how to add Roblox leaderstats correctly: create a server-side leaderboard, update stats safely, save real player progression and test it in Studio.", "mainEntityOfPage": "https://trystellarai.com/blog/roblox-leaderstats-tutorial", "url": "https://trystellarai.com/blog/roblox-leaderstats-tutorial", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1237}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">Roblox · Practical guide</div><h1>How to Add Leaderstats to a Roblox Game</h1><p class="intro">Learn how to add Roblox leaderstats correctly: create a server-side leaderboard, update stats safely, save real player progression and test it in Studio.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 6 min read</div></header>
+<div class="article-content"><p>A practical guide to how to add leaderstats to your roblox game, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<h2 id="section-1">Introduction</h2>
+<p>
+    This guide walks you through adding robust, secure leaderstats to a Roblox game. It covers architecture, implementation choices, server-side authority, DataStore persistence, error handling, testing, deployment, and maintenance. Example Luau code samples demonstrate recommended patterns for creating leaderstats, saving and loading from DataStore, and validating client requests. Although focused on Roblox, a short security reminder for FiveM developers is included: never trust client input in any multiplayer environment.
+  </p>
+<h2 id="section-2">High-level architecture</h2>
+<p>
+    Keep leaderstats and score-related logic server-side. The common architecture components:
+  </p>
+<ul>
+<li><strong>Server scripts</strong> in ServerScriptService that create and own leaderstats for each Player and handle persistence.</li>
+<li><strong>DataStoreService</strong> to persist values between sessions; pcall and retry logic to handle transient failures.</li>
+<li><strong>RemoteEvents</strong> for client-to-server requests (e.g., "I scored a point"); the server validates and updates leaderstats.</li>
+<li><strong>LocalScripts</strong> should only display UI and send requests; they must never be the source of truth.</li>
+</ul>
+<p>
+    This model ensures a single authoritative source (the server) and minimizes avenues for client-side cheating or data loss.
+  </p>
+<h2 id="section-3">Creating leaderstats on PlayerAdded</h2>
+<p>
+    A canonical pattern is creating a Folder named <code>leaderstats</code> under each Player. Roblox's default leaderboard UI reads values placed below this folder.
+  </p>
+<pre><code>-- ServerScriptService/CreateLeaderstats.lua
+local Players = game:GetService("Players")
+
+Players.PlayerAdded:Connect(function(player)
+    local leaderstats = Instance.new("Folder")
+    leaderstats.Name = "leaderstats"
+    leaderstats.Parent = player
+
+    local coins = Instance.new("IntValue")
+    coins.Name = "Coins"
+    coins.Value = 0
+    coins.Parent = leaderstats
+
+    local wins = Instance.new("IntValue")
+    wins.Name = "Wins"
+    wins.Value = 0
+    wins.Parent = leaderstats
+end)</code></pre>
+<p>
+    Keep raw value updates on the server. If you need the client to request an increment (e.g., when a player completes a client-initiated animation), send a RemoteEvent request and validate server-side before changing these values.
+  </p>
+<h3>Why server-side creation matters</h3>
+<ul>
+<li>Leaderboards read Player/leaderstats on the client automatically; placing values on the server prevents spoofing.</li>
+<li>Values under <code>leaderstats</code> are replicated but controlled by server ownership, enabling authoritative updates.</li>
+</ul>
+<h2 id="section-4">Persistence with DataStoreService</h2>
+<p>
+    Persistent leaderstats require DataStoreService. Design keys and schemas with migration in mind (use versioned keys). Always wrap DataStore calls with <code>pcall</code> and include retry logic with exponential backoff to respect rate limits.
+  </p>
+<pre><code>-- ServerScriptService/DataPersistence.lua
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+local Leaderstore = DataStoreService:GetDataStore("Leaderstats_v1")
+
+local function getKey(userId)
+    return "player_" .. userId
+end
+
+local function load(player)
+    local key = getKey(player.UserId)
+    local success, data = pcall(function()
+        return Leaderstore:GetAsync(key)
+    end)
+    if success and type(data) == "table" then
+        local leaderstats = player:FindFirstChild("leaderstats")
+        if leaderstats then
+            if data.Coins then leaderstats.Coins.Value = data.Coins end
+            if data.Wins then leaderstats.Wins.Value = data.Wins end
+        end
+    else
+        -- Handle missing data or pcall failure: keep defaults and log
+        warn("Data load failed for", player.Name, data)
+    end
+end
+
+local function save(player)
+    local key = getKey(player.UserId)
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if not leaderstats then return end
+    local data = {
+        Coins = leaderstats.Coins.Value,
+        Wins = leaderstats.Wins.Value
+    }
+    local success, err = pcall(function()
+        Leaderstore:SetAsync(key, data)
+    end)
+    if not success then
+        warn("Save failed for", player.Name, err)
+        -- Optionally queue retry; do not block player removal
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        -- ensure leaderstats exist before loading
+    end)
+    -- ensure leaderstats created first in another script, then
+    load(player)
+end)
+
+Players.PlayerRemoving:Connect(save)</code></pre>
+<p>
+    Consider saving periodically (e.g., every 5–10 minutes) and on PlayerRemoving. Use a robust retry queue for transient failures, but avoid blocking server shutdown.
+  </p>
+<h2 id="section-5">Handling DataStore failures and rate limits</h2>
+<p>
+    DataStores can fail due to service issues or rate limits. Best practices:
+  </p>
+<ul>
+<li>Wrap Get/Set/Update calls in <code>pcall</code> and inspect the error.</li>
+<li>Use exponential backoff on retries (e.g., 0.5s, 1s, 2s, 4s) and cap retries.</li>
+<li>Queue writes in memory and flush on PlayerRemoving or when a slot is available; avoid infinite retries.</li>
+<li>Consider combining frequent small writes into a single batched write to reduce request volume.</li>
+<li>Test failure handling by simulating errors in Studio and verifying your retry and fallback logic.</li>
+</ul>
+<h2 id="section-6">Server validation and security</h2>
+<ul>
+<li>Validate all RemoteEvent requests on the server. Example: if a client claims "I killed an enemy," validate the score by checking game state, timestamps, or server-verifiable events.</li>
+<li>Do not accept direct client-sent leaderstat values. The client can request an action; the server computes the resulting change.</li>
+<li>Rate-limit client requests server-side to mitigate abuse.</li>
+<li>Sanitize string values and avoid unsafe concatenation for keys.</li>
+</ul>
+<h3>Example: RemoteEvent request with validation</h3>
+<pre><code>-- ServerScriptService/ServerHandlers.lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RepEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
+local AddPoint = RepEvents:WaitForChild("RequestAddPoint")
+
+AddPoint.OnServerEvent:Connect(function(player, payload)
+    -- payload should be minimal, e.g., an id of the item collected
+    if type(payload) ~= "table" or not payload.itemId then
+        return -- malformed
+    end
+
+    -- Perform server-side checks: did the item exist and is it collectible?
+    local valid = checkIfItemCollectible(player, payload.itemId) -- implement server logic
+    if not valid then
+        return
+    end
+
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats and leaderstats.Coins then
+        leaderstats.Coins.Value = leaderstats.Coins.Value + 1
+    end
+end)</code></pre>
+<h2 id="section-7">Testing and QA</h2>
+<p>
+    Test leaderstats in a variety of scenarios:
+  </p>
+<ol>
+<li>Local Studio Play (Server + Client) to validate replication and UI updates.</li>
+<li>Published server tests (with multiple players) to simulate concurrency and DataStore load patterns.</li>
+<li>Simulate DataStore failures by forcing pcall to return false and verifying that retry logic and player experience are acceptable.</li>
+<li>Stress test: simulate many rapid client events and ensure server rate-limits and validations hold.</li>
+</ol>
+<p>
+    Logging is critical: instrument save/load success and failure counts and sample failed payloads (never log sensitive PII).
+  </p>
+<h2 id="section-8">Deployment and versioning</h2>
+<p>
+    When updating leaderstats structure (e.g., renaming "Coins" to "Currency"), follow a migration plan:
+  </p>
+<ul>
+<li>Introduce new keys with version numbers in DataStore keys (e.g., <code>Leaderstats_v2</code>).</li>
+<li>Implement a migration path that reads v1 and writes v2 when a player first connects.</li>
+<li>Keep backward-compatible reads for a transitional period.</li>
+<li>Monitor logs for migration errors and provide a rollback plan.</li>
+</ul>
+<p>
+    For operational tooling and analytics, you can use third-party services to analyze usage patterns. If you use external tools for analysis or deployment, ensure they respect user privacy and Roblox Terms of Service. For developing and managing your project, consider productivity tools like the Stellar AI desktop app to manage tasks and insights: <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI app</a>. For team documentation and release notes, you may also find the Stellar AI blog helpful: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">Stellar AI blog</a>.
+  </p>
+<h2 id="section-9">Maintenance and observability</h2>
+<p>
+    Ongoing maintenance tasks:
+  </p>
+<ul>
+<li>Track DataStore error rates and average latency.</li>
+<li>Monitor unusual leaderstat deltas that indicate exploits.</li>
+<li>Rotate DataStore keys during major schema changes.</li>
+<li>Keep a test server or a staging place where you can trial migrations before applying them to production.</li>
+<li>Run periodic backup exports of critical aggregated data if your analytics rely on them (do not export PII without consent).</li>
+</ul>
+<p>
+    Consider adding an administrative in-game command (server-only) to query a player's last save timestamp or force-save a player's data for debugging.
+  </p>
+<h2 id="section-10">Practical checklist</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Location</th>
+<th>Purpose</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create leaderstats folder and values</td>
+<td>ServerScriptService/CreateLeaderstats.lua</td>
+<td>Expose values to Roblox leaderboard UI</td>
+<td>Server-only: do not create leaderstats on client</td>
+</tr>
+<tr>
+<td>Implement DataStore load/save</td>
+<td>ServerScriptService/DataPersistence.lua</td>
+<td>Persist persistent values</td>
+<td>Use pcall + retry and versioned keys</td>
+</tr>
+<tr>
+<td>RemoteEvent + validation</td>
+<td>ReplicatedStorage/RemoteEvents</td>
+<td>Client requests actions, server validates</td>
+<td>Never accept raw value updates from client</td>
+</tr>
+<tr>
+<td>Periodic autosave</td>
+<td>ServerScriptService/Autosave.lua</td>
+<td>Reduce data loss on crashes</td>
+<td>Balance frequency with DataStore rate limits</td>
+</tr>
+<tr>
+<td>Testing &amp; staging</td>
+<td>Studio / Published Test Places</td>
+<td>Validate replication, persistence, and failure modes</td>
+<td>Simulate DataStore failures and concurrency</td>
+</tr>
+<tr>
+<td>Monitoring &amp; logging</td>
+<td>Server scripts / external analytics</td>
+<td>Detect issues early</td>
+<td>Respect privacy and avoid logging PII</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-11">Additional tools and workflows</h2>
+<p>
+    For managing game iterations, asset updates, and team coordination, consider using a desktop or web tool to centralize tasks and insights during development. One option to try is the Stellar AI app for task and insight workflows: <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI app</a>.
+  </p>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://create.roblox.com/docs/scripting/security/client-server-boundary">Roblox client-server security</a></li><li><a href="https://create.roblox.com/docs/cloud-services/data-stores">Roblox data stores</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/roblox-ai-game-builder">Roblox AI game builder: build without vibe-coding</a><a href="https://trystellarai.com/blog/roblox-datastore-tutorial">How to Use DataStoreService in Roblox — Complete Tutorial</a><a href="https://trystellarai.com/blog/roblox-gamepass-script">How to Add Game Passes to Your Roblox Game</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Introduction</a><a href="#section-2">High-level architecture</a><a href="#section-3">Creating leaderstats on PlayerAdded</a><a href="#section-4">Persistence with DataStoreService</a><a href="#section-5">Handling DataStore failures and rate limits</a><a href="#section-6">Server validation and security</a><a href="#section-7">Testing and QA</a><a href="#section-8">Deployment and versioning</a><a href="#section-9">Maintenance and observability</a><a href="#section-10">Practical checklist</a><a href="#section-11">Additional tools and workflows</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

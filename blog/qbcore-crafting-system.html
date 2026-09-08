@@ -1,1 +1,246 @@
-blog-crafting.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Add a Crafting System to Your QBCore FiveM Server | Stellar AI</title>
+<meta name="description" content="A crafting system lets players combine items to make new ones — perfect for drug processing, weapon modifications and survival mechanics on your FiveM server.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-crafting-system">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Add a Crafting System to Your QBCore FiveM Server">
+<meta property="og:description" content="A crafting system lets players combine items to make new ones — perfect for drug processing, weapon modifications and survival mechanics on your FiveM server.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-crafting-system">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to Add a Crafting System to Your QBCore FiveM Server", "description": "A crafting system lets players combine items to make new ones — perfect for drug processing, weapon modifications and survival mechanics on your FiveM server.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-crafting-system", "url": "https://trystellarai.com/blog/qbcore-crafting-system", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1368}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>How to Add a Crafting System to Your QBCore FiveM Server</h1><p class="intro">A crafting system lets players combine items to make new ones — perfect for drug processing, weapon modifications and survival mechanics on your FiveM server.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 7 min read</div></header>
+<div class="article-content"><p>A practical guide to how to add a crafting system to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+<p><strong>Overview</strong></p>
+<p>This guide walks through adding a robust, server-authoritative crafting system to a QBCore-based FiveM server and outlines parallel concerns for Roblox/Luau. You will learn architectural patterns, item and recipe modeling, validation and anti-cheat measures, integration options (ESX/ox_lib considerations), how to test safely, and how to deploy and maintain the system. If you want to prototype or coordinate tasks with designers and developers, consider using the Stellar AI collaboration tool: <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a>.</p>
+<h2 id="section-1">Design and Architecture</h2>
+<p>Crafting systems are stateful: they change player inventories, consume items, produce items, and may trigger cooldowns or skill checks. The most important architectural principle is <strong>server authority</strong>. The server must be the only component that confirms recipe success, updates inventory, and persists results.</p>
+<p>Core components:</p>
+<ul>
+<li>Item database: canonical definitions for item IDs, stack size, metadata, and crafting flags.</li>
+<li>Recipe registry: a server-side table of recipes mapping ingredients to results, cost, and optional metadata (time, skill checks, chance).</li>
+<li>Server validation layer: checks availability, concurrency locks, cooldowns, and anti-duplication safeguards.</li>
+<li>Client UI: displays recipes and submits craft requests, but never performs final validation.</li>
+<li>Persistence/storage: inventory database or player items storage (QBCore SQL, ESX DB, Roblox DataStore).</li>
+</ul>
+<h3>Choice considerations: QBCore, ESX, ox_lib</h3>
+<p>QBCore provides utilities like QBCore.Functions.GetPlayer and inventory helpers that simplify server-side work. ESX has its own player object patterns. ox_lib is a client-side helper library (menus, contexts). When using ox_lib for the client UI, ensure it only communicates with the server for authoritative operations. Architect so that the server can operate independently of the client UI resource.</p>
+<h2 id="section-2">Data Model and Recipe Management</h2>
+<p>Model recipes as immutable server-side records. A minimal recipe entry:</p>
+<pre><code>{
+  id = "stone_pickaxe",
+  ingredients = { {item = "wood", amount = 2}, {item = "stone", amount = 3} },
+  result = { item = "stone_pickaxe", amount = 1 },
+  craftingTime = 5000, -- milliseconds
+  chance = 1.0 -- 0.0-1.0 optional
+}</code></pre>
+<p>Store items and recipes in a single shared Lua table on the server and expose read-only callbacks to clients for UI rendering. Avoid sending mutable recipe objects to the client; send only read-only metadata and localized strings.</p>
+<h2 id="section-3">Server Validation and Security</h2>
+<p>Never trust client inputs. All craft requests must be validated by the server using these checks:</p>
+<ul>
+<li>Existence: recipe ID exists in the server-side registry.</li>
+<li>Inventory verification: the server checks the player's inventory for required quantities using canonical inventory APIs (QBCore.Functions.GetPlayer, ESX.GetPlayerFromId).</li>
+<li>Concurrency: lock player inventory (or use transaction semantics) to prevent race conditions or double-spend.</li>
+<li>Cooldowns and rate limits: server-enforced per-player cooldown or craft queue to prevent farm exploits.</li>
+<li>Randomization and fairness: compute any chance/hit rate server-side using a secure RNG; do not rely on client RNG.</li>
+<li>Logging and auditing: log craft events for anomaly detection (item ID, player ID, timestamp).</li>
+</ul>
+<p>Example anti-cheat pattern: when a craft request arrives, immediately acquire a server-side lock (e.g., a per-player boolean busy flag). If locked, reject. After validation and applying inventory changes atomically, release the lock. Use database transactions where possible for persistence.</p>
+<h2 id="section-4">Implementation Patterns</h2>
+<p>Below are concise implementation examples showing server-side validation for FiveM (QBCore) and for Roblox (Luau). The goal is to demonstrate correct authority flow.</p>
+<h3>QBCore (FiveM) - Server-side event</h3>
+<pre><code>-- server.lua (FiveM, QBCore)
+RegisterNetEvent('mycraft:requestCraft', function(recipeId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- simple per-player lock
+  if Player.metadata.isCrafting then
+    TriggerClientEvent('mycraft:craftResult', src, false, "busy")
+    return
+  end
+  Player.metadata.isCrafting = true
+
+  local recipe = Recipes[recipeId]
+  if not recipe then
+    Player.metadata.isCrafting = false
+    TriggerClientEvent('mycraft:craftResult', src, false, "invalid_recipe")
+    return
+  end
+
+  -- Validate inventory
+  for _, ing in ipairs(recipe.ingredients) do
+    if Player.Functions.GetItemByName(ing.item) == nil or Player.Functions.GetItemByName(ing.item).amount &lt; ing.amount then
+      Player.metadata.isCrafting = false
+      TriggerClientEvent('mycraft:craftResult', src, false, "missing_ingredients")
+      return
+    end
+  end
+
+  -- Remove ingredients atomically then add result
+  for _, ing in ipairs(recipe.ingredients) do
+    Player.Functions.RemoveItem(ing.item, ing.amount)
+  end
+  -- Optionally delay for craftingTime, but state must remain server-authoritative
+  Citizen.SetTimeout(recipe.craftingTime, function()
+    Player.Functions.AddItem(recipe.result.item, recipe.result.amount)
+    Player.metadata.isCrafting = false
+    TriggerClientEvent('mycraft:craftResult', src, true, "success")
+  end)
+end)</code></pre>
+<p>Key points: all inventory checks and changes happen server-side. The client only requests craft and receives the result.</p>
+<h3>Roblox (Luau) - Server-authoritative RemoteEvent</h3>
+<pre><code>-- ServerScript in ServerScriptService
+local RemoteEvent = game.ReplicatedStorage:WaitForChild("CraftRequest")
+local DataStoreService = game:GetService("DataStoreService")
+local playerInventoryStore = DataStoreService:GetDataStore("PlayerInventory")
+
+RemoteEvent.OnServerEvent:Connect(function(player, recipeId)
+  -- Validate input types
+  if type(recipeId) ~= "string" then
+    RemoteEvent:FireClient(player, false, "invalid_input")
+    return
+  end
+
+  local recipe = Recipes[recipeId]
+  if not recipe then
+    RemoteEvent:FireClient(player, false, "invalid_recipe")
+    return
+  end
+
+  -- Obtain player's inventory server-side (cache or DataStore)
+  local ok, inventory = pcall(function()
+    return playerInventoryStore:GetAsync(player.UserId)
+  end)
+  if not ok then
+    RemoteEvent:FireClient(player, false, "datastore_error")
+    return
+  end
+
+  -- Validate ingredients
+  for _, ing in ipairs(recipe.ingredients) do
+    if (inventory[ing.item] or 0) &lt; ing.amount then
+      RemoteEvent:FireClient(player, false, "missing_ingredients")
+      return
+    end
+  end
+
+  -- Deduct and write back with pcall + UpdateAsync pattern and retry
+  local success = false
+  local attempts = 0
+  while not success and attempts &lt; 5 do
+    attempts = attempts + 1
+    local updateOk, newInv = pcall(function()
+      return playerInventoryStore:UpdateAsync(tostring(player.UserId), function(old)
+        old = old or inventory
+        for _, ing in ipairs(recipe.ingredients) do
+          old[ing.item] = (old[ing.item] or 0) - ing.amount
+        end
+        old[recipe.result.item] = (old[recipe.result.item] or 0) + recipe.result.amount
+        return old
+      end)
+    end)
+    if updateOk then
+      success = true
+    else
+      wait(2 ^ attempts * 0.1) -- exponential backoff
+    end
+  end
+
+  if success then
+    RemoteEvent:FireClient(player, true, "success")
+  else
+    RemoteEvent:FireClient(player, false, "save_failed")
+  end
+end)</code></pre>
+<h2 id="section-5">UI, Feedback, and Crafting Stations</h2>
+<p>Client UI should be purely presentational: show recipes, amounts, and enable the "craft" button which sends the request. If using ox_lib for contextual menus or progress UI, ensure progress bars are cosmetic: treat them as indicators of server progress, not as authoritative timers. For visible feedback to the player, use server push events (TriggerClientEvent/RemoteEvent:FireClient) when the server changes player state.</p>
+<p>For stationary crafting stations (workbenches), spawn them server-side and check proximity on the server or validate a token the client sends that proves the player is near a station (e.g., server tracks position or uses zone flags). Never accept a craft simply because the client says "I am at bench X".</p>
+<h2 id="section-6">Testing and Quality Assurance</h2>
+<p>Testing must verify race conditions, persistence failures, and exploits. Recommended tests:</p>
+<ul>
+<li>Unit test recipe validation logic (server-only functions).</li>
+<li>Simulate concurrent craft requests for same player to ensure locks prevent double-spend.</li>
+<li>Simulate disconnects during crafting and verify inventory integrity.</li>
+<li>Test datastore/database failures and recovery flows (for Roblox DataStore or SQL reconnects).</li>
+<li>Run load tests for automated crafting farms and implement rate-limits accordingly.</li>
+</ul>
+<p>Track suspicious patterns with logs and create automated alerts for sudden inventory creation spikes. Publish a concise bug report template and use it during testing cycles; if you use collaborative tooling, you can centralize artifact tracking with tools like <a href="https://trystellarai.com/app" rel="noopener noreferrer">https://trystellarai.com/app</a>. For design reads and implementation notes consider writing developer posts on your team blog: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">https://trystellarai.com/blog</a>.</p>
+<h2 id="section-7">Deployment and Maintenance</h2>
+<p>Roll out changes carefully. Recommended deployment approach:</p>
+<ol>
+<li>Feature-flag new recipes and crafting logic on the server to enable quick rollback.</li>
+<li>Deploy server-side code first. Clients should gracefully accept server changes (e.g., missing recipe IDs ignored).</li>
+<li>Monitor logs for unexpected item creation and increased datastore errors.</li>
+<li>Use database migrations for any persistent schema changes; back up inventory tables prior to large updates.</li>
+</ol>
+<p>Maintenance checklist (short version):</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Frequency</th>
+<th>Responsible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Audit recipe integrity and balance</td>
+<td>Monthly</td>
+<td>Game Designer</td>
+</tr>
+<tr>
+<td>Inspect server logs for anomalies</td>
+<td>Daily</td>
+<td>SRE / DevOps</td>
+</tr>
+<tr>
+<td>Backup inventories and database</td>
+<td>Daily</td>
+<td>DB Admin</td>
+</tr>
+<tr>
+<td>Security review of RPC/Remote events</td>
+<td>Quarterly</td>
+<td>Security Engineer</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-8">Checklist: Practical Steps to Implement</h2>
+<ul>
+<li>Define canonical item IDs and server-side recipe registry.</li>
+<li>Create server-side API for: listRecipes (read-only), requestCraft (server validates and performs changes), craftStatus (optional polling or push notifications).</li>
+<li>Implement per-player locking and rate-limiting.</li>
+<li>Use database transactions or UpdateAsync/persistent atomic patterns to avoid dupes.</li>
+<li>Log craft events and create detection for abnormal creation patterns.</li>
+<li>Gracefully handle persistence failures: report to client, retry with exponential backoff where safe, and avoid silent loss of items.</li>
+<li>Test edge cases: disconnects mid-craft, simultaneous crafts, exploit simulations.</li>
+</ul>
+<h2 id="section-9">Testing Examples and Verification</h2>
+<p>Verify the following during QA:</p>
+<ol>
+<li>Try to craft using forged client packets that reference nonexistent items; server should reject.</li>
+<li>Queue multiple craft requests concurrently; server should serialize or reject redundant requests.</li>
+<li>Simulate database downtime and ensure the system fails safely (no item duplication and informative client errors).</li>
+<li>Check that crafting stations and proximity checks are validated server-side.</li>
+</ol>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Design and Architecture</a><a href="#section-2">Data Model and Recipe Management</a><a href="#section-3">Server Validation and Security</a><a href="#section-4">Implementation Patterns</a><a href="#section-5">UI, Feedback, and Crafting Stations</a><a href="#section-6">Testing and Quality Assurance</a><a href="#section-7">Deployment and Maintenance</a><a href="#section-8">Checklist: Practical Steps to Implement</a><a href="#section-9">Testing Examples and Verification</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>

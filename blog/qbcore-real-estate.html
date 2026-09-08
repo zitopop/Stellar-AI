@@ -1,1 +1,257 @@
-blog-real-estate.html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QBCore Real Estate: Build a Secure, Server-Authoritative Housing System | Stellar AI</title>
+<meta name="description" content="Step-by-step guide to designing and shipping a QBCore real estate resource. Covers architecture, destination-labelled files (fxmanifest, client, server, config, SQL), server-side.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://trystellarai.com/blog/qbcore-real-estate">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QBCore Real Estate: Build a Secure, Server-Authoritative Housing System">
+<meta property="og:description" content="Step-by-step guide to designing and shipping a QBCore real estate resource. Covers architecture, destination-labelled files (fxmanifest, client, server, config, SQL), server-side.">
+<meta property="og:url" content="https://trystellarai.com/blog/qbcore-real-estate">
+<meta name="twitter:card" content="summary">
+<style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:#0a0a0a;color:#fff;font:17px/1.8 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#fff;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid #fff;outline-offset:5px}.skip{position:absolute;top:8px;left:16px;transform:translateY(-200%);z-index:10;background:#fff;color:#0a0a0a;padding:8px 14px}.skip:focus{transform:none}.nav{border-bottom:1px solid #303030;background:#0a0a0a}.nav-inner{max-width:1120px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:850;letter-spacing:-.5px}.nav-links{display:flex;align-items:center;gap:22px;font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;background:#fff;color:#0a0a0a;font-weight:750;text-decoration:none;font-size:14px}.layout{max-width:1120px;margin:auto;padding:56px 24px 80px;display:grid;grid-template-columns:minmax(0,760px) 230px;gap:64px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c3c3c3}.layout>article{min-width:0}h1{overflow-wrap:anywhere}.article-head{margin-bottom:38px;border-bottom:1px solid #303030;padding-bottom:32px}h1{font-size:clamp(34px,4.5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:16px 0 20px}h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;margin:42px 0 18px}h3{font-size:21px;line-height:1.35;margin:28px 0 12px}p,li{color:#ededed}p{margin:0 0 20px}.intro{font-size:19px;color:#d5d5d5}.meta{font-size:12px;color:#b5b5b5}.article-content{overflow-wrap:anywhere}ul,ol{padding-left:26px}li{padding-left:4px;margin:9px 0}pre{overflow:auto;max-width:100%;padding:20px;background:#141414;border:1px solid #333;border-radius:10px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code{background:#202020;padding:2px 5px;border-radius:4px}table{display:block;width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid #383838;padding:12px;text-align:left;min-width:140px}th{background:#191919}blockquote{margin:24px 0;padding:12px 20px;border-left:3px solid #fff;background:#151515}.toc{position:sticky;top:30px;font-size:12px;align-self:start;max-height:85vh;overflow:auto}.toc strong{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:#bababa;margin-bottom:14px}.toc a{display:block;color:#c6c6c6;text-decoration:none;padding:7px 0;line-height:1.5}.cta-panel{margin:44px 0 0;padding:28px;border:1px solid #414141;border-radius:14px;background:#151515}.cta-panel h2{margin:0 0 12px;font-size:26px}.cta-panel p{font-size:15px}.related{font-size:14px;border-top:1px solid #303030;margin-top:36px;padding-top:26px}.related a{display:block;margin:10px 0}.site-footer{padding:28px 24px;border-top:1px solid #303030;font-size:12px;color:#b5b5b5;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:800px;gap:0}.toc{display:none}}@media(max-width:600px){body{font-size:16px}.layout{padding:34px 20px 56px}.nav-inner{padding:14px 20px}.nav-links>a:not(.button){display:none}.intro{font-size:17px}h2{font-size:24px}.cta-panel{padding:22px}pre{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "QBCore Real Estate: Build a Secure, Server-Authoritative Housing System", "description": "Step-by-step guide to designing and shipping a QBCore real estate resource. Covers architecture, destination-labelled files (fxmanifest, client, server, config, SQL), server-side.", "mainEntityOfPage": "https://trystellarai.com/blog/qbcore-real-estate", "url": "https://trystellarai.com/blog/qbcore-real-estate", "dateModified": "2026-09-08", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 1083}</script>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+<header class="nav"><nav class="nav-inner" aria-label="Main navigation"><a class="brand" href="/">✦ Stellar AI</a><div class="nav-links"><a href="/blog">All guides</a><a href="/#plans">Pricing</a><a class="button" href="https://trystellarai.com/app">Try Stellar free →</a></div></nav></header>
+<main class="layout">
+<article id="article" tabindex="-1"><header class="article-head"><div class="eyebrow">FiveM & QBCore · Practical guide</div><h1>QBCore Real Estate: Build a Secure, Server-Authoritative Housing System</h1><p class="intro">Step-by-step guide to designing and shipping a QBCore real estate resource. Covers architecture, destination-labelled files (fxmanifest, client, server, config, SQL), server-side.</p><div class="meta">Stellar AI · Updated 8 September 2026 · 5 min read</div></header>
+<div class="article-content"><p>A practical, secure plan to create a QBCore real estate system that supports property browsing, purchase, ownership persistence, and basic entry/lock mechanics. This guide includes complete destination-labelled files, installation steps, validation checks, and a brief Roblox mapping for cross-platform builders.</p>
+<h2 id="section-1">Why server-authoritative housing matters</h2>
+<p>Real estate systems touch money, permissions, and persistent state. For stability and security, all authoritative actions — purchases, ownership changes, and money transfers — must run on the server. The client only requests actions and displays UI. This guide shows a minimal, production-minded QBCore resource with safe database writes, qb-target support, and clear extension points for inventory/locks or rental systems.</p>
+<h2 id="section-2">Implementation plan (short)</h2>
+<ul>
+<li>Define a SQL schema for properties and ownership.</li>
+<li>Create resource files: fxmanifest.lua, config.lua, server/main.lua, client/main.lua.</li>
+<li>Expose target zones (qb-target) for viewing and buying.</li>
+<li>Validate purchases server-side: check player, balance, and atomic DB write.</li>
+<li>Test flow: browse -&gt; request buy -&gt; server validates and persists -&gt; client receives confirmation.</li>
+</ul>
+<h3>Assumptions &amp; dependencies</h3>
+<ul>
+<li>Server uses QBCore (v2+ pattern): exports['qb-core']:GetCoreObject().</li>
+<li>MySQL is available via oxmysql (exports.oxmysql:execute) or adjust to your DB layer.</li>
+<li>qb-target or a similar targeting library is present for interaction zones.</li>
+<li>Resource name will be <strong>qb-realestate</strong>. Adjust references if you rename it.</li>
+</ul>
+<h2 id="section-3">Destination-labelled files</h2>
+<p>Below are the minimal complete files to get started. Place them in a folder named <strong>qb-realestate</strong> in your resources directory.</p>
+<pre><code>// fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore Real Estate - minimal safe implementation'
+version '1.0.0'
+
+shared_scripts {
+  'config.lua'
+}
+
+server_scripts {
+  '@oxmysql/lib/MySQL.lua',
+  'server/main.lua'
+}
+
+client_scripts {
+  'client/main.lua'
+}
+
+dependencies {
+  'qb-core'
+}
+</code></pre>
+<pre><code>// config.lua
+Config = {}
+Config.PropertyTable = 'qb_realestate_properties' -- SQL table
+Config.OwnersTable = 'qb_realestate_owners'     -- SQL table
+Config.TargetResource = 'qb-target' -- optional, used for interactions
+
+-- Example property list fallback (also useful for initial DB seed)
+Config.Properties = {
+  { id = 1, label = 'Vinewood Terrace #1', price = 150000, coords = vector3( -267.0, -969.0, 31.2 ) },
+}
+</code></pre>
+<pre><code>// server/main.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Server: handle purchase requests and persistence
+RegisterNetEvent('qb-realestate:server:BuyProperty', function(propertyId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Validate property exists
+  local property = nil
+  for _,p in pairs(Config.Properties) do if p.id == propertyId then property = p break end end
+  if not property then
+    TriggerClientEvent('QBCore:Notify', src, 'Property not found', 'error')
+    return
+  end
+
+  local price = property.price
+  -- Check money and remove it server-side
+  if Player.Functions.RemoveMoney('bank', price) then
+    -- Persist ownership safely using parameterised query
+    exports.oxmysql:insert('INSERT INTO '..Config.OwnersTable..' (property_id, owner) VALUES (?, ?)', { propertyId, Player.PlayerData.citizenid }, function(insertId)
+      TriggerClientEvent('qb-realestate:client:OnBought', src, propertyId)
+      print(('qb-realestate: %s bought property %s'):format(Player.PlayerData.citizenid, propertyId))
+    end)
+  else
+    TriggerClientEvent('QBCore:Notify', src, 'Insufficient funds', 'error')
+  end
+end)
+
+-- Simple server RPC to fetch owned properties
+QBCore.Functions.CreateCallback('qb-realestate:server:GetOwned', function(source, cb)
+  local Player = QBCore.Functions.GetPlayer(source)
+  if not Player then cb({}) return end
+  exports.oxmysql:execute('SELECT property_id FROM '..Config.OwnersTable..' WHERE owner = ?', { Player.PlayerData.citizenid }, function(result)
+    local owned = {}
+    for _,r in ipairs(result) do owned[r.property_id] = true end
+    cb(owned)
+  end)
+end)
+</code></pre>
+<pre><code>// client/main.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Register target interactions (if qb-target is present)
+CreateThread(function()
+  -- Add target for each property
+  for _,p in pairs(Config.Properties) do
+    if GetResourceState(Config.TargetResource) == 'started' then
+      exports[Config.TargetResource]:AddBoxZone('re_prop_'..p.id, p.coords, 2, 2, {
+        name = 're_prop_'..p.id,
+        heading = 0,
+        debugPoly = false
+      }, {
+        options = {
+          {
+            icon = 'fas fa-home',
+            label = 'View / Buy '..p.label,
+            action = function()
+              QBCore.Functions.TriggerCallback('qb-realestate:server:GetOwned', function(owned)
+                if owned[p.id] then
+                  QBCore.Functions.Notify('You already own this property')
+                else
+                  -- open a simple confirmation UI or use default input
+                  TriggerServerEvent('qb-realestate:server:BuyProperty', p.id)
+                end
+              end)
+            end
+          }
+        },
+        distance = 2.5
+      })
+    end
+  end
+end)
+
+-- Receive confirmation
+RegisterNetEvent('qb-realestate:client:OnBought', function(propertyId)
+  QBCore.Functions.Notify('Purchase complete! Property ID: '..propertyId, 'success')
+end)
+</code></pre>
+<h2 id="section-4">SQL schema (simple)</h2>
+<pre><code>-- sql/schema.sql
+CREATE TABLE IF NOT EXISTS qb_realestate_properties (
+  id INT PRIMARY KEY,
+  label VARCHAR(255),
+  price BIGINT,
+  coords TEXT -- JSON or encoded vector
+);
+
+CREATE TABLE IF NOT EXISTS qb_realestate_owners (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  property_id INT,
+  owner VARCHAR(64),
+  purchased_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<h3>Where every file belongs &amp; installation</h3>
+<ul>
+<li>Place fxmanifest.lua, config.lua, server/main.lua, client/main.lua in resources/qb-realestate.</li>
+<li>Place sql/schema.sql in your database migrations folder and run it with your MySQL tool.</li>
+<li>Add ensure qb-realestate to server.cfg after qb-core and oxmysql.</li>
+</ul>
+<h2 id="section-5">Validation, testing &amp; security considerations</h2>
+<ul>
+<li>Always validate player existence server-side: QBCore.Functions.GetPlayer(source).</li>
+<li>Never trust client-side price or ownership flags — use server-side Config.Properties or DB lookups.</li>
+<li>Use parameterised queries (oxmysql handles placeholders) to avoid SQL injection.</li>
+<li>Make money removal atomic before the DB write; consider transactional behavior if your DB supports it or compensate on failure.</li>
+<li>Rate-limit buy attempts server-side if you see abuse patterns.</li>
+</ul>
+<h3>Quick checklist before launch</h3>
+<table>
+<thead>
+<tr><th>Step</th><th>Action</th><th>File/Tool</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Seed properties</td><td>sql/schema.sql / config.lua</td></tr>
+<tr><td>2</td><td>Start resource</td><td>server.cfg</td></tr>
+<tr><td>3</td><td>Test buy flow</td><td>client/server logs</td></tr>
+<tr><td>4</td><td>Verify DB rows</td><td>MySQL</td></tr>
+<tr><td>5</td><td>Attempt failure cases (insufficient funds, duplicate buy)</td><td>QA</td></tr>
+</tbody>
+</table>
+<h2 id="section-6">Roblox mapping: server-authoritative equivalent</h2>
+<p>If you also build a Roblox housing flow, keep the same rules: server validates currency and persists ownership to DataStore. Below is a safe ServerScript example using RemoteEvent &amp; DataStoreService. The client should only send a propertyId request; the server checks currency, writes ownership, and uses pcall for DataStore safety.</p>
+<pre><code>// ServerScript (Roblox Lua / Luau)
+local DataStoreService = game:GetService('DataStoreService')
+local PropertiesStore = DataStoreService:GetDataStore('PropertiesStore')
+local BuyEvent = game.ReplicatedStorage:WaitForChild('BuyPropertyEvent')
+
+local function onBuy(player, propertyId, price)
+  -- validate server-side: check leaderstats or server currency
+  local success, owned = pcall(function()
+    return PropertiesStore:GetAsync(player.UserId)
+  end)
+  if not success then
+    BuyEvent:FireClient(player, 'error', 'DataStore error')
+    return
+  end
+
+  -- check funds (example uses leaderstats currency)
+  local leaderstats = player:FindFirstChild('leaderstats')
+  local cash = leaderstats and leaderstats:FindFirstChild('Cash')
+  if not cash or cash.Value &lt; price then
+    BuyEvent:FireClient(player, 'error', 'Insufficient funds')
+    return
+  end
+
+  -- deduct and persist
+  cash.Value = cash.Value - price
+  local newOwned = owned or {}
+  table.insert(newOwned, propertyId)
+  local ok, err = pcall(function()
+    PropertiesStore:SetAsync(player.UserId, newOwned)
+  end)
+  if ok then
+    BuyEvent:FireClient(player, 'success', propertyId)
+  else
+    -- rollback on failure
+    cash.Value = cash.Value + price
+    BuyEvent:FireClient(player, 'error', 'Failed to save ownership')
+  end
+end
+
+BuyEvent.OnServerEvent:Connect(onBuy)
+</code></pre>
+<h2 id="section-7">Next steps and iteration</h2>
+<p>Additions you can make next: keyholder permissions, rental/lease timers, in-house storage, customizable interiors, and integration with your existing phone/garage systems. If you want a generator for property files or an interactive planner, try the Stellar AI app for scripting assistance: <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI app</a>. For more background on building flows and iteration patterns, see the guide on our blog: <a href="https://trystellarai.com/blog" rel="noopener noreferrer">Stellar AI blog</a>. When you're ready to prototype alternative designs or generate full resource files from a plain-English plan, open the <a href="https://trystellarai.com/app" rel="noopener noreferrer">Stellar AI app</a>.</p>
+<p>Follow the validation checklist above, keep money and DB writes on the server, and iterate with small, tested changes. That approach keeps your real estate system robust and extensible.</p>
+</div>
+<section class="related" aria-label="Official documentation"><strong>Check the current platform documentation</strong><ul><li><a href="https://docs.fivem.net/docs/scripting-reference/resource-manifest/">FiveM resource manifest</a></li><li><a href="https://docs.fivem.net/docs/developers/server-security/">FiveM event security</a></li><li><a href="https://qbcore.org/docs/qb-core/server-function-reference">QBCore server function reference</a></li></ul></section>
+<section class="cta-panel"><h2>Build your next system with Stellar AI</h2><p>Describe one feature, get organized project files, then bring back your errors to keep improving. Start free with no card required. Test generated code in a private development environment before release.</p><a class="button" href="https://trystellarai.com/app">Create your first script free →</a></section>
+<section class="related" aria-label="Related guides"><strong>Keep building</strong><a href="https://trystellarai.com/blog/fivem-ai-script-generator">FiveM AI script generator: what a production-ready workflow should include</a><a href="https://trystellarai.com/blog/fivem-death-respawn-system">How to Set Up a Death and Respawn System on FiveM QBCore</a><a href="https://trystellarai.com/blog/fivem-bank-heist-script">FiveM Bank Heist Script — Design, Security, and Implementation Guide</a></section></article>
+<aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#section-1">Why server-authoritative housing matters</a><a href="#section-2">Implementation plan (short)</a><a href="#section-3">Destination-labelled files</a><a href="#section-4">SQL schema (simple)</a><a href="#section-5">Validation, testing &amp; security considerations</a><a href="#section-6">Roblox mapping: server-authoritative equivalent</a><a href="#section-7">Next steps and iteration</a></aside>
+</main><footer class="site-footer">© 2026 Stellar AI · <a href="/blog">Guides</a> · <a href="/terms.html">Terms</a> · <a href="mailto:support@trystellarai.com">Support</a></footer>
+</body></html>
