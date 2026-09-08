@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Economy Setup Guide — Secure, Server‑Authoritative, QBCore Example — Stellar AI</title>
+  <meta name="description" content="A practical, step‑by‑step FiveM economy guide focusing on server authority, validation, QBCore patterns, installation, and testing. Includes complete destination-labelled files, a checklist, and safe code examples.">
+  <meta name="keywords" content="FiveM economy, QBCore money, server authority, fxmanifest, FiveM security, qbcore economy, fivem economy setup">
+  <meta property="og:title" content="FiveM Economy Setup Guide — Secure, Server‑Authoritative, QBCore Example">
+  <meta property="og:description" content="A practical, step‑by‑step FiveM economy guide focusing on server authority, validation, QBCore patterns, installation, and testing. Includes complete destination-labelled files, a checklist, and safe code examples.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-economy-setup-guide">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Technical guide for builders</div>
+  <h1>FiveM Economy Setup Guide — Secure, Server‑Authoritative, QBCore Example</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you through designing and implementing a secure, server‑authoritative economy on FiveM using QBCore patterns. You’ll get a short implementation plan, assumptions, complete destination-labelled files, installation steps, a validation checklist, and safe code examples you can drop into a resource.</p>
+  <h2>Overview</h2>
+<p>Creating a believable and secure economy in FiveM is about more than numbers: it’s about server authority, consistent state, anti‑exploit validation, and extensible APIs for shops, jobs, and persistence. This guide shows a minimal, robust pattern for QBCore servers: all balance changes happen server‑side, client requests use validated server events/callbacks, and configuration is separated from logic so you can plug in banks, item shops, or job paychecks later.</p>
+
+<h2>Implementation plan (short)</h2>
+<ul>
+  <li>Define a small API: server events and callbacks for GiveMoney, RemoveMoney, and GetBalance.</li>
+  <li>Implement server‑side validation using QBCore’s player object and permissions.</li>
+  <li>Create a safe client interface for UI or in‑game interactions.</li>
+  <li>Test edge cases, persistence, and abuse scenarios.</li>
+</ul>
+
+<h3>Assumptions & framework dependencies</h3>
+<ul>
+  <li>Server runs QBCore (v1 compatible) and has the usual player object functions (e.g., QBCore.Functions.GetPlayer).</li>
+  <li>Money is stored as an integer (no floats) and QBCore exports handle adding/removing cash/bank.</li>
+  <li>You have basic resource deployment rights and can add/ensure fxmanifest.lua is loaded.</li>
+</ul>
+
+<h2>Files you will add (destination-labelled)</h2>
+<p>Below are complete files for a minimal resource named <strong>qb-economy-api</strong>. Place the folder under your server resources and add it to server.cfg.</p>
+
+<pre><code>-- qb-economy-api/fxmanifest.lua
+fx_version 'cerulean'
+games { 'gta5' }
+
+author 'YourName'
+description 'Minimal QBCore economy API'
+version '1.0.0'
+
+shared_script 'config.lua'
+server_script 'server/main.lua'
+client_script 'client/main.lua'
+</code></pre>
+
+<pre><code>-- qb-economy-api/config.lua
+Config = {}
+Config.LogTransactions = true -- set to false in production noisy servers
+Config.SafeMaxChange = 1000000 -- max amount allowed in a single change
+</code></pre>
+
+<pre><code>-- qb-economy-api/server/main.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Server callback to get balance
+QBCore.Functions.CreateCallback('qb-economy:getBalance', function(source, cb)
+    local player = QBCore.Functions.GetPlayer(source)
+    if not player then return cb(nil) end
+    local cash = player.Functions.GetMoney('cash')
+    local bank = player.Functions.GetMoney('bank')
+    cb({ cash = cash, bank = bank })
+end)
+
+-- Secure money change event
+RegisterNetEvent('qb-economy:changeMoney', function(type, amount, reason)
+    local src = source
+    local player = QBCore.Functions.GetPlayer(src)
+    if not player then return end
+    amount = tonumber(amount) or 0
+    if amount == 0 then return end
+
+    -- Basic validation
+    if math.abs(amount) > Config.SafeMaxChange then
+        print(('qb-economy: blocked huge money change from %s (%s)'):format(src, amount))
+        return
+    end
+
+    -- Only server‑side functions actually change money
+    if amount > 0 then
+        player.Functions.AddMoney(type, amount, reason or 'server:forceAdd')
+    else
+        -- Removing money: ensure player has funds
+        local cur = player.Functions.GetMoney(type)
+        if cur + amount < 0 then
+            -- Not enough funds (amount is negative)
+            TriggerClientEvent('QBCore:Notify', src, 'Insufficient funds', 'error')
+            return
+        end
+        player.Functions.RemoveMoney(type, math.abs(amount), reason or 'server:forceRemove')
+    end
+
+    if Config.LogTransactions then
+        print(('qb-economy: %s %s %s by %s'):format(type, amount, reason or '-', player.PlayerData.citizenid))
+    end
+end)
+</code></pre>
+
+<pre><code>-- qb-economy-api/client/main.lua
+-- Example client call to request a purchase
+function TryPurchase(itemPrice)
+    -- Ask server for current balance first (avoid desync expectations)
+    QBCore.Functions.TriggerCallback('qb-economy:getBalance', function(balance)
+        if not balance then return end
+        if balance.cash >= itemPrice then
+            -- Ask server to remove cash securely
+            TriggerServerEvent('qb-economy:changeMoney', 'cash', -itemPrice, 'item_purchase')
+        else
+            QBCore.Functions.Notify('Not enough cash', 'error')
+        end
+    end)
+end
+</code></pre>
+
+<h2>Core concepts explained</h2>
+<p>Always treat the server as source of truth. Clients can request actions but must never apply balance changes locally. Use callbacks to fetch authoritative state and RegisterNetEvent on the server to make changes after full checks. Keep business logic on the server (job pay, marketplace settlement). The client can only present UI and call validated server endpoints.</p>
+
+<h2>Installation & deployment</h2>
+<ol>
+  <li>Place the folder qb-economy-api in your server resources directory.</li>
+  <li>Add start qb-economy-api to server.cfg (after qb-core).</li>
+  <li>Restart or refresh the resource and test with two connected players to verify concurrency behavior.</li>
+</ol>
+
+<h2>Practical checklist: Security & validation</h2>
+<table>
+  <thead>
+    <tr><th>Item</th><th>Why it matters</th><th>Pass/Fail</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>All money changes only on server</td><td>Prevents client spoofing</td><td></td></tr>
+    <tr><td>Max per‑change limit</td><td>Stops single huge exploit attempts</td><td></td></tr>
+    <tr><td>Balance check before removal</td><td>Prevents negative exploits</td><td></td></tr>
+    <tr><td>Server log for suspicious changes</td><td>Enables auditing</td><td></td></tr>
+    <tr><td>Rate limit high‑frequency endpoints</td><td>Prevents spam or DDoS</td><td></td></tr>
+  </tbody>
+</table>
+
+<h2>Testing & common edge cases</h2>
+<ul>
+  <li>Test concurrent purchases: two players buying the same unique item should be resolved server‑side.</li>
+  <li>Test negative and huge amounts: ensure the server rejects them and logs.</li>
+  <li>Persistence: if your economy interacts with a database, test transaction rollback on failure.</li>
+</ul>
+
+<h2>Next integrations & tooling</h2>
+<p>Once you have the API, integrate shops, ATM/bank UI, and job paychecks. Use qb-target or ox_target for interactions and always call the server API rather than modifying state locally. For design iterations, consider using an AI scripting workspace to produce resource files and iterate quickly — try the Stellar AI app at https://trystellarai.com/app for planning and code scaffolding. If you maintain a knowledge base or changelog, link developer notes to your blog; read deeper posts at https://trystellarai.com/blog for workflow suggestions.</p>
+
+<h2>Where to go next</h2>
+<p>Extend this pattern to item marketplaces (server holds escrow), bank transfers (two‑party server swaps with atomic checks), and logs that emit to a secure admin UI. For rapid prototyping of alternative economy rules or variant servers, the same server‑authoritative pattern applies — and if you want to generate alternative resource templates quickly, the Stellar AI app at https://trystellarai.com/app can accelerate iterations.</p>
+
+<h2>Summary</h2>
+<p>Secure economies depend on server‑authority, careful validation, and well‑documented APIs. The small resource above demonstrates those principles in QBCore: callbacks for reads, server events for writes, and strict checks to prevent common exploits. Use the checklist and testing steps to validate your deployment, and extend the API with shop, bank, and persistence features as needed.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>References and further reading:</p><ul><li><a href="https://docs.fivem.net/" target="_blank">FiveM documentation</a></li><li><a href="https://docs.qbcore.org/" target="_blank">QBCore community docs</a></li><li><a href="https://developer.roblox.com/" target="_blank">Roblox developer hub (for cross‑platform ideas)</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

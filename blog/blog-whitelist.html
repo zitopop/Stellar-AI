@@ -68,37 +68,242 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Set Up a Whitelist on Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A whitelist keeps your FiveM server private and maintains quality roleplay. This guide covers setting up a whitelist system on QBCore with Discord integration.</p>
 
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
+<p class="intro">A practical guide to how to set up a whitelist on your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<body>
+  <h2>Overview</h2>
+  <p>
+    This guide explains how to implement a robust whitelist for a QBCore FiveM server. It covers architecture, secure server-side validation, database choices, a practical server-side implementation example, admin tooling, testing, and deployment/maintenance best practices. The patterns shown apply to QBCore and are easy to adapt to ESX or to frameworks using ox_lib. For related management tooling and monitoring you can explore Stellar AI's tools at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.
+  </p>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
+  <h2>Architecture and Data Model</h2>
+  <p>
+    Keep the whitelist logic entirely on the server. The client cannot be trusted for any access control decision: do all validation inside the player connection flow and any command handlers. Typical components:
+  </p>
+  <ul>
+    <li>Connection gate (playerConnecting deferrals) — checks identifiers before allowing join.</li>
+    <li>Persistent store (MySQL/oxmysql) — canonical whitelist entries, metadata (who added, reason, expiration).</li>
+    <li>Admin controls — commands and optional UI for adding/removing entries.</li>
+    <li>Audit and logging — record join attempts and admin actions to detect abuse.</li>
+  </ul>
+  <p>
+    Minimal data model (SQL):
+  </p>
+  <pre><code>CREATE TABLE whitelist (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  identifier VARCHAR(64) NOT NULL, -- e.g. steam:110000...
+  added_by VARCHAR(64),
+  added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at TIMESTAMP NULL,
+  reason TEXT NULL,
+  INDEX (identifier)
+);</code></pre>
 
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
+  <h2>Implementation Choices</h2>
+  <h3>Storage</h3>
+  <p>
+    Use a server-side database rather than a local file for production. MySQL-backed stores (mysql-async or oxmysql) scale and persist across restarts. JSON or flat-file storage can be useful for testing or small communities but is fragile for production.
+  </p>
+  <h3>Identifiers to use</h3>
+  <p>
+    Whitelist by stable server-side identifiers: Steam ID ("steam:..."), Rockstar License ("license:..."), xbl or discord (when available). Do not rely on player-supplied names or client-side variables. Always parse and canonicalize identifiers on the server.
+  </p>
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+  <h2>Server-Side Validation and Security</h2>
+  <p>
+    Enforce these rules:
+  </p>
+  <ul>
+    <li><strong>Never trust client input.</strong> Do not allow the client to assert which identifier it is — retrieve identifiers server-side via GetPlayerIdentifiers in the playerConnecting event or via QBCore hooks.</li>
+    <li><strong>Use deferrals.</strong> Use FiveM's deferrals to pause connection, run checks, and return clear messages to the client.</li>
+    <li><strong>Rate-limit and log.</strong> Track repeated failed connection attempts and log them; consider temporary bans for obvious abuse vectors.</li>
+    <li><strong>Sanitize database inputs.</strong> Use parameterized queries (MySQL.Async or your driver) rather than string concatenation.</li>
+    <li><strong>Principle of least privilege.</strong> Grant the minimum database permissions required for the whitelist table (SELECT/INSERT/UPDATE/DELETE).</li>
+  </ul>
+
+  <h2>Practical Server Script Example (QBCore)</h2>
+  <p>
+    The example below demonstrates a server-side whitelist that uses FiveM deferrals and MySQL.Async. Adapt the DB calls to oxmysql or your preferred driver. The logic: collect identifiers, check DB, allow or deny via deferrals.
+  </p>
+  <pre><code>-- server.lua (example)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
+  local src = source
+  deferrals.defer()
+  deferrals.update("Checking whitelist...")
+
+  -- Collect identifiers server-side
+  local identifiers = {}
+  for _, id in ipairs(GetPlayerIdentifiers(src)) do
+    identifiers[id:match('^(%w+:%w+)')] = id
+  end
+
+  -- Prefer steam or license, fallback to first identifier
+  local identifier
+  if identifiers['steam'] then identifier = identifiers['steam']
+  elseif identifiers['license'] then identifier = identifiers['license']
+  else
+    for _,v in pairs(identifiers) do identifier = v; break end
+  end
+
+  if not identifier then
+    deferrals.done("Could not resolve your identifiers. Ensure your client is running Steam/launcher.")
+    return
+  end
+
+  -- Secure DB lookup (MySQL.Async shown; replace with oxmysql if used)
+  MySQL.Async.fetchAll('SELECT * FROM whitelist WHERE identifier = @id', {
+    ['@id'] = identifier
+  }, function(result)
+    if result and #result > 0 then
+      deferrals.done() -- allow
+    else
+      deferrals.done("You are not whitelisted on this server.")
+    end
+  end)
+end)
+
+-- Admin commands (server-side only)
+RegisterCommand('wladd', function(source, args, raw)
+  if source ~= 0 and not IsPlayerAceAllowed(source, 'admin') then
+    TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'No permission' } })
+    return
+  end
+
+  local identifier = args[1]
+  if not identifier then
+    print('Usage: /wladd <identifier>')
+    return
+  end
+
+  MySQL.Async.execute('INSERT INTO whitelist (identifier, added_by) VALUES (@id, @added)', {
+    ['@id'] = identifier, ['@added'] = (source == 0 and 'console' or tostring(GetPlayerName(source)))
+  }, function(rows)
+    print('Whitelist entry added:', identifier)
+  end)
+end, true)</code></pre>
+
+  <p>
+    Notes:
+  </p>
+  <ul>
+    <li>Adapt the admin permission check to your server's ACLs. IsPlayerAceAllowed is a common FiveM ACE check.</li>
+    <li>For QBCore admin menus, expose server commands and keep UI interactions purely as clients sending admin requests to the server; validate the caller server-side before applying changes.</li>
+  </ul>
+
+  <h2>Admin Tools and UI</h2>
+  <p>
+    Consider two admin interfaces:
+  </p>
+  <ol>
+    <li>Command-line commands for quick adds/removals (as shown above).</li>
+    <li>Context menus or web panels that call server endpoints. If you use ox_lib, register client context menus but perform all whitelist changes through server events that verify the admin's identity and permissions.</li>
+  </ol>
+  <p>
+    If you build a web dashboard, expose a server-side API (not client) that only trusted backend components call. Protect that API with keys and IP restrictions.
+  </p>
+
+  <h2>Testing and QA</h2>
+  <p>
+    Before production rollout:
+  </p>
+  <ul>
+    <li>Test fresh connections with non-whitelisted identifiers and confirm deferral messages are clear.</li>
+    <li>Test admin flows: add, remove, expire entries and verify changes apply immediately.</li>
+    <li>Test edge cases: multiple identifiers, identifier collisions, partial information (no steam), and DB failures.</li>
+    <li>Simulate DB downtime and ensure your server responds with a clear message (prefer safe denial rather than allowing everyone when DB unavailable).</li>
+  </ul>
+  <p>
+    For logging and quick diagnosis, log join attempts with timestamp, identifier, result, and admin actions. Keep logs in a separate retention storage for auditing.
+  </p>
+
+  <h2>Deployment and Maintenance</h2>
+  <p>
+    Deployment checklist:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Action</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Staging test</td>
+        <td>Deploy to staging server and run integration test suite</td>
+        <td>Catch regressions before production</td>
+      </tr>
+      <tr>
+        <td>DB Backup</td>
+        <td>Schedule nightly backups of whitelist table</td>
+        <td>Recover from accidental deletes or corruption</td>
+      </tr>
+      <tr>
+        <td>Monitoring</td>
+        <td>Monitor DB connectivity, deferral failure rates, and repeated rejects</td>
+        <td>Detect outages or attack patterns early</td>
+      </tr>
+      <tr>
+        <td>Access control</td>
+        <td>Review ACEs and admin accounts monthly</td>
+        <td>Limit privilege creep</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    For operational tooling and analytics integration, you can connect server logs to external systems; to inspect and manage lists interactively consider secure apps such as <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.
+  </p>
+
+  <h2>Maintenance Best Practices</h2>
+  <p>
+    Maintain whitelist hygiene:
+  </p>
+  <ul>
+    <li>Expire entries for temporary whitelists and implement automatic cleanup jobs.</li>
+    <li>Keep an audit trail (who added/removed and when).</li>
+    <li>Rotate database credentials periodically and restrict DB user permissions.</li>
+    <li>Document admin procedures: who can add, remove, and how appeals are handled.</li>
+  </ul>
+  <p>
+    For deeper procedural guidance and updates, review your team’s operations notes or an operations blog post: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.
+  </p>
+
+  <h2>Roblox Considerations (Server Authority and RemoteEvents)</h2>
+  <p>
+    If you also maintain Roblox servers or scripts, follow these parallels:
+  </p>
+  <ul>
+    <li>Keep decisions server-authoritative. Clients may request actions via RemoteEvents, but the server must validate every request before changing whitelist state.</li>
+    <li>Use DataStore for persistence and implement robust failure handling: DataStore calls may fail, so implement retries and degrade gracefully (e.g., deny joins if you cannot confirm whitelist status reliably).</li>
+    <li>Log and audit RemoteEvent calls and DataStore errors to diagnose consistency issues.</li>
+  </ul>
+
+  <h2>Practical Checklist</h2>
+  <ol>
+    <li>Choose a storage backend (MySQL/oxmysql preferred for production).</li>
+    <li>Implement playerConnecting deferrals that look up identifiers server-side.</li>
+    <li>Do not use client-provided identifiers; read them with GetPlayerIdentifiers.</li>
+    <li>Provide secure admin commands with ACE checks or QBCore authority checks.</li>
+    <li>Log and monitor join attempts and admin changes.</li>
+    <li>Back up the whitelist table and test restore procedures.</li>
+    <li>Test DB failure scenarios; choose deny-by-default behavior if DB unavailable.</li>
+  </ol>
+
+  <h2>References</h2>
+  <ul>
+    <li><a href="https://docs.fivem.net/docs/server-manual/handling-players/player-events/">FiveM playerConnecting and deferrals</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore framework (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/oxmysql">oxmysql (GitHub)</a></li>
+    <li><a href="https://community.fivem.net/t/mysql-async-documentation/3665">mysql-async documentation</a></li>
+    <li><a href="https://create.roblox.com/docs/reference/engine/classes/RemoteEvent">Roblox RemoteEvent reference</a></li>
+    <li><a href="https://create.roblox.com/docs/reference/engine/classes/DataStoreService">Roblox DataStoreService reference</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Update QBCore: A Practical, Safe Upgrade Guide — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to safely update a QBCore-based FiveM server. Covers backups, dependency checks, fxmanifest changes, server/client migration tips, validation patterns, database and resource testing, and rollout steps.">
+  <meta name="keywords" content="QBCore update, FiveM upgrade, qb-core migration, QBCore fxmanifest, FiveM server maintenance">
+  <meta property="og:title" content="How to Update QBCore: A Practical, Safe Upgrade Guide">
+  <meta property="og:description" content="Step-by-step guide to safely update a QBCore-based FiveM server. Covers backups, dependency checks, fxmanifest changes, server/client migration tips, validation patterns, database and resource testing, and rollout steps.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/how-to-update-qbcore">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM maintenance</div>
+  <h1>How to Update QBCore: A Practical, Safe Upgrade Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">Updating QBCore on a running FiveM server can be straightforward if you follow a reproducible plan: backup, inspect, update core and dependent resources, migrate DB schema, validate server authority, and stage rollout. This guide gives a safe checklist, concrete examples, and migration tips to avoid downtime and security regressions.</p>
+  <h2>Why you need a plan</h2>
+<p>QBCore is central to many FiveM servers; updating it touches permissions, exports, events, database schema, and frequently-used helper functions. A rushed update can break inventories, player saves, or buy/sell flows. Use a staged approach: local inspection & test server, code-level migration, database migration, and controlled production rollout. Keep server authority rules intact: most validation belongs on the server, not the client.</p>
+
+<h2>High-level update plan</h2>
+<p>Follow these phases in order:</p>
+<ol>
+  <li>Backup (files + database)</li>
+  <li>Audit resources that reference qb-core, ox_lib, qb-target, qb-menu</li>
+  <li>Update qb-core resource and run its migration scripts on a staging server</li>
+  <li>Update dependent resources and fix API/exports changes</li>
+  <li>Test gameplay flows: login, inventory, transactions, saving</li>
+  <li>Roll out to production during a low-traffic window</li>
+</ol>
+
+<h2>Assumptions and dependencies</h2>
+<p>This guide assumes you use a typical QBCore layout where resources declare a dependency on qb-core in fxmanifest.lua and obtain the core object via the export pattern. It also assumes you use a supported MySQL driver (oxmysql, ghmattimysql, or similar). If you use ESX, many concepts are similar but APIs differ; migrate only when you're ready to rewrite resource integrations.</p>
+
+<h2>Step 1 — Back up everything</h2>
+<p>Always take a complete file system snapshot and a database dump before changing core components. For SQL:</p>
+<ul>
+  <li>mysqldump --single-transaction --routines --triggers --events yourdb &gt; backup.sql</li>
+  <li>Store the dump off-server and verify it by importing to a local test DB</li>
+</ul>
+<p>Also copy your resources directory or tag a git commit. If you use CI, create a release branch for the upgrade work.</p>
+
+<h2>Step 2 — Audit resources and list breaking changes</h2>
+<p>Search your server for common touch points: <code>GetCoreObject()</code>, <code>QBCore =</code>, exports['qb-core'], qb-target usage, ox_lib calls, and any direct DB queries. Compile a list per resource of spots that require change. Examples include different export names, refactored function signatures, or removed callbacks. Treat third-party resources carefully—check their repos for compatibility notes.</p>
+
+<h2>Step 3 — Update core resource safely</h2>
+<p>Clone the qb-core update into a staging instance. Do not overwrite production files yet. Apply the following safe pattern in server-side files to get the core object and avoid nil dereference:</p>
+<pre><code>-- server.lua (safe pattern)
+local QBCore = nil
+if exports and exports['qb-core'] then
+  QBCore = exports['qb-core']:GetCoreObject()
+else
+  error('qb-core export not found; ensure qb-core is active')
+end
+
+-- Example: secure server event
+RegisterNetEvent('myresource:server:buyItem', function(itemName, amount)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then
+    return
+  end
+  -- validate item and amount
+  if type(itemName) ~= 'string' or math.type(amount) ~= 'integer' then
+    return
+  end
+  -- server-side permission/transaction logic
+  local price = Config.Prices[itemName]
+  if not price then return end
+  if Player.Functions.RemoveMoney('bank', price * amount) then
+    Player.Functions.AddItem(itemName, amount)
+    TriggerClientEvent('QBCore:Notify', src, 'Purchase complete', 'success')
+  else
+    TriggerClientEvent('QBCore:Notify', src, 'Insufficient funds', 'error')
+  end
+end)
+</code></pre>
+<p>This pattern checks exports and always performs server-side validation for source, input types, and authorization. Never trust client arguments for money or inventory changes.</p>
+
+<h2>Step 4 — Update fxmanifest.lua and dependency declarations</h2>
+<p>Make sure each resource that requires qb-core declares it. Example fxmanifest snippet:</p>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'MyResource'
+version '1.0.1'
+
+shared_script '@qb-core/shared/locale.lua' -- if applicable
+server_script 'server.lua'
+client_script 'client.lua'
+
+dependency 'qb-core'
+-- optional: dependency 'ox_lib', 'qb-target'
+</code></pre>
+<p>Using dependency ensures the resource manager starts qb-core first. Some servers prefer <code>ensure qb-core</code> in server.cfg; keep your startup consistent.</p>
+
+<h2>Step 5 — Database migration and checks</h2>
+<p>Check the qb-core update for provided SQL migration files. If present, run them against a staging DB first. If there are schema changes, verify these with a local import of a production dump. After applying migrations, run the server and try to login with a migrated character. If a migration fails, restore from the backup and investigate the migration SQL.</p>
+
+<h3>Testing checklist (staging)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Expected result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Start server with updated qb-core</td>
+      <td>No startup errors related to qb-core exports</td>
+    </tr>
+    <tr>
+      <td>Login with test account</td>
+      <td>Player data loads, job and inventory intact</td>
+    </tr>
+    <tr>
+      <td>Buy/sell item flow</td>
+      <td>Server validates money and updates DB</td>
+    </tr>
+    <tr>
+      <td>Admin commands</td>
+      <td>Permissions work as before</td>
+    </tr>
+    <tr>
+      <td>Resource restart</td>
+      <td>Resource reloads without breaking clients</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Step 6 — Rollout strategy</h2>
+<p>Schedule a low-traffic maintenance window for production. Communicate expected downtime. Recommended approach:</p>
+<ol>
+  <li>Stop accepting new connections (use your matchmaking or server manager)</li>
+  <li>Apply file and DB changes</li>
+  <li>Start server in a single-node mode and smoke test</li>
+  <li>Open server to a small group, monitor logs and errors</li>
+  <li>Fully open once stable</li>
+</ol>
+
+<h2>Common pitfalls and how to avoid them</h2>
+<ul>
+  <li>Missing dependency declaration — use fxmanifest dependency or ensure in server.cfg</li>
+  <li>Client-side trust — move transactional logic and validation to server events</li>
+  <li>Unpatched third-party resources — check each resource repository for compatibility</li>
+  <li>DB mismatches — always run migrations on a staging dump first</li>
+</ul>
+
+<h2>Useful tools and tips</h2>
+<p>Use a staging environment that mirrors production. Automate backups, use source control branches for the upgrade, and capture logs centrally. If you use Stellar AI to plan or generate migration tasks, try the app to draft detailed file changes: https://trystellarai.com/app. For documentation or blog-style updates on your migration, store notes and postmortems on your internal blog and cross-link to public guidance at https://trystellarai.com/blog.</p>
+
+<h2>Final checklist before production</h2>
+<ul>
+  <li>Database backup verified and downloadable</li>
+  <li>All resources that reference qb-core updated and tested</li>
+  <li>fxmanifest declares dependency 'qb-core'</li>
+  <li>Server-side validation added for all critical transactions</li>
+  <li>Staging passed smoke tests (login, transactions, saves)</li>
+  <li>Maintenance window scheduled</li>
+  <li>Monitoring and rollback plan ready</li>
+</ul>
+
+<p>If you want a faster, interactive plan generator for these steps or need destination-labelled file changes (e.g., modified fxmanifest.lua, server.lua), consider using the Stellar AI workflow: https://trystellarai.com/app — it helps produce complete file updates and explanations to reduce manual errors.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div>
+  <p>References and further reading:</p>
+  <ul>
+    <li><a href="https://trystellarai.com/blog">Stellar AI Blog</a> — migration writeups and examples</li>
+    <li>QBCore community repositories and changelogs — inspect the repo you use for official migration notes</li>
+  </ul>
+</div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

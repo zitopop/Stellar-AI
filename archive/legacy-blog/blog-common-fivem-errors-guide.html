@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Common FiveM Errors Guide — Troubleshoot Fast and Fix Right — Stellar AI</title>
+  <meta name="description" content="A practical troubleshooting guide for FiveM builders: read logs, fix resource start failures, resolve client/server event mismatches, handle database errors, and keep server authority intact. Includes a checklist and safe code examples for QBCore/ESX patterns.">
+  <meta name="keywords" content="FiveM errors, FiveM troubleshooting, QBCore errors, ESX errors, fxmanifest, server validation, FiveM debugging">
+  <meta property="og:title" content="Common FiveM Errors Guide — Troubleshoot Fast and Fix Right">
+  <meta property="og:description" content="A practical troubleshooting guide for FiveM builders: read logs, fix resource start failures, resolve client/server event mismatches, handle database errors, and keep server authority intact. Includes a checklist and safe code examples for QBCore/ESX patterns.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/common-fivem-errors-guide">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM troubleshooting</div>
+  <h1>Common FiveM Errors Guide — Troubleshoot Fast and Fix Right</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide helps builders diagnose and fix the most common FiveM errors fast. It focuses on authoritative troubleshooting: reading logs, fixing resource start issues, validating server calls, and avoiding client-side trust mistakes. Use the checklist and code examples to prevent repeat issues.</p>
+  <h2>Why this guide</h2>
+<p>FiveM servers combine CFX runtime, Lua scripts, dependencies (QBCore, ESX, ox_lib), and external systems (MySQL, Redis). Small mismatches or missing validation often cause runtime failures. This guide helps you find root causes and implement safe fixes so resources start and stay stable in production.</p>
+
+<h2>1. Always start with the logs</h2>
+<p>The server console and <strong>server.log</strong> show the first symptom. Look for these patterns: resource failed to start, missing exports, Lua syntax errors, or unhandled exceptions. When a resource doesn't start, the console often prints the filename and a stacktrace—use that to pinpoint the file and line number.</p>
+
+<h2>2. Resource fails to start: fxmanifest and file layout</h2>
+<p>Common causes: typos in fxmanifest.lua, incorrect <code>server_script</code>/<code>client_script</code> entries, or missing files. Keep the manifest minimal and explicit. Example minimal fxmanifest for QBCore-compatible resource:</p>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'you'
+description 'Example resource'
+version '1.0.0'
+
+shared_script 'config.lua'
+server_script 'server/main.lua'
+client_script 'client/main.lua'
+
+dependencies {
+  'qb-core'
+}
+</code></pre>
+<p>If the manifest references files that don't exist, the resource will not start. Check file names and case sensitivity on Linux hosts.</p>
+
+<h2>3. Client / Server event mismatches</h2>
+<p>Many runtime errors come from wrong event names or calling client-only APIs on the server. Remember: server scripts run in the server context and must perform authoritative checks. Client scripts should never grant items, money, or permissions without a secure server callback.</p>
+<p>Pattern to avoid: client directly giving items. Instead, client triggers a server event, and server validates and applies the change.</p>
+
+<h3>Safe server-authoritative flow (QBCore-style)</h3>
+<pre><code>-- server/main.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('myresource:giveItem', function(itemName, count)
+  local src = source
+  -- Validate
+  if type(itemName) ~= 'string' or type(count) ~= 'number' then return end
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  -- Server adds the item (authoritative)
+  Player.Functions.AddItem(itemName, count)
+end)
+
+-- client/main.lua
+-- request from UI or input
+TriggerServerEvent('myresource:giveItem', 'bread', 1)
+</code></pre>
+<p>Note: APIs like QBCore.Functions.GetPlayer vary by QBCore versions — check your core release. For ESX, use the ESX.GetPlayerFromId pattern on the server.</p>
+
+<h2>4. Database and MySQL issues</h2>
+<p>Common DB mistakes: forgetting to run migrations, using blocking calls on the client, or not handling query failures. Always run SQL migrations before starting the resource and check that your DB connection string is correct. Use asynchronous wrappers like <code>oxmysql</code> or <code>ghmattimysql</code> and handle callbacks or promise rejections.</p>
+<p>If a query fails, log the error and return a safe default to the caller. Never assume a DB call succeeded.</p>
+
+<h2>5. Dependency and export errors</h2>
+<p>Exports fail when a resource is not started or the export name changed. If your script depends on qb-target, ox_lib, or a particular core, declare that in fxmanifest dependencies and check server console for "missing dependency" messages. For exports, call them only after the resource is running or use a retry/backoff strategy.</p>
+
+<h2>6. NUI and CEF problems</h2>
+<p>NUI (CEF) issues often look like blank UIs, JS errors, or CORS-like failures. Common causes: wrong <code>setNuiFocus</code> usage, NUI message names mismatch, or missing HTML files in the resource. Use the browser console (F8) to inspect NUI errors and ensure you post messages using the correct event names.</p>
+
+<h2>7. Permissions, rate limits, and anti-cheat false positives</h2>
+<p>Anti-cheat or rate-limiters can block legitimate actions. If players report actions being blocked, check server-side rate limiting for spamming net events and ensure anti-cheat lists aren't too aggressive. Log decision points so you can reproduce and tune thresholds.</p>
+
+<h2>8. Reproducible debugging workflow</h2>
+<ol>
+  <li>Reproduce locally in a minimal server with only the resource and core to isolate failures.</li>
+  <li>Read server console errors and follow the stacktrace to the file/line.</li>
+  <li>Add defensive logging to suspect functions (source, args, validation outcome).</li>
+  <li>Fix a small change, restart the resource, and test the exact failing action.</li>
+  <li>Push the minimal fix and document the change in your changelog.</li>
+</ol>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Error</th>
+      <th>Likely cause</th>
+      <th>Quick fix</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Resource won't start</td>
+      <td>fxmanifest typo or missing file</td>
+      <td>Check manifest paths, file case, and console stacktrace</td>
+    </tr>
+    <tr>
+      <td>TriggerServerEvent has no effect</td>
+      <td>Server event name mismatch or missing registration</td>
+      <td>Verify RegisterNetEvent name and log the source on server</td>
+    </tr>
+    <tr>
+      <td>DB queries fail</td>
+      <td>Wrong DB connection, missing migrations</td>
+      <td>Confirm DB credentials, run migrations, handle errors</td>
+    </tr>
+    <tr>
+      <td>NUI blank</td>
+      <td>HTML missing or JS error in browser console</td>
+      <td>Open F8, inspect console, ensure files exist in resource</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Next practical steps</h2>
+<p>If you want to automate creating resource templates, generate manifests, or produce server/client scaffolding that follows QBCore or ESX patterns, try the Stellar app to get a starting resource scaffold—it can help turn a plain-English description into destination-labelled files you can drop into your server. Use the app to draft manifest and basic server/client flows: <a href="https://trystellarai.com/app">Stellar AI app</a>.</p>
+<p>If you prefer guided articles and deeper examples, the Stellar AI blog contains tutorials and patterns for common resource types: <a href="https://trystellarai.com/blog">Stellar AI blog</a>. After reading, you can generate a tailored resource scaffold from the app and iterate on server authority and validation with confidence. Here’s the app again for quick creation of scaffolds and debug scripts: <a href="https://trystellarai.com/app">open the Stellar AI app</a>.</p>
+
+<h2>Final notes</h2>
+<p>Always prefer server-side validation to prevent exploits. Keep third-party dependencies updated, test resources in a minimal environment, and use structured logging so you can trace issues quickly. When in doubt, reproduce the failure locally and add defensive checks before merging changes to production.</p>
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>Further reading and references:</p>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+  <li><a href="https://github.com/ESX-Org/es_extended">ESX (community) GitHub</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib (example)</a></li>
+</ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

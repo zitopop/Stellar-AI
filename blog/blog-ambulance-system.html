@@ -68,32 +68,233 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Set Up a Death and Respawn System on FiveM QBCore</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A proper death system stops instant respawning and forces players to wait for EMS or bleed out. This guide covers configuring the QBCore death and respawn system.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to set up a death and respawn system on fivem qbcore, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview and goals</h2>
+  <p>
+    This guide walks you through designing and implementing a robust death and respawn system for FiveM using QBCore. It focuses on architecture, server-side validation, practical implementation patterns, alternatives for ESX and ox_lib, and complementary notes for Roblox/Luau developers who need to replicate safe patterns. The goal is to deliver a server-authoritative system that prevents client-side tampering, supports revive mechanics, logs important events, and is maintainable in production.
+  </p>
+  <p>
+    If you want a compact project planner and asset tracker to manage your script deployment, consider using the Stellar AI app for project coordination and SEO tasks: <a href="https://trystellarai.com/app">try the app</a>.
+  </p>
+
+  <h2>Architecture overview</h2>
+  <p>
+    A death/respawn system must separate responsibilities between server and client. The server is authoritative for state (isDead, lastDeathTime, bleedout, respawnLocation, inventory state). The client is responsible for presentation: animations, UI, control locks, and attempting to trigger server events. Never rely on client assertions of death without server-side verification layers.
+  </p>
+  <p>
+    Core components:
+  </p>
+  <ul>
+    <li>Server state manager: stores death metadata in player persistent storage or runtime memory and validates actions like revive or respawn.</li>
+    <li>Client visual layer: shows downed screen, countdown timers, and local effects; sends server events to request actions.</li>
+    <li>Revive providers: player-based revive, EMS job revives, or auto-respawn after timeout.</li>
+    <li>Logging & analytics: audit death events for debugging and abuse detection.</li>
+  </ul>
+
+  <h2>Server-side design (QBCore)</h2>
+  <p>
+    The server must enforce rules: who can revive, whether inventory is dropped on death, cooldowns, and DB persistence. Use QBCore's player management to get player instances and update metadata. Typical server event flow:
+  </p>
+  <ol>
+    <li>Client signals possible death: TriggerServerEvent('death:client:requestDeath')</li>
+    <li>Server receives event; uses source (server-provided) to find the player and perform validation checks.</li>
+    <li>If validated, server marks player as dead in metadata and triggers client to enter downed state (TriggerClientEvent).</li>
+    <li>Revive attempts are server-validated and update metadata/DB when successful; respawn is authorized by server.</li>
+  </ol>
+
+  <h3>Example server handler (Lua)</h3>
+  <pre><code>RegisterNetEvent('death:server:requestDeath')
+AddEventHandler('death:server:requestDeath', function(clientReportedState)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+
+    -- Never trust clientReportedState blindly. Use it only as a hint.
+    -- Additional server validation should be performed.
+    local lastDeath = Player.PlayerData.metadata.lastDeath or 0
+    local now = os.time()
+
+    -- Example validation: rate-limit repeated death claims to prevent spam.
+    if now - lastDeath < 5 then
+        -- Reject likely invalid or spammy claims
+        TriggerClientEvent('death:client:reject', src, 'rate_limit')
+        return
+    end
+
+    -- Mark player dead server-side
+    Player.PlayerData.metadata.isDead = true
+    Player.PlayerData.metadata.lastDeath = now
+    Player.Functions.Save() -- persist metadata to DB via QBCore (implementation may vary)
+
+    -- Notify the client to enter downed state and disable controls
+    TriggerClientEvent('death:client:enterDowned', src, {bleedout = 120})
+    -- Log to server logs for audit
+    print(('Player %s marked dead at %s'):format(src, os.date('%c', now)))
+end)</code></pre>
+
+  <p>
+    This example emphasizes two things: use the implicit server-side source to identify the player, and persist state on the server. The client-provided arguments (clientReportedState) are only hints—never used for authoritative decisions.
+  </p>
+
+  <h2>Client responsibilities and safety patterns</h2>
+  <p>
+    The client handles animations, control locking, HUD overlays, and showing timers. It should call server events to request transitions, but must be designed under the assumption that a malicious client may call those events excessively or with crafted payloads.
+  </p>
+  <ul>
+    <li>Do not set internal client-only variables as the official server state; always wait for the server response.</li>
+    <li>Use client events as "requests" and wait for server-authorized events to change state (e.g., 'death:client:enterDowned').</li>
+    <li>Implement local safeguards to minimize grief: if server ignores repeated requests, show an informative message instead of repeatedly re-sending.</li>
+  </ul>
+
+  <h2>Security and server validation</h2>
+  <p>
+    Protect the system with multiple validation layers:
+  </p>
+  <ul>
+    <li>Rate limiting: prevent clients from spamming death requests by storing timestamps.</li>
+    <li>Server side logs: store death events (player, position, weapon hash, timestamp) to identify patterns of abuse.</li>
+    <li>Revocation on suspicious activity: if the same player sends impossible sequences (many deaths per second), mark them for manual review and refuse automated respawn.</li>
+    <li>Authority checks: only allow job roles or players that meet server criteria to revive others. Always verify src and lookup their job via QBCore.Functions.GetPlayer(src).</li>
+    <li>Database sanity checks: when loading player metadata on connect, verify values are within expected ranges and correct malformed entries.</li>
+  </ul>
+
+  <h3>Handling inventory and money</h3>
+  <p>
+    Decide your policy (drop items, retain on death, or temporary inventory freeze). Any changes affecting inventory must be performed server-side using secure functions (Player.Functions.RemoveItem, Player.Functions.AddMoney, or direct DB updates) and logged for audit.
+  </p>
+
+  <h2>Alternatives and extensions: ESX, ox_lib and common patterns</h2>
+  <p>
+    If you use ESX or ox_lib, the core principles remain the same: server authoritative state, event validation, and persistent metadata. Implementation details differ:
+  </p>
+  <ul>
+    <li>ESX: use ESX.GetPlayerFromId(source) and ESX.SaveToDatabase or shared objects to persist state. Many ESX resources use MySQL.Async to save metadata.</li>
+    <li>ox_lib: leverage ox_inventory and ox_core patterns; use exports and server callbacks provided by ox_lib to get consistent player objects and metadata save patterns.</li>
+  </ul>
+  <p>
+    Avoid reinventing persistence when the framework provides safe APIs for player metadata. Use those APIs to ensure compatibility with other resources.
+  </p>
+
+  <h2>Roblox/Luau considerations (server authority & RemoteEvent handling)</h2>
+  <p>
+    For Roblox developers who want similar behavior, the important rules are: RemoteEvents should be treated as client requests only. All authoritative state must live on the server (in memory, or persisted via DataStores). When you use RemoteEvent.OnServerEvent, the first parameter is the Player instance sent by the engine -- never accept a player id string from the client.
+  </p>
+  <pre><code>-- Example Roblox server pattern (Luau)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local deathEvent = ReplicatedStorage:WaitForChild("DeathRequest")
+local DataStoreService = game:GetService("DataStoreService")
+local playerDataStore = DataStoreService:GetDataStore("PlayerData")
+
+deathEvent.OnServerEvent:Connect(function(player, clientHint)
+    -- 'player' is authoritative. clientHint is a suggestion only.
+    -- Verify server-side conditions here.
+    local userId = player.UserId
+    -- Update in-memory state and use pcall for DataStore ops
+    local succ, err = pcall(function()
+        playerDataStore:SetAsync(tostring(userId)..":isDead", true)
+    end)
+    if not succ then
+        -- handle DataStore failures: retry/backoff and notify player
+        warn("DataStore error saving death state for", player.Name, err)
+    end
+end)</code></pre>
+  <p>
+    DataStore failures are common: always wrap in pcall, implement retries or fallback caching, and surface friendly messages to players when persistence is temporarily unavailable.
+  </p>
+
+  <h2>Testing checklist and table</h2>
+  <p>
+    Validate all interaction flows with a systematic test plan. The table below is a pragmatic checklist to run in staging before production.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Test</th>
+        <th>Steps</th>
+        <th>Expected Result</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Basic death flow</td>
+        <td>Cause player to die; client requests death; server validates and marks dead</td>
+        <td>Client receives enterDowned and server metadata shows isDead=true</td>
+        <td>Check DB persistence</td>
+      </tr>
+      <tr>
+        <td>Rate-limit abuse</td>
+        <td>Spam death requests from client</td>
+        <td>Server rejects excess requests and logs incident</td>
+        <td>Verify reject message shown to client</td>
+      </tr>
+      <tr>
+        <td>Revive by EMS</td>
+        <td>Authorized player triggers revive action</td>
+        <td>Server validates role, revives player, updates metadata and DB</td>
+        <td>Ensure animations triggered on both players</td>
+      </tr>
+      <tr>
+        <td>Inventory handling</td>
+        <td>Die with valuable items</td>
+        <td>Server applies configured policy (drop/keep), changes saved</td>
+        <td>Check logs for removed items</td>
+      </tr>
+      <tr>
+        <td>Reconnect after death</td>
+        <td>Player disconnects while dead and reconnects</td>
+        <td>Server reads metadata and re-applies correct downed state or respawn</td>
+        <td>Validate session persistence</td>
+      </tr>
+      <tr>
+        <td>Network partition</td>
+        <td>Simulate loss between client and server during death flow</td>
+        <td>Server times out or gracefully handles incomplete requests</td>
+        <td>Ensure no inconsistent DB state</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Testing, deployment, and maintenance</h2>
+  <p>
+    Before you deploy to production:
+  </p>
+  <ol>
+    <li>Run the tabled tests above in a staging environment that mirrors production as closely as possible.</li>
+    <li>Enable verbose logging for the first week to capture unexpected flows.</li>
+    <li>Deploy with feature flags: enable the new death flow for a small population first.</li>
+    <li>Monitor metrics like death event rate, revive rate, DB errors, and unusual spikes in death claims.</li>
+  </ol>
+  <p>
+    For team workflows, track tasks and assets using project management tools and tie changes to a versioned release. Use the Stellar AI app to manage release notes and SEO assets: <a href="https://trystellarai.com/app">Stellar AI project</a>. For technical write-ups and deeper posts about lifecycle and patterns, see our content hub: <a href="https://trystellarai.com/blog">blog</a>.
+  </p>
+
+  <h2>Operational best practices</h2>
+  <p>
+    Maintenance and operational hygiene:
+  </p>
+  <ul>
+    <li>Rotate any credentials and keep your DB access minimal for the game server account.</li>
+    <li>Keep a changelog and migration script for metadata keys when you modify schema.</li>
+    <li>Run periodic audits of death logs to detect automated abuse or exploitation.</li>
+    <li>Instrument critical code paths with structured logs so you can correlate client events with server-side actions.</li>
+  </ul>
+
+  <h2>References</h2>
+  <p>
+    Official documentation and relevant resources:
+  </p>
+  <ul>
+    <li><a href="https://docs.fivem.net">FiveM Documentation</a> — core server and client API reference.</li>
+    <li><a href="https://docs.qbcore.org">QBCore Documentation</a> — framework patterns for player management and persistence.</li>
+    <li><a href="https://developer.roblox.com">Roblox Developer Hub</a> — RemoteEvent patterns and DataStore best practices.</li>
+    <li><a href="https://developers.fivem.net/docs/scripting-reference/server/">FiveM Server Scripting</a> — server-side specifics for events and resource lifecycle.</li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

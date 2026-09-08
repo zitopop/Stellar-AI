@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+  <meta name="theme-color" content="#080808">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stellar AI">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Add a Mechanic Job to Your QBCore FiveM Server — Stellar AI</title>
+  <meta name="description" content="Install a QBCore mechanic job on your FiveM server. Vehicle repair, upgrades, impound and job menu explained step by step.">
+  <meta name="keywords" content="qbcore mechanic job, fivem mechanic script, mechanic job fivem install, qbcore garage script, fivem repair script">
+  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-mechanic-job">
+  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
+    a{color:inherit;text-decoration:none;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
+    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
+    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
+    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
+    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
+    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
+    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
+    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
+    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
+    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
+    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
+    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
+    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
+    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-copy{font-size:12px;color:var(--muted);}
+    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
+  </style>
+  <link rel="stylesheet" href="/site-polish.css">
+</head>
+<body>
+<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
+<div class="container">
+  <h1>How to Add a Mechanic Job to Your QBCore FiveM Server</h1>
+
+<p class="intro">A practical guide to how to add a mechanic job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<p><strong>Summary:</strong> This guide walks you through adding a robust, secure mechanic job to a QBCore FiveM server. It covers architecture, data model, server/client responsibilities, common implementation choices (ox_lib, qb-bossmenu, inventory integrations), security and validation patterns, testing strategies, and deployment/maintenance best practices. Follow the server-first patterns: never trust client input for critical state changes such as job assignment, billing, or inventory transactions.</p>
+
+<h2>1 — High-level architecture and responsibilities</h2>
+<p>Design the mechanic job using a clear separation of responsibilities. Use the server to own authoritative state (player job, money, database updates) and the client to provide presentation and local interactions (animations, UI). Typical components:</p>
+<ul>
+  <li>Core: QBCore job definition and any required shared configuration (shared/jobs.lua).</li>
+  <li>Server: job handlers, billing, inventory checks, job promotions, database persistence, RPC endpoints and callbacks.</li>
+  <li>Client: targeting UI (ox_target/3dtext), animations, progress bars, local vehicle repairs, and hit detection.</li>
+  <li>Optional: third-party libraries like ox_lib for UI utilities, qb-bossmenu for job management, qb-phone for billing notifications.</li>
+</ul>
+<p>For development tools, you can prototype workflows and track tasks using a lightweight project tracker or an app. If you use a companion tool for planning and automation, reference it appropriately: <a href="https://trystellarai.com/app">Stellar AI App</a>.</p>
+
+<h2>2 — Database and job configuration</h2>
+<p>Add a job entry in your QB core configuration so players can be assigned the mechanic job and grades. Edit qb-core/shared/jobs.lua and add a new table entry like this:</p>
+<pre><code>["mechanic"] = {
+  label = "Mechanic",
+  defaultDuty = true,
+  grades = {
+    ["0"] = { name = "Trainee", payment = 20 },
+    ["1"] = { name = "Mechanic", payment = 40 },
+    ["2"] = { name = "Supervisor", payment = 70 }
+  }
+}</code></pre>
+<p>QBCore uses the player job saved field to persist job state. If you plan to allow recruitment via a boss menu, ensure your job supports grade permissions and that you wire qb-bossmenu or a custom admin UI to call the server-side API to set a player's job.</p>
+
+<h3>Schema guidance</h3>
+<ul>
+  <li>Keep persistent job fields in the player table managed by QBCore. Avoid adding duplicate job columns.</li>
+  <li>If you store owned vehicles or mechanic invoices, use dedicated tables: mechanic_invoices (id, sender, receiver, amount, paid, createdAt) and vehicle_maintenance (vehicle_plate, last_service, notes).</li>
+  <li>Index frequently queried columns (player identifier, plate, paid flag) for performance.</li>
+</ul>
+
+<h2>3 — Server-side design and API surface</h2>
+<p>All authoritative actions must be executed on the server. Implement clear event and callback names and minimize arguments from the client. Example server API responsibilities:</p>
+<ul>
+  <li>Assign/remove job: only by staff or boss menu; validate caller permissions server-side.</li>
+  <li>Create and charge invoices: validate sender job, ensure target exists, store invoice row, notify via qb-phone/server event.</li>
+  <li>Approve repairs: server checks player's job, funds or item ownership, then instruct the client to perform local repairs.</li>
+</ul>
+<p>Example server-side pattern (pseudocode):</p>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('mechanic:server:attemptRepair', function(vehiclePlate, estimate)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player or Player.PlayerData.job.name ~= 'mechanic' then
+    TriggerClientEvent('QBCore:Notify', src, 'You are not a mechanic', 'error')
+    return
+  end
+
+  -- validate funds server-side
+  if Player.Functions.RemoveMoney('cash', estimate) then
+    -- safe: server authorizes action, client only performs visual and local entity modifications
+    TriggerClientEvent('mechanic:client:performRepair', src, vehiclePlate)
+  else
+    TriggerClientEvent('QBCore:Notify', src, 'Insufficient funds', 'error')
+  end
+end)</code></pre>
+<p>Notes:</p>
+<ul>
+  <li>Do not trust vehiclePlate or entity IDs sent from the client for authorization — use server-side ownership checks where possible.</li>
+  <li>Prefer calling Player.Functions.RemoveMoney/Payment APIs provided by QBCore to maintain atomicity and avoid race conditions.</li>
+</ul>
+
+<h2>4 — Client-side roles and safe interactions</h2>
+<p>The client should be responsible for UX: showing menus, targeting vehicles, playing animations, and applying the local repair effect when the server authorizes it. Keep these rules:</p>
+<ul>
+  <li>The client triggers minimal events like "request repair" but does not directly change money or job data.</li>
+  <li>When the server authorizes an action, the server triggers a client event with a minimal payload. To limit abuse, do not include sensitive arguments like payment outcomes or server-side identifiers.</li>
+  <li>For vehicle repair visuals, the client can repair the local vehicle entity after server authorization. The actual record of the repair should be stored on the server (invoice/maintenance log).</li>
+</ul>
+<p>Example client flow:</p>
+<ol>
+  <li>Player targets vehicle and selects "Repair".</li>
+  <li>Client sends TriggerServerEvent('mechanic:server:attemptRepair', plate, estimate).</li>
+  <li>Server checks job and charges, then sends TriggerClientEvent('mechanic:client:performRepair', src).</li>
+  <li>Client plays animation, progress bar, and repairs local vehicle entity.</li>
+</ol>
+
+<h2>5 — Integration choices: ox_lib, ox_target, qb-bossmenu, ox_inventory</h2>
+<p>Depending on your server, integrate with quality-of-life libraries:</p>
+<ul>
+  <li><strong>ox_target</strong> or qb-target: Use these for contextual target interactions on vehicles and NPCs.</li>
+  <li><strong>ox_lib</strong>: Provides common UI components, notifications, and liberation from boilerplate.</li>
+  <li><strong>qb-bossmenu</strong>: Use for hiring, promoting, and firing mechanics through a UI that performs server-side authorization.</li>
+  <li><strong>ox_inventory/qb-inventory</strong>: Ensure any item consumption (repair kits) is performed atomically on the server.</li>
+</ul>
+<p>Integration best practice: wrap library calls in your own server endpoints so you can swap out implementations later without changing business logic.</p>
+
+<h2>6 — Security and server validation checklist</h2>
+<p>Security is critical. Use the checklist below during development and code review.</p>
+<table>
+  <thead>
+    <tr>
+      <th>Area</th>
+      <th>Action</th>
+      <th>Why it matters</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Job assignment</td>
+      <td>Only allow server-side changes via authenticated admin or boss routes</td>
+      <td>Prevents client spoofing of job privileges</td>
+    </tr>
+    <tr>
+      <td>Billing & Payments</td>
+      <td>Validate and remove funds on server, persist invoices in DB</td>
+      <td>Keeps monetary state authoritative and auditable</td>
+    </tr>
+    <tr>
+      <td>Vehicle ownership</td>
+      <td>Verify plate/owner server-side before granting free repairs</td>
+      <td>Prevents griefing or unauthorized repairs</td>
+    </tr>
+    <tr>
+      <td>Item consumption</td>
+      <td>Consume items only via server APIs; return failure state if missing</td>
+      <td>Prevents duplication exploits</td>
+    </tr>
+    <tr>
+      <td>Events</td>
+      <td>Named and namespaced events; rate-limit high-frequency actions</td>
+      <td>Reduces accidental collisions and DoS surface</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>7 — Testing strategy and QA</h2>
+<p>Test the mechanic job across the following dimensions:</p>
+<ul>
+  <li>Functional: recruit/promote, repair flow, invoice creation and payment, item usage.</li>
+  <li>Security: attempt client-side spoofing (fake job, fake server events) — server should reject.</li>
+  <li>Edge cases: unexpected disconnect during repair, simultaneous payments, DataStore or MySQL failures.</li>
+  <li>Performance: measure server CPU during job-heavy scenarios (multiple simultaneous repairs) and tune queries.</li>
+</ul>
+<p>Automated tests:</p>
+<ul>
+  <li>Unit test database queries where possible.</li>
+  <li>Write integration tests that simulate job assignment and payment flows using tools that can call server events.</li>
+  <li>Use staging servers and player testing sessions to validate UI/UX and concurrency.</li>
+</ul>
+
+<h2>8 — Deployment and maintenance</h2>
+<p>Deploy using a staged pipeline: local development → staging → production. Key items:</p>
+<ul>
+  <li>Version control all resources. Tag releases and maintain changelogs for server admins.</li>
+  <li>Apply database migrations in a controlled manner. Backup before running migrations.</li>
+  <li>Monitor server logs for suspicious events tied to job APIs and billing endpoints.</li>
+  <li>Provide admin commands to roll back invoices or revert job changes in emergencies.</li>
+</ul>
+<p>For deployment coordination and automation, consider documenting build steps and using a small companion project management tool. If you use a hosted workflow or automation tool, you might link it from your internal docs or application: <a href="https://trystellarai.com/app">Stellar AI App</a> can be a part of your planning toolchain. For a technical blog and long-form change explanations, publish release notes to your dev blog: <a href="https://trystellarai.com/blog">developer blog</a>.</p>
+
+<h2>9 — Maintenance: monitoring and telemetry</h2>
+<p>Routine maintenance tasks:</p>
+<ol>
+  <li>Review server logs weekly for errors tied to mechanic job events.</li>
+  <li>Audit job grade permissions if new grades are added.</li>
+  <li>Reconcile invoices and payments daily — add automated alerts for payment failures.</li>
+  <li>Update third-party libraries and test integrations (ox_lib, qb-bossmenu) in a staging environment.</li>
+</ol>
+
+<h2>10 — Roblox considerations (if you map similar concepts)</h2>
+<p>If you run a Roblox game with mechanic-like roles, follow these server-authority best practices:</p>
+<ul>
+  <li>Use RemoteEvents/RemoteFunctions with server validation: client requests should always be validated on the server before making state changes.</li>
+  <li>Gracefully handle DataStore failures: implement exponential backoff and retries, and show safe fallback UI when saves fail.</li>
+  <li>Use BindableEvents within server-only logic to decouple modules rather than broadcasting to clients directly.</li>
+</ul>
+<p>Even though mechanics differ across platforms, the same principle applies: server owns the truth, clients present results.</p>
+
+<h2>Practical implementation checklist</h2>
+<ol>
+  <li>Create job entry in qb-core/shared/jobs.lua and define grades.</li>
+  <li>Implement server endpoints for: hire/fire, create invoice, attempt repair, confirm payment.</li>
+  <li>Integrate with inventory system for repair kits and ensure server-side consumption.</li>
+  <li>Wire ox_target or qb-target to provide client interaction points.</li>
+  <li>Add client handlers that only act after server authorization events.</li>
+  <li>Implement persistence: invoice and maintenance tables; add backups and migrations.</li>
+  <li>Test security by attempting to call events directly; fix any paths where client can mutate authoritative state.</li>
+  <li>Deploy to staging and validate concurrency and rollback paths.</li>
+</ol>
+
+<h3>Files and responsibilities (quick reference)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>File/Resource</th>
+      <th>Responsibility</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>shared/jobs.lua</td>
+      <td>Declare job, labels, and grade config</td>
+    </tr>
+    <tr>
+      <td>server/main.lua</td>
+      <td>Server event handlers, billing, DB writes</td>
+    </tr>
+    <tr>
+      <td>client/main.lua</td>
+      <td>UI, targeting, animations, local repair effects</td>
+    </tr>
+    <tr>
+      <td>sql/migrations</td>
+      <td>Schema for invoices and maintenance logs</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Troubleshooting common issues</h2>
+<ul>
+  <li>Players appear with incorrect jobs: ensure job is saved correctly and that you don’t have conflicting custom resources overriding player load handlers.</li>
+  <li>Repairs not applying: confirm client receives the server authorization event and that local entity mapping of plates/netIDs is correct.</li>
+  <li>Duplicate items after repair: make sure item consumption happens server-side and confirm returns are atomic.</li>
+  <li>Boss menu no-op: verify qb-bossmenu events trigger server functions that authorize job changes.</li>
+</ul>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM documentation (Cfx.re)</a></li>
+  <li><a href="https://docs.qbcore.org/">QBCore official docs and community resources</a></li>
+  <li><a href="https://overextended.gitbook.io/ox_lib/">ox_lib documentation</a></li>
+  <li><a href="https://developer.roblox.com/en-us/">Roblox Developer Hub</a></li>
+</ul>
+</div>
+<footer>
+  <div class="footer-copy">© 2026 Stellar AI</div>
+  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
+</footer>
+</body>
+</html>

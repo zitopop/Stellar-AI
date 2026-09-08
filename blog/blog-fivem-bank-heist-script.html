@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Bank Heist Script — Design, Security, and Implementation Guide — Stellar AI</title>
+  <meta name="description" content="A practical, security-first guide to designing and building a FiveM bank heist resource. Covers server authority, QBCore/ESX/ox_lib boundaries, anti-cheat validation, qb-target integration, persistence, and deployment checklists.">
+  <meta name="keywords" content="FiveM, bank heist, QBCore, ESX, ox_lib, qb-target, server-side validation, fxmanifest, anti-cheat, oxmysql">
+  <meta property="og:title" content="FiveM Bank Heist Script — Design, Security, and Implementation Guide">
+  <meta property="og:description" content="A practical, security-first guide to designing and building a FiveM bank heist resource. Covers server authority, QBCore/ESX/ox_lib boundaries, anti-cheat validation, qb-target integration, persistence, and deployment checklists.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-bank-heist-script">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM Development Guide</div>
+  <h1>FiveM Bank Heist Script — Design, Security, and Implementation Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks a builder from system design to a secure FiveM bank heist implementation. It emphasises server authority, framework boundaries (QBCore/ESX/ox_lib), target interactions, anti-cheat validation, and installation notes so you can ship a robust resource.</p>
+  <h2>Overview</h2>
+<p>A bank heist is a complex multiplayer interaction: multiple players coordinate, timed objectives run, inventory items are consumed, doors unlock, police must be notified, and rewards are distributed. Because these actions affect player economy and persistence, authority must live on the server. This guide explains design choices, includes a server-authoritative code example for QBCore, details how to wire qb-target/ox_lib interactions, and provides a practical checklist for deployment.</p>
+
+<h2>Design goals</h2>
+<ul>
+  <li>Server authority: all state-changing decisions and reward distribution are validated on the server.</li>
+  <li>Minimal client trust: clients can request actions but cannot grant themselves rewards or bypass checks.</li>
+  <li>Framework agnostic patterns: implementable with QBCore, ESX, or ox_lib by swapping small integration layers.</li>
+  <li>Auditability and logging: every heist attempt is logged for moderation and debugging.</li>
+  <li>Rate-limited and auditable: cooldowns and per-player concurrency limits to deter farming.</li>
+</ul>
+
+<h2>High-level flow</h2>
+<ol>
+  <li>Player approaches vault and uses qb-target/ox_lib to trigger a heist attempt.</li>
+  <li>Client fires a safe server event asking to start the heist; server verifies prerequisites (police online, item requirements, cooldowns, job restrictions).</li>
+  <li>Server reserves the vault (locks it) and notifies all clients to start synchronized animations/timers.</li>
+  <li>During the heist, server-side timers validate progress; anti-cheat checks watch for impossible state changes.</li>
+  <li>At completion, server awards loot (cash, items) and logs the transaction; failure triggers cleanup and cooldowns.</li>
+</ol>
+
+<h2>Server authority & validation (must-haves)</h2>
+<p>All critical checks occur on the server. Do not accept client claims about item removals or task completion. Example validations:</p>
+<ul>
+  <li>Check police count server-side with an authoritative player list.</li>
+  <li>Verify and consume required items from the player inventory with framework APIs (QBCore: <code>QBCore.Functions.GetPlayer</code>, ESX: <code>xPlayer</code>).</li>
+  <li>Use database flags or in-memory locks to reserve the vault during an ongoing heist.</li>
+  <li>Use server-side timers and verify heartbeats from clients, but treat them as hints — don’t grant rewards without final server checks.</li>
+</ul>
+
+<h3>Common server-side checks</h3>
+<ul>
+  <li>Active heist flag: is the vault already in progress?</li>
+  <li>Whitelist/exclusion: is the player allowed to initiate? (jobs, bans)</li>
+  <li>Cooldowns: last completed attempt time per player and per-vault cooldown.</li>
+  <li>Item/skill verification: confirm removal of physical items or craft requirements.</li>
+</ul>
+
+<h2>QBCore / ESX / ox_lib boundaries</h2>
+<p>Design your resource with a small integration layer so that the core logic is framework-agnostic. Provide adapter functions for inventory ops, job checks, and notifications.</p>
+<ul>
+  <li>QBCore: use <code>QBCore.Functions.GetPlayer</code>, <code>player.Functions.RemoveItem</code>, and exports for logging.</li>
+  <li>ESX: use <code>xPlayer</code> methods like <code>xPlayer.removeInventoryItem</code> and server callbacks.</li>
+  <li>ox_lib: use its notification and lib callbacks; for target interactions use <code>ox_target</code> if present.</li>
+</ul>
+
+<h2>Client ↔ Server separation and qb-target</h2>
+<p>Clients only trigger an intent. Use qb-target or ox_target to start the interaction; client code should only display prompts and animations. Example target action: client triggers <code>heist:server:tryStart</code>. The server responds with confirmations or errors.</p>
+
+<h2>Example: secure server start (QBCore-style)</h2>
+<pre><code>-- server.lua (QBCore example)
+local QBCore = exports['qb-core']:GetCoreObject()
+local activeVaults = {}
+
+RegisterNetEvent('heist:server:tryStart', function(vaultId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Basic checks
+  if activeVaults[vaultId] then
+    TriggerClientEvent('heist:client:notify', src, 'Vault already in use')
+    return
+  end
+
+  -- Police count check (server-side authoritative)
+  local policeCount = 0
+  for k,v in pairs(QBCore.Functions.GetPlayers()) do
+    local p = QBCore.Functions.GetPlayer(v)
+    if p and p.PlayerData.job.name == 'police' then policeCount = policeCount + 1 end
+  end
+  if policeCount < Config.RequiredPolice then
+    TriggerClientEvent('heist:client:notify', src, 'Not enough police online')
+    return
+  end
+
+  -- Verify and remove required item
+  if not Player.Functions.RemoveItem('thermite', 1) then
+    TriggerClientEvent('heist:client:notify', src, 'You need a thermite')
+    return
+  end
+
+  -- Reserve vault and start server timer
+  activeVaults[vaultId] = {starter = src, startedAt = os.time()}
+  TriggerClientEvent('heist:client:started', -1, vaultId)
+
+  -- Example reward after completion (server-only)
+  SetTimeout(Config.HeistDuration * 1000, function()
+    if not activeVaults[vaultId] then return end
+    -- Final validation (player still connected, hasn't been arrested, etc.)
+    local starter = QBCore.Functions.GetPlayer(activeVaults[vaultId].starter)
+    if starter then
+      starter.Functions.AddMoney('cash', math.random(50000,120000))
+      exports['oxmysql']:insert('INSERT INTO heist_logs (starter, vault, reward) VALUES (?, ?, ?)', {starter.PlayerData.citizenid, vaultId, 'cash'})
+    end
+    activeVaults[vaultId] = nil
+    TriggerClientEvent('heist:client:finished', -1, vaultId)
+  end)
+end)
+</code></pre>
+
+<p>This example demonstrates server-side locking, police count verification, item consumption, delayed reward distribution, and a log insert. Replace the DB call with your chosen MySQL wrapper (oxmysql/ghmattimysql) and adapt the player APIs to ESX if needed.</p>
+
+<h2>Anti-cheat and validation strategies</h2>
+<ul>
+  <li>Never trust client-sent timers or reward events — always issue rewards from server-side timers or final validation RPCs.</li>
+  <li>Rate-limit start attempts per player and per IP; log repeated failures for moderation review.</li>
+  <li>Use server-side position checks if necessary: confirm the starter is near the vault when finishing.</li>
+  <li>Whitelist network events in your server config; avoid generic global events that can be abused.</li>
+</ul>
+
+<h2>Persistence, logging, and economics</h2>
+<p>Keep a heist_logs table with starter id, participants, timestamp, vault id, and reward. This aids rollback and moderation. Ensure reward values are balanced and server-side configurable via <code>config.lua</code>, and avoid hard-coding large sums in client files.</p>
+
+<h2>Deployment checklist</h2>
+<table>
+  <thead>
+    <tr><th>File</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>fxmanifest.lua</td><td>Resource manifest and dependency declarations (qb-core, qb-target, oxmysql)</td></tr>
+    <tr><td>config.lua</td><td>All tunables: police requirement, cooldowns, rewards</td></tr>
+    <tr><td>server.lua</td><td>Server authority logic, DB writes, validation</td></tr>
+    <tr><td>client.lua</td><td>qb-target/ox_lib interaction, animations, UI</td></tr>
+    <tr><td>sql/</td><td>Schema for heist_logs and any persistence</td></tr>
+  </tbody>
+</table>
+
+<h3>Quick installation notes</h3>
+<ul>
+  <li>Declare dependencies in fxmanifest (e.g., <code>dependency 'qb-core'</code>).</li>
+  <li>Install SQL schema and verify oxmysql/ghmattimysql connectivity.</li>
+  <li>Tune Config.RequiredPolice and Config.HeistDuration on a test server before live.</li>
+  <li>Test with staff accounts or a private server then roll to staging.</li>
+</ul>
+
+<h2>Testing and monitoring</h2>
+<p>Test heists with multiple clients, ensure cooldowns are enforced, and deliberately attempt invalid flows (missing items, insufficient police) to ensure server responses are robust. Monitor logs for rapid repeat attempts and unexpected DB errors. For team workflows, use the Stellar AI app to sketch the resource's states and file outputs, then iterate on implementation — you can start a new project at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> or open the app later when designing variants at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Further reading</h2>
+<p>For patterns and community discussions about resource structure and security, check the project writing on the Stellar AI blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>. Also consult core docs for QBCore, ESX, qb-target, and your chosen MySQL wrapper when wiring production code.</p>
+
+<h2>Practical launch checklist</h2>
+<ol>
+  <li>Run unit smoke tests on server-side checks: police count, item removal, cooldowns.</li>
+  <li>Deploy to staging; run multi-client heist stress tests with logging enabled.</li>
+  <li>Verify DB inserts and ensure no sensitive keys are in code or logs.</li>
+  <li>Review and set event whitelists; ensure only expected resources can call your server events.</li>
+  <li>Document admin commands for forced cleanup and logs retrieval.</li>
+</ol>
+
+<div><strong>Next steps</strong>: scaffold the resource with clear adapter functions for QBCore/ESX, instrument server logging, and iterate on reward balancing in a controlled staging environment. If you want a generator that produces destination-labelled files for this resource, try the Stellar AI app to speed initial scaffolding at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</div>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><h3>References</h3>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM Docs</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore on GitHub</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib on GitHub</a></li>
+</ul></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

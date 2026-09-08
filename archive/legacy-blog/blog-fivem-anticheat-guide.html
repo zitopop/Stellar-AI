@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Anticheat Guide — Server-First Strategies &amp; QBCore Examples — Stellar AI</title>
+  <meta name="description" content="A practical FiveM anticheat guide focused on server-authoritative design, QBCore-safe examples, detection, validation, logging, testing, and deployment.">
+  <meta name="keywords" content="FiveM, anticheat, QBCore, server validation, cheat prevention, game security, fxmanifest">
+  <meta property="og:title" content="FiveM Anticheat Guide — Server-First Strategies &amp; QBCore Examples">
+  <meta property="og:description" content="A practical FiveM anticheat guide focused on server-authoritative design, QBCore-safe examples, detection, validation, logging, testing, and deployment.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-anticheat-guide">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM Security</div>
+  <h1>FiveM Anticheat Guide — Server-First Strategies &amp; QBCore Examples</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide explains a server-first anticheat architecture for FiveM servers, with concrete QBCore code examples, validated workflows for banning and logging, and a practical checklist you can apply before launch.</p>
+  <h2>Why server-first anticheat matters</h2>
+<p>Cheats succeed when the server trusts the client. A robust FiveM anticheat enforces authority on the server: all sensitive decisions (money, item grants, admin actions, bans) must be validated server-side, with audit logging and human-review paths for punishments. This guide focuses on patterns you can implement quickly and iterate on safely.</p>
+
+<h2>Threat model and goals</h2>
+<p>Define what you protect: economy integrity, anti-exploit for mission flow, prevention of weapon/spawn hacks, or griefing protection. Classify threats: client-side injectors, modified events, network packet tampering, or abusive admins. Prioritise low-effort high-impact protections first: server validation for item/money grants, rate-limiting, and ban workflow with appeals.</p>
+
+<h3>Core principles</h3>
+<ul>
+  <li>Never trust the client: validate all client-sent data server-side.</li>
+  <li>Fail securely: when validation fails, log and drop the action instead of guessing.</li>
+  <li>Keep punishments reversible where practical: soft-bans and manual reviews reduce false positives.</li>
+  <li>Prefer simple, deterministic checks over complex heuristics at first.</li>
+</ul>
+
+<h2>Architecture overview</h2>
+<p>Typical layers:</p>
+<ol>
+  <li>Client: sends requests and receives authoritative state updates only.</li>
+  <li>Server core (QBCore/ESX): validates actions, updates persistent store, issues events.</li>
+  <li>Anticheat service: centralized validation+logging component that other server resources call into.</li>
+  <li>Persistent store & review UI: database for logs and an admin UI for appeals/reviews.</li>
+</ol>
+<p>By making the anticheat a callable server resource (export or server event in QBCore), you avoid duplicated logic and keep validation consistent.</p>
+
+<h2>QBCore-safe example: resource layout and simple validation</h2>
+<p>Below is a minimal resource showing server-authoritative validation for a player money grant. It follows QBCore patterns and keeps checks server-side.</p>
+<div>
+  <pre><code>&lt;-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'Secure Money Grant Example'
+version '1.0.0'
+
+shared_script 'config.lua'
+server_script 'server.lua'
+client_script 'client.lua'
+
+dependencies {
+  'qb-core'
+}
+&quot;</code></pre>
+
+  <pre><code>&lt;-- config.lua
+Config = {}
+Config.MaxGrant = 5000 -- maximum single grant without manual review
+</code></pre>
+
+  <pre><code>&lt;-- server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('example:requestGrant', function(amount)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then
+    return
+  end
+
+  -- validate type and bounds
+  amount = tonumber(amount) or 0
+  if amount <= 0 then
+    return
+  end
+
+  if amount &gt; Config.MaxGrant then
+    -- log for manual review instead of auto-granting
+    exports['anticheat_logger']:Log({player = Player.PlayerData.source, reason = 'HighGrantRequest', amount = amount})
+    TriggerClientEvent('QBCore:Notify', src, 'Grant request sent for review', 'error')
+    return
+  end
+
+  -- server-side award
+  Player.Functions.AddMoney('bank', amount, 'secure-grant')
+  TriggerClientEvent('QBCore:Notify', src, 'You received $' .. amount, 'success')
+end)
+</code></pre>
+</div>
+
+<p>Notes: never rely on client-side checks or obfuscated parameters. Always use QBCore's server functions to change player state and log actions.</p>
+
+<h2>Detection patterns and common checks</h2>
+<ul>
+  <li>Rate limiting: track server-side timestamps for high-frequency actions.</li>
+  <li>Sanity checks: numeric bounds, valid item IDs, permissions for admin-only events.</li>
+  <li>Consistency checks: compare reported state to authoritative store (weapons, money, IDs).</li>
+  <li>Behavioral baselines: flag improbable sequences (e.g., teleport then immediate bank transfer).</li>
+</ul>
+
+<h2>Logging and ban workflow</h2>
+<p>Log all flagged events with player identifiers (license, steam hex), timestamps, and evidence payloads. Use a separate admin review UI or a simple CSV export. For bans, implement stages:</p>
+<ol>
+  <li>Soft-ban (temporary) and notify for manual appeal.</li>
+  <li>If repeated or clear-cheat evidence, escalate to permanent ban with recorded evidence.</li>
+  <li>Keep appeals documented; restore state if ban was wrongful.</li>
+</ol>
+
+<h2>Performance and false-positive handling</h2>
+<p>Heavy heuristics can cause false positives and CPU load. Start with deterministic checks and low-cost rate limits. When adding machine-learning or heuristics (later), run them offline first against historic logs. Provide an opt-in debug mode for admins to see why a player was flagged without exposing all internal heuristics to players.</p>
+
+<h2>Testing, iteration, and deployment</h2>
+<p>Test locally with trusted accounts and a small public beta. Use a staging server that mirrors your production config and data shapes. Deploy anticheat changes during low-traffic windows and have a rollback plan (configuration toggles for heuristics and a quick disable switch). Monitor logs and user reports closely for the first 48–72 hours after a change.</p>
+
+<h3>Checklist: pre-launch anticheat tasks</h3>
+<table>
+  <thead>
+    <tr><th>Task</th><th>Completed</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server-side validation for money/item grants</td><td>[ ]</td><td>Use QBCore Functions.AddMoney / AddItem</td></tr>
+    <tr><td>Rate-limiter for high-frequency events</td><td>[ ]</td><td>Per-player token-bucket or timestamp checks</td></tr>
+    <tr><td>Logging to persistent store</td><td>[ ]</td><td>Include player identifiers and evidence</td></tr>
+    <tr><td>Admin review and appeal process</td><td>[ ]</td><td>Soft-ban first</td></tr>
+    <tr><td>Staging tests with simulated cheat inputs</td><td>[ ]</td><td>Replay attacker-like inputs</td></tr>
+    <tr><td>Rollback toggle in config</td><td>[ ]</td><td>Feature flag for anticheat heuristics</td></tr>
+  </tbody>
+</table>
+
+<h2>Operational tips</h2>
+<ul>
+  <li>Store evidence externally or in a database with retention policies in case of legal requests.</li>
+  <li>Rotate admin accounts and audit admin actions to prevent abuse.</li>
+  <li>Automate alerts for spikes in flagged events.</li>
+</ul>
+
+<h2>Where to go next</h2>
+<p>Start by centralizing simple validations into an anticheat resource, then iterate: add richer context-aware checks and a human-in-the-loop review for edge cases. If you want to prototype enforcement rules or generate resource files from plain-English descriptions, try the Stellar AI workspace to speed planning and file generation — use the app to sketch rules and produce destination-labelled files: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For deeper reading on FiveM server design and community approaches, review community docs and your framework's best practices, then run staged experiments. You can also integrate the app output with your staging repo to produce ready-to-install resources: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<p>For ongoing learning, see a practical roundup of related development workflows on the Stellar AI blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>Quick validations summary</h2>
+<ul>
+  <li>Always validate amounts, IDs, and permission checks on server.</li>
+  <li>Log evidence before taking irreversible actions.</li>
+  <li>Prefer soft enforcement and manual review for ambiguous cases.</li>
+</ul>
+
+<p>Follow these steps to implement a minimal, safe anticheat: centralize validation, log everything, provide a human-review path, and iterate from deterministic checks to more advanced detection. That approach keeps player trust high and reduces the chance of harmful false positives while improving the overall security posture of your FiveM server.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References & further reading</h3><ul><li><a href="https://docs.fivem.net/">FiveM documentation</a></li><li><a href="https://qbcore.org/">QBCore community resources</a></li><li><a href="https://forum.cfx.re/">Cfx.re community forum</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

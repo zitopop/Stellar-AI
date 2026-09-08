@@ -68,32 +68,276 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Set Up a Live Map for Your FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A live map shows your players on a real-time browser map. This guide covers setting up a live map for your FiveM server so players can see each other online.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to set up a live map for your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Introduction: Why a Live Map Matters</h2>
+  <p>
+    A live map improves player experience by showing real-time locations, vehicle states, and event annotations. For roleplay communities and competitive servers, a reliable map also helps admins monitor server health, reduce griefing, and coordinate staff. This guide explains architectures, secure data flow, server validation, and practical implementations for FiveM (QBCore/ESX/ox_lib) and Roblox (Luau) servers.
+  </p>
+
+  <h2>Architecture Overview: Components and Responsibilities</h2>
+  <p>
+    A live map typically has these components:
+  </p>
+  <ul>
+    <li>Game server(s): authoritative source of game state.</li>
+    <li>Map backend: receives validated updates and broadcasts to clients (WebSocket or SSE).</li>
+    <li>Frontend web client: renders tiles, markers, and interactions.</li>
+    <li>Cache/persistence layer: Redis for ephemeral state, SQL/NoSQL for history.</li>
+  </ul>
+  <p>
+    Key principle: the game server is authoritative. Never trust client input; always validate on the server before broadcasting or persisting.
+  </p>
+
+  <h2>Choosing a Real-Time Transport: WebSocket vs Polling vs SSE</h2>
+  <p>
+    Use WebSockets for low-latency updates (player position, vehicle speed). Server push minimizes bandwidth and latency. Provide a fallback polling API for clients that cannot maintain sockets. Server-Sent Events (SSE) are simpler for unidirectional streams but do not handle bidirectional control messages as well as WebSockets.
+  </p>
+  <p>
+    Consider these trade-offs:
+  </p>
+  <ul>
+    <li><strong>WebSocket</strong>: best for real-time, full-duplex communication; use authenticated, TLS-protected connections and rate-limiting.</li>
+    <li><strong>Polling</strong>: simpler to implement, higher bandwidth/latency; suitable for low-traffic or mobile clients.</li>
+    <li><strong>SSE</strong>: simpler for server->client streams; poor fit when clients must send frequent updates.</li>
+  </ul>
+
+  <h2>Security and Server Validation</h2>
+  <p>
+    Security is critical. Do not accept or display raw client-sent positions or state without server-side verification. The server must:
+  </p>
+  <ol>
+    <li>Authenticate the player token/session on every update.</li>
+    <li>Verify the player exists and is in the expected server instance.</li>
+    <li>Enforce rate limits and sanity checks (no teleportation beyond physical constraints).</li>
+    <li>Check ownership of vehicles/entities before showing sensitive data.</li>
+    <li>Use TLS for all frontend-backend and backend-backend traffic.</li>
+  </ol>
+  <p>
+    Example WebSocket message schema (JSON) to be sent from the server to map clients:
+  </p>
+  <pre><code>{
+  "type": "player_update",
+  "id": "server_player_id",
+  "pos": {"x": 123.4, "y": 456.7, "z": 78.9},
+  "heading": 180,
+  "meta": {"status":"alive","vehicle":null},
+  "ts": 1680000000000
+}</code></pre>
+
+  <h2>FiveM Implementation (QBCore / ESX / ox_lib) — Server Side</h2>
+  <p>
+    For FiveM, run validation inside the server runtime (Lua). Use exports or the framework event hooks to gather player state and push to your map backend via secure HTTP or a persistent WebSocket connection. Never rely on client-side scripts for authoritative data.
+  </p>
+  <p>
+    Common pattern:
+  </p>
+  <ol>
+    <li>Server polls authoritative state at a safe interval (e.g., 1 update/sec for position). For performance-sensitive servers, aggregate updates.</li>
+    <li>Sanitize and validate: clamp coordinates, verify player exists via source ID, confirm vehicle ownership using your database or framework exports.</li>
+    <li>Send signed JWT or mTLS-authenticated message to the map backend.</li>
+  </ol>
+  <p>Example server-side validation snippet (FiveM Lua):</p>
+  <pre><code>-- Server-side (FiveM)
+local http = require('socket.http') -- (or use PerformHttpRequest in FiveM)
+
+local function validateAndSend(source)
+  local player = QBCore.Functions.GetPlayer(source) -- or ESX.GetPlayerFromId
+  if not player then return end
+
+  local ped = GetPlayerPed(source)
+  local x, y, z = table.unpack(GetEntityCoords(ped))
+  -- Basic sanity checks
+  if math.abs(x) > 100000 or math.abs(y) > 100000 then return end
+  -- Check if server thinks the player is in a vehicle (do not trust client)
+  local vehicle = GetVehiclePedIsIn(ped, false)
+  local vehicleId = vehicle and NetworkGetNetworkIdFromEntity(vehicle) or nil
+
+  local payload = {
+    id = player.PlayerData.citizenid or player.identifier,
+    pos = {x=x, y=y, z=z},
+    vehicle = vehicleId
+  }
+  -- Sign or use server-to-server auth (example pseudocode)
+  PerformHttpRequest("https://map-backend.example/api/update", function() end, "POST", json.encode(payload), {["Authorization"]="Bearer XXXXX"})
+end</code></pre>
+  <p>
+    Use framework-specific exports (ox_lib/exports, qb-commands) and ensure only server-triggered events supply map updates.
+  </p>
+
+  <h3>QBCore / ESX Integration Notes</h3>
+  <ul>
+    <li>For QBCore, use QBCore.Functions.CreateCallback and server events to collect validated state.</li>
+    <li>For ESX, use xPlayer identifiers and server events. Validate via ESX.GetPlayerFromId.</li>
+    <li>ox_lib helpers can assist UI and utility code, but keep critical validation server-side.</li>
+  </ul>
+
+  <h2>Roblox Implementation (Luau): Authority and DataStore Handling</h2>
+  <p>
+    In Roblox, server scripts are authoritative. LocalScripts can request location updates, but the server must validate and decide what to send to external systems (like a web map).
+    </p>
+  <p>Key practices:</p>
+  <ul>
+    <li>Use RemoteEvents/RemoteFunctions only for client requests; perform validation on the server before processing.</li>
+    <li>When writing to DataStores, wrap calls in pcall and implement exponential backoff retries, local caching, and failure handling.</li>
+    <li>Never allow a client to dictate global state without server confirmation.</li>
+  </ul>
+  <p>Example server-side RemoteEvent handler and DataStore pattern (Luau):</p>
+  <pre><code>-- ServerScript
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local DataStoreService = game:GetService("DataStoreService")
+local PlayerLocations = DataStoreService:GetDataStore("PlayerLocations")
+local UpdateEvent = script:WaitForChild("UpdateEvent")
+
+local function sendToMapBackend(playerId, pos)
+  local payload = HttpService:JSONEncode({id = playerId, pos = pos, ts = tick()})
+  -- Use HttpService with an API key; ensure backend validates
+  pcall(function()
+    HttpService:PostAsync("https://map-backend.example/api/update", payload, Enum.HttpContentType.ApplicationJson)
+  end)
+end
+
+UpdateEvent.OnServerEvent:Connect(function(player, pos)
+  -- Validate types and ranges strictly server-side
+  if typeof(pos) ~= "Vector3" then return end
+  if math.abs(pos.X) > 1e5 then return end
+  -- Optionally rate-limit per-player
+  sendToMapBackend(player.UserId, {x=pos.X, y=pos.Y, z=pos.Z})
+  -- Save a lightweight cache; use DataStore for persistence with pcall retry logic
+  local success, err = pcall(function()
+    PlayerLocations:SetAsync(tostring(player.UserId), {x=pos.X, y=pos.Y, z=pos.Z, ts = tick()})
+  end)
+  if not success then
+    -- handle failures: queue retry, store in server memory, alert admins
+  end
+end)</code></pre>
+
+  <h2>Frontend Map Options and Integration</h2>
+  <p>
+    Popular mapping libraries: Leaflet (lightweight), Mapbox GL (vector tiles, high customization), and Google Maps (familiar, commercial). For game maps like GTA V, use custom tile sets or static map images and overlay a coordinate transform layer to map in-game coordinates to pixels.
+  </p>
+  <p>
+    Implementation tips:
+  </p>
+  <ul>
+    <li>Expose a secure WebSocket endpoint that sends compact position updates. Messages should be signed or authenticated by the backend.</li>
+    <li>Maintain a time-to-live (TTL) for markers to remove stale players (e.g., 30 seconds without updates).</li>
+    <li>Offer clustering and velocity smoothing on the client to avoid jitter.</li>
+  </ul>
+  <p>
+    For a visual dashboard, you can integrate a secure embed or full SPA. If you want a management interface, consider linking to tools like <a href="https://trystellarai.com/app">Stellar AI app</a> to coordinate deployments and monitoring.
+  </p>
+
+  <h2>Testing, Load, and QA</h2>
+  <p>
+    Test in stages:
+  </p>
+  <ol>
+    <li>Unit test server validation logic (sanity checks, ownership checks, rate-limits).</li>
+    <li>Integration test map backend with simulated server updates over WebSocket.</li>
+    <li>Load test: simulate many players sending updates (use gradually increasing frequency), measure CPU, Redis memory, and WebSocket connection handling.</li>
+    <li>Security test: attempt replay attacks, forged messages, and unauthorized connections to ensure your auth scheme works.</li>
+  </ol>
+  <p>
+    Use staging environments to mimic production topologies and monitor metrics before full rollout.
+  </p>
+
+  <h2>Deployment and Maintenance</h2>
+  <p>
+    Recommended operational practices:
+  </p>
+  <ul>
+    <li>Run map backend in containers behind a reverse proxy (nginx) with TLS termination.</li>
+    <li>Use mTLS or signed JWTs between game servers and map backends for server-to-server authentication.</li>
+    <li>Use Redis for ephemeral state and PostgreSQL (or similar) for persistent audit logs if needed.</li>
+    <li>Implement log aggregation and alerting for anomalies (sudden jump in updates, repeated validation failures).</li>
+  </ul>
+  <p>
+    For centralized management and observability, consider a control panel or orchestration tool and link admin tools to your workflow — you can manage deployments and monitor status through your chosen admin console such as <a href="https://trystellarai.com/app">Stellar AI app</a>.
+  </p>
+
+  <h2>Checklist: Practical Implementation Steps</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Priority</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Define authoritative data schema</td>
+        <td>High</td>
+        <td>Include id, pos, heading, ts, and entity ownership</td>
+      </tr>
+      <tr>
+        <td>Implement server-side validation</td>
+        <td>High</td>
+        <td>Clamp coordinates, verify player/entity ownership</td>
+      </tr>
+      <tr>
+        <td>Choose transport (WebSocket primary)</td>
+        <td>High</td>
+        <td>Provide polling fallback</td>
+      </tr>
+      <tr>
+        <td>Secure server-to-server auth</td>
+        <td>High</td>
+        <td>Use mTLS or signed tokens</td>
+      </tr>
+      <tr>
+        <td>Implement rate limits and TTL</td>
+        <td>Medium</td>
+        <td>Protect against spam and stale markers</td>
+      </tr>
+      <tr>
+        <td>Set up caching (Redis)</td>
+        <td>Medium</td>
+        <td>Fast ephemeral state for frontend queries</td>
+      </tr>
+      <tr>
+        <td>Load and security testing</td>
+        <td>High</td>
+        <td>Test replay, forged messages, large connections</td>
+      </tr>
+      <tr>
+        <td>Monitoring and alerting</td>
+        <td>High</td>
+        <td>Track validation failures and spike patterns</td>
+      </tr>
+      <tr>
+        <td>Document deployment steps and rollback</td>
+        <td>Medium</td>
+        <td>Keep runbooks and backups</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Maintenance and Operational Tips</h2>
+  <p>
+    Regularly review rate limits and validate thresholds as player counts change. Maintain a list of trusted server hosts and rotate keys periodically. Archive historical positional data at configurable intervals (e.g., aggregate per minute) to reduce storage while preserving useful analytics.
+  </p>
+  <p>
+    For design inspiration and community articles about map UX and server monitoring, see the project blog: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.
+  </p>
+
+  <h2>References</h2>
+  <p>
+    Official documentation and resources:
+  </p>
+  <ul>
+    <li><a href="https://docs.fivem.net">FiveM documentation</a></li>
+    <li><a href="https://docs.qbcore.org">QBCore documentation</a></li>
+    <li><a href="https://esx-framework.org">ESX framework</a></li>
+    <li><a href="https://overextended.github.io/ox_lib/">ox_lib reference</a></li>
+    <li><a href="https://developer.roblox.com/en-us/">Roblox Developer Hub</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

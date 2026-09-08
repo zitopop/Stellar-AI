@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Death &amp; Respawn System — Server-Authoritative Design (QBCore &amp; ESX) — Stellar AI</title>
+  <meta name="description" content="A practical guide to building a secure, server-authoritative death and respawn system for FiveM. Includes a clear plan, assumptions, complete example resource files, validation rules for QBCore and ESX, and a testing checklist.">
+  <meta name="keywords" content="FiveM, death system, respawn, QBCore, ESX, server-authoritative, Lua, fxmanifest, revive, ambulance, anti-cheat">
+  <meta property="og:title" content="FiveM Death &amp; Respawn System — Server-Authoritative Design (QBCore &amp; ESX)">
+  <meta property="og:description" content="A practical guide to building a secure, server-authoritative death and respawn system for FiveM. Includes a clear plan, assumptions, complete example resource files, validation rules for QBCore and ESX, and a testing checklist.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-death-respawn-system">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM Guide</div>
+  <h1>FiveM Death &amp; Respawn System — Server-Authoritative Design (QBCore &amp; ESX)</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">Implementing a robust death and respawn system requires clear separation between client detection and server authority. This guide walks you from design to complete resource files, covers QBCore and ESX validation, and gives a practical checklist for testing and security.</p>
+  <h2>Overview</h2>
+<p>A good FiveM death and respawn system keeps the server in control of critical actions (revive, respawn location, penalties) and keeps the client responsible for local presentation (ragdoll, camera). This reduces cheating risk and ensures consistent behavior across frameworks like QBCore and ESX. The example below is a compact resource that implements: death detection, server-side logging and validation, timed respawn, ambulance job revives, and a simple player-requested respawn flow.</p>
+
+<h2>Implementation plan (short)</h2>
+<ol>
+  <li>Detect player death on the client and send a single server event with location & cause.</li>
+  <li>Server records state and enforces respawn rules (timer, job-only revives, costs).</li>
+  <li>Server triggers validated revive/respawn client events.</li>
+  <li>Client handles UI and final local respawn (NetworkResurrectLocalPlayer + SetEntityHealth).</li>
+</ol>
+
+<h2>Assumptions & framework dependencies</h2>
+<ul>
+  <li>Server is authoritative: all revives/respawns are triggered by server events.</li>
+  <li>You either have QBCore (exports['qb-core']:GetCoreObject()) or ESX (esx:getSharedObject) available. The examples include conditional snippets for both.
+  <li>Do not rely on client trust for job checks, money deductions, or distance checks—perform those on server.</li>
+  <li>Client will show UI/menus but cannot execute revives directly.</li>
+</ul>
+
+<h2>Files provided (destination-labelled)</h2>
+<p>This example is a ready-to-drop resource named <strong>death_system</strong>. Place files under resources/[local]/death_system/ and add to server.cfg with <code>ensure death_system</code>.</p>
+<ul>
+  <li>fxmanifest.lua</li>
+  <li>config.lua</li>
+  <li>server.lua</li>
+  <li>client.lua</li>
+</ul>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+name 'death_system'
+description 'Server-authoritative death & respawn system'
+author 'YourName'
+version '1.0.0'
+
+shared_script 'config.lua'
+client_script 'client.lua'
+server_script 'server.lua'
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+Config.RespawnTime = 90 -- seconds until automatic respawn
+Config.ReviveDistance = 5.0 -- max distance (meters) for ambulance revive validation on server
+Config.AllowSelfRespawn = true -- allow player-requested respawn after timer
+Config.Framework = 'qb' -- set to 'qb' or 'esx'
+</code></pre>
+
+<h3>server.lua</h3>
+<pre><code>local framework = Config.Framework
+
+if framework == 'qb' then
+  QBCore = exports['qb-core']:GetCoreObject()
+else
+  ESX = nil
+  TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+end
+
+local deadPlayers = {} -- src -> {x,y,z,deathTime}
+
+RegisterNetEvent('deathsystem:playerDied', function(data)
+  local src = source
+  if not data or not data.pos then return end
+  -- basic anti-spam: only allow a death record if not already dead
+  if deadPlayers[src] then return end
+  deadPlayers[src] = {pos = data.pos, time = os.time()}
+  print(('death_system: player %d died at %.2f %.2f'):format(src, data.pos.x, data.pos.y))
+  -- notify EMS, log to database (implementers: do DB on your side)
+end)
+
+RegisterNetEvent('deathsystem:requestRevive', function(targetSrc)
+  local src = source
+  -- validate caller is ambulance
+  local jobName
+  if framework == 'qb' then
+    local xPlayer = QBCore.Functions.GetPlayer(src)
+    jobName = xPlayer and xPlayer.PlayerData.job.name
+  else
+    local xPlayer = ESX.GetPlayerFromId(src)
+    jobName = xPlayer and xPlayer.job.name
+  end
+  if jobName ~= 'ambulance' then
+    print(('death_system: %d attempted revive without job'):format(src))
+    return
+  end
+  -- validate target is recorded dead
+  if not deadPlayers[targetSrc] then return end
+  -- distance check
+  local medicCoords = GetEntityCoords(GetPlayerPed(src))
+  local targetCoords = deadPlayers[targetSrc].pos
+  local dist = #(vector3(medicCoords.x, medicCoords.y, medicCoords.z) - vector3(targetCoords.x, targetCoords.y, targetCoords.z))
+  if dist > Config.ReviveDistance then return end
+  -- all good: server triggers client revive
+  TriggerClientEvent('deathsystem:reviveClient', targetSrc)
+  deadPlayers[targetSrc] = nil
+end)
+
+-- automatic respawn after timer (server-side tick)
+CreateThread(function()
+  while true do
+    local now = os.time()
+    for src, info in pairs(deadPlayers) do
+      if now - info.time >= Config.RespawnTime then
+        TriggerClientEvent('deathsystem:forceRespawn', src, info.pos)
+        deadPlayers[src] = nil
+      end
+    end
+    Wait(5000)
+  end
+end)
+</code></pre>
+
+<h3>client.lua</h3>
+<pre><code>local isDead = false
+
+-- simple death detection loop
+CreateThread(function()
+  while true do
+    Wait(1000)
+    local ped = PlayerPedId()
+    if DoesEntityExist(ped) then
+      if IsEntityDead(ped) and not isDead then
+        isDead = true
+        local pos = GetEntityCoords(ped)
+        TriggerServerEvent('deathsystem:playerDied', {pos = {x = pos.x, y = pos.y, z = pos.z}})
+        -- show local UI, ragdoll etc.
+      elseif not IsEntityDead(ped) and isDead then
+        isDead = false
+      end
+    end
+  end
+end)
+
+RegisterNetEvent('deathsystem:reviveClient', function()
+  local ped = PlayerPedId()
+  local pos = GetEntityCoords(ped)
+  NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped) or 0.0, true, false)
+  SetEntityHealth(ped, 200)
+  ClearPedTasksImmediately(ped)
+end)
+
+RegisterNetEvent('deathsystem:forceRespawn', function(spawnPos)
+  -- server-authoritative forced respawn; choose spawnPos or hospital spawn
+  local ped = PlayerPedId()
+  NetworkResurrectLocalPlayer(spawnPos.x, spawnPos.y, spawnPos.z, 0.0, true, false)
+  SetEntityHealth(ped, 200)
+  ClearPedTasksImmediately(ped)
+end)
+</code></pre>
+
+<h2>Server authority & security considerations</h2>
+<p>Always validate the following on the server:</p>
+<ul>
+  <li>Caller job and permissions (use QBCore.Functions.GetPlayer / ESX.GetPlayerFromId). Do not trust data sent by the client about job names or money.</li>
+  <li>Proximity when medic revives a target—check server-side positions or compare timestamps and locations recorded during death.</li>
+  <li>Rate-limit death events to prevent spam or griefing logs.</li>
+  <li>Log suspicious activity (multiple revive attempts, invalid job calls) for review.</li>
+</ul>
+
+<h2>Integration tips for QBCore and ESX</h2>
+<p>When integrating with in-server economy or missions:</p>
+<ul>
+  <li>Charge a respawn fee server-side and deduct from player money (QBCore.Functions.RemoveMoney or xPlayer.removeMoney).</li>
+  <li>Trigger ambulance job notifications via exports or server events (for qb-phone or esx_phone integrations).</li>
+  <li>Use server persistence to mark player as injured to prevent weapon use until revived.</li>
+</ul>
+
+<h2>UI & UX suggestions</h2>
+<p>Keep client UI local: a death timer, 'Request Respawn' button and 'Awaiting Medic' status are all client-side displays. When the player requests a respawn or cancels, send a single event to the server and wait for server confirmation. Avoid having client perform NetworkResurrectLocalPlayer without server permission.</p>
+
+<h2>Practical checklist (table)</h2>
+<table>
+  <thead>
+    <tr><th>Item</th><th>What to check</th><th>Done</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server authority</td><td>All respawn/revive commands originate from server</td><td></td></tr>
+    <tr><td>Job validation</td><td>Medics verified via QBCore/ESX on server</td><td></td></tr>
+    <tr><td>Distance checks</td><td>Server enforces <em>Config.ReviveDistance</em></td><td></td></tr>
+    <tr><td>Anti-spam</td><td>Prevent multiple death reports per player</td><td></td></tr>
+    <tr><td>UI</td><td>Client shows timer, request button; no direct revive calls</td><td></td></tr>
+    <tr><td>Testing</td><td>Test medic revive, auto-respawn, and invalid revive attempts</td><td></td></tr>
+  </tbody>
+</table>
+
+<h2>Testing & validation steps</h2>
+<ol>
+  <li>Start server with the resource ensured. Confirm console logs print death events.</li>
+  <li>Die in-game and confirm your client sends a single death report. Check server side deadPlayers entry.</li>
+  <li>As ambulance, attempt revive within and outside <strong>Config.ReviveDistance</strong>; ensure server accepts only valid ones.</li>
+  <li>Try to call revive as non-ambulance and confirm server ignores it.</li>
+  <li>Wait for auto-respawn timer and confirm <code>forceRespawn</code> fires and client respawns.</li>
+</ol>
+
+<h2>Next steps & scaling</h2>
+<p>Consider adding:</p>
+<ul>
+  <li>Downed state with bleed-out and player-controlled crawler mode.</li>
+  <li>Integration with revive items and animations (server validates item presence).</li>
+  <li>Persistent death logs in your DB and staff notifications.</li>
+</ul>
+<p>If you'd like to prototype alternative flows or generate scaffolded files quickly, try Stellar AI's scripting workspace at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> for templated resource generation. If you want to iterate on UX and server rules with AI-assisted planning, the same tool can speed design and produce destination-labelled files: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Wrap-up</h2>
+<p>This guide showed a minimal, server-authoritative death and respawn system with clear boundaries: client detects and displays, server validates and commands. Follow the checklist, test the edge cases, and extend the resource with job notifications, costs, or downed mechanics as needed. For design dive-ins and iterative file generation, read more on the dev blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References</h3>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM Native & Docs</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+  <li><a href="https://github.com/esx-framework/es_extended">ESX (es_extended) GitHub</a></li>
+</ul>
+</div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

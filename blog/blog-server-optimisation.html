@@ -68,37 +68,185 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Optimise Your FiveM Server Performance</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A laggy server loses players fast. This guide covers the most effective ways to optimise your FiveM server — from resource management to network settings.</p>
 
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
+<p class="intro">A practical guide to how to optimise your fivem server performance, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h2>Overview</h2>
+<p>This guide explains practical, technical steps to optimise server performance for multiplayer game backends: primarily FiveM (Cfx.re) servers using QBCore, ESX, ox_lib, and complementary guidance for Roblox using Luau. It focuses on architecture, security and server-side validation, implementation choices, testing and profiling, and deployment/maintenance. Apply these patterns to reduce CPU and memory pressure, eliminate obvious bottlenecks, and keep your server responsive under load.</p>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
+<h2>Architecture and Resource Layout</h2>
+<p>Start with a clear, modular architecture. Treat each server process and resource as a unit of responsibility: game state, persistence, networking, and third-party integrations. For FiveM, run a dedicated fxserver instance per game mode and keep heavy third-party scripts isolated. For Roblox, split responsibilities into server scripts (ServerScriptService), remote interfaces (RemoteEvents/RemoteFunctions), and module scripts (ModuleScript) for reuse.</p>
+<p>Key architectural patterns:</p>
+<ul>
+  <li>Minimal main loop: avoid long-running tasks on every tick. Use event-driven callbacks and timed tasks with sensible intervals.</li>
+  <li>Separation of concerns: separate persistence (database/DataStore), simulation, and client communication into different threads or processes where possible.</li>
+  <li>Stateless servers where applicable: keep session-specific ephemeral data in memory but push authoritative state to a persistent store only when necessary.</li>
+</ul>
 
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
+<h2>Code and Resource Optimisations</h2>
+<p>Efficient code reduces CPU and memory usage. For FiveM, optimize Lua/C# scripts and limit the use of resource-heavy natives. For Roblox, optimize Luau by avoiding unnecessary allocations inside loops and by using pooled objects for frequently spawned instances.</p>
+<ul>
+  <li>Reduce tick frequency: only run expensive logic where necessary. Example: run AI or NPC pathfinding less often than client frame rate.</li>
+  <li>Batch operations: group DB writes or network updates to reduce round trips and context switching.</li>
+  <li>Use caching with expiration for frequently-read, rarely-updated data. Ensure cache invalidation is explicit.</li>
+  <li>Avoid expensive iterations: prefer indexed lookups over iterating entire player lists when searching.</li>
+</ul>
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+<h3>FiveM specifics</h3>
+<p>For FiveM resources, follow these practices:</p>
+<ul>
+  <li>Limit the number of entities streamed to clients with appropriate distance/event triggers.</li>
+  <li>Use server-side object pooling for vehicles and ped creation/destruction to reduce garbage collection churn.</li>
+  <li>Prefer asynchronous database queries and job queuing to avoid blocking the main server thread.</li>
+</ul>
+
+<h3>Roblox specifics</h3>
+<p>On Roblox use server authority patterns: validations and authoritative calculations must run on the server. Use RemoteEvents to receive client requests but never trust the payload. Use RemoteEvents for one-way notifications and RemoteFunctions sparingly and with strict validation. Cache DataStore values locally and apply write coalescing to reduce request volume.</p>
+
+<h2>Security and Server-Side Validation</h2>
+<p>Security and correctness are core to performance: invalid client input or unchecked operations can cause excessive processing and degradation. Never trust client input—treat every incoming value as potentially malicious. Validate types, ranges, permissions, and rate-limit client-initiated actions.</p>
+<h3>Validation patterns</h3>
+<ol>
+  <li>Authenticate and authorize: ensure the client is permitted to perform the action before executing heavy logic.</li>
+  <li>Schema validation: enforce expected payload shapes and types on the server.</li>
+  <li>Rate-limiting and throttling: implement per-player and per-resource rate limits to prevent floods.</li>
+  <li>Canonical state checks: verify any client-supplied delta against server canonical state before applying it.</li>
+</ol>
+<p>Example server-side validation pseudocode (FiveM / Luau concept):</p>
+<pre><code>-- Validate and apply position update (server side only)
+if type(pos) ~= "table" or not pos.x or not pos.y or not pos.z then
+  return -- invalid payload
+end
+if not player:hasPermission("move") then
+  return -- unauthorized
+end
+if math.abs(pos.x - serverState[player].x) > MAX_MOVE_DISTANCE then
+  logPotentialCheat(player)
+  return
+end
+applyPosition(player, pos)</code></pre>
+
+<h2>Implementation Choices: Frameworks and Libraries</h2>
+<p>Select frameworks that match your scale and team expertise. QBCore and ESX offer differing philosophies—QBCore emphasizes modularity and performance, ESX is feature-rich but may require pruning. ox_lib supplies performant UI and utilities; evaluate its components and include only what you need.</p>
+<ul>
+  <li>Use lightweight core frameworks and selectively include community packages.</li>
+  <li>Audit third-party resources for synchronous DB calls or frequent cross-resource events that can block the main loop.</li>
+  <li>For Roblox, prefer built-in services (MessagingService, DataStoreService) and minimize heavy use of remote scripting patterns that force too much server work.</li>
+</ul>
+
+<h2>Testing and Profiling</h2>
+<p>Testing under realistic load is essential. Use profiling tools and targeted stress tests to find bottlenecks. For FiveM, instrument resource CPU usage and tick times; for Roblox, use MicroProfiler and Developer Console to measure memory and script durations.</p>
+<p>Create reproducible scenarios that mimic peak concurrent players, heavy DB access, and common edge cases (e.g., sudden spike in interactions). Integrate automated tests for logic paths and simulate malicious clients attempting to bypass validation.</p>
+<p>Use the Stellar AI tools when planning and tracking optimisations: signpost monitoring tasks and deployment goals via <a href="https://trystellarai.com/app">Stellar AI app</a>. For documentation-driven testing and team collaboration, export test plans and issues to the same tool to centralise tracking (<a href="https://trystellarai.com/app">Stellar AI app</a>).</p>
+<p>For a deeper read about iterative testing and community advice, see the engineering blog linked here: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.</p>
+
+<h2>Deployment and Maintenance</h2>
+<p>Deploy with observability and rollback mechanisms in place. Rolling restarts, blue/green deployments, and feature flags help you measure changes without impacting the entire player base.</p>
+<ul>
+  <li>Monitor key signals: tick time, resource CPU%, memory use, DB latency, and error rate.</li>
+  <li>Instrument logging for suspicious behavior and throttles for noisy features.</li>
+  <li>Automate deployment pipelines and include smoke tests that run post-deploy to validate core flows.</li>
+</ul>
+<p>Maintenance practices:</p>
+<ul>
+  <li>Regularly prune unused resources and event listeners to reduce memory leaks.</li>
+  <li>Apply security updates to OS and server runtimes; lock down ports and use firewalls.</li>
+  <li>Back up persistent data regularly and verify restore procedures.</li>
+</ul>
+
+<h2>Practical Checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Priority</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Audit resources and remove unused scripts</td>
+      <td>High</td>
+      <td>Look for synchronous DB calls and heavy event loops</td>
+    </tr>
+    <tr>
+      <td>Implement server-side validation for all remote inputs</td>
+      <td>High</td>
+      <td>Never trust client input; validate type, range, permissions</td>
+    </tr>
+    <tr>
+      <td>Batch writes to DB / DataStore and use retry with backoff</td>
+      <td>High</td>
+      <td>Reduce request volume and handle transient failures</td>
+    </tr>
+    <tr>
+      <td>Profile under load and instrument metrics</td>
+      <td>Medium</td>
+      <td>Measure tick time, CPU, memory, and error rates</td>
+    </tr>
+    <tr>
+      <td>Implement per-player rate limits</td>
+      <td>Medium</td>
+      <td>Protect against floods and abusive clients</td>
+    </tr>
+    <tr>
+      <td>Plan deployment with canaries and rollback</td>
+      <td>Medium</td>
+      <td>Use staged releases and automated smoke tests</td>
+    </tr>
+    <tr>
+      <td>Set up backups and disaster recovery tests</td>
+      <td>Low</td>
+      <td>Regularly verify restores, including partial state</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Testing Examples and Code Snippets</h2>
+<p>Example: robust DataStore save pattern in Luau (Roblox): always wrap DataStore calls and implement retries and exponential backoff.</p>
+<pre><code>local function safeSave(dataStore, key, value)
+  local attempts = 0
+  local waitTime = 1
+  while attempts < 5 do
+    local success, err = pcall(function()
+      dataStore:SetAsync(key, value)
+    end)
+    if success then
+      return true
+    end
+    attempts = attempts + 1
+    wait(waitTime)
+    waitTime = math.min(waitTime * 2, 30)
+  end
+  return false
+end</code></pre>
+<p>Example: server-side event handling in FiveM (Lua) with validation:</p>
+<pre><code>RegisterNetEvent("inventory:useItem")
+AddEventHandler("inventory:useItem", function(itemId, metadata)
+  local src = source
+  local user = getPlayer(src)
+  if not user then return end
+  if type(itemId) ~= "string" then return end
+  if not user:hasItem(itemId) then
+    return -- player lied about having the item
+  end
+  -- perform server-side consumption and effects
+  user:removeItem(itemId)
+  TriggerClientEvent("inventory:itemUsed", src, itemId)
+end)</code></pre>
+
+<h2>Maintenance: Logs, Alerts, and Runbooks</h2>
+<p>Maintain clear runbooks for common incidents: DB failures, memory leaks, player storms. Configure alerts on thresholds and document escalation paths. Use structured logs and tag them by player ID, resource, and request type to speed debugging. Periodically review logs to find slow queries and hotspots.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM / Cfx.re Documentation</a></li>
+  <li><a href="https://docs.qbcore.org/">QBCore Documentation</a></li>
+  <li><a href="https://oxlib.dev/">ox_lib Documentation</a></li>
+  <li><a href="https://create.roblox.com/docs">Roblox Creator Documentation (DevHub)</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store">Roblox DataStores (official)</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

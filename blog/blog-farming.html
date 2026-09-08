@@ -68,32 +68,265 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Farming Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A farming job is a popular legal activity on FiveM servers. This guide covers setting up crop growing, harvesting and selling on QBCore.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add a farming job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview</h2>
+  <p>
+    This guide walks through adding a robust, secure farming job to a QBCore-based FiveM server. It covers architecture, data flow, security and server-side validation, implementation choices (QBCore, ox_lib, oxmysql), testing, and deployment/maintenance. The goal is a production-ready job that resists client-side tampering, scales to multiple players, and integrates cleanly with your economy and item systems.
+  </p>
+
+  <h2>High-level architecture</h2>
+  <p>
+    A farming job is a coordinated set of server and client responsibilities:
+  </p>
+  <ul>
+    <li>Client: UI, targeting zones, visual feedback (animations, progress bars). Never trust client assertions about success, quantities, or positions.</li>
+    <li>Server: authoritative validation, inventory and money transactions, cooldowns and anti-duplication, requests to persistent storage (SQL or datastore).</li>
+    <li>Database: item definitions, farmable locations, job progress if persistent across sessions.</li>
+  </ul>
+  <p>
+    Typical tools and libraries: QBCore for player and job frameworks, ox_lib for UI/menus/notifications, and oxmysql (or ghmattimysql) for SQL persistence. Keep the authoritative logic on the server and treat clients as untrusted renderers and input forwarders.
+  </p>
+
+  <h2>Job flow and state machine</h2>
+  <p>
+    A concise state machine reduces edge cases. Example states for a single farm interaction:
+  </p>
+  <ol>
+    <li>Player approaches a field / zone (client shows prompt).</li>
+    <li>Player initiates action (client sends server event request to start harvesting).</li>
+    <li>Server validates player: proximity to the defined zone, job permissions (if job-limited), cooldowns, and inventory space.</li>
+    <li>If valid, server reserves the farm node, returns a token/acknowledgement to the client, and optionally triggers client progress animation.</li>
+    <li>Client shows progress; on completion it notifies server to claim reward. Server re-validates server-side timer and reservation, then awards items/money and updates DB.</li>
+    <li>Server releases node reservation and records cooldowns or state to prevent farming duplication.</li>
+  </ol>
+
+  <h2>Server-side implementation (QBCore patterns)</h2>
+  <p>
+    Keep all critical state and rewards on the server. Use QBCore.Functions.GetPlayer to access a player's inventory and money APIs. Use server events and callbacks only as a request mechanism—the server must re-check everything before mutating state.
+  </p>
+  <p>Example server-side pseudo-code (QBCore v2+ patterns):</p>
+  <pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local reservedNodes = {} -- track active reservations by nodeId
+
+QBCore.Functions.CreateCallback('farm:server:canStart', function(source, cb, nodeId)
+    local src = source
+    local player = QBCore.Functions.GetPlayer(src)
+    if not player then return cb(false, "Player not found") end
+
+    -- Validate node exists, is not reserved, and player is near node (server geometry check)
+    local node = MyFarmNodes[nodeId]
+    if not node or reservedNodes[nodeId] then
+        return cb(false, "Node unavailable")
+    end
+
+    -- Optionally check player's job, inventory space, cooldowns
+    if player.PlayerData.job.name == 'police' then
+        return cb(false, "Not allowed for police")
+    end
+
+    -- Reserve node and return success
+    reservedNodes[nodeId] = {by = src, ts = os.time()}
+    return cb(true)
+end)
+
+RegisterNetEvent('farm:server:complete', function(nodeId)
+    local src = source
+    local player = QBCore.Functions.GetPlayer(src)
+    if not player then return end
+
+    local reservation = reservedNodes[nodeId]
+    if not reservation or reservation.by ~= src then
+        return TriggerClientEvent('QBCore:Notify', src, "Invalid completion", "error")
+    end
+
+    -- Award items server-side
+    player.Functions.AddItem('potato', 3)
+    -- Optionally add money
+    player.Functions.AddMoney('bank', 25)
+
+    -- Release reservation and log
+    reservedNodes[nodeId] = nil
+end)</code></pre>
+
+  <h3>Notes on server geometry validation</h3>
+  <p>
+    Do not trust client-reported coordinates without rechecking. For low-latency, compare distances between the player's last-known server position (from a recent authenticated heartbeat) and the node coordinates. If you need precise checks, use server-side raycasts or validate timestamps to avoid replayed completions.
+  </p>
+
+  <h2>Database design and items</h2>
+  <p>
+    Store farm node definitions (coords, type, respawn time) in a persistent table. For farm progress that must persist across reconnections (like long grow times), persist node states with timestamps.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Table / Key</th>
+        <th>Purpose</th>
+        <th>Fields / Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>farm_nodes</td>
+        <td>Static node definitions</td>
+        <td>id, x, y, z, type, respawn_seconds</td>
+      </tr>
+      <tr>
+        <td>farm_state</td>
+        <td>Dynamic node state</td>
+        <td>node_id, status (available/reserved/growing), reserved_by, reserved_until</td>
+      </tr>
+      <tr>
+        <td>player_items</td>
+        <td>Handled by QBCore inventory</td>
+        <td>Use Player.Functions.AddItem / RemoveItem</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Use transactions or atomic SQL updates to prevent race conditions when multiple players try to harvest the same node simultaneously. With oxmysql, prefer parameterized queries and check affectedRows to ensure updates happened.
+  </p>
+
+  <h2>Client-side: UI and safe communication</h2>
+  <p>
+    The client should only display prompts and send requests. Example pattern:
+  </p>
+  <ol>
+    <li>Client detects proximity to farm zone and shows an interaction prompt (qb-target / qtarget / ox_target).</li>
+    <li>When player presses interact, client calls a server callback (QBCore.Functions.TriggerCallback) to ask for permission.</li>
+    <li>If server grants permission, client runs animations and shows progress. When progress completes, client triggers a server event to finalize.</li>
+    <li>If progress is interrupted (player moved or died), client notifies server to cancel; server should verify and free reservations.</li>
+  </ol>
+  <pre><code>-- client example
+QBCore.Functions.TriggerCallback('farm:server:canStart', function(allowed)
+    if allowed then
+        -- play animation, show progress bar
+        TriggerServerEvent('farm:server:complete', nodeId)
+    else
+        QBCore.Functions.Notify('Cannot start farming', 'error')
+    end
+end, nodeId)</code></pre>
+  <p>
+    Never let the client directly add items or write to server storage. All adds/removes must happen in server-side code.
+  </p>
+
+  <h2>Security, validation, and anti-exploit strategies</h2>
+  <p>
+    Key rules to enforce:
+  </p>
+  <ul>
+    <li><strong>Server is authoritative:</strong> All inventory and money mutations occur on the server.</li>
+    <li><strong>Validate proximity & timing:</strong> Re-check the player's position and the node state on every sensitive request.</li>
+    <li><strong>Reserve nodes:</strong> Use server-side reservations with expirations to avoid duplicate claims.</li>
+    <li><strong>Cooldowns & rate-limits:</strong> Enforce per-player cooldowns and global limits for farm yields to prevent automated farming.</li>
+    <li><strong>Anti-duplication checks:</strong> Verify that awarding items is based on server-confirmed events and check inventory deltas when feasible.</li>
+    <li><strong>Log suspicious behavior:</strong> Store server-side logs for failed validations and repeated rapid requests for later review.</li>
+  </ul>
+  <p>
+    Consider integrating your server logs with an external monitoring service or alerting system to notify you of spikes or unusual patterns.
+  </p>
+
+  <h2>Testing and debugging</h2>
+  <p>
+    Test the job in stages:
+  </p>
+  <ol>
+    <li>Unit test server callbacks with simulated sources to validate logic without client overhead.</li>
+    <li>Local multiplayer tests (multiple clients) to attempt race conditions on the same node.</li>
+    <li>Edge-case tests: disconnects during active harvest, server restart during a reserved node, and inventory full cases.</li>
+    <li>Stress tests on production-like hardware to observe database contention and lock behavior.</li>
+  </ol>
+  <p>
+    Useful debug tools and patterns:
+  </p>
+  <ul>
+    <li>Verbose server logs guarded by a debug flag.</li>
+    <li>Temporary testing endpoints that simulate nodes and responses.</li>
+    <li>Database query logging for slow queries and failed updates.</li>
+  </ul>
+
+  <h2>Deployment and maintenance</h2>
+  <p>
+    Deploy with migrations for database changes. Use semantic versioning for your job resource and keep migration scripts with the resource. Back up the farm_state table before schema upgrades. Monitor server CPU and DB connections for contention during peak hours.
+  </p>
+  <p>
+    If you want to prototype or visualize your job flow with a third-party tool, check out this resource hub: <a href="https://trystellarai.com/app">Stellar AI App</a>. For production task and resource management workflows, consider the same tool to track changes: <a href="https://trystellarai.com/app">Stellar AI App</a>.
+  </p>
+
+  <h2>Roblox considerations (if porting concepts or building a Roblox equivalent)</h2>
+  <p>
+    If you also build a farming activity in Roblox, preserve similar server-authority principles. Use RemoteEvents only as input channels from client to server. Always validate player positions and inventory on the server. For persistence, use DataStore with robust pcall handling and retries. Example patterns:
+  </p>
+  <ul>
+    <li>Wrap DataStore calls in pcall and implement exponential backoff for transient failures.</li>
+    <li>Use server-side reservations for nodes, stored in Memory or a persistent DataStore for long grow cycles.</li>
+    <li>Never trust client-reported completion; the server should compute eligibility from its own state and timestamps.</li>
+  </ul>
+
+  <h2>Practical checklist</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Files / Config</th>
+        <th>Validation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Create farm node table</td>
+        <td>sql/farm_nodes.sql</td>
+        <td>Run migration, verify SELECT returns nodes</td>
+      </tr>
+      <tr>
+        <td>Implement server callbacks</td>
+        <td>server/farm_server.lua</td>
+        <td>unit tests for race conditions and reserve logic</td>
+      </tr>
+      <tr>
+        <td>Client prompt and progress</td>
+        <td>client/farm_client.lua</td>
+        <td>Simulate interruptions and verify server cancels</td>
+      </tr>
+      <tr>
+        <td>Inventory and reward handling</td>
+        <td>server/rewards.lua</td>
+        <td>Confirm items added only via server path</td>
+      </tr>
+      <tr>
+        <td>Monitoring and logs</td>
+        <td>server/logging.lua</td>
+        <td>Trigger alerts on suspicious request rates</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Maintenance tips</h2>
+  <ul>
+    <li>Automate DB backups and schema migrations as part of CI/CD.</li>
+    <li>Rotate and archive old farm_state rows to keep performance optimal.</li>
+    <li>Version your job resource and keep change logs so admins can rollback if needed.</li>
+    <li>Run scheduled integrity checks to find orphaned reservations and clear them automatically after expiration.</li>
+  </ul>
+
+  <h2>Further reading</h2>
+  <p>
+    For development workflow and community articles, see the related writeups and tutorials on the official blog: <a href="https://trystellarai.com/blog">Stellar AI Blog</a>.
+  </p>
+
+  <h2>References</h2>
+  <ul>
+    <li><a href="https://docs.fivem.net/">FiveM official docs</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib (UI & utilities)</a></li>
+    <li><a href="https://github.com/overextended/oxmysql">oxmysql</a></li>
+    <li><a href="https://developer.roblox.com/en-us/">Roblox Developer Hub</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

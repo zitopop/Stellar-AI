@@ -68,37 +68,205 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How the QBCore Job System Works — Complete Guide</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Understanding the QBCore job system is essential for any server owner. This guide covers how jobs work, how to add new ones, set grades and configure pay.</p>
 
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
+<p class="intro">A practical guide to how the qbcore job system works — complete guide, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h2>Overview</h2>
+<p>This guide explains how a QBCore job system works in a FiveM server, covering architecture, implementation choices, security and server validation, testing, and maintenance. It also highlights differences and important considerations for Roblox implementations (Luau) where relevant. The goal is practical: show patterns you can copy, validate, and maintain safely.</p>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
+<h2>Core architecture of a QBCore job system</h2>
+<p>A robust job system separates responsibilities across layers. Typical components include:</p>
+<ul>
+  <li><strong>Job definitions</strong> (shared data): names, grades, permissions, pay scales, and available tasks.</li>
+  <li><strong>Server-side authority</strong>: job assignment, payout calculation, inventory changes, and database persistence.</li>
+  <li><strong>Client-side UI</strong>: markers, menus, task progression visuals — strictly presentation only.</li>
+  <li><strong>Persistence layer</strong>: MySQL or an ORM, with transactions for critical changes and backups for job-related payouts.</li>
+  <li><strong>Integration layer</strong>: optional exports to ox_lib, ESX compatibility shims, and admin tools.</li>
+</ul>
+<p>Design principle: the server is authoritative. Never assume a client honestly reports job progress, money, or inventory changes.</p>
 
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
+<h2>QBCore components and job definitions</h2>
+<p>In QBCore, define jobs in a shared config file so both client and server can reference the same structure. Keep sensitive values (pay formula, limits) on the server only. Example definition elements:</p>
+<ul>
+  <li>job name (string)</li>
+  <li>grades (array: permissions, salary multiplier)</li>
+  <li>actions (table: task identifiers mapped to server-side handlers)</li>
+  <li>locations (coords used by clients for UI only)</li>
+</ul>
+<pre><code>-- shared/jobs.lua (example)
+Jobs = {
+  garbage = {
+    label = "Garbage Collector",
+    grades = { ['0'] = {pay = 50}, ['1'] = {pay = 75} },
+    tasks = { "collect_bin", "deliver_trash" },
+    locations = { start = vector3(10.0, 6500.0, 31.0) }
+  },
+  -- other jobs
+}
+</code></pre>
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+<h2>Server-side validation & security</h2>
+<p>Security is the most important part of a job system. Treat any client-sent event as untrusted input. The server must validate:</p>
+<ul>
+  <li>Player identity and job name using QBCore.Functions.GetPlayer(source)</li>
+  <li>That the player's job grade permits the requested action</li>
+  <li>No modification of payout values from the client — compute payouts server-side</li>
+  <li>Rate-limit high-value events and use anti-spam logic</li>
+  <li>Use prepared statements / parameterized queries for DB writes</li>
+</ul>
+<p>Example server pattern (QBCore):</p>
+<pre><code>-- server/main.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('qb-jobs:server:completeTask', function(taskId)
+  local src = source
+  if not src then return end
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  local jobName = Player.PlayerData.job.name
+  -- validate job and task ownership on server
+  if jobName ~= 'garbage' then return end
+
+  -- map taskId to server-side reward & checks
+  local task = Jobs.garbage.tasks[taskId]
+  if not task then return end
+
+  local reward = CalculateServerReward(jobName, Player.PlayerData.job.grade.level, taskId)
+  if reward <= 0 then return end
+
+  -- apply money server-side and persist transaction
+  Player.Functions.AddMoney('cash', reward, "job-complete-" .. taskId)
+end)</code></pre>
+
+<p>Key points: perform all payout calculation and permission checks on the server. Log suspicious behavior and disconnect or flag for review instead of rewarding unexpected values.</p>
+
+<h2>Client-side behavior and UI</h2>
+<p>Client scripts should be thin: spawn markers, play animations, and send minimal events to the server indicating attempts or confirmations. Never send reward values, and avoid sending unobfuscated task progress that could be modified. When a client submits "task complete", the server should verify all aspects before any state change.</p>
+<p>Use client-side movement checks and simple visual validation for UX, but do not treat these as authoritative.</p>
+
+<h2>Integration choices: ox_lib, ESX, and interoperability</h2>
+<p>When integrating with ox_lib or providing an ESX compatibility layer, keep the QBCore server logic central and expose safe exports only. For example:</p>
+<ul>
+  <li>Provide an export for reading job definitions (read-only)</li>
+  <li>Expose server callbacks for admin tools that require permission checks</li>
+  <li>Avoid exposing any function that directly mints currency on the client request — require server callbacks that perform permission checks</li>
+</ul>
+<p>If you must support ESX players, translate data at the server boundary and maintain one canonical job state; do not duplicate logic across frameworks.</p>
+
+<h2>Implementation choices: database, permissions, grades</h2>
+<p>Decisions you will need to make:</p>
+<ul>
+  <li><strong>DB schema:</strong> store PlayerData.job.name and grade, job logs, and payout history. Use transactions when modifying both balance and job progress.</li>
+  <li><strong>Grades & permissions:</strong> implement a simple RBAC model — grades map to permission flags. Do not assume numeric grade implies permissions; check flags by name.</li>
+  <li><strong>Task definitions:</strong> identify tasks by server-side IDs rather than client names; allow server to change task parameters without client updates.</li>
+</ul>
+<p>Maintain migrations for job schema changes to ensure upgrades don't break running servers.</p>
+
+<h2>Testing, debugging, and anti-cheat testing</h2>
+<p>Testing should include automated unit tests for server-side logic and manual scenario tests for client/server interactions.</p>
+<ul>
+  <li>Simulate malicious clients by sending invalid events and verify the server rejects them.</li>
+  <li>Unit test payout calculations and DB transactions.</li>
+  <li>Use sandbox environments to test migrations and new job definitions before deploying to production.</li>
+</ul>
+<p>Log minimal, structured information on failures (error codes, player id, event name) and aggregate logs for pattern detection. If you use an external monitoring dashboard consider low-latency hooks; for example, a development tool or a hosted app can help visualize job activity — try the app here: <a href="https://trystellarai.com/app">Stellar AI App</a>.</p>
+
+<h2>Roblox considerations: RemoteEvents and DataStore robustness</h2>
+<p>When porting job concepts to Roblox:</p>
+<ul>
+  <li>RemoteEvents are the only acceptable client→server path. The first parameter for OnServerEvent is always the player — use it to validate identity.</li>
+  <li>Never accept client-calculated rewards. Calculate on the server and then use RemoteEvent:FireClient to confirm.</li>
+  <li>DataStore failures are common; wrap writes in pcall, implement exponential backoff, batched writes, and queuing for critical transactions. Avoid losing money changes on failure by keeping an in-memory queue with write retries.</li>
+  <li>Rate-limit RemoteEvents per player and monitor for abnormal frequency.</li>
+</ul>
+<pre><code>-- Roblox server-side pattern (Luau)
+local Remote = game.ReplicatedStorage:WaitForChild("CompleteTask")
+Remote.OnServerEvent:Connect(function(player, taskId)
+  local playerJob = GetPlayerJob(player) -- server-side
+  if playerJob ~= "Delivery" then return end
+  local reward = CalculateRewardForTask(taskId, playerJob)
+  -- persist with DataStore, wrapped in pcall
+  local success, err = pcall(function()
+    -- DataStoreSet implementation
+  end)
+  if not success then
+    -- queue retry or inform player via RemoteEvent
+  else
+    GivePlayerMoney(player, reward)
+  end
+end)</code></pre>
+
+<h2>Deployment and maintenance</h2>
+<p>Deployment checklist:</p>
+<ul>
+  <li>Use a CI pipeline to deploy server scripts and DB migrations.</li>
+  <li>Keep configuration values for pay scales and limits in a versioned config file.</li>
+  <li>Have a rollback plan: a migration that reverts job schema changes quickly.</li>
+  <li>Monitor error logs, suspicious behavior alerts, and latency for DB writes.</li>
+</ul>
+<p>For centralized dashboards and operational workflows, you can integrate server logs or metrics into an external service. If you need a hosted monitoring and deployment assistant, the following app can be useful: <a href="https://trystellarai.com/app">Stellar AI App</a>. For editorial updates and deeper articles on server architecture, see: <a href="https://trystellarai.com/blog">Stellar AI Blog</a>.</p>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Why it matters</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Server-side job validation</td>
+      <td>Prevents unauthorized rewards</td>
+      <td>Verify job name and grade with QBCore.Functions.GetPlayer before actions</td>
+    </tr>
+    <tr>
+      <td>Server-calculated payouts</td>
+      <td>Clients can be manipulated</td>
+      <td>Map taskId → server payout; ignore client-sent amounts</td>
+    </tr>
+    <tr>
+      <td>DB transactions</td>
+      <td>Atomicity for money & progress changes</td>
+      <td>Use transactional writes or rollback on failure</td>
+    </tr>
+    <tr>
+      <td>Rate limiting</td>
+      <td>Prevents spam and automated abuse</td>
+      <td>Track last event timestamps per player and block rapid repeats</td>
+    </tr>
+    <tr>
+      <td>Logging & monitoring</td>
+      <td>Detect exploits</td>
+      <td>Log structured events; aggregate with dashboards</td>
+    </tr>
+    <tr>
+      <td>Roblox DataStore retries</td>
+      <td>Network errors are common</td>
+      <td>Use pcall, retry with backoff, and queue unsaved changes</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Common pitfalls and how to avoid them</h2>
+<ul>
+  <li><strong>Trusting client payloads:</strong> Never perform financial operations based on client values. The server should compute and execute.</li>
+  <li><strong>Lack of auditing:</strong> Not logging job payouts or suspicious events makes it impossible to post-mortem exploits. Keep concise logs for important transactions.</li>
+  <li><strong>Mixing frameworks without boundary:</strong> If you support both QBCore and ESX, keep a single authoritative module for job logic and only adapt interfaces per framework.</li>
+  <li><strong>Ignoring DataStore retries (Roblox):</strong> Always handle failure paths; do not assume a write always succeeds.</li>
+</ul>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net">FiveM docs (official)</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore (GitHub)</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib (GitHub)</a></li>
+  <li><a href="https://developer.roblox.com/en-us/">Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store">Roblox DataStore documentation</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

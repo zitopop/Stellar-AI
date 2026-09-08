@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Gang System — Architect, Build, Secure — Stellar AI</title>
+  <meta name="description" content="A practical guide to designing and implementing a QBCore gang system for FiveM. Server-authoritative patterns, file-by-file examples, qb-target integration, DB schema, security checks, and a deployment checklist.">
+  <meta name="keywords" content="QBCore, FiveM, gang system, qb-target, oxmysql, server-authoritative, Lua, fxmanifest">
+  <meta property="og:title" content="QBCore Gang System — Architect, Build, Secure">
+  <meta property="og:description" content="A practical guide to designing and implementing a QBCore gang system for FiveM. Server-authoritative patterns, file-by-file examples, qb-target integration, DB schema, security checks, and a deployment checklist.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-gang-system">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">QBCore guide</div>
+  <h1>QBCore Gang System — Architect, Build, Secure</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide shows how to plan and implement a compact, secure gang system for QBCore-based FiveM servers. It focuses on server-authoritative flows, validation, and useful integration points (qb-target, stash, shared funds). Included: full destination-labelled files, SQL schema, and a practical installation checklist.</p>
+  <h2>Overview and implementation plan</h2>
+<p>Goal: add persistent gangs with membership, a shared bank, a stash, and territorial interaction points. Keep all authoritative state on the server, validate every client request, and expose minimal surface to the client (UI triggers and qb-target zones).</p>
+<p>Short implementation plan:</p>
+<ol>
+  <li>Define database schema for gangs and members.</li>
+  <li>Create a QBCore resource with server and client files, and a small config.</li>
+  <li>Implement server callbacks/events for create/join/leave/transfer/deposit/withdraw.</li>
+  <li>Client: qb-target zones for stash and gang menu; basic menus use QBCore UI calls or exports.</li>
+  <li>Test authoritative flows, exploit cases, and Data validation.</li>
+</ol>
+
+<h2>Assumptions and dependencies</h2>
+<ul>
+  <li>Server runs QBCore and has one MySQL wrapper installed (oxmysql recommended).</li>
+  <li>qb-target is available for spatial interactions.</li>
+  <li>UI is minimal; you may plug in ox_lib or custom NUI for rich menus.</li>
+</ul>
+
+<h2>Files (complete, destination-labelled)</h2>
+<p>Drop these files into a resource folder named qb-gangs/ with the exact filenames.</p>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore Gang System'
+version '1.0.0'
+
+shared_script 'config.lua'
+
+client_scripts {
+  'client/main.lua'
+}
+
+server_scripts {
+  '@oxmysql/lib/MySQL.lua',
+  'server/main.lua'
+}
+
+dependencies {
+  'qb-core',
+  'qb-target'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+Config.StashModel = 'prop_box_wood02a_pu'
+Config.DefaultGangFund = 5000
+</code></pre>
+
+<h3>server/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Simple MySQL helper; assumes oxmysql
+local function query(sql, params)
+  return exports.oxmysql:fetchSync(sql, params)
+end
+
+-- Create tables (run once manually in SQL, below SQL provided in the guide)
+
+QBCore.Functions.CreateCallback('qb-gangs:getPlayerGang', function(source, cb)
+  local src = source
+  local xPlayer = QBCore.Functions.GetPlayer(src)
+  if not xPlayer then cb(nil) return end
+  local identifier = xPlayer.PlayerData.citizenid
+  local res = query('SELECT g.* FROM gangs g JOIN gang_members m ON g.id = m.gang_id WHERE m.citizenid = ?', {identifier})
+  cb(res[1])
+end)
+
+RegisterNetEvent('qb-gangs:server:createGang', function(gangName)
+  local src = source
+  local xPlayer = QBCore.Functions.GetPlayer(src)
+  if not xPlayer or type(gangName) ~= 'string' then return end
+  -- basic validation
+  if #gangName < 3 or #gangName > 24 then
+    TriggerClientEvent('QBCore:Notify', src, 'Gang name invalid', 'error')
+    return
+  end
+  -- ensure name unique
+  local exists = query('SELECT id FROM gangs WHERE name = ? LIMIT 1', {gangName})
+  if exists[1] then
+    TriggerClientEvent('QBCore:Notify', src, 'Gang name taken', 'error')
+    return
+  end
+  -- create gang
+  local res = exports.oxmysql:insertSync('INSERT INTO gangs (name, fund) VALUES (?, ?)', {gangName, Config.DefaultGangFund})
+  if res then
+    local gangId = res
+    exports.oxmysql:execute('INSERT INTO gang_members (gang_id, citizenid, rank) VALUES (?, ?, ?)', {gangId, xPlayer.PlayerData.citizenid, 'leader'})
+    TriggerClientEvent('QBCore:Notify', src, 'Gang created', 'success')
+  end
+end)
+
+RegisterNetEvent('qb-gangs:server:deposit', function(amount)
+  local src = source
+  local xPlayer = QBCore.Functions.GetPlayer(src)
+  if not xPlayer or type(amount) ~= 'number' or amount <= 0 then return end
+  -- ensure player in gang
+  local gang = query('SELECT g.* FROM gangs g JOIN gang_members m ON g.id = m.gang_id WHERE m.citizenid = ?', {xPlayer.PlayerData.citizenid})
+  if not gang[1] then
+    TriggerClientEvent('QBCore:Notify', src, 'You are not in a gang', 'error')
+    return
+  end
+  if xPlayer.Functions.RemoveMoney('bank', amount) then
+    exports.oxmysql:execute('UPDATE gangs SET fund = fund + ? WHERE id = ?', {amount, gang[1].id})
+    TriggerClientEvent('QBCore:Notify', src, 'Deposited $' .. amount, 'success')
+  else
+    TriggerClientEvent('QBCore:Notify', src, 'Not enough money', 'error')
+  end
+end)
+
+-- Additional server events: withdraw, join requests, promote/demote should follow the same validation pattern.
+</code></pre>
+
+<h3>client/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+CreateThread(function()
+  -- example stash zone near a model; adjust coordinates
+  local coords = vector3(185.0, -930.0, 30.0)
+  exports['qb-target']:AddBoxZone('qb-gang-stash', coords, 1.5, 1.5, {
+    name = 'qb-gang-stash',
+    heading = 0,
+    debugPoly = false,
+    minZ = 29.0,
+    maxZ = 31.0
+  }, {
+    options = {
+      {
+        type = 'client',
+        icon = 'fas fa-box',
+        label = 'Open Gang Stash',
+        event = 'qb-gangs:client:openStash'
+      }
+    },
+    distance = 2.5
+  })
+end)
+
+RegisterNetEvent('qb-gangs:client:openStash', function()
+  QBCore.Functions.TriggerCallback('qb-gangs:getPlayerGang', function(gang)
+    if not gang then
+      QBCore.Functions.Notify('You are not in a gang', 'error')
+      return
+    end
+    -- open stash inventory, this is intentionally a placeholder
+    -- integrate with your inventory resource (ox_inventory, qb-inventory, etc.)
+    QBCore.Functions.Notify('Opening stash for ' .. gang.name)
+  end)
+end)
+</code></pre>
+
+<h2>SQL schema (run once)</h2>
+<pre><code>CREATE TABLE IF NOT EXISTS gangs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(64) UNIQUE NOT NULL,
+  fund BIGINT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS gang_members (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  gang_id INT NOT NULL,
+  citizenid VARCHAR(32) NOT NULL,
+  rank VARCHAR(32) DEFAULT 'member',
+  FOREIGN KEY (gang_id) REFERENCES gangs(id) ON DELETE CASCADE
+);
+</code></pre>
+
+<h2>Security and validation checklist</h2>
+<p>Every client-originating action must be verified on the server. Use these rules as a minimum:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Check</th>
+      <th>Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Server-side money/item checks</td>
+      <td>Prevent clients from faking removal/addition of money/items</td>
+    </tr>
+    <tr>
+      <td>Membership & rank validation</td>
+      <td>Only leaders should change ranks or remove members</td>
+    </tr>
+    <tr>
+      <td>Input sanitisation</td>
+      <td>Reject invalid strings and sizes to avoid DB issues</td>
+    </tr>
+    <tr>
+      <td>Rate limiting for expensive ops</td>
+      <td>Prevent spam (e.g., repeated create requests)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Installation & testing steps</h2>
+<ol>
+  <li>Place qb-gangs resource in your resources folder and start it from server.cfg (ensure qb-core loads first).</li>
+  <li>Run the SQL schema once to create the tables.</li>
+  <li>Test flows: create gang, join, deposit, open stash. Use server console logs and QBCore notifications to observe results.</li>
+  <li>Attempt exploit tests: client-sent deposit with negative amounts, fake join — server must reject.</li>
+</ol>
+
+<h2>Where to go next</h2>
+<p>Add features incrementally: gang territories with blips, territory capture logic, advanced permission system (custom ranks), and NUI menus for management. For configuration-driven UI and rapid iterations consider using an AI-backed scripting workspace to produce destination-labelled files faster — try the Stellar AI app at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> to prototype flows. When iterating, ensure every new client action maps to a small, validated server handler.</p>
+
+<p>If you want templated scaffolding, Stellar AI can generate resource files and SQL skeletons for you — learn more and iterate via <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> and read development notes on the blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>Validation & security summary</h2>
+<p>Keep the minimal attack surface: server-controlled DB updates, validated QBCore player operations, and limited client responsibilities (UI and target triggers). Log important actions (creates, large withdrawals) for audit. Consider using server-side rate limiting plugins or a simple in-memory cooldown table for expensive operations.</p>
+
+<p>Next steps: build the full join/leave/promote endpoints using the same patterns shown here, add unit test scenarios for server callbacks, and create NUI pages that call client events only after local validation.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div>
+  <h3>References & further reading</h3>
+  <ul>
+    <li><a href="https://docs.qbcore.org/">QBCore documentation (community)</a></li>
+    <li><a href="https://github.com/overextended/oxmysql">oxmysql</a> — MySQL wrapper commonly used with QBCore</li>
+    <li><a href="https://github.com/BerkieBb/qb-target">qb-target</a> — target interaction resource</li>
+  </ul>
+</div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

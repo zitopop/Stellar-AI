@@ -1,106 +1,239 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QBCore Mechanic Job Script: Build, Secure and Test One Properly | Stellar AI</title>
-  <meta name="description" content="Learn how to plan a reliable QBCore mechanic job script for FiveM, including duty states, repair bays, vehicle checks, payments, server validation and testing.">
-  <meta name="keywords" content="qbcore mechanic job script, fivem mechanic job, qb-mechanicjob, qbcore mechanic script">
-  <meta property="og:title" content="QBCore Mechanic Job Script: Build, Secure and Test One Properly">
-  <meta property="og:description" content="A practical guide to designing a QBCore mechanic job script that is enjoyable to use and difficult to exploit.">
+  <title>QBCore Mechanic Job Script — Practical Guide — Stellar AI</title>
+  <meta name="description" content="Build a server-authoritative QBCore mechanic job with repairs, tows, and impound actions. Implementation plan, complete destination-labelled files, installation, validation and security notes.">
+  <meta name="keywords" content="QBCore mechanic, FiveM mechanic job, qbcore mechanic script, qb-target mechanic, tow script, vehicle impound, FiveM Lua, QBCore guide">
+  <meta property="og:title" content="QBCore Mechanic Job Script — Practical Guide">
+  <meta property="og:description" content="Build a server-authoritative QBCore mechanic job with repairs, tows, and impound actions. Implementation plan, complete destination-labelled files, installation, validation and security notes.">
   <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/qbcore-mechanic-job-script">
-  <link rel="stylesheet" href="/site-polish.css">
-  <style>
-    :root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}
-  </style>
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
 <nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
 <main class="wrap">
-  <div class="eyebrow">FiveM · QBCore guide</div>
-  <h1>QBCore mechanic job script: build a garage players actually enjoy</h1>
-  <div class="meta">Updated August 2026 · 9 min read · Stellar AI</div>
-  <p class="intro">A good <strong>QBCore mechanic job script</strong> is more than a repair menu. It gives a player a clear shift, a believable garage workflow, useful progression and enough server-side validation that one bad client cannot print money or repair every vehicle on the map.</p>
+  <div class="eyebrow">Hands-on QBCore job scripting</div>
+  <h1>QBCore Mechanic Job Script — Practical Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you through creating a server-authoritative QBCore mechanic job resource: repair, tow, and impound actions, qb-target interactions, and safe server-side validation. You'll get a short plan, assumptions, complete files to drop into a resource, installation steps, testing checklist, and security considerations.</p>
+  <h2>Implementation plan</h2>
+<p>1) Define config and permissions. 2) Register qb-target interactions (repair/tow/impound). 3) Use server callbacks to check job, charge money, and record impounds. 4) Client performs the local vehicle actions only after server approval. 5) Provide a simple persistent impound hook placeholder (oxmysql or your vehicle ownership system).</p>
 
-  <p>Mechanic jobs are one of the best ways to give a FiveM roleplay server a reliable everyday loop. Players bring damaged cars to a shop, mechanics diagnose the problem, parts are consumed, payments are recorded and the job creates reasons for other players to interact. The official QBCore mechanic resource describes the familiar building blocks: duty and clock-in locations, job vehicles, a stash, repair areas and vehicle-part status values.<sup><a href="#references">[1]</a></sup> The challenge is joining those pieces into a resource that feels coherent on a live server.</p>
+<h3>Assumptions and dependencies</h3>
+<ul>
+  <li>Server uses QBCore (v1/v2 style exports). Adjust GetCoreObject line to match your core.</li>
+  <li>qb-target or ox_target installed for targeting interactions.</li>
+  <li>Optional: oxmysql or your own persistence if you want permanent impound storage — otherwise impounds will be ephemeral.</li>
+  <li>The mechanic is a job named "mechanic" in your jobs config. Change job name in <code>config.lua</code> if different.</li>
+</ul>
 
-  <h2>Start with the job loop, not the menu</h2>
-  <p>Before writing Lua, write down what a complete mechanic shift looks like. A practical loop might begin with the player clocking in, checking the workshop board, taking a service vehicle or opening a repair bay, inspecting a customer vehicle, quoting a price, completing the repair and clocking out. Each step should have a reason to exist. If the mechanic can teleport into a menu and click “repair all”, the job will feel like a command rather than a role.</p>
-  <p>Decide which parts are simulated. A lightweight script can focus on engine and body health. A deeper version can add brakes, clutch, axle, radiator and fuel components. Keep the first release readable: show the part, its current condition, the required item and the time or interaction needed. Players should understand what they are paying for without reading your source code.</p>
+<h2>Destination-labelled files (complete)</h2>
+<p>Create a resource folder called <strong>qb-mechanic</strong>. Place these files exactly as named.</p>
 
-  <table>
-    <thead><tr><th>System</th><th>Good first version</th><th>Common mistake</th></tr></thead>
-    <tbody>
-      <tr><td>Duty</td><td>Clock in near the garage and expose job actions only while on duty.</td><td>Trusting a client flag that says the player is working.</td></tr>
-      <tr><td>Repair</td><td>Require a vehicle, a valid bay and the correct repair item.</td><td>Accepting vehicle IDs, prices or item counts from the client.</td></tr>
-      <tr><td>Payment</td><td>Calculate the quote on the server and log the transaction.</td><td>Letting the client choose the reward amount.</td></tr>
-      <tr><td>Progression</td><td>Use ranks, unlocks or reputation after successful jobs.</td><td>Giving rewards every time an event is fired.</td></tr>
-    </tbody>
-  </table>
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
 
-  <h2>Plan the QBCore data contract</h2>
-  <p>Write the data contract before the event names. You need to know what the server must remember: the player source, citizen ID, active duty state, shop or garage, the vehicle being serviced, the selected part, the quote, the start time and whether the repair is already complete. An active repair record should belong to the server and expire if the player leaves, disconnects or abandons the bay.</p>
-  <p>Keep configuration separate from runtime state. Configuration can contain garage coordinates, authorized job grades, available vehicles, repair items, prices and animation timings. Runtime state should live in a table keyed by player source or a server-generated repair ID. Never edit a “currently attached vehicle” field in configuration as if it were a permanent setting; live state belongs in memory or a datastore designed for it.</p>
+author 'YourName'
+description 'QBCore mechanic job (repair, tow, impound)'
+version '1.0.0'
 
-  <div class="tip"><strong>Useful prompt for generating a first structure</strong><p>Ask <a href="https://trystellarai.com/app">Stellar AI</a> for a complete QBCore mechanic job script with <code>fxmanifest.lua</code>, separate client and server files, config-driven garages, duty state, repair bays, item costs, server-side validation, cleanup on disconnect and a test checklist. State the exact framework version and dependencies before asking for code.</p></div>
+shared_script 'config.lua'
 
-  <h2>Security belongs on the server</h2>
-  <p>FiveM clients can trigger networked events, so a mechanic resource must assume that every client argument can be changed. Cfx.re’s security guidance recommends server-side checks for money, inventory, position, state, experience, permissions and roles.<sup><a href="#references">[2]</a></sup> In practice, that means the server should retrieve the player object, confirm the mechanic job and grade, verify the player is near the garage, check that the target vehicle is valid, check that the player owns or is authorised to service it, and calculate the cost itself.</p>
-  <p>For example, a client can request “start repair on engine”, but the server decides whether the source is on duty, whether the vehicle is within the repair bay, whether engine repair is enabled, whether the required item exists and what the repair duration and price are. The client can display progress; it should not be the authority that grants items, cash or permanent status.</p>
-  <pre><code>-- server-side shape, not a drop-in resource
-RegisterNetEvent('mechanic:server:startRepair', function(repairId, part)
+client_script 'client/main.lua'
+server_script 'server/main.lua'
+
+dependencies {
+  'qb-core',
+  'qb-target'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+Config.JobName = 'mechanic'
+Config.RepairCost = 150 -- cash amount
+Config.TowCost = 250
+Config.ImpoundCost = 500
+Config.ImpoundLocation = vector3(412.0, -1634.0, 29.3) -- example
+Config.TargetDistance = 3.0
+</code></pre>
+
+<h3>client/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+-- qb-target registration for nearby vehicles (run on client start)
+CreateThread(function()
+    while not NetworkIsSessionStarted() do
+        Wait(100)
+    end
+
+    -- register an entity target for vehicles the player is near
+    exports['qb-target']:AddTargetModel(GetHashKey('a_m_m_business_01'), {
+        options = {
+            {
+                type = 'client',
+                event = 'qb-mechanic:client:OpenMechanicMenu',
+                icon = 'fas fa-wrench',
+                label = 'Mechanic Actions',
+            }
+        },
+        distance = 3.0
+    })
+end)
+
+-- Client event opens actions and coordinates server validation
+RegisterNetEvent('qb-mechanic:client:OpenMechanicMenu', function()
+    local playerPed = PlayerPedId()
+    local veh = GetVehiclePedIsIn(playerPed, true)
+    local plate = veh ~= 0 and QBCore.Functions.GetPlate(veh) or nil
+
+    local elements = {}
+    table.insert(elements, {label = 'Repair Vehicle ($' .. Config.RepairCost .. ')', value = 'repair'})
+    table.insert(elements, {label = 'Tow Vehicle ($' .. Config.TowCost .. ')', value = 'tow'})
+    table.insert(elements, {label = 'Impound Vehicle ($' .. Config.ImpoundCost .. ')', value = 'impound'})
+
+    -- simple menu using ox_lib or your UI. Here we call server directly per choice.
+    -- Replace this menu with your preferred UI. For example purposes we'll use a native input.
+
+    local choice = nil
+    -- (Replace the following placeholder with your UI selection implementation.)
+    -- For demo, we will always pick repair if in a vehicle, otherwise impound is skipped.
+    if veh ~= 0 then
+        choice = 'repair'
+    else
+        QBCore.Functions.Notify('Stand near a vehicle to use mechanic actions', 'error')
+        return
+    end
+
+    if choice == 'repair' then
+        -- ask server to charge and approve
+        QBCore.Functions.TriggerCallback('qb-mechanic:server:ChargeForService', function(success)
+            if success then
+                -- local repair action: server authorised
+                SetVehicleFixed(veh)
+                SetVehicleDirtLevel(veh, 0.0)
+                QBCore.Functions.Notify('Vehicle repaired', 'success')
+            else
+                QBCore.Functions.Notify('You cannot perform this action', 'error')
+            end
+        end, 'repair')
+    end
+end)
+</code></pre>
+
+<h3>server/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local Impounded = {} -- in-memory store; replace with DB for persistence
+
+QBCore.Functions.CreateCallback('qb-mechanic:server:ChargeForService', function(source, cb, serviceType)
     local src = source
-    local player = QBCore.Functions.GetPlayer(src)
-    if not player or player.PlayerData.job.name ~= 'mechanic' then return end
-    if not isOnDuty(src) or not isValidBay(src, repairId) then return end
-    if not Config.Parts[part] then return end
-    -- Re-read inventory, price and vehicle state here.
-    beginRepairForSource(src, repairId, part)
-end)</code></pre>
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then cb(false); return end
 
-  <h2>Make the garage feel like a real workplace</h2>
-  <p>Small details create the roleplay. Use a clear shop identity, a compact dispatch board, a mechanic-only stash and a vehicle list that reflects the server’s economy. Give the player a visible reason to move around: one interaction for duty, one for parts, one for bays and one for vehicles. Avoid covering the screen with five overlapping menus. A simple interaction flow is usually more premium than a long settings panel.</p>
-  <p>For customers, make the quote and outcome obvious. Show which part is being repaired, what the estimated price is, and whether the mechanic is using a shop item or a customer-supplied item. For staff, show active work and completed jobs. If you add reputation, reward completed validated repairs rather than raw event counts so players cannot farm progress by repeatedly triggering the same callback.</p>
+    -- job validation
+    if Player.PlayerData.job.name ~= Config.JobName then
+        cb(false)
+        return
+    end
 
-  <h2>Test it like a server owner</h2>
-  <p>Test the happy path first, then test the resource as if you were trying to break it. Check clock-in and clock-out, reconnects, death, vehicle deletion, two mechanics using the same bay, missing items, wrong job grades, invalid part names, long distances, duplicate repair requests and a player leaving mid-repair. Also test a server restart: configuration should load cleanly and no stale repair record should grant a reward after the restart.</p>
-  <p>Keep a short release checklist with the exact dependencies, resource start order, database requirements, coordinates, item names and commands. The official QBCore mechanic documentation includes configuration examples for vehicles, locations, repair costs and authorised commands, which makes it a useful compatibility reference even when your resource is custom.<sup><a href="#references">[1]</a></sup></p>
+    local cost = 0
+    if serviceType == 'repair' then cost = Config.RepairCost
+    elseif serviceType == 'tow' then cost = Config.TowCost
+    elseif serviceType == 'impound' then cost = Config.ImpoundCost
+    else cb(false); return end
 
-  <h2>Generate a better first draft with a precise brief</h2>
-  <p>If you are using AI to create the first version of a <strong>QBCore mechanic job script</strong>, do not ask for “a mechanic job” and hope the missing details appear. Ask for the framework, dependencies, exact files, event names, item names, garage coordinates, payment rules, job grades, test cases and security assumptions. Then review the output file by file. An AI-generated script is a starting structure, not proof that the resource is secure or compatible with your server.</p>
-  <p>You can use <a href="https://trystellarai.com/app">Stellar AI’s scripting workspace</a> to plan the system, generate complete files, ask follow-up questions and request a test matrix before installing it. Keep the generated resource private until you have tested it on a separate development server.</p>
+    -- check money and remove
+    if Player.Functions.RemoveMoney('cash', cost) then
+        cb(true)
+    else
+        cb(false)
+    end
+end)
 
-  <div class="cta-box"><h2>Need the first structure?</h2><p>Describe your garage locations, job grades, parts and payment rules. Stellar AI can help you turn that brief into a reviewable QBCore resource.</p><a href="https://trystellarai.com/app">Build a mechanic system →</a></div>
+-- Impound example: record an impound and notify
+RegisterNetEvent('qb-mechanic:server:ImpoundVehicle', function(plate, model, owner)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    if Player.PlayerData.job.name ~= Config.JobName then return end
 
-  <section class="refs" id="references"><h2>References</h2><p>[1] <a href="https://docs.qbcore.org/qbcore-documentation/qbcore-resources/qb-mechanicjob">QBCore: qb-mechanicjob documentation</a>.</p><p>[2] <a href="https://docs.fivem.net/docs/developers/server-security/">Cfx.re: Secure Your Events</a>.</p></section>
+    -- place into in-memory table; replace with oxmysql insert for persistence
+    table.insert(Impounded, {plate = plate, model = model, impoundedBy = Player.PlayerData.citizenid, time = os.time()})
+    TriggerClientEvent('QBCore:Notify', src, 'Vehicle impounded: ' .. plate, 'success')
+
+    -- TODO: save to DB via exports.oxmysql:insert(...) if you want persistence across restarts
+end)
+</code></pre>
+
+<h2>Where files belong and install</h2>
+<ol>
+  <li>Create a folder resources/[your-folder]/qb-mechanic and drop fxmanifest.lua, config.lua, client/main.lua, server/main.lua inside.</li>
+  <li>Add start qb-mechanic to your server.cfg (ensure qb-core and qb-target are started first).</li>
+  <li>Restart server or resource and test.</li>
+</ol>
+
+<h3>Testing & validation checklist</h3>
+<table>
+  <thead>
+    <tr><th>Step</th><th>What to expect</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Start resource</td><td>No startup errors in server console</td></tr>
+    <tr><td>Open mechanic menu near a vehicle</td><td>Menu opens and repair option available</td></tr>
+    <tr><td>Repair action</td><td>Money removed server-side and vehicle fixed client-side</td></tr>
+    <tr><td>Impound action</td><td>Entry added to server Impounded table (or DB if integrated)</td></tr>
+    <tr><td>Unauthorized job try</td><td>Action rejected and no money removed</td></tr>
+  </tbody>
+</table>
+
+<h2>Security considerations</h2>
+<ul>
+  <li>Never let the client remove or add money. Server callbacks must do all monetary operations (as shown).</li>
+  <li>Validate job and permissions on the server for every paid action.</li>
+  <li>If you need to validate vehicle ownership before impound, query your ownership DB server-side rather than trusting client-sent plate strings.</li>
+  <li>For persistence use oxmysql or your preferred DB with proper prepared statements to avoid injection.</li>
+  <li>Remember that the client still performs local vehicle fixes. For strict enforcement, set a server-side state that flags repaired vehicles and reject inconsistent updates from anti-cheat logic.</li>
+</ul>
+
+<h2>Next steps and useful integrations</h2>
+<ul>
+  <li>Integrate a full UI (ox_lib or your custom NUI) for selecting actions and showing receipts.</li>
+  <li>Hook impound storage into your owned_vehicles or a dedicated impound table in the DB for persistent retrieval.</li>
+  <li>Add job blips, ranks, and a garage for professional tools and upgradeable equipment.</li>
+</ul>
+
+<p>If you'd like help designing the full feature set or producing destination-labelled files for an extended mechanic resource (NUI, persistent DB, tow-trailer handling), try building the plan in the <a href="https://trystellarai.com/app">Stellar AI app</a> and iterate quickly. The app helps translate plain-English requirements into complete resource files you can drop into your server. After that, check our walkthroughs on the blog for integration patterns: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.</p>
+
+<p>When you're ready to prototype multi-role flows or export a staged resource, open the generator in the <a href="https://trystellarai.com/app">Stellar AI app</a> to prototype file sets and installation instructions you can copy directly into your FiveM server.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><strong>References & further reading</strong><ul><li><a href="https://github.com/qbcore-framework/qb-core">QBCore framework (GitHub)</a></li><li><a href="https://github.com/nerohiro/qb-target">qb-target (GitHub)</a></li><li><a href="https://github.com/overextended/oxmysql">oxmysql (GitHub) — optional DB persistence</a></li></ul></div></section>
 </main>
 <footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>

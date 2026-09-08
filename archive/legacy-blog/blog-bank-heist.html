@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+  <meta name="theme-color" content="#080808">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stellar AI">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Add a Bank Heist Script to Your FiveM QBCore Server — Stellar AI</title>
+  <meta name="description" content="Step by step guide to adding a bank robbery script to your FiveM QBCore server. Hacking, vault timers, police alerts and loot explained.">
+  <meta name="keywords" content="fivem bank heist script, qbcore bank robbery, fleeca heist fivem, bank robbery script fivem install, qbcore heist script">
+  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-bank-heist-script">
+  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
+    a{color:inherit;text-decoration:none;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
+    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
+    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
+    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
+    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
+    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
+    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
+    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
+    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
+    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
+    .cta-box{background:linear-gradient(135deg,rgba(16,163,127,0.1),rgba(16,163,127,0.05));border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
+    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
+    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
+    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-copy{font-size:12px;color:var(--muted);}
+    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
+  </style>
+  <link rel="stylesheet" href="/site-polish.css">
+</head>
+<body>
+<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
+<div class="container">
+  <h1>How to Add a Bank Heist Script to Your FiveM QBCore Server</h1>
+
+<p class="intro">A practical guide to how to add a bank heist script to your fivem qbcore server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<p>This guide walks through integrating a bank heist script into a FiveM QBCore server and covers architecture, implementation choices, server validation, testing, deployment, and maintenance. The same security principles are noted for ESX and Roblox (Luau) implementations where relevant. Use this as a technical plan and reference checklist for a production-grade, server-authoritative heist that resists client tampering and supports robust, maintainable behavior.</p>
+
+<h2>High-level architecture</h2>
+<p>Design the heist as a server-authoritative resource that coordinates state between persistent storage (database), server runtime memory, and clients. Key components:</p>
+<ul>
+  <li>Server state manager — maintains active heists, cooldowns, and saves progress to DB.</li>
+  <li>Server validation handlers — check job counts (police), player inventory, money distribution, and permission checks.</li>
+  <li>Client UI and animation layer — only shows effects and sends intent (button press, interaction) to server.</li>
+  <li>Third-party integrations — qb-target/ox_target or ox_lib for interactions; oxmysql or ghmattimysql for persistence.</li>
+  <li>Logging and monitoring — audit logs for start/stop/fail and criminal payouts.</li>
+</ul>
+
+<h2>State model and data flow</h2>
+<p>Keep authoritative data on the server and persist necessary state. Example state objects:</p>
+<ul>
+  <li>ActiveHeists: { heistId, bankId, startedAt, participants = {source,...}, stage, lootRemaining }</li>
+  <li>BankDefs: static config for each bank (doors, vault positions, required items, minimum cops)</li>
+  <li>Cooldowns: bankId -> timestamp when next allowed</li>
+</ul>
+<p>Flow for a single heist action (high level):</p>
+<ol>
+  <li>Client requests interaction (TriggerServerEvent).</li>
+  <li>Server validates (player exists, items, police online, not on cooldown).</li>
+  <li>Server reserves lock (mark heist active) and persists to DB if multi-minute.</li>
+  <li>Server notifies clients (start UI, hide openable door to all clients, spawn loot objects server-side or instruct clients to local spawn with server validation).</li>
+  <li>Server monitors events, awards money only from server-side operation when appropriate.</li>
+</ol>
+
+<h2>Implementation choices: qb-core, ESX, and libraries</h2>
+<p>Common options and recommendations:</p>
+<ul>
+  <li>Use a dedicated resource for the heist that depends on qb-core (declare in fxmanifest) rather than patching core files — easier to maintain and update.</li>
+  <li>Support integration with qb-target or ox_target for interaction. Provide fallback exports for other target systems.</li>
+  <li>Use oxmysql (or ghmattimysql) for persistent cooldowns and long-running heist state; store only what you need to reconstruct a failed or restarted heist.</li>
+  <li>Make core logic server-side; clients are presenters only. For animations and objects with breakable state, keep the canonical state on the server and broadcast deltas.</li>
+</ul>
+
+<h3>Example fxmanifest dependency</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+server_script 'server.lua'
+client_script 'client.lua'
+
+shared_script '@qb-core/import.lua'
+
+-- opt: qb-target or ox_target
+dependency 'qb-core'
+</code></pre>
+
+<h2>Key server-side validation (never trust client)</h2>
+<p>Security principles:</p>
+<ul>
+  <li>Always verify player state server-side using QBCore.Functions.GetPlayer(source) or ESX.GetPlayerFromId.</li>
+  <li>Check inventory and remove items server-side — do not accept client-submitted inventory changes.</li>
+  <li>Verify police count by iterating server-side player list and checking PlayerData.job.name == "police" and on-duty status.</li>
+  <li>Enforce per-bank cooldowns from server memory and persistent DB.</li>
+  <li>Use transaction-like patterns when awarding money — update DB and then notify the client.</li>
+</ul>
+
+<h3>Server-side starter example (QBCore)</h3>
+<pre><code>-- server.lua (excerpt)
+local QBCore = exports['qb-core']:GetCoreObject()
+local activeHeists = {}
+local cooldowns = {}
+
+RegisterNetEvent('heist:start', function(bankId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Validate police count
+  local cops = 0
+  for _, pid in pairs(QBCore.Functions.GetPlayers()) do
+    local p = QBCore.Functions.GetPlayer(pid)
+    if p and p.PlayerData.job and p.PlayerData.job.name == 'police' and p.PlayerData.job.onduty then
+      cops = cops + 1
+    end
+  end
+  if cops < Config.Banks[bankId].minCops then
+    TriggerClientEvent('heist:notify', src, 'Not enough police online')
+    return
+  end
+
+  -- Cooldown check
+  if cooldowns[bankId] and os.time() < cooldowns[bankId] then
+    TriggerClientEvent('heist:notify', src, 'Bank is on cooldown')
+    return
+  end
+
+  -- Item check: thermite or keycard
+  if Player.Functions.GetItemByName('thermite') == nil then
+    TriggerClientEvent('heist:notify', src, 'You need thermite')
+    return
+  end
+
+  -- Remove item server-side and start heist
+  Player.Functions.RemoveItem('thermite', 1)
+  activeHeists[bankId] = { startedAt = os.time(), participants = {src} }
+  cooldowns[bankId] = os.time() + Config.Banks[bankId].cooldown
+  TriggerClientEvent('heist:started', -1, bankId) -- broadcast
+end)</code></pre>
+
+<p>Note: Player.Functions.GetItemByName is a placeholder for your inventory system's lookup; always call your actual QBCore/ESX methods.</p>
+
+<h2>Persistence and DB patterns</h2>
+<p>Keep the DB usage minimal and robust:</p>
+<ul>
+  <li>Save only long-running or important state: cooldowns, staged loot counts, and final payouts.</li>
+  <li>Use transactions or idempotent updates — avoid duplicated payouts if the server restarts mid-heist.</li>
+  <li>Store an audit row per finished heist (heist_id, bank, start_time, end_time, participants JSON, payout summary) for ops and rollback investigation.</li>
+</ul>
+
+<h3>DB save example (pseudo)</h3>
+<pre><code>-- run after heist ends
+local sql = "INSERT INTO heist_logs (bank, start_time, end_time, participants, loot) VALUES (@bank,@start,@end,@participants,@loot)"
+exports.oxmysql:execute(sql, {
+  ['@bank'] = bankId,
+  ['@start'] = startedAt,
+  ['@end'] = os.time(),
+  ['@participants'] = json.encode(participants),
+  ['@loot'] = json.encode(lootSummary)
+})</code></pre>
+
+<h2>Anti-cheat and hardening</h2>
+<p>Anti-cheat is both proactive and reactive:</p>
+<ul>
+  <li>Authorize all sensitive actions on the server. If a client requests "open vault," server checks and updates state.</li>
+  <li>Rate-limit requests from any single source. Keep per-source watchdogs in server memory.</li>
+  <li>Log suspicious events to a separate table or file (unexpected large payout requests, out-of-band inventory changes) for manual review.</li>
+  <li>Obfuscate nothing critical — securing is about server validation, not hiding logic.</li>
+</ul>
+
+<h2>Testing and QA</h2>
+<p>Create a test plan that simulates real conditions:</p>
+<ul>
+  <li>Unit tests for server validators (inventory check, police count, cooldown logic).</li>
+  <li>Integration tests with a dev DB: start/abort/complete flows and verify DB audit rows.</li>
+  <li>Load tests: simulate multiple concurrent start requests to validate race conditions and locking behavior.</li>
+  <li>Failover tests: simulate server restart mid-heist and ensure persistent state or safe abort behavior.</li>
+</ul>
+
+<h3>Local debug tips</h3>
+<ul>
+  <li>Use verbose server logs for a dev environment only; sanitize before production.</li>
+  <li>Simulate low police counts and check notifications and prevent-start behavior.</li>
+  <li>Verify money is only minted by server code after DB updates (preferably atomic).</li>
+</ul>
+
+<h2>Deployment and maintenance</h2>
+<p>When deploying to production:</p>
+<ol>
+  <li>Deploy to a staging server first and run automated acceptance tests.</li>
+  <li>Enable a migration to add heist tables/columns in a vetted DB migration script.</li>
+  <li>Monitor memory usage and activeHeists table size; clear stale entries after a safe timeout.</li>
+  <li>Periodically review logs and adjust thresholds or cooldowns based on gameplay balance.</li>
+</ol>
+<p>For convenience and analytics integrations, you can manage deployment workflows with tools and services. See the Stellar AI app for project and deployment automation assistance: <a href="https://trystellarai.com/app">Stellar AI app</a>. If you maintain a developer blog or changelog, add a post describing breaking changes so server operators know what to expect: <a href="https://trystellarai.com/blog">release notes guidance</a>.</p>
+<p>Also consider linking your staging CI/CD to a centralized utility: more info at the Stellar AI app: <a href="https://trystellarai.com/app">Stellar AI app</a>.</p>
+
+<h2>Roblox (Luau) considerations</h2>
+<p>On Roblox, the same server-authoritative rules apply but using RemoteEvents and DataStores:</p>
+<ul>
+  <li>Handle all heist state inside a server Script (ServerScriptService), using RemoteEvent: OnServerEvent to receive client intents.</li>
+  <li>Validate inventory/possession server-side using the server-side Player object and server-side inventory module.</li>
+  <li>DataStore failure handling: always pcall DataStore calls and implement retry with exponential backoff. Do not assume success — have idempotent or compensating logic.</li>
+  <li>Save incremental progress frequently if the heist lasts long; use UpdateAsync for atomic updates where needed.</li>
+</ul>
+
+<h3>Roblox server skeleton (Luau)</h3>
+<pre><code>local Remote = game.ReplicatedStorage:WaitForChild('HeistRemote')
+
+Remote.OnServerEvent:Connect(function(player, action, bankId)
+  -- Validate player, permissions, items on server
+  if not ValidatePlayerHasItem(player, 'Thermite') then
+    Remote:FireClient(player, 'Notify', 'Missing required item')
+    return
+  end
+  -- Start heist server-side, update DataStore with pcall and retries
+end)</code></pre>
+
+<h2>Practical checklist (table)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Area</th>
+      <th>Action</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Server validation</td>
+      <td>All client requests checked against authoritative player state</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td>Cooldowns</td>
+      <td>Store in DB + server memory to prevent duplicates after restart</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td>Police check</td>
+      <td>Iterate server players and use job/onduty flags</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td>Payouts</td>
+      <td>Only issued server-side after DB update</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td>DataStore/DB</td>
+      <td>Use pcall, retries, and idempotent writes</td>
+      <td>Recommended</td>
+    </tr>
+    <tr>
+      <td>Logging</td>
+      <td>Audit heist start/stop/fail and suspicious events</td>
+      <td>Recommended</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Maintenance and tuning</h2>
+<p>Operational guidance:</p>
+<ul>
+  <li>Track key events (start/fail/complete) and review weekly for anomalies.</li>
+  <li>Keep a migration script for DB changes; maintain backwards compatibility where possible.</li>
+  <li>Update the heist resource when qb-core or target libs change their exported signatures — subscribe to their release notes.</li>
+  <li>Provide a server config UI or config file with adjustable parameters: minCops, payout ranges, cooldown length, and rewards types.</li>
+</ul>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net">FiveM documentation</a></li>
+  <li><a href="https://docs.qbcore.org">QBCore community documentation / repo</a></li>
+  <li><a href="https://developer.roblox.com">Roblox developer documentation (DataStore and RemoteEvents)</a></li>
+</ul>
+</div>
+<footer>
+  <div class="footer-copy">© 2026 Stellar AI</div>
+  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
+</footer>
+</body>
+</html>

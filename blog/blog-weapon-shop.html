@@ -68,32 +68,214 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Weapon Shop to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A weapon shop lets players legally buy firearms on your server. This guide covers setting up a QBCore weapon shop with stock management, job locks and licence requirements.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add a weapon shop to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Introduction</h2>
+<p>This guide walks you through adding a secure, maintainable weapon shop to a QBCore-based FiveM server. It explains architecture choices, server-side validation, persistence, integration options (ox_lib / ox_inventory / ESX), testing practices, and deployment/maintenance recommendations. The examples focus on QBCore patterns but include notes for ESX and Roblox where relevant. If you want a companion management UI or automation tools, see the Stellar app for server ops: <a href="https://trystellarai.com/app">Stellar AI app</a>.</p>
+
+<h2>Architecture overview</h2>
+<p>Design the weapon shop as a small set of responsibilities split across client and server: UI client code handles input and displays prices; server code validates purchases, modifies player data, logs transactions, and persists inventory changes. Never trust client data. The server is authoritative for money, inventory, permissions, and logging.</p>
+<p>A simple architecture:</p>
+<ul>
+  <li>Client UI: shows shop catalog, local animations, triggers server callbacks/events.</li>
+  <li>Server API: callbacks to check affordability and permissions; events to perform purchases and log actions.</li>
+  <li>Persistence layer: writes purchases to player inventories (ox_inventory / qb-inventory / custom DB) and logs to a transactions table.</li>
+  <li>Optional: admin panel and webhooks for audit logs.</li>
+</ul>
+
+<h2>Data model and database considerations</h2>
+<p>Keep the weapon catalog in a centrally maintained Lua table or DB table that the server loads on startup. Store only canonical identifiers (e.g., "weapon_pistol", item names) and server-side price/requirement metadata. Avoid letting clients choose arbitrary identifiers.</p>
+<p>Example catalog structure (server-side):</p>
+<pre><code>local WeaponCatalog = {
+  pistol = {hash = "weapon_pistol", price = 2500, ammo = 50, job = nil},
+  smg = {hash = "weapon_smg", price = 7500, ammo = 120, job = "police"}
+}</code></pre>
+<p>Persistence options:</p>
+<ul>
+  <li>Use your server inventory system (qb-inventory, ox_inventory) to add items. This ensures consistency with existing inventory UIs.</li>
+  <li>Log transactions in a dedicated SQL table for audits and troubleshooting: player identifier, weapon id, price, timestamp, transaction id.</li>
+  <li>If using MySQL, wrap money removal and inventory addition in a deterministic server-side sequence and log failures.</li>
+</ul>
+
+<h2>Server-side security and validation</h2>
+<p>Security checklist (enforced server-side only):</p>
+<ul>
+  <li>Validate weapon identifier against the trusted catalog.</li>
+  <li>Check player existence and load latest player data (money, job, whitelist flags).</li>
+  <li>Verify payment (Remove money or deduct bank balance) and verify the function returns true before granting item.</li>
+  <li>Enforce job or whitelist restrictions on the server; do not rely on client checks.</li>
+  <li>Sanitize and validate metadata (ammo counts, attachments) and reject unexpected fields.</li>
+  <li>Log every successful and failed attempt for auditing.</li>
+</ul>
+<p>All client-initiated operations should call server callbacks or events. Use QBCore.Functions.CreateCallback for pre-purchase checks, and RegisterNetEvent for finalization with server-side validation of the same checks.</p>
+
+<h2>QBCore implementation example</h2>
+<p>Below is a compact, practical pattern using QBCore conventions. Adapt function names to match your QBCore version and inventory resource.</p>
+<pre><code>-- server/main.lua (server-side)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+local WeaponCatalog = {
+  pistol = {item = "weapon_pistol", price = 2500, ammo = 50},
+  smg = {item = "weapon_smg", price = 7500, ammo = 120}
+}
+
+QBCore.Functions.CreateCallback('weaponshop:canBuy', function(source, cb, weaponKey)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return cb(false, 'no_player') end
+  local entry = WeaponCatalog[weaponKey]
+  if not entry then return cb(false, 'invalid_weapon') end
+  local balance = Player.PlayerData.money['cash'] or 0
+  if balance < entry.price then return cb(false, 'insufficient_funds') end
+  -- Example job check (optional)
+  if entry.job and Player.PlayerData.job.name ~= entry.job then
+    return cb(false, 'job_restricted')
+  end
+  cb(true, entry.price)
+end)
+
+RegisterNetEvent('weaponshop:buy', function(weaponKey)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  local entry = WeaponCatalog[weaponKey]
+  if not entry then
+    TriggerClientEvent('QBCore:Notify', src, 'Invalid weapon', 'error')
+    return
+  end
+  -- re-check server-side
+  if (Player.PlayerData.money['cash'] or 0) < entry.price then
+    TriggerClientEvent('QBCore:Notify', src, 'Not enough money', 'error')
+    return
+  end
+  -- remove money, then add item atomically in code flow
+  if not Player.Functions.RemoveMoney('cash', entry.price) then
+    TriggerClientEvent('QBCore:Notify', src, 'Payment failed', 'error')
+    return
+  end
+  Player.Functions.AddItem(entry.item, 1, false, { ammo = entry.ammo })
+  -- log to DB or external logger here
+  TriggerClientEvent('QBCore:Notify', src, 'Purchase successful', 'success')
+end)</code></pre>
+<p>Client-side usage (invoke callback then event):</p>
+<pre><code>-- client/main.lua (client-side)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+function AttemptBuy(weaponKey)
+  QBCore.Functions.TriggerCallback('weaponshop:canBuy', function(success, info)
+    if not success then
+      QBCore.Functions.Notify(info, 'error')
+      return
+    end
+    -- Show confirmation UI to the player then:
+    TriggerServerEvent('weaponshop:buy', weaponKey)
+  end, weaponKey)
+end</code></pre>
+<p>Notes: adjust Player.Functions.AddItem/AddWeapon to your inventory or weapon resource. Many servers use qb-inventory so adding an item there keeps UI consistent.</p>
+
+<h3>Logging and atomicity</h3>
+<p>Ensure operations that affect money and inventory are performed together in the server flow. If your persistence uses asynchronous DB calls, perform server-side state changes first, then persist the log; if persistence fails, reconciliate via a periodic audit that checks player inventories vs transaction logs.</p>
+
+<h2>Integrating with ox_lib / ox_inventory and ESX</h2>
+<p>ox_inventory and ox_lib provide performance and UX benefits. Integration notes:</p>
+<ul>
+  <li>Use the inventory's AddItem export instead of directly modifying DB tables.</li>
+  <li>ox_inventory will often handle attachment metadata; pass { ammo = X } as item metadata when adding a weapon entry.</li>
+  <li>If you use ESX, replace QBCore player interactions with ESX.GetPlayerFromId and xPlayer.removeMoney/addInventoryItem. Maintain the same server-side validation flow.</li>
+</ul>
+<p>Example integration pattern: check funds via server callback, call xPlayer.removeMoney / Player.Functions.RemoveMoney, then call the inventory export to add the item. Always check return values from exports and revert or log if failures occur.</p>
+
+<h2>Client UI and safety considerations</h2>
+<p>Client responsibilities:</p>
+<ul>
+  <li>Render the catalog and prices fetched from the server or embedded in the client as read-only. Prefer fetching the catalog from the server at UI open to reflect dynamic pricing.</li>
+  <li>Only call server callbacks or events to request checks/purchase. Do not perform any client-side money subtraction or inventory modifications locally.</li>
+  <li>Provide clear error messages from server callback results.</li>
+</ul>
+<p>Example client flow:</p>
+<ol>
+  <li>Player opens shop -> client requests catalog and current player limits (server callback).</li>
+  <li>Client displays UI and confirmation prompt.</li>
+  <li>On confirm, client triggers server event to finalize purchase; server validates and responds via notification.</li>
+</ol>
+
+<h2>Testing and debugging</h2>
+<p>Strategy for robust testing:</p>
+<ul>
+  <li>Unit test server callbacks: simulate GetPlayer returning mock data to ensure all validation branches behave as expected.</li>
+  <li>Integration test: simulate networked purchase from client to server and assert database/inventory state changes and logs.</li>
+  <li>Edge cases: insufficient funds, malformed identifiers, DB failures, duplicate requests, concurrent purchases (race conditions).</li>
+  <li>Penetration checks: attempt to call the buy event with forged weapon keys and confirm server rejects them.</li>
+</ul>
+<p>For broader operational monitoring and continuous deployments, tie changes to your management workflows. You can use server automation tools like the Stellar management platform for task tracking and deployment orchestration: <a href="https://trystellarai.com/app">Stellar AI app</a>. For developer-focused discussion and case studies, see the blog: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.</p>
+
+<h3>Roblox-specific note</h3>
+<p>If you maintain a similar weapon shop concept in Roblox, preserve server authority using RemoteEvents/RemoteFunctions carefully: the server must own the final checks and DataStore writes. Handle DataStore failures by retrying with exponential backoff, and consider queueing writes to avoid hitting limits. For RemoteEvents, validate all incoming parameters and do not trust client-sent prices or identifiers.</p>
+
+<h2>Deployment and maintenance</h2>
+<p>Deployment checklist before going live:</p>
+<ul>
+  <li>Run load tests or simulated purchases to validate DB and inventory throughput.</li>
+  <li>Ensure all logging (successful and failed attempts) is persisted for audits.</li>
+  <li>Apply rate-limiting on purchase attempts to avoid abuse via rapid repeated events.</li>
+  <li>Document required configuration (weapon catalog, prices, job restrictions) in a single server file for easy updates.</li>
+</ul>
+<p>Post-deployment: monitor server logs for anomalies and run daily reconciliation jobs comparing inventory tables with transaction logs. If you automate backups and versioned deployments, include rollback steps and database migration scripts.</p>
+
+<h2>Practical checklist (quick reference)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Server-side</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Validate weapon identifier</td>
+      <td>Compare incoming key against WeaponCatalog</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td>Verify funds & remove</td>
+      <td>Get player, remove money, confirm success</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td>Add inventory entry</td>
+      <td>Call Player.Functions.AddItem or inventory export</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td>Log transaction</td>
+      <td>Insert into transactions table</td>
+      <td>Strongly recommended</td>
+    </tr>
+    <tr>
+      <td>Restrict by job/whitelist</td>
+      <td>Server-side job check</td>
+      <td>Optional</td>
+    </tr>
+    <tr>
+      <td>Rate limiting</td>
+      <td>Throttle purchase attempts per player</td>
+      <td>Recommended</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Maintenance tips</h2>
+<p>Keep the weapon catalog and pricing in source control. Announce shop changes to players in downtime windows. Implement feature flags for experimental weapons so you can turn them off without a full deploy. Periodically review logs for abuse patterns and adjust rate limits or add further anti-cheat checks.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM documentation</a> — server/client development, natives and resources</li>
+  <li><a href="https://docs.qbcore.org/">QBCore documentation</a> — core functions, Player API, server callbacks</li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib GitHub</a> — library used by ox_inventory and other modern resources</li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

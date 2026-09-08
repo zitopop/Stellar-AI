@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+  <meta name="theme-color" content="#080808">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stellar AI">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+
+  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FiveM Bank Robbery Script — Complete QBCore Guide — Stellar AI</title>
+  <meta name="description" content="A complete bank robbery system for your FiveM server covering store robberies, bank vaults and escape routes on QBCore.">
+  <meta name="keywords" content="fivem bank robbery script, qbcore bank script, fivem store robbery, qbcore robbery system">
+  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-bank-robbery-script">
+  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
+    a{color:inherit;text-decoration:none;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
+    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
+    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
+    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
+    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
+    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
+    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
+    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
+    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
+    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
+    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
+    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
+    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
+    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-copy{font-size:12px;color:var(--muted);}
+    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
+  </style>
+  <link rel="stylesheet" href="/site-polish.css">
+</head>
+<body>
+<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
+<div class="container">
+  <h1>FiveM Bank Robbery Script — Complete QBCore Guide</h1>
+
+<p class="intro">A practical guide to fivem bank robbery script — complete qbcore guide, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview: Purpose and Scope</h2>
+  <p>This guide walks through building a secure, maintainable bank robbery script for FiveM using QBCore, with notes on ESX compatibility, ox_lib integration, and a short section covering Roblox porting considerations. It focuses on architecture, server-side validation, implementation choices, testing, deployment, and maintenance. It does not rely on client input for security-sensitive checks and follows best practices for data integrity and anti-cheat resilience.</p>
+
+  <h2>Architecture and Data Flow</h2>
+  <p>Design the robbery flow as a set of authoritative server processes with minimal client authority. Typical components:</p>
+  <ul>
+    <li>Server controller: single source of truth for robbery state, cooldowns, police counts, and payouts.</li>
+    <li>Client UI & effects: animations, progress bars, target selection, sound—purely cosmetic and driven by server state.</li>
+    <li>Database/logging layer: persistent logs for audits and rollback, optionally using MySQL or your preferred DB via an async query layer.</li>
+    <li>Anti-cheat integration: rate limiting, event throttling, and anomaly detection on the server.</li>
+  </ul>
+  <p>Sequence (high-level): Player requests to start → server validates permissions and world state → server begins robbery, pushes events to clients (police alert, UI triggers) → client reports progress ticks only as confirmations to server → server awards payout and updates persistent logs when the robbery completes.</p>
+
+  <h3>State model</h3>
+  <p>Keep a small in-memory state for active robberies keyed by bankId or instanceId. Persist only final outcomes or significant checkpoints to DB. Never persist transient client-sent progress without server verification.</p>
+
+  <h2>Implementation Choices (QBCore-focused)</h2>
+  <p>Use the server-side QBCore API for player lookups, inventory checks, and item consumption. For QBCore v2+ common idioms:</p>
+  <pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('bank:server:StartRobbery', function(bankId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- server-side validations
+  if not validBank(bankId) then
+    TriggerClientEvent('bank:client:RobberyDenied', src, 'invalid_bank')
+    return
+  end
+
+  if not Player.Functions.GetItemByName('thermal_charge') then
+    TriggerClientEvent('bank:client:RobberyDenied', src, 'missing_item')
+    return
+  end
+
+  -- start robbery in server state and notify police
+  startRobberyForPlayer(src, bankId)
+end)</code></pre>
+  <p>Validate inventory and permissions on server, consume required items on server, and use QBCore.Functions.CreateCallback for synchronous server-client queries when necessary.</p>
+
+  <h3>ox_lib and effect integration</h3>
+  <p>Use ox_lib for standardized UI and progressbars on the client, but drive the progress state from server heartbeats or validated ticks. Never let the client unilaterally trigger completion; client sends "progress tick" events that server verifies against timeouts and expected intervals.</p>
+
+  <h2>Security and Server Validation</h2>
+  <p>Security is the single most important area. Never trust client input. Key server-side checks:</p>
+  <ul>
+    <li>Player identity: use QBCore functions to retrieve player metadata, identifiers, and job.</li>
+    <li>Inventory and items: check for required items server-side and remove them atomically when starting.</li>
+    <li>Proximity / line-of-sight: validate player coordinates server-side if the world position matters.</li>
+    <li>Weapon check: verify weapon type on server by checking the player state or an equip flag sent in a short-lived, validated event.</li>
+    <li>Police count and presence: count active police jobs on the server—not client-supplied numbers.</li>
+    <li>Timing & anti-rapid-fire: implement minimum intervals between progress ticks, and reject impossible sequences.</li>
+  </ul>
+  <p>Store a server-side anti-cheat score and incremental penalties for suspicious behavior (e.g., impossible location changes, too-fast completion). Log suspicious events for offline review rather than immediate punishment in ambiguous cases.</p>
+
+  <h2>Database and Logging</h2>
+  <p>Persist outcomes and important state transitions:</p>
+  <ul>
+    <li>Robbery start and end timestamps</li>
+    <li>Payout amounts, player identifiers, and item consumption</li>
+    <li>Police notifications and response IDs</li>
+    <li>Suspicious activity flags</li>
+  </ul>
+  <p>Use asynchronous DB calls and ensure errors are handled—retry transient failures and fail-safe by placing the robbery in a "pending" state until persistence succeeds or manual reconciliation occurs.</p>
+
+  <h2>Practical Checklist: Server vs Client Responsibilities</h2>
+  <table>
+    <thead>
+      <tr><th>Task</th><th>Server</th><th>Client</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Start request</td><td>Validate player, items, cooldowns, police count</td><td>Send request, show pending UI</td><td>Server decides accept/deny</td></tr>
+      <tr><td>Progress tracking</td><td>Validate ticks, enforce timing, store state</td><td>Show progressbar/animation</td><td>Client-only visuals; server owns correctness</td></tr>
+      <tr><td>Payout</td><td>Calculate and distribute money/items, log to DB</td><td>Show reward UI/animation</td><td>Server should be authoritative</td></tr>
+      <tr><td>Police alert</td><td>Determine and broadcast geofence alerts</td><td>Play sounds/markers</td><td>Use server to prevent false alarms</td></tr>
+      <tr><td>Anti-cheat</td><td>Score based on anomalies; block/flag</td><td>None</td><td>Keep lists of violators</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Sample Server Event Patterns and Fail-Safes</h2>
+  <p>Use guarded RegisterNetEvent handlers with local source checking and state locks. Example patterns to protect critical sections:</p>
+  <pre><code>local activeRobberies = {}
+
+local function startRobberyForPlayer(src, bankId)
+  if activeRobberies[bankId] then return end
+  activeRobberies[bankId] = {player = src, start = os.time()}
+  -- schedule end or timeout
+  SetTimeout(60 * 1000, function()
+    if activeRobberies[bankId] and activeRobberies[bankId].player == src then
+      finishRobbery(src, bankId)
+    end
+  end)
+end
+
+RegisterNetEvent('bank:server:ProgressTick', function(bankId, tickId)
+  local src = source
+  if not activeRobberies[bankId] or activeRobberies[bankId].player ~= src then
+    return -- invalid or stale tick
+  end
+  -- validate tick timing and update server state
+end)</code></pre>
+
+  <h2>Testing: Unit, Integration, and Abuse Scenarios</h2>
+  <p>Testing phases:</p>
+  <ol>
+    <li>Unit tests for server-side validation logic (cooldowns, item checks).</li>
+    <li>Integration tests with QBCore player objects and DB layer (simulate multiple concurrent players).</li>
+    <li>Manual gameplay testing with QA players: police responses, UI flow, edge cases like disconnect mid-robbery.</li>
+    <li>Abuse testing: simulate forged client events, rapid tick submissions, and improbable position reports.</li>
+  </ol>
+  <p>Use verbose server logs during testing but disable expensive logging in production. Record player identifiers with tests so you can reproduce sequences later.</p>
+
+  <h2>Deployment and Runtime Considerations</h2>
+  <p>When releasing:</p>
+  <ul>
+    <li>Feature toggle: release behind a config flag so you can quickly disable if issues arise.</li>
+    <li>DB migrations: apply schema changes in a transactional way and verify backups before schema-altering updates.</li>
+    <li>Monitoring: expose metrics (robberies/attempts/success rate/flags) to your monitoring system. Keep logs for reconciliation.</li>
+    <li>Auto-reload safety: avoid hot-reloading scripts that reset in-memory robbery state without persisting; gracefully drain active robberies before a restart.</li>
+  </ul>
+  <p>For on-going analytics and admin control, integrate an admin panel to list active robberies, cancel, or force-complete for recovery operations. You can use a lightweight internal UI or a web dashboard linked to the same DB and protected by admin auth.</p>
+  <p>If you want to integrate with tools or manage assets, consider using the Stellar AI app for asset management and automation: <a href="https://trystellarai.com/app">Stellar AI app</a>. For workflow articles and deeper guides, see our blog: <a href="https://trystellarai.com/blog">Stellar AI blog</a>. You can also explore the app again to manage deployments: <a href="https://trystellarai.com/app">Stellar AI app</a>.</p>
+
+  <h2>Maintenance, Updates, and Versioning</h2>
+  <p>Maintain a changelog and semantic versioning. When updating the script:</p>
+  <ul>
+    <li>Document breaking changes (state model changes, DB schema updates).</li>
+    <li>Provide compatibility shims for older client assets if immediate client updates are impossible.</li>
+    <li>Schedule maintenance windows for schema migrations and major updates that require player downtime.</li>
+    <li>Rotate any secrets (API keys, webhook tokens) used by your logging or alerting systems periodically and after suspected leaks.</li>
+  </ul>
+
+  <h2>Roblox Porting Considerations (Luau)</h2>
+  <p>If you plan to port the core ideas to Roblox, follow these server-authoritative patterns:</p>
+  <ul>
+    <li>All security checks and payouts are executed on the Roblox server (Script), never on client LocalScripts.</li>
+    <li>Use RemoteEvents and RemoteFunctions only to request actions; validate all data and refusal reasons on the server. Never accept positional data without server-side verification.</li>
+    <li>Handle DataStore errors robustly using pcall, retries, and backoff. Design for rate limits and expired writes.</li>
+    <li>Use server-side locking patterns (e.g., ordered state tables or BindableEvents) to prevent double-completion.</li>
+    <li>Log server-side events and provide an admin UI for investigation. Protect admin endpoints by group/role checks.</li>
+  </ul>
+
+  <h2>Common Pitfalls and How to Avoid Them</h2>
+  <ul>
+    <li>Trusting client timestamps: Reject or re-derive time deltas server-side.</li>
+    <li>Not accounting for disconnects: persist mid-state when appropriate and support resume or safe cancellation.</li>
+    <li>Race conditions on DB writes: use transactions or atomic updates when crediting money or items.</li>
+    <li>Insufficient police verification: count only active police jobs from the server job registry, not client claims.</li>
+  </ul>
+
+  <h2>References</h2>
+  <p>Official documentation and repositories referenced for best practices:</p>
+  <ul>
+    <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib repository</a></li>
+    <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a></li>
+    <li><a href="https://esx-framework.github.io/">ESX Framework docs</a></li>
+  </ul>
+</body>
+</div>
+<footer>
+  <div class="footer-copy">© 2026 Stellar AI</div>
+  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
+</footer>
+</body>
+</html>

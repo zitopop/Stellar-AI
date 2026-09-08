@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Fire Job — Build a server-authoritative fire department for FiveM (plus Roblox pattern) — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to implement a safe, server-authoritative QBCore fire job. Includes complete resource files, qb-target interaction, server validation, and a matched Roblox pattern using RemoteEvents and DataStore error handling.">
+  <meta name="keywords" content="QBCore fire job, FiveM fire department, qb-target, ox_lib, QBCore resource, Roblox fire job, RemoteEvents, DataStore">
+  <meta property="og:title" content="QBCore Fire Job — Build a server-authoritative fire department for FiveM (plus Roblox pattern)">
+  <meta property="og:description" content="Step-by-step guide to implement a safe, server-authoritative QBCore fire job. Includes complete resource files, qb-target interaction, server validation, and a matched Roblox pattern using RemoteEvents and DataStore error handling.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-fire-job">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Developer guide</div>
+  <h1>QBCore Fire Job — Build a server-authoritative fire department for FiveM (plus Roblox pattern)</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you through a secure, production-minded QBCore Fire Job resource for FiveM, plus a short Roblox pattern that maps to the same responsibilities. It focuses on server authority, validation, job/on-duty gating, target interactions, and safe persistence. Wherever appropriate the examples follow QBCore and Roblox server-client rules.</p>
+  <h2>Implementation plan (short)</h2>
+<p>1) Create a QBCore resource with fxmanifest.lua, config.lua, client.lua and server.lua. 2) Use qb-target or ox_lib for interactions. 3) Keep all authoritive state and rewards server-side. 4) Offer a Roblox-compatible pattern using RemoteEvents and DataStore with retry handling. 5) Validate, test, and iterate.</p>
+
+<h3>Assumptions and dependencies</h3>
+<ul>
+  <li>FiveM: QBCore (v2 style exports), qb-target or ox_lib, optional qb-phone or dispatch integration.</li>
+  <li>Roblox: standard server-client model, DataStoreService available, RemoteEvent/RemoteFunction allowed.</li>
+  <li>You have permission to add/start resources on the target server and to create Roblox scripts in a place you control.</li>
+</ul>
+
+<h2>QBCore Fire Job — Files and where they go</h2>
+<p>Place the resource in your server/resources folder as <strong>qb-firejob</strong>. Ensure it is started after qb-core and qb-target.</p>
+
+<table>
+  <thead>
+    <tr><th>File</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>fxmanifest.lua</td><td>Resource manifest and dependencies</td></tr>
+    <tr><td>config.lua</td><td>Job names, reward amounts, target zones</td></tr>
+    <tr><td>server.lua</td><td>Server-authoritative logic, validation, payouts</td></tr>
+    <tr><td>client.lua</td><td>Player interactions, qb-target entries, animations</td></tr>
+  </tbody>
+</table>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore Fire Job'
+version '1.0.0'
+
+shared_script 'config.lua'
+client_script 'client.lua'
+server_script 'server.lua'
+
+dependencies {
+  'qb-core',
+  'qb-target'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+Config.JobName = 'fire'
+Config.ExtinguishPay = 150 -- server-side validated
+Config.MinimumRank = 0 -- lowest rank allowed to earn pay
+Config.Targets = {
+  ['firehose'] = { coords = vector3(256.0, -1002.0, 29.3), dist = 2.0 }
+}
+</code></pre>
+
+<h3>server.lua (core validation)</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('qb-firejob:server:Extinguish', function(zone)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Server-side job check and on-duty enforcement
+  local job = Player.PlayerData.job
+  if not job or job.name ~= Config.JobName then
+    TriggerClientEvent('QBCore:Notify', src, 'You are not a firefighter', 'error')
+    return
+  end
+  if job.onduty ~= true then
+    TriggerClientEvent('QBCore:Notify', src, 'You must be on duty', 'error')
+    return
+  end
+  if job.grade < Config.MinimumRank then
+    TriggerClientEvent('QBCore:Notify', src, 'Your rank cannot claim rewards', 'error')
+    return
+  end
+
+  -- Award and log server-side
+  local pay = Config.ExtinguishPay
+  Player.Functions.AddMoney('bank', pay, 'fire-extinguish')
+  TriggerClientEvent('QBCore:Notify', src, ('Paid $%s for extinguishing'):format(pay), 'success')
+
+  -- Optional: trigger dispatch, logs, brief cooldowns, etc.
+end)
+
+-- Safe server callback example for UI
+QBCore.Functions.CreateCallback('qb-firejob:server:GetStatus', function(source, cb)
+  local Player = QBCore.Functions.GetPlayer(source)
+  if not Player then cb({ok = false}) return end
+  cb({job = Player.PlayerData.job})
+end)
+</code></pre>
+
+<p>Notes: always validate Player.PlayerData.job and job.onduty server-side before changing money or persistent state. Do not trust client-sent zone names without validation.</p>
+
+<h2>client.lua (qb-target example)</h2>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+CreateThread(function()
+  for name,data in pairs(Config.Targets) do
+    exports['qb-target']:AddBoxZone(name, data.coords, 1.5, 1.5, {
+      name = name,
+      heading = 0,
+      debugPoly = false,
+      minZ = data.coords.z - 1.0,
+      maxZ = data.coords.z + 1.0
+    }, {
+      options = {{
+        type = 'client',
+        event = 'qb-firejob:client:UseHose',
+        icon = 'fas fa-fire-extinguisher',
+        label = 'Use firehose'
+      }},
+      distance = data.dist
+    })
+  end
+end)
+
+RegisterNetEvent('qb-firejob:client:UseHose', function()
+  QBCore.Functions.TriggerCallback('qb-firejob:server:GetStatus', function(resp)
+    if not resp or not resp.job or resp.job.name ~= Config.JobName or resp.job.onduty ~= true then
+      QBCore.Functions.Notify('You must be on duty as a firefighter', 'error')
+      return
+    end
+    -- Play animation, particles, then notify server to award
+    -- animation omitted for brevity
+    TriggerServerEvent('qb-firejob:server:Extinguish', 'firehose')
+  end)
+end)
+</code></pre>
+
+<p>Use qb-target to limit interactions only when physically near tools or vehicles. Keep asset spawning and ownership checks on the server.</p>
+
+<h2>Roblox pattern: server-authoritative Fire Job</h2>
+<p>The same responsibilities exist on Roblox: keep award logic and job assignment on the server, use RemoteEvents to request actions, and use DataStore with pcall and retries for persistence.</p>
+
+<h3>Files (place in ServerScriptService / ReplicatedStorage)</h3>
+<ul>
+  <li>ReplicatedStorage.FireEvent (RemoteEvent)</li>
+  <li>ServerScriptService.FireServer (Script)</li>
+  <li>StarterPlayerScripts.FireClient (LocalScript)</li>
+</ul>
+
+<h3>ServerScriptService/FireServer.lua (safe, simplified)</h3>
+<pre><code>-- ServerScriptService/FireServer.lua
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Players = game:GetService('Players')
+local DataStoreService = game:GetService('DataStoreService')
+local fireEvent = ReplicatedStorage:WaitForChild('FireEvent')
+local jobStore = DataStoreService:GetDataStore('PlayerJobs')
+
+local function updateDataStore(player, key, transform)
+  local success, err
+  for i=1,3 do
+    success, err = pcall(function()
+      jobStore:UpdateAsync(player.UserId .. ':' .. key, function(old)
+        return transform(old)
+      end)
+    end)
+    if success then return true end
+    wait(1 * i) -- exponential-ish backoff
+  end
+  warn('DataStore update failed for', player.Name, err)
+  return false
+end
+
+fireEvent.OnServerEvent:Connect(function(player, action)
+  -- Validate player's job server-side
+  local jobMeta = player:GetAttribute('Job') or 'none'
+  local onduty = player:GetAttribute('OnDuty')
+  if jobMeta ~= 'Fire' or not onduty then
+    fireEvent:FireClient(player, 'Denied')
+    return
+  end
+
+  if action == 'Extinguish' then
+    -- award XP or money in a server-authoritative way
+    local awarded = 50
+    player:SetAttribute('Cash', (player:GetAttribute('Cash') or 0) + awarded)
+    local ok = updateDataStore(player, 'cash', function(old)
+      return (old or 0) + awarded
+    end)
+    fireEvent:FireClient(player, ok and 'Success' or 'SavedLocally')
+  end
+end)
+</code></pre>
+
+<h2>Practical checklist before go-live</h2>
+<table>
+  <thead>
+    <tr><th>Step</th><th>Why</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Validate job & on-duty server-side</td><td>Prevents cheating</td></tr>
+    <tr><td>Limit client-sent data; send IDs not amounts</td><td>Reduce attack surface</td></tr>
+    <tr><td>Log sensitive events (payouts)</td><td>Audit and debug</td></tr>
+    <tr><td>Test qb-target zones and distances</td><td>UX and security</td></tr>
+    <tr><td>Implement DataStore retry/backoff</td><td>Prevent data loss on Roblox</td></tr>
+  </tbody>
+</table>
+
+<p>For iterative scripting and to generate ready-to-edit files automatically, Stellar AI offers an AI workspace that helps produce destination-labelled files and explain changes — try the app at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. If you prefer guided examples and templates, explore the blog for deeper patterns: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>. When you want to speed up resource scaffolding and iterate quickly, try the app again here: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Security considerations & next steps</h2>
+<ul>
+  <li>Never award money client-side. Always check Player.PlayerData.job on server.</li>
+  <li>Consider rate-limiting extinguish events per player to avoid farming.</li>
+  <li>Add logging to an external audit channel for suspicious patterns.</li>
+  <li>For Roblox, respect DataStore limits and use UpdateAsync with retries.</li>
+</ul>
+
+<p>Next steps: hook dispatch/notifications, create grade-based tasks, add vehicle garage management server-side, and plan telemetry for balancing rewards. Test each change on a staging server before moving to live.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References</h3><ul><li><a href="https://docs.fivem.net/">FiveM docs</a></li><li><a href="https://developer.roblox.com/">Roblox Developer Hub</a></li><li><a href="https://github.com/zitopop/Stellar-AI">Stellar AI GitHub</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

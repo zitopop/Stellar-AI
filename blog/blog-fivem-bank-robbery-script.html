@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Bank Robbery Script — Server-Authoritative, QBCore-Friendly Guide — Stellar AI</title>
+  <meta name="description" content="Design and implement a secure, server-authoritative bank robbery script for FiveM. Includes planning, QBCore examples, fxmanifest, server/client files, validation, anti-cheat checks, installation steps, and a practical checklist.">
+  <meta name="keywords" content="FiveM bank robbery script, QBCore bank robbery, fxmanifest, server authoritative, qb-target, security, ESX, ox_lib">
+  <meta property="og:title" content="FiveM Bank Robbery Script — Server-Authoritative, QBCore-Friendly Guide">
+  <meta property="og:description" content="Design and implement a secure, server-authoritative bank robbery script for FiveM. Includes planning, QBCore examples, fxmanifest, server/client files, validation, anti-cheat checks, installation steps, and a practical checklist.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-bank-robbery-script">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM scripting guide</div>
+  <h1>FiveM Bank Robbery Script — Server-Authoritative, QBCore-Friendly Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you through building a secure, server-authoritative bank robbery script for FiveM. It explains design decisions, provides complete example files for QBCore, covers installation, and lists a practical testing checklist.</p>
+  <h2>Overview</h2>
+<p>Bank robberies are high-impact gameplay features: they must feel cinematic while remaining secure and authoritative. This guide focuses on an approach that keeps critical logic on the server, validates client messages, integrates cleanly with QBCore (with notes for ESX/ox_lib), and avoids common exploits such as client-side reward minting, permission bypasses, or sync issues.</p>
+
+<h2>Design principles</h2>
+<ul>
+  <li><strong>Server authority:</strong> All reward, cooldown, vault state, and payout calculations run server-side.</li>
+  <li><strong>Declarative config:</strong> Keep positions, timers, and rewards in a config file to allow fast tweaking.</li>
+  <li><strong>Graceful failure handling:</strong> Any network or state error should abort the robbery and notify the client.</li>
+  <li><strong>Minimal client trust:</strong> Client handles visuals, animation, and interaction requests only.</li>
+</ul>
+
+<h2>Short implementation plan</h2>
+<ol>
+  <li>Define config: bank locations, cooldowns, required items, police count requirements.</li>
+  <li>Create fxmanifest and resource structure.</li>
+  <li>Implement server.lua to manage bank state, verify dependencies, and issue payouts via QBCore.</li>
+  <li>Implement client.lua to prompt interactions (qb-target or ox_target), play animations, and call the server events.</li>
+  <li>Test with multiple clients and ensure robust anti-cheat checks and logging.</li>
+</ol>
+
+<h2>Assumptions & framework notes</h2>
+<p>This guide assumes a QBCore server (qb-core). For ESX, replace QBCore exports with ESX.TriggerServerCallback and ESX.GetPlayerFromId equivalents and persist server-side state similarly. If you use ox_lib or ox_target, adapt the target registration in the client to use their export names. The server examples use QBCore exports and standard FiveM events.</p>
+
+<h2>Files — complete example</h2>
+<p>Below are minimal but complete files to get a safe robbery started. Put these inside a resource folder named fivem-bank-robbery.</p>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'You'
+description 'Server-authoritative bank robbery example (QBCore)'
+version '1.0.0'
+
+shared_script 'config.lua'
+client_script 'client.lua'
+server_script 'server.lua'
+
+dependencies {
+  'qb-core'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+Config.Banks = {
+  { id = 'fleeca1', name = 'Fleeca Bank', coords = vector3(148.34, -1040.22, 29.37), cooldown = 3600, rewardMin = 5000, rewardMax = 15000, requiredPolice = 2 }
+}
+Config.RequiredItem = 'lockpick'
+</code></pre>
+
+<h3>server.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local BankState = {}
+
+for _, bank in pairs(Config.Banks) do
+  BankState[bank.id] = { onCooldown = false }
+end
+
+RegisterNetEvent('fivem-bank-robbery:attempt', function(bankId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  local bank = nil
+  for _, b in pairs(Config.Banks) do if b.id == bankId then bank = b end end
+  if not bank then return end
+
+  -- Basic checks
+  if BankState[bankId].onCooldown then
+    TriggerClientEvent('fivem-bank-robbery:notify', src, 'This bank was recently robbed.')
+    return
+  end
+
+  -- Police count check (example using qb-core metadata)
+  local cops = 0
+  for _, player in pairs(QBCore.Functions.GetPlayers()) do
+    local ply = QBCore.Functions.GetPlayer(player)
+    if ply and ply.PlayerData.job and ply.PlayerData.job.name == 'police' then cops = cops + 1 end
+  end
+  if cops < bank.requiredPolice then
+    TriggerClientEvent('fivem-bank-robbery:notify', src, 'Not enough police online.')
+    return
+  end
+
+  -- Inventory / item check
+  if not Player.Functions.GetItemByName(Config.RequiredItem) then
+    TriggerClientEvent('fivem-bank-robbery:notify', src, 'You need a lockpick to start this robbery.')
+    return
+  end
+
+  -- Mark bank in cooldown state
+  BankState[bankId].onCooldown = true
+  SetTimeout(bank.cooldown * 1000, function() BankState[bankId].onCooldown = false end)
+
+  -- Secure reward: random within server bounds
+  local reward = math.random(bank.rewardMin, bank.rewardMax)
+
+  -- Final validation and payout
+  -- Example: ensure player still exists and is near bank
+  local playerCoords = Player.PlayerData.position
+  if not playerCoords or #(vector3(playerCoords.x, playerCoords.y, playerCoords.z) - bank.coords) > 10.0 then
+    TriggerClientEvent('fivem-bank-robbery:notify', src, 'You are too far from the bank.')
+    return
+  end
+
+  -- Add money, log, and notify police
+  Player.Functions.AddMoney('cash', reward, 'bank-robbery')
+  TriggerClientEvent('fivem-bank-robbery:success', src, reward)
+  -- TODO: integrate dispatch for police
+end)
+</code></pre>
+
+<h3>client.lua (interaction / qb-target)</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+CreateThread(function()
+  for _, bank in pairs(Config.Banks) do
+    exports['qb-target']:AddBoxZone(bank.id, bank.coords, 2.0, 2.0, { name = bank.id, heading = 0, debugPoly = false }, { options = {
+      { event = 'fivem-bank-robbery:clientStart', icon = 'fas fa-user-secret', label = 'Rob Bank', bankId = bank.id }
+    }, distance = 3.5 })
+  end
+end)
+
+RegisterNetEvent('fivem-bank-robbery:clientStart', function(data)
+  local bankId = data.bankId
+  -- Play animation, progress bar etc.
+  TriggerServerEvent('fivem-bank-robbery:attempt', bankId)
+end)
+</code></pre>
+
+<h2>Installation & deployment</h2>
+<ol>
+  <li>Place the folder fivem-bank-robbery in your resources directory.</li>
+  <li>Add ensure fivem-bank-robbery to your server.cfg after qb-core.</li>
+  <li>Restart or start the resource and test in a local environment before deploying to live.</li>
+</ol>
+
+<h2>Security and validation checklist</h2>
+<p>Ensure the following server-side rules are enforced to reduce attack surface:</p>
+<table>
+  <thead>
+    <tr><th>Check</th><th>Server-side enforcement</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Reward issuance</td><td>Payouts only on server after all checks</td></tr>
+    <tr><td>Cooldowns</td><td>BankState table tracked on server, not client</td></tr>
+    <tr><td>Distance validation</td><td>Verify player's position before payout</td></tr>
+    <tr><td>Police requirement</td><td>Count police on server, do not trust client reports</td></tr>
+    <tr><td>Item checks</td><td>Verify inventory server-side (GetItemByName)</td></tr>
+  </tbody>
+</table>
+
+<h2>Testing checklist (practical)</h2>
+<ul>
+  <li>Test single-player robbery: verify payout, cooldown sets, and notifications.</li>
+  <li>Test multi-player: attempt simultaneous robberies and ensure server blocks duplicates.</li>
+  <li>Attempt spoofing: send attempt events from client scripts; server should still validate position, items, and police count.</li>
+  <li>Network failure: drop connection mid-robbery and confirm server cleans up timers as needed.</li>
+  <li>Edge cases: player disconnect during robbery, police count changes mid-process.</li>
+</ul>
+
+<h2>Optimization & anti-cheat notes</h2>
+<p>Keep expensive checks minimal: cache police counts with a short TTL, validate proximity against a stored vector3 rather than trusting client coordinates, and keep logs for manual review. Avoid heavy per-tick work on the server; use event-driven state transitions and timeouts.</p>
+
+<h2>Next steps & integration ideas</h2>
+<ul>
+  <li>Integrate with a dispatch resource to notify police with blips and calls.</li>
+  <li>Add vault mini-games on the client, but validate success server-side with proof tokens or a server-driven RNG.</li>
+  <li>Connect to a logging system or webhook for auditing high-value payouts.</li>
+</ul>
+
+<p>If you want to prototype faster, try a purpose-built AI scripting workspace to generate resource files and iteration plans at https://trystellarai.com/app — it can save time when producing full destination-labelled files. For workflow guidance and further tutorials, see the Stellar AI blog at https://trystellarai.com/blog and consider generating tailored resource templates at https://trystellarai.com/app.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References & further reading</h3><ul><li><a href="https://docs.fivem.net/">FiveM Documentation</a></li><li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub (for exports and player APIs)</a></li><li><a href="https://docs.fivem.net/docs/scripting-reference/server-events/">Server event reference</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

@@ -1,103 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Add a Prison System to Your QBCore FiveM Server — Stellar AI</title>
-  <meta name="description" content="A proper prison system makes police roleplay much more engaging. This guide covers setting up a QBCore prison with sentences, activities and escape mechanics.">
-  <meta name="keywords" content="qbcore prison script, fivem prison system, fivem jail script qbcore, qbcore penitentiary">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Prison Script — Design, Implementation &amp; Best Practices — Stellar AI</title>
+  <meta name="description" content="A practical, server-authoritative guide to designing and implementing a robust QBCore prison/jail script for FiveM. Includes architecture, security, qb-target integration, persistence, code examples and a deployment checklist.">
+  <meta name="keywords" content="QBCore, FiveM, prison script, jail, qb-target, oxmysql, qbcore jail, server-authoritative, Lua, fxmanifest">
+  <meta property="og:title" content="QBCore Prison Script — Design, Implementation &amp; Best Practices">
+  <meta property="og:description" content="A practical, server-authoritative guide to designing and implementing a robust QBCore prison/jail script for FiveM. Includes architecture, security, qb-target integration, persistence, code examples and a deployment checklist.">
+  <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/qbcore-prison-script">
-  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>How to Add a Prison System to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A proper prison system makes police roleplay much more engaging. This guide covers setting up a QBCore prison with sentences, activities and escape mechanics.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
-</div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM / QBCore guide</div>
+  <h1>QBCore Prison Script — Design, Implementation &amp; Best Practices</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">A clean, secure prison system is a common server feature that must be server-authoritative, resilient to disconnects, and easy for admins to operate. This guide walks through design choices, persistence, escape prevention, admin commands and a sample implementation pattern that fits modern QBCore servers.</p>
+  <h2>Overview & implementation plan</h2>
+<p>This guide explains how to build a QBCore prison script that: enforces jail time server-side, persists jail state across disconnects, supports admin commands and qb-target interactions, and prevents exploits. Implementation plan:</p>
+<ol>
+  <li>Decide data persistence (oxmysql or ghmattimysql) and schema changes.</li>
+  <li>Create server-side APIs that validate permission and set jail state in the DB.</li>
+  <li>Create a client script to teleport, limit controls, play animations and sync timers from the server.</li>
+  <li>Integrate qb-target for in-world interactions and add safe admin commands.</li>
+  <li>Test disconnect, reconnect, and failure scenarios.</li>
+</ol>
+
+<h3>Assumptions and framework dependencies</h3>
+<ul>
+  <li>Server uses QBCore (v2+ or compatible). APIs like <code>QBCore.Functions.GetPlayer</code> exist.</li>
+  <li>MySQL resource available (oxmysql or ghmattimysql). Examples use <em>exports.oxmysql:execute</em> but you can swap to your DB wrapper.</li>
+  <li>qb-target or equivalent is installed for interaction targets.</li>
+  <li>The users table stores a unique identifier (steam/fivem identifier). If your schema differs, adjust SQL and metadata keys accordingly.</li>
+</ul>
+
+<h2>Core design principles</h2>
+<p>Keep authority on the server. The server must be the source of truth for who is jailed and for how long. Clients should only present visuals and report input; they must not be trusted with countdown logic, granting parole, or modifying jail state.</p>
+
+<h3>Server responsibilities</h3>
+<ul>
+  <li>Validate admin actions and permission checks.</li>
+  <li>Record jail state in persistent storage.</li>
+  <li>Emit events to clients to apply confinement (teleport, freeze).</li>
+  <li>Run periodic timers and release players when time elapses.</li>
+</ul>
+
+<h3>Client responsibilities</h3>
+<ul>
+  <li>Receive server events and apply local restrictions (disable controls, UI).</li>
+  <li>Play animations or cell camera effects.</li>
+  <li>Attempt reconnection gracefully and re-sync jail state on connect.</li>
+</ul>
+
+<h2>Minimal safe code example</h2>
+<p>Below is a compact pattern showing a server command to jail a player, persistent DB write, and an event emitted to the client. This is an illustrative example; update identifiers and SQL for your schema.</p>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+author 'YourName'
+description 'QBCore Prison Script'
+version '1.0.0'
+
+shared_script '@qb-core/import.lua'
+server_script 'server/server.lua'
+client_script 'client/client.lua'
+</code></pre>
+
+<pre><code>-- server/server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+QBCore.Commands.Add('jail', 'Jail a player', {{name='id', help='Player ID'}, {name='minutes', help='Minutes to jail'}}, true, function(source, args)
+  local src = source
+  local targetId = tonumber(args[1])
+  local minutes = tonumber(args[2]) or 5
+  local caller = QBCore.Functions.GetPlayer(src)
+  if not caller or not caller.PlayerData.job or caller.PlayerData.job.name ~= 'police' then
+    return TriggerClientEvent('QBCore:Notify', src, 'No permission', 'error')
+  end
+
+  local target = QBCore.Functions.GetPlayer(targetId)
+  if not target then
+    return TriggerClientEvent('QBCore:Notify', src, 'Player not online', 'error')
+  end
+
+  local identifier = target.PlayerData.citizenid or target.PlayerData.license
+  local jailTime = os.time() + (minutes * 60)
+
+  -- Persist jail state (example uses oxmysql)
+  exports.oxmysql:execute('UPDATE users SET jail = ?, jail_time = ? WHERE citizenid = ?', {1, jailTime, identifier})
+
+  -- Notify target client
+  TriggerClientEvent('qb-prison:client:setJailed', target.PlayerData.source, minutes)
+  TriggerClientEvent('QBCore:Notify', src, 'Player jailed for ' .. minutes .. ' minutes')
+end, 'police')
+
+-- On server start / player load: re-sync jailed players
+AddEventHandler('QBCore:Server:PlayerLoaded', function(playerId)
+  local src = playerId
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  local identifier = Player.PlayerData.citizenid
+  exports.oxmysql:execute('SELECT jail, jail_time FROM users WHERE citizenid = ?', {identifier}, function(result)
+    if result and result[1] and result[1].jail == 1 then
+      local remaining = math.max(0, result[1].jail_time - os.time())
+      if remaining > 0 then
+        TriggerClientEvent('qb-prison:client:setJailed', src, math.floor(remaining / 60))
+      else
+        -- cleanup expired jail
+        exports.oxmysql:execute('UPDATE users SET jail = ?, jail_time = ? WHERE citizenid = ?', {0, 0, identifier})
+      end
+    end
+  end)
+end)
+</code></pre>
+
+<pre><code>-- client/client.lua
+local jailed = false
+
+RegisterNetEvent('qb-prison:client:setJailed', function(minutes)
+  jailed = true
+  -- simple example: teleport to cell, freeze and open UI
+  local ped = PlayerPedId()
+  DoScreenFadeOut(500)
+  Wait(600)
+  SetEntityCoords(ped, vector3(1790.0, 2570.0, 45.8)) -- adjust to your cell
+  FreezeEntityPosition(ped, true)
+  DoScreenFadeIn(500)
+  -- show countdown or UI driven by server
+end)
+
+-- Prevent actions while jailed
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(0)
+    if jailed then
+      DisableControlAction(0, 1, true) -- look
+      DisableControlAction(0, 2, true) -- move
+      -- keep network alive and short waits
+    else
+      Citizen.Wait(1000)
+    end
+  end
+end)
+</code></pre>
+
+<h2>Checklist: server vs client responsibilities</h2>
+<table>
+  <thead>
+    <tr><th>Responsibility</th><th>Server</th><th>Client</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Validate admin action</td><td>✔️</td><td></td></tr>
+    <tr><td>Persist jail state</td><td>✔️</td><td></td></tr>
+    <tr><td>Timer and release</td><td>✔️</td><td>Display only</td></tr>
+    <tr><td>Teleport & freeze visuals</td><td>Trigger</td><td>Apply</td></tr>
+    <tr><td>Escape detection</td><td>✔️ (pos checks)</td><td>Report pos</td></tr>
+  </tbody>
+</table>
+
+<h2>Security considerations</h2>
+<p>Never rely on client-side timers or client requests to end jail. When you release someone, update the DB and then emit a release event. On reconnect the server must re-check DB state; do not trust a reconnecting client's memory. Monitor for teleport/vehicle exploits by periodically checking jailed players' coordinates server-side and re-teleport them if they leave the cell area.</p>
+
+<h3>Failure & resilience</h3>
+<p>If your DB is temporarily unavailable, queue actions in memory with conservative defaults and refuse admin jail commands until persistence is confirmed, or show a clear admin error. On player load, if DB query fails, log a server warning and keep the player disconnected from jail areas until persistence is restored or an admin intervenes.</p>
+
+<h2>Operational tips & integrations</h2>
+<p>Use qb-target to add interaction points in the prison (visiting, release desk) and register server callbacks (server-side validation for visit requests). Test disconnect/reconnect flows thoroughly. For quick scaffolding and to auto-generate file templates, consider using the Stellar AI app to produce destination-labelled files and iteration-ready plans: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. When you want deeper design posts or implementation walkthroughs, read the Stellar AI blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<p>Finally, if you generate initial code with automation, iterate and harden the produced scripts (permission checks, SQL sanitation, and robust DB error handling). For a hands-on workspace that helps plan and produce complete files for FiveM and Roblox builders try the Stellar AI app again: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Next steps</h2>
+<ul>
+  <li>Implement periodic server-side checks that enforce position and release.</li>
+  <li>Add an admin UI to inspect jailed players and remaining times.</li>
+  <li>Extend with visitor systems, contraband detection, and jobs inside the prison.</li>
+</ul>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div>
+  <p>References and further reading:</p>
+  <ul>
+    <li><a href="https://docs.fivem.net">FiveM docs</a> — core server/client scripting guidelines.</li>
+    <li><a href="https://github.com/qbcore-framework">QBCore GitHub</a> — QBCore resource and examples.</li>
+    <li><a href="https://github.com/overextended/oxmysql">oxmysql</a> — common MySQL wrapper used in modern servers.</li>
+  </ul>
+</div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>
 </html>

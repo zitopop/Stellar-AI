@@ -1,103 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Add ATM Robbery to Your QBCore FiveM Server — Stellar AI</title>
-  <meta name="description" content="ATM robberies give criminals something quick and risky to do on your FiveM server. This guide covers adding an ATM robbery script to QBCore with police alerts and cooldowns.">
-  <meta name="keywords" content="qbcore atm robbery, fivem atm script, fivem atm robbery install, qbcore robbery scripts">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore ATM Robbery — Secure, Testable Implementation Guide — Stellar AI</title>
+  <meta name="description" content="Design and implement a secure ATM robbery system for QBCore-based FiveM servers. Server-side validation, qb-target integration, cooldowns, police checks, and safe reward handling with example files and a practical checklist.">
+  <meta name="keywords" content="QBCore, FiveM, ATM robbery, qb-target, server validation, Lua, fxmanifest, qb-core, security, cooldown, police check">
+  <meta property="og:title" content="QBCore ATM Robbery — Secure, Testable Implementation Guide">
+  <meta property="og:description" content="Design and implement a secure ATM robbery system for QBCore-based FiveM servers. Server-side validation, qb-target integration, cooldowns, police checks, and safe reward handling with example files and a practical checklist.">
+  <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/qbcore-atm-robbery">
-  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>How to Add ATM Robbery to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">ATM robberies give criminals something quick and risky to do on your FiveM server. This guide covers adding an ATM robbery script to QBCore with police alerts and cooldowns.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
-</div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Practical guide for builders</div>
+  <h1>QBCore ATM Robbery — Secure, Testable Implementation Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you through a robust ATM robbery resource for QBCore. It covers design goals, server-authoritative checks, qb-target integration, anti-spoofing mitigations, and complete example files you can drop into a FiveM resource.</p>
+  <h2>Why server authority matters</h2>
+<p>ATM robberies change player balances and trigger server-wide consequences (police alerts, cooldowns, item rewards). Keep authority server-side: reject all reward and state changes on the client. The client should only request actions and render effects. This reduces cheating and inconsistent state across players.</p>
+
+<h2>High-level implementation plan</h2>
+<ol>
+  <li>Define ATM positions and per-ATM cooldowns in Config.</li>
+  <li>Use qb-target on the client to make ATMs interactable.</li>
+  <li>When a player starts a robbery, client sends the target ATM id and current coords to server.</li>
+  <li>Server validates: police on duty, ATM not on cooldown, player is close to known ATM position (distance check), and player inventory (if required).</li>
+  <li>On success, server marks ATM on cooldown, notifies police, gives reward via QBCore server API, and broadcasts a robbery in progress to nearby clients for particle/sound effects.</li>
+</ol>
+
+<h3>Assumptions and dependencies</h3>
+<ul>
+  <li>Server uses QBCore export: exports['qb-core']:GetCoreObject().</li>
+  <li>qb-target is available for interaction zones/models.</li>
+  <li>You will add the resource to server.cfg and test on a dev server with a police job configured.</li>
+</ul>
+
+<h2>Example files (destination-labelled)</h2>
+<p>Below are minimal complete files. Place them in a resource folder named qb-atm-robbery/ and add to server.cfg with ensure qb-atm-robbery.</p>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore ATM Robbery'
+version '1.0.0'
+
+shared_script 'config.lua'
+
+client_scripts {
+  'client/main.lua'
+}
+
+server_scripts {
+  '@oxmysql/lib/MySQL.lua', -- optional if you persist cooldowns
+  'server/main.lua'
+}
+
+dependencies {
+  'qb-core',
+  'qb-target'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+
+-- Example ATM positions, use real coordinates
+Config.ATMs = {
+  { id = 'atm_1', coords = vector3(89.75, 2.35, 69.63) },
+  { id = 'atm_2', coords = vector3(-386.23, -228.25, 37.08) }
+}
+
+Config.Cooldown = 600 -- seconds per ATM
+Config.RequiredPolice = 2
+Config.RewardMin = 200
+Config.RewardMax = 1000
+Config.MaxDistance = 3.5 -- meters allowed between player and ATM for validation
+</code></pre>
+
+<h3>server/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local atmCooldowns = {} -- { atmId = timestamp }
+
+local function policeCount()
+  local count = 0
+  for _, playerId in pairs(QBCore.Functions.GetPlayers()) do
+    local Player = QBCore.Functions.GetPlayer(playerId)
+    if Player and Player.PlayerData and Player.PlayerData.job and Player.PlayerData.job.name == 'police' then
+      count = count + 1
+    end
+  end
+  return count
+end
+
+local function findATMById(id)
+  for _, atm in ipairs(Config.ATMs) do
+    if atm.id == id then return atm end
+  end
+  return nil
+end
+
+RegisterNetEvent('qb-atm-robbery:server:startRobbery', function(atmId, clientCoords)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- basic police check
+  if policeCount() < Config.RequiredPolice then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'Not enough police on duty')
+    return
+  end
+
+  local atm = findATMById(atmId)
+  if not atm then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'Invalid ATM')
+    return
+  end
+
+  -- cooldown check
+  local now = os.time()
+  if atmCooldowns[atmId] and atmCooldowns[atmId] > now then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'ATM is still on cooldown')
+    return
+  end
+
+  -- distance validation (server trusts client-provided coords minimally)
+  local dx = atm.coords.x - clientCoords.x
+  local dy = atm.coords.y - clientCoords.y
+  local dz = atm.coords.z - clientCoords.z
+  local dist = math.sqrt(dx*dx + dy*dy + dz*dz)
+  if dist > Config.MaxDistance then
+    TriggerClientEvent('qb-atm-robbery:client:notify', src, 'You are too far from the ATM')
+    return
+  end
+
+  -- mark cooldown
+  atmCooldowns[atmId] = now + Config.Cooldown
+
+  -- reward
+  local reward = math.random(Config.RewardMin, Config.RewardMax)
+  Player.Functions.AddMoney('cash', reward, 'atm-robbery')
+
+  -- alert police and broadcast
+  TriggerClientEvent('qb-atm-robbery:client:started', -1, atmId, atm.coords)
+  TriggerClientEvent('qb-atm-robbery:client:notify', src, 'Robbery successful, you got $' .. reward)
+end)
+</code></pre>
+
+<h3>client/main.lua (overview)</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+Citizen.CreateThread(function()
+  for _, atm in ipairs(Config.ATMs) do
+    exports['qb-target']:AddBoxZone(atm.id, atm.coords, 0.8, 0.8, {
+      name = atm.id,
+      heading = 0,
+      debugPoly = false,
+      minZ = atm.coords.z - 1.0,
+      maxZ = atm.coords.z + 1.0
+    }, {
+      options = {{
+        event = 'qb-atm-robbery:client:attemptRobbery',
+        icon = 'fas fa-hand-holding',
+        label = 'Rob ATM',
+        atmId = atm.id
+      }},
+      distance = 2.5
+    })
+  end
+end)
+
+RegisterNetEvent('qb-atm-robbery:client:attemptRobbery', function(data)
+  local ped = PlayerPedId()
+  local coords = GetEntityCoords(ped)
+  TriggerServerEvent('qb-atm-robbery:server:startRobbery', data.atmId, { x = coords.x, y = coords.y, z = coords.z })
+end)
+</code></pre>
+
+<h2>Security and validation notes</h2>
+<ul>
+  <li>Distance checks using client-supplied coords are vulnerable to spoofing. Mitigate by sending the server periodic reliable position heartbeats or validating via server-side position syncing. At minimum, keep checks strict (small MaxDistance).</li>
+  <li>Do server-side police count and cooldown logic (as shown). Never grant money on the client.</li>
+  <li>If you persist cooldowns across restarts, store atmCooldowns in a database (oxmysql) and rehydrate on server start.</li>
+</ul>
+
+<h2>Testing checklist</h2>
+<table>
+  <thead>
+    <tr><th>Step</th><th>What to verify</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Install</td><td>Place folder in resources, add ensure qb-atm-robbery to server.cfg</td></tr>
+    <tr><td>Dependencies</td><td>qb-core and qb-target present and started</td></tr>
+    <tr><td>Interaction</td><td>Approach ATM and see qb-target option</td></tr>
+    <tr><td>Server validation</td><td>Trigger with insufficient police and confirm rejection</td></tr>
+    <tr><td>Cooldown</td><td>Rob ATM, then try again and confirm cooldown prevents repeat</td></tr>
+    <tr><td>Reward</td><td>Server adds cash; check server logs for authorisation string (atm-robbery)</td></tr>
+  </tbody>
+</table>
+
+<h2>Next steps and integrations</h2>
+<p>Want a more polished robbery? Add a minigame on the client (keep outcome server-validated by the server issuing a signed token), animated police dispatch via qb-phone or dispatch resources, and persistent cooldowns with MySQL. If you prototype designs and file layout, Stellar AI can help generate complete resource files and iterate on tests — try the workspace at https://trystellarai.com/app. You can also import your design notes and get a refined implementation plan in the Stellar AI app at https://trystellarai.com/app.</p>
+
+<p>For broader server tips and related tutorials see the Stellar AI blog: https://trystellarai.com/blog.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References & further reading</h3><ul><li><a href="https://docs.fivem.net/">FiveM docs</a> — native references and server scripting guidance.</li><li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a> — project and community examples.</li><li><a href="https://github.com/TargetResource/qb-target">qb-target repo</a> — setup and API.</li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>
 </html>

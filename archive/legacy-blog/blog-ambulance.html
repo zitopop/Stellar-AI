@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Building a Robust QBCore Ambulance Job — Server-Authoritative Design — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to design and implement a QBCore ambulance job for FiveM. Covers server authority, validation, revives, treatments, vehicles, qb-target integration, secure billing, and testing checklists.">
+  <meta name="keywords" content="QBCore ambulance job, FiveM ambulance, qb-core, qb-target, server validation, revive, medical job, FiveM scripting, Lua">
+  <meta property="og:title" content="Building a Robust QBCore Ambulance Job — Server-Authoritative Design">
+  <meta property="og:description" content="Step-by-step guide to design and implement a QBCore ambulance job for FiveM. Covers server authority, validation, revives, treatments, vehicles, qb-target integration, secure billing, and testing checklists.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-ambulance-job">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM / QBCore Guide</div>
+  <h1>Building a Robust QBCore Ambulance Job — Server-Authoritative Design</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks a developer through planning and building a server-authoritative ambulance job for QBCore: features, file layout, secure server-side checks, client interactions, qb-target and ox_lib considerations, and a practical checklist to ship a maintainable resource.</p>
+  <h2>Overview</h2>
+<p>An ambulance job is more than animations and props: it is a server-authoritative workflow for player health, treatments, billing, and vehicles that must resist exploitation while providing a responsive UX. This guide presumes QBCore as the framework and shows safe patterns for server validation, event design, and integrating common FiveM extensions like qb-target and ox_lib.</p>
+
+<h2>Implementation plan (short)</h2>
+<ul>
+  <li>Define job features and permissions (revive, treat, tow, bill).</li>
+  <li>Create file layout and fxmanifest.</li>
+  <li>Implement server events and callbacks with strong validation.</li>
+  <li>Add client UI and target interactions (qb-target / ox_target).</li>
+  <li>Test edge cases and anti-cheat scenarios.</li>
+</ul>
+
+<h2>Assumptions & dependencies</h2>
+<ul>
+  <li>Server uses QBCore framework (qb-core) and MySQL (or equivalent) for persistent data.</li>
+  <li>qb-target or ox_target for in-world interactions; ox_lib optional for notifications and progress bars.</li>
+  <li>Developers will run updates on a dev server and preserve existing database schemas.</li>
+</ul>
+
+<h2>Core design principles</h2>
+<p>Keep authority on the server. Clients may request actions, but the server must verify:</p>
+<ul>
+  <li>Player job and rank (is the caller an active ambulance).</li>
+  <li>Distance checks for target players and vehicles.</li>
+  <li>Cooldowns and rate limits to prevent spam.</li>
+  <li>Database updates (billing, job logs) must happen server-side.</li>
+</ul>
+
+<h2>Key features to implement</h2>
+<ul>
+  <li>Revive: validate target is downed, within range, and not already revived.</li>
+  <li>Treat: apply temporary buffs/debuffs, change health and armour via server events.</li>
+  <li>Ambulance vehicle management: spawn, store, and impound handling with server records.</li>
+  <li>Billing and payments: create an invoice server-side and log to DB; never trust client amounts.</li>
+  <li>Dispatch and on-duty toggles: toggle duty on server and allow commands for restricted roles.</li>
+</ul>
+
+<h2>File layout and fxmanifest example</h2>
+<p>Keep files organized to make authority clear.</p>
+<table>
+  <thead>
+    <tr><th>File</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>fxmanifest.lua</td><td>Resource metadata</td></tr>
+    <tr><td>server/main.lua</td><td>All server validation, callbacks, DB writes</td></tr>
+    <tr><td>client/main.lua</td><td>UI, target interactions, animations</td></tr>
+    <tr><td>config.lua</td><td>Job settings, costs, models</td></tr>
+  </tbody>
+</table>
+
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore Ambulance Job'
+version '1.0.0'
+
+shared_script 'config.lua'
+client_scripts {
+  'client/main.lua'
+}
+server_scripts {
+  '@oxmysql/lib/MySQL.lua', -- or your MySQL resource
+  'server/main.lua'
+}
+</code></pre>
+
+<h2>Server-side example: revive with validations</h2>
+<p>Always check job, distance, and target state.</p>
+<pre><code>-- server/main.lua (snippet)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+QBCore.Functions.CreateCallback('ambulance:server:canRevive', function(source, cb, targetId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  local targetPlayer = QBCore.Functions.GetPlayer(targetId)
+  if not Player or not targetPlayer then return cb(false, 'Invalid player') end
+
+  if Player.PlayerData.job.name ~= 'ambulance' then
+    return cb(false, 'Not Ambulance')
+  end
+
+  local srcCoords = GetEntityCoords(GetPlayerPed(src)) -- server utility needed via client? store last known coords server-side or trust a ranged check
+  local tgtCoords = targetPlayer.PlayerData.coords -- if you store coords periodically on server
+  if #(srcCoords - tgtCoords) > 3.5 then
+    return cb(false, 'Too far')
+  end
+
+  if not targetPlayer.PlayerData.metadata.isDown then
+    return cb(false, 'Target not down')
+  end
+
+  -- Passed checks
+  cb(true)
+end)
+
+RegisterNetEvent('ambulance:server:revive', function(targetId)
+  local src = source
+  QBCore.Functions.TriggerCallback('ambulance:server:canRevive', src, function(ok, err)
+    if not ok then
+      TriggerClientEvent('QBCore:Notify', src, err or 'Cannot revive', 'error')
+      return
+    end
+    local targetPlayer = QBCore.Functions.GetPlayer(targetId)
+    if targetPlayer then
+      -- perform revive: reset metadata and health on server
+      targetPlayer.Functions.SetPlayerData('metadata', { isDown = false })
+      TriggerClientEvent('ambulance:client:applyRevive', targetId)
+      -- optional: log revive in DB
+    end
+  end, targetId)
+end)
+</code></pre>
+
+<h2>Client-side interactions (qb-target)</h2>
+<p>Client triggers must call secure server callbacks instead of directly applying effects.</p>
+<pre><code>-- client/main.lua (snippet)
+exports['qb-target']:AddTargetBone('player', {
+  options = {
+    {
+      type = 'client',
+      event = 'ambulance:client:attemptRevive',
+      icon = 'fas fa-hand-holding-medical',
+      label = 'Revive'
+    }
+  },
+  distance = 3.5
+})
+
+RegisterNetEvent('ambulance:client:attemptRevive', function(data)
+  local targetId = data.entityId -- ensure qb-target supplies ID in your config
+  QBCore.Functions.TriggerCallback('ambulance:server:canRevive', function(ok)
+    if ok then
+      TriggerServerEvent('ambulance:server:revive', targetId)
+    else
+      QBCore.Functions.Notify('Cannot revive', 'error')
+    end
+  end, targetId)
+end)
+</code></pre>
+
+<h2>Billing, DB writes and persistence</h2>
+<p>Create invoices server-side. Never accept an amount from the client. Instead, define cost tables in config.lua and reference them server-side when creating a bill or adding a DB record.</p>
+
+<h2>Anti-cheat & validation checklist</h2>
+<table>
+  <thead>
+    <tr><th>Test</th><th>Expected server-side control</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Revive spam</td><td>Cooldowns and rate limits on server</td></tr>
+    <tr><td>Unauthorized revive</td><td>Verify player job and rank</td></tr>
+    <tr><td>Distance exploits</td><td>Server-calculated distance or frequent server-side position updates</td></tr>
+    <tr><td>Billing tampering</td><td>Server uses config costs, logs to DB</td></tr>
+  </tbody>
+</table>
+
+<h2>Practical deployment checklist</h2>
+<ol>
+  <li>Create a dev branch and back up your DB schema.</li>
+  <li>Install resource and fxmanifest; verify dependencies (qb-core, qb-target, oxmysql).</li>
+  <li>Run through server-side validation tests and log every decision path.</li>
+  <li>Test with two players: ambulance and patient; validate distances, revives, and bills.</li>
+  <li>Check edge cases: disconnect during revive, duplicate events, DB failures.</li>
+</ol>
+
+<h2>Next steps & resources</h2>
+<p>To prototype faster, use a scripting workspace or generation assistant that can scaffold files and maintain consistent file labels. If you want to quickly iterate on feature descriptions and produce destination-labelled files, try the Stellar AI scripting workspace: <a href="https://trystellarai.com/app">open the app</a> to scaffold resources and then <a href="https://trystellarai.com/app">connect a repository</a> for iterative edits. For design articles and deeper reads on ship-ready patterns, see the blog: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.</p>
+
+<h2>Closing notes</h2>
+<p>Focus on minimal trusted server surfaces: callbacks for permission checks, server-side DB writes for invoices and logs, and client-side UI for responsiveness. Compose small, testable units, and iterate with unit tests and playtests to ensure the ambulance job feels responsive and secure.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References</h3><ul><li>QBCore community and docs (official GitHub and discussions)</li><li>qb-target and ox_lib repositories for integration examples</li><li>oxmysql or your chosen database connector for server persistence</li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

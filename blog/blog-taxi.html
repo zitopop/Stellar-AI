@@ -1,108 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Add a Taxi Job to Your QBCore FiveM Server — Stellar AI</title>
-  <meta name="description" content="A taxi job gives players a legitimate way to earn money on your FiveM server. This guide covers setting up a complete QBCore taxi job with GPS routes, fares and job management.">
-  <meta name="keywords" content="qbcore taxi job, fivem taxi script, fivem taxi job install, qbcore cab script">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Taxi Job: design, secure implementation, and Roblox parity notes — Stellar AI</title>
+  <meta name="description" content="A practical, senior-level guide to building a QBCore taxi job for FiveM: server-authoritative fares, qb-target interactions, fxmanifest layout, file checklist, and a brief Roblox equivalent pattern using RemoteEvents and DataStores.">
+  <meta name="keywords" content="QBCore,taxi job,FiveM,qb-target,ox_lib,fxmanifest,server authoritative,Roblox,RemoteEvent,DataStore">
+  <meta property="og:title" content="QBCore Taxi Job: design, secure implementation, and Roblox parity notes">
+  <meta property="og:description" content="A practical, senior-level guide to building a QBCore taxi job for FiveM: server-authoritative fares, qb-target interactions, fxmanifest layout, file checklist, and a brief Roblox equivalent pattern using RemoteEvents and DataStores.">
+  <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/qbcore-taxi-job">
-  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>How to Add a Taxi Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A taxi job gives players a legitimate way to earn money on your FiveM server. This guide covers setting up a complete QBCore taxi job with GPS routes, fares and job management.</p>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM / QBCore guide</div>
+  <h1>QBCore Taxi Job: design, secure implementation, and Roblox parity notes</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you through designing and implementing a robust QBCore taxi job: server-side fare logic, secure events, qb-target pickup interactions, and installable resource files. If you want to scaffold the project faster, open the Stellar AI project planner in the app: https://trystellarai.com/app to create files from plain-English prompts.</p>
+  <h2>Why server authority matters</h2>
+<p>Taxi jobs are straightforward gameplay but attractive for exploits: money transfers, fake distances, or client-side manipulation. Make the server authoritative for trip state (active trip, pickup time), fare computation, and payment. Keep clients responsible only for UI, local markers, and requesting server actions. This minimizes cheating while keeping responsive client UX.</p>
 
-  <h2>Step 1 — Generate your script</h2>
-  <div class="tip-box">
-    <strong>Try Stellar AI:</strong>
-    <p style="margin-top:8px;">Describe exactly what you want in plain English and Stellar writes all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop in.</p>
-  </div>
+<h2>Design principles and constraints</h2>
+<ul>
+  <li>Validate job permissions server-side: only players with job.name == 'taxi' may accept fares or be paid.</li>
+  <li>Compute fare server-side using stored pickup/dropoff coordinates and a safe formula; clamp for sanity.</li>
+  <li>Store active trips server-side with timestamps and coordinates to compute duration/distance.</li>
+  <li>Use qb-target or ox_target on client to start interactions but call server events to register state.</li>
+</ul>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-script/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h3>Quick implementation plan</h3>
+<ol>
+  <li>Create resource skeleton (fxmanifest.lua, config.lua, client.lua, server.lua, html/UI if needed).</li>
+  <li>Expose qb-target zones to start/stop trips and use client events to call server APIs.</li>
+  <li>Server: Maintain activeTrips table, compute fares, validate passenger funds, and perform atomic payment operations.</li>
+  <li>Test edge cases: disconnect mid-trip, Data persistence, and unusual coordinates.</li>
+</ol>
+<p>If you'd like a fast scaffold generator, you can also create a plan inside Stellar AI: https://trystellarai.com/app and export complete files.</p>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-script</div>
+<h2>Files, placement, and responsibilities (practical checklist)</h2>
+<table>
+  <thead>
+    <tr><th>Path</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>qb-taxi/fxmanifest.lua</td><td>Resource manifest</td></tr>
+    <tr><td>qb-taxi/config.lua</td><td>Config: fares, clamp values, target models</td></tr>
+    <tr><td>qb-taxi/client.lua</td><td>qb-target interactions, blips, UI triggers</td></tr>
+    <tr><td>qb-taxi/server.lua</td><td>Active trip tracking, fare calc, payment, validation</td></tr>
+    <tr><td>qb-taxi/html/*</td><td>Optional UI (ride request panel)</td></tr>
+  </tbody>
+</table>
 
-  <h2>Step 4 — Restart and test</h2>
-  <p>Restart your server, set your job with /setjob and test everything works. Check your config.lua for any coordinates or settings you need to update for your server.</p>
+<h2>Example files and safe code snippets</h2>
+<p>fxmanifest to start:</p>
+<pre><code>fx_version 'cerulean'
+games { 'gta5' }
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
-</div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
+author 'you'
+description 'QBCore Taxi job'
+version '1.0.0'
+
+shared_script 'config.lua'
+server_script 'server.lua'
+client_script 'client.lua'
+</code></pre>
+
+<p>Server: authoritative trip completion and payment (QBCore conventions)</p>
+<pre><code>-- server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+local activeTrips = {} -- key: driverSource -> { passenger = id, pickup = vec3, started = os.time() }
+
+RegisterNetEvent('qb-taxi:server:StartTrip', function(passengerId, pickupX, pickupY, pickupZ)
+    local src = source
+    local driver = QBCore.Functions.GetPlayer(src)
+    if not driver or driver.PlayerData.job.name ~= 'taxi' then return end
+    -- Basic validation of values
+    local pickup = { x = tonumber(pickupX) or 0, y = tonumber(pickupY) or 0, z = tonumber(pickupZ) or 0 }
+    activeTrips[src] = { passenger = passengerId, pickup = pickup, started = os.time() }
+    TriggerClientEvent('QBCore:Notify', src, 'Trip started', 'success')
+end)
+
+RegisterNetEvent('qb-taxi:server:CompleteTrip', function(dropX, dropY, dropZ)
+    local src = source
+    local trip = activeTrips[src]
+    if not trip then return end
+    local driver = QBCore.Functions.GetPlayer(src)
+    if not driver or driver.PlayerData.job.name ~= 'taxi' then
+        activeTrips[src] = nil
+        return
+    end
+    local passenger = QBCore.Functions.GetPlayer(tonumber(trip.passenger))
+    if not passenger then
+        activeTrips[src] = nil
+        return
+    end
+    -- Simple distance-based fare (server-side)
+    local dx = dropX - trip.pickup.x
+    local dy = dropY - trip.pickup.y
+    local distance = math.sqrt(dx*dx + dy*dy)
+    local baseFare = 50
+    local perMeter = 0.5
+    local fare = math.floor(baseFare + (distance * perMeter))
+    -- Clamp fare to server policy
+    fare = math.max(20, math.min(fare, 2000))
+    -- Check passenger funds and perform payment atomically
+    local success = false
+    if passenger.Functions.RemoveMoney then
+        -- remove from passenger then add to driver
+        local removed = passenger.Functions.RemoveMoney('bank', fare, 'taxi_fare')
+        if removed then
+            driver.Functions.AddMoney('bank', fare, 'taxi_income')
+            success = true
+        end
+    end
+    if success then
+        TriggerClientEvent('QBCore:Notify', src, 'Trip complete: $' .. fare, 'success')
+        TriggerClientEvent('QBCore:Notify', passenger.PlayerData.source, 'You paid $' .. fare .. ' for the ride', 'success')
+    else
+        TriggerClientEvent('QBCore:Notify', src, 'Trip failed: passenger could not pay', 'error')
+    end
+    activeTrips[src] = nil
+end)
+</code></pre>
+
+<p>Client: qb-target example to start a trip on a vehicle or NPC. Keep it UI-only and call server events.</p>
+<pre><code>-- client.lua (snippet)
+local QBCore = exports['qb-core']:GetCoreObject()
+-- qb-target setup, run once
+exports['qb-target']:AddTargetEntity(vehicleEntity, {
+    options = {
+        { type = 'client', event = 'qb-taxi:client:RequestPickup', icon = 'fa fa-taxi', label = 'Request Taxi' }
+    }, distance = 3.5
+})
+
+RegisterNetEvent('qb-taxi:client:RequestPickup', function()
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    TriggerServerEvent('qb-taxi:server:RequestTaxi', pos.x, pos.y, pos.z)
+end)
+</code></pre>
+
+<h2>Validation and security checklist</h2>
+<ul>
+  <li>Only accept StartTrip/CompleteTrip from players whose server-side job == 'taxi'.</li>
+  <li>Clamp fare to min/max; do not accept client-supplied fare amount.</li>
+  <li>Verify passenger player is connected before trying to debit money.</li>
+  <li>Handle disconnects by expiring activeTrips after a timeout server-side.</li>
+  <li>Log suspicious events for manual review (excessive distance or repeated failures).</li>
+</ul>
+
+<h2>Roblox parity notes (server/client separation)</h2>
+<p>If you want a similar Taxi job on Roblox: keep the server authoritative. Use RemoteEvents for requests and server Scripts to store active rides. For persistent earnings, use DataStoreService with pcall and retries — never trust client-sent fares. Example: server Script listens to a RemoteEvent 'RequestTaxi', validates player and assigns driver, then when trip ends it updates the driver's leaderstats and writes to DataStore with safe error handling.</p>
+
+<pre><code>-- Roblox Server Script (snippet)
+local Remote = game.ReplicatedStorage:WaitForChild('TaxiRemote')
+local DataStore = game:GetService('DataStoreService'):GetDataStore('TaxiEarnings')
+Remote.OnServerEvent:Connect(function(player, action, params)
+    if action == 'CompleteTrip' then
+        local fare = math.clamp(math.floor(params.distance * 0.5) + 50, 20, 2000)
+        -- Update leaderstats server-side
+        player.leaderstats.Cash.Value = player.leaderstats.Cash.Value + fare
+        -- Save earnings safely
+        local success, err = pcall(function()
+            DataStore:SetAsync('earnings_'..player.UserId, player.leaderstats.Cash.Value)
+        end)
+        if not success then warn('DataStore save failed', err) end
+    end
+end)
+</code></pre>
+
+<h3>Next steps</h3>
+<p>Test the resource in a development server, simulate edge cases (disconnects, insufficient funds), and iterate. If you prefer a prompt-driven scaffold that produces complete destination-labelled files, open the project planner in the Stellar AI app: https://trystellarai.com/app. For deeper reading on job patterns and server authority, see the Stellar AI blog: https://trystellarai.com/blog</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>Suggested internal references and next reading:</p><ul><li><strong>Stellar AI GitHub</strong> — project scaffolding and examples (check your repository for latest manifests and utilities).</li><li><strong>QBCore docs and community</strong> — inspect your server's QBCore version to confirm exact Player.Functions API variants.</li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>
 </html>

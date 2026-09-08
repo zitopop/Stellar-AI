@@ -68,32 +68,154 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Set Up Anti-Cheat on Your FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Cheaters can destroy a FiveM server quickly. This guide covers the best anti-cheat options for QBCore servers and how to configure them to catch exploiters.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to set up anti-cheat on your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Overview</h2>
+<p>This guide explains a practical, secure approach to adding anti-cheat protections for a FiveM server while offering parallel considerations for Roblox servers. It focuses on architecture, server-side validation, integration with common frameworks (QBCore, ESX, ox_lib), concrete implementation patterns, testing and deployment, and ongoing maintenance. The goal is to provide actionable steps you can implement in your server stack without relying on client trust. If you want to combine automation or observability, consider pairing your workflows with the Stellar AI tooling available at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> for alert correlation and incident tracking.</p>
+
+<h2>Architecture and Trust Model</h2>
+<p>Design anti-cheat as an architecture problem where the server is the single source of truth. Clients can be modified or spoofed, so their inputs are never authoritative. The architecture should separate detection, validation, mitigation, logging, and a human review path:</p>
+<ul>
+  <li><strong>Server-side validation layer:</strong> Validate every game-changing action (money changes, inventory, weapon spawns, teleportation, health, vehicle spawns) on the server before applying it to authoritative state.</li>
+  <li><strong>Detection agents:</strong> Lightweight server-side checks that flag abnormal patterns (impossible movement, inventory deltas, rapid money increments).</li>
+  <li><strong>Mitigation services:</strong> Automated actions with conservative defaults (temporary session kicks, suspensions, or movement rollback) combined with a queue for manual review and escalation for permanent bans.</li>
+  <li><strong>Logging and audit:</strong> Immutable, tamper-resistant logs of events, ideally exported to an external logging/alerting platform.</li>
+</ul>
+
+<h2>Key Anti-Cheat Strategies</h2>
+<p>Use a layered detection model that combines deterministic validation, anomaly detection, and rule-based blacklists.</p>
+<ul>
+  <li><strong>Deterministic checks:</strong> Server-side rate limits, canonical state transitions, and verification of client requests against expected sequences (example: spawn weapon must be preceded by a purchase or authorized grant event).</li>
+  <li><strong>Rule-based thresholds:</strong> Speed, teleportation distance between server ticks, damage per second exceeding plausible ranges for given weapon and vehicle state.</li>
+  <li><strong>Behavioral analytics:</strong> Aggregate patterns across sessions to detect scripted or macroed activity (e.g., repetitive actions with identical timing across players).</li>
+  <li><strong>Resource integrity monitoring:</strong> Track resource start times and signatures on the server; detect known exploit modules if feasible.</li>
+</ul>
+
+<h2>Implementation Choices with QBCore / ESX / ox_lib</h2>
+<p>Choose integration patterns that maintain server authority and minimize performance overhead. Use existing events and hooks provided by frameworks, but ensure validation happens before state mutation.</p>
+<ul>
+  <li><strong>Interception points:</strong> Hook into item give/purchase handlers, vehicle creation handlers, and money transfer events within the server framework.</li>
+  <li><strong>Middleware approach:</strong> Implement a validation middleware that every framework call passes through. For example, wrap QBCore's giveItem method on server-side to validate source and reason before completing the action.</li>
+  <li><strong>ox_lib compatibility:</strong> ox_lib provides utilities for UI and server tasks; place anti-cheat validation in server callbacks and do not perform authoritative checks on client-side ox_lib functions.</li>
+  <li><strong>Modular resources:</strong> Keep anti-cheat logic in a separate resource to allow independent updates and restarts without changing core gamemode resources.</li>
+</ul>
+
+<h3>Server-side Lua Example (FiveM) — Validation Skeleton</h3>
+<pre><code>-- server/validation.lua
+RegisterNetEvent('myserver:requestGiveItem')
+AddEventHandler('myserver:requestGiveItem', function(targetPlayer, item, amount)
+  local src = source
+  -- NEVER trust client data
+  if not PlayerHasPermission(src, 'admin') then
+    -- validate amount range, item exists, and source inventory can permit it
+    if amount &lt;= 0 or amount &gt; 1000 then
+      TriggerClientEvent('myserver:kickForCheat', src, 'invalid_amount')
+      return
+    end
+  end
+  if not IsValidItem(item) then
+    LogSuspicious(src, 'invalid_item:' .. tostring(item))
+    return
+  end
+  -- final authoritative operation on server side
+  GiveItemToPlayerServerSide(targetPlayer, item, amount)
+end)</code></pre>
+
+<p>Above, all decisive operations run on the server. Reject or log suspicious client requests and avoid state mutation until validation passes.</p>
+
+<h2>Detection, Mitigation, and Banning Strategy</h2>
+<p>Design mitigation to favor reversible actions when in doubt. Use an automated tiered-response system:</p>
+<ol>
+  <li><strong>Tier 1 — Soft mitigation:</strong> Log, notify moderators, temporarily restrict session changes (freeze inventory changes), and place the player under increased validation.</li>
+  <li><strong>Tier 2 — Hard mitigation:</strong> Kick or immediate session suspension and place the account in a review queue for manual inspection.</li>
+  <li><strong>Tier 3 — Permanent action:</strong> Post-review ban with rationale logged and appeal mechanisms documented.</li>
+</ol>
+<p>Always include an appeals flow and human review before applying indefinite or permanent bans. Maintain a ban database and ensure lookups are performed on connection. For privacy and fairness, log the evidence used to ban and provide it to moderators in the review queue.</p>
+
+<h2>Testing and Monitoring</h2>
+<p>Detection code must be tested under controlled conditions. Build unit tests and deterministic integration tests that simulate common cheat patterns and legitimate edge cases.</p>
+<ul>
+  <li><strong>Automated test scenarios:</strong> Simulate excessive money grants, teleport spam, and weapon spawns to ensure your rules trigger correctly and do not false-positive normal gameplay.</li>
+  <li><strong>Staging environment:</strong> Run a copy of your server with a controlled population of test accounts and deploy changes there first.</li>
+  <li><strong>Observability:</strong> Export events to a centralized system. Correlate suspicious events with player metadata and session history.</li>
+  <li><strong>Alerting and dashboards:</strong> Set alerts for spikes in flags per minute, repeated flagging of the same user, or unusual command usage.</li>
+</ul>
+<p>For automated alert and incident correlation, integrate your logs with tooling such as the Stellar AI app to reduce manual triage time: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For deeper editorial content or case studies about server security operations, see our writeups at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>Deployment and Maintenance</h2>
+<p>Anti-cheat is not a one-off build. Treat it as a continuously updated service:</p>
+<ul>
+  <li><strong>Incremental rollouts:</strong> Deploy new detection rules progressively (canary then global) to monitor false positive rates.</li>
+  <li><strong>Hotfix capability:</strong> Keep the anti-cheat resource separate so you can push urgent fixes without restarting the entire server pool.</li>
+  <li><strong>Logging retention and export:</strong> Keep detailed logs long enough to support appeals, but prune or archive to control storage costs.</li>
+  <li><strong>Incident response playbooks:</strong> Document steps for containment, rollback, and communication when a widespread exploit appears.</li>
+</ul>
+
+<h2>Roblox-Specific Considerations</h2>
+<p>For Roblox, always enforce authority on the server (Script) and treat RemoteEvents/RemoteFunctions as untrusted channels. Key points:</p>
+<ul>
+  <li><strong>Server authority:</strong> Validate and execute all game-state transitions on the server. Client should only request actions, which the server validates and then performs.</li>
+  <li><strong>RemoteEvent patterns:</strong> Use simple, well-documented RemoteEvent signatures. On the server, validate argument types, ranges, and that the player is permitted to perform the action.</li>
+  <li><strong>DataStore failure handling:</strong> Implement retries and exponential backoff when interacting with DataStores. Protect against partial failures by using versioned keys or idempotent operations and by saving checkpoints before critical state changes.</li>
+  <li><strong>Rate limiting and debouncing:</strong> Prevent spam by limiting RemoteEvent calls per player per second and by debouncing repeated identical requests.</li>
+</ul>
+
+<h2>Practical Checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Priority</th>
+      <th>Owner</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Implement server-side validation middleware</td>
+      <td>High</td>
+      <td>Backend dev</td>
+      <td>Wrap all authoritative state changes</td>
+    </tr>
+    <tr>
+      <td>Integrate logging and alerting</td>
+      <td>High</td>
+      <td>DevOps</td>
+      <td>Export to central system; include player session IDs</td>
+    </tr>
+    <tr>
+      <td>Create staging tests for common exploits</td>
+      <td>Medium</td>
+      <td>QA</td>
+      <td>Automate repeatable scenarios</td>
+    </tr>
+    <tr>
+      <td>Deploy anti-cheat as separate resource</td>
+      <td>Medium</td>
+      <td>Backend dev</td>
+      <td>Allows fast hotfixes</td>
+    </tr>
+    <tr>
+      <td>Document appeals and review workflow</td>
+      <td>Low</td>
+      <td>Community mgr</td>
+      <td>Store evidence with ban records</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Maintenance: Logs, Updates, and Community Signals</h2>
+<p>Schedule periodic reviews of detection rules and false-positive rates. Use community reports as input to refine detection heuristics and always correlate reporter claims with server logs. Maintain a small changelog for anti-cheat updates so moderators understand why behavior changed and when new rules were introduced.</p>
+
+<h2>References</h2>
+<p>Official documentation and useful resources:</p>
+<ul>
+  <li><a href="https://docs.fivem.net">FiveM / Cfx.re Documentation</a></li>
+  <li><a href="https://developer.roblox.com">Roblox Developer Hub</a></li>
+  <li><a href="https://github.com/qbcore-framework">QBCore GitHub</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

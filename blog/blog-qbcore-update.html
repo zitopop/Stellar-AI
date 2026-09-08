@@ -68,32 +68,235 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Update QBCore on Your FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Keeping QBCore up to date ensures you have the latest bug fixes and features. This guide covers how to safely update your QBCore framework without breaking your server.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to update qbcore on your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview</h2>
+  <p>
+    This guide explains a practical, safe process to update QBCore on a FiveM server while preserving data, avoiding downtime, and maintaining security. It covers architecture, choices between in-place and fresh installs, server-side validation patterns (never trusting client input), integration considerations for ox_lib and ESX compatibility layers, testing, deployment, and ongoing maintenance. For tooling and project organization you can integrate with external management dashboards — for example, consider using a deployment front-end like <a href="https://trystellarai.com/app">Stellar AI App</a> during staging and monitoring phases. For longer-form updates and strategy read patterns, see the team blog at <a href="https://trystellarai.com/blog">Stellar AI Blog</a>.
+  </p>
+
+  <h2>Architecture and Core Components</h2>
+  <p>
+    QBCore is a modular framework built around resources (server and client scripts), shared items/commands, and persistent databases. The primary moving pieces you must consider when updating:
+  </p>
+  <ul>
+    <li><strong>qb-core resource</strong> — central server-side logic and shared utilities.</li>
+    <li><strong>qb-objects & qb-inventory</strong> — item and inventory handling; often require compatibility checks.</li>
+    <li><strong>Dependencies</strong> — ox_lib, qb-target/ox_target, PolyZone, oxmysql/ghmattimysql.</li>
+    <li><strong>Database</strong> — MySQL schema and data migrations; must be backed up before updates.</li>
+    <li><strong>Client resources</strong> — UI, animations and NUI changes that can change event names or payload structures.</li>
+  </ul>
+  <p>
+    Maintain a clear separation of authority: the server is authoritative for economics, player state, items, and permissions. Client code should only be used for presentation and input capture; all client-originated requests must be validated and re-checked on the server.
+  </p>
+
+  <h2>Update Strategy: In-Place vs Fresh Install</h2>
+  <h3>In-place update</h3>
+  <p>
+    Updating core files inside the live resource keeps resource identifiers and custom modifications. Use when you have small changes or follow a controlled patch process:
+  </p>
+  <ul>
+    <li>Pros: preserves resource name, easier to map custom patches, smaller diffs.</li>
+    <li>Cons: risk of merging conflicts, residual legacy code if not carefully cleaned.</li>
+  </ul>
+
+  <h3>Fresh install</h3>
+  <p>
+    Install a fresh copy of the updated QBCore resource under a new resource name (for example qb-core-v2) and migrate customizations into it:
+  </p>
+  <ul>
+    <li>Pros: clean state, easier to audit changes, stage migration in parallel.</li>
+    <li>Cons: requires careful resource name changes and dependency rewiring.</li>
+  </ul>
+
+  <h3>Version control and branching</h3>
+  <p>
+    Use git branches for updates: create an update branch, apply migrations and tests there, and only merge to main once staging passes. Tag releases so rollback is simply switching to a tagged commit.
+  </p>
+
+  <h2>Security and Server Validation</h2>
+  <p>
+    Never trust client input. Treat every request from the client as untrusted and validate it using server-side authoritative logic. Validation categories:
+  </p>
+  <ol>
+    <li><strong>Authentication</strong> — confirm player identifiers (citizenid/steam identifier) using server session data before processing requests.</li>
+    <li><strong>Permissions</strong> — check job grade, admin flags, or ACL before privileged operations.</li>
+    <li><strong>State validation</strong> — verify that a player actually possesses an item, amount, weapon, or nearby entity before performing a state-changing operation.</li>
+    <li><strong>Rate limiting and anti-abuse</strong> — throttle repeated requests to endpoints that modify money or inventory.</li>
+  </ol>
+  <p>
+    Example server-side validation pattern (Lua, FiveM):
+  </p>
+  <pre><code>RegisterNetEvent('example:server:transferItem')
+AddEventHandler('example:server:transferItem', function(targetId, itemName, amount)
+  local src = source
+  local srcPlayer = QBCore.Functions.GetPlayer(src)
+  local tarPlayer = QBCore.Functions.GetPlayer(targetId)
+
+  if not srcPlayer or not tarPlayer then
+    return
+  end
+
+  -- server authoritative checks
+  if amount <= 0 then return end
+  if not srcPlayer.Functions.GetItemByName(itemName) then return end
+  if srcPlayer.PlayerData.items[itemName].amount < amount then return end
+
+  -- permission or proximity checks (server-side)
+  -- perform transfer
+  srcPlayer.Functions.RemoveItem(itemName, amount)
+  tarPlayer.Functions.AddItem(itemName, amount)
+end)</code></pre>
+
+  <h2>Integration Notes: ox_lib, ESX and Shared Utilities</h2>
+  <p>
+    When updating QBCore, library compatibility is critical. ox_lib provides utility helpers, and many community resources rely on it. Steps:
+  </p>
+  <ul>
+    <li>Pin dependency versions when possible. Check required versions in the updated qb-core release notes or manifest.</li>
+    <li>If your server uses ESX compatibility modules, validate each compatibility bridge after updating core QBCore because function names and callback signatures may change.</li>
+    <li>Rebuild or adapt any custom exports and lib callbacks. For example if you use export-based calls, verify the export names exist in the new core.</li>
+  </ul>
+  <p>
+    Keep a manifest checklist that lists required resources with minimum versions and any forced order in server.cfg via start directives.
+  </p>
+
+  <h2>Implementation: Step-by-step</h2>
+  <ol>
+    <li><strong>Backup everything</strong>: database dump (mysqldump or ghmattimysql export), resource folder archives, and server.cfg.</li>
+    <li><strong>Create a staging environment</strong>: a local or second VPS instance that mirrors prod config.</li>
+    <li><strong>Apply update to staging</strong>: install updated qb-core resource, add any new dependencies and update fxmanifest.lua entries.</li>
+    <li><strong>Run DB migrations</strong>: if the update includes schema changes, run migrations on staging and validate data integrity.</li>
+    <li><strong>QA and security checks</strong>: run automated scripts and manual test cases (see testing section).</li>
+    <li><strong>Schedule production window</strong>: notify players, disable joins if necessary, and push update to prod.</li>
+    <li><strong>Monitor</strong> logs and revert if critical failures occur.</li>
+  </ol>
+
+  <h3>fxmanifest example</h3>
+  <p>
+    Ensure fxmanifest includes correct dependency order and server-only entries:
+  </p>
+  <pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourTeam'
+description 'qb-core (patched)'
+
+server_scripts {
+  '@oxmysql/lib/MySQL.lua',
+  'server/*.lua'
+}
+
+shared_script 'config.lua'
+client_scripts {
+  'client/*.lua'
+}
+
+dependencies {
+  'ox_lib',
+  'oxmysql'
+}</code></pre>
+
+  <h2>Testing and Validation</h2>
+  <p>
+    A structured test suite will reduce rollback events. Testing should include unit, integration, and manual tests:
+  </p>
+  <ul>
+    <li>Unit test server functions in isolation where possible (using mocked QBCore objects).</li>
+    <li>Integration tests that simulate player flows: login, spawn, money transactions, item transfers, and job actions.</li>
+    <li>Security tests: simulate malformed client payloads; attempt state changes without permissions.</li>
+    <li>Load tests on staging: simulate concurrent players to spot race conditions and deadlocks.</li>
+  </ul>
+
+  <h3>Practical checklist</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Command / Action</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Backup DB</td>
+        <td><code>mysqldump -u user -p database &gt; backup.sql</code></td>
+        <td>Store backups off-host and verify integrity.</td>
+      </tr>
+      <tr>
+        <td>Archive resource</td>
+        <td><code>tar -czf qb-core-backup.tar.gz resources/qb-core</code></td>
+        <td>Keep versioned archives for rollback.</td>
+      </tr>
+      <tr>
+        <td>Apply update (staging)</td>
+        <td>Replace resource files and run migration sql</td>
+        <td>Test in staging before prod.</td>
+      </tr>
+      <tr>
+        <td>Restart resource</td>
+        <td>In console: <code>refresh</code> and <code>restart qb-core</code></td>
+        <td>Monitor server logs for errors.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Deployment and Rollback</h2>
+  <p>
+    Deploy during off-peak hours. Two safe patterns:
+  </p>
+  <ul>
+    <li><strong>Blue/Green</strong> — run the new core under a separate resource name and switch clients with a controlled migration event. This minimizes downtime but requires careful dependency mapping.</li>
+    <li><strong>Rolling restart</strong> — stop the server briefly, swap resources, then start. Use this when persistent connections or resource naming make blue/green impractical.</li>
+  </ul>
+  <p>
+    Rollback checklist:
+  </p>
+  <ol>
+    <li>Immediately stop the updated resource.</li>
+    <li>Restore the backed-up resource folder or checkout the previous git tag.</li>
+    <li>If DB schema changed and is incompatible, restore DB from pre-update backup before switching live.</li>
+    <li>Restart and validate baseline functionality (spawn, login, inventory).</li>
+  </ol>
+
+  <h2>Maintenance and Monitoring</h2>
+  <p>
+    After update, establish continuous monitoring:
+  </p>
+  <ul>
+    <li>Log all critical server events and errors to a centralized system.</li>
+    <li>Set alerts for key failures: login errors, DB connection loss, resource start failures, and inventory mismatch errors.</li>
+    <li>Keep a changelog and migration notes. Tag your repository with the deployed commit/version.</li>
+  </ul>
+  <p>
+    For automated deployments or environment orchestration you can integrate with CI/CD or deployment tools and manage staging via an admin interface — tools such as <a href="https://trystellarai.com/app">Stellar AI App</a> can help coordinate staged rollouts and health checks across instances.
+  </p>
+
+  <h2>Roblox (Luau) Notes — Relevant Best Practices</h2>
+  <p>
+    If you maintain a Roblox game alongside a FiveM server or port systems, keep these rules in mind:
+  </p>
+  <ul>
+    <li><strong>Server authority:</strong> All important game state and currency must be stored and validated on the server. Client events should only request actions; the server decides the outcome.</li>
+    <li><strong>RemoteEvents/RemoteFunctions:</strong> Validate arguments on the server and enforce permission checks before mutating state.</li>
+    <li><strong>DataStore failure handling:</strong> Use exponential backoff and retries for DataStore operations. Always provide fallback behavior when a write fails (e.g., queue operation, notify admins, or temporarily deny hunts/transactions to avoid loss).</li>
+    <li><strong>Testing:</strong> Simulate DataStore outages and throttling in staging to ensure resilience.</li>
+  </ul>
+
+  <h2>References</h2>
+  <p>
+    Official documentation and repositories:
+  </p>
+  <ul>
+    <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib GitHub</a></li>
+    <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

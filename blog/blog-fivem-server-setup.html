@@ -68,52 +68,214 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Set Up a FiveM QBCore Server From Scratch</h1>
-  <div class="blog-meta">August 2026 · 8 min read · Stellar AI</div>
-  <p class="blog-intro">Starting a FiveM roleplay server can feel overwhelming but the process is straightforward once you know the steps. This guide covers everything from choosing a host to getting QBCore running with your first custom scripts.</p>
 
-  <h2>Step 1 — Choose a host</h2>
-  <p>You need a server to run FiveM. The most popular options for beginners are ZAP-Hosting and GTXGaming — both have one-click FiveM installs and reasonable pricing around £10-20/month.</p>
-  <p>For a serious server with 50+ players you'll want at least 8GB RAM and an NVMe drive. Start small and upgrade as your player count grows.</p>
+<p class="intro">A practical guide to how to set up a fivem qbcore server from scratch, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 2 — Get a FiveM server licence</h2>
-  <p>You need a server licence key from the Cfx.re keymaster. Go to keymaster.fivem.net, link your Steam account and generate a key. This is free and takes a few minutes.</p>
-  <div class="code-block">sv_licenseKey "your-licence-key-here"</div>
+<p>This guide gives a complete, practical walkthrough to set up a FiveM server running QBCore from scratch, with architecture decisions, security and validation best practices, implementation notes covering QBCore/ESX/ox_lib integrations, Roblox parallels for server authority and DataStore handling, testing, deployment, and maintenance. Use this as a reference checklist and implementation template rather than a drop-in script. Always keep server authority and validation central: client input must be treated as untrusted on FiveM, and Roblox scripts must respect server-side validation and robust DataStore handling.</p>
 
-  <h2>Step 3 — Install QBCore</h2>
-  <p>QBCore is the most popular FiveM roleplay framework. Download it from the official QBCore GitHub organisation. The easiest way is to use the QBCore installer script which downloads all required resources automatically.</p>
-  <div class="tip-box">
-    <strong>Required resources for QBCore:</strong>
-    <p style="margin-top:8px;">qb-core, oxmysql, ox_lib, qb-multicharacter, qb-spawn, qb-hud, qb-inventory, qb-phone</p>
-  </div>
+<h2>High-level architecture and resource layout</h2>
+<p>Design the server in layers: core framework (QBCore/ESX), shared utilities (ox_lib, utility resources), gameplay resources (jobs, inventory, vehicles), and infrastructure resources (database connector, logging, permissions). Keep resource boundaries clear so you can restart or replace modules without touching unrelated systems.</p>
+<ul>
+  <li>Core: qb-core or ESX base resource, event exporters, server callbacks.</li>
+  <li>Database: oxmysql or ghmattimysql / mysql-async adapter resource that mediates access to MySQL.</li>
+  <li>Libraries: ox_lib for menus/exports, ox_inventory or qb-inventory for item handling.</li>
+  <li>Gameplay modules: job scripts, vehicle spawning handlers, police utils, stores.</li>
+  <li>Admin tools: txAdmin, webadmin, rcon/logging export.</li>
+</ul>
+<p>Example minimal fxmanifest pattern for a resource:</p>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
 
-  <h2>Step 4 — Set up your database</h2>
-  <p>QBCore uses MariaDB/MySQL for data storage. Your host should provide a database — create one and note the credentials. Then update your server.cfg with the connection string.</p>
-  <div class="code-block">set oxmysql_connection_string "mysql://user:pass@localhost/dbname?charset=utf8mb4"</div>
+author 'you'
+description 'example-job'
+version '1.0.0'
 
-  <h2>Step 5 — Configure server.cfg</h2>
-  <p>Your server.cfg controls what resources load and in what order. The order matters — always ensure dependencies before the resources that need them.</p>
-  <div class="code-block">sv_licenseKey "your-key"
-sv_hostname "My FiveM Server"
-sets sv_projectName "My Server"
+shared_scripts {
+  '@qb-core/shared/locale.lua',
+  'config.lua'
+}
 
-ensure ox_lib
-ensure qb-core
-ensure oxmysql
-ensure qb-multicharacter
-ensure qb-spawn
-ensure qb-hud
-ensure qb-inventory</div>
+server_scripts {
+  '@oxmysql/lib/MySQL.lua', -- or ghmattimysql
+  'server/main.lua'
+}
 
-  <h2>Step 6 — Add your first scripts</h2>
-  <p>Once the base framework is running you can start adding custom scripts — police jobs, drug systems, housing, jobs and more. Each script goes in its own folder in the resources directory with an ensure line in server.cfg.</p>
+client_scripts {
+  'client/main.lua'
+}
+</code></pre>
 
-  <div class="cta-box">
-    <h3>Generate custom scripts for your new server</h3>
-    <p>Describe what you need and Stellar AI writes the complete script — fxmanifest, client, server and config — ready to drop into your resources folder.</p>
-    <a href="/app" class="cta-btn">Generate your first script free →</a>
-  </div>
+<h2>Database design and migrations</h2>
+<p>Use normalized tables for inventories, characters, vehicles, and permissions. Migrations should be versioned and idempotent. Use parameterized queries always; never construct SQL with direct concatenation of client-sent strings.</p>
+<ul>
+  <li>Tables: players, characters, items, vehicles, logs, sessions.</li>
+  <li>Indexes: add indexes on frequently queried columns (identifier, citizenid, job).</li>
+  <li>Migrations: store a schema_version table and write migrations that can be re-run safely.</li>
+</ul>
+
+<h2>Security and server validation</h2>
+<p>Security is a combination of architecture, code discipline, and runtime defense. For FiveM, treat all client-originated data as untrusted and perform full server-side validation for every sensitive action. In Roblox, authority must be on the server for state changes; clients are only requesters.</p>
+<ul>
+  <li><strong>Never trust client input:</strong> validate item IDs, quantities, funds, and ownership on the server before committing anything.</li>
+  <li><strong>Use parameterized queries:</strong> protect against SQL injection by using the DB library placeholders (oxmysql/ghmattimysql supplies parameter support).</li>
+  <li><strong>Permissions and roles:</strong> store permission levels server-side and verify before privileged actions.</li>
+  <li><strong>Rate-limiting and anti-spam:</strong> throttle repeated actions (e.g., pickup, buy) per player session.</li>
+  <li><strong>Data integrity:</strong> use transactions for multi-step DB writes where supported.</li>
+</ul>
+<p>Server-side validation example (QBCore server-side Lua):</p>
+<pre><code>-- server/main.lua
+QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('shop:buyItem', function(itemId, amount)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Validate amount type and bounds
+  if type(amount) ~= 'number' or amount < 1 or amount > 100 then
+    -- invalid, ignore and log
+    return
+  end
+
+  -- Validate item exists in server-side config
+  local itemDef = ServerItemConfig[itemId]
+  if not itemDef then return end
+
+  local totalPrice = itemDef.price * amount
+  if Player.PlayerData.money['bank'] < totalPrice then
+    return -- insufficient funds
+  end
+
+  -- Final server-side transaction
+  Player.Functions.RemoveMoney('bank', totalPrice)
+  Player.Functions.AddItem(itemId, amount)
+end)</code></pre>
+
+<h2>Implementation choices: QBCore vs ESX and ox_lib</h2>
+<p>QBCore and ESX are different design philosophies. QBCore favors lightweight modularity and exports; ESX is more monolithic historically. Choose based on resource compatibility and team familiarity. ox_lib provides client-side UI and server exports that many modern resources rely on—treat it as a library dependency with clear version control and update strategy.</p>
+<ul>
+  <li>Prefer QBCore if you want modular exports and a modern flow (server callbacks and player wrappers).</li>
+  <li>Choose ESX if you must use legacy resources unless you plan to convert them incrementally.</li>
+  <li>Use ox_lib for menus, notifications, and easier client-server utility exports, but keep all authoritative logic on the server.</li>
+</ul>
+
+<h3>Inventory and item systems</h3>
+<p>Pick an inventory system (ox_inventory, qb-inventory) that matches your persistence model. For stackable items, enforce server-side stacking rules and size limits. Apply anti-duplication checks on item creation and transfers.</p>
+
+<h2>Roblox parallels: server authority, RemoteEvents, and DataStore failure handling</h2>
+<p>Roblox development shares many of the same central principles: the server must be authoritative, RemoteEvents/RemoteFunctions are transport only, and DataStore operations must gracefully handle failures and rate limits.</p>
+<ul>
+  <li><strong>Server authority:</strong> do all state mutations on server scripts. Use client requests only to initiate actions. Never allow the client to alter critical state directly.</li>
+  <li><strong>RemoteEvent pattern:</strong> client -> server: validate parameters and permissions; server -> client: send sanitized view-only state.</li>
+  <li><strong>DataStore reliability:</strong> implement retry with exponential backoff, use UpdateAsync carefully, and use BindToClose to persist data on shutdown.</li>
+</ul>
+<p>Roblox DataStore retry example (Luau):</p>
+<pre><code>local DataStoreService = game:GetService('DataStoreService')
+local PlayersStore = DataStoreService:GetDataStore('Players')
+
+local function savePlayerData(userId, data)
+  local retries = 0
+  local success, err
+  repeat
+    success, err = pcall(function()
+      PlayersStore:UpdateAsync(tostring(userId), function(old)
+        return data
+      end)
+    end)
+    if not success then
+      retries += 1
+      task.wait(2 ^ math.min(retries, 5)) -- exponential backoff capped
+    end
+  until success or retries >= 5
+  if not success then
+    warn('Failed saving for', userId, err)
+  end
+end</code></pre>
+
+<h2>Testing, debugging, and QA</h2>
+<p>Test at multiple levels: unit tests for pure logic where possible, integration tests for DB interactions, and load tests for connection and session behaviors. Use txAdmin and cfx.re console logs for runtime issues. Create local staging environments that mirror production MySQL and resource ordering.</p>
+<ul>
+  <li>Automated tests: validate business logic functions (Lua unit tests via busted if applicable).</li>
+  <li>Integration tests: simulate player sequences for login, purchases, vehicle spawns.</li>
+  <li>Load testing: use bots or scripted clients to simulate connection spikes and resource restarts.</li>
+  <li>Runtime debugging: use dbg prints, structured JSON logs, and txAdmin live console for crash traces.</li>
+</ul>
+
+<h2>Deployment and maintenance</h2>
+<p>Deploy with reproducible builds and versioned resources. Use CI to push resource artifacts and a robust restart strategy to minimize downtime. Back up databases and automated snapshots daily, and keep schema migrations backward-compatible when possible.</p>
+<p>Tools and best practices:</p>
+<ul>
+  <li>Use Git for all resources and tag releases.</li>
+  <li>Use txAdmin for process management, auto-restarts, and scheduled backups.</li>
+  <li>Automate database backups with retention policies and test restores regularly.</li>
+  <li>Document upgrade steps and perform blue-green deploys when touching core database changes.</li>
+</ul>
+<p>For hands-on deployment dashboards and workspace integration, consider using the Stellar AI tools: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> for project organization. Integrate server logs and monitoring into your deployment pipeline and keep an eye on critical error rates; coordinating tools can help — check <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> for workflow options and the team blog at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a> for operational guides.</p>
+
+<h2>Monitoring, logging, and incident response</h2>
+<p>Structured logs and error aggregation are essential. Log important security events (failed validation, suspicious actions). Use tags to filter per-player or per-resource problems, and keep an incident playbook for rollbacks and hotfixes.</p>
+<ul>
+  <li>Log levels: debug, info, warn, error. Send error/warn to an aggregator.</li>
+  <li>Alerting: set alerts on high error rates, repeated validation failures, and long DB queries.</li>
+  <li>Incident playbook: immediate mute/ban steps, how to roll back a migration, and emergency restart scripts.</li>
+</ul>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Why</th>
+      <th>Completed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Install QBCore / base</td>
+      <td>Provides player abstractions, callbacks, and core exports</td>
+      <td>[ ]</td>
+    </tr>
+    <tr>
+      <td>Set up MySQL + oxmysql</td>
+      <td>Persistent storage with safe parameterized queries</td>
+      <td>[ ]</td>
+    </tr>
+    <tr>
+      <td>Implement server-side validation</td>
+      <td>Prevents duplication, fraud, and exploits</td>
+      <td>[ ]</td>
+    </tr>
+    <tr>
+      <td>Configure txAdmin and backups</td>
+      <td>Process management and automated backups</td>
+      <td>[ ]</td>
+    </tr>
+    <tr>
+      <td>Test resource restart/resilience</td>
+      <td>Ensure safe hot-reloads and dependency ordering</td>
+      <td>[ ]</td>
+    </tr>
+    <tr>
+      <td>Monitor logs & alerts</td>
+      <td>Early detection of regressions or abuse</td>
+      <td>[ ]</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Maintenance and upgrades</h2>
+<p>Keep a scheduled maintenance window for upgrades. Always run migrations against a clone of production first. Keep a changelog and rollback steps published to your team. For third-party libraries like ox_lib, track upstream releases and test them in staging before deploying to production.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM / Cfx.re Documentation</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub (core repo)</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib GitHub</a></li>
+  <li><a href="https://docs.roblox.com/">Roblox Developer Hub</a></li>
+  <li><a href="https://docs.roblox.com/en-us/api-reference/function/DataStoreService">Roblox DataStore documentation</a></li>
+  <li><a href="https://docs.txadmin.com/">txAdmin documentation</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

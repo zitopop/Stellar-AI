@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Fuel Script — server-authoritative, secure, QBCore/ESX-friendly guide — Stellar AI</title>
+  <meta name="description" content="Build a server-authoritative fuel system for FiveM that respects framework boundaries (QBCore/ESX/ox_lib), prevents client-side cheating, supports pumps and jerrycans, and persists fuel data safely.">
+  <meta name="keywords" content="FiveM fuel script, FiveM fuel, QBCore fuel, ESX fuel, server authoritative, fuel persistence, fuel pump, fxmanifest">
+  <meta property="og:title" content="FiveM Fuel Script — server-authoritative, secure, QBCore/ESX-friendly guide">
+  <meta property="og:description" content="Build a server-authoritative fuel system for FiveM that respects framework boundaries (QBCore/ESX/ox_lib), prevents client-side cheating, supports pumps and jerrycans, and persists fuel data safely.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-fuel-script">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Practical implementation guide</div>
+  <h1>FiveM Fuel Script — server-authoritative, secure, QBCore/ESX-friendly guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you step-by-step through building a robust, server-authoritative fuel system for FiveM. It covers architecture, code you can install, integration notes for QBCore/ESX, security and persistence, and a practical checklist to validate your resource.</p>
+  <h2>Implementation plan (short)</h2>
+<p>1) Create a simple resource with config, client and server files. 2) Keep fuel state server-side keyed by plate (or plate+cid) and expose safe events. 3) Let the client display HUD and interact with pumps/jerrycans but never authoritatively set fuel. 4) Add persistence hook for MySQL or an export for datastore. 5) Integrate with qb-target/ox_target and item checks for refuel.</p>
+
+<h2>Assumptions and framework dependencies</h2>
+<ul>
+  <li>Server runs FiveM with either QBCore or ESX available. Code uses conditional checks to support both.</li>
+  <li>You have a database resource (MySQL-async / oxmysql) if you want persistence — persistence calls are optional hooks.</li>
+  <li>qb-target or ox_target is optional for pump interaction; otherwise use a simple proximity check.</li>
+  <li>This guide uses plate-based keys. If your server has duplicated plates consider combining plate+candidate owner id (cid) for uniqueness.</li>
+</ul>
+
+<h2>High-level architecture</h2>
+<p>Keep authoritative state and validation on the server. Clients request fuel updates and the server decides whether to accept them. The client handles HUD, animation, and local smoothing (interpolation) but not permanent state changes. When persistence is enabled the server writes the fuel level to your DB on safe intervals and on player disconnect.</p>
+
+<h3>Why server authority matters</h3>
+<p>All critical actions (fuel deduction, refuelling, item consumption) must be validated server-side to prevent weaponized clients or speed hacks from setting fuel arbitrarily. Client-side should be treated as display-only and input provider.</p>
+
+<h2>Complete, destination-labelled files</h2>
+<p>Create a resource folder named fivem-fuel-script with these files. Below are minimal, deployable files: fxmanifest.lua, config.lua, server/main.lua, client/main.lua.</p>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'Server-authoritative fuel script (QBCore/ESX friendly)'
+version '1.0.0'
+
+shared_script 'config.lua'
+server_script 'server/main.lua'
+client_script 'client/main.lua'
+
+dependencies {
+  -- optional: 'qb-core', 'es_extended', 'oxmysql', 'qb-target'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+Config.DefaultFuel = 70.0 -- starting fuel percentage
+Config.PersistInterval = 600000 -- 10 minutes
+Config.MaxFuelIncreasePerSecond = 0.5 -- validate refuel rate
+Config.RefillStations = { -- example coordinates for pumps
+  {x=263.0, y=260.0, z=105.0}
+}
+Config.UseQBCore = true -- set to false if using ESX
+</code></pre>
+
+<h3>server/main.lua</h3>
+<pre><code>local Fuel = {} -- fuel[plate] = {level=number, lastChange=os.time(), owner=playerId}
+local lastPersist = os.time()
+
+RegisterNetEvent('fivem-fuel:requestFuel')
+AddEventHandler('fivem-fuel:requestFuel', function(plate)
+  local src = source
+  if not plate or type(plate) ~= 'string' then return end
+  Fuel[plate] = Fuel[plate] or { level = Config.DefaultFuel }
+  TriggerClientEvent('fivem-fuel:updateFuelClient', src, plate, Fuel[plate].level)
+end)
+
+RegisterNetEvent('fivem-fuel:attemptConsume')
+AddEventHandler('fivem-fuel:attemptConsume', function(plate, newLevel)
+  local src = source
+  if not plate or type(newLevel) ~= 'number' then return end
+  local now = os.time()
+  Fuel[plate] = Fuel[plate] or { level = Config.DefaultFuel, lastChange = now }
+  local stored = Fuel[plate]
+
+  -- simple anti-cheat: do not accept impossible refill jumps
+  local dt = math.max(1, now - (stored.lastChange or now))
+  local maxIncrease = Config.MaxFuelIncreasePerSecond * dt
+  if newLevel - stored.level > maxIncrease then
+    -- suspicious increase, reject and log
+    print(('fivem-fuel: suspicious refill by %s (plate=%s): %.2f -> %.2f'):format(src, plate, stored.level, newLevel))
+    TriggerClientEvent('fivem-fuel:syncFuel', src, plate, stored.level)
+    return
+  end
+
+  stored.level = math.max(0, math.min(100, newLevel))
+  stored.lastChange = now
+  -- optionally persist: call your DB here (safe-write)
+  -- Example: exports.oxmysql:update(...) or MySQL.Async.execute(...)
+end)
+
+-- periodic persistence hook
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(60000)
+    if os.time() - lastPersist >= (Config.PersistInterval/1000) then
+      lastPersist = os.time()
+      -- iterate Fuel and write to DB safely, or export for other resources
+      -- for plate, data in pairs(Fuel) do ... end
+    end
+  end
+end)
+</code></pre>
+
+<h3>client/main.lua</h3>
+<pre><code>local currentFuel = nil
+
+-- ask server for fuel on entering a vehicle
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(1000)
+    local ped = PlayerPedId()
+    if IsPedInAnyVehicle(ped, false) then
+      local veh = GetVehiclePedIsIn(ped, false)
+      if veh ~= 0 then
+        local plate = GetVehicleNumberPlateText(veh)
+        if plate and plate ~= '' then
+          TriggerServerEvent('fivem-fuel:requestFuel', plate)
+        end
+      end
+    end
+  end
+end)
+
+RegisterNetEvent('fivem-fuel:updateFuelClient')
+AddEventHandler('fivem-fuel:updateFuelClient', function(plate, level)
+  currentFuel = { plate = plate, level = level }
+  -- update HUD display with currentFuel.level
+end)
+
+-- send fuel consumption to server periodically (server decides acceptance)
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(2000)
+    if currentFuel then
+      local ped = PlayerPedId()
+      if IsPedInAnyVehicle(ped, false) then
+        local veh = GetVehiclePedIsIn(ped, false)
+        local speed = GetEntitySpeed(veh) * 3.6
+        -- simple consumption model
+        local consume = math.max(0.01, (speed / 1000) * 2)
+        currentFuel.level = math.max(0, currentFuel.level - consume)
+        TriggerServerEvent('fivem-fuel:attemptConsume', currentFuel.plate, currentFuel.level)
+      end
+    end
+  end
+end)
+</code></pre>
+
+<h2>Integration notes for QBCore/ESX/ox_lib</h2>
+<ul>
+  <li>Use QBCore/ESX player identifiers to combine plate + cid for uniqueness when saving to DB.</li>
+  <li>If using qb-target or ox_target, expose a server-only callback for a pump action and verify player's proximity and item ownership server-side before allowing refuel.</li>
+  <li>Consume items (jerrycan) by invoking framework functions serverside: QBCore.Functions.RemoveItem or ESX.RemoveInventoryItem.</li>
+</ul>
+
+<h2>Practical checklist before production</h2>
+<table>
+  <thead>
+    <tr><th>Step</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Install resource folder into resources/[yourcategory]/fivem-fuel-script and start it in server.cfg</td></tr>
+    <tr><td>2</td><td>Set Config.UseQBCore to match your framework and wire persistence to your DB</td></tr>
+    <tr><td>3</td><td>Test fuel sync: enter vehicle, ensure HUD shows server-provided value</td></tr>
+    <tr><td>4</td><td>Test refuel via pump: ensure server-side validation approves only valid refuels</td></tr>
+    <tr><td>5</td><td>Run cheat test: attempt rapid, large fuel increases client-side and verify server rejects</td></tr>
+  </tbody>
+</table>
+
+<h2>Security and validation considerations</h2>
+<ul>
+  <li>Never accept raw client fuel values without rate-limiting or delta checks. Use Config.MaxFuelIncreasePerSecond.</li>
+  <li>Always verify refuels originate from an allowed source: a pump ID or valid item consumption. Validate on server by checking player inventory or a pump-server registry.</li>
+  <li>Log suspicious events server-side and optionally notify admins. Don’t expose logs to clients.</li>
+</ul>
+
+<h2>Persistence and DB notes</h2>
+<p>Persist fuel to the DB at safe intervals and on player disconnect. Save by identifier (plate or plate+cid) and avoid per-second writes. Use a queue or batch writes to minimize DB load. If using oxmysql or MySQL-async, implement parameterized queries — do not concatenate user data into SQL strings.</p>
+
+<h2>Testing and validation steps</h2>
+<ol>
+  <li>Start server with only essential resources and this fuel resource. Confirm no runtime errors.</li>
+  <li>Drive normally and verify fuel decreases and server events show expected values.</li>
+  <li>Attempt to set fuel via client triggers — ensure server rejects impossible deltas.</li>
+  <li>Test persistence by restarting server and confirming saved fuel loads.</li>
+</ol>
+
+<h2>Next steps and extensions</h2>
+<ul>
+  <li>Add pump UI, animations, and qb-target entries for realism.</li>
+  <li>Expose admin commands to set/reset fuel safely server-side.</li>
+  <li>Integrate with vehicle keys/ownership systems to tie fuel to owner vs. plate.</li>
+</ul>
+
+<p>Want to accelerate building or generate resource files automatically? Try the Stellar AI builder at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> to scaffold resources and iterate on server-client flows. For quick in-app iterations and previews use <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> and check community guides on our blog at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References & further reading</h3>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM documentation</a></li>
+  <li><a href="https://github.com/qbcore-framework">QBCore GitHub (community)</a></li>
+  <li><a href="https://github.com/esx-framework">ESX GitHub (community)</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib / oxmysql examples</a></li>
+</ul>
+</div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

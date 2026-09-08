@@ -68,32 +68,199 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Use DataStoreService in Roblox — Complete Tutorial</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">DataStoreService lets your Roblox game save player data between sessions. This guide covers how to save and load player stats, currency and inventory using DataStores.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to use datastoreservice in roblox — complete tutorial, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<p>This guide walks through practical, production-ready usage of Roblox DataStoreService. It covers architecture patterns, secure server authority, concurrency handling, failure recovery, testing, and ongoing maintenance so you can reliably persist player and game state. Examples use Luau and emphasize server-side validation, RemoteEvent patterns, and safe retries. If you want a companion tool to manage testing workflows and deploy automation, consider exploring this app: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>1. DataStoreService: High-level architecture</h2>
+<p>DataStoreService is Roblox’s server-side persistence layer. Your server scripts (not client code) must read, write, and validate data. Typical architecture separates responsibilities:</p>
+<ul>
+  <li>Data layer: scripts that wrap DataStoreService calls (GetAsync, SetAsync, UpdateAsync, OrderedDataStore)</li>
+  <li>Validation layer: functions that verify incoming gameplay state and sanitize structures</li>
+  <li>API layer: RemoteEvents/RemoteFunctions that clients use to request reads/writes — server authoritatively handles these</li>
+  <li>Persistence policies: autosave intervals, on-leave saves, and backups</li>
+</ul>
+<p>Keep DataStore interactions strictly server-side. Clients can request saves via RemoteEvents, but the server decides what to persist.</p>
+
+<h2>2. Data model and serialization choices</h2>
+<p>Design a clear, versioned data schema. Use plain tables with primitive fields (numbers, strings, booleans, nested tables). Avoid storing non-serializable types (instances, functions, userdata). Example player data model:</p>
+<pre><code>local playerData = {
+  version = 2,
+  coins = 0,
+  inventory = { ["sword"] = 1 },
+  lastLogin = os.time()
+}
+</code></pre>
+<p>Include a version field so you can migrate older saved structures safely. When loading, check the version and perform migrations server-side.</p>
+
+<h2>3. Core implementation patterns</h2>
+<p>Use these patterns for common operations:</p>
+<ul>
+  <li>Use UpdateAsync for atomic transforms (increment counters, merge inventory) to avoid race conditions.</li>
+  <li>Use GetAsync to read and SetAsync only when you need to replace data, but prefer UpdateAsync where possible.</li>
+  <li>Scope keys with a game-specific prefix and player.UserId for player-specific data (e.g., "prod_v2_player_123456").</li>
+</ul>
+<p>Basic save-on-leave skeleton:</p>
+<pre><code>local DataStoreService = game:GetService("DataStoreService")
+local playerStore = DataStoreService:GetDataStore("PlayerStore")
+
+game.Players.PlayerRemoving:Connect(function(player)
+  local key = "player_" .. player.UserId
+  local success, err = pcall(function()
+    playerStore:SetAsync(key, player._persistData)
+  end)
+  if not success then
+    warn("Save failed for", player.Name, err)
+    -- queue a retry or schedule a backup
+  end
+end)</code></pre>
+
+<h2>4. Concurrency: UpdateAsync and atomic operations</h2>
+<p>UpdateAsync provides atomic updates. Use it for increments, merges, and conflict resolution. It receives the current value (or nil) and returns the new value to store.</p>
+<pre><code>local function incrementCoins(userId, amount)
+  local key = "player_" .. userId
+  local success, result = pcall(function()
+    return playerStore:UpdateAsync(key, function(old)
+      old = old or { coins = 0 }
+      old.coins = (old.coins or 0) + amount
+      return old
+    end)
+  end)
+  if not success then
+    warn("UpdateAsync failed:", result)
+    return nil, result
+  end
+  return result
+end</code></pre>
+<p>UpdateAsync helps mitigate lost-writes when multiple server instances interact with the same key, but still honor Roblox rate limits and exponential backoff strategies.</p>
+
+<h2>5. Robust error handling and retry strategy</h2>
+<p>All DataStoreService calls can fail due to throttling, transient errors, or service downtime. Wrap operations in pcall, inspect errors, and implement incremental backoff with limited retries. Persist critical failed saves to a local in-memory queue and retry in the background while the server is running and not overloaded.</p>
+<pre><code>local function safeCall(fn, retries)
+  retries = retries or 5
+  local delayTime = 1
+  for i = 1, retries do
+    local ok, res = pcall(fn)
+    if ok then return true, res end
+    warn("DataStore error, retry", i, res)
+    task.wait(delayTime)
+    delayTime = math.min(delayTime * 2, 16)
+  end
+  return false, "max retries exceeded"
+end</code></pre>
+<p>Never loop blocking saves on the main thread without yielding; use task.spawn/task.wait and monitor queue size to avoid memory growth.</p>
+
+<h2>6. Security and server-side validation</h2>
+<p>Treat all client requests as untrusted. Clients can send requests that propose state changes — your server must validate them. Typical validation checks:</p>
+<ul>
+  <li>Value ranges: no negative currency, enforce caps</li>
+  <li>Game rules: ensure clients cannot grant themselves items without spending or completing prerequisites</li>
+  <li>Action rate limits: throttle save or purchase requests per player</li>
+</ul>
+<p>Example RemoteEvent pattern:</p>
+<pre><code>remote.OnServerEvent:Connect(function(player, request)
+  -- Validate shape & types
+  if type(request) ~= "table" then return end
+  if request.action == "buy" then
+    if not validateBuy(player, request.itemId) then return end
+    -- perform server-side purchase and persist via UpdateAsync
+  end
+end)</code></pre>
+<p>For FiveM developers: never trust client input. Always validate and sanitize server-side, and use server-side authoritative checks analogous to RemoteEvents in Roblox.</p>
+
+<h2>7. Testing and debugging DataStores</h2>
+<p>Roblox Studio has a setting "Enable Studio Access to API Services" to test DataStore calls locally. Use it when developing, but remember that production behavior can differ under real services and throttling. Test these situations:</p>
+<ul>
+  <li>Concurrent saves from multiple server instances (use actual server testing with TeleportService or multiple server instances in closed beta)</li>
+  <li>Data migrations from older versions</li>
+  <li>Throttling/errors and retry/backoff behavior</li>
+</ul>
+<p>Log structured events with timestamps and keys (avoid logging full player data). Use unique temporary keys for test runs so you do not corrupt production data.</p>
+
+<h2>8. Deployment, maintenance, and migrations</h2>
+<p>When deploying schema changes:</p>
+<ol>
+  <li>Deploy server-side migration code that detects older version field and upgrades on first load.</li>
+  <li>Run cautious rolling migrations — avoid global SetAsync mass writes unless necessary.</li>
+  <li>Keep a small compatibility layer so older server versions still read newer data safely.</li>
+</ol>
+<p>Maintenance best practices:</p>
+<ul>
+  <li>Implement periodic backups by copying data to a secondary DataStore key namespace or export using a secure admin-only flow.</li>
+  <li>Monitor save queue sizes and error rates; alert when background retries exceed thresholds.</li>
+  <li>Document your schema and migration steps in source control.</li>
+</ul>
+
+<h2>9. Practical checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Description</th>
+      <th>Actionable Items</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Design schema</td>
+      <td>Define fields and include version</td>
+      <td>Write schema doc; add version number</td>
+    </tr>
+    <tr>
+      <td>Server authority</td>
+      <td>Handle all saves/loads on server</td>
+      <td>Move persistence into ServerScriptService; use RemoteEvents</td>
+    </tr>
+    <tr>
+      <td>Atomic updates</td>
+      <td>Use UpdateAsync for conflicts</td>
+      <td>Replace SetAsync with UpdateAsync for increments/merges</td>
+    </tr>
+    <tr>
+      <td>Failure handling</td>
+      <td>Retry with backoff; queue failures</td>
+      <td>Implement safeCall and a retry queue</td>
+    </tr>
+    <tr>
+      <td>Testing</td>
+      <td>Enable Studio API access & deploy to test servers</td>
+      <td>Run concurrency and migration tests</td>
+    </tr>
+    <tr>
+      <td>Monitoring</td>
+      <td>Log key events and monitor retry counts</td>
+      <td>Instrument logs and alerts for high failure rates</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>10. Example end-to-end flow</h2>
+<p>Player joins:</p>
+<ol>
+  <li>Server loads data with safeCall(GetAsync) and applies migrations.</li>
+  <li>Server populates a server-side player object (not on the client).</li>
+  <li>Client requests actions via RemoteEvents; server validates and uses UpdateAsync to persist increments or SetAsync for bulk saves.</li>
+  <li>On PlayerRemoving, server triggers a final safe save and, if it fails, enqueues retries.</li>
+</ol>
+<p>This pattern ensures the server remains the single source of truth and reduces exploit surface area.</p>
+
+<h2>11. Observability and operational tips</h2>
+<p>Keep save and load logs concise. Record:</p>
+<ul>
+  <li>Timestamp, key namespace, userId (obfuscated if needed), operation type (Get/Set/Update), and result (success/failure)</li>
+  <li>Queue length and number of outstanding retries</li>
+  <li>Recent migration runs and counts of migrated keys</li>
+</ul>
+<p>If you manage multiple game modes, use different DataStore namespaces to avoid accidental collisions. For deployment automation and monitoring tools you can integrate with, learn more at our platform: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For articles and deeper developer write-ups, see the blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://developer.roblox.com/en-us/articles/Handling-Data-Store-Service">Roblox: Handling Data Store Service</a></li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/class/DataStoreService">Roblox API: DataStoreService</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Remote-Events-and-Remote-Functions">Roblox: Remote Events and Remote Functions</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

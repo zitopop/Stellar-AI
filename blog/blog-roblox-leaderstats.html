@@ -50,18 +50,36 @@
 <body>
   <nav class="nav"><a href="/" class="brand"><i>✦</i>Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try Stellar free →</a></nav>
   <main class="container">
-    <div class="eyebrow">Roblox scripting tutorial</div>
-    <h1>How to add leaderstats to your Roblox game</h1>
-    <div class="meta">UPDATED 18 AUGUST 2026 · 7 MIN READ · STELLAR AI</div>
-    <p class="intro">Leaderstats are Roblox’s built-in way to show a small set of player stats on the in-game leaderboard. They are useful for showing coins, wins, rebirths or level—but they are only the display layer. Your game still needs server-side logic and persistent player data behind them.</p>
+  <h1>How to Add Leaderstats to a Roblox Game</h1>
 
-    <h2>What leaderstats should show</h2>
-    <p>Only display values that help a player understand their progress or compare a meaningful achievement. Coins, wins, kills, rebirths and level are common examples. Avoid putting every saved value on the leaderboard; capacity, internal upgrade levels, equipped items and private settings usually belong in your player data or UI instead.</p>
-    <div class="callout"><strong>Important distinction:</strong> leaderstats show values in Roblox’s player list. They do not automatically save data, balance an economy, or protect a game from exploit attempts.</div>
+<p class="intro">A practical guide to how to add leaderstats to your roblox game, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-    <h2>Create the leaderboard from a server Script</h2>
-    <p>Create a normal <strong>Script</strong> inside <strong>ServerScriptService</strong>. Keeping this on the server makes the leaderboard available to every player and stops the client from being the source of truth.</p>
-    <div class="code">local Players = game:GetService("Players")
+<body>
+  <h2>Introduction</h2>
+  <p>
+    This guide walks you through adding robust, secure leaderstats to a Roblox game. It covers architecture, implementation choices, server-side authority, DataStore persistence, error handling, testing, deployment, and maintenance. Example Luau code samples demonstrate recommended patterns for creating leaderstats, saving and loading from DataStore, and validating client requests. Although focused on Roblox, a short security reminder for FiveM developers is included: never trust client input in any multiplayer environment.
+  </p>
+
+  <h2>High-level architecture</h2>
+  <p>
+    Keep leaderstats and score-related logic server-side. The common architecture components:
+  </p>
+  <ul>
+    <li><strong>Server scripts</strong> in ServerScriptService that create and own leaderstats for each Player and handle persistence.</li>
+    <li><strong>DataStoreService</strong> to persist values between sessions; pcall and retry logic to handle transient failures.</li>
+    <li><strong>RemoteEvents</strong> for client-to-server requests (e.g., "I scored a point"); the server validates and updates leaderstats.</li>
+    <li><strong>LocalScripts</strong> should only display UI and send requests; they must never be the source of truth.</li>
+  </ul>
+  <p>
+    This model ensures a single authoritative source (the server) and minimizes avenues for client-side cheating or data loss.
+  </p>
+
+  <h2>Creating leaderstats on PlayerAdded</h2>
+  <p>
+    A canonical pattern is creating a Folder named <code>leaderstats</code> under each Player. Roblox's default leaderboard UI reads values placed below this folder.
+  </p>
+  <pre><code>-- ServerScriptService/CreateLeaderstats.lua
+local Players = game:GetService("Players")
 
 Players.PlayerAdded:Connect(function(player)
     local leaderstats = Instance.new("Folder")
@@ -73,41 +91,243 @@ Players.PlayerAdded:Connect(function(player)
     coins.Value = 0
     coins.Parent = leaderstats
 
-    local rebirths = Instance.new("IntValue")
-    rebirths.Name = "Rebirths"
-    rebirths.Value = 0
-    rebirths.Parent = leaderstats
-end)</div>
-    <p>The exact folder name matters: Roblox recognises a folder called <code>leaderstats</code>. Each value inside it then appears in the standard player list when a player joins.</p>
+    local wins = Instance.new("IntValue")
+    wins.Name = "Wins"
+    wins.Value = 0
+    wins.Parent = leaderstats
+end)</code></pre>
+  <p>
+    Keep raw value updates on the server. If you need the client to request an increment (e.g., when a player completes a client-initiated animation), send a RemoteEvent request and validate server-side before changing these values.
+  </p>
 
-    <h2>Update stats through gameplay, not the client</h2>
-    <p>When a player earns coins, the server should verify the action and update the value. For a simulator, that could mean checking the player is close to a collection object, has not exceeded a cooldown, and has not reached backpack capacity before adding currency.</p>
-    <div class="code">local function awardCoins(player, amount)
+  <h3>Why server-side creation matters</h3>
+  <ul>
+    <li>Leaderboards read Player/leaderstats on the client automatically; placing values on the server prevents spoofing.</li>
+    <li>Values under <code>leaderstats</code> are replicated but controlled by server ownership, enabling authoritative updates.</li>
+  </ul>
+
+  <h2>Persistence with DataStoreService</h2>
+  <p>
+    Persistent leaderstats require DataStoreService. Design keys and schemas with migration in mind (use versioned keys). Always wrap DataStore calls with <code>pcall</code> and include retry logic with exponential backoff to respect rate limits.
+  </p>
+  <pre><code>-- ServerScriptService/DataPersistence.lua
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+local Leaderstore = DataStoreService:GetDataStore("Leaderstats_v1")
+
+local function getKey(userId)
+    return "player_" .. userId
+end
+
+local function load(player)
+    local key = getKey(player.UserId)
+    local success, data = pcall(function()
+        return Leaderstore:GetAsync(key)
+    end)
+    if success and type(data) == "table" then
+        local leaderstats = player:FindFirstChild("leaderstats")
+        if leaderstats then
+            if data.Coins then leaderstats.Coins.Value = data.Coins end
+            if data.Wins then leaderstats.Wins.Value = data.Wins end
+        end
+    else
+        -- Handle missing data or pcall failure: keep defaults and log
+        warn("Data load failed for", player.Name, data)
+    end
+end
+
+local function save(player)
+    local key = getKey(player.UserId)
     local leaderstats = player:FindFirstChild("leaderstats")
-    local coins = leaderstats and leaderstats:FindFirstChild("Coins")
+    if not leaderstats then return end
+    local data = {
+        Coins = leaderstats.Coins.Value,
+        Wins = leaderstats.Wins.Value
+    }
+    local success, err = pcall(function()
+        Leaderstore:SetAsync(key, data)
+    end)
+    if not success then
+        warn("Save failed for", player.Name, err)
+        -- Optionally queue retry; do not block player removal
+    end
+end
 
-    if not coins then return end
-    coins.Value += amount
-end</div>
-    <p>Do not let a LocalScript send a number such as “give me 5000 coins” and apply it directly. The client can request an action, but the server should calculate and approve the reward.</p>
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        -- ensure leaderstats exist before loading
+    end)
+    -- ensure leaderstats created first in another script, then
+    load(player)
+end)
 
-    <h2>Connect leaderstats to saved player data</h2>
-    <p>For a game that players return to, load persistent data when the player joins and apply the saved values to leaderstats. Save progress again when the player leaves and at controlled points during a session. Roblox DataStores are intended for persistent experience data, but calls can fail, so handle failures without erasing existing progress. [<a href="https://create.roblox.com/docs/cloud-services/data-stores" target="_blank" rel="noopener noreferrer">1</a>]</p>
-    <div class="check"><div>Load a default profile for a new player.</div><div>Use protected calls around every data load and save.</div><div>Only show stats after your server has loaded the player profile.</div><div>Never replace old data with blanks after a failed load.</div></div>
-    <p>As your project grows, keep a dedicated player-data module as the source of truth. Update the visible leaderstats whenever the player’s coins or rebirths change. This makes it easier to add UI, shops, game passes and separate internal stats later.</p>
+Players.PlayerRemoving:Connect(save)</code></pre>
+  <p>
+    Consider saving periodically (e.g., every 5–10 minutes) and on PlayerRemoving. Use a robust retry queue for transient failures, but avoid blocking server shutdown.
+  </p>
 
-    <h2>Test it in Studio</h2>
-    <p>Start a two-player local server test in Roblox Studio. Confirm that both players get their own values, that an earned reward only changes the correct player, and that one player cannot affect another player’s stats. Test a fresh player, a returning player, and the case where a data request fails.</p>
-    <p>For a simulator, also test the full loop: collect currency, reach capacity, sell, buy an upgrade, leave, and return. The leaderboard should reflect real progress rather than become the system that creates it.</p>
+  <h2>Handling DataStore failures and rate limits</h2>
+  <p>
+    DataStores can fail due to service issues or rate limits. Best practices:
+  </p>
+  <ul>
+    <li>Wrap Get/Set/Update calls in <code>pcall</code> and inspect the error.</li>
+    <li>Use exponential backoff on retries (e.g., 0.5s, 1s, 2s, 4s) and cap retries.</li>
+    <li>Queue writes in memory and flush on PlayerRemoving or when a slot is available; avoid infinite retries.</li>
+    <li>Consider combining frequent small writes into a single batched write to reduce request volume.</li>
+    <li>Test failure handling by simulating errors in Studio and verifying your retry and fallback logic.</li>
+  </ul>
 
-    <h2>Use a clear prompt for the rest of your game</h2>
-    <p>Once you have leaderstats, describe the rest of the system precisely so each script has a defined responsibility.</p>
-    <div class="prompt">Create a Roblox player data and leaderstats system for a simulator. Use server-side Coins and Rebirths values, load and save with protected DataStore calls, and provide a separate server function for awarding coins after validation. Add clear notes showing where the RemoteEvents, data module and UI should go. Do not trust currency amounts sent by the client.</div>
+  <h2>Server validation and security</h2>
+  <p>
+    Never trust the client. This is a universal multiplayer principle and applies equally to Roblox and FiveM development. For FiveM developers: the client is always untrusted; server must validate every action. For Roblox:
+  </p>
+  <ul>
+    <li>Validate all RemoteEvent requests on the server. Example: if a client claims "I killed an enemy," validate the score by checking game state, timestamps, or server-verifiable events.</li>
+    <li>Do not accept direct client-sent leaderstat values. The client can request an action; the server computes the resulting change.</li>
+    <li>Rate-limit client requests server-side to mitigate abuse.</li>
+    <li>Sanitize string values and avoid unsafe concatenation for keys.</li>
+  </ul>
 
-    <section class="cta"><div class="eyebrow">Build the next system</div><h2>Plan your Roblox systems before they turn into one huge script.</h2><p>Use Stellar AI to turn a clear feature description into a structured starting point, then refine it while you test in Roblox Studio.</p><a class="cta-btn" href="/app">Open Stellar AI free →</a></section>
+  <h3>Example: RemoteEvent request with validation</h3>
+  <pre><code>-- ServerScriptService/ServerHandlers.lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RepEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
+local AddPoint = RepEvents:WaitForChild("RequestAddPoint")
 
-    <section class="related"><h2>More Roblox guides</h2><div class="related-grid"><a href="/blog/roblox-simulator-game-guide"><b>How to make a Roblox simulator game</b><span>Plan the loop, upgrades, saving and progression.</span></a><a href="/blog/roblox-remote-events-tutorial"><b>Roblox RemoteEvents tutorial</b><span>Keep client and server responsibilities clear.</span></a><a href="/blog/roblox-datastore-tutorial"><b>Roblox DataStores tutorial</b><span>Build more reliable persistent player progress.</span></a></div></section>
-  </main>
-  <footer><span>© 2026 Stellar AI</span><span><a href="/">Home</a> · <a href="/blog">Guides</a> · <a href="/app">Open app</a></span></footer>
+AddPoint.OnServerEvent:Connect(function(player, payload)
+    -- payload should be minimal, e.g., an id of the item collected
+    if type(payload) ~= "table" or not payload.itemId then
+        return -- malformed
+    end
+
+    -- Perform server-side checks: did the item exist and is it collectible?
+    local valid = checkIfItemCollectible(player, payload.itemId) -- implement server logic
+    if not valid then
+        return
+    end
+
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats and leaderstats.Coins then
+        leaderstats.Coins.Value = leaderstats.Coins.Value + 1
+    end
+end)</code></pre>
+
+  <h2>Testing and QA</h2>
+  <p>
+    Test leaderstats in a variety of scenarios:
+  </p>
+  <ol>
+    <li>Local Studio Play (Server + Client) to validate replication and UI updates.</li>
+    <li>Published server tests (with multiple players) to simulate concurrency and DataStore load patterns.</li>
+    <li>Simulate DataStore failures by forcing pcall to return false and verifying that retry logic and player experience are acceptable.</li>
+    <li>Stress test: simulate many rapid client events and ensure server rate-limits and validations hold.</li>
+  </ol>
+  <p>
+    Logging is critical: instrument save/load success and failure counts and sample failed payloads (never log sensitive PII).
+  </p>
+
+  <h2>Deployment and versioning</h2>
+  <p>
+    When updating leaderstats structure (e.g., renaming "Coins" to "Currency"), follow a migration plan:
+  </p>
+  <ul>
+    <li>Introduce new keys with version numbers in DataStore keys (e.g., <code>Leaderstats_v2</code>).</li>
+    <li>Implement a migration path that reads v1 and writes v2 when a player first connects.</li>
+    <li>Keep backward-compatible reads for a transitional period.</li>
+    <li>Monitor logs for migration errors and provide a rollback plan.</li>
+  </ul>
+  <p>
+    For operational tooling and analytics, you can use third-party services to analyze usage patterns. If you use external tools for analysis or deployment, ensure they respect user privacy and Roblox Terms of Service. For developing and managing your project, consider productivity tools like the Stellar AI desktop app to manage tasks and insights: <a href="https://trystellarai.com/app">Stellar AI app</a>. For team documentation and release notes, you may also find the Stellar AI blog helpful: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.
+  </p>
+
+  <h2>Maintenance and observability</h2>
+  <p>
+    Ongoing maintenance tasks:
+  </p>
+  <ul>
+    <li>Track DataStore error rates and average latency.</li>
+    <li>Monitor unusual leaderstat deltas that indicate exploits.</li>
+    <li>Rotate DataStore keys during major schema changes.</li>
+    <li>Keep a test server or a staging place where you can trial migrations before applying them to production.</li>
+    <li>Run periodic backup exports of critical aggregated data if your analytics rely on them (do not export PII without consent).</li>
+  </ul>
+  <p>
+    Consider adding an administrative in-game command (server-only) to query a player's last save timestamp or force-save a player's data for debugging.
+  </p>
+
+  <h2>Practical checklist</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Location</th>
+        <th>Purpose</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Create leaderstats folder and values</td>
+        <td>ServerScriptService/CreateLeaderstats.lua</td>
+        <td>Expose values to Roblox leaderboard UI</td>
+        <td>Server-only: do not create leaderstats on client</td>
+      </tr>
+      <tr>
+        <td>Implement DataStore load/save</td>
+        <td>ServerScriptService/DataPersistence.lua</td>
+        <td>Persist persistent values</td>
+        <td>Use pcall + retry and versioned keys</td>
+      </tr>
+      <tr>
+        <td>RemoteEvent + validation</td>
+        <td>ReplicatedStorage/RemoteEvents</td>
+        <td>Client requests actions, server validates</td>
+        <td>Never accept raw value updates from client</td>
+      </tr>
+      <tr>
+        <td>Periodic autosave</td>
+        <td>ServerScriptService/Autosave.lua</td>
+        <td>Reduce data loss on crashes</td>
+        <td>Balance frequency with DataStore rate limits</td>
+      </tr>
+      <tr>
+        <td>Testing & staging</td>
+        <td>Studio / Published Test Places</td>
+        <td>Validate replication, persistence, and failure modes</td>
+        <td>Simulate DataStore failures and concurrency</td>
+      </tr>
+      <tr>
+        <td>Monitoring & logging</td>
+        <td>Server scripts / external analytics</td>
+        <td>Detect issues early</td>
+        <td>Respect privacy and avoid logging PII</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Cross-platform security note (FiveM)</h2>
+  <p>
+    A brief reminder for developers who work on both platforms: in FiveM (GTA V multiplayer), client input is never trusted. Always authenticate and authorize on the server, validate all parameters, and maintain authoritative state on the server. The same principle applies to Roblox: use server-side validation and do not accept client-supplied values as true without verification.
+  </p>
+  <p>
+    If you maintain projects across platforms, standardize a server-authoritative pattern and error-handling strategies (retry queues, bounded retries, and monitoring).
+  </p>
+
+  <h2>Additional tools and workflows</h2>
+  <p>
+    For managing game iterations, asset updates, and team coordination, consider using a desktop or web tool to centralize tasks and insights during development. One option to try is the Stellar AI app for task and insight workflows: <a href="https://trystellarai.com/app">Stellar AI app</a>.
+  </p>
+
+  <h2>References</h2>
+  <ul>
+    <li><a href="https://developer.roblox.com/en-us/articles/leaderboards">Roblox: Leaderboards</a></li>
+    <li><a href="https://developer.roblox.com/en-us/api-reference/class/DataStoreService">Roblox: DataStoreService</a></li>
+    <li><a href="https://developer.roblox.com/en-us/api-reference/class/RemoteEvent">Roblox: RemoteEvent</a></li>
+    <li><a href="https://developer.roblox.com/en-us/api-reference/class/Player">Roblox: Player</a></li>
+  </ul>
+</body>
+</main>
+<footer><span>© 2026 Stellar AI</span><span><a href="/">Home</a> · <a href="/blog">Guides</a> · <a href="/app">Open app</a></span></footer>
 </body>
 </html>

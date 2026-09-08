@@ -68,32 +68,167 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>FiveM Heist Scripts — Everything You Need to Know</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A guide to every type of heist script for FiveM — bank vaults, jewellery stores, house robberies and more. How to set each one up and balance the rewards.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to fivem heist scripts — everything you need to know, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Overview</h2>
+<p>This guide explains how to design, build, secure, test, deploy, and maintain heist scripts for FiveM servers (QBCore / ESX / ox_lib) and provides parallel guidance for Roblox (Luau) implementations. It focuses on architecture, server validation, data integrity, concurrency control, and safe client-server communication patterns. If you manage server tooling or want integrated analytics during development, consider using the Stellar AI deployment app for staging and monitoring: <a href="https://trystellarai.com/app">Stellar AI App</a>.</p>
+
+<h2>Architecture and core responsibilities</h2>
+<p>Design a heist as a set of independent sub-systems with clear responsibilities. Typical components:</p>
+<ul>
+  <li><strong>Server authority layer:</strong> Enforces all game rules (money rewards, item transfers, cooldowns, job checks). Never trust client-sent state — treat it as a request only.</li>
+  <li><strong>Persistence layer:</strong> Database access for inventories, accounts, heist state, and logs. Use prepared queries and transactions for multi-step operations.</li>
+  <li><strong>Sync / event layer:</strong> Broadcast state changes to clients using server-controlled events.</li>
+  <li><strong>Anti-abuse layer:</strong> Rate limiting, event throttles, and validation to prevent exploitation.</li>
+  <li><strong>Telemetry and logging:</strong> Store detailed audit logs of heist attempts and critical actions.</li>
+</ul>
+<p>Separating concerns helps you reason about security boundaries and makes testing and deployments more predictable.</p>
+
+<h2>Server validation and security best practices (FiveM)</h2>
+<p>For FiveM implementations, assume all client messages are untrusted. The server must verify every action before applying game-state changes. Specific measures:</p>
+<ul>
+  <li>Validate player job/role and inventory on the server before granting access to heist start triggers or rewards.</li>
+  <li>Use server-side cooldowns stored in memory or DB so clients cannot repeatedly attempt state changes.</li>
+  <li>Sanitize and validate any numeric values (amounts, durations) on the server; don't accept client-specified reward multipliers.</li>
+  <li>Keep critical checks inside RegisterNetEvent callbacks on the server and call source identifiers (player IDs) only from server context.</li>
+</ul>
+<p>Example server-side pattern (Lua):</p>
+<pre><code>RegisterNetEvent('heist:attempt')
+AddEventHandler('heist:attempt', function(payload)
+  local src = source
+  local user = QBCore.Functions.GetPlayer(src)
+  if not user then return end
+  -- Server-validated checks
+  if not user.PlayerData.job or user.PlayerData.job.name ~= 'criminal' then
+    return TriggerClientEvent('heist:denied', src)
+  end
+  if CooldownManager:isOnCooldown(user.PlayerData.citizenid) then
+    return TriggerClientEvent('heist:denied', src, 'cooldown')
+  end
+  -- Proceed with DB-backed transaction, audit, etc.
+end)</code></pre>
+
+<h2>Roblox-specific server authority and DataStore handling</h2>
+<p>Roblox requires strict server-authoritative design: RemoteEvents and RemoteFunctions should carry minimal data from client to server (intent + identifiers). The server must validate player state (leaderstats, roles, inventory) before committing reward changes. Always make DataStore operations robust to failure:</p>
+<ul>
+  <li>Wrap DataStore operations with pcall and exponential backoff retries.</li>
+  <li>Use optimistic concurrency with version tokens where possible or implement per-player locking to prevent race conditions.</li>
+  <li>Gracefully degrade when DataStore is unavailable: queue local state in MemoryStore or in a server-side cache, informing players of delays instead of silently failing.</li>
+</ul>
+<p>Example Luau snippet for a RemoteEvent handler:</p>
+<pre><code>local Remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes")
+local DataStoreService = game:GetService("DataStoreService")
+local PlayerStore = DataStoreService:GetDataStore("PlayerData")
+
+Remotes.HeistStart.OnServerEvent:Connect(function(player, heistId)
+  -- Minimal client input: only heistId, server checks everything else
+  if not ValidatePlayerForHeist(player, heistId) then
+    Remotes.HeistResponse:FireClient(player, false, "invalid")
+    return
+  end
+  local success, result = pcall(function()
+    return PlayerStore:GetAsync(player.UserId)
+  end)
+  if not success then
+    Remotes.HeistResponse:FireClient(player, false, "datastore_error")
+    return
+  end
+  -- Proceed with server-authoritative mutations
+end)</code></pre>
+
+<h2>Integration with QBCore / ESX / ox_lib</h2>
+<p>Hook into your server framework for consistent player objects and utility functions. Recommendations:</p>
+<ul>
+  <li>QBCore: use QBCore.Functions.GetPlayer and exports for inventory/money operations. Wrap changes in a single server-side function for the atomic heist reward transaction.</li>
+  <li>ESX: use server callbacks and shared items APIs. Be mindful of older ESX versions that do synchronous DB calls; prefer async-compatible forks.</li>
+  <li>ox_lib: take advantage of common utilities like notifications, busy flags, and progress bars, but keep the authoritative logic on the server exports.</li>
+</ul>
+<p>When using these frameworks, create a heist module that abstracts framework-specific calls to allow future refactors or multiple-framework support.</p>
+
+<h2>Database patterns and transactions</h2>
+<p>Heists often update several tables: player accounts, inventories, logs, and global heist state. Use transactions to maintain consistency:</p>
+<ul>
+  <li>When applying rewards, deduct items before crediting money, and roll back if any step fails.</li>
+  <li>Use row-level locks or application-level locking for multi-player heists to avoid double-claiming the same loot.</li>
+  <li>Prefer parameterized queries with a mature connector (ghmattimysql, mysql-async, or equivalent) to avoid injection and ensure performance.</li>
+</ul>
+<p>If your DB doesn't support multi-statement transactions easily, implement application-level compensating transactions and ensure idempotency keys for retries.</p>
+
+<h2>Concurrency, anti-cheat, and denial mitigation</h2>
+<p>Attacks you'll see: repeated event spam, spoofed state changes, or simultaneous claims. Defenses:</p>
+<ul>
+  <li>Rate limit critical server events per-player and per-target (e.g., per-robbery point).</li>
+  <li>Use atomic server-side checks that simultaneously verify and mutate state (check-then-set within one DB transaction or memory lock).</li>
+  <li>Log suspicious patterns (rapid repeated attempts, impossible timings) and auto-ban or flag for manual review.</li>
+  <li>Implement sanity checks on timing and positions — but derive all authoritative positions from server-sent references when required.</li>
+</ul>
+
+<h2>Testing and QA workflow</h2>
+<p>A robust testing pipeline prevents regressions and security holes.</p>
+<ul>
+  <li>Unit tests for server-side modules: validation logic, reward calculations, and cooldown managers. Use mocks for DB and framework APIs.</li>
+  <li>Integration tests on a local FiveM server: simulate multiple players, network latency, and concurrent heist starts.</li>
+  <li>Roblox: use local server tests in Studio with simulated RemoteEvents and DataStore stubs. Test pcall failure paths and queue behavior.</li>
+  <li>Fuzz test event inputs from clients to ensure server never accepts malformed or out-of-range data.</li>
+  <li>Load-test the DB paths for heist success/failure to ensure your persistence layer scales.</li>
+</ul>
+
+<h3>Example test checklist (condensed)</h3>
+<table>
+  <thead>
+    <tr><th>Area</th><th>Test</th><th>Expected result</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server validation</td><td>Client sends start request without job</td><td>Server denies and logs attempt</td></tr>
+    <tr><td>DB transaction</td><td>Simulate DB failure mid-transaction</td><td>Rollback; player notified; log recorded</td></tr>
+    <tr><td>Concurrency</td><td>Two players claim same loot</td><td>Only one succeeds; other gets refund/denied</td></tr>
+    <tr><td>DataStore</td><td>DataStore pcall failure</td><td>Retry/backoff; queue; inform player</td></tr>
+    <tr><td>Exploit</td><td>Rapid event spam</td><td>Rate limit enforced; suspicious log entry</td></tr>
+  </tbody>
+</table>
+
+<h2>Deployment and maintenance</h2>
+<p>Follow an automated and monitored deployment approach:</p>
+<ul>
+  <li>Package resources with a consistent fxmanifest.lua and version tags. Keep migrations as SQL scripts or scripted state transitions for each release.</li>
+  <li>Deploy to a staging server first and run smoke tests that simulate heist flows.</li>
+  <li>Automate backups for critical DB tables and the heist logs before applying migrations.</li>
+  <li>Use runtime monitoring and alerts on error rates, pcall failures (Roblox), and DB transaction errors.</li>
+  <li>Maintain a small patch window for emergency hotfixes; ship safeguards that can be toggled server-side to disable heist features if needed.</li>
+</ul>
+<p>For operational tooling and staging environments, teams often use hosted platforms to manage deployments and observability. You can integrate an app-based workflow for deployments and monitoring via the Stellar AI deployment app: <a href="https://trystellarai.com/app">Stellar AI App</a>.</p>
+
+<h2>Maintenance: logging, audit, and player transparency</h2>
+<p>Keep high-fidelity logs for each heist attempt including:</p>
+<ul>
+  <li>Player identifiers, timestamps, actions taken, and server-side decisions.</li>
+  <li>DB transaction outcomes and any rollbacks.</li>
+  <li>Rate-limit and anti-cheat triggers.</li>
+</ul>
+<p>Provide transparent in-game messages when operations fail (DataStore errors, server maintenance) so players understand delays and do not attempt to retry unsafely.</p>
+
+<h2>Practical checklist before going live</h2>
+<ol>
+  <li>All client inputs are validated on the server and treated as requests only.</li>
+  <li>Critical state changes are performed under DB transactions or atomic server locks.</li>
+  <li>Rate limiting and anti-spam logic in place for every exposed event.</li>
+  <li>DataStore operations wrapped with pcall and retry/backoff.</li>
+  <li>Audit logs centralised and backups scheduled.</li>
+  <li>Staging environment with smoke tests that cover heist success and failure paths.</li>
+  <li>Rollback and feature-disable mechanisms ready for hotfixes.</li>
+</ol>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM documentation</a> — server scripting and resource management.</li>
+  <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a> — RemoteEvents, DataStore and best practices.</li>
+  <li><a href="https://github.com/qbcore-framework">QBCore GitHub</a> — framework patterns and player APIs.</li>
+  <li><a href="https://github.com/ESX-Org/es_extended">ESX (es_extended) repository</a> — ESX server-side hooks and patterns.</li>
+  <li><a href="https://github.com/overextended/ox_core">ox_core / ox_lib</a> — utilities commonly used in modern FiveM servers.</li>
+  <li><a href="https://trystellarai.com/blog">Stellar AI blog</a> — deeper ops articles and case studies.</li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

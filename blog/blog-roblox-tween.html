@@ -68,32 +68,222 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Use TweenService in Roblox</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">TweenService lets you create smooth animations in Roblox — moving parts, fading UI, rotating objects. This guide covers the basics and common use cases.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to use tweenservice in roblox, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Introduction</h2>
+<p>This guide explains how to use Roblox's TweenService effectively and safely in production games. You will learn the API basics, how to architect client/server interactions for smooth visuals without relinquishing server authority, error-handling patterns for persistence, performance considerations, and testing and deployment strategies. Examples are provided in Luau and practical security notes compare Roblox patterns to FiveM/other multiplayer frameworks so you can transfer best practices.</p>
+
+<h2>How TweenService Works (Conceptual)</h2>
+<p>TweenService interpolates properties of Instances over time according to TweenInfo and easing styles. Tweens are deterministic locally: the same tween parameters applied on different clients produce the same visual progression, but network lag, replication delays, and server-authoritative state make coordination non-trivial for gameplay-critical properties. Use tweens primarily for client-side visuals (UI, local camera motion, cosmetic parts) and rely on the server for authoritative state changes (positions that determine gameplay, inventory, economy).</p>
+
+<h2>API Primer with Clear Examples</h2>
+<p>Core workflow:</p>
+<ol>
+  <li>Create a TweenInfo describing duration, easing style, direction, repeats, and other settings.</li>
+  <li>Build a goals table describing end property values.</li>
+  <li>Call TweenService:Create(instance, tweenInfo, goals) and then Play the tween.</li>
+</ol>
+<p>Minimal example for a GUI fade:</p>
+<pre><code>local TweenService = game:GetService("TweenService")
+local frame = script.Parent.Frame -- LocalScript context
+local info = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local goals = {BackgroundTransparency = 0.5}
+local tween = TweenService:Create(frame, info, goals)
+tween:Play()
+tween.Completed:Connect(function(status)
+    if status == Enum.PlaybackState.Completed then
+        print("Fade completed")
+    end
+end)</code></pre>
+<p>Example for a part moving on the client with server authority pattern (predictive):</p>
+<pre><code>-- LocalScript (client)
+local TweenService = game:GetService("TweenService")
+local part = workspace.LocalPart -- client-cached visual
+local info = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+local goals = {Position = Vector3.new(10, 5, 0)}
+
+-- Play immediately for responsive UX
+local visualTween = TweenService:Create(part, info, goals)
+visualTween:Play()
+
+-- Notify server of intent (never trust clients to assert final position)
+local remote = game.ReplicatedStorage:WaitForChild("RequestMove")
+remote:FireServer(goals.Position)</code></pre>
+
+<h2>Client-Server Architecture and Authority</h2>
+<p>Tweens should not be used as a mechanism to circumvent server authority. The server must remain the source of truth for gameplay-critical properties (positions that affect collisions, hit detection, health, inventory). Use tweens for client-side smoothing and anticipation but ensure that the server validates every state change that affects game rules.</p>
+<p>Recommended pattern:</p>
+<ul>
+  <li>Client plays a local tween immediately to improve responsiveness.</li>
+  <li>Client fires a RemoteEvent to request the action.</li>
+  <li>Server validates request (permissions, game rules, range checks).</li>
+  <li>If valid, server updates a server-owned instance or broadcasts an update to other clients; clients reconcile visual state with authoritative values.</li>
+</ul>
+
+<h3>Server Validation Example (Luau)</h3>
+<pre><code>-- ServerScript
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local MoveRequest = ReplicatedStorage:WaitForChild("RequestMove")
+
+MoveRequest.OnServerEvent:Connect(function(player, newPosition)
+    -- Validate types and ranges
+    if typeof(newPosition) ~= "Vector3" then return end
+    if (newPosition - player.Character.PrimaryPart.Position).Magnitude > 50 then
+        -- Reject suspiciously large movement
+        return
+    end
+
+    -- Set server-owned object or update datastore/state
+    -- This update replicates to other clients; clients should tween to this rep
+    local serverPart = workspace:FindFirstChild("AuthoritativePart")
+    if serverPart then
+        serverPart.Position = newPosition
+    end
+end)</code></pre>
+
+<h2>Predictive Tweening and Reconciliation</h2>
+<p>Prediction improves responsiveness: client plays tween immediately and later reconciles when the server confirms. Reconciliation strategies:</p>
+<ul>
+  <li>Snap: when authoritative update arrives, stop local tween and set to server value.</li>
+  <li>Smooth correct: compute a short corrective tween from the local position to the server position to avoid visible snapping.</li>
+  <li>Time-based: align animations using timestamps so clients resolve consistent progression when server messages arrive late.</li>
+</ul>
+<p>Example of smooth correction:</p>
+<pre><code>-- LocalScript receiving authoritative update
+local TweenService = game:GetService("TweenService")
+local correctionInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear)
+local networkUpdateRemote = game.ReplicatedStorage:WaitForChild("UpdatePosition")
+
+networkUpdateRemote.OnClientEvent:Connect(function(serverPosition)
+    local currentPos = part.Position
+    if (currentPos - serverPosition).Magnitude > 0.1 then
+        local correction = TweenService:Create(part, correctionInfo, {Position = serverPosition})
+        correction:Play()
+    end
+end)</code></pre>
+
+<h2>Persistence, DataStore Failure Handling, and State</h2>
+<p>When tween-driven events affect persistent game state (e.g., shop purchases, unlocked cosmetics), write to DataStore safely and design for eventual consistency. DataStore operations can fail due to throttling or transient errors; always use pcall and retries with exponential backoff.</p>
+<pre><code>-- ServerScript example: resilient save
+local DataStoreService = game:GetService("DataStoreService")
+local myStore = DataStoreService:GetDataStore("PlayerData")
+
+local function saveDataAsync(playerKey, data)
+    local success, result
+    local attempt = 0
+    repeat
+        attempt = attempt + 1
+        success, result = pcall(function()
+            return myStore:SetAsync(playerKey, data)
+        end)
+        if not success then
+            wait(2 ^ math.min(attempt, 6)) -- exponential backoff, capped
+        end
+    until success or attempt >= 6
+    return success, result
+end</code></pre>
+<p>Also maintain a server-side cache to handle short-term failures and notify players if a save ultimately fails. Never rely on client to persist critical changes.</p>
+
+<h2>Security Considerations (Roblox and FiveM Comparison)</h2>
+<p>Roblox-specific security:</p>
+<ul>
+  <li>Never trust client-sent properties as authoritative; validate types, ranges, and permissions on the server.</li>
+  <li>Use server-owned Instances for authoritative state and replicate changes to clients as needed.</li>
+  <li>For RemoteEvents, validate the player's intent and rate-limit high-frequency requests.</li>
+</ul>
+<p>FiveM/general multiplayer systems (QBCore/ESX/ox_lib style):</p>
+<ul>
+  <li>The same principle applies: treat the server as the only trusted authority. Client input must always be validated.</li>
+  <li>Use server-side checks for inventory, money, and state transitions; do not let clients manipulate server resources directly.</li>
+  <li>Log and audit suspicious inputs, implement rate-limiting, and verify integrity of actions (signatures or server-side timestamps if appropriate).</li>
+</ul>
+<p><strong>Important:</strong> For FiveM, never imply client input is trusted; always re-check on the server before applying changes that affect gameplay, economy, or persistence.</p>
+
+<h2>Performance and Best Practices</h2>
+<ul>
+  <li>Avoid creating many simultaneous long-running tweens on the server. Prefer client-side execution for non-authoritative visual effects.</li>
+  <li>Reuse TweenInfo objects where possible to reduce memory churn.</li>
+  <li>For UI tweens, prefer LocalScripts and keep heavy calculations off the render thread.</li>
+  <li>Use Tween.Completed events and connections carefully; disconnect when no longer needed to prevent memory leaks.</li>
+</ul>
+<p>When tweening physics-enabled parts, be mindful that directly setting CFrame/Position can conflict with physics simulation. Server-side physics changes should be authoritative and done sparingly; for client visuals, use non-collidable cosmetic parts or local camera manipulations.</p>
+
+<h2>Testing Strategies</h2>
+<p>Test under realistic network conditions and with multiple players. Key test cases:</p>
+<ul>
+  <li>High latency and packet loss: verify reconciliation behaves acceptably.</li>
+  <li>Simultaneous conflicting requests: ensure server resolves deterministically.</li>
+  <li>DataStore throttling scenarios: verify retry/backoff logic and player notification.</li>
+  <li>Edge cases like player disconnect during a tween or during a save operation.</li>
+</ul>
+<p>Use Roblox Studio's simulation features, R15/R6 avatars, and device emulation to validate UI animation timing across frame rates. For automated tests, write unit tests for validation functions on the server where feasible.</p>
+
+<h2>Deployment and Maintenance</h2>
+<p>When deploying changes that affect tween behavior or timing (for instance changing durations or easing), follow this maintenance checklist:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Reason</th>
+      <th>Frequency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Audit server validation routines</td>
+      <td>Ensure new client animations do not change authoritative logic</td>
+      <td>Every release</td>
+    </tr>
+    <tr>
+      <td>Test prediction and reconciliation</td>
+      <td>Prevent visible snapping after update</td>
+      <td>Pre-deploy</td>
+    </tr>
+    <tr>
+      <td>Monitor error logs and DataStore failures</td>
+      <td>Detect save problems early</td>
+      <td>Daily</td>
+    </tr>
+    <tr>
+      <td>Profile tween counts and memory</td>
+      <td>Detect leaks or excessive instances</td>
+      <td>Weekly or after major changes</td>
+    </tr>
+  </tbody>
+</table>
+<p>Use staged rollouts where possible. Patch client-side tween durations or visuals first and validate on a small group before wide release. For tools and team workflow support, consider project management or build tools that integrate with cloud CI and asset pipelines; more details and tools are available in the Stellar AI app at <a href="https://trystellarai.com/app">Stellar AI</a>.</p>
+
+<h2>Example: End-to-End Pattern</h2>
+<p>Summary of an end-to-end flow for a player-triggered cosmetic move:</p>
+<ol>
+  <li>Client triggers UI button to perform cosmetic move; client plays local tween instantly.</li>
+  <li>Client fires RemoteEvent to server with a compact, validated request token.</li>
+  <li>Server checks permission, cooldowns, and inventory; if allowed, server updates a server-owned instance or records the change and notifies other players.</li>
+  <li>When other clients receive server broadcast, they perform corrective or matching visual tweens to stay in sync.</li>
+  <li>If persistence is required, server writes to DataStore with pcall and retry/backoff. If the write fails, server retains a cached copy and retries, and optionally informs the player.</li>
+</ol>
+<p>To manage your deployment pipeline and coordination between designers and engineers, use tools that track feature flags and staged rollouts. If you use the Stellar AI platform for project and deployment tracking, see <a href="https://trystellarai.com/app">Stellar AI</a> for integration options and workflow automation.</p>
+
+<h2>Practical Checklist</h2>
+<ul>
+  <li>Use TweenService on clients for UI and cosmetics.</li>
+  <li>Keep server authoritative for gameplay state; always validate RemoteEvent data.</li>
+  <li>Implement predictive local tweens with server reconciliation.</li>
+  <li>Handle DataStore errors with pcall and exponential backoff.</li>
+  <li>Profile tween count and disconnect events to avoid memory leaks.</li>
+  <li>Test under high latency and multiple simultaneous players.</li>
+  <li>Log and rate-limit RemoteEvent requests to avoid abuse.</li>
+</ul>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/class/TweenService">TweenService API — Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Remote-Functions-and-Events">Remote Events and Remote Functions — Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store">Data Store — Roblox Developer Hub</a></li>
+  <li><a href="https://trystellarai.com/blog">Stellar AI Blog</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

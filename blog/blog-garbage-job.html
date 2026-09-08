@@ -68,32 +68,198 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Garbage Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A garbage collection job is one of the most popular starter jobs on FiveM. Players drive a truck, pick up bins and earn money. This guide covers setting it up on QBCore.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add a garbage job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Overview</h2>
+<p>This guide shows how to add a robust, secure garbage job to a QBCore FiveM server. It covers architecture, data modeling, server-side validation, client interactions, implementation choices (QBCore/ESX/ox_lib), testing, deployment and ongoing maintenance. The example emphasizes server authority: never trust client input. For designers using companion tooling or analytics, consider integrating external workflows such as the Stellar AI platform via <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> to prototype routes or asset placement, but keep runtime validation on your server.</p>
+
+<h2>Goals and requirements</h2>
+<ul>
+  <li>Create a job that players can start from a job center or phone.</li>
+  <li>Provide route generation and a garbage truck vehicle with persistent job state stored server-side.</li>
+  <li>Validate every collection/payout on the server and write reliable database updates.</li>
+  <li>Support ox_lib / qb-target / qb-menu integrations for modern UI and targeting.</li>
+  <li>Be testable locally and deployable with clear migration and maintenance steps.</li>
+</ul>
+
+<h2>High-level architecture</h2>
+<p>Design the system so the server is authoritative for job state, money, and inventory changes. The client should only render UI, play sounds/animations, and send intent (e.g., "I attempted to pick up bag id 123"). The server verifies the request, checks cooldowns, route ownership, and item counts, then updates the database and emits confirmation events back to the client.</p>
+<p>Components:</p>
+<ul>
+  <li>Server module: job registration, route manager, state persistence, payout logic.</li>
+  <li>Database: tables for player job progress, truck assignments, route definitions, payouts.</li>
+  <li>Client module: UI, marker/blip rendering, interaction handlers, animations.</li>
+  <li>Optional integrations: ox_lib for menus, qb-target for interactions, oxmysql/ghmattimysql for DB.</li>
+</ul>
+
+<h2>Data model and persistence</h2>
+<p>Keep the model minimal but complete. Example tables/objects:</p>
+<ul>
+  <li>garbage_routes (route_id, route_points JSON, payout_base)</li>
+  <li>garbage_jobs (player_id, job_active boolean, route_id, progress JSON, truck_plate, last_update)</li>
+  <li>garbage_logs (log_id, player_id, action, value, timestamp)</li>
+</ul>
+<p>Store route progress and bag ownership server-side as a small JSON blob to avoid inconsistent client state. Always update through single atomic DB operations where possible (use transactions or a single UPDATE statement). For oxmysql you can use execute with parameterized queries; for ghmattimysql use the execute/async helpers your server provides.</p>
+
+<h2>Server-side implementation (QBCore example)</h2>
+<p>Key principles:</p>
+<ul>
+  <li>Validate player job status, proximity to a bag, and truck assignment before accepting a collection request.</li>
+  <li>Rate-limit collection calls and log suspicious behavior.</li>
+  <li>Perform all money and item adjustments on the server and persist them immediately.</li>
+</ul>
+<pre><code>-- server/main.lua (simplified)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Secure handler: client requests to collect a bag
+RegisterNetEvent('garbage:server:collectBag', function(bagId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Fetch job state from DB or in-memory cache
+  local jobState = GetPlayerGarbageJob(Player.PlayerData.citizenid)
+  if not jobState or not jobState.job_active then
+    -- reject - player is not on the job
+    TriggerClientEvent('garbage:client:collectRejected', src, 'not_on_job')
+    return
+  end
+
+  -- Server-side proximity and legitimacy check:
+  if not ValidateBagOwnership(jobState, bagId) then
+    -- potential cheat attempt: do not trust client claims
+    LogSuspicious(src, 'invalid_bag_collect', bagId)
+    return
+  end
+
+  -- Calculate payout securely on server
+  local payout = CalculatePayoutForBag(jobState.route_id)
+  -- Update DB atomically, increment progress, and give payout
+  if UpdateJobProgressAndPayout(Player.PlayerData.citizenid, bagId, payout) then
+    Player.Functions.AddMoney('cash', payout, 'garbage-collection')
+    TriggerClientEvent('garbage:client:collectSuccess', src, bagId, payout)
+  else
+    TriggerClientEvent('garbage:client:collectRejected', src, 'db_fail')
+  end
+end)</code></pre>
+
+<h3>Server-side DB update pattern</h3>
+<p>Use parameterized SQL queries and wrap multi-statement changes in a transaction when possible. If using oxmysql, use exports.oxmysql:execute and handle errors. Always handle DB failures gracefully and inform the client of the server-side state.</p>
+
+<h2>Client-side implementation</h2>
+<p>The client should:</p>
+<ul>
+  <li>Display route: blips and markers based on server-sent route points.</li>
+  <li>Send intention events to the server (e.g., TriggerServerEvent('garbage:server:collectBag', bagId)).</li>
+  <li>Listen for server confirmation events and update local state/UI only after confirmation.</li>
+</ul>
+<p>Never award money or items on the client. Show temporary animations and "pending" UI if you want instant feedback, but mark them as tentative until the server confirms.</p>
+
+<pre><code>-- client/main.lua (simplified)
+RegisterNetEvent('garbage:client:updateRoute', function(routeData)
+  -- draw blips & markers; do NOT trust client-only route as authority
+  RenderRoute(routeData)
+end)
+
+-- player interacts with bag
+function OnInteractWithBag(bagId)
+  -- play pickup animation, then request server authorization
+  TriggerServerEvent('garbage:server:collectBag', bagId)
+end
+
+RegisterNetEvent('garbage:client:collectSuccess', function(bagId, payout)
+  -- show UI and update local progress
+  ShowPayoutNotification(payout)
+end)</code></pre>
+
+<h2>Integration choices: ox_lib, qb-target, ESX considerations</h2>
+<p>Modern FiveM setups often use ox_lib for menus and utilities, and qb-target for interaction targeting. Use these to present a clean player experience, but maintain the same server-authoritative flow.</p>
+<ul>
+  <li>ox_lib: use its menus and progress bars for non-authoritative UI. All state changes must still originate from server validation.</li>
+  <li>qb-target / ox_target: use target zones to offer "Collect" interactions. Trigger server events only on interaction confirmation.</li>
+  <li>ESX servers: replace QBCore function calls with ESX equivalents. Keep server validation patterns identical.</li>
+</ul>
+
+<h2>Security and anti-cheat considerations</h2>
+<p>Never trust the client. Specific measures:</p>
+<ul>
+  <li>Validate position on the server where possible. If you must rely on client-provided coordinates, verify these against the server’s expected route points and a reasonable distance threshold.</li>
+  <li>Rate limit critical events per player and per truck to avoid spamming exploits.</li>
+  <li>Log and review suspicious patterns: many different bag IDs collected in rapid succession, large payouts without DB updates, or requests from players without an active job.</li>
+  <li>Do not accept client-side inventory changes; always check with the canonical server inventory.</li>
+</ul>
+
+<h2>Testing and debugging</h2>
+<p>Test locally before deploying. Recommended steps:</p>
+<ol>
+  <li>Run a local server with minimal resources and a test database snapshot.</li>
+  <li>Simulate normal job flows and edge cases: disconnect mid-route, DB failure during payout, duplicate bag collects.</li>
+  <li>Enable verbose server logs for job events and DB queries when debugging, then reduce verbosity in production.</li>
+  <li>Test third-party integration points (oxmysql, ghmattimysql) by intentionally failing the DB to see fallback behavior.</li>
+</ol>
+<p>Use txAdmin or your preferred FiveM manager to monitor resource CPU and script errors during load testing. For behavior-driven tests, write small scripts that simulate many clients collecting on the same route to ensure race conditions are handled.</p>
+
+<h2>Deployment and maintenance</h2>
+<p>Deploy with migrations and rollback capability. Checklist before pushing updates:</p>
+<table>
+  <thead>
+    <tr><th>Step</th><th>Action</th><th>Who/When</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>DB Migration</td><td>Apply new table/schema changes using versioned migration scripts</td><td>DB Admin / Deploy</td></tr>
+    <tr><td>Backup</td><td>Create a backup snapshot of production DB</td><td>Ops / Before deploy</td></tr>
+    <tr><td>Config</td><td>Verify oxmysql/ghmattimysql connection strings and credentials</td><td>Dev/Ops</td></tr>
+    <tr><td>Smoke Test</td><td>Start server in staging and run the job end-to-end</td><td>QA</td></tr>
+    <tr><td>Monitor</td><td>Enable logs and quick rollback if anomalies detected</td><td>Ops / 24h after deploy</td></tr>
+  </tbody>
+</table>
+<p>Maintain: rotate logs, review payout economics periodically, and watch for new exploit patterns. Keep libraries (QBCore, ox_lib, qb-target) up to date and read their release notes for breaking changes.</p>
+
+<h2>Roblox notes (Luau, if recreating similar job on Roblox)</h2>
+<p>Roblox servers must also be authoritative. Use RemoteEvents only to send intents from client to server; all validation, awarding of in-game currency and DataStore writes must happen server-side. Patterns to follow:</p>
+<ul>
+  <li>Use RemoteEvents to request actions, but validate player position/time/cooldowns on the server.</li>
+  <li>When using DataStore, always use pcall() to handle service outages and implement exponential backoff or fallback queues to avoid data loss.</li>
+  <li>Test DataStore failure modes in a controlled environment: queue saves locally in memory and drain the queue once DataStore recovers.</li>
+  <li>Use ServerScriptService for authoritative logic and avoid trusting any client modifications.</li>
+</ul>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr><th>Item</th><th>Pass/Fail</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server validates every collection</td><td>__</td><td>Check event handlers and logs</td></tr>
+    <tr><td>DB updates are atomic</td><td>__</td><td>Test concurrent collects</td></tr>
+    <tr><td>Client only renders UI</td><td>__</td><td>Ensure no client money adds</td></tr>
+    <tr><td>Rate limits present</td><td>__</td><td>Throttle high-frequency calls</td></tr>
+    <tr><td>Backup and migration scripts ready</td><td>__</td><td>Versioned SQL scripts</td></tr>
+    <tr><td>Monitoring and alerts configured</td><td>__</td><td>Log suspicious patterns</td></tr>
+  </tbody>
+</table>
+
+<h2>Performance considerations</h2>
+<p>Large servers require efficient event handling and minimal DB churn. Suggestions:</p>
+<ul>
+  <li>Cache job state in memory and flush to DB periodically or on important transitions rather than on every minor action; still persist critical events (payouts) immediately.</li>
+  <li>Batch non-critical writes and use background workers to process logs or analytics.</li>
+  <li>Avoid sending large route payloads on every tick — push route once and send incremental updates only when required.</li>
+</ul>
+
+<h2>Further reading and tools</h2>
+<p>For route prototyping or job analytics, teams sometimes leverage AI-assisted workflows during development. See the Stellar AI platform for research and experimentation: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For blog-style writeups and community best practices, see <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM documentation</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib repository</a></li>
+  <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a></li>
+  <li><a href="https://github.com/overextended/oxmysql">oxmysql (DB)</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

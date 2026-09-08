@@ -68,32 +68,303 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Mining Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Mining is a popular activity on FiveM servers. Players dig for ore, process it and sell it for income. This guide covers setting up mining on QBCore.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add a mining job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview</h2>
+  <p>
+    This guide shows how to add a robust, secure mining job to a QBCore FiveM server. It focuses on architecture, server-side validation, implementation choices (qb-target / ox_target / ox_lib), database modeling, testing, deployment, and ongoing maintenance. Follow the patterns here to avoid trusting any client input, to keep server authority intact, and to make the job maintainable and scalable.
+  </p>
+
+  <h2>Architecture and Data Model</h2>
+  <p>
+    Design your mining job with clear server authority and minimal client responsibility. Typical components:
+  </p>
+  <ul>
+    <li>Client: UI, targeting interactions, animation triggers, local visual effects only.</li>
+    <li>Server: authoritative logic for harvest, inventory, rewards, cooldowns, anti-cheat, and persistence.</li>
+    <li>Database: persistent player progress, optionally rock respawn schedules, and audit logs.</li>
+    <li>Third-party libs: qb-target or ox_target for interactions; ox_lib for menu builders if needed; ghmattimysql or mysql-async for persistence.</li>
+  </ul>
+  <p>
+    Minimal DB schema example:
+  </p>
+  <pre><code>
+CREATE TABLE IF NOT EXISTS mining_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  steam HEX(16),
+  player_id INT,
+  action VARCHAR(64),
+  item VARCHAR(64),
+  amount INT,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+  </code></pre>
+
+  <h2>Implementation Choices and fxmanifest</h2>
+  <p>
+    Decide whether to implement as a standalone resource or integrate into an existing job resource. Example fxmanifest essentials:
+  </p>
+  <pre><code>
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+version '1.0.0'
+
+shared_script 'shared.lua'
+server_script 'server.lua'
+client_script 'client.lua'
+
+dependencies {
+  'qb-core'
+}
+  </code></pre>
+  <p>
+    If using qb-target or ox_target, declare them as dependencies or conditionally detect them in runtime to register interaction zones appropriately.
+  </p>
+
+  <h2>Server-Side Job Flow (Secure)</h2>
+  <p>
+    The server must validate every client request. Do not assume client-sent IDs, coordinates, or durations are genuine. The canonical flow:
+  </p>
+  <ol>
+    <li>Player triggers the target interaction client-side (no sensitive state changed).</li>
+    <li>Client fires a server event like <code>qb-mining:server:StartMine</code> with a rock ID.</li>
+    <li>Server verifies the rock ID is allowed, checks cooldowns/locks, checks inventory capacity, and then sets a server-side lock for that rock or player.</li>
+    <li>Server returns an optimistic confirmation to client (e.g., start animation) but does not grant items yet.</li>
+    <li>After the expected mining duration, client notifies server with a request to complete (or server times out and resolves itself via server tick).</li>
+    <li>Server re-validates and grants items or denies and logs suspicious activity.</li>
+  </ol>
+  <p>
+    Example server-side skeleton:
+  </p>
+  <pre><code>
+-- server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+local rockLocks = {} -- [rockId] = source or true
+
+RegisterNetEvent('qb-mining:server:StartMine', function(rockId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Validate rock and availability on server list
+  if not ValidRock(rockId) or rockLocks[rockId] then
+    TriggerClientEvent('qb-mining:client:MiningDenied', src, 'Rock unavailable.')
+    return
+  end
+
+  -- Inventory capacity check
+  if not Player.Functions.CanCarryItem('stone', 1) then
+    TriggerClientEvent('qb-mining:client:MiningDenied', src, 'No inventory space.')
+    return
+  end
+
+  -- Lock and start a server-side timer
+  rockLocks[rockId] = src
+  SetTimeout(8000, function()
+    -- Re-validate and reward
+    local p = QBCore.Functions.GetPlayer(src)
+    if p and rockLocks[rockId] == src then
+      p.Functions.AddItem('stone', 1) -- authoritative
+      ExportLogMining(p, 'stone', 1)
+    end
+    rockLocks[rockId] = nil
+  end)
+end)
+  </code></pre>
+
+  <h2>Client Integration: Targets and Animations</h2>
+  <p>
+    Client code only triggers UI and local effects. Use qb-target or ox_target to present interaction points. Never let client code directly add items.
+  </p>
+  <pre><code>
+-- client.lua (qb-target)
+local target = exports['qb-target']
+
+target:AddBoxZone("mining_rock_1", vector3(2856.0, 2790.0, 40.0), 1.0, 1.0, {
+  name="mining_rock_1",
+  heading=0,
+  debugPoly=false,
+}, {
+  options = {
+    {
+      type = "client",
+      event = "qb-mining:client:TryMine",
+      icon = "fas fa-hammer",
+      label = "Mine Rock",
+      rockId = 1
+    }
+  },
+  distance = 2.5
+})
+
+RegisterNetEvent('qb-mining:client:TryMine', function(data)
+  -- Play animation locally
+  -- request server to start mining
+  TriggerServerEvent('qb-mining:server:StartMine', data.rockId)
+end)
+  </code></pre>
+  <p>
+    If you detect multiple target systems, prefer a conditional loader and make the resource compatible with both. Do not send coordinates or other sensitive state that the server must trust.
+  </p>
+
+  <h2>Inventory Items, Shops, and Processing</h2>
+  <p>
+    Create item definitions and processing recipes in your shared or database data. Example items:
+  </p>
+  <ul>
+    <li>stone (raw)</li>
+    <li>ore (raw ore for smelting)</li>
+    <li>gem (rare drop)</li>
+  </ul>
+  <p>
+    Processing should be server-side too: when a player uses a furnace, server checks for required inputs, removes them server-side, and adds outputs. If you want a cooldown or labor animation, use server-side timers as shown previously.
+  </p>
+
+  <h2>Security and Server Validation</h2>
+  <p>
+    Security is paramount. Do not trust any client payload. Key patterns:
+  </p>
+  <ul>
+    <li>Validate rock IDs against a server-side table. Do not accept arbitrary IDs.</li>
+    <li>Check player inventory and weight capacity server-side before granting items.</li>
+    <li>Add per-player and per-rock cooldowns and rate limits to prevent farming via rapid events.</li>
+    <li>Log suspicious behavior: repeated failed attempts, mismatched client/server timers, or malformed payloads.</li>
+    <li>Use QBCore.Functions.GetPlayer(source) and server callbacks for authoritative state.</li>
+  </ul>
+
+  <h3>Example validation checklist</h3>
+  <ul>
+    <li>Is rockId in allowed set?</li>
+    <li>Is rock locked by another player?</li>
+    <li>Does player have inventory space?</li>
+    <li>Has player been rate-limited?</li>
+    <li>Has the operation been logged for auditing?</li>
+  </ul>
+
+  <h2>Testing and Debugging</h2>
+  <p>
+    Test thoroughly in a staging server. Steps:
+  </p>
+  <ol>
+    <li>Enable verbose server logging for the module and run automated simulated actions.</li>
+    <li>Test edge cases: full inventory, multiple clients attempting the same rock, network latency simulation.</li>
+    <li>Force failure paths: make DB unavailable to confirm graceful degradation and retries.</li>
+    <li>Confirm logs capture: player id, steam hex, action, result.</li>
+  </ol>
+  <p>
+    Useful debug snippet for server logging:
+  </p>
+  <pre><code>
+local function ExportLogMining(player, item, amount)
+  print(("MINING LOG - %s (%s): %s x%d"):format(player.PlayerData.citizenid, player.PlayerData.steam, item, amount))
+  -- optionally persist to DB here
+end
+  </code></pre>
+
+  <h2>Deployment and Maintenance</h2>
+  <p>
+    Deployment checklist and maintenance considerations are about safe rollouts and migrations. Use your resource manifest versioning, back up player inventories and DB tables, and validate migration scripts before applying on production. If you need orchestration or documentation for staff, integrate the resource with your admin tools.
+  </p>
+  <p>
+    For quick ops and team access tools, consider pairing that documentation with team platforms such as the Stellar AI project manager: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. When coordinating deploy windows and changelogs, keep a copy of DB migration scripts checked into version control and maintain a rollback plan. For planning features and tracking issues, you can centralize task boards using: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.
+  </p>
+
+  <h2>Performance and Scaling</h2>
+  <p>
+    Mines are event-driven but can create spikes if many players mine simultaneously. Mitigation:
+  </p>
+  <ul>
+    <li>Batch DB writes for logs using a worker or buffer with a reasonable flush interval.</li>
+    <li>Keep rock state in memory and persist only essential changes or periodic snapshots.</li>
+    <li>Rate limit per-player mining attempts and global concurrent mines.</li>
+  </ul>
+
+  <h2>Roblox / Luau Considerations (Brief)</h2>
+  <p>
+    If you are implementing a similar mining job in Roblox, server authority patterns are similar: RemoteEvents are used for client->server requests, but the server must validate everything. On the Roblox server:
+  </p>
+  <ul>
+    <li>Validate player permissions, item capacity, and object availability server-side.</li>
+    <li>Use DataStore with careful failure handling: implement exponential backoff, limit retries, and consider a local cache to avoid repeated calls on short failures.</li>
+    <li>Handle DataStore rate limits by batching transforms and persisting only changes or snapshots at safe intervals.</li>
+  </ul>
+  <p>
+    Always treat RemoteEvents as untrusted input and check all fields before applying changes to a DataStore or updating a player's inventory.
+  </p>
+
+  <h2>Practical Deployment Checklist</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Action</th>
+        <th>Completed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Create resource skeleton and fxmanifest</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Implement server validation and item grants</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Register items in shared item list</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Set up target interactions (qb-target / ox_target)</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Write DB migration / logs table</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Staging tests: concurrency, inventory edge cases</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Production rollout with monitoring and rollback plan</td>
+        <td>☐</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Long-Term Maintenance</h2>
+  <p>
+    Maintain changelogs, add automated alerting for suspicious activity, and rotate audit logs. Periodically review spawn rates and economy impact of the mining job. If you add new items or processing, add DB migrations and test them on staging first.
+  </p>
+
+  <h2>Further Reading and Blog</h2>
+  <p>
+    For deeper operational or design perspectives, see the developer blog post collection: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.
+  </p>
+
+  <h2>References</h2>
+  <ul>
+    <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore Framework (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/ox_target">ox_target (GitHub)</a></li>
+    <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a></li>
+    <li><a href="https://github.com/brouznouf/fivem-mysql-async">mysql-async / ghmattimysql (common MySQL drivers)</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

@@ -68,37 +68,230 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Migrate From ESX to QBCore on Your FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Switching from ESX to QBCore is a big step but worth it. This guide covers the key differences, what to migrate, and how to convert your existing scripts.</p>
 
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
+<p class="intro">A practical guide to how to migrate from esx to qbcore on your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h2>Introduction</h2>
+<p>This guide walks a server operator through migrating a FiveM server from ESX to QBCore with emphasis on architecture, security, implementation choices, testing, and safe deployment. It assumes you maintain production players and want to minimize downtime while preserving player data and gameplay behavior. The migration strategy below favors incremental, reversible steps and strict server-side validation. If you need tooling or a control dashboard during migration, consider external tools or platforms that integrate with your workflow; see the Stellar AI app for project management and tracking: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
+<h2>Architecture Differences: ESX vs QBCore</h2>
+<p>Understanding the core architectural differences helps you decide how to map resources and APIs.</p>
+<ul>
+  <li><strong>Player object and functions</strong>: ESX exposes xPlayer and exported functions; QBCore exposes player objects via QBCore.Functions.GetPlayer and a callback system (QBCore.Functions.CreateCallback). QBCore tends to centralize functionality under QBCore.Functions and uses standardized events and exports.</li>
+  <li><strong>Database layer</strong>: Both setups use MySQL (oxmysql/ghmattimysql/mysql-async). Modern QBCore installs commonly use oxmysql and pair well with ox_lib utilities.</li>
+  <li><strong>Libraries</strong>: QBCore servers commonly include ox_lib for UI and utility features; ESX servers historically use different helper resources. Expect to replace or adapt client-side UI code to work with ox_lib or native qb-target / qb-menu patterns.</li>
+  <li><strong>Resource naming</strong>: QBCore organizes core resources (qb-core, qb-banking, qb-inventory). Plan namespace changes and ensure no conflicting resource names.</li>
+</ul>
 
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
+<h2>Planning the Migration</h2>
+<p>Establish a migration plan with prioritized items: player persistence, economy (money, bank), jobs, inventory, vehicles, and third-party scripts (garages, jobs, shops).</p>
+<ol>
+  <li>Inventory current resources and dependencies: list ESX scripts, their versions, and what DB tables they use.</li>
+  <li>Back up your full database and resource folder (including .sql dumps and resource zips).</li>
+  <li>Choose a migration strategy: big-bang replacement, staged conversion, or adapter/wrapper layer.</li>
+  <li>Set up a staging server that mirrors production but with a copy of the database. Never test on live without a rollback plan.</li>
+</ol>
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+<h2>Data Migration: Mapping Schemas and Ensuring Integrity</h2>
+<p>Data is the most critical piece. Use an explicit mapping table to convert ESX schema to QBCore equivalents and validate identifiers.</p>
+<table>
+  <thead>
+    <tr>
+      <th>ESX Table/Concept</th>
+      <th>QBCore Equivalent</th>
+      <th>Migration Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>users / users table (money, bank)</td>
+      <td>players or player tables in qb-core</td>
+      <td>Map money fields to player financial properties; migrate using an explicit UPDATE or insert to qb_core players table. Ensure identifier fields (license, steam) match.</td>
+    </tr>
+    <tr>
+      <td>owned_vehicles</td>
+      <td>player_vehicles or qb-vehicles</td>
+      <td>Convert vehicle JSON schemas and ensure plate collisions are handled. Verify ownership queries after import.</td>
+    </tr>
+    <tr>
+      <td>inventory (esx_inventory)</td>
+      <td>qb-inventory or ox_inventory</td>
+      <td>Normalize item identifiers and quantity fields. Test stack limits and weight if used.</td>
+    </tr>
+    <tr>
+      <td>job assignments</td>
+      <td>qb-core job system</td>
+      <td>Map ESX job names and grades to QBCore job entries. Update DB rows to reflect new job identifiers.</td>
+    </tr>
+  </tbody>
+</table>
+<p>Tips:</p>
+<ul>
+  <li>Perform a dry-run import into a staging DB and run integrity checks (count mismatches, missing identifiers).</li>
+  <li>Preserve old player identifiers in a migration table to allow rollback.</li>
+  <li>Keep transactions atomic where multiple tables must change simultaneously. Use SQL transactions via oxmysql where available.</li>
+</ul>
+
+<h2>Implementation Choices: Strategies and Patterns</h2>
+<p>There are three common approaches to actually replacing ESX with QBCore:</p>
+<ol>
+  <li><strong>Adapter/Compatibility Layer</strong> — create lightweight server-side shims that implement ESX exports using QBCore internals. This allows 3rd-party ESX scripts to keep functioning temporarily while you convert them. Use this for low-risk, low-traffic servers where immediate behavior parity is required.</li>
+  <li><strong>Gradual Resource Conversion</strong> — convert scripts in priority order (e.g., economy first, then jobs, then misc resources). Use feature flags and turn resources off/on per job to test in isolation.</li>
+  <li><strong>Full Replacement</strong> — deploy qb-core and converted resources in a maintenance window. Require more planning but faster completion.</li>
+</ol>
+<p>Server validation code example (FiveM / QBCore): never trust client inputs — always validate server-side.</p>
+<pre><code>RegisterServerEvent('myshop:buyItem')
+AddEventHandler('myshop:buyItem', function(itemName, amount)
+  local src = source
+  local xPlayer = QBCore.Functions.GetPlayer(src)
+  if not xPlayer then return end
+
+  -- Server-side lookup for item price and availability
+  local itemDef = Config.ShopItems[itemName]
+  if not itemDef then return end
+
+  local price = itemDef.price * tonumber(amount or 1)
+  -- Validate player can afford the purchase on server
+  if xPlayer.PlayerData.money.cash >= price then
+    -- Deduct and grant item server-side
+    xPlayer.Functions.RemoveMoney('cash', price)
+    xPlayer.Functions.AddItem(itemName, tonumber(amount))
+    TriggerClientEvent('QBCore:Notify', src, 'Purchase complete', 'success')
+  else
+    TriggerClientEvent('QBCore:Notify', src, 'Insufficient funds', 'error')
+  end
+end)</code></pre>
+<p>Key patterns:</p>
+<ul>
+  <li>Resolve item metadata on the server; do not accept client-side price or ID fields.</li>
+  <li>Use QBCore.Functions.GetPlayer and manipulate PlayerData only server-side.</li>
+  <li>Use callbacks for synchronous client-server queries when needed (QBCore.Functions.CreateCallback).</li>
+</ul>
+
+<h2>Security and Server Validation</h2>
+<p>Security is critical during and after migration. Follow these rules:</p>
+<ul>
+  <li><strong>Never trust client input</strong>. Always revalidate items, quantities, and prices on the server.</li>
+  <li><strong>Use server-side rate limiting</strong> for expensive operations (e.g., item spawns, bank transfers) and enforce per-player cooldowns.</li>
+  <li><strong>Validate identifiers</strong> (license, steam) present in DB rows when reconciling migrated data. Ensure no duplicates or mismatches that could cause account takeover.</li>
+  <li><strong>Secure remote calls</strong>: prefer server callbacks or exports rather than raw RegisterNetEvent handlers without validation.</li>
+  <li><strong>Plan for rollback</strong>: keep migration scripts reversible by storing original rows in a migration log table.</li>
+</ul>
+
+<h2>Testing and QA</h2>
+<p>Testing should cover functional, integration, and security tests. Set up test cases that simulate typical player flows and edge cases.</p>
+<ul>
+  <li>Automated script test: spawn players, perform common actions, assert DB state changes.</li>
+  <li>Manual QA: enlist a small group of trusted players to validate economy and jobs on a staging server.</li>
+  <li>Security test: attempt invalid client payloads and verify server rejects them consistently.</li>
+</ul>
+<p>Practical migration checklist (use this during each resource conversion):</p>
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Action</th>
+      <th>Pass Criteria</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Backup</td>
+      <td>Export DB and resource files</td>
+      <td>Complete dump verified on separate machine</td>
+    </tr>
+    <tr>
+      <td>Staging Import</td>
+      <td>Import data to staging DB</td>
+      <td>No integrity errors; user counts match</td>
+    </tr>
+    <tr>
+      <td>Adapter Test</td>
+      <td>Run ESX script against QBCore adapter</td>
+      <td>Script functions as expected in staging</td>
+    </tr>
+    <tr>
+      <td>Functional QA</td>
+      <td>Perform transactions and job actions</td>
+      <td>All flows complete and DB consistent</td>
+    </tr>
+    <tr>
+      <td>Security Check</td>
+      <td>Test invalid client inputs</td>
+      <td>Server rejects invalid requests and logs attempts</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Deployment and Rollout Strategies</h2>
+<p>Minimize player disruption by using careful rollout techniques.</p>
+<ul>
+  <li><strong>Blue/Green or Staged Rollout</strong>: Run QBCore on a copy of the server, redirect a subset of players to test, then switch traffic after monitoring.</li>
+  <li><strong>Feature flags</strong>: Toggle new functionality on only for testing accounts before enabling globally.</li>
+  <li><strong>Maintenance window</strong>: For a full replacement, schedule a window and notify players in advance. Ensure backups are accessible and that rollback scripts are ready.</li>
+</ul>
+<p>After deployment, continue monitoring logs for unexpected validation failures and re-run migration scripts if any data mismatches appear. For extra observability, you can integrate external dashboards; one option that teams use to coordinate deployment tasks and track issues is the Stellar AI platform: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Maintenance and Future-Proofing</h2>
+<p>After migration, lock in practices that keep the server healthy and easier to maintain:</p>
+<ul>
+  <li>Keep QBCore and ox_lib up to date and follow changelogs before upgrading production. Test upgrades in staging first.</li>
+  <li>Document any adapters or compatibility layers you created; these are technical debt and should be prioritized for eventual removal.</li>
+  <li>Standardize server-side validation helpers and centralize them where possible so future resources reuse secure patterns.</li>
+  <li>Keep a migration log table that records migrations, scripts run, and their checksums to audit later.</li>
+</ul>
+<p>For further reading on operational best practices and community updates, see the project blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>Roblox-Specific Considerations (If Relevant)</h2>
+<p>If your team also develops for Roblox, apply similar server-authority principles. A few concrete rules:</p>
+<ul>
+  <li><strong>Server Authority</strong>: All game state changes must be applied on the server. Do not perform authoritative state updates from client scripts.</li>
+  <li><strong>RemoteEvents & RemoteFunctions</strong>: Use RemoteEvents or RemoteFunctions for client-server communication. Validate every request on the server. Example handler:</li>
+</ul>
+<pre><code>local Remote = game.ReplicatedStorage:WaitForChild("PurchaseEvent")
+Remote.OnServerEvent:Connect(function(player, itemId, amount)
+  -- Validate types and player state
+  if typeof(itemId) ~= "string" or typeof(amount) ~= "number" then return end
+  -- Validate item exists on server
+  local itemDef = itemConfig[itemId]
+  if not itemDef then return end
+  -- Validate currency, deduct server-side, then grant
+  local leaderstats = player:FindFirstChild("leaderstats")
+  if leaderstats and leaderstats.Cash.Value >= itemDef.price * amount then
+    leaderstats.Cash.Value = leaderstats.Cash.Value - itemDef.price * amount
+    -- grant item server-side
+  end
+end)</code></pre>
+<p><strong>DataStore Failure Handling</strong>: Always use pcall for datastore operations and implement retries with backoff. Never assume GetAsync/UpdateAsync will always succeed. Example pattern:</p>
+<pre><code>local function safeGet(datastore, key)
+  local attempts = 0
+  while attempts &lt;= 5 do
+    local ok, result = pcall(function()
+      return datastore:GetAsync(key)
+    end)
+    if ok then
+      return true, result
+    end
+    attempts = attempts + 1
+    wait(2 ^ attempts * 0.1) -- exponential backoff
+  end
+  return false, nil
+end</code></pre>
+
+<h2>Monitoring, Logging, and Incident Response</h2>
+<p>After the migration, set up monitoring for key signals: unexpected money spikes, rapid inventory changes, or repeated validation errors. Log rejected client payloads with context (player id, offending payload, server-side rule triggered) to diagnose attempted exploits. Maintain a simple incident playbook and ensure backups exist before any emergency fix is applied.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net">FiveM Documentation</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+  <li><a href="https://github.com/esx-framework/esx-legacy">ESX Legacy GitHub</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib GitHub</a></li>
+  <li><a href="https://github.com/overextended/oxmysql">oxmysql GitHub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Roblox-Data-Store">Roblox Data Store Documentation</a></li>
+  <li><a href="https://developer.roblox.com">Roblox Developer Hub</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

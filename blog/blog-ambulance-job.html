@@ -68,59 +68,247 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add an Ambulance Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">An ambulance or EMS job is essential for any serious FiveM roleplay server. It gives players a way to revive downed players, run a hospital system and have a dedicated medical team on the server. This guide shows you how to set one up on QBCore.</p>
 
-  <h2>What an ambulance job includes</h2>
-  <p>A complete EMS system has player revival with a progress bar, a hospital check-in system, death timers that send players to hospital if no medic arrives, an EMS vehicle spawner, and job management with duty toggle.</p>
+<p class="intro">A practical guide to how to add an ambulance job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 1 — Generate your EMS script</h2>
-  <div class="tip-box">
-    <strong>Try this prompt in Stellar AI:</strong>
-    <p style="margin-top:8px;">"QBCore ambulance job with F6 menu, reviving downed players with a defibrillator progress bar, hospital check-in system, 5 minute death timer before respawn, EMS vehicle spawner and duty toggle. Include fxmanifest, client.lua, server.lua and config.lua"</p>
-  </div>
+<body>
+  <h2>Introduction</h2>
+  <p>This guide walks you through adding a robust, secure ambulance job to a QBCore FiveM server. It covers architecture choices, server-authoritative patterns, integration points (vehicles, garage, revives, billing), testing, and deployment considerations. Examples use modern QBCore patterns and emphasize never trusting client input — the server must validate all actions. If you want a GUI or management tooling during development, try the app at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> for workflow help and later check the blog for best practices at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── qb-ambulancejob/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+  <h2>High-level architecture</h2>
+  <p>Design the ambulance feature as a cohesive resource (for example qb-ambulance) with a clear separation of responsibilities:</p>
+  <ul>
+    <li>Server authority: job registration, permissions, billing, inventory changes, database writes.</li>
+    <li>Client responsibility: animations, menus, display-only UI, local effects (not authoritative actions).</li>
+    <li>Shared definitions: job names, labels, configuration constants, and locales.</li>
+  </ul>
+  <p>Keep the server side minimal and authoritative: clients send intents (e.g., "I want to revive player X") and the server confirms legitimacy, performs checks, and executes the action.</p>
 
-  <h2>Step 3 — Add items</h2>
-  <p>Add medical items to qb-core/shared/items.lua</p>
-  <div class="code-block">['firstaid'] = {name='firstaid', label='First Aid Kit', weight=500, type='item',
-  image='firstaid.png', unique=false, useable=true, shouldClose=true,
-  description='Revive a downed player'},
-['defibrillator'] = {name='defibrillator', label='Defibrillator', weight=2000, 
-  type='item', image='defibrillator.png', unique=true, useable=true, 
-  shouldClose=true, description='Revive a critically injured player'},</div>
+  <h2>QBCore job registration and data model</h2>
+  <p>QBCore stores jobs in shared configuration. You can register the ambulance role in your project's shared jobs file or as part of your resource. Typical steps:</p>
+  <ol>
+    <li>Add an entry to shared/jobs.lua (or your resource's config) with sensible permissions and labels.</li>
+    <li>Create role-specific configuration: equipment, vehicles, revival cost, allowed items.</li>
+    <li>Ensure database consistency: existing player job entries must match the new job name. If migrating, update your DB rows to the new job name prior to deploying.</li>
+  </ol>
+  <p>Example snippet (conceptual):</p>
+  <pre><code>-- shared/jobs.lua (illustrative)
+jobs['ambulance'] = {
+  label = "EMS",
+  defaultDuty = false,
+  grades = {
+    ['0'] = { name = "Probationary", salary = 50 },
+    ['1'] = { name = "Medic", salary = 100 },
+    ['2'] = { name = "Doctor", salary = 150 }
+  }
+}
+</code></pre>
 
-  <h2>Step 4 — Add job and configure</h2>
-  <div class="code-block">['ambulance'] = {
-    label = 'EMS',
-    defaultDuty = false,
-    offDutyPay = false,
-    grades = {
-        ['0'] = { name = 'Trainee', payment = 50 },
-        ['1'] = { name = 'Paramedic', payment = 100 },
-        ['2'] = { name = 'Doctor', payment = 150 },
-        ['3'] = { name = 'Chief', payment = 200 },
-    },
-},</div>
+  <h2>Server-side validation and security</h2>
+  <p>Never trust client input. All client-initiated actions must be verified server-side before applying effects. Common attack vectors include falsified heal events, forged bills, and unauthorized vehicle spawns. Mitigations:</p>
+  <ul>
+    <li>Validate the caller's job and grade on every server event.</li>
+    <li>Check proximity: confirm the target player is within an expected range on the server (send both player coords from server and compare).</li>
+    <li>Rate-limit critical actions (e.g., revives) and require cooldowns or resource consumption.</li>
+    <li>Log unusual activity server-side for audit and possible automated bans/warnings.</li>
+  </ul>
+  <p>Example server event that validates authority and range before reviving:</p>
+  <pre><code>local QBCore = exports['qb-core']:GetCoreObject()
 
-  <h2>Step 5 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure qb-ambulancejob</div>
+RegisterNetEvent('qb-ambulance:server:requestRevive', function(targetId)
+  local src = source
+  local player = QBCore.Functions.GetPlayer(src)
+  if not player or player.PlayerData.job.name ~= 'ambulance' then
+    return -- unauthorized
+  end
 
-  <div class="cta-box">
-    <h3>Generate your EMS job in seconds</h3>
-    <p>Describe your ambulance system and Stellar AI writes all the files — revival system, hospital, death timer, vehicle spawner — ready to drop in.</p>
-    <a href="/app" class="cta-btn">Generate my EMS job →</a>
-  </div>
+  local target = QBCore.Functions.GetPlayer(tonumber(targetId))
+  if not target then return end
+
+  -- Server-side proximity check: request coords from both players or use server tracking
+  -- Here we ask the client for their coords, but verify with additional server-side logic or distance data
+  TriggerClientEvent('qb-ambulance:client:confirmRevive', src, target.PlayerData.source)
+end)</code></pre>
+
+  <h2>Implementation choices: vehicles, spawners, and ox_lib</h2>
+  <p>Decide how ambulances are provided. Common options:</p>
+  <ul>
+    <li>Static parking spots with a server-side spawner that checks job and duty status.</li>
+    <li>Use a garage resource to manage keys and storage. Ensure keys are server-tracked.</li>
+    <li>Optionally integrate ox_lib for menus and progress bars; keep its use client-side for UX only.</li>
+  </ul>
+  <p>Vehicle spawn should be a server-triggered action after validation. Example pattern:</p>
+  <pre><code>-- Server: spawn vehicle if job and spot available
+RegisterNetEvent('qb-ambulance:server:spawnAmbulance', function(model)
+  local src = source
+  local xPlayer = QBCore.Functions.GetPlayer(src)
+  if not xPlayer or xPlayer.PlayerData.job.name ~= 'ambulance' then return end
+
+  -- server can check a "spawn queue" to avoid abuse and ensure unique instances
+  TriggerClientEvent('qb-ambulance:client:spawnVehicle', src, model)
+end)</code></pre>
+
+  <h2>Healing, revives, and billing patterns</h2>
+  <p>Typical ambulance responsibilities: heal, revive, transport, and billing. For each action, follow this pattern:</p>
+  <ol>
+    <li>Client sends intent to server (e.g., "I wish to bill player X for Y").</li>
+    <li>Server verifies job, proximity, target status, and amount (ensure non-negative, within configured caps).</li>
+    <li>Server performs account transactions, database writes, and triggers client effects.</li>
+  </ol>
+  <p>Example server-side billing validation:</p>
+  <pre><code>RegisterNetEvent('qb-ambulance:server:billPlayer', function(targetId, amount)
+  local src = source
+  local biller = QBCore.Functions.GetPlayer(src)
+  amount = tonumber(amount)
+  if not biller or biller.PlayerData.job.name ~= 'ambulance' then return end
+  if not amount or amount <= 0 or amount > 5000 then return end -- cap
+  local target = QBCore.Functions.GetPlayer(tonumber(targetId))
+  if not target then return end
+
+  -- perform the transaction server-side
+  target.Functions.RemoveMoney('bank', amount, "ambulance-bill")
+  biller.Functions.AddMoney('bank', amount, "ambulance-income")
+  -- record billing in DB or invoice system
+end)</code></pre>
+
+  <h2>File structure and required entries</h2>
+  <p>Keep a predictable layout in your ambulance resource. Example minimal structure:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>File / Resource</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>fxmanifest.lua</td>
+        <td>Define resource, dependencies (qb-core, ox_lib optional), and server/client scripts</td>
+      </tr>
+      <tr>
+        <td>server/main.lua</td>
+        <td>All authoritative logic: job checks, billing, revives, DB writes</td>
+      </tr>
+      <tr>
+        <td>client/main.lua</td>
+        <td>Animations, progress bars, UI, vehicle spawning request (non-authoritative)</td>
+      </tr>
+      <tr>
+        <td>config.lua</td>
+        <td>Job name, revive costs, vehicle models, spawn points</td>
+      </tr>
+      <tr>
+        <td>locales/*.lua</td>
+        <td>Localization for messages and notifications</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Ensure fxmanifest enumerates dependencies to prevent startup order issues. Example dependency line: <code>dependency 'qb-core'</code>.</p>
+
+  <h2>Testing and debugging</h2>
+  <p>Follow a staged testing workflow:</p>
+  <ol>
+    <li>Start with server-only unit checks: validate config values and DB migrations.</li>
+    <li>Use a local client to exercise each server event and inspect server logs (server console & qb-core debug). Add verbose logging temporarily around validation paths.</li>
+    <li>Test edge cases: unauthorized client attempts, missing target, invalid amounts, distance manipulation.</li>
+    <li>Simulate network issues: what happens if a client disconnects mid-revive? Ensure server rolls back partial transactions.</li>
+  </ol>
+  <p>Use these debug tips:</p>
+  <ul>
+    <li>Print contextual info server-side (source id, job, target id) for event handling.</li>
+    <li>Use breakpoints in your editor with a Lua debugger if available.</li>
+    <li>Review server event flood patterns to detect abuse.</li>
+  </ul>
+
+  <h2>Deployment and maintenance</h2>
+  <p>Before deploying to production:</p>
+  <ul>
+    <li>Back up your database (players and job fields).</li>
+    <li>Deploy to a staging server and allow staff to validate job behavior.</li>
+    <li>Plan for migrations: document any DB updates required for job names or permissions.</li>
+  </ul>
+  <p>Ongoing maintenance items:</p>
+  <ul>
+    <li>Monitor server logs for unauthorized attempts or errors.</li>
+    <li>Keep the resource compatible with qb-core updates; test after core updates.</li>
+    <li>Maintain security: patch any server-side logic that makes assumptions about client state.</li>
+  </ul>
+  <p>For management and workflow tooling during your build/deploy cycle, you can pair local dev tools with the developer dashboard at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+  <h2>Roblox (Luau) considerations — brief</h2>
+  <p>If you also maintain a Roblox server or adapt patterns from this guide to Roblox, follow these authoritative server principles:</p>
+  <ul>
+    <li>Use RemoteEvents/RemoteFunctions only for intent; perform all state changes (health, currency) on the server.</li>
+    <li>Treat client messages as untrusted and perform proximity/permission checks server-side.</li>
+    <li>Handle DataStore failures using pcall and exponential backoff, and plan for writes to be retried or queued on server restart.</li>
+    <li>Never assume a successful DataStore write — record local transient state and ensure reconciliation on player reconnect.</li>
+  </ul>
+
+  <h2>Practical checklist before going live</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Done</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Register ambulance job in shared jobs list</td>
+        <td></td>
+        <td>Ensure name matches DB entries or migrate DB</td>
+      </tr>
+      <tr>
+        <td>Implement server-side revive/billing handlers</td>
+        <td></td>
+        <td>Include job & proximity validation</td>
+      </tr>
+      <tr>
+        <td>Add vehicle spawn server-side checks</td>
+        <td></td>
+        <td>Limit spawn rate and ensure unique instances</td>
+      </tr>
+      <tr>
+        <td>Test unauthorized client attempts</td>
+        <td></td>
+        <td>Log and hard-fail on suspicious patterns</td>
+      </tr>
+      <tr>
+        <td>Deploy on staging and run full playtest</td>
+        <td></td>
+        <td>Collect staff feedback and adjust</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Common pitfalls and how to avoid them</h2>
+  <p>Watch out for:</p>
+  <ul>
+    <li>Client-only checks for billing or revives — always duplicate checks server-side.</li>
+    <li>Hardcoding job names in multiple places — centralize in config/shared files.</li>
+    <li>Not handling disconnects during critical flows — ensure atomic server operations.</li>
+    <li>Mismatched dependencies or missing fxmanifest entries causing startup failures.</li>
+  </ul>
+
+  <h3>Example server-to-client safe flow</h3>
+  <p>Flow pattern summary:</p>
+  <ol>
+    <li>Client requests action → Server validates job, proximity, caps → Server performs DB changes and triggers client effects → Server logs event.</li>
+    <li>Client only displays UI and animations after confirmation from the server.</li>
+  </ol>
+
+  <h3>References</h3>
+  <p>Official docs and repositories to consult while implementing:</p>
+  <ul>
+    <li><a href="https://docs.fivem.net">FiveM Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib (optional UI/util library)</a></li>
+    <li><a href="https://github.com/esx-framework/esx-legacy">ESX (if integrating with ESX servers)</a></li>
+    <li><a href="https://developer.roblox.com">Roblox Developer Hub (Luau & DataStore)</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

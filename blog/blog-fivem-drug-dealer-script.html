@@ -1,109 +1,207 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FiveM Drug Dealer Script: Design a Better RP Economy | Stellar AI</title>
-  <meta name="description" content="Plan a secure FiveM drug dealer script with sourcing, processing, deliveries, police risk, cooldowns, server-side validation and a fair roleplay economy.">
-  <meta name="keywords" content="fivem drug dealer script, fivem drug script, qbcore drug dealer, fivem drug system">
-  <meta property="og:title" content="FiveM Drug Dealer Script: Design a Better RP Economy">
-  <meta property="og:description" content="A practical guide to building a believable and secure drug-dealer system for a FiveM roleplay server.">
+  <title>FiveM Drug Dealer Script — Design, Safety, and Implementation Guide — Stellar AI</title>
+  <meta name="description" content="A practical, server-authoritative guide to building a secure, modular FiveM drug dealer script with QBCore/ESX integration, qb-target/ox_lib support, anti-cheat validation, and deployment checklist.">
+  <meta name="keywords" content="FiveM drug dealer script, QBCore drug script, ESX drug script, qb-target, ox_lib, server-side validation, anti-cheat, fxmanifest, FiveM tutorial">
+  <meta property="og:title" content="FiveM Drug Dealer Script — Design, Safety, and Implementation Guide">
+  <meta property="og:description" content="A practical, server-authoritative guide to building a secure, modular FiveM drug dealer script with QBCore/ESX integration, qb-target/ox_lib support, anti-cheat validation, and deployment checklist.">
   <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/fivem-drug-dealer-script">
-  <link rel="stylesheet" href="/site-polish.css">
-  <style>
-    :root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}
-  </style>
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
 <nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
 <main class="wrap">
-  <div class="eyebrow">FiveM · Roleplay systems</div>
-  <h1>FiveM drug dealer script: build a tense RP economy without making it exploitable</h1>
-  <div class="meta">Updated August 2026 · 9 min read · Stellar AI</div>
-  <p class="intro">A strong <strong>FiveM drug dealer script</strong> should create decisions, not just a button that turns an item into cash. The best systems give players a chain of risk: sourcing, processing, finding buyers, moving product, managing heat and deciding whether the payout is worth the exposure.</p>
+  <div class="eyebrow">FiveM development • QBCore • Server-first scripting</div>
+  <h1>FiveM Drug Dealer Script — Design, Safety, and Implementation Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks through designing and shipping a robust FiveM drug dealer script. Focus is on server authority, safe item/cash handling, target integration, and anti-exploit validation. Use the patterns below to build a maintainable, audit-ready resource.</p>
+  <h2>Overview</h2>
+<p>Drug dealer mechanics are common in RP servers: players procure or produce illicit items and sell them to NPC dealers for cash. Because in-game illicit economies affect balance and invite exploits, the canonical rule is: trust nothing from the client. All checks that affect player inventory, cash, or police notifications must be authoritative on the server.</p>
 
-  <p>Drug-dealer gameplay is popular because it naturally creates conflict between civilians, gangs, police and the wider server economy. It can also become one of the easiest systems to exploit if the client is allowed to choose the item, quantity, reward or delivery result. Treat the feature as an economy system with a roleplay layer, not as a collection of client events.</p>
-  <p>Before you write code, decide what your server is trying to encourage. Do you want short street-level interactions, longer supply chains, territory conflict, police investigations or a mixture? The answer determines whether your script needs simple NPC buyers or a full pipeline with suppliers, processing locations, deliveries, evidence and risk.</p>
+<h2>Design principles</h2>
+<ul>
+  <li><strong>Server authority:</strong> validate items, quantities, and payments server-side.</li>
+  <li><strong>Modular integration:</strong> keep qb-target / ox_lib / radial menus as optional adapters.</li>
+  <li><strong>Config-driven behavior:</strong> store prices, locations, cooldowns, and police odds in a config file.</li>
+  <li><strong>Anti-exploit:</strong> rate-limits, ownership checks, and persistent logs for suspicious activity.</li>
+</ul>
 
-  <h2>Design the loop in five understandable stages</h2>
-  <p>A good first version can use five stages: acquire, process, find a buyer, complete the sale and manage the consequences. Each stage should have a clear input and output. If the player receives a raw item, processing should change it into a defined product. If a buyer asks for a product, the server should generate or validate that order. If police risk increases, the player should understand why.</p>
-  <table>
-    <thead><tr><th>Stage</th><th>Player experience</th><th>Server responsibility</th></tr></thead>
-    <tbody>
-      <tr><td>Acquire</td><td>Find a supplier, collect a package or negotiate a source.</td><td>Choose the allowed item and amount; never trust the client’s inventory claim.</td></tr>
-      <tr><td>Process</td><td>Use a location and wait through a meaningful interaction.</td><td>Check distance, cooldown, materials and active job state.</td></tr>
-      <tr><td>Find buyer</td><td>Receive a lead or approach a buyer in a riskier area.</td><td>Generate the order and reward from server configuration.</td></tr>
-      <tr><td>Sell</td><td>Confirm the handoff and receive a fair payout.</td><td>Consume the correct item and calculate the payout atomically.</td></tr>
-      <tr><td>Heat</td><td>Deal with witnesses, alerts, cooldowns or police attention.</td><td>Rate-limit reports and prevent repeated reward events.</td></tr>
-    </tbody>
-  </table>
+<h2>Assumptions and framework choices</h2>
+<p>This guide uses QBCore as the primary example because it's popular in FiveM RP communities. Where appropriate I'll note ESX alternatives. If your server uses ox_lib utilities or qb-target, the code shows how to add optional exports without hard dependencies.</p>
 
-  <h2>Keep the economy believable</h2>
-  <p>The payout should be meaningful without becoming the only profitable activity on the server. Set a baseline reward, add controlled variation, and consider a risk multiplier rather than huge random numbers. Your configuration should make it easy to balance the system after observing real play: minimum and maximum quantity, base payout, police requirement, cooldown, processing time, item requirements and the chance of a report.</p>
-  <p>A common mistake is to add a “bonus” for every risk event. If a player can force a police alert and then immediately sell for a larger reward, the optimal strategy may be to spam the same loop. Instead, use risk as a trade-off. A dangerous location could have better margins, but it should also have a longer cooldown, more evidence or a greater chance of a response.</p>
-  <p>Build an economy table before writing the UI. For example, list the item cost, processing loss, expected sale value, average time per run and expected police pressure. Compare that result with legal jobs on your server. The aim is not perfect mathematical balance on day one; it is a loop that can be tuned without rewriting the resource.</p>
+<h2>High-level implementation plan</h2>
+<ol>
+  <li>Create a small resource with fxmanifest.lua, config.lua, client.lua and server.lua.</li>
+  <li>Define dealer locations and a server-side sell event that validates items and pays the player.</li>
+  <li>Support target interaction (qb-target) and a fallback keypress interaction.</li>
+  <li>Add anti-exploit controls: cooldowns, item ownership checks, and server logging.</li>
+  <li>Test with an admin account and run simulated abuse cases (rapid sell, forged item reports).</li>
+</ol>
 
-  <div class="tip"><strong>Prompt for a safer first draft</strong><p>In <a href="https://trystellarai.com/app">Stellar AI</a>, ask for a FiveM drug-dealer system with configurable suppliers, processing, buyer orders, cooldowns, police alerts and server-side inventory and payout validation. Ask for separate client and server files, an event threat model, and a manual test matrix. State whether your server uses QBCore, ESX or another framework.</p></div>
+<h2>Key server-side rules</h2>
+<ul>
+  <li>Never accept client-provided item amounts or prices without server-side verification.</li>
+  <li>Use framework inventory functions (QBCore.Functions.GetPlayer, QBCore.Functions.RemoveItem, AddMoney) rather than direct DB writes.</li>
+  <li>Keep payment and police notifications atomic: only notify police after successful item removal and payment.</li>
+</ul>
 
-  <h2>Never trust client-side sales</h2>
-  <p>FiveM’s official security guidance explains that networked events can be triggered by clients and recommends validating money, inventory, position, state, experience, permissions and roles on the server.<sup><a href="#references">[1]</a></sup> This matters especially for a drug system because the profitable operation is usually a server event such as “sell item”.</p>
-  <p>The client may request a sale, but it should not decide what was sold or how much the player earned. The server should retrieve the player object, verify the item exists in the configured product list, validate the player’s position or active order, check the cooldown, remove the item, calculate the reward and write the result. If any check fails, return without granting money.</p>
-  <pre><code>RegisterNetEvent('dealer:server:completeSale', function(orderId)
-    local src = source
-    local player = QBCore.Functions.GetPlayer(src)
-    local order = activeOrders[src]
-    if not player or not order or order.id ~= orderId then return end
-    if os.time() &lt; order.cooldownUntil or not isWithinBuyerRange(src, order) then return end
-    if not player.Functions.RemoveItem(order.item, order.quantity) then return end
-    local payout = calculatePayout(order)
-    player.Functions.AddMoney('cash', payout, 'dealer-sale')
-    activeOrders[src] = nil
-end)</code></pre>
-  <p>This is deliberately a shape rather than a drop-in script. Framework exports and inventory functions differ between servers. The important point is the order of authority: the server owns the active order, the quantity, the item check and the payout.</p>
+<h2>Example files (complete minimal resource)</h2>
+<p>Below are destination-labelled files for a minimal QBCore resource. Adjust names, folder location, and exports to match your server's conventions.</p>
 
-  <h2>Add evidence and cooldowns carefully</h2>
-  <p>Evidence can make the loop more interesting without turning it into a frustrating punishment. A sale could create a short-lived dispatch marker, a shell casing equivalent, a phone lead or a vehicle description. Make the result readable and give police a fair chance to respond. Avoid hidden random alerts that feel arbitrary; explain enough that players can learn the risk.</p>
-  <p>Cooldowns should protect the economy and the server, not simply stop players from playing. Apply them per player, location or order type. Clear active state on disconnect and remove abandoned orders after a timeout. If multiple players can use one buyer, give the server a lock or order ownership so two callbacks cannot both pay for the same transaction.</p>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
 
-  <h2>Test the resource as an attacker and a roleplayer</h2>
-  <p>Start with a normal run: acquire an item, process it, receive a buyer, travel to the location and sell. Then test the edges. Try changing the item name in the client request, changing the quantity, moving away from the location, triggering the event twice, selling after the order expires, disconnecting mid-process, restarting the resource and having two players target the same buyer. Also test a player with the wrong job, wrong gang, insufficient inventory or insufficient police presence.</p>
-  <p>Log rejected actions during development, but keep production logs useful rather than noisy. Record the reason for a rejected sale and the server-side order ID without logging private player data unnecessarily. Balance from observed outcomes: average time per successful run, payout distribution, police response frequency and how often players abandon the chain.</p>
+author 'YourName'
+description 'Simple drug dealer script (QBCore)'
+version '1.0.0'
 
-  <h2>Use AI for structure, then review the risk</h2>
-  <p>AI can help you turn a feature brief into a complete resource structure, but it cannot know your exact framework version, inventory exports, database conventions or economy balance unless you provide them. Give it the locations, item names, framework, dependency list, event diagram and acceptance tests. Ask it to explain every server-side trust boundary.</p>
-  <p><a href="https://trystellarai.com/app">Stellar AI</a> is useful for generating a first pass, reviewing an existing FiveM resource and turning errors into a testable repair plan. Keep the output on a development server until you have checked every reward event yourself.</p>
+server_script 'server.lua'
+client_script 'client.lua'
+shared_script 'config.lua'
+</code></pre>
 
-  <div class="cta-box"><h2>Plan a safer dealer system</h2><p>Describe your framework, items, locations, police rules and economy targets. Build a reviewable structure before you put it on a live server.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+<pre><code>-- config.lua
+Config = {}
+Config.Dealers = {
+  {name = 'Downtown Dealer', coords = vector3( -1486.1, -378.2, 40.16 ), sell_item = 'weed', price = 200, policeChance = 0.05},
+}
+Config.SellCooldown = 5 -- seconds per player per dealer
+</code></pre>
 
-  <section class="refs" id="references"><h2>References</h2><p>[1] <a href="https://docs.fivem.net/docs/developers/server-security/">Cfx.re: Secure Your Events</a>.</p><p>[2] <a href="https://docs.fivem.net/docs/scripting-reference/events/server-events/">Cfx.re: Server Events</a>.</p></section>
+<pre><code>-- server.lua (QBCore example)
+local QBCore = exports['qb-core']:GetCoreObject()
+local lastSell = {}
+
+RegisterNetEvent('drugdealer:server:sell', function(dealerIndex)
+  local src = source
+  local xPlayer = QBCore.Functions.GetPlayer(src)
+  if not xPlayer then return end
+
+  local dealer = Config.Dealers[dealerIndex]
+  if not dealer then return end
+
+  -- rate limit
+  lastSell[src] = lastSell[src] or {}
+  if lastSell[src][dealerIndex] and (os.time() - lastSell[src][dealerIndex]) < Config.SellCooldown then
+    TriggerClientEvent('QBCore:Notify', src, 'You must wait before selling again', 'error')
+    return
+  end
+
+  -- check inventory server-side
+  local item = xPlayer.Functions.GetItemByName(dealer.sell_item)
+  if not item or item.amount < 1 then
+    TriggerClientEvent('QBCore:Notify', src, 'You have nothing to sell', 'error')
+    return
+  end
+
+  -- remove item and give money atomically
+  local removed = xPlayer.Functions.RemoveItem(dealer.sell_item, 1)
+  if not removed then
+    TriggerClientEvent('QBCore:Notify', src, 'Failed to remove item', 'error')
+    return
+  end
+
+  xPlayer.Functions.AddMoney('cash', dealer.price, 'sold-drugs')
+  lastSell[src][dealerIndex] = os.time()
+  TriggerClientEvent('QBCore:Notify', src, 'Sold 1 '..dealer.sell_item..' for $'..dealer.price, 'success')
+
+  -- optional police alert with validated chance
+  if math.random() < dealer.policeChance then
+    TriggerEvent('police:server:sendAlert', {x = dealer.coords.x, y = dealer.coords.y, z = dealer.coords.z, message = 'Suspicious deal'})
+  end
+end)
+</code></pre>
+
+<pre><code>-- client.lua (target integration example)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+Citizen.CreateThread(function()
+  for i, d in ipairs(Config.Dealers) do
+    if exports['qb-target'] then
+      exports['qb-target']:AddBoxZone('dealer_'..i, d.coords, 1.2, 1.2, {name = 'dealer_'..i, heading = 0, debugPoly = false}, {
+        options = {{type = 'client', event = 'drugdealer:client:openMenu', icon = 'fas fa-user-secret', label = 'Talk to dealer', dealerIndex = i}},
+        distance = 2.5
+      })
+    end
+  end
+end)
+
+RegisterNetEvent('drugdealer:client:openMenu', function(data)
+  -- fallback: directly call server event
+  TriggerServerEvent('drugdealer:server:sell', data.dealerIndex)
+end)
+</code></pre>
+
+<h2>Security and anti-exploit measures</h2>
+<ul>
+  <li>Rate-limit sells per-player per-dealer to prevent rapid-grinding.</li>
+  <li>Perform all inventory checks and removes on the server using framework APIs.</li>
+  <li>Log unusual patterns to a secure server log: high-frequency sells, negative balances, or failed item removals.</li>
+  <li>Don’t trust client-sent dealerIndex blindly — validate index exists in Config.Dealers.</li>
+</ul>
+
+<h2>ESX differences</h2>
+<p>For ESX, replace QBCore.Functions.GetPlayer and inventory calls with ESX.GetPlayerFromId and xPlayer.getInventoryItem / xPlayer.removeInventoryItem. Also use ESX.ShowNotification on the client where appropriate. Keep the server authority rule unchanged.</p>
+
+<h2>Testing and validation</h2>
+<p>Local testing should include:</p>
+<ol>
+  <li>Sell flow with correct item and without item.</li>
+  <li>Rapid sell attempts to validate cooldown behavior.</li>
+  <li>Simulated packet tampering: call the server event with invalid dealerIndex or spoofed player IDs (as server owner) to ensure checks block it.</li>
+</ol>
+
+<h2>Deployment checklist</h2>
+<table>
+  <thead>
+    <tr><th>Task</th><th>Why</th><th>Done?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Use framework APIs for inventory/cash</td><td>Server authority</td><td> </td></tr>
+    <tr><td>Add cooldowns & rate-limits</td><td>Prevent rapid abuse</td><td> </td></tr>
+    <tr><td>Validate dealerIndex & item existence</td><td>Prevent null deref / exploits</td><td> </td></tr>
+    <tr><td>Log suspicious events</td><td>Audit & ban support</td><td> </td></tr>
+    <tr><td>Test with ESX/QBCore and qb-target/ox_lib</td><td>Compatibility</td><td> </td></tr>
+  </tbody>
+</table>
+
+<h2>Next steps and resources</h2>
+<p>To iterate quickly, consider using a planning workspace that produces destination-labelled files and installs quickly. If you want a guided generator to produce full resource files, try the Stellar AI app to prototype variations and generate complete file sets: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. When you're iterating on police notification logic or balancing payout rates, keep the configuration external so you can tweak values without changing logic.</p>
+
+<p>For community guides and deeper patterns (hooking into evidence systems, laundering mechanics, or vendor cooldown persistence), read articles and collections from the Stellar blog for recommended patterns: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>. You can also open the Stellar AI app to prototype alternate dealer behaviors and test multiple configurations quickly: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Closing notes</h2>
+<p>Keep social features (informing players, leaving hints) client-side only as UI, and keep all economic changes server-side. If you later add production chains (grow -> process -> sell), maintain the same atomic, validated operations at each step. That contract—server trust, client UI—keeps your server balanced and more resistant to exploits.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References</h3><ul><li><a href="https://docs.fivem.net/">FiveM Documentation</a></li><li><a href="https://docs.qbcore.org/">QBCore Documentation</a></li><li><a href="https://github.com/overextended/ox_core">ox_core / ox_lib (GitHub)</a></li></ul></div></section>
 </main>
 <footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore HUD Customisation: Practical Guide for Builders — Stellar AI</title>
+  <meta name="description" content="Step-by-step QBCore HUD customisation with a safe NUI approach, complete files, installation checklist, and validation/security guidance for FiveM servers.">
+  <meta name="keywords" content="QBCore HUD, FiveM HUD, QBCore, NUI, qb-core, HUD customization, Lua, fxmanifest">
+  <meta property="og:title" content="QBCore HUD Customisation: Practical Guide for Builders">
+  <meta property="og:description" content="Step-by-step QBCore HUD customisation with a safe NUI approach, complete files, installation checklist, and validation/security guidance for FiveM servers.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-hud-customisation">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">QBCore HUD — NUI-based, server-aware, secure</div>
+  <h1>QBCore HUD Customisation: Practical Guide for Builders</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">Customize a modern QBCore HUD using a small NUI (HTML/CSS/JS) overlay with client-server best practices. This guide gives a short implementation plan, lists assumptions, provides complete destination-labelled files, and explains installation, validation and security considerations so you can ship a maintainable HUD on your FiveM server.</p>
+  <h2>Implementation plan (short)</h2>
+<p>1) Create a resource with fxmanifest.lua, a client script, a minimal server script, a config file, and an html UI directory. 2) Use exports['qb-core']:GetCoreObject() on the client to subscribe to player events and send periodic state to the NUI. 3) Keep authoritative checks server-side: money changes, health-affecting effects or sensitive data must always be validated by server callbacks. 4) Provide feature toggle in config and graceful fallback if the NUI is unavailable.</p>
+
+<h2>Assumptions & framework dependencies</h2>
+<ul>
+  <li>Server runs a supported QBCore release where exports['qb-core']:GetCoreObject() is available.</li>
+  <li>You will use a client-side NUI to render the HUD so it works cross-client and supports CSS animations.</li>
+  <li>Sensitive changes (add/remove money, admin-only toggles) remain server-side and are not trusted from the client or NUI.</li>
+  <li>This example avoids ox_lib or qb-target specific code; add hooks where you already use those libraries.</li>
+</ul>
+
+<h2>Files you'll create (complete destination-labelled files)</h2>
+<p>Place these files in a resource directory, e.g. resources/[local]/qb-hud-custom</p>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'QBCore Custom HUD (NUI)'
+version '1.0.0'
+
+shared_script 'config.lua'
+
+client_script 'client/main.lua'
+server_script 'server/main.lua'
+
+ui_page 'html/ui/index.html'
+
+files {
+  'html/ui/index.html',
+  'html/ui/style.css',
+  'html/ui/app.js'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+Config.UpdateInterval = 1000 -- ms, how often client sends state to NUI
+Config.ShowHunger = true
+Config.ShowThirst = true
+</code></pre>
+
+<h3>client/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local playerData = {}
+
+local function SendHudUpdate(data)
+  SendNUIMessage({action = 'updateHUD', payload = data})
+end
+
+-- Subscribe to player loaded and job updates
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+  playerData = QBCore.Functions.GetPlayerData()
+  SendHudUpdate({player = playerData})
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
+  playerData.job = job
+  SendHudUpdate({player = playerData})
+end)
+
+-- Periodic state: health, armor, status effects, hunger/thirst if provided by a status resource
+Citizen.CreateThread(function()
+  while true do
+    local ped = PlayerPedId()
+    local health = GetEntityHealth(ped)
+    local armour = GetPedArmour(ped)
+
+    -- If you use a hunger/thirst resource, fetch it safely instead of trusting NUI input
+    local status = {}
+    if Config.ShowHunger then status.hunger = exports['status']:Get('hunger') or 0 end
+    if Config.ShowThirst then status.thirst = exports['status']:Get('thirst') or 0 end
+
+    local data = {
+      health = health,
+      armour = armour,
+      job = playerData.job,
+      money = playerData.money, -- local read of player data; authoritative changes must come from server
+      status = status
+    }
+
+    SendHudUpdate(data)
+    Citizen.Wait(Config.UpdateInterval)
+  end
+end)
+</code></pre>
+
+<h3>server/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Example server callback for validated money change
+QBCore.Functions.CreateCallback('qb-hud:server:GetPlayerMoneySafe', function(source, cb, targetPlayer)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(targetPlayer or src)
+  if Player then
+    cb({cash = Player.PlayerData.money['cash'], bank = Player.PlayerData.money['bank']})
+  else
+    cb(nil)
+  end
+end)
+</code></pre>
+
+<p>Note: The server callback above shows how to avoid trusting client-sent money values. Callbacks are the proper way to retrieve authoritative data when the client UI needs to show accurate balances.</p>
+
+<h2>Minimal NUI: html/ui/index.html (important parts)</h2>
+<pre><code>&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"/&gt;
+  &lt;meta name="viewport" content="width=device-width,initial-scale=1"/&gt;
+  &lt;link rel="stylesheet" href="style.css"/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="hud"&gt;
+    &lt;div id="money"&gt;Cash: -- &lt;/div&gt;
+    &lt;div id="health"&gt;Health: -- &lt;/div&gt;
+    &lt;div id="status"&gt;H: -- T: -- &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;script src="app.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3>html/ui/app.js (listens for SendNUIMessage)</h3>
+<pre><code>window.addEventListener('message', function(event) {
+  const d = event.data
+  if (d.action === 'updateHUD') {
+    const p = d.payload
+    document.getElementById('health').innerText = 'Health: ' + (p.health || '--')
+    document.getElementById('money').innerText = 'Cash: ' + ((p.money and p.money.cash) || '--')
+    if (p.status) document.getElementById('status').innerText = 'H: ' + (p.status.hunger || 0) + ' T: ' + (p.status.thirst || 0)
+  }
+})
+</code></pre>
+
+<h2>Installation & where files belong</h2>
+<ol>
+  <li>Create a folder resources/[local]/qb-hud-custom and place fxmanifest.lua and config.lua at its root.</li>
+  <li>Create client/main.lua and server/main.lua in client/ and server/ subfolders respectively (or named as above and referenced by fxmanifest).</li>
+  <li>Create html/ui/ with index.html, style.css and app.js. Ensure fxmanifest lists these files and ui_page points to index.html.</li>
+  <li>Add start qb-hud-custom to your server.cfg after qb-core.</li>
+</ol>
+
+<h2>Validation checklist</h2>
+<table>
+  <thead>
+    <tr><th>Step</th><th>What to verify</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Start resource</td><td>No errors in server console, ui_page loaded by client (F8 to check)</td></tr>
+    <tr><td>Player loaded</td><td>HUD shows job and money on spawn</td></tr>
+    <tr><td>Server authority</td><td>Use the server callback to fetch money; test client can't spoof balances</td></tr>
+    <tr><td>Performance</td><td>UpdateInterval not too low (1000ms default) and no frame drops</td></tr>
+    <tr><td>Mobile clients</td><td>Test NUI scale and safe zones if using tablet/phone overlays</td></tr>
+  </tbody>
+</table>
+
+<h2>Security and best practices</h2>
+<ul>
+  <li>Never accept monetary or admin state from the client. Always verify via server callbacks or events.</li>
+  <li>Keep any privileged server events protected by permission checks (isPlayerAceAllowed or QBCore permissions).</li>
+  <li>Sanitise any strings sent to the NUI to avoid malformed HTML; prefer plain text insertion (textContent in JS).</li>
+  <li>Avoid heavy UI updates every tick. Use coalesced updates (e.g., 500–2000 ms) or delta changes.</li>
+</ul>
+
+<h2>Next steps & integrations</h2>
+<p>Add job icons, voice status, or vehicle HUD sections by subscribing to QBCore events (OnJobUpdate, OnPlayerUnload) and fetching authoritative details with server callbacks for anything sensitive. If you use qb-target or ox_lib, register goal points and display contextual tooltips in the NUI rather than exposing logic to the UI.</p>
+
+<p>If you're iterating on HUD design, try rapid prototyping with an AI-assisted workflow designed for game builders; learn more or open the app to describe the HUD you want and auto-generate files at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For deeper design guides and common pitfalls, check the blog at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>. When ready to produce multiple HUD variants, the app can help export resource-ready files quickly: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<p>Follow the verification workflow: inspect, reproduce, change minimally, test in-game, and commit a clear change. Keep sensitive checks on the server and document your config defaults so future maintainers can tune update intervals and toggles.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>Relevant references and further reading:</p><ul><li><a href="https://docs.fivem.net/">FiveM docs (client NUI & fxmanifest)</a></li><li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub (reference core functions)</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

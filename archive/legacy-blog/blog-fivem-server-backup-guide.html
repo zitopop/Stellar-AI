@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Server Backup Guide — Stellar AI</title>
+  <meta name="description" content="Practical, secure steps to back up FiveM server files, player databases (QBCore/ESX), and configuration. Includes server-side scripts, validation, retention policy, and an optional in-game trigger respecting server authority.">
+  <meta name="keywords" content="FiveM backup, QBCore backup, ESX backup, server backup script, MySQL dump, FiveM restore, resource backup, fxmanifest backup">
+  <meta property="og:title" content="FiveM Server Backup Guide">
+  <meta property="og:description" content="Practical, secure steps to back up FiveM server files, player databases (QBCore/ESX), and configuration. Includes server-side scripts, validation, retention policy, and an optional in-game trigger respecting server authority.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-server-backup-guide">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Operational guide for server operators</div>
+  <h1>FiveM Server Backup Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">A concrete, security-first approach to backing up FiveM resources and databases. This guide covers host-level automation, safe database dumps for QBCore/ESX, an optional admin-only in-game trigger, retention policy, and recovery testing.</p>
+  <p>Backing up a FiveM server is an operational imperative: resource files, configuration, and the player database are required to restore service after hardware failure, accidental deletion, or a failed upgrade. This guide gives a practical plan, safe scripts, server-side examples that respect authority and validation, and a tested restore checklist.</p>
+
+<h2>Implementation plan (short)</h2>
+<p>1) Prioritise host-level backups (filesystem + database). 2) Automate with cron or systemd and push encrypted archives offsite (S3/GCS). 3) Optionally provide an admin-only in-game trigger that requests a host-level backup via an authenticated webhook. 4) Test restores and document recovery steps.</p>
+
+<h2>Assumptions and dependencies</h2>
+<ul>
+  <li>Your FiveM server runs on a Linux host or VM with shell access.</li>
+  <li>Player data is stored in MySQL/MariaDB (common for QBCore, ESX, oxmysql or ghmattimysql setups).</li>
+  <li>You can create a user with limited DB permissions for dumps or use a read-only dump user.</li>
+  <li>Backups should be managed outside of the resource folder; avoid storing secrets in the repo.</li>
+</ul>
+
+<h2>Host-level backup (recommended first)</h2>
+<p>Host-level backups are the most reliable. They can snapshot the entire FiveM directory, server.cfg, custom resources, and optionally the database dump. Use a retained, encrypted archive strategy and push archives to an offsite store.</p>
+
+<h3>Example bash backup script (safe, uses env file)</h3>
+<pre><code># /usr/local/bin/fivem-backup.sh
+set -e
+source /etc/fivem-backup.env # contains DB_USER, DB_PASS, DB_NAME, BACKUP_DIR, S3_BUCKET, GPG_KEY
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H%M%SZ")
+ARCHIVE="$BACKUP_DIR/fivem-backup-$TIMESTAMP.tar.gz"
+# Dump MySQL to a temporary file
+mysqldump -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" > /tmp/fivem-sql-$TIMESTAMP.sql
+# Create archive with server files and DB dump (exclude node_modules, caches)
+tar --exclude='node_modules' --exclude='cache' -czf "$ARCHIVE" /opt/fivem /etc/fivem/server.cfg /tmp/fivem-sql-$TIMESTAMP.sql
+# Encrypt archive with GPG public key
+gpg --encrypt --recipient "$GPG_KEY" --output "$ARCHIVE.gpg" "$ARCHIVE"
+# Push to S3 (awscli configured separately)
+aws s3 cp "$ARCHIVE.gpg" "s3://$S3_BUCKET/"
+# Clean temporary files
+rm -f "$ARCHIVE" /tmp/fivem-sql-$TIMESTAMP.sql
+</code></pre>
+<p>Notes: store DB credentials in /etc/fivem-backup.env owned by root with 600 permissions. Do not commit this file. Use a deploy key/service account for S3 upload; keep that config on the host only.</p>
+
+<h2>Database-only dumps for QBCore / ESX</h2>
+<p>Both QBCore and ESX rely on MySQL. A consistent dump is important; you can use mysqldump with --single-transaction for InnoDB to avoid locking, or use a logical backup tool compatible with your engine. Use a DB user limited to SELECT, LOCK TABLES (if required), and SHOW VIEW; avoid using root in automation.</p>
+
+<h2>Optional: Admin-triggered in-game backup (server-authoritative)</h2>
+<p>Provide an optional resource that sends an authenticated request to a host-side webhook which initiates the host backup. This keeps the heavy work off the game server process and enforces server authority. The in-game command must validate admin permissions server-side (not client-side).</p>
+
+<h3>Server-side resource example (fxmanifest + Lua)</h3>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+author 'Ops'
+server_script 'server.lua'
+
+-- server.lua
+local http_endpoint = GetConvar('backup_webhook', '') -- set in server.cfg
+
+RegisterCommand('triggerbackup', function(source, args, raw)
+  -- server-only command
+  local src = source
+  if src ~= 0 then
+    -- player issued command: validate with framework
+    local allowed = false
+    -- QBCore example
+    if GetResourceState('qb-core') == 'started' then
+      local QBCore = exports['qb-core']:GetCoreObject()
+      local xPlayer = QBCore.Functions.GetPlayer(src)
+      if xPlayer and xPlayer.PlayerData.job.name == 'admin' then allowed = true end
+    end
+    -- ESX example fallback
+    if not allowed and GetResourceState('es_extended') == 'started' then
+      local xPlayer = ESX.GetPlayerFromId(src)
+      if xPlayer and (xPlayer.getGroup() == 'admin' or xPlayer.getGroup() == 'superadmin') then allowed = true end
+    end
+    if not allowed then
+      TriggerClientEvent('chat:addMessage', src, { args = { '^1Backup', 'Permission denied.' } })
+      return
+    end
+  end
+  -- server-originated or validated player: call webhook
+  PerformHttpRequest(http_endpoint, function(code, res, headers) end, 'POST', json.encode({ action = 'start' }), { ['Content-Type'] = 'application/json', ['Authorization'] = 'Bearer ' .. GetConvar('backup_token','') })
+end, false)
+</code></pre>
+<p>Important: Set backup_webhook and backup_token in server.cfg, not in resources. The webhook should authenticate the token and run the host backup script; never embed shell execution directly in the game process.</p>
+
+<h2>Retention policy and rotation (table)</h2>
+<table>
+  <thead>
+    <tr><th>Retention item</th><th>Recommended setting</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Daily backups</td><td>Keep last 14</td></tr>
+    <tr><td>Weekly backups</td><td>Keep last 12</td></tr>
+    <tr><td>Monthly backups</td><td>Keep last 12</td></tr>
+    <tr><td>Critical snapshot before major upgrades</td><td>Keep until upgrade verified</td></tr>
+    <tr><td>Encryption</td><td>GPG encrypt before offsite transfer</td></tr>
+  </tbody>
+</table>
+
+<h2>Testing restores and validation</h2>
+<p>Backups are only useful when regularly tested. Restore to a staging host monthly and validate: resource files load, server.cfg settings intact, and the database contains expected players. For DB restores, check user IDs, money balances, and character inventories; for frameworks, verify QBCore/ESX compatibility after restore.</p>
+
+<h2>Security considerations</h2>
+<ul>
+  <li>Do not run backup scripts under the FiveM service account with excessive privileges.</li>
+  <li>Use dedicated limited DB users, encrypt backups, and employ rotating keys if possible.</li>
+  <li>Keep webhook tokens and cloud credentials out of resource files and put them in server.cfg or /etc environment files with strict permissions.</li>
+</ul>
+
+<h2>Monitoring and automation</h2>
+<p>Use cron or systemd timers to schedule nightly backups and a monitoring alert on failure. Keep logs of backup runs and S3/GCS upload results. Consider using a retention lifecycle rule on the cloud bucket to prune old encrypted archives automatically.</p>
+
+<h2>Practical checklist before going live</h2>
+<ol>
+  <li>Create /etc/fivem-backup.env and set permissions to 600.</li>
+  <li>Install and test mysqldump and awscli/gcloud CLI on the host.</li>
+  <li>Deploy and test the backup script manually; verify archive encryption.</li>
+  <li>Push one encrypted archive to offsite storage; attempt a staged restore.</li>
+  <li>Schedule cron/systemd and configure monitoring alerts for failures.</li>
+  <li>If using in-game trigger, ensure tokens are in server.cfg and webhook validates token server-side.</li>
+  <li>Document the restore process and store it in your ops runbook.</li>
+</ol>
+
+<h2>Automation example: cron</h2>
+<pre><code># Run at 03:30 daily
+30 3 * * * /usr/local/bin/fivem-backup.sh >> /var/log/fivem-backup.log 2>&1
+</code></pre>
+
+<h2>Where to go next</h2>
+<p>For constructing scripts and iterating on the resource files described above, you can use tools that help generate destination-labelled files and iterate on the next version. If you want scripted templates or a guided workspace to produce ready-to-deploy files for this backup flow, try the Stellar AI app to speed up the process: <a href="https://trystellarai.com/app">Stellar AI workspace</a>. If you'd like a short tutorial and examples about deployment patterns and automation, check the blog: <a href="https://trystellarai.com/blog">Stellar AI blog</a>. For hands-on automation with a hosted workflow, the Stellar AI app can also help produce shell, systemd, and resource files: <a href="https://trystellarai.com/app">Stellar AI workspace</a>.</p>
+
+<h2>Summary</h2>
+<p>Prioritise host-level encrypted backups and offsite storage, use limited DB users for dumps, automate with cron/systemd and monitor failures, and keep an optional in-game trigger strictly server-authoritative. Test restores regularly and document the process. Following this pattern keeps your FiveM server resilient and recoverable without exposing credentials or overloading the game process.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>References and further reading:</p><ul><li><a href="https://docs.fivem.net/">FiveM documentation</a></li><li><a href="https://dev.mysql.com/doc/">MySQL documentation (mysqldump)</a></li><li><a href="https://docs.aws.amazon.com/cli/">AWS CLI</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

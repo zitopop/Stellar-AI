@@ -1,108 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QBCore Inventory System — How to Add Items and Configure — Stellar AI</title>
-  <meta name="description" content="The QBCore inventory system stores everything your players carry. This guide covers how to add new items, set weights, make items useable and configure your inventory.">
-  <meta name="keywords" content="qbcore inventory, qbcore add items, qbcore shared items lua, fivem inventory items">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Inventory Guide — Stellar AI</title>
+  <meta name="description" content="A practical, security-first guide to designing and implementing a custom inventory workflow for QBCore-based FiveM servers. Covers item definitions, server-authority patterns, weight/stack rules, UI touchpoints, and safe code examples.">
+  <meta name="keywords" content="QBCore, FiveM, inventory, qb-inventory, server-authority, Lua, fxmanifest, usable items, validation, qb-target">
+  <meta property="og:title" content="QBCore Inventory Guide">
+  <meta property="og:description" content="A practical, security-first guide to designing and implementing a custom inventory workflow for QBCore-based FiveM servers. Covers item definitions, server-authority patterns, weight/stack rules, UI touchpoints, and safe code examples.">
+  <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/qbcore-inventory-guide">
-  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>QBCore Inventory System — How to Add Items and Configure</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">The QBCore inventory system stores everything your players carry. This guide covers how to add new items, set weights, make items useable and configure your inventory.</p>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">QBCore inventory — secure, authoritative, extensible</div>
+  <h1>QBCore Inventory Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide teaches builders how to design and implement a robust inventory system for QBCore servers. It focuses on server-authoritative patterns, item lifecycle (add, remove, use), weight/stack validation, and safe client/server communication. Example files are included for a small resource that adds a consumable item and a secure stash interaction.</p>
+  <h2>Why server authority matters</h2>
+<p>Inventory data is a core trust boundary. Always treat the server as the source of truth: only the server should add/remove items, check weight and permissions, or change player money. Clients should request actions and render UI only. This prevents exploits and keeps synchronisation reliable across reconnects.</p>
 
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
+<h2>Design checklist (quick)</h2>
+<table>
+  <thead>
+    <tr><th>Area</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Item definitions</td><td>Register in shared config and server-side item list; include weight and stack size</td></tr>
+    <tr><td>Adding/removing</td><td>Only on server via QBCore Player.Functions.AddItem/RemoveItem</td></tr>
+    <tr><td>Usable items</td><td>Use QBCore.Functions.CreateUseableItem on server to handle use</td></tr>
+    <tr><td>Client actions</td><td>Trigger server events; never mutate inventory locally</td></tr>
+    <tr><td>Validation</td><td>Server checks weight, inventory space, ownership, and permissions</td></tr>
+  </tbody>
+</table>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h2>Core components</h2>
+<p>A minimal QBCore inventory interaction typically has:</p>
+<ul>
+  <li>config.lua / shared definitions (weights, limits)</li>
+  <li>server.lua (item handlers, CreateUseableItem, callbacks)</li>
+  <li>client.lua (UI triggers, animations, targets)</li>
+  <li>fxmanifest.lua (resource manifest and dependencies)</li>
+</ul>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
+<h3>Item model</h3>
+<p>Keep item definitions small and canonical. Example fields: name, label, weight, stack. Store them in one shared file so UI and server logic use the same values.</p>
 
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
+<h2>Complete example resource files</h2>
+<p>The example below creates a consumable "energy_drink" and a secure stash interaction that validates ownership on the server. Place these files in a resource folder, e.g. <code>qb-custom-inventory</code>.</p>
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
-</div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+name 'qb-custom-inventory'
+author 'YourName'
+description 'Small example: consumable item and server-validated stash'
+version '1.0.0'
+
+shared_script 'config.lua'
+
+server_script 'server.lua'
+client_script 'client.lua'
+
+dependencies {
+  'qb-core'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+
+Config.Items = {
+  energy_drink = {
+    label = 'Energy Drink',
+    weight = 200, -- grams
+    stack = 5,
+  }
+}
+
+-- Stash config: example key is stash id stored in DB or on server
+Config.Stashes = {
+  ['house_stash_1'] = {
+    label = 'Safe Stash',
+    ownerOnly = true
+  }
+}
+</code></pre>
+
+<h3>server.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Register usable item
+QBCore.Functions.CreateUseableItem('energy_drink', function(source, item)
+  local Player = QBCore.Functions.GetPlayer(source)
+  if not Player then return end
+
+  -- Server-side validation: ensure player still has the item
+  local hasItem = Player.Functions.GetItemByName('energy_drink')
+  if not hasItem then
+    TriggerClientEvent('QBCore:Notify', source, 'You do not have an energy drink', 'error')
+    return
+  end
+
+  -- Remove the item on server and trigger a client effect
+  local removed = Player.Functions.RemoveItem('energy_drink', 1, item.slot)
+  if removed then
+    TriggerClientEvent('qb-custom-inventory:client:consumeEnergy', source)
+  else
+    TriggerClientEvent('QBCore:Notify', source, 'Could not remove item', 'error')
+  end
+end)
+
+-- Secure stash open: server checks ownership before giving inventory access
+QBCore.Functions.CreateCallback('qb-custom-inventory:server:canOpenStash', function(source, cb, stashId)
+  local Player = QBCore.Functions.GetPlayer(source)
+  if not Player then cb(false) return end
+
+  local stash = Config.Stashes[stashId]
+  if not stash then cb(false) return end
+
+  if stash.ownerOnly then
+    -- Example check: assume player metadata stores house id
+    local ownerHouse = Player.PlayerData.metadata and Player.PlayerData.metadata.houseId
+    if ownerHouse == stashId then
+      cb(true)
+    else
+      cb(false)
+    end
+  else
+    cb(true)
+  end
+end)
+</code></pre>
+
+<h3>client.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('qb-custom-inventory:client:consumeEnergy')
+AddEventHandler('qb-custom-inventory:client:consumeEnergy', function()
+  -- Client-side effect only: animation, heal, sound
+  -- All state changes were validated and performed server-side
+  QBCore.Functions.Notify('You feel energized', 'success')
+  -- Example: trigger a small health restore client-side
+  local ped = PlayerPedId()
+  local health = GetEntityHealth(ped)
+  SetEntityHealth(ped, math.min(200, health + 20))
+end)
+
+-- Example: request stash open via qb-target or key
+function TryOpenStash(stashId)
+  QBCore.Functions.TriggerCallback('qb-custom-inventory:server:canOpenStash', function(canOpen)
+    if canOpen then
+      -- Open qb-inventory or custom UI; server remains authoritative
+      TriggerEvent('inventory:client:OpenStash', stashId)
+    else
+      QBCore.Functions.Notify('You are not allowed to open this stash', 'error')
+    end
+  end, stashId)
+end
+</code></pre>
+
+<h2>Security and validation notes</h2>
+<ul>
+  <li>Never trust client-sent item amounts or slots. Always call Player.Functions.GetItemByName and Player.Functions.RemoveItem/AddItem on the server and validate return values.</li>
+  <li>Use callbacks for small queries (existence, ownership) and server events for state changes. Callbacks return values synchronously to the client script with server checks in place.</li>
+  <li>Limit exposed events; name them with your resource prefix (e.g. qb-custom-inventory:server:removeItem) to avoid collisions.</li>
+  <li>Check for race conditions: if you allow rapid item use, consider server-side locks or re-checks after database writes.</li>
+</ul>
+
+<h2>Integration tips</h2>
+<p>If you use qb-inventory or ox_inventory frontends, keep item metadata compatible and translate only on the server-side. For target interactions prefer qb-target or ox_target to keep client code small: they trigger the TryOpenStash function above, which performs server-validated checks.</p>
+
+<p>Stellar AI can help you iterate on resource structure and file creation. If you want to prototype multiple item types and UI screens quickly, try the builder at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. When you have a small working demo, use the same workspace to expand interactions and automate file scaffolding via templates available in the app: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For reading and deeper background posts about scripting patterns, see the Stellar AI blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>Validation steps and next steps</h2>
+<ol>
+  <li>Install resource folder and ensure fxmanifest.lua references qb-core in your server cfg.</li>
+  <li>Start the server and test: give a test player the item via server console or qb-core admin commands.</li>
+  <li>Attempt to use the item and verify server removes it and client shows effects.</li>
+  <li>Attempt client-only mutations (e.g. fake calls to client events) to confirm server-only changes prevent exploits.</li>
+  <li>Expand: add weight checks on AddItem and refuse adds if capacity exceeded.</li>
+</ol>
+
+<p>Next steps: add logging for inventory changes, hook DataStore backups for persistent stash contents, and add unit tests for server callbacks if you have a CI environment. Keep UIs thin and let the server own all business logic.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>Useful references and docs:</p><ul><li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li><li><a href="https://github.com/qbcore-framework/qb-inventory">qb-inventory (community repo)</a></li><li><a href="https://docs.fivem.net/">FiveM docs</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>
 </html>

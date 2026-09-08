@@ -68,32 +68,261 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Lawyer Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A lawyer job adds a unique civilian roleplay experience. Players can represent clients, file appeals and interact with the police and court system.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add a lawyer job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Introduction</h2>
+  <p>
+    Adding a lawyer job to a QBCore FiveM server requires more than UI and animations — it needs a clear server-side architecture, secure validation, persistent data, and robust testing. This guide walks through architecture decisions, QBCore-specific implementation patterns, supporting libraries such as <em>ox_lib</em>, cross-compatibility notes for ESX, and a short section on equivalent design patterns for Roblox (Luau) servers. Use the practical checklist and code examples to implement a lawyer job that is maintainable and secure.
+  </p>
+
+  <h2>High-level architecture</h2>
+  <p>
+    The lawyer job is composed of three major subsystems:
+  </p>
+  <ol>
+    <li>
+      Persistence and database: job definitions, employee lists, permissions, and any case or invoice records stored in SQL.
+    </li>
+    <li>
+      Server authority and validation: server-side handlers to verify job state, money transactions, and permission checks. Client code must be considered untrusted.
+    </li>
+    <li>
+      Client presentation and interaction: menus, markers, animations, and blips that call server functions via safe events and callbacks.
+    </li>
+  </ol>
+  <p>
+    Keep the server authoritative — the server decides who is a lawyer, who can bill a client, and what transactions happen. Client code only requests actions and renders data the server confirms.
+  </p>
+
+  <h2>Data model and database considerations</h2>
+  <p>
+    Create a lightweight SQL schema that supports employees, law firm records, and invoices. Using QBCore’s export-compatible model and a migration script ensures changes are repeatable.
+  </p>
+  <pre><code>
+-- Example SQL (MySQL)
+CREATE TABLE IF NOT EXISTS lawyer_firms (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
+  owner_identifier VARCHAR(64) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS lawyer_employees (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  firm_id INT NOT NULL,
+  identifier VARCHAR(64) NOT NULL,
+  role VARCHAR(32) DEFAULT 'associate',
+  FOREIGN KEY (firm_id) REFERENCES lawyer_firms(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS lawyer_invoices (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  firm_id INT NOT NULL,
+  client_identifier VARCHAR(64) NOT NULL,
+  amount INT NOT NULL,
+  paid TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+  </code></pre>
+  <p>
+    Keep financial logic on the server and store identifiers using whichever identifier strategy your server uses (Steam, license, fivem:hex, or license2). Avoid storing passwords or sensitive PII.
+  </p>
+
+  <h2>QBCore implementation: file layout and responsibilities</h2>
+  <p>
+    Split the resource into clear responsibilities. Example resource layout:
+  </p>
+  <ul>
+    <li>fxmanifest.lua — declares dependencies (qb-core, ox_lib optionally)</li>
+    <li>server/main.lua — server-side event handlers, database queries, permission checks</li>
+    <li>client/main.lua — UI, menus, interactions; no business logic</li>
+    <li>config.lua — job names, blip settings, pay scale</li>
+    <li>sql/ — migration files for schema</li>
+  </ul>
+  <p>
+    Use QBCore exports and server callbacks instead of trusting client-sent data. For example, when a client requests to create an invoice, the server must verify that the requester is an employee of the firm and that the client exists.
+  </p>
+
+  <h3>Server-side patterns</h3>
+  <p>
+    Implement server-side callbacks and events that validate every request. Example patterns:
+  </p>
+  <ul>
+    <li>Use QBCore.Functions.GetPlayer to read and validate identifier and money</li>
+    <li>Validate role/permission stored in the database before allowing an action</li>
+    <li>Sanitize inputs used in SQL queries and use parameterized queries</li>
+    <li>Emit events for logging/auditing rather than writing client logs</li>
+  </ul>
+
+  <h2>ox_lib, menus, and UI choices</h2>
+  <p>
+    ox_lib provides fast menu and UI primitives. If you use ox_lib:
+  </p>
+  <ul>
+    <li>Keep menu construction client-side, but call server callbacks for all stateful actions</li>
+    <li>Use ox_lib notifications for feedback only after server confirmation</li>
+    <li>Limit sensitive actions (e.g., awarding money, firing someone) to server-only functions triggered by validated events</li>
+  </ul>
+  <p>
+    Example client flow: open menu → select "Issue Invoice" → client sends request with target identifier and amount → server verifies and returns success/failure → client displays confirmation.
+  </p>
+
+  <h2>Security and server validation</h2>
+  <p>
+    Security is essential. Adopt these concrete safeguards:
+  </p>
+  <ul>
+    <li><strong>Never trust client input:</strong> validate identifiers, amounts, and permissions on the server. Treat client messages as requests only.</li>
+    <li><strong>Rate-limit sensitive endpoints:</strong> prevent spamming invoice creation or payment requests via server-side counters or cooldowns.</li>
+    <li><strong>Audit actions:</strong> log changes to employee role, payouts, invoice deletions so admins can review suspicious behavior.</li>
+    <li><strong>Use parameterized SQL or prepared queries:</strong> prevent injection attacks. Do not build SQL by concatenating strings with client data.</li>
+    <li><strong>Permission model:</strong> use a role field and check both QBCore job and a database-backed permission list for elevated actions (e.g., managing a firm).</li>
+  </ul>
+
+  <h2>Code examples — safe server callback and client request</h2>
+  <pre><code>
+-- server/main.lua (QBCore)
+QBCore.Functions.CreateCallback('lawyer:getEmployeeData', function(source, cb, identifier)
+  local src = source
+  local player = QBCore.Functions.GetPlayer(src)
+  -- Always validate server-side: only allow if requesting player has permission or is querying self
+  if not player then return cb(nil) end
+  -- Example check: only allow own data or firm managers
+  MySQL.query('SELECT * FROM lawyer_employees WHERE identifier = ?', { identifier }, function(result)
+    cb(result[1] or nil)
+  end)
+end)
+
+RegisterNetEvent('lawyer:createInvoice', function(clientIdentifier, amount)
+  local src = source
+  local player = QBCore.Functions.GetPlayer(src)
+  if not player or type(amount) ~= 'number' or amount <= 0 then return end
+  -- server verifies that src is an employee and belongs to the firm
+  -- perform parameterized insert
+  MySQL.insert('INSERT INTO lawyer_invoices (firm_id, client_identifier, amount) VALUES (?, ?, ?)', { firmId, clientIdentifier, amount })
+  -- notify and log
+end)
+  </code></pre>
+
+  <h2>Testing and debugging</h2>
+  <p>
+    Systematic testing ensures the job behaves in production:
+  </p>
+  <ul>
+    <li>Unit test server functions where possible (mock QBCore exports and MySQL functions).</li>
+    <li>Integration test common flows: hire/fire employee, create/pay invoice, edge cases like negative amounts and SQL failures.</li>
+    <li>Simulate latency and dropped packets to verify the client gracefully retries when appropriate.</li>
+    <li>Use verbose server logs for admin-only testing, then switch to structured logs for production.</li>
+  </ul>
+
+  <h3>Automated checks</h3>
+  <p>
+    Automate SQL migrations, resource validation, and basic integration tests in your CI pipeline. Include a pre-deploy step that verifies the fxmanifest dependency chain and ensures required exports are present.
+  </p>
+
+  <h2>Deployment and maintenance</h2>
+  <p>
+    Deploy with versioned resources and migrations:
+  </p>
+  <ol>
+    <li>Run migration scripts in a transactional manner; keep backups before schema changes.</li>
+    <li>Provide a feature-flag or disabled-by-default config for major changes to allow safe rollout.</li>
+    <li>Monitor error rates and add alerts for repeated failed RPCs or SQL errors.</li>
+    <li>Document public server events and callbacks to prevent breaking other resources that may integrate with the lawyer job.</li>
+  </ol>
+  <p>
+    If you need tooling for deployment or collaboration, consider managed app dashboards like the Stellar AI app to organize resources and logs:
+    <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>
+  </p>
+
+  <h2>Roblox (Luau) equivalent considerations</h2>
+  <p>
+    When implementing an equivalent job on Roblox, keep strict server authority:
+  </p>
+  <ul>
+    <li>Use RemoteEvents/RemoteFunctions where the server validates every request. The server is authoritative; clients only ask to perform actions.</li>
+    <li>Never apply state changes based only on RemoteEvent parameters without validation on the server.</li>
+    <li>Handle DataStore failures: use pcall with exponential backoff and local caching for temporary state when DataStore operations fail.</li>
+    <li>Design for resilient player disconnects — persist critical state as soon as possible and recover gracefully.</li>
+  </ul>
+  <p>
+    Example: when a client asks to bill another player, the server checks the bill amount, verifies both players exist and are in the same session, and writes a DataStore record only after validation. If DataStore fails, inform the client and retry or fallback to a non-persistent state until resolved.
+  </p>
+
+  <h2>Checklist: deployment readiness</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Status</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Database migrations created and tested</td>
+        <td>☐</td>
+        <td>Transactional scripts and backups</td>
+      </tr>
+      <tr>
+        <td>Server validation covering all actions</td>
+        <td>☐</td>
+        <td>Includes permission checks and sanitization</td>
+      </tr>
+      <tr>
+        <td>Client only handles UI; no business logic</td>
+        <td>☐</td>
+        <td>Use server callbacks for every critical action</td>
+      </tr>
+      <tr>
+        <td>Error handling for MySQL/DataStore</td>
+        <td>☐</td>
+        <td>Retries and admin alerts configured</td>
+      </tr>
+      <tr>
+        <td>Automated tests for key flows</td>
+        <td>☐</td>
+        <td>Unit + integration checks</td>
+      </tr>
+      <tr>
+        <td>Logging and audit trails enabled</td>
+        <td>☐</td>
+        <td>Review logs for suspicious behavior</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Maintenance and future-proofing</h2>
+  <p>
+    Keep the job maintainable:
+  </p>
+  <ul>
+    <li>Version your resource and communicate breaking changes to the admin community.</li>
+    <li>Write migration scripts for every schema change and maintain a changelog.</li>
+    <li>Abstract integrations with other resources (bank, phone, billing) via stable server exports rather than direct database access when possible.</li>
+  </ul>
+  <p>
+    If you run multiple servers or want an admin UI to manage resources, consider external tools and dashboards:
+    <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>
+  </p>
+
+  <h2>Further reading and references</h2>
+  <p>
+    Read detailed implementation notes and related posts on the Stellar AI blog:
+    <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>
+  </p>
+  <h3>References</h3>
+  <ul>
+    <li><a href="https://docs.fivem.net/">FiveM Official Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore Framework (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib (GitHub)</a></li>
+    <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a></li>
+    <li><a href="https://esx-framework.org/">ESX Framework (community)</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

@@ -68,32 +68,239 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Customise Your QBCore HUD on FiveM</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">The HUD is the first thing players see on your server. This guide covers customising the QBCore HUD — moving elements, changing colours and adding custom indicators.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to customise your qbcore hud on fivem, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview</h2>
+  <p>
+    This guide explains how to customise a QBCore HUD for FiveM with secure, maintainable patterns, and where relevant contrasts with ESX, ox_lib and Roblox/Luau approaches. You will learn architectural choices, NUI integration, server validation requirements, implementation trade-offs, testing strategies, and deployment/maintenance practices. Follow this to build a responsive HUD that avoids common security pitfalls and remains easy to extend.
+  </p>
+
+  <h2>Design goals and constraints</h2>
+  <p>
+    Before coding, set clear goals: what HUD elements are mandatory (health, armour, hunger, thirst, vehicle status, voice), which are configurable by players, and which require server-side authority. Design constraints to enforce:
+  </p>
+  <ul>
+    <li><strong>Server authority:</strong> any state that affects gameplay or persistent data must be validated and sourced from the server.</li>
+    <li><strong>Performance:</strong> update only what changes and throttle frequent updates (e.g., voice volume).</li>
+    <li><strong>Interoperability:</strong> integrate cleanly with QBCore exports and common libraries like ox_lib without hard coupling.</li>
+    <li><strong>Modularity:</strong> make UI components replaceable with a minimal client API.</li>
+  </ul>
+
+  <h2>Architecture: client, server, and NUI layers</h2>
+  <p>
+    A robust HUD has three primary layers:
+  </p>
+  <ol>
+    <li>
+      <strong>Server layer</strong> — authoritative source of truth. It tracks persistent stats (jobs, cash balances, inventory states) and broadcasts validated changes to clients. Do not accept client-sent changes for authoritative data.
+    </li>
+    <li>
+      <strong>Client game layer</strong> — responsible for local sensors: player health, vehicle speed, local voice proximity, and triggers to show/hide HUD components. The client requests occasional authoritative data from the server but never writes persistent state directly.
+    </li>
+    <li>
+      <strong>NUI (HTML/CSS/JS) layer</strong> — renders visuals and animations. Receives driven updates via SendNUIMessage from client scripts and sends non-authoritative UI interactions (e.g., menu toggles) back to the client script only.
+    </li>
+  </ol>
+  <p>
+    Communication flow:
+  </p>
+  <ul>
+    <li>Server validates and emits events -> client receives and forwards to NUI.</li>
+    <li>Client detects local changes -> forwards to server for validation or directly updates NUI for purely local UI elements (non-authoritative).</li>
+    <li>NUI sends UI-only events to client script via callbacks; client mediates any server interactions.</li>
+  </ul>
+
+  <h2>File structure and resource layout</h2>
+  <p>
+    Keep resource layout predictable and split responsibilities. Example layout for a QBCore HUD:
+  </p>
+  <ul>
+    <li>qb-hud/</li>
+    <li> - fxmanifest.lua</li>
+    <li> - client/main.lua (game interactions, Listen for server events)</li>
+    <li> - server/main.lua (authoritative updates, export functions)</li>
+    <li> - html/ (NUI files)</li>
+    <li> - html/index.html, css/, js/ (SendNUIMessage handlers)</li>
+    <li> - config.lua (toggleable features, update intervals)</li>
+  </ul>
+  <p>
+    Use fxmanifest metadata to declare NUI files and ensure the resource is discoverable by other resources via exports. Keep configuration small and descriptive; do not embed secrets or tokens in client-side files.
+  </p>
+
+  <h2>Security and server validation</h2>
+  <p>
+    The single most important rule: never trust client input. Any client-originated request that would change persistent state, grant money/items, or affect other players must be routed to the server, validated against server-side rules, and then the accepted change must be broadcast from the server to clients.
+  </p>
+  <ul>
+    <li>
+      <strong>Example safe flow:</strong> Client detects player healed via item -> client requests server: "useItem" -> server verifies inventory and cooldown -> server reduces inventory and triggers a broadcast event to update HUDs.
+    </li>
+    <li>
+      <strong>Reject or ignore:</strong> If server validation fails, server must send an explicit rejected event so the client can revert any local UI state changes.
+    </li>
+    <li>
+      <strong>Rate-limiting and anti-spam:</strong> Validate frequency of client requests (e.g., 1 request per second) and implement server-side cooldowns for actions that would otherwise be abused.
+    </li>
+    <li>
+      <strong>Data serialization:</strong> When sending complex payloads, sign or checksum server-sourced payloads where appropriate to detect tampering, and keep the size small to avoid packet bloat.
+    </li>
+  </ul>
+
+  <h2>Implementation choices and integrations</h2>
+  <p>
+    Choose a stack that suits your team and players. Common choices:
+  </p>
+  <ul>
+    <li>
+      <strong>Plain NUI + Lua client:</strong> Lightweight and simplest. Use SendNUIMessage for updates and RegisterNUICallback to receive UI interactions.
+    </li>
+    <li>
+      <strong>React/Vue inside NUI:</strong> Better for complex UIs with components and state management. Slightly larger build pipeline but cleaner code.
+    </li>
+    <li>
+      <strong>Integrations:</strong> If you use ox_lib, leverage its utilities for context menus and exports. For ESX servers, adapt server validation patterns to ESX player APIs.
+    </li>
+  </ul>
+  <p>
+    Keep a clear client API: one-way server->client for authoritative updates and client->server for requests. Avoid direct NUI->server communications; always mediate via the client script.
+  </p>
+
+  <h2>Practical example patterns (pseudocode)</h2>
+  <p>
+    The following pseudocode shows recommended flows without relying on a specific API call that may differ between frameworks. Use framework equivalents for your version.
+  </p>
+  <pre><code>// Client: receives validated update from server
+RegisterNetEvent('hud:updateStatus')
+AddEventHandler('hud:updateStatus', function(data)
+  -- Sanity check shape and expected fields
+  if type(data) == 'table' then
+    SendNUIMessage({type = 'update', payload = data})
+  end
+end)
+
+// User interacts with NUI (toggle)
+RegisterNUICallback('toggleHud', function(data, cb)
+  -- Only UI toggle, handled locally. No server validation needed.
+  ToggleHudVisible(data.visible)
+  cb('ok')
+end)
+
+// Client requests server to perform an authoritative action
+function requestUseItem(itemId)
+  TriggerServerEvent('hud:requestUseItem', itemId)
+end</code></pre>
+
+  <h2>Testing and debugging strategies</h2>
+  <p>
+    Validate behavior under real scenarios. Use the following approaches:
+  </p>
+  <ul>
+    <li><strong>Unit test server logic:</strong> Test validation, cooldowns, and inventory changes using Lua unit tests where possible or dry-run server handlers.</li>
+    <li><strong>Simulate latency and packet loss:</strong> Test HUD updates under jitter to ensure the UI gracefully handles missed updates or late-arriving authoritative events.</li>
+    <li><strong>Logging:</strong> Log server-side validation failures with contextual data (player id, attempted action) but avoid sensitive info. On client, log NUI messages to console for debugging during development.</li>
+    <li><strong>Feature flags:</strong> Add config toggles to enable/disable features on the fly while testing on a live server without redeploying code.</li>
+  </ul>
+
+  <h2>Deployment, updates and maintenance</h2>
+  <p>
+    Operational maturity matters. Follow these practices:
+  </p>
+  <ul>
+    <li><strong>Version your resource:</strong> Tag releases and keep a changelog. Allow rolling back to a previous fxmanifest quickly if a new UI causes issues.</li>
+    <li><strong>Hot config changes:</strong> Where safe, let server-side config controls change HUD behaviour without requiring clients to download a new resource (e.g., toggles for extra panels).</li>
+    <li><strong>Compatibility matrix:</strong> Track which QBCore/ox_lib/ESX versions your HUD supports and test against each supported version before release.</li>
+    <li><strong>Backwards compatibility:</strong> When adding new fields to NUI messages, make older clients ignore unknown fields to avoid breakages.</li>
+  </ul>
+
+  <h2>Roblox considerations (Luau) — server authority & datastore handling</h2>
+  <p>
+    If you maintain ports or similar HUD systems in Roblox, respect the platform’s server authority model:
+  </p>
+  <ul>
+    <li><strong>RemoteEvents/RemoteFunctions:</strong> Client-side UI interactions should fire RemoteEvents to server scripts for authoritative changes. Never allow the client to authoritatively change persistent data directly.</li>
+    <li><strong>DataStore failure handling:</strong> Wrap all DataStore calls in pcall(), implement exponential backoff for retries, and design for partial failure (e.g., temporary client-side caching with a server reconciliation step).</li>
+    <li><strong>Rate limiting:</strong> Validate frequency of RemoteEvent calls to prevent flood/abuse and consider incremental saves rather than saving on every interaction.</li>
+  </ul>
+
+  <h2>Checklist for a secure, maintainable HUD</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Description</th>
+        <th>Owner</th>
+        <th>Verification</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Design authority model</td>
+        <td>Decide which fields are server-authoritative vs client-only</td>
+        <td>Lead dev</td>
+        <td>Documented list and tests</td>
+      </tr>
+      <tr>
+        <td>Implement server validation</td>
+        <td>All persistent changes validated server-side</td>
+        <td>Backend dev</td>
+        <td>Automated unit tests and logs</td>
+      </tr>
+      <tr>
+        <td>Throttle updates</td>
+        <td>Limit broadcasts and use diffs for NUI updates</td>
+        <td>Client dev</td>
+        <td>Performance benchmark under load</td>
+      </tr>
+      <tr>
+        <td>Fallback and retry</td>
+        <td>Handle UDP jitter and DataStore failures gracefully</td>
+        <td>Ops</td>
+        <td>Chaos testing scenarios</td>
+      </tr>
+      <tr>
+        <td>Release and rollback plan</td>
+        <td>Tagged release with quick rollback option</td>
+        <td>Release manager</td>
+        <td>Tested rollback in staging</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Tooling and developer workflow</h2>
+  <p>
+    Use a build pipeline for your NUI (if using React/Vue) and automate packaging. Integrate basic linting for Lua and JavaScript and run a local test server to iterate quickly. For collaboration, expose a small, documented export API from the HUD resource so other resources can request HUD updates without coupling to internal implementation.
+  </p>
+  <p>
+    If you want to prototype faster or manage multiple builds and staging deployments for your FiveM server, consider productivity tools and dashboards to track resource versions and push updates to test servers, and check out platforms that integrate with your workflow like the Stellar App (try the management console at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>) for resource tracking.
+  </p>
+
+  <h2>Maintenance and community compatibility</h2>
+  <p>
+    Keep communication channels open with your player base. When adding new HUD features, provide configuration options to disable or move UI elements and support community-made themes. Monitor common client errors and provide detailed instructions for players running custom HUDs or client-side modifications.
+  </p>
+  <p>
+    For operational management and analytics dashboards that integrate with your server lifecycle, you may find external tooling helpful. See the app console for deployment workflows and logging integrations: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.
+  </p>
+
+  <h2>Further reading</h2>
+  <p>
+    For larger architectural patterns and case studies, consult community posts and official blogs. A curated editorial overview is also available in the project blog for deeper operational guidance: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.
+  </p>
+
+  <h2>References</h2>
+  <p>
+    Official documentation and reference material:
+  </p>
+  <ul>
+    <li><a href="https://docs.fivem.net">FiveM Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework">QBCore Framework (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib (GitHub)</a></li>
+    <li><a href="https://developer.roblox.com">Roblox Developer Hub</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

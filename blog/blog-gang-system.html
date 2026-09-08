@@ -68,50 +68,260 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Gang System to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Gang systems are what make serious FiveM roleplay servers stand out. This guide covers everything you need to set up turf wars, gang income, member management and territory control on QBCore.</p>
 
-  <h2>What a gang system does</h2>
-  <p>A gang system lets players form criminal organisations, claim territory on the map, earn passive income from turfs they control, and engage in turf wars with rival gangs. The best systems include a gang menu, rank management and database persistence so progress saves between sessions.</p>
+<p class="intro">A practical guide to how to add a gang system to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 1 — Generate your gang script</h2>
-  <div class="tip-box">
-    <strong>💡 Try this prompt in Stellar AI:</strong>
-    <p style="margin-top:8px;">"Make a QBCore gang system with turf wars, gang territories on the map, passive income every 10 minutes for controlled turfs, gang member management with ranks, and a gang stash. Include database tables, fxmanifest, client.lua, server.lua and config.lua"</p>
-  </div>
+<body>
+  <h2>Overview</h2>
+  <p>
+    This guide walks through adding a robust, secure gang system to a QBCore FiveM server and touches on implementation choices for ESX, ox_lib integrations, and comparable server-authoritative patterns for Roblox (Luau). You will get architecture guidance, SQL schema examples, server validation patterns, testing strategies, deployment and maintenance best practices, and a compact practical checklist that you can use to plan and ship a reliable gang feature.
+  </p>
 
-  <h2>Step 2 — Set up the database</h2>
-  <p>Gang systems need database tables to store gang data, members and turf ownership. Your generated script will include SQL — run it in your database manager before starting the resource.</p>
-  <div class="code-block">CREATE TABLE IF NOT EXISTS `gangs` (
-  `name` varchar(50) NOT NULL,
-  `label` varchar(50) NOT NULL,
-  `owner` varchar(50) NOT NULL,
-  PRIMARY KEY (`name`)
-);</div>
+  <h2>Architecture: core components and data model</h2>
+  <p>
+    Design the gang system as a set of discrete responsibilities:
+  </p>
+  <ul>
+    <li>Persistent storage (SQL tables): gangs, gang_members, gang_ranks, gang_territories</li>
+    <li>Server-side API: RPCs and events that validate and mutate gang state</li>
+    <li>Client UI & interaction: menus, blips, markers, and client predictions for UX only</li>
+    <li>Permissions & roles: rank-based actions and owner/leader checks</li>
+    <li>Anti-exploit layer: rate-limiting, server-side checks, and auditable logs</li>
+  </ul>
+  <p>
+    Example core tables (MySQL / oxmysql). Keep columns minimal and index identifiers for lookups:
+  </p>
+  <pre><code>
+CREATE TABLE gangs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(64) NOT NULL,
+  tag VARCHAR(8) NOT NULL,
+  owner_citizenid VARCHAR(64) NOT NULL,
+  balance BIGINT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-  <h2>Step 3 — Upload and configure</h2>
-  <div class="code-block">resources/
-└── qb-gangs/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <p>Open config.lua and set your turf locations — these are the coordinates on the map where gangs can claim territory. Set income amounts and timers to balance your server economy.</p>
+CREATE TABLE gang_members (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  gang_id INT NOT NULL,
+  citizenid VARCHAR(64) NOT NULL,
+  rank_id INT NOT NULL,
+  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (gang_id) REFERENCES gangs(id)
+);
+  </code></pre>
 
-  <h2>Step 4 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure qb-gangs</div>
+  <h2>Implementation choices: QBCore, ESX, ox_lib and utilities</h2>
+  <p>
+    Recommended stack for QBCore servers:
+  </p>
+  <ul>
+    <li>Framework glue: qb-core for player lookup and player metadata (QBCore.Functions.GetPlayer)</li>
+    <li>Database: oxmysql (preferred) for parameterized queries and migration support</li>
+    <li>Targeting/interaction: qb-target or ox_target for contextual menus</li>
+    <li>UI: Native menus or a lightweight NUI for gang management screens</li>
+  </ul>
+  <p>
+    For ESX servers, the pattern is the same: keep all authoritative validation server-side, expose callbacks for data access, and use the framework's player model to resolve identifiers. If you use ox_lib utilities, follow their conventions for menus and input to maintain UX consistency.
+  </p>
 
-  <h2>Testing your gang system</h2>
-  <p>Use the owner console to create a test gang and assign yourself as a member. Then walk to a turf location and interact with it to start a capture. After the timer, your gang should own the turf and start earning income.</p>
+  <h2>Server-side validation & security rules</h2>
+  <p>
+    Never trust the client. All actions that change persistent state must be validated and performed on the server. Common checks to enforce:
+  </p>
+  <ul>
+    <li>Verify the source identity: map source -> player object -> citizenid or identifier</li>
+    <li>Check membership and rank before mutating a gang record</li>
+    <li>Validate currency operations against server balance and anti-fraud thresholds</li>
+    <li>Rate-limit high-impact actions (e.g., mass invites, territorial claims)</li>
+    <li>Use parameterized queries (oxmysql) to prevent injection</li>
+  </ul>
+  <p>
+    Example server event pattern (QBCore Lua, simplified). Note: always re-derive the source player on the server:
+  </p>
+  <pre><code>
+RegisterNetEvent('gang:server:Invite')
+AddEventHandler('gang:server:Invite', function(targetCitizenId, gangId)
+  local src = source
+  local srcPlayer = QBCore.Functions.GetPlayer(src)
+  if not srcPlayer then return end
 
-  <div class="cta-box">
-    <h3>Generate your gang system in seconds</h3>
-    <p>Describe your perfect gang system and Stellar AI writes all the files — turf wars, income, member management — ready to drop in.</p>
-    <a href="/app" class="cta-btn">Generate my gang system →</a>
-  </div>
+  -- server-side check: must be a member and have invite permission
+  local srcCitizenId = srcPlayer.PlayerData.citizenid
+  local isAllowed = MyPermissionCheck(srcCitizenId, gangId) -- implement server-side
+  if not isAllowed then
+    TriggerClientEvent('QBCore:Notify', src, 'Not authorized', 'error')
+    return
+  end
+
+  -- modify DB with parameterized query via oxmysql
+  exports.oxmysql:execute(
+    'INSERT INTO gang_invites (gang_id, target_citizenid, invited_by) VALUES (?, ?, ?)',
+    { gangId, targetCitizenId, srcCitizenId }
+  )
+end)
+  </code></pre>
+
+  <h2>Client integration and UI considerations</h2>
+  <p>
+    Keep the client responsible for presentation only. Example responsibilities:
+  </p>
+  <ul>
+    <li>Rendering gang blips, markers and UI</li>
+    <li>Sending interaction requests to server (e.g., join request, apply to join)</li>
+    <li>Local predictions to improve feel (but confirm with server before state is considered final)</li>
+  </ul>
+  <p>
+    Use qb-target / ox_target to expose server-backed actions. When showing a menu with potentially sensitive options, query the server for the player's permissions via a callback before enabling the UI controls.
+  </p>
+
+  <h2>Territories, PvP and balancing game mechanics</h2>
+  <p>
+    Territory control introduces concurrency and race conditions. Always implement a lease/claim pattern:
+  </p>
+  <ol>
+    <li>Begin claim: server creates a temporary claim record with expiry</li>
+    <li>Confirm claim: after validation and any gameplay checks, server promotes to active territory</li>
+    <li>Contested mechanics: store timestamps and event logs to audit disputes</li>
+  </ol>
+  <p>
+    For PvP rewards or income flows, compute payouts server-side on a scheduled tick and store ledger events. Avoid exposing payout logic to the client.
+  </p>
+
+  <h2>Testing and QA: how to validate and harden your system</h2>
+  <p>
+    Run these tests before public deployment:
+  </p>
+  <ul>
+    <li>Unit test server permission checks, using automated inputs for common edge cases</li>
+    <li>Integration test DB migrations and restore from backups in a staging environment</li>
+    <li>Exploit tests: simulate client forging events (malformed payloads, rapid-fire events)</li>
+    <li>Latency tests: validate server-side timeouts for long-running operations</li>
+  </ul>
+  <p>
+    Use a staging server or isolated port to run multi-client scenarios; log and monitor suspicious event frequencies. If you use an observability stack, instrument critical server paths (invites, rank changes, large transfers).
+  </p>
+
+  <h3>Roblox (Luau) specific testing notes</h3>
+  <p>
+    On Roblox, leave authority in server scripts. RemoteEvents must be validated on the server. Test DataStore failure modes by simulating pcall failures and ensure you have retry logic with progressive backoff. Do not block the server thread on long retries; fail gracefully and notify players when persistence is delayed.
+  </p>
+
+  <h2>Deployment, migrations and operational safety</h2>
+  <p>
+    Deployment checklist:
+  </p>
+  <ol>
+    <li>Run schema migrations in a transactional manner (add new tables before migrating data)</li>
+    <li>Back up the database snapshot before applying changes</li>
+    <li>Deploy server code in versioned releases; maintain a rollback plan</li>
+    <li>Feature-flag dangerous changes to control rollout</li>
+  </ol>
+  <p>
+    Use continuous integration to run linting and tests on your scripts. If you need a UI or analytics dashboard, you can evaluate external tools such as the Stellar AI app for operations and experimentation on server workflows (see the app for workflows and orchestration at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>).
+  </p>
+
+  <h2>Maintenance, logging and anti-cheat integration</h2>
+  <p>
+    Ongoing maintenance tasks:
+  </p>
+  <ul>
+    <li>Audit logs for rank changes, money transfers, and territory edits. Store enough metadata to investigate user IDs and timestamps.</li>
+    <li>Integrate with your anti-cheat: ban evasion, duplicated invites, or suspicious mass transfers should trigger alerts.</li>
+    <li>Offer admin tools for manual audits and reversible actions (with multi-admin confirmation).</li>
+  </ul>
+  <p>
+    For long-term data integrity, prune old logs into an archive and keep a compact audit trail in your primary DB. If you use a third-party operations tool, you can sync changes and troubleshooting data with a platform such as the Stellar AI app for monitoring releases and feature flags (link: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>).
+  </p>
+
+  <h2>Roblox best practices (server authority & DataStore resilience)</h2>
+  <p>
+    Translate server-authoritative principles to Roblox:
+  </p>
+  <ul>
+    <li>Use RemoteEvents/RemoteFunctions only to ask the server to perform actions; never trust client-sent rank IDs or monetary values</li>
+    <li>When writing DataStore data, wrap persistence calls in pcall and implement retries with exponential backoff</li>
+    <li>Graceful fallback: if DataStore is unavailable, queue writes in memory and persist later, but be aware of server reboots and shard limits</li>
+    <li>Handle duplicate invocations and idempotency where possible (store unique operation IDs)</li>
+  </ul>
+
+  <h2>Practical deployment checklist</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Server</th>
+        <th>Client</th>
+        <th>Priority</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Implement DB schema</td>
+        <td>SQL with indexes, migrations</td>
+        <td>—</td>
+        <td>High</td>
+      </tr>
+      <tr>
+        <td>Server permission API</td>
+        <td>Full validation and audit logs</td>
+        <td>Request UI permissions via callback</td>
+        <td>High</td>
+      </tr>
+      <tr>
+        <td>Network event hardening</td>
+        <td>Rate limits, source checks</td>
+        <td>Sanitize inputs</td>
+        <td>High</td>
+      </tr>
+      <tr>
+        <td>UI & UX</td>
+        <td>Expose minimal domain data</td>
+        <td>Local prediction, confirm with server</td>
+        <td>Medium</td>
+      </tr>
+      <tr>
+        <td>Backups & rollout</td>
+        <td>DB snapshot + rollback</td>
+        <td>Versioned assets</td>
+        <td>High</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Sample server-to-client callback (QBCore)</h2>
+  <p>
+    Use callbacks to fetch server-validated data for UI population. Callbacks should return only authorized data.
+  </p>
+  <pre><code>
+QBCore.Functions.CreateCallback('gang:getPlayerGang', function(source, cb)
+  local srcPlayer = QBCore.Functions.GetPlayer(source)
+  if not srcPlayer then cb(nil); return end
+
+  local citizenid = srcPlayer.PlayerData.citizenid
+  exports.oxmysql:execute('SELECT g.id, g.name, gm.rank_id FROM gangs g JOIN gang_members gm ON g.id = gm.gang_id WHERE gm.citizenid = ?', { citizenid }, function(result)
+    if result and result[1] then
+      cb(result[1])
+    else
+      cb(nil)
+    end
+  end)
+end)
+  </code></pre>
+
+  <h2>References</h2>
+  <p>
+    Official docs and resources for the technologies mentioned:
+  </p>
+  <ul>
+    <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore Framework (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/oxmysql">oxmysql (GitHub)</a></li>
+    <li><a href="https://create.roblox.com/docs/reference/engine/classes/DataStoreService">Roblox DataStoreService docs</a></li>
+    <li><a href="https://trystellarai.com/blog">Stellar AI blog</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

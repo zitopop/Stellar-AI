@@ -68,37 +68,227 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Fishing Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A fishing job is one of the most popular civilian activities on FiveM. This guide covers setting up a complete QBCore fishing system with different spots, fish types and selling.</p>
 
-  <h2>Step 1 — Generate your script</h2>
-  <div class="tip-box">
-    <strong>Try Stellar AI:</strong>
-    <p style="margin-top:8px;">Describe exactly what you want in plain English and Stellar writes all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop in.</p>
-  </div>
+<p class="intro">A practical guide to how to add a fishing job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-script/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h2>Overview</h2>
+<p>
+Adding a robust fishing job to a QBCore FiveM server means more than drawing bait and spawning fish. You need a clear architecture split between client visuals and server authority, secure server-side validation for rewards and inventory changes, a clean resource layout, and a plan for testing, deployment, and maintenance. This guide walks through architecture choices, concrete implementation patterns, security considerations (never trust client input), integration options (ox_lib, ox_inventory, ESX equivalents), and practical deployment steps.
+</p>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-script</div>
+<h2>Architecture and responsibilities</h2>
+<p>
+Design the fishing job as a modular resource that separates responsibilities:
+</p>
+<ul>
+  <li><strong>Client</strong>: UI, animations, local minigame, input and camera effects, hit detection for local visuals. The client may request actions but does not grant rewards directly.</li>
+  <li><strong>Server</strong>: authoritative checks, issuing items/money, storing sessions/tokens, database writes (selling, processing), cooldowns and rate-limits, anti-cheat decisions.</li>
+  <li><strong>Database</strong>: fish tables for prices, player job state (if persistent), migration scripts for items and job records.</li>
+  <li><strong>Optional integration</strong>: ox_lib for menus, ox_inventory for item handling or QBCore inventory API, reusable job entries in qb-core shared files if you want job appearing in job lists.</li>
+</ul>
 
-  <h2>Step 4 — Restart and test</h2>
-  <p>Restart your server, set your job with /setjob and test everything works. Check your config.lua for any coordinates or settings you need to update for your server.</p>
+<h2>Resource structure and fxmanifest</h2>
+<p>
+A clear file layout keeps the resource maintainable. Example minimal layout:
+</p>
+<pre><code>qb-fishing/
+  fxmanifest.lua
+  client/
+    main.lua
+    ui.lua
+  server/
+    main.lua
+    handlers.lua
+  config.lua
+  sql/
+    migrations.sql
+</code></pre>
+<p>
+Example fxmanifest snippet:
+</p>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+author 'YourName'
+description 'QBCore fishing job'
+version '1.0.0'
+
+shared_script 'config.lua'
+client_scripts {
+  'client/main.lua',
+  'client/ui.lua'
+}
+server_scripts {
+  '@oxmysql/lib/MySQL.lua', -- if using oxmysql
+  'server/main.lua',
+  'server/handlers.lua'
+}</code></pre>
+
+<h2>Server validation, tokens and security</h2>
+<p>
+Never trust client-provided coordinates, counts, or timestamps. A reliable pattern is a short-lived server-issued token that authorizes a fishing session. This prevents clients from spoofing remote actions because only the server knows valid tokens and expiration times.
+</p>
+<p>Pattern:</p>
+<ol>
+  <li>Client enters fishing zone and sends a request to start a session: TriggerServerEvent('qb-fishing:server:requestSession', zoneId).</li>
+  <li>Server checks job permissions, cooldowns, and optionally that the player is allowed to fish now. If OK, server generates a token and stores it in memory keyed by source with an expiration timestamp.</li>
+  <li>Client can request catches using the token: TriggerServerEvent('qb-fishing:server:attemptCatch', token).</li>
+  <li>Server validates the token and expiration server-side. Only after validation does the server add items/money to the player and optionally update database records.</li>
+</ol>
+<p>
+This pattern avoids trusting any client-submitted coordinates and centralizes reward decisions on the server. Implement rate-limiting and anti-spam checks (per-minute catch caps) and log suspicious behavior for monitoring.
+</p>
+
+<h3>Server-side token example (Lua)</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local sessions = {} -- [source] = {token=xxxx, expires=os.time()+60}
+
+RegisterNetEvent('qb-fishing:server:requestSession', function(zoneId)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  -- Permission checks
+  if Player.PlayerData.job.name == 'police' then return end -- example
+  local token = tostring(math.random(100000,999999))
+  sessions[src] = { token = token, expires = os.time() + 60, zone = zoneId }
+  TriggerClientEvent('qb-fishing:client:sessionStarted', src, token)
+end)
+
+RegisterNetEvent('qb-fishing:server:attemptCatch', function(token)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  local s = sessions[src]
+  if not s or s.token ~= token or os.time() > s.expires then
+    -- invalid or expired
+    TriggerClientEvent('qb-fishing:client:sessionDenied', src)
+    return
+  end
+  -- Rate limiting example
+  if Player.PlayerData.metadata.fishCooldown and (os.time() - Player.PlayerData.metadata.fishCooldown) < 2 then
+    return
+  end
+  Player.Functions.AddItem('fish_small', 1)
+  Player.Functions.RemoveMoney('cash', 5) -- example processing cost or fees if required
+  Player.Functions.UpdateMetaData('fishCooldown', os.time())
+end)</code></pre>
+
+<h2>Item economy, processing and DB schema</h2>
+<p>
+Decide whether fish are raw items that need processing or direct sell items. Example flow:
+</p>
+<ul>
+  <li>Catch raw fish (items: fish_small, fish_medium, fish_large).</li>
+  <li>Take to processing location to transform raw fish to filet or canned goods (server processes inventory changes).</li>
+  <li>Sell processed goods at a vendor NPC or sellpoint. Transactions occur server-side.</li>
+</ul>
+<p>
+SQL migration sample (for oxmysql/ghmattimysql):
+</p>
+<pre><code>-- sql/migrations.sql
+INSERT INTO items (name, label, weight, rare, usable, description) VALUES
+('fish_small', 'Small Fish', 200, 0, 0, 'A small fish.'),
+('fish_medium', 'Medium Fish', 350, 0, 0, 'A medium fish.'),
+('fish_large', 'Large Fish', 600, 1, 0, 'A large fish.');</code></pre>
+
+<h2>Implementation choices: minigames, animations, and integrations</h2>
+<p>
+Choices to match playstyle:
+</p>
+<ul>
+  <li><strong>Minigame</strong>: Simple timed progress bar (client) vs skill-based minigame (mini-UI). Keep minigame on client for smooth UX but require a server-issued session token to accept rewards.</li>
+  <li><strong>Inventory</strong>: Use QBCore.Functions for default inventory operations. If using ox_inventory, adapt AddItem/RemoveItem calls to that API. Do all item granting on server.</li>
+  <li><strong>Context menus and interaction</strong>: ox_lib context menus provide polished interaction points for starting/stopping job actions and selling. They are client components only for UI—authorization still runs server-side.</li>
+  <li><strong>Animations and synchronisation</strong>: Trigger local animations for visual feedback. Avoid synchronizing server position; let client animate, and validate actions via token-checks and cooldowns.</li>
+</ul>
+
+<h2>Code patterns: robust server handlers</h2>
+<p>
+Keep server code modular and maintain authority. Use dedicated handler functions, centralize economy changes, and emit logs on important operations:
+</p>
+<pre><code>local function giveFish(player, fishType, amount)
+  -- additional validations: inventory space, daily caps, etc.
+  player.Functions.AddItem(fishType, amount)
+  -- log in server logs for audits
+  print(('[fishing] %s received %s x%d'):format(player.PlayerData.citizenid, fishType, amount))
+end
+
+-- call giveFish after token validation (see previous token snippet)</code></pre>
+
+<h2>Testing and QA</h2>
+<p>
+Testing should cover edge cases where clients try to bypass flows. Use these steps:
+</p>
+<ol>
+  <li>Unit test server handlers locally with multiple simulated sources to check session expiration and cleanup.</li>
+  <li>Playtest with two-player scenarios: one normal, one attempting to spam catch events to verify rate-limits and anti-cheat triggers.</li>
+  <li>Test DB migrations on a staging server with a backup plan for rolling back in production.</li>
+  <li>Verify inventory boundaries: item stacking, weight caps, and sellpoint behavior with zero inventory cases.</li>
+  <li>Simulate missing dependencies (oxmysql down, inventory unavailable) and confirm the server handles failures gracefully and sends descriptive errors to admins/logs.</li>
+</ol>
+
+<h2>Deployment and maintenance</h2>
+<p>
+Deployment checklist:
+</p>
+<table>
+  <thead>
+    <tr><th>Step</th><th>What</th><th>Responsible</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Install resource</td><td>Place qb-fishing in resources, add start qb-fishing to server.cfg</td><td>Dev/Ops</td></tr>
+    <tr><td>Run migrations</td><td>Apply sql/migrations.sql using your DB tool (oxmysql/ghmattimysql)</td><td>DB Admin</td></tr>
+    <tr><td>Configure</td><td>Edit config.lua for zones, prices, job names</td><td>Developer</td></tr>
+    <tr><td>Monitor</td><td>Check logs for token errors, failed DB calls, and suspicious activity</td><td>Ops</td></tr>
+  </tbody>
+</table>
+<p>
+Use a deployment or monitoring tool to track resource health. If you use a managed platform for resource deployment and logs, integrate server logs and alerts. For continuous improvement, keep configuration separated from code and use feature flags to enable/disable new game mechanics without redeploying code.
+</p>
+<p>
+You can manage resource deployments through modern orchestration or dedicated platforms — for example try the Stellar AI deployment and monitoring tools for game servers at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> to store and deploy resource packages, and later review logs and metrics. Consult engineering guides or blog posts in your team repository; additional how-to articles are available at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.
+</p>
+
+<h2>Maintenance: versioning, backups, and cleanup</h2>
+<p>
+Maintenance tasks include:
+</p>
+<ul>
+  <li>Keep resource versioned and tag releases. Document config changes.</li>
+  <li>Back up databases before applying migrations or changing item definitions.</li>
+  <li>Add server-side garbage collection for expired tokens/sessions. Example: periodic loop that clears sessions table and writes audit logs.</li>
+  <li>Rotate logs and keep an incident response plan in place for exploits or item dupes.</li>
+  <li>Periodically review and update permissions for jobs and salary settings in qb-core shared definitions to align with economy balance.</li>
+</ul>
+<p>
+If you want a hosted interface for deployments and rapid rollback capabilities consider integrating your deployment pipeline with staging and production rollouts; you can connect and monitor via a platform such as <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> for centralized operations.
+</p>
+
+<h3>Roblox/Luau considerations (if cross-platform inspiration)</h3>
+<p>
+If you adapt patterns for Roblox: always treat the server as authoritative. Use RemoteEvents/RemoteFunctions only to request actions; have the server validate RemoteEvent calls and handle DataStore writes with retry/backoff and failure handling. Avoid putting any item granting logic on the client. Implement server-side cooldowns and store session state on the server. Handle DataStore failures by queuing and retrying writes and informing players of transient issues.
+</p>
+
+<h2>Checklist: minimum requirements before launch</h2>
+<ul>
+  <li>Server-side session token system implemented and tested.</li>
+  <li>Rate limits and cooldowns on catches to prevent rapid farming.</li>
+  <li>Inventory operations only on server: AddItem/RemoveItem controlled by server handlers.</li>
+  <li>SQL migrations applied and tested on staging.</li>
+  <li>Error handling for DB downtime and graceful failures.</li>
+  <li>Logging for suspicious behavior and audit trails for item grants.</li>
+  <li>Deployment plan with rollback and backups.</li>
+  <li>Automated cleanup of expired sessions and stale data.</li>
+</ul>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM Documentation</a> — server and networking basics.</li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a> — core functions and patterns for server integration.</li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib</a> — optional UI/context integration for client interactions.</li>
+  <li><a href="https://docs.oxmysql.dev/">oxmysql documentation</a> — database integration details for queries and migrations.</li>
+  <li><a href="https://create.roblox.com/docs/en-us/learn-roblox/server">Roblox Server and Networking</a> — RemoteEvent patterns and DataStore guidance for Lua implementations.</li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

@@ -68,32 +68,196 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Create a GUI in Roblox — Beginner Guide</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">GUIs let you show menus, health bars and custom interfaces in your Roblox game. This guide covers creating a ScreenGui with buttons and labels using scripts.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to create a gui in roblox — beginner guide, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<p>This guide teaches you how to build a robust, secure GUI for Roblox with practical notes for FiveM-style projects (NUI) and server-side validation patterns. You'll learn architecture, implementation choices, networking patterns using RemoteEvents, DataStore failure handling, testing, deployment, and maintenance. Concrete code snippets and a practical checklist are included so you can go from prototype to a production-ready interface.</p>
+
+<h2>Architecture: separating concerns</h2>
+<p>A maintainable GUI is separated into clear layers:</p>
+<ul>
+  <li><strong>Presentation (Client)</strong> — ScreenGui, Frames, Buttons, animations, and local logic (input, visual feedback).</li>
+  <li><strong>Networking</strong> — RemoteEvents / RemoteFunctions for Roblox; NUI + server events for FiveM. Communication must be minimal and well-defined.</li>
+  <li><strong>Server Authority</strong> — All game-critical changes, validation, and persistent storage (DataStore in Roblox; server-side DB or resource state in FiveM) occur on the server.</li>
+  <li><strong>Persistence</strong> — DataStore (Roblox) or persistent storage (FiveM resource/database). Failure handling must be explicit.</li>
+</ul>
+<p>Design with the server as the single source of truth and the client as the render-and-input layer. This minimizes cheating and simplifies recovery from errors.</p>
+
+<h2>Roblox: basic GUI implementation (Luau)</h2>
+<p>Use StarterGui for templates but prefer building GUI elements in Studio and toggling visibility, or create them dynamically from code for programmatic interfaces. Example: creating a simple button and handling click locally.</p>
+<pre><code>-- LocalScript in StarterPlayerScripts
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0,200,0,50)
+button.Position = UDim2.new(0.5,-100,0.5,-25)
+button.Text = "Request Action"
+button.Parent = screenGui
+
+button.MouseButton1Click:Connect(function()
+    -- Trigger server request (do not trust client state)
+    game.ReplicatedStorage.RequestAction:FireServer("someAction")
+end)</code></pre>
+<p>Keep UI logic local (animations, sound, immediate feedback). For any change that affects game state, call a RemoteEvent and let the server validate and respond.</p>
+
+<h2>Server-side validation and RemoteEvents</h2>
+<p>Never trust client-provided data. On the server, validate the calling player and the payload. Use the implicit player parameter passed to OnServerEvent in Roblox to tie actions to a specific user and ignore client-supplied identifiers.</p>
+<pre><code>-- Server Script
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RequestAction = ReplicatedStorage:WaitForChild("RequestAction")
+
+RequestAction.OnServerEvent:Connect(function(player, actionName, params)
+    -- Validate player, actionName, and parameters
+    if type(actionName) ~= "string" then return end
+    if actionName == "someAction" then
+        -- perform server-side checks (inventory, cooldowns, position)
+        local canDo = serverChecks(player)
+        if not canDo then
+            -- Optionally send a restricted failure back to the client
+            RequestAction:FireClient(player, "Denied")
+            return
+        end
+        -- Apply authoritative change and persist
+        performActionAndSave(player, params)
+        RequestAction:FireClient(player, "Success")
+    end
+end)</code></pre>
+<p>Use authorities like player.UserId, server-side cooldowns, ownership checks, and spatial checks (are they close enough to interact?). Log suspicious activity for later review rather than making gameplay decisions client-side.</p>
+
+<h3>DataStore failure handling (Roblox)</h3>
+<p>DataStore calls can fail and are rate-limited. Wrap calls in pcall, implement retries with exponential backoff, and queue saves to minimize contention. Example:</p>
+<pre><code>local success, result = pcall(function()
+    return DataStore:SetAsync(key, data)
+end)
+if not success then
+    -- retry logic or cache in-memory and persist later
+end</code></pre>
+<p>Consider batching frequent writes and saving critical data on predictable events (player leave, periodic checkpoints). Inform players of save failures conservatively; never assume persistence succeeded.</p>
+
+<h2>FiveM and NUI: client UI and server trust model</h2>
+<p>FiveM uses an HTML/CSS/JS NUI for UI rendering. The same principle applies: treat the server as authoritative. The NUI is a client-side renderer; any input from NUI must be validated on the server. Use RegisterNUICallback to forward actions to the server via TriggerServerEvent, and always validate server-side.</p>
+<pre><code>-- client.lua
+RegisterNUICallback("purchaseItem", function(data, cb)
+    -- send to server for validation (do not rely on data.amount for pricing)
+    TriggerServerEvent("shop:attemptPurchase", data.itemId, data.clientCalculatedPrice)
+    cb({ acknowledged = true })
+end)</code></pre>
+<p>On the server, re-calculate prices, check the player's funds, and only then grant items. Never grant items solely because the client requested it.</p>
+<p>FiveM example server-side snippet:</p>
+<pre><code>-- server.lua
+RegisterNetEvent("shop:attemptPurchase")
+AddEventHandler("shop:attemptPurchase", function(itemId, clientPrice)
+    local src = source
+    local price = CalculatePriceServerSide(itemId)
+    if not price then return end
+    if not PlayerHasFunds(src, price) then
+        TriggerClientEvent("shop:purchaseFailed", src, "Insufficient funds")
+        return
+    end
+    DeductFunds(src, price)
+    GiveItemToPlayer(src, itemId)
+    TriggerClientEvent("shop:purchaseSuccess", src, itemId)
+end)</code></pre>
+
+<h2>Implementation choices: dynamic vs. static GUI</h2>
+<p>Choices to make early:</p>
+<ul>
+  <li><strong>Studio-built GUI</strong> — Easier for designers, good for static screens and consistent layouts. Use bindable events or RemoteEvents when dynamic content is required.</li>
+  <li><strong>Programmatic GUI</strong> — Useful when elements are numerous or dynamically generated from server data (inventory, leaderboards). Keeps templates small and generates items on demand.</li>
+  <li><strong>Hybrid</strong> — Create templates in Studio (Frame templates, Button templates) and clone them at runtime. This offers the best designer-developer workflow.</li>
+</ul>
+<p>Prefer templates cloned on the client based on sanitized server data. Avoid rendering huge lists fully — use virtualization or pagination to maintain performance.</p>
+
+<h2>Testing, QA, and deployment</h2>
+<p>Test across scenarios and simulate failures:</p>
+<ul>
+  <li>Network loss and reconnection. Ensure UI recovers or retries gracefully.</li>
+  <li>DataStore failures and partial saves. Confirm you can reapply or rollback changes.</li>
+  <li>Race conditions between multiple clients (concurrent purchases, shared resources).</li>
+  <li>Security tests — attempt to send malformed events or spoofed data and verify server rejects them.</li>
+</ul>
+<p>Automate client and server tests where possible. Use playtests to measure perceived latency and usability. For FiveM, test NUI flows across different resolutions and input devices.</p>
+
+<h2>Performance and maintenance</h2>
+<p>Key ongoing maintenance tasks:</p>
+<ul>
+  <li>Profile UI code to avoid expensive loops or expensive property writes each frame. Use TweenService for smooth transitions.</li>
+  <li>Debounce user inputs to prevent event spamming.</li>
+  <li>Garbage-collect cloned UI elements when not needed. Remove event listeners to avoid memory leaks.</li>
+  <li>Monitor DataStore quotas and plan fallbacks if limits are hit.</li>
+</ul>
+<p>Keep a changelog for UI behavior changes. Communicate breaking UI updates to other developers who may depend on specific RemoteEvent signatures.</p>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>What to check</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Design UI mockup</td>
+      <td>Layouts, accessibility, responsive scaling</td>
+      <td>☐</td>
+    </tr>
+    <tr>
+      <td>Implement local presentation</td>
+      <td>Animations, sounds, immediate feedback</td>
+      <td>☐</td>
+    </tr>
+    <tr>
+      <td>Define network API</td>
+      <td>Clear RemoteEvent/NUICallback schema and minimal payloads</td>
+      <td>☐</td>
+    </tr>
+    <tr>
+      <td>Server validation</td>
+      <td>Ownership, cooldowns, sanity checks, re-calculate critical values</td>
+      <td>☐</td>
+    </tr>
+    <tr>
+      <td>Data persistence</td>
+      <td>pcall, retries, backoff, batching</td>
+      <td>☐</td>
+    </tr>
+    <tr>
+      <td>Testing</td>
+      <td>Network loss, concurrent actions, edge-case inputs</td>
+      <td>☐</td>
+    </tr>
+    <tr>
+      <td>Deploy and monitor</td>
+      <td>Error logging, player reports, telemetry</td>
+      <td>☐</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Example end-to-end flow</h2>
+<p>Consider an inventory UI where the client requests to equip an item:</p>
+<ol>
+  <li>Player clicks "Equip" — the client sends a minimal remote event: FireServer("Equip", itemId).</li>
+  <li>The server receives the event, uses the implicit player parameter, verifies the item is in the player's inventory stored server-side, checks any slot/cooldown rules, and then updates authoritative state.</li>
+  <li>The server persists the change safely (pcall + retry) and, on success, fires back a confirmation or updated inventory snapshot to the client.</li>
+  <li>The client applies visual changes on confirmation; if the server sends a full snapshot, the client reconciles its display to match server state.</li>
+</ol>
+<p>Always design the client to be tolerant to "denied" responses — show clear feedback and avoid leaving the UI in a half-applied state.</p>
+
+<h2>Further resources</h2>
+<p>For tools and assistance with production workflows, check Stellar AI’s app for prototyping and collaboration: <a href="https://trystellarai.com/app">Stellar AI app</a>. Use it to iterate on UI mockups and gather developer notes. You can also find practical write-ups and guides in the Stellar AI blog: <a href="https://trystellarai.com/blog">Stellar AI blog</a>. For cross-project coordination, export specs to the app: <a href="https://trystellarai.com/app">Stellar AI app</a>.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://developer.roblox.com/en-us/articles/remote-events-and-functions">Roblox Developer Hub — Remote Events and Functions</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store">Roblox Developer Hub — Data Stores</a></li>
+  <li><a href="https://luau-lang.org/">Luau language reference</a></li>
+  <li><a href="https://docs.fivem.net/docs/">FiveM Documentation</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

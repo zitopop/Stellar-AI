@@ -69,51 +69,246 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Set Up a QBCore Drug System on Your FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A drug system is one of the most popular scripts on any serious FiveM roleplay server. This guide covers how to get a weed growing, cocaine cooking and selling system set up on QBCore from scratch — no coding required.</p>
 
-  <h2>What a drug system includes</h2>
-  <p>A good QBCore drug system typically has several parts working together. Players can grow or find raw materials, process them into sellable drugs, and then sell to NPC dealers at hidden locations. Police can be alerted when dealing happens near them.</p>
-  <p>Common drug types on FiveM servers include weed (easiest), cocaine and methamphetamine. Each usually has its own growing or cooking process with timers and animations.</p>
+<p class="intro">A practical guide to how to set up a qbcore drug system on your fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
 
-  <h2>Step 1 — Get your drug system script</h2>
-  <p>You can generate a complete custom drug system with Stellar AI in seconds. Just describe exactly what you want — which drugs, how the growing works, where dealers spawn, whether police get alerted — and it writes all the files.</p>
-  <div class="tip-box">
-    <strong>💡 Try this prompt in Stellar AI:</strong>
-    <p style="margin-top:8px;">"Make a QBCore drug system with weed growing at hidden outdoor spots, a 5 minute grow timer, harvesting animation, selling to a dealer NPC near Grove Street, and police getting a text alert when someone sells. Include fxmanifest, client.lua, server.lua and config.lua"</p>
-  </div>
+<p><strong>Overview</strong></p>
+<p>This guide walks through setting up a robust QBCore drug system for a FiveM server while covering implementation choices, security and server-side validation, testing, deployment, and maintenance. It includes integration notes for popular libraries (ox_lib, ESX compatibility considerations), and comparative guidance for Roblox developers on RemoteEvents and DataStore failure handling. The aim is to produce a production-safe system: all critical logic runs server-side, and client messages are treated as untrusted signals only.</p>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <p>Create a folder in your resources directory and upload your script files 👇</p>
-  <div class="code-block">resources/
-└── qb-drugs/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h2>Architecture and Components</h2>
+<p>Design the drug system as a set of clearly separated components. Typical architecture:</p>
+<ul>
+  <li><strong>Server core</strong> — QBCore resource that handles purchases, processing, payouts, and database writes. All business logic and validation belong here.</li>
+  <li><strong>Client UI/interactions</strong> — displays menus, progress bars, and animations. Clients send interaction intents to the server (e.g., "start processing") but never authoritative state.</li>
+  <li><strong>Database</strong> — persistent item counts, transactions, and audit logs. Use prepared SQL queries and migrations for schema changes.</li>
+  <li><strong>Third-party libs</strong> — ox_lib for menus/targets, exports for job checks, and optional anti-cheat/monitoring plugins.</li>
+</ul>
+<p>Make each part replaceable: the server core should expose a small, well-documented API of exports/callbacks so other resources (like jobs or shops) can integrate without coupling to UI logic.</p>
 
-  <h2>Step 3 — Add items to QBCore shared</h2>
-  <p>Drug systems usually need items registered in QBCore. Open <strong style="color:#fff;">qb-core/shared/items.lua</strong> and add entries for your drug items. Your generated script should include the exact lines to add.</p>
-  <div class="code-block">['weed'] = {name='weed', label='Weed', weight=0.1, type='item', image='weed.png', unique=false, useable=true, shouldClose=true, combinable=nil, description='Some weed'},</div>
+<h3>High-level flow</h3>
+<ol>
+  <li>Player interacts with a client-side marker or target.</li>
+  <li>Client emits an event indicating intent (e.g., "process attempt").</li>
+  <li>Server validates inventory, cooldowns, job/permissions, and anti-cheat signals.</li>
+  <li>If valid, server deducts inputs, queues processing job (or immediately completes with checks), and awards outputs.</li>
+  <li>Server logs the transaction and emits a confirmation to the client to play effects/UI.</li>
+</ol>
 
-  <h2>Step 4 — Add to server.cfg and restart</h2>
-  <div class="code-block">ensure qb-core
-ensure qb-drugs</div>
-  <p>Restart your server and test by giving yourself the seed item using the owner console, then finding the grow spot on the map.</p>
+<h2>Data Model & SQL Schema (Example)</h2>
+<p>Keep item definitions in QBCore shared data (items.lua) and store transactions in a simple table for audit and rollback. Example SQL snippet for a transactions table:</p>
+<pre><code>CREATE TABLE IF NOT EXISTS drug_transactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  player_identifier VARCHAR(64) NOT NULL,
+  action VARCHAR(32) NOT NULL,
+  input_items JSON,
+  output_items JSON,
+  amount INT,
+  price INT,
+  time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  server_id INT NOT NULL
+);
+</code></pre>
+<p>Store inventory changes atomically in server code (use QBCore player functions) and write a transaction record after successful commit to the player object to avoid inconsistencies between in-memory state and DB.</p>
 
-  <h2>Common issues</h2>
-  <h3>Grow spots not showing on map</h3>
-  <p>Check your config.lua — the coordinates for grow spots might be set to default values far from the map. Update them to locations on the GTA map.</p>
-  <h3>Items not working</h3>
-  <p>Make sure you added all items to qb-core shared items and restarted qb-core after editing that file.</p>
+<h2>Implementation Steps (Server-first)</h2>
+<p>Follow a structured rollout:</p>
+<ul>
+  <li>Define items in shared items.lua and ensure item names/labels are consistent across resources.</li>
+  <li>Build processing logic entirely server-side: require input verification, remove items, award results.</li>
+  <li>Protect critical operations with explicit checks—player job, distance/zone checks (server-side raycast or stored last-known position), cooldown timers, and concurrency locks.</li>
+  <li>Integrate with ox_lib target/menus client-side for usability, but never move logic server-to-client.</li>
+</ul>
 
-  <div class="cta-box">
-    <h3>Generate your drug system in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script — weed, coke, dealers, police alerts — all 4 files ready to drop in.</p>
-    <a href="/app" class="cta-btn">Generate my drug system →</a>
-  </div>
+<h3>Server-side sample (QBCore)</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('qb-drugs:server:process', function(processType, count)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Always re-check inventory server-side
+  local item = Player.Functions.GetItemByName('raw_substance')
+  if not item or item.amount &lt; count then
+    TriggerClientEvent('QBCore:Notify', src, 'Not enough items', 'error')
+    return
+  end
+
+  -- Validate processType, cooldowns and job on server
+  if not IsValidProcessForPlayer(Player, processType) then
+    TriggerClientEvent('QBCore:Notify', src, 'Invalid action', 'error')
+    return
+  end
+
+  -- Remove input and add output atomically
+  local removed = Player.Functions.RemoveItem('raw_substance', count)
+  if not removed then
+    TriggerClientEvent('QBCore:Notify', src, 'Failed to remove items', 'error')
+    return
+  end
+
+  Player.Functions.AddItem('processed_drug', math.floor(count * 0.8))
+  -- write audit log
+  exports.ghmattimysql:execute('INSERT INTO drug_transactions (...) VALUES (...)', {...})
+  TriggerClientEvent('QBCore:Notify', src, 'Processing complete', 'success')
+end)</code></pre>
+
+<h2>Security and Server Validation</h2>
+<p>Never trust the client. Treat client messages as requests that require validation and possible rejection. Core validation checklist:</p>
+<ul>
+  <li>Inventory verification using server APIs (e.g., QBCore player functions).</li>
+  <li>Rate limiting: prevent a client from triggering events repeatedly to farm resources — implement server-side cooldowns and concurrency locks.</li>
+  <li>Distance/zone checks: validate the player's location on the server matches allowed processing locations and timestamps to avoid teleport exploits.</li>
+  <li>Authorization: validate jobs, roles, and whitelists server-side; do not accept client-reported job status.</li>
+  <li>Anti-cheat integration: log suspicious behaviors and optionally ban/flag accounts after manual review.</li>
+</ul>
+<p>Design all financial or inventory-affecting functions to be idempotent where possible, and always log both before and after state for easier rollback and investigation.</p>
+
+<h3>Practical validation pattern</h3>
+<pre><code>-- server: validate before applying
+local function ApplyTransaction(player, inputs, outputs)
+  if not player then return false, 'no player' end
+  -- re-check inputs
+  for k,v in pairs(inputs) do
+    local item = player.Functions.GetItemByName(k)
+    if not item or item.amount &lt; v.amount then
+      return false, 'missing input'
+    end
+  end
+  -- remove and add
+  for k,v in pairs(inputs) do player.Functions.RemoveItem(k, v.amount) end
+  for k,v in pairs(outputs) do player.Functions.AddItem(k, v.amount) end
+  return true
+end</code></pre>
+
+<h2>Client/Server Event Best Practices</h2>
+<p>Events are a communication channel, not a trust channel. Use the following patterns:</p>
+<ul>
+  <li>Use RegisterNetEvent on the server to accept client requests, but always re-verify player state and inventory.</li>
+  <li>Prefer server-initiated callbacks for sensitive operations. In QBCore, use QBCore.Functions.CreateCallback where the server responds after full validation.</li>
+  <li>Maintain short, explicit payloads. Avoid sending full inventories from the client; send minimal intent like "process 3" and let the server read the inventory.</li>
+</ul>
+
+<h2>Integration Notes: ox_lib, ESX Differences</h2>
+<p>If you depend on ox_lib for client-side targeting and menus, keep the dependency limited to the client resource. The server resource should expose exports like:</p>
+<ul>
+  <li>exports['qb-drugs']:CanProcess(playerId, processType)</li>
+  <li>exports['qb-drugs']:ForceStopProcessing(playerId)</li>
+</ul>
+<p>For ESX servers, adapt inventory calls (ESX.GetPlayerFromId, xPlayer.removeInventoryItem, addInventoryItem) but keep the same validation rules: server authoritative inventory checks and transaction logging.</p>
+
+<h2>Roblox/Luau Considerations (Brief)</h2>
+<p>When porting patterns or designing similar systems in Roblox:</p>
+<ul>
+  <li>RemoteEvents and RemoteFunctions must be treated as untrusted channels. Validate everything on the server before changing DataStore or leaderstats.</li>
+  <li>Always handle DataStore failures: use pcall, implement retry/backoff logic, and queue up critical writes if the first attempt fails. Never let DataStore failures lead to item duplication or loss.</li>
+  <li>Prefer server authority: client sends intent, server checks and then updates player state. Use BindableEvents internally for decoupled server modules.</li>
+</ul>
+<pre><code>-- Example Roblox server-side RemoteEvent handler
+local ProcessEvent = game.ReplicatedStorage.ProcessEvent
+
+ProcessEvent.OnServerEvent:Connect(function(player, request)
+  if not ValidateRequest(player, request) then
+    return
+  end
+  local success, err = pcall(function()
+    -- mutate leaderstats or DataStore here
+  end)
+  if not success then
+    warn('DataStore error', err)
+    -- queue retry or notify player of temporary failure
+  end
+end)</code></pre>
+
+<h2>Testing and QA</h2>
+<p>Testing is critical. Use a staging server that mirrors production configuration, including anti-cheat and configuration variables. Test categories:</p>
+<ul>
+  <li><strong>Functional tests</strong>: item conversions, edge cases (0 inputs, fractional outputs), and permissions.</li>
+  <li><strong>Security tests</strong>: simulate forged client events, rapid-fire requests, and invalid payloads.</li>
+  <li><strong>Load tests</strong>: spawn multiple bot players to simulate concurrent processing and monitor DB lock contention.</li>
+  <li><strong>Regression tests</strong>: run migrations on a copy of production DB and ensure no schema breakages.</li>
+</ul>
+<p>Log everything. Logs are the first line of defense when investigating suspected exploits.</p>
+
+<h2>Deployment and Maintenance</h2>
+<p>Production deployments should be controlled and reversible:</p>
+<ul>
+  <li>Use version control tags for resource versions and database migrations that are applied in a sequential, tested manner.</li>
+  <li>Perform a backup of the production database before any migration and maintain an automated backup schedule.</li>
+  <li>Rollout in phases: enable a subset of servers or player groups first for live canary testing.</li>
+  <li>Monitor metrics: transaction rates, error frequency, and suspicious events per minute.</li>
+</ul>
+<p>For CI/CD and management, consider using tools to build and bundle resources. If you use third-party helpers, they can be orchestrated through management tooling or an app workflow — for example, automation and packaging tools are available from Stellar AI; see the desktop and packaging options on the Stellar AI app for resource bundling and build preview.</p>
+
+<h2>Checklist: Deployment & Security Table</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Priority</th>
+      <th>Status/Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Define items in shared config</td>
+      <td>High</td>
+      <td>Complete</td>
+    </tr>
+    <tr>
+      <td>Server-side validation implemented</td>
+      <td>Critical</td>
+      <td>Complete — re-check inventory and jobs on server</td>
+    </tr>
+    <tr>
+      <td>DB schema & backup strategy</td>
+      <td>High</td>
+      <td>Pending — schedule weekly backups</td>
+    </tr>
+    <tr>
+      <td>Anti-cheat & rate limiting</td>
+      <td>High</td>
+      <td>Partial — integrate monitoring logs</td>
+    </tr>
+    <tr>
+      <td>Staging tests run</td>
+      <td>High</td>
+      <td>Complete</td>
+    </tr>
+    <tr>
+      <td>Canary deployment</td>
+      <td>Medium</td>
+      <td>Planned</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Operational Tips & Maintenance</h2>
+<p>Maintenance is ongoing. Keep these practices:</p>
+<ul>
+  <li>Implement a rolling migration strategy for DB changes to minimize downtime.</li>
+  <li>Limit hotfixes and prefer tested releases; patch critical vulnerabilities immediately though.</li>
+  <li>Archive transaction logs periodically and provide tooling to reconstruct item states if players report problems.</li>
+  <li>Provide admin tools to reverse specific transactions after manual review rather than enabling broad destructive operations.</li>
+</ul>
+<p>If you use external packaging/building tools for resources, review and test resource manifests on a local server and use build previews to ensure no missing dependencies. You can manage builds and artifact distribution through the Stellar AI app to streamline packaging and previews across environments.</p>
+
+<h2>Further Reading</h2>
+<p>For operational articles, advanced integrations and community posts, review curated posts — for example, an integration and best-practices writeup is available on the Stellar AI blog and includes sample workflows and deployment strategies.</p>
+<p><a href="https://trystellarai.com/blog">Stellar AI blog</a></p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net">FiveM official docs</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub (core framework)</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib GitHub</a></li>
+  <li><a href="https://create.roblox.com/docs">Roblox developer documentation</a></li>
+</ul>
+
+<p><strong>Final notes</strong>: build with server authority at the center. Keep client-side code minimal and focused on UX. Log everything that changes persistent state and instrument your system for fast detection and rollback. For packaging, continuous integration and artifact distribution, consider using the Stellar AI app for build orchestration and preview tools to speed repeatable deployments.</p>
+<p><a href="https://trystellarai.com/app">Stellar AI app</a> — packaging and build preview tools.</p>
+<p><a href="https://trystellarai.com/app">Stellar AI app</a> — resource orchestration and automation.</p>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

@@ -68,32 +68,232 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Car Dealership to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A car dealership lets players buy and own vehicles on your FiveM server. This guide covers setting up a QBCore vehicle shop with test drives, financing and ownership.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add a car dealership to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview</h2>
+  <p>
+    Adding a car dealership to a QBCore FiveM server is a multi-layer task: it touches client UI, server-side validation, persistent storage, and anticheat/logging. This guide focuses on a secure, maintainable architecture that never trusts client input and uses QBCore patterns (and optional ox_lib/ox_target integrations) to create a robust purchase-and-ownership flow. For deployment and analytics integration, consider tools such as the Stellar AI app for team collaboration and monitoring — see the Stellar AI app and projects list for quick setup: <a href="https://trystellarai.com/app">Stellar AI app</a>.
+  </p>
+
+  <h2>Architecture and Components</h2>
+  <h3>Core components</h3>
+  <ul>
+    <li>Client UI: dealership menus, preview camera, purchase confirmation (purely visual; no trust)</li>
+    <li>Server controller: request handling, validation, funds management, vehicle creation record</li>
+    <li>Database: persistent vehicle ownership table and transaction log</li>
+    <li>Anti-cheat and audit: rate limiting, anomaly detection, logs</li>
+  </ul>
+
+  <h3>Typical data flow</h3>
+  <ol>
+    <li>Client opens dealership UI and selects a model (client-side only).</li>
+    <li>Client requests purchase by calling a server RPC/event with chosen model id.</li>
+    <li>Server validates model against a maintained whitelist, checks price, and verifies funds.</li>
+    <li>Server applies transaction (atomic where possible), inserts ownership record, and responds with success/failure.</li>
+    <li>Client receives confirmation and spawns owned vehicle only after server approves and returns spawn token/plate.</li>
+  </ol>
+
+  <h2>Implementation Choices</h2>
+  <h3>QBCore integration</h3>
+  <p>
+    Use the QBCore core object on the server: local QBCore = exports['qb-core']:GetCoreObject(). Implement server callbacks or server events that perform all checks. Avoid placing pricing or model whitelist in client files; client may cache read-only copies for UI, but server must hold authoritative config.
+  </p>
+
+  <h3>Optional libraries</h3>
+  <ul>
+    <li><strong>ox_lib</strong> for menus and notifications (client-side UX).</li>
+    <li><strong>ox_target</strong> for interaction points (approach dealership sign to open catalog).</li>
+    <li><strong>oxmysql</strong> or MySQL Async for robust DB operations and transaction management.</li>
+  </ul>
+
+  <h2>Server-Side Validation and Security</h2>
+  <p>
+    Never trust the client. All financial and ownership decisions must be done on the server. Do not accept client-supplied price, plate, or ownership flags. Maintain a server-side vehicle catalog with model, display name, and price and validate purchases against that catalog.
+  </p>
+
+  <h3>Key validation steps</h3>
+  <ul>
+    <li>Confirm model exists in server whitelist and retrieve authoritative price.</li>
+    <li>Check that the requesting player exists (QBCore.Functions.GetPlayer(source)) and that they have sufficient funds in the correct wallet type.</li>
+    <li>Use database transactions where available; if insertion fails, refund immediately and log the incident.</li>
+    <li>Rate-limit purchases per player to prevent automated abuse.</li>
+    <li>Log purchase attempts including mismatched price, invalid model, or DB errors for later review.</li>
+  </ul>
+
+  <h3>Example server flow (Lua, QBCore)</h3>
+  <pre><code>
+local QBCore = exports['qb-core']:GetCoreObject()
+local vehicleCatalog = {
+  ['t20'] = { price = 1_500_000, name = 'T20' },
+  ['zentorno'] = { price = 2_000_000, name = 'Zentorno' },
+  -- server-authoritative list
+}
+
+QBCore.Functions.CreateCallback('qb-dealer:server:purchase', function(source, cb, model)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return cb(false, 'no_player') end
+
+  local catalogItem = vehicleCatalog[model]
+  if not catalogItem then
+    -- invalid model attempted
+    return cb(false, 'invalid_model')
+  end
+
+  local price = catalogItem.price
+  if not Player.Functions.RemoveMoney('bank', price) then
+    return cb(false, 'insufficient_funds')
+  end
+
+  -- generate plate and ownership metadata server-side
+  local plate = 'DLR' .. tostring(math.random(1000,9999))
+
+  -- insert into owned_vehicles with a safe DB call
+  exports.oxmysql:insert('INSERT INTO owned_vehicles (owner, plate, model, metadata) VALUES (?, ?, ?, ?)', {
+    Player.PlayerData.citizenid,
+    plate,
+    model,
+    json.encode({ state = 'stored', purchasePrice = price })
+  }, function(insertId)
+    if not insertId then
+      -- DB error: refund and log
+      Player.Functions.AddMoney('bank', price)
+      -- log warning to server logs
+      return cb(false, 'db_error')
+    end
+    -- success: return plate and model, server-authoritative
+    return cb(true, { plate = plate, model = model })
+  end)
+end)
+  </code></pre>
+
+  <h2>Database Schema and Transactions</h2>
+  <p>
+    Keep a minimal and indexed ownership table. Use transactions when possible to ensure atomicity between money removal and ownership creation.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Table</th><th>Key Columns</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>owned_vehicles</td>
+        <td>id (pk), owner (citizenid), plate, model, metadata (json), created_at</td>
+        <td>index on owner and plate for fast lookups</td>
+      </tr>
+      <tr>
+        <td>dealer_transactions</td>
+        <td>id, owner, model, price, status, error_code, created_at</td>
+        <td>transaction history for audits and refunds</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Best practices</h3>
+  <ul>
+    <li>Wrap multi-step DB modifications (debit + insert) in transactions if your driver supports them.</li>
+    <li>Retain a transaction log with error_code to enable automatic reconciliation scripts.</li>
+    <li>Sanitize data and use prepared statements or parameterized queries (oxmysql handles parameters).</li>
+  </ul>
+
+  <h2>UI & Interaction Patterns</h2>
+  <p>
+    The client UI should provide previews and selection UX only. Use server callbacks to confirm availability and final price before performing a purchase.
+  </p>
+
+  <h3>Approach patterns</h3>
+  <ul>
+    <li>Use ox_target to trigger a "Open Catalog" client interaction when the player approaches a dealer NPC or showroom.</li>
+    <li>On selection, call a server callback to get the latest price and availability; show a final confirmation dialog client-side.</li>
+    <li>On final confirm, call the purchase server callback — do not pass sensitive values like price or plate from client side.</li>
+  </ul>
+
+  <h2>Testing and QA</h2>
+  <p>
+    The testing phase should include unit, integration, and abuse testing. Test both normal and failure paths: DB downtime, insufficient funds, and malformed client messages. Use the following checklist to validate behavior.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Test</th><th>Purpose</th><th>Expected Result</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Purchase success</td>
+        <td>Standard buy flow</td>
+        <td>Funds removed, owned_vehicles entry created, client receives plate</td>
+      </tr>
+      <tr>
+        <td>Insufficient funds</td>
+        <td>Ensure server denies and no DB insert</td>
+        <td>No DB entry, no funds removed</td>
+      </tr>
+      <tr>
+        <td>Invalid model</td>
+        <td>Client submits model not in server list</td>
+        <td>Purchase rejected, logged</td>
+      </tr>
+      <tr>
+        <td>DB failure during insert</td>
+        <td>Simulate DB timeout/error</td>
+        <td>Funds refunded, alert logged</td>
+      </tr>
+      <tr>
+        <td>Rate limit abuse</td>
+        <td>Repeated rapid requests</td>
+        <td>Requests throttled with warning and logs</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Deployment and Maintenance</h2>
+  <p>
+    Deploy the dealership as a versioned resource with migrations for DB schema changes. Keep config in a separate server-side file and support remote-reload of catalogs if your workflow requires live catalog updates.
+  </p>
+
+  <h3>Operational tips</h3>
+  <ul>
+    <li>Run weekly automated backups of DB and validate restores.</li>
+    <li>Monitor transaction failure rates and set alerts for consecutive DB errors.</li>
+    <li>Maintain an audit trail (dealer_transactions) that includes error_code and stack traces when available.</li>
+    <li>Use CI to lint Lua, run unit tests, and verify that server-side callbacks cover all edge cases.</li>
+    <li>For collaboration and issue tracking, integrating a project workspace such as the Stellar AI app can centralize logs and tasks: <a href="https://trystellarai.com/app">Stellar AI app</a>. For editorial and tutorial updates, review the team blog page: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.</li>
+  </ul>
+
+  <h2>Roblox (Luau) Considerations — Brief Notes</h2>
+  <p>
+    If you implement a similar dealership pattern on Roblox, the same server-authority principle applies. Use RemoteEvents/RemoteFunctions carefully: all purchase validation must occur in a server script that checks player currency in a server-side datastore. Do not trust client-sent prices or item IDs.
+  </p>
+  <h3>Roblox best practices</h3>
+  <ul>
+    <li>Perform DataStore saves with retry/backoff and handle failure by queueing reconciliation or notifying the player.</li>
+    <li>Use server-only modules for catalog config; clients only request previews. Provide limited time tokens for spawns only after server confirms purchase.</li>
+    <li>Gracefully handle DataStore throttling/failure: inform the player, and implement a retry or manual support flow.</li>
+  </ul>
+
+  <h2>Monitoring, Logging, and Anti-Cheat</h2>
+  <p>
+    Logging is essential. Track suspicious purchase attempts, mismatched prices, and repeated failures. Integrate server logs with your monitoring platform or use a centralized workspace to triage issues. Consider:
+  </p>
+  <ul>
+    <li>Request rate and pattern analysis per player</li>
+    <li>Automated alerts for DB insert failures above a threshold</li>
+    <li>Manual review workflows for refunds or disputes</li>
+  </ul>
+
+  <h2>References</h2>
+  <ul>
+    <li><a href="https://docs.fivem.net">FiveM Documentation</a></li>
+    <li><a href="https://github.com/qbcore-framework/qb-core">QBCore Framework (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/ox_lib">ox_lib (GitHub)</a></li>
+    <li><a href="https://github.com/overextended/ox_target">ox_target (GitHub)</a></li>
+    <li><a href="https://developer.roblox.com">Roblox Developer Hub</a></li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

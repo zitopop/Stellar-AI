@@ -1,103 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Add a Hunting Job to Your QBCore FiveM Server — Stellar AI</title>
-  <meta name="description" content="A hunting job gives players a fun outdoor activity on your FiveM server. This guide covers setting up animal hunting with skinning, selling pelts and job management on QBCore.">
-  <meta name="keywords" content="qbcore hunting job, fivem hunting script, fivem hunting job install, qbcore animal hunting">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Hunting Job — Build a secure, server-authoritative hunting resource — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to implement a QBCore hunting job for FiveM: plan, files, server validation, client interactions, installation checklist, and security notes for a production-ready resource.">
+  <meta name="keywords" content="QBCore,hunting job,FiveM,qb-core,qb-target,server validation,fxmanifest,Lua">
+  <meta property="og:title" content="QBCore Hunting Job — Build a secure, server-authoritative hunting resource">
+  <meta property="og:description" content="Step-by-step guide to implement a QBCore hunting job for FiveM: plan, files, server validation, client interactions, installation checklist, and security notes for a production-ready resource.">
+  <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/qbcore-hunting-job">
-  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>How to Add a Hunting Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A hunting job gives players a fun outdoor activity on your FiveM server. This guide covers setting up animal hunting with skinning, selling pelts and job management on QBCore.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
-</div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">QBCore resource guide</div>
+  <h1>QBCore Hunting Job — Build a secure, server-authoritative hunting resource</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks a FiveM builder through creating a server-authoritative QBCore hunting job. It includes a short implementation plan, assumptions, complete destination-labelled files, installation steps, validation and anti-cheat notes, and quick next steps so you can ship a safe hunting script.</p>
+  <h2>Implementation plan</h2>
+<p>Short plan (do these in order):</p>
+<ol>
+  <li>Decide scope: free-for-all hunting or job-locked. Configure animal spawn points and sell/pelt items in <strong>config.lua</strong>.</li>
+  <li>Create resource manifest and server/client scripts. Use server events for all state changes: giving/removing items, paying money.</li>
+  <li>Integrate interaction (qb-target or keybind) on client; call server events for authoritative actions.</li>
+  <li>Test with multiple players, check item integrity, and apply anti-spam/cooldowns on server.</li>
+</ol>
+
+<h3>Assumptions & framework dependencies</h3>
+<p>Assumptions: you use QBCore v1/v2 style exports (exports['qb-core']:GetCoreObject()). The guide avoids inventory API specifics beyond common functions: <code>QBCore.Functions.GetPlayer</code>, <code>Player.Functions.AddItem</code>, <code>Player.Functions.RemoveItem</code>, and <code>Player.Functions.AddMoney</code>. If you use ox_inventory or a different core, adapt those calls accordingly. Optional: qb-target for interaction targets.</p>
+
+<h2>Destination-labelled files</h2>
+<p>Place these files inside a resource folder named <code>qb-hunting</code>. The list below is complete for a minimal, secure hunting job.</p>
+
+<h3>fxmanifest.lua</h3>
+<pre><code>fx_version 'cerulean'
+games {'gta5'}
+
+author 'Your Name'
+description 'QBCore Hunting Job'
+version '1.0.0'
+
+shared_scripts {
+  'config.lua'
+}
+
+client_scripts {
+  'client/main.lua'
+}
+
+server_scripts {
+  'server/main.lua'
+}
+
+dependencies {
+  'qb-core'
+}
+</code></pre>
+
+<h3>config.lua</h3>
+<pre><code>Config = {}
+
+-- Toggle whether only players with a specific job can sell pelts
+Config.RequireJob = false
+Config.AllowedJob = 'hunter' -- only used if RequireJob = true
+
+-- Prices per pelt item
+Config.Prices = {
+  ['pelt_rabbit'] = 50,
+  ['pelt_deer'] = 250,
+  ['pelt_bear'] = 800
+}
+
+-- Sell ped/coords -- simple single location example
+Config.SellLocation = { x = 2442.0, y = 4969.0, z = 41.35 }
+
+-- Server-side cooldown (ms) per player to prevent spam
+Config.SellCooldown = 1500
+</code></pre>
+
+<h3>server/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+local lastSell = {} -- source -> timestamp
+
+RegisterNetEvent('qb-hunting:server:SellPelt', function(peltItem)
+  local src = source
+  local now = os.time() * 1000
+  if lastSell[src] and (now - lastSell[src]) &lt; Config.SellCooldown then
+    TriggerClientEvent('QBCore:Notify', src, 'Please wait before selling again', 'error')
+    return
+  end
+
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  if Config.RequireJob and Player.PlayerData.job.name ~= Config.AllowedJob then
+    TriggerClientEvent('QBCore:Notify', src, 'Your job cannot sell these pelts', 'error')
+    return
+  end
+
+  local item = Player.Functions.GetItemByName(peltItem)
+  if not item then
+    TriggerClientEvent('QBCore:Notify', src, 'You have no pelts to sell', 'error')
+    return
+  end
+
+  local price = Config.Prices[peltItem] or 0
+  if price &lt;= 0 then
+    TriggerClientEvent('QBCore:Notify', src, 'This pelt cannot be sold', 'error')
+    return
+  end
+
+  -- Remove exactly one pelt, server-side authoritative
+  local removed = Player.Functions.RemoveItem(peltItem, 1, false)
+  if removed then
+    Player.Functions.AddMoney('cash', price, 'hunting-pelt-sell')
+    TriggerClientEvent('QBCore:Notify', src, 'Sold pelt for $' .. price, 'success')
+    lastSell[src] = now
+  else
+    TriggerClientEvent('QBCore:Notify', src, 'Failed to remove pelt', 'error')
+  end
+end)
+</code></pre>
+
+<h3>client/main.lua</h3>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Example: direct sell interaction at a fixed coord (also support qb-target externally)
+Citizen.CreateThread(function()
+  while true do
+    local sleep = 2000
+    local ped = PlayerPedId()
+    local pCoords = GetEntityCoords(ped)
+    local dist = #(pCoords - vector3(Config.SellLocation.x, Config.SellLocation.y, Config.SellLocation.z))
+    if dist &lt; 3.0 then
+      sleep = 5
+      -- show prompt (use your notification/UI) and listen for keypress
+      -- For brevity we use a simple key check
+      if IsControlJustReleased(0, 38) then -- E
+        -- open a sell menu or attempt to sell a default item
+        -- In real use, show player's pelts and select item to sell
+        TriggerServerEvent('qb-hunting:server:SellPelt', 'pelt_deer')
+      end
+    end
+    Citizen.Wait(sleep)
+  end
+end)
+</code></pre>
+
+<h2>Installation & where files belong</h2>
+<ul>
+  <li>Create folder resources/[local]/qb-hunting</li>
+  <li>Drop the files above into that folder with the same filenames.</li>
+  <li>Start the resource in server.cfg: <code>ensure qb-hunting</code></li>
+  <li>If you use qb-target, add target models or add an export in <code>client/main.lua</code> to register the sell spot.</li>
+</ul>
+
+<h2>Validation, security and anti-cheat notes</h2>
+<ul>
+  <li>Never give money or remove items on the client. All state changes happen in server/main.lua.</li>
+  <li>Validate Player existence with <code>QBCore.Functions.GetPlayer</code> and check the real inventory with <code>Player.Functions.GetItemByName</code>.</li>
+  <li>Use cooldowns (Config.SellCooldown) and optionally server-side rate limits to stop automated farming.</li>
+  <li>Do not trust client-sent prices or counts; derive prices from server-side Config.Prices and remove items server-side.</li>
+  <li>If you integrate with a police or economy system, add logs and export events for auditing.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr><th>Checklist</th><th>Why it matters</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server-only money/item changes</td><td>Prevents spoofing and duping</td></tr>
+    <tr><td>Cooldown per player</td><td>Mitigates rapid automated sells</td></tr>
+    <tr><td>Job checks (optional)</td><td>Supports roleplay rules and monetization</td></tr>
+    <tr><td>qb-target integration</td><td>Better UX than a keybind loop</td></tr>
+    <tr><td>Test with multiple players</td><td>Find race conditions and concurrency issues</td></tr>
+  </tbody>
+</table>
+
+<h2>Testing and validation steps</h2>
+<ol>
+  <li>Start the server and join as two players to test concurrency.</li>
+  <li>Try selling without a pelt (should be denied).</li>
+  <li>Give a pelt via your server admin tools or a spawn command, then sell and confirm money arrival in server logs.</li>
+  <li>Attempt to spam sell to ensure cooldown and removal logic hold.</li>
+  <li>Check resource logs for unexpected errors and tighten error handling.</li>
+</ol>
+
+<h2>Next practical steps</h2>
+<p>Improve realism by spawning animal entities client-side and dropping progressive pelt types. Add a butcher minigame client-side (only triggers a server event when completed), track pelt quality in item metadata, and provide NPC buyers with dynamic prices. For workflow acceleration, consider generating plan files and tests using a scripting workspace like Stellar AI — start at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> to prototype resource structure and tests. When you publish or iterate, keep the spec and tests with the resource; Stellar AI can help with iteration at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For articles and deeper design patterns see the engineering posts on the Stellar blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>Reference links:</p><ul><li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub (community core)</a></li><li><a href="https://github.com/overextended/qb-target">qb-target (interaction resource)</a></li><li><a href="https://github.com/zitopop/Stellar-AI">Stellar AI repo (product context)</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>
 </html>

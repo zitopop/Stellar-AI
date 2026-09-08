@@ -1,108 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
   <meta name="theme-color" content="#080808">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Install a Phone Script on Your QBCore FiveM Server — Stellar AI</title>
-  <meta name="description" content="A phone script is essential for modern FiveM roleplay. This guide covers installing qb-phone or a custom phone script on your QBCore server.">
-  <meta name="keywords" content="qbcore phone script, fivem phone install, qb-phone setup, fivem smartphone script">
-  <meta name="google-site-verification" content="BFVoF_X9EAkDU9hClo1ZdwsBJHNB-s4J_xYNIE5w6-w">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Phone Script — Design, Build, and Secure a Modern In-Game Phone — Stellar AI</title>
+  <meta name="description" content="A practical guide for building a QBCore phone script for FiveM. Covers architecture, server authority, database patterns, examples (fxmanifest, client/server), validation, installation, and a short Roblox comparison for similar in-game phone concepts.">
+  <meta name="keywords" content="QBCore phone, FiveM phone script, qb-phone, QBCore tutorial, phone resource, server validation, fxmanifest, QBCore callbacks">
+  <meta property="og:title" content="QBCore Phone Script — Design, Build, and Secure a Modern In-Game Phone">
+  <meta property="og:description" content="A practical guide for building a QBCore phone script for FiveM. Covers architecture, server authority, database patterns, examples (fxmanifest, client/server), validation, installation, and a short Roblox comparison for similar in-game phone concepts.">
+  <meta property="og:type" content="article">
   <link rel="canonical" href="https://trystellarai.com/blog/qbcore-phone-script">
-  <link rel="icon" href="/lib/assets/pwa/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--bg:#050505;--surface:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e2e8f0;--muted:rgba(255,255,255,0.5);--green:#10a37f;}
-    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;line-height:1.7;}
-    a{color:inherit;text-decoration:none;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(5,5,5,0.92);backdrop-filter:blur(12px);z-index:100;}
-    .nav-logo{font-weight:900;font-size:17px;} .nav-logo span{color:var(--green);}
-    .nav-cta{background:var(--green);color:#000;font-weight:800;font-size:13px;padding:8px 18px;border-radius:8px;}
-    .container{max-width:760px;margin:0 auto;padding:60px 24px;}
-    .blog-tag{font-size:11px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
-    h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;}
-    .blog-meta{font-size:13px;color:var(--muted);margin-bottom:32px;}
-    .blog-intro{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border);}
-    h2{font-size:22px;font-weight:900;margin:40px 0 16px;} h3{font-size:17px;font-weight:800;margin:28px 0 10px;}
-    p{color:rgba(255,255,255,0.65);margin-bottom:16px;font-size:15px;}
-    .code-block{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;color:#a3e635;margin:16px 0;overflow-x:auto;white-space:pre;}
-    .tip-box{background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.25);border-radius:12px;padding:16px 20px;margin:24px 0;}
-    .tip-box strong{color:var(--green);} .tip-box p{color:rgba(255,255,255,0.7);margin:0;}
-    .cta-box{background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.3);border-radius:16px;padding:32px;text-align:center;margin:48px 0;}
-    .cta-box h3{font-size:20px;margin-bottom:12px;color:#fff;} .cta-box p{margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:var(--green);color:#000;font-weight:800;font-size:15px;padding:13px 28px;border-radius:10px;}
-    footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .footer-copy{font-size:12px;color:var(--muted);}
-    .footer-links{display:flex;gap:16px;} .footer-links a{font-size:12px;color:var(--muted);}
-  </style>
-  <link rel="stylesheet" href="/site-polish.css">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
 </head>
 <body>
-<nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
-<div class="container">
-  <div class="blog-tag">FiveM Guide</div>
-  <h1>How to Install a Phone Script on Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A phone script is essential for modern FiveM roleplay. This guide covers installing qb-phone or a custom phone script on your QBCore server.</p>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Developer guide — QBCore Phone</div>
+  <h1>QBCore Phone Script — Design, Build, and Secure a Modern In-Game Phone</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks you from planning to a minimal, secure QBCore phone resource. It focuses on server authority, validation, data storage, and integration points so you ship a dependable phone feature on your FiveM server.</p>
+  <h2>Overview and goals</h2>
+<p>An in-game phone in QBCore is a small app platform: contacts, messages, calls, job notices, and UI-ready events. The highest-risk areas are client trust, persistent data, and third-party integrations (marketplace items, banking). This guide shows a minimal, secure implementation pattern and a clear plan for expanding features safely.</p>
 
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
+<h2>Short implementation plan</h2>
+<ol>
+  <li>Define server-owned data: phone number, contacts, messages, bill records.</li>
+  <li>Create resource scaffold: fxmanifest.lua, server.lua, client.lua, UI files (not included here).</li>
+  <li>Add RPCs and server callbacks for every changeable action; validate on server.</li>
+  <li>Store persistent data in your database with fail-safe patterns.</li>
+  <li>Hook UI events to safe client triggers and server callbacks.</li>
+</ol>
 
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
+<h3>Assumptions and dependencies</h3>
+<p>This guide assumes QBCore v2-style exports and callbacks (QBCore.Functions.TriggerCallback / CreateCallback). If your server uses a different QBCore fork or ox_lib helpers, adapt export names accordingly. You need a MySQL driver (oxmysql or ghmattimysql) already configured by your server. If you prefer scaffolding or AI-assisted file generation, try the Stellar AI app at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> to create destination-labeled files.</p>
 
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
+<h2>Core file examples (destination-labelled)</h2>
+<p>Below are complete minimal files for a resource named qb-simplephone. Place them inside resources/qb-simplephone/ and start with ensure qb-simplephone in your server.cfg.</p>
 
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
 
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+author 'YourName'
+description 'Minimal QBCore phone scaffold'
+version '1.0.0'
+
+shared_script '@qb-core/shared/locale.lua'
+
+server_script 'server.lua'
+client_script 'client.lua'
+
+ui_page 'html/index.html'
+files {
+  'html/index.html', 'html/app.js', 'html/app.css'
+}
+</code></pre>
+
+<pre><code>-- server.lua (complete minimal server authority patterns)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Example persistent storage table: messages
+QBCore.Functions.CreateCallback('qb-simplephone:GetMessages', function(source, cb)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then
+    return cb({})
+  end
+  local citizenid = Player.PlayerData.citizenid
+  -- Use your DB driver here. Pseudocode using oxmysql
+  MySQL.Async.fetchAll('SELECT * FROM phone_messages WHERE citizenid = @cid', {['@cid'] = citizenid}, function(result)
+    cb(result or {})
+  end)
+end)
+
+RegisterNetEvent('qb-simplephone:SendMessage')
+AddEventHandler('qb-simplephone:SendMessage', function(targetNumber, messageText)
+  local src = source
+  if type(targetNumber) ~= 'string' or type(messageText) ~= 'string' then return end
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  local senderCid = Player.PlayerData.citizenid
+  -- Validate message length and content server-side
+  if #messageText > 500 then
+    -- optionally log and reject
+    return
+  end
+  -- Look up target's citizenid and insert message
+  local target = MySQL.Sync.fetchAll('SELECT citizenid FROM players WHERE phone_number = @num', {['@num'] = targetNumber})
+  if target[1] then
+    local targetCid = target[1].citizenid
+    MySQL.Async.execute('INSERT INTO phone_messages (citizenid, sender, message, time) VALUES (@cid, @sender, @msg, @t)', {
+      ['@cid'] = targetCid, ['@sender'] = senderCid, ['@msg'] = messageText, ['@t'] = os.time()
+    })
+    -- Optionally notify target player if online
+    local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(targetCid)
+    if targetPlayer then
+      TriggerClientEvent('qb-simplephone:NewMessage', targetPlayer.PlayerData.source, {from = senderCid, text = messageText})
+    end
+  end
+end)
+</code></pre>
+
+<p>Client code should never write to the DB, and only send intent events to the server. Validate in both layers to protect UX and security.</p>
+
+<h2>Client pattern (short)</h2>
+<pre><code>-- client.lua (only UI triggers and listeners)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('qb-simplephone:NewMessage')
+AddEventHandler('qb-simplephone:NewMessage', function(msg)
+  -- Forward to UI: use SendNUIMessage or qb-phone compatible event
+  SendNUIMessage({action = 'new_message', payload = msg})
+end)
+
+-- Example: request messages when opening phone
+function OpenPhone()
+  QBCore.Functions.TriggerCallback('qb-simplephone:GetMessages', function(messages)
+    SendNUIMessage({action = 'load_messages', messages = messages})
+  end)
+  SetNuiFocus(true, true)
+end
+</code></pre>
+
+<h2>Checklist before you deploy</h2>
+<table>
+  <thead>
+    <tr><th>Item</th><th>Pass/Fail</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server-side validation for all client actions</td><td>✔</td><td>Check data types and lengths</td></tr>
+    <tr><td>No client DB writes</td><td>✔</td><td>DB access only from server scripts</td></tr>
+    <tr><td>Phone number uniqueness enforced</td><td>✔</td><td>DB unique index on phone_number</td></tr>
+    <tr><td>Rate limiting for messaging/calls</td><td>✖</td><td>Add throttling if spam observed</td></tr>
+    <tr><td>Backup plan for DB failures</td><td>✔</td><td>Return empty sets and queue writes</td></tr>
+  </tbody>
+</table>
+
+<h2>Security and validation notes</h2>
+<ul>
+  <li>Treat the server as the source of truth: player identifiers, balances, and item ownership must be checked server-side before any transfer or payment.</li>
+  <li>Use prepared statements / parameterized queries to avoid injection when using raw SQL drivers.</li>
+  <li>Apply throttling for expensive actions (e.g., sending messages) and log suspicious activity for moderation.</li>
+  <li>Provide graceful DB failure handling: when reads fail return an empty response and retry or queue writes until DB is available.</li>
+</ul>
+
+<h2>Roblox comparison note</h2>
+<p>If you port the concept to Roblox, the same server-authoritative principle applies. Use RemoteEvents/RemoteFunctions with strict server validation, and persist phone-like data using DataStoreService with exponential backoff and error handling for throttled saves. Keep UI code in LocalScripts and never trust client-sent identifiers for purchases or balances.</p>
+
+<h2>Next steps & tooling</h2>
+<p>After the minimal resource, add features incrementally: contact syncing, in-game VoIP integration, notification routing, and asynchronous push notifications. For generating scaffolds or planning destination-labelled files, consider using an AI scripting workspace to produce file lists and templates; the Stellar AI app can help accelerate iterations: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For reading deeper posts on game script patterns, visit the Stellar AI blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<div>
+  <strong>Validation summary:</strong>
+  <p>Always validate client inputs on the server, treat DB as critical infrastructure with retries and backups, and log edge cases. Start small, test with staff users, then open to the community.</p>
 </div>
-<footer>
-  <div class="footer-copy">© 2026 Stellar AI</div>
-  <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/app">App</a><a href="/terms.html">Terms</a></div>
-</footer>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><h3>References</h3>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM documentation</a></li>
+  <li><a href="https://docs.qbcore.org/">QBCore community docs</a></li>
+  <li><a href="https://forum.cfx.re/">Cfx.re community forum</a></li>
+</ul></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
 </body>
 </html>

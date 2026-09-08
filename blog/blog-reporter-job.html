@@ -68,32 +68,205 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add a Reporter Job to Your QBCore FiveM Server</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">A reporter job lets players document server events, interview other players and broadcast news. Great for adding depth to roleplay servers.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add a reporter job to your qbcore fivem server, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Introduction</h2>
+<p>This guide walks you through adding a robust, secure Reporter job to a QBCore FiveM server. It covers architecture, configuration, server-side enforcement, client integration, optional ox_lib/qb-target UX, testing, deployment, and maintenance. The goal is a production-ready job that protects server authority, validates all client requests, and integrates cleanly with common FiveM/QBCore toolchains. If you want a companion web or management workflow for roles and content, consider the management app available at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Architecture and design considerations</h2>
+<p>Keep a clear separation between authoritative server state and client presentation. The server is the single source of truth for player jobs, grades, permissions, and payroll. Clients only request actions (for UX) and receive updates or confirmations. Your architecture should include:</p>
+<ul>
+  <li>Persistent job definitions in the server config (shared/jobs.lua or a dedicated resource).</li>
+  <li>Server-side handlers for job assignment and job-based actions.</li>
+  <li>Client-side UI and interaction hooks (qb-target, ox_lib, or native menus) that call server endpoints.</li>
+  <li>Audit logs and basic telemetry for job changes and abuse detection.</li>
+</ul>
+
+<h2>Job definition and server configuration</h2>
+<p>Define the Reporter job centrally so payroll, duty toggles, and grade names are consistent. For QBCore, jobs are typically declared in a shared table. Example pattern (adapt to your qb-core version):</p>
+<pre><code>-- shared/jobs.lua (extract)
+['reporter'] = {
+  label = "Reporter",
+  defaultDuty = true,
+  grades = {
+    ['0'] = {name = "Intern", payment = 50},
+    ['1'] = {name = "Reporter", payment = 80},
+    ['2'] = {name = "Editor", payment = 120},
+  }
+}
+</code></pre>
+<p>Keep this in the same format your core expects. Avoid duplicating job logic in multiple places; import the job table where needed.</p>
+
+<h2>Server-side implementation and security</h2>
+<p>All sensitive actions must be validated and executed on the server. Never trust client payloads for role changes, money transfers, or access checks. Typical server responsibilities for the Reporter job:</p>
+<ul>
+  <li>Assign job and grade after admin approval or in-game workflow.</li>
+  <li>Validate job-related actions (e.g., publishing an article, creating billing items) against allowed job/grade.</li>
+  <li>Record job changes for auditing and rollback.</li>
+</ul>
+<p>Server-side Lua pseudocode demonstrates the pattern of authoritative handling with whitelists and source validation:</p>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+local allowedJobs = { reporter = true }
+local allowedGrades = { ["0"]=true, ["1"]=true, ["2"]=true }
+
+RegisterNetEvent('reporter:server:SetJob', function(jobName, grade)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  -- Validate incoming values against server-side whitelist
+  if not allowedJobs[jobName] or not allowedGrades[tostring(grade)] then
+    -- Optional: increment a suspicious activity counter for src
+    return
+  end
+
+  -- Authoritative set on server only
+  Player.Functions.SetJob(jobName, tonumber(grade))
+  -- Confirm to the client
+  TriggerClientEvent('QBCore:Notify', src, 'Job updated to '..jobName, 'success')
+end)</code></pre>
+<p>Note: adapt Player.Functions.SetJob to match your core's API. The key point is source-derived Player lookup, whitelist validation, and server-executed mutation.</p>
+
+<h3>Payment and payroll</h3>
+<p>Handle payment calculations on the server and store any configurable pay rates in a server-side table. If you implement on-duty bonuses, ensure the duty toggle is server controlled. Never allow the client to send raw cash amounts for transactions without server verification.</p>
+
+<h2>Client integration and UX</h2>
+<p>Client code should provide an intuitive way for reporter players to access job features (writing, submitting, pickups, vehicle spawns). Use interaction systems already in your stack:</p>
+<ul>
+  <li>qb-target for in-world interaction points.</li>
+  <li>ox_lib or qb-menu for contextual menus.</li>
+  <li>client-side UI libraries for text entry and article previews.</li>
+</ul>
+<p>Example qb-target registration (client):</p>
+<pre><code>exports['qb-target']:AddBoxZone("reporter_desk", vector3(200.0, -900.0, 30.7), 1.2, 1.0, {
+  name = "reporter_desk",
+  heading = 340,
+  debugPoly = false,
+  minZ = 29.7,
+  maxZ = 31.7
+}, {
+  options = {
+    { type = "client", event = "reporter:client:OpenDeskMenu", icon = "fas fa-pen", label = "Reporter Desk" }
+  },
+  distance = 2.5
+})</code></pre>
+<p>When the client triggers "reporter:client:OpenDeskMenu", the menu should gather text input locally but send a summarized, validated payload to the server for publishing.</p>
+
+<h3>Data flow and validation</h3>
+<p>Client sends minimal descriptive data (e.g., title, body hash, attachments list) to the server. The server validates the format, length, and any blacklist/whitelist rules before storing or broadcasting. Reject or sanitize anything that fails validation.</p>
+
+<h2>Integration notes: ox_lib, ESX, and compatibility</h2>
+<p>If you use ox_lib for UI helpers or ESX instead of QBCore, adapt the patterns but keep the core principles: server authority, whitelist validation, and consistent job definitions. For ESX the APIs differ; use ESX.GetPlayerFromId(source) and ESX.SetJob historically, but always consult the versioned docs for exact function names.</p>
+<p>When integrating third-party libs (ox_lib, qb-target, qb-menu), treat them as presentation layers. Your server must not rely on these libs for security checks.</p>
+
+<h2>Roblox server-authoritative note (if porting patterns)</h2>
+<p>If you are translating concepts to Roblox, the same server-authority rules apply. Use RemoteEvents only for client-to-server requests and validate every request on the server. For persistent player state, use DataStores and handle failures robustly:</p>
+<pre><code>-- Luau example: server handler and DataStore retry
+local DataStoreService = game:GetService("DataStoreService")
+local ReporterStore = DataStoreService:GetDataStore("ReporterJobs")
+
+local function SavePlayerReport(userId, reportData)
+  local success, err
+  local attempts = 0
+  repeat
+    attempts = attempts + 1
+    success, err = pcall(function()
+      ReporterStore:SetAsync(tostring(userId), reportData)
+    end)
+    if not success then
+      wait(2 ^ attempts) -- exponential backoff
+    end
+  until success or attempts >= 5
+  return success, err
+end
+
+remoteEvent.OnServerEvent:Connect(function(player, payload)
+  -- Validate payload server-side, then call SavePlayerReport
+end)</code></pre>
+<p>Always pcall DataStore calls, implement retries with backoff, and consider local caching to reduce rate-limit exposure.</p>
+
+<h2>Testing, QA, and security checks</h2>
+<p>Test in a staging environment that mirrors production. Recommended test matrix:</p>
+<ul>
+  <li>Assign and revoke Reporter role via admin tools and in-game flow.</li>
+  <li>Attempt unauthorized actions from a non-reporter client (should fail server-side).</li>
+  <li>Simulate malformed client payloads and measure server validation behavior.</li>
+  <li>Stress test payroll and publishing to detect race conditions.</li>
+</ul>
+<p>Use logs and a lightweight audit table to record job changes, IPs, and timestamps for post-incident investigation. For further reading on deployment and maintenance, check the operator blog at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>Deployment and maintenance</h2>
+<p>Deployment checklist:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Confirm</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Job definition loaded from central config</td>
+      <td>Yes/No</td>
+    </tr>
+    <tr>
+      <td>Server-side validation for all job actions</td>
+      <td>Yes/No</td>
+    </tr>
+    <tr>
+      <td>Admin approval or safe auto-assign flow</td>
+      <td>Yes/No</td>
+    </tr>
+    <tr>
+      <td>Backup/rollback plan for shared/jobs.lua</td>
+      <td>Yes/No</td>
+    </tr>
+    <tr>
+      <td>Monitoring and audit logging enabled</td>
+      <td>Yes/No</td>
+    </tr>
+    <tr>
+      <td>Management console or app connected (optional)</td>
+      <td>Use the management app: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a></td>
+    </tr>
+  </tbody>
+</table>
+<p>For maintenance, keep your core and libs up to date in a staging branch. Test job-related changes in staging before pushing to production. Maintain a changelog that records job schema changes so migration scripts can be applied when players remain online across updates.</p>
+
+<h2>Operational security and abuse mitigation</h2>
+<p>Implement the following mitigations:</p>
+<ul>
+  <li>Rate-limit job-change and publish events per user and per IP/source.</li>
+  <li>Whitelist allowable job names and grades server-side.</li>
+  <li>Log failures and invalid attempts for later review.</li>
+  <li>Use server-side anti-cheat hooks if available to detect tampering.</li>
+</ul>
+<p>Audit logs should include: timestamp, player identifier, old job, new job, invoking source (admin or in-game process), and proof of approval when relevant.</p>
+
+<h2>Checklist: Practical steps to add Reporter job</h2>
+<ol>
+  <li>Define the Reporter job and grades in shared job config.</li>
+  <li>Implement server-side endpoints to set and validate job changes.</li>
+  <li>Register interaction points (qb-target) and menus (ox_lib/qb-menu) for reporters.</li>
+  <li>Ensure all client requests are validated and authoritatively executed on the server.</li>
+  <li>Implement payment and payroll server-side, not client-side.</li>
+  <li>Add audit logging, rate-limiting, and monitoring.</li>
+  <li>Test thoroughly in staging with edge-case client payloads and simultaneous transactions.</li>
+  <li>Rollback plan and backup of job config before deploying to production.</li>
+</ol>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub (core repo)</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib GitHub</a></li>
+  <li><a href="https://docs.fivem.net/docs/scripting-reference/serverside-events/overview/">FiveM server event best practices</a></li>
+  <li><a href="https://developer.roblox.com/en-us/">Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store">Roblox DataStore guide</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

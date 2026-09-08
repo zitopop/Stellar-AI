@@ -68,32 +68,180 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>QBCore vs ESX — Which FiveM Framework Should You Use?</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Choosing between QBCore and ESX is the first big decision for any FiveM server owner. This guide breaks down the key differences to help you pick the right one.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to qbcore vs esx — which fivem framework should you use?, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Overview</h2>
+<p>Choosing between modern, lightweight frameworks and more established ecosystems is a common engineering decision for FiveM projects. This guide presents architecture, security, implementation patterns, testing, deployment, and Roblox-specific best practices so you can make a technically informed choice. It compares core design differences, dependency footprints (including ox_lib), and practical trade-offs for long-term maintenance.</p>
+
+<h2>Core architecture: modularity and runtime model</h2>
+<p>Both frameworks provide a server-authoritative model with client-side presentation layers, but they differ in structure and conventions.</p>
+<ul>
+  <li><strong>QBCore</strong>: event-driven, modular resource layout. Many recent servers favor QBCore for its cleaner export and shared state patterns. QBCore uses a central object (QBCore) with functions exposed for player lookup, money operations, and other common actions.</li>
+  <li><strong>ESX</strong>: historically widespread with many community resources and scripts. ESX provides shared objects via exports and often relies on a larger surface area of community modules; older installs may have more legacy patterns you must refactor for modern security/maintainability.</li>
+</ul>
+<p>Both frameworks run on the FiveM runtime and use fxmanifest.lua manifests. Choose based on team familiarity, available community modules you need, and how much you want to refactor third-party scripts to meet server-validation requirements.</p>
+
+<h2>Dependencies and ox_lib</h2>
+<p>ox_lib (and the ox_core ecosystem) has become a standard building block. It provides utilities for UI, inventories, and optimized native handling. When evaluating dependencies:</p>
+<ul>
+  <li>Prefer lightweight, well-maintained libs. ox_lib can reduce duplicate code and improve performance for common operations.</li>
+  <li>Avoid blindly installing many community scripts. Each dependency increases attack surface and maintenance burden.</li>
+  <li>Use dependency isolation: treat each resource as replaceable, with clear API surfaces and versioned releases in source control.</li>
+</ul>
+<p>If you are assessing tools to manage server assets or team collaboration, consider integrating a governance tool such as the Stellar AI App to track deployments and telemetry: <a href="https://trystellarai.com/app">Stellar AI App</a>.</p>
+
+<h2>Security and server validation</h2>
+<p>Never trust client input. This is non-negotiable for FiveM and Roblox. All authoritative state—money, inventories, job progression—must be validated on the server. Key security patterns:</p>
+<ul>
+  <li><strong>Validate types and ranges</strong>: Ensure incoming values are expected types and within allowed ranges (quantities, prices, IDs).</li>
+  <li><strong>Verify permissions</strong>: Check player job, permissions, or license on server before performing sensitive actions.</li>
+  <li><strong>Canonical checks</strong>: Use canonical identifiers (database IDs, canonical item names) on the server; map any client-provided labels to canonical values after validation.</li>
+  <li><strong>Rate-limit and debounce</strong>: Prevent flood of events that could be exploited for duplication or resource exhaustion.</li>
+  <li><strong>Audit and logging</strong>: Log critical actions server-side with structured logs (who, what, when) for auditing and rollback support.</li>
+</ul>
+<p>Example server-side validation pattern (QBCore-style):</p>
+<pre><code>RegisterServerEvent('myresource:buyItem')
+AddEventHandler('myresource:buyItem', function(itemName, qty)
+  local src = source
+  if type(itemName) ~= 'string' or type(qty) ~= 'number' then return end
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+  -- server lookups for price and inventory capacity
+  local item = GetItemDefinition(itemName)
+  if not item then return end
+  local price = item.price * qty
+  if Player.Functions.RemoveMoney('bank', price) then
+    Player.Functions.AddItem(itemName, qty)
+    TriggerClientEvent('QBCore:Notify', src, 'Purchase complete')
+  end
+end)</code></pre>
+<p>For ESX, replace QBCore.Functions.GetPlayer with the framework-specific player retrieval patterns and ensure third-party scripts perform the same validations.</p>
+
+<h2>Implementation choices and common patterns</h2>
+<p>When implementing core systems (jobs, economy, inventory, vehicles), choose clear separation of concerns:</p>
+<ul>
+  <li><strong>Server-only operations</strong>: Currency changes, inventory mutations, job assignment, vehicle ownership must happen server-side.</li>
+  <li><strong>Client-only operations</strong>: Camera work, animations, HUD rendering — these should query server state but not write critical state directly.</li>
+  <li><strong>Event contracts</strong>: Define a small, versioned set of server events and responses. Document the input schema for each event and enforce it in your server handlers.</li>
+  <li><strong>Database access</strong>: Use parameterized queries or ORM libraries and validate migration scripts in staging before production.</li>
+</ul>
+<p>Common pattern for shops/transactions:</p>
+<ol>
+  <li>Client requests "show shop" — server responds with cached catalog snippet (no client-provided prices).</li>
+  <li>Client sends "purchase request" with item ID and quantity.</li>
+  <li>Server validates item ID, computes price from canonical catalog, checks balance, updates inventory and money, logs the action, then notifies the client with success/failure.</li>
+</ol>
+
+<h2>Testing and continuous integration</h2>
+<p>Automated testing for game servers requires both unit and integration strategies. Unit-test utilities and pure Lua logic. For integration tests, use a headless FiveM instance or dedicated staging server where you can run scripted player bots and smoke tests.</p>
+<ul>
+  <li><strong>Unit tests</strong>: Validate your serialization, catalog calculations, and permission logic using Lua test harnesses.</li>
+  <li><strong>Integration tests</strong>: Deploy to a reproducible staging environment and run scripted interactions that exercise server events, database migrations, and persistence.</li>
+  <li><strong>Regression testing</strong>: Add checks for important flows (purchases, transfers, job changes). Automate deployment to a staging server on each pull request.</li>
+</ul>
+<p>For documentation and changelog automation, consider publishing release notes and snapshot images. Team tooling like the Stellar AI App can help track resource versions and rollout status: <a href="https://trystellarai.com/app">Stellar AI App</a>. For strategic reading and ongoing research, follow the community and engineering posts at the <a href="https://trystellarai.com/blog">Stellar AI Blog</a>.</p>
+
+<h2>Deployment and maintenance</h2>
+<p>Deployment should be repeatable and reversible. Key operational practices:</p>
+<ul>
+  <li><strong>Immutable resource artifacts</strong>: Build and tag fxmanifest releases in CI, avoid editing live resources directly on production.</li>
+  <li><strong>Blue/green or canary updates</strong>: If your server fleet supports it, roll updates to a small subset, run smoke tests, then promote.</li>
+  <li><strong>Database migrations</strong>: Version migrations and run them in staging first. Use explicit transactional migrations when possible and provide rollback steps.</li>
+  <li><strong>Backups and retention</strong>: Regularly back up player data and relevant logs. Document recovery procedures and exercise them periodically.</li>
+  <li><strong>Monitoring</strong>: Collect metrics for resource restarts, error rates, and critical server events. Alert on unusual spikes in validation failures or duplicate transactions.</li>
+</ul>
+
+<h2>Roblox-specific best practices</h2>
+<p>Roblox uses a similar principle: server authority with client-side presentation. Respect the server authority model and treat the client as untrusted. Specific guidance:</p>
+<ul>
+  <li><strong>RemoteEvents / RemoteFunctions</strong>: Always validate the player parameter and payload on the server using strict schema checks. For RemoteFunctions, keep functions idempotent and small to reduce attack surface.</li>
+  <li><strong>DataStore handling</strong>: Always wrap DataStore calls in pcall, implement exponential backoff retries, and gracefully handle Get/Set failures. Use incremental saves or queue-based persistence for high-throughput systems.</li>
+  <li><strong>Rate limits</strong>: Implement server-side rate-limiting per-player for expensive operations and track abuse patterns.</li>
+  <li><strong>Secure state transitions</strong>: Use game passes or server-controlled flags to gate critical operations rather than trusting client flags.</li>
+</ul>
+<p>Roblox DataStore example (simplified):</p>
+<pre><code>local DataStoreService = game:GetService("DataStoreService")
+local ds = DataStoreService:GetDataStore("PlayerData")
+local function loadPlayer(userId)
+  local success, data = pcall(function()
+    return ds:GetAsync(tostring(userId))
+  end)
+  if not success then
+    -- retry or use safe defaults
+    warn("Data store read failed for", userId)
+    return {} -- safe default
+  end
+  return data or {}
+end</code></pre>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>QBCore</th>
+      <th>ESX</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Player lookup and validation</td>
+      <td>Use QBCore.Functions.GetPlayer and server checks</td>
+      <td>Use ESX.GetPlayerFromId or equivalent with server checks</td>
+      <td>Always validate the source and permissions server-side</td>
+    </tr>
+    <tr>
+      <td>Inventory operations</td>
+      <td>Prefer ox_lib or canonical inventory API</td>
+      <td>Audit third-party inventory scripts before use</td>
+      <td>Ensure atomic updates to avoid duplication</td>
+    </tr>
+    <tr>
+      <td>Database migrations</td>
+      <td>Versioned SQL migrations</td>
+      <td>Versioned SQL migrations</td>
+      <td>Test in staging and support rollbacks</td>
+    </tr>
+    <tr>
+      <td>Deployment</td>
+      <td>Tag fxmanifest releases and CI deploy</td>
+      <td>Tag fxmanifest releases and CI deploy</td>
+      <td>Use canary/blue-green when possible</td>
+    </tr>
+    <tr>
+      <td>Monitoring</td>
+      <td>Structured logs and alerts</td>
+      <td>Structured logs and alerts</td>
+      <td>Track validation failures and resource restarts</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Testing scenarios checklist</h2>
+<ul>
+  <li>Unit test price calculations and permission checks.</li>
+  <li>Integration test inventory and money transfers with concurrent requests.</li>
+  <li>Simulate network loss and client reconnection to validate persistence.</li>
+  <li>Test database migration rollback and disaster recovery procedures.</li>
+  <li>For Roblox: simulate DataStore failures and verify fallback handling.</li>
+</ul>
+
+<h2>Maintenance and long-term stability</h2>
+<p>Maintain a clear upgrade strategy: track upstream changes in QBCore/ESX and third-party libs like ox_lib. Schedule quarterly dependency audits and minimal breaking-change upgrades in a staging environment. For teams, maintain code ownership and document APIs for each resource so replacements and refactors are low-cost.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+  <li><a href="https://github.com/qbcore-framework/qb-core">QBCore GitHub</a></li>
+  <li><a href="https://github.com/esx-framework/esx-legacy">ESX (community/legacy)</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib</a></li>
+  <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/class/DataStoreService">DataStoreService (Roblox)</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Remote-Events-and-Remote-Functions">Remote Events and Remote Functions (Roblox)</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

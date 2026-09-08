@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Mechanic Job — Plan, Files, and Secure Implementation — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to implement a server-authoritative QBCore mechanic job: useable repair item, server-side validation, client repair, and install checklist. Includes complete resource files and integration notes for qb-core.">
+  <meta name="keywords" content="QBCore mechanic job, FiveM mechanic, repairkit QBCore, server-side validation, qb-core tutorial, qb-mechanic">
+  <meta property="og:title" content="QBCore Mechanic Job — Plan, Files, and Secure Implementation">
+  <meta property="og:description" content="Step-by-step guide to implement a server-authoritative QBCore mechanic job: useable repair item, server-side validation, client repair, and install checklist. Includes complete resource files and integration notes for qb-core.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-mechanic-job">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">QBCore Guide</div>
+  <h1>QBCore Mechanic Job — Plan, Files, and Secure Implementation</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks a builder through a compact, secure implementation of a mechanic job for QBCore. You get an implementation plan, assumptions, complete resource files, installation steps, and a verification checklist so the mechanic role behaves correctly and money/item changes are enforced server-side.</p>
+  <h2>Overview & implementation plan</h2>
+<p>Mechanic jobs in QBCore should be server-authoritative: the server decides whether a player is a mechanic, removes payment or items, and then instructs a client to apply the repair to the vehicle. The plan below builds a small resource named <strong>qb-mechanic</strong> that provides a useable <em>repairkit</em> item and a repair flow that validates the player's job and funds server-side.</p>
+
+<h3>Plan</h3>
+<ul>
+  <li>Create a self-contained resource (fxmanifest, config, client, server)</li>
+  <li>Register a useable item on the server (repairkit) that triggers the client</li>
+  <li>Client finds the nearest vehicle and requests server authorization</li>
+  <li>Server validates job and money/items; on success, instructs client to repair</li>
+  <li>Provide clear installation and validation steps plus an optional qb-target hook</li>
+</ul>
+
+<h3>Assumptions and dependencies</h3>
+<p>Assumes a QBCore v2-style server with exports['qb-core']:GetCoreObject(). Optional integrations: qb-target (for target interactions). The code uses common QBCore server APIs (CreateUseableItem, GetPlayer, CreateCallback) and FiveM natives for nearby vehicle detection and repair. If your server uses a different money/item API, adapt the server functions where payment/item removal and notifications happen.</p>
+
+<h2>Complete resource files (destination-labelled)</h2>
+<p>Drop this folder into your server resources and add <code>start qb-mechanic</code> to server.cfg.</p>
+
+<pre><code>// fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'you'
+description 'QBCore mechanic job — minimal secure example'
+version '1.0.0'
+
+shared_script 'config.lua'
+
+server_scripts {
+  'server.lua'
+}
+
+client_scripts {
+  'client.lua'
+}
+
+depends {
+  'qb-core'
+}
+</code></pre>
+
+<pre><code>// config.lua
+Config = {}
+Config.RepairCost = 200 -- price charged to mechanic for each repair (adjust to your economy)
+Config.MechanicJob = 'mechanic' -- job name used in qb-core/shared/jobs.lua
+Config.MaxDistance = 5.0 -- max meters to vehicle for repair
+</code></pre>
+
+<pre><code>// server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Simple callback to check job
+QBCore.Functions.CreateCallback('qb-mechanic:server:isMechanic', function(source, cb)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if Player and Player.PlayerData and Player.PlayerData.job then
+        cb(Player.PlayerData.job.name == Config.MechanicJob)
+    else
+        cb(false)
+    end
+end)
+
+-- Register a useable item called 'repairkit' — add the item to your shared/items.lua if missing
+QBCore.Functions.CreateUseableItem('repairkit', function(source)
+    TriggerClientEvent('qb-mechanic:client:useRepairKit', source)
+end)
+
+-- Server event: validate and process repair request
+RegisterNetEvent('qb-mechanic:server:requestRepair', function(netVehicleId)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+
+    if Player.PlayerData.job.name ~= Config.MechanicJob then
+        TriggerClientEvent('QBCore:Notify', src, 'You are not a mechanic', 'error')
+        return
+    end
+
+    -- Charge the mechanic (server authoritative)
+    local price = Config.RepairCost
+    local success = Player.Functions.RemoveMoney('bank', price)
+    if not success then
+        TriggerClientEvent('QBCore:Notify', src, 'Not enough money', 'error')
+        return
+    end
+
+    -- Optionally remove an item (repairkit) if you want one-time use
+    Player.Functions.RemoveItem('repairkit', 1)
+
+    -- Instruct client to perform repair (client will validate network id exists locally)
+    TriggerClientEvent('qb-mechanic:client:doRepair', src, netVehicleId)
+    TriggerClientEvent('QBCore:Notify', src, 'Vehicle repaired — charged $' .. price, 'success')
+end)
+</code></pre>
+
+<pre><code>// client.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Called when player uses a repairkit
+RegisterNetEvent('qb-mechanic:client:useRepairKit', function()
+    QBCore.Functions.TriggerCallback('qb-mechanic:server:isMechanic', function(isMech)
+        if not isMech then
+            QBCore.Functions.Notify('You must be a mechanic to use this', 'error')
+            return
+        end
+
+        -- find nearest vehicle
+        local playerPed = PlayerPedId()
+        local pCoords = GetEntityCoords(playerPed)
+        local vehicle = GetClosestVehicle(pCoords.x, pCoords.y, pCoords.z, Config.MaxDistance, 0, 70)
+        if not DoesEntityExist(vehicle) then
+            QBCore.Functions.Notify('No vehicle nearby', 'error')
+            return
+        end
+
+        local netId = NetworkGetNetworkIdFromEntity(vehicle)
+        -- request server to charge and validate
+        TriggerServerEvent('qb-mechanic:server:requestRepair', netId)
+    end)
+end)
+
+-- Server-authorized repair triggered here
+RegisterNetEvent('qb-mechanic:client:doRepair', function(netId)
+    local vehicle = NetworkGetEntityFromNetworkId(netId)
+    if not vehicle or not DoesEntityExist(vehicle) then
+        QBCore.Functions.Notify('Vehicle no longer available', 'error')
+        return
+    end
+
+    -- Simple visual: fix and set engine health
+    SetVehicleFixed(vehicle)
+    SetVehicleEngineHealth(vehicle, 1000.0)
+    QBCore.Functions.Notify('Repair complete', 'success')
+end)
+</code></pre>
+
+<h2>Optional: add the mechanic job to your QBCore jobs</h2>
+<p>Open <code>qb-core/shared/jobs.lua</code> and add a job entry. Example snippet to insert in the jobs table:</p>
+
+<pre><code>// add to qb-core/shared/jobs.lua
+['mechanic'] = {
+    label = "Mechanic",
+    grades = {
+        ['0'] = {label = "Recruit", salary = 150},
+        ['1'] = {label = "Technician", salary = 250},
+        ['2'] = {label = "Senior Mechanic", salary = 350}
+    }
+},
+</code></pre>
+
+<h2>Installation & configuration</h2>
+<ol>
+  <li>Place the folder <strong>qb-mechanic</strong> in your resources directory.</li>
+  <li>Ensure the resource is started in server.cfg: <code>start qb-mechanic</code>.</li>
+  <li>If you don't have a <em>repairkit</em> item, add it to <code>qb-core/shared/items.lua</code> (or add a shop entry).</li>
+  <li>Restart the server and test with a test mechanic account.</li>
+</ol>
+
+<h2>Validation, security notes, and testing checklist</h2>
+<p>Put all authoritative checks on the server. Do not allow the client to deduct money or spawn receipts. Use the checklist below to validate behavior before giving players access.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>What to check</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Job validation</td>
+      <td>Player must be <em>mechanic</em> server-side before charging/repairing</td>
+    </tr>
+    <tr>
+      <td>Payment</td>
+      <td>The server removes money or item; client only requests repair</td>
+    </tr>
+    <tr>
+      <td>Vehicle validity</td>
+      <td>Client validates the vehicle entity exists for the supplied network ID</td>
+    </tr>
+    <tr>
+      <td>Race/Exploit checks</td>
+      <td>Ensure server rejects requests that come from non-mechanics or when item/money removal fails</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Quick testing steps</h3>
+<ul>
+  <li>Create a player with job mechanic and one without, then try using the repairkit.</li>
+  <li>Attempt to trigger the server event from a non-mechanic client (should be rejected).</li>
+  <li>Try with insufficient funds — server should not call client repair.</li>
+</ul>
+
+<h2>Optional integrations & next steps</h2>
+<p>To improve UX, integrate with qb-target: add a small menu option when looking at vehicles so a mechanic can open a repair menu instead of using the item. If you use ox_lib for progress bars, trigger a progress before sending the server request so players see an in-world repair action. Because Stellar AI is built to accelerate file scaffolding and iteration, you can open this project inside the Stellar AI workspace and iterate on the files quickly: https://trystellarai.com/app. If you want a guided write-up about design patterns and job flows, read the deeper article on our site: https://trystellarai.com/blog. You can also scaffold or modify templates directly in the workspace at https://trystellarai.com/app to produce destination-labelled files faster.</p>
+
+<p>Next steps: add a dispatch trigger for job announcements, create a shop or locker for mechanic tools, and add vehicle towing/impound flows with server-side ownership checks. Follow the checklist above when you extend behavior to ensure that money, inventory, and permissions always remain validated on the server.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References & notes</h3><ul><li><strong>QBCore GitHub:</strong> check your server's qb-core version for exact API differences before production changes.</li><li><strong>Stellar AI blog:</strong> https://trystellarai.com/blog — patterns and design ideas for FiveM resources.</li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

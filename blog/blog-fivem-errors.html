@@ -68,32 +68,196 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>Common FiveM Errors and How to Fix Them</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Every FiveM server owner hits errors. This guide covers the most common FiveM and QBCore errors and exactly how to fix each one.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to common fivem errors and how to fix them, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<body>
+  <h2>Overview</h2>
+  <p>This guide collects the most common runtime and deployment issues encountered in FiveM servers (QBCore, ESX, ox_lib) and Roblox games (Luau), and gives practical, tested fixes and patterns. It focuses on architecture choices, server-side validation and security, debugging and testing workflows, and deployment & maintenance best practices. If you use third-party tooling for observability or CI, consider integrating it early — for example, you can evaluate a developer productivity tool such as <a href="https://trystellarai.com/app">Stellar AI app</a> during the testing phase to surface regressions and runtime anomalies faster.</p>
+
+  <h2>Common FiveM Errors and Root Causes</h2>
+  <h3>Resource fails to start or "Manifest missing" errors</h3>
+  <p>Symptoms: Resource logs "starting" then "stopping", or the server console shows "Could not find fxmanifest.lua or __resource.lua". Causes are generally manifest/filename errors, bad dependency declarations, or ordering problems in server.cfg.</p>
+  <p>Fixes:</p>
+  <ul>
+    <li>Ensure each resource contains a valid fxmanifest.lua or __resource.lua with correct format and a matching resource folder name.</li>
+    <li>Declare dependencies using <code>dependencies { 'qb-core', 'ox_lib' }</code> or <code>server_export</code> as appropriate so Cfx handles start order.</li>
+    <li>In server.cfg, use <code>ensure resourceName</code> instead of <code>start</code> so txAdmin will auto-restart and report missing resources.</li>
+  </ul>
+
+  <h3>Missing exports, mismatched function signatures, or ox_lib runtime errors</h3>
+  <p>Symptoms: "attempt to call a nil value" for an exported function or error referencing <code>ox_lib</code>. Often caused by calling exports before a dependency finished initializing or by changed API names between library versions.</p>
+  <p>Fixes:</p>
+  <ul>
+    <li>Check the dependency order and use resource <code>dependencies</code> in fxmanifest.</li>
+    <li>Confirm exported function names and parameters in the dependency's README or its fxmanifest.</li>
+    <li>Pin library versions in your resource repository (e.g., use a git tag) so upgrades are deliberate.</li>
+  </ul>
+
+  <h3>Database connection and query failures (oxmysql / mysql-async)</h3>
+  <p>Symptoms: Queries return nil, server logs show connection refused, or blocking on startup. Common causes: misconfigured database credentials, wrong driver, async vs sync call confusion, or missing migrations.</p>
+  <p>Fixes:</p>
+  <ul>
+    <li>Verify database host, port, user and password in the server config; test the connection from the host machine.</li>
+    <li>Use the driver recommended by your resource (oxmysql replaces mysql-async in many modern stacks).</li>
+    <li>Run schema migrations before starting resources that expect DB tables. Include migration checks in your startup script.</li>
+  </ul>
+
+  <h3>Client CEF, NUI or Lua errors</h3>
+  <p>Symptoms: CEF windows fail to render, NUI callbacks not firing, or Lua runtime stack traces on the client. Causes: wrong HTML paths in resource, mismatched NUI messages, or race conditions.</p>
+  <p>Fixes:</p>
+  <ul>
+    <li>Ensure UI files are listed under <code>files { 'html/index.html', ... }</code> in fxmanifest.</li>
+    <li>Validate NUI messages: always include an action string and validate the payload on the client and on the server (never trust the client).</li>
+    <li>Use resource start order and explicit event synchronization if the UI requires server state before opening.</li>
+  </ul>
+
+  <h2>Implementation Choices and Architecture</h2>
+  <p>Design server-authoritative systems. For FiveM, enforce all game-state changes server-side. For Roblox, ensure RemoteEvents only request actions; the server must validate and apply them. Key choices:</p>
+  <ul>
+    <li>Use events and exports appropriately. Exports are suitable for tightly-coupled integrations; events are better for decoupling and for allowing multiple listeners.</li>
+    <li>Keep physics, inventory and economy logic on the server. Clients should only send intents, not results.</li>
+    <li>Choose your persistence layer early (MySQL via oxmysql, or cloud databases for cross-server persistence) and standardize queries with parameterized statements to avoid injections and logic errors.</li>
+  </ul>
+
+  <h2>Security and Server Validation</h2>
+  <p>Never trust client input. This is a fundamental rule for both FiveM and Roblox. Validate every operation that affects currency, inventory, character state, or database writes on the authoritative server. Here are minimal patterns and examples.</p>
+
+  <h3>FiveM server-side validation example (QBCore pattern)</h3>
+  <pre><code>RegisterNetEvent('shop:buyItem', function(itemId, amount)
+  local src = source
+  if type(itemId) ~= 'string' or type(amount) ~= 'number' then return end
+  local QBCore = exports['qb-core']:GetCoreObject()
+  local player = QBCore.Functions.GetPlayer(src)
+  if not player then return end
+  local price = GetItemPrice(itemId) -- server-side function
+  local total = price * amount
+  if player.Functions.RemoveMoney('bank', total, 'purchase:'..itemId) then
+    player.Functions.AddItem(itemId, amount)
+    TriggerClientEvent('shop:purchaseSuccess', src, itemId, amount)
+  else
+    TriggerClientEvent('shop:purchaseFailed', src, 'insufficient_funds')
+  end
+end)</code></pre>
+
+  <p>Notes: Use server-owned helper functions to compute price and stock, and never accept a client-supplied total price. Always log critical transactions and consider a rate-limiter per player for sensitive operations.</p>
+
+  <h3>Roblox RemoteEvent and authority pattern</h3>
+  <p>On Roblox, RemoteEvents/RemoteFunctions are conveniences, but server authority must be preserved. Example server-side handler that validates and uses pcall for safe operations:</p>
+  <pre><code>local Remote = game:GetService("ReplicatedStorage"):WaitForChild("RequestAction")
+Remote.OnServerEvent:Connect(function(player, actionName, params)
+  if typeof(actionName) ~= "string" then return end
+  -- Validate actionName and params strictly
+  if actionName == "BuyItem" then
+    local itemId = params and params.itemId
+    local amount = params and params.amount
+    if typeof(itemId) == "string" and typeof(amount) == "number" and amount > 0 then
+      -- Server-side currency check & inventory update
+      local success, err = pcall(function()
+        -- Perform DataStore or leaderstats update here with authoritative checks
+      end)
+      if not success then
+        warn("Purchase failed for", player.Name, err)
+      end
+    end
+  end
+end)</code></pre>
+
+  <h2>DataStore Failure Handling (Roblox)</h2>
+  <p>DataStore APIs can fail intermittently. Use pcall around GetAsync/SetAsync and retries with exponential backoff. Never discard failures silently; mark saves as pending for later retries if necessary.</p>
+  <pre><code>local function safeGet(datastore, key, retries)
+  retries = retries or 3
+  local delayTime = 0.5
+  for i = 1, retries do
+    local ok, result = pcall(function() return datastore:GetAsync(key) end)
+    if ok then return true, result end
+    wait(delayTime)
+    delayTime = delayTime * 2
+  end
+  return false, nil
+end</code></pre>
+
+  <h2>Testing Strategies</h2>
+  <p>Test in environments that closely mirror production. For FiveM:</p>
+  <ul>
+    <li>Run a local fxserver or use txAdmin's staging server to replicate production configs.</li>
+    <li>Use isolated databases for tests and reset schema between runs.</li>
+    <li>Automate smoke tests that exercise login, inventory and transactions.</li>
+  </ul>
+  <p>For Roblox:</p>
+  <ul>
+    <li>Use Roblox Studio's "Start Server" + "Start Player" features to simulate multiple-player interactions.</li>
+    <li>Automate unit tests on Luau logic where possible and run integration tests in a staging place.</li>
+    <li>Use code sync tools like Rojo and a CI/CD pipeline for deterministic publishes.</li>
+  </ul>
+  <p>Integrate observability and error grouping early. Using external tools can accelerate debugging; for instance, you can evaluate the developer tooling available in the <a href="https://trystellarai.com/app">Stellar AI app</a> to catch hot-path regressions during integration testing. Also maintain a technical blog or changelog for your team; a short post after each deployment helps when tracking regressions (see more on the <a href="https://trystellarai.com/blog">Stellar AI blog</a>).</p>
+
+  <h2>Deployment and Maintenance</h2>
+  <p>Best practices for a smooth production lifecycle:</p>
+  <ul>
+    <li>Back up databases and key config files before major releases. Automate backups and test restores periodically.</li>
+    <li>Deploy with staged rollouts: bring a server offline from a low-traffic region, perform migration and smoke tests, then roll forward.</li>
+    <li>Use rolling restarts to reduce downtime. For FiveM, restart resources individually if possible and document ordered restarts for dependencies.</li>
+    <li>Log and monitor critical paths: log all financial transactions, shop purchases, and admin actions with timestamps and player identifiers.</li>
+  </ul>
+
+  <h2>Practical Troubleshooting Checklist</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Issue</th>
+        <th>Likely Cause</th>
+        <th>Immediate Steps</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Resource won't start</td>
+        <td>Missing fxmanifest / wrong path</td>
+        <td>Check fxmanifest syntax, ensure in server.cfg with <code>ensure</code>, check file encoding</td>
+      </tr>
+      <tr>
+        <td>Exports nil / function missing</td>
+        <td>Dependency not started or API changed</td>
+        <td>Verify dependencies in fxmanifest and pin versions</td>
+      </tr>
+      <tr>
+        <td>DB queries failing</td>
+        <td>Credentials / driver / schema mismatch</td>
+        <td>Test DB connection, run migrations, switch driver if required</td>
+      </tr>
+      <tr>
+        <td>Client-side NUI not updating</td>
+        <td>Message format mismatch / race</td>
+        <td>Validate payload, add handshake event from server</td>
+      </tr>
+      <tr>
+        <td>Roblox save fails</td>
+        <td>DataStore API throttling or transient error</td>
+        <td>Use pcall, retry with exponential backoff, log failures</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Maintenance Checklist</h2>
+  <ol>
+    <li>Daily: Check server logs for exceptions and failed DB queries.</li>
+    <li>Weekly: Run schema validation and apply minor fixes on staging first.</li>
+    <li>Before each release: Snapshot DB, backup config, run full integration tests.</li>
+    <li>Monthly: Review third-party dependency versions, update and test in staging.</li>
+  </ol>
+
+  <h2>Testing and Validation Snippets</h2>
+  <p>Use lightweight scripts to validate resource health at boot time. Example: small server-side "health check" endpoint that verifies DB, critical exports, and config keys, returning a structured JSON log to your monitoring tool. Keep it read-only and rate-limited.</p>
+
+  <h2>References</h2>
+  <ul>
+    <li><a href="https://docs.fivem.net/">FiveM Documentation</a> — official docs for fxmanifest, resource manifests, and server administration.</li>
+    <li><a href="https://developer.roblox.com/">Roblox Developer Hub</a> — official documentation for RemoteEvents, DataStore APIs, and best practices.</li>
+    <li>QBCore, ESX and ox_lib project pages and READMEs (search their official repos for API details before upgrading).</li>
+  </ul>
+</body>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

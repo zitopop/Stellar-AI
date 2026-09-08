@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Live Map Setup — Server-Authoritative Real-Time Player Map — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to build a secure, server-authoritative live map for FiveM using a small resource, a Node.js websocket bridge, and a Leaflet front-end. Includes fxmanifest, server/client Lua, Node server, and a web map example.">
+  <meta name="keywords" content="FiveM live map, FiveM map real-time, fxmanifest, PerformHttpRequest, websocket, Leaflet, server-authoritative, QBCore, ESX">
+  <meta property="og:title" content="FiveM Live Map Setup — Server-Authoritative Real-Time Player Map">
+  <meta property="og:description" content="Step-by-step guide to build a secure, server-authoritative live map for FiveM using a small resource, a Node.js websocket bridge, and a Leaflet front-end. Includes fxmanifest, server/client Lua, Node server, and a web map example.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-live-map-setup">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM developer guide</div>
+  <h1>FiveM Live Map Setup — Server-Authoritative Real-Time Player Map</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks a FiveM developer through a practical, secure setup to stream player positions to an external live map. The pattern is server-authoritative: clients send position updates to the server, the server validates and aggregates, and a small bridge forwards positions to a web map over WebSocket. Complete file examples and deployment steps are included.</p>
+  <h2>Why server-authoritative live maps?</h2>
+<p>External live maps are useful for administration, events, and public status pages. A server-authoritative pipeline prevents client spoofing, implements rate limiting, and centralises access controls. The pattern below keeps trust on the FiveM server, uses a separate web bridge for public display, and leaves secrets out of client code.</p>
+
+<h2>Implementation plan (short)</h2>
+<ol>
+  <li>Create a FiveM resource that accepts periodic client coordinate updates and validates them.</li>
+  <li>Store a compact player state on the server and periodically POST the aggregated snapshot to a Node.js bridge using a server-side secret.</li>
+  <li>The Node.js bridge broadcasts snapshots to connected web clients via WebSocket; a Leaflet front-end renders markers.</li>
+</ol>
+
+<h2>Assumptions & framework dependencies</h2>
+<ul>
+  <li>Vanilla FiveM server with Lua resources. QBCore/ESX users: the examples use only core FiveM functions (GetPlayerName, source) so they work alongside frameworks. If you need framework-specific player metadata, call QBCore or ESX server APIs when building the snapshot.</li>
+  <li>External map host reachable from your FiveM server (the bridge). Use a private bridge (local network) for staff-only maps, or host in a secure VPS for public maps.</li>
+  <li>Node.js 16+ for the bridge and a small static web host for the Leaflet page.</li>
+</ul>
+
+<h2>Files you will create</h2>
+<p>Below are full destination-labelled files. Put the FiveM files into a resource folder (e.g. resources/[local]/live_map). The Node and web files are deployed outside FiveM.</p>
+
+<h3>1) fxmanifest.lua (resource root)</h3>
+<pre><code>fx_version 'cerulean'
+games { 'gta5' }
+
+author 'YourName'
+description 'Live map: client updates -> server aggregation -> external bridge'
+
+shared_script 'config.lua'
+server_script 'server.lua'
+client_script 'client.lua'
+</code></pre>
+
+<h3>2) config.lua</h3>
+<pre><code>-- live_map/config.lua
+Config = {
+  UpdateInterval = 2000,          -- how often client sends coords (ms)
+  ServerBroadcastInterval = 3000, -- server pushes snapshot to bridge (ms)
+  BridgeUrl = GetConvar('live_map_bridge', 'http://127.0.0.1:8080/update'),
+  BridgeSecretConvar = 'live_map_secret'
+}
+</code></pre>
+
+<h3>3) client.lua</h3>
+<pre><code>-- live_map/client.lua
+local sendInterval = Config.UpdateInterval
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(sendInterval)
+    local ped = PlayerPedId()
+    if DoesEntityExist(ped) then
+      local pos = GetEntityCoords(ped)
+      TriggerServerEvent('live_map:updateCoords', { x = pos.x, y = pos.y, z = pos.z })
+    end
+  end
+end)
+</code></pre>
+
+<h3>4) server.lua</h3>
+<pre><code>-- live_map/server.lua
+local playerPositions = {}
+
+RegisterNetEvent('live_map:updateCoords', function(coords)
+  local src = source
+  if type(coords) ~= 'table' or not coords.x or not coords.y or not coords.z then return end
+
+  -- Basic validation
+  for k,v in pairs(coords) do
+    if type(v) ~= 'number' or math.abs(v) > 100000 then return end
+  end
+
+  playerPositions[src] = {
+    id = src,
+    name = GetPlayerName(src) or ('player_'..src),
+    x = coords.x,
+    y = coords.y,
+    z = coords.z,
+    ts = os.time()
+  }
+end)
+
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(Config.ServerBroadcastInterval)
+    local snapshot = {}
+    for src, data in pairs(playerPositions) do
+      -- drop stale entries older than 10s
+      if os.time() - data.ts < 10 then
+        table.insert(snapshot, data)
+      else
+        playerPositions[src] = nil
+      end
+    end
+
+    if #snapshot > 0 then
+      local payload = json.encode({ players = snapshot })
+      local secret = GetConvar(Config.BridgeSecretConvar, '')
+      PerformHttpRequest(Config.BridgeUrl, function(code, res, headers) end, 'POST', payload, { ['Content-Type'] = 'application/json', ['X-Live-Map-Secret'] = secret })
+    end
+  end
+end)
+</code></pre>
+
+<h3>5) Node.js bridge (map_server/index.js)</h3>
+<pre><code>// map_server/index.js
+const express = require('express')
+const bodyParser = require('body-parser')
+const WebSocket = require('ws')
+
+const app = express()
+app.use(bodyParser.json())
+
+const PORT = process.env.PORT || 8080
+const SECRET = process.env.LIVE_MAP_SECRET || 'replace-me'
+
+const wss = new WebSocket.Server({ noServer: true })
+let lastSnapshot = { players: [] }
+
+app.post('/update', (req, res) => {
+  const secret = req.header('X-Live-Map-Secret') || ''
+  if (secret !== SECRET) return res.status(401).send('unauthorized')
+  if (!req.body || !Array.isArray(req.body.players)) return res.status(400).send('bad payload')
+
+  lastSnapshot = req.body
+  // broadcast to WS clients
+  const msg = JSON.stringify(lastSnapshot)
+  wss.clients.forEach(c => { if (c.readyState === WebSocket.OPEN) c.send(msg) })
+  res.send('ok')
+})
+
+const server = app.listen(PORT, () => console.log('bridge listening', PORT))
+server.on('upgrade', (req, socket, head) => {
+  wss.handleUpgrade(req, socket, head, ws => wss.emit('connection', ws, req))
+})
+
+// optional: provide last snapshot for HTTP polling
+app.get('/snapshot', (req, res) => res.json(lastSnapshot))
+</code></pre>
+
+<h3>6) Web front-end (web/index.html)</h3>
+<pre><code>&lt;!doctype html&gt;
+&lt;html&gt;&lt;head&gt;
+  &lt;meta charset="utf-8"/&gt;
+  &lt;title&gt;Live Map&lt;/title&gt;
+  &lt;link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/&gt;
+&lt;/head&gt;&lt;body&gt;
+  &lt;div id="map" style="width:100%;height:100vh"&gt;&lt;/div&gt;
+  &lt;script src="https://unpkg.com/leaflet/dist/leaflet.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+    const map = L.map('map').setView([0,0], 2)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map)
+    const markers = {}
+    const ws = new WebSocket('ws://YOUR_BRIDGE_HOST:8080')
+
+    ws.onmessage = (e) =&gt; {
+      const data = JSON.parse(e.data)
+      data.players.forEach(p =&gt; {
+        const latLng = [p.y, p.x] // swap if your mapping uses lat/lon; adjust as needed
+        if (markers[p.id]) {
+          markers[p.id].setLatLng(latLng)
+        } else {
+          markers[p.id] = L.marker(latLng).addTo(map).bindPopup(p.name)
+        }
+      })
+    }
+  &lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;
+</code></pre>
+
+<h2>Where each file belongs and installation</h2>
+<ul>
+  <li>Put fxmanifest.lua, client.lua, server.lua, config.lua into resources/[local]/live_map and start the resource in server.cfg with start live_map.</li>
+  <li>Set the bridge and secret in server.cfg (do not commit secrets):
+    <pre><code>set live_map_bridge "http://1.2.3.4:8080/update"
+set live_map_secret "your-strong-secret"
+</code></pre>
+  </li>
+  <li>Deploy the Node bridge on a server reachable by the FiveM host. Set environment LIVE_MAP_SECRET and run node index.js.</li>
+  <li>Host web/index.html on any static host and replace ws://YOUR_BRIDGE_HOST:8080 with your bridge address.</li>
+</ul>
+
+<h2>Security, validation and best practices</h2>
+<ul>
+  <li>Keep the secret only in server.cfg or an environment variable. Never embed it in client.lua or front-end code.</li>
+  <li>Validate coordinates and rate limits on the server. The example drops values with abs &gt; 100000 and prunes stale entries.</li>
+  <li>Use HTTPS/WSS and firewall rules for production. Require authentication or IP allowlist on the bridge if the map is not public.</li>
+  <li>If you integrate with QBCore/ESX, fetch additional server-side metadata (job, steam) from the framework server API; avoid trusting anything from the client.</li>
+</ul>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr><th>Step</th><th>Done</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Place live_map resource and start it</td><td>[ ]</td><td>resources/[local]/live_map</td></tr>
+    <tr><td>Set live_map_bridge and live_map_secret in server.cfg</td><td>[ ]</td><td>Do not commit server.cfg</td></tr>
+    <tr><td>Deploy Node bridge with LIVE_MAP_SECRET</td><td>[ ]</td><td>Use firewall / TLS</td></tr>
+    <tr><td>Host web map and verify websocket connection</td><td>[ ]</td><td>Replace ws URL in index.html</td></tr>
+    <tr><td>Verify rate limiting and stale pruning</td><td>[ ]</td><td>Adjust intervals in config.lua</td></tr>
+  </tbody>
+</table>
+
+<h2>Troubleshooting & next steps</h2>
+<ul>
+  <li>If you see no markers: check that server sends POSTs (enable server logs) and the bridge returns 200. Use the bridge /snapshot to verify the last payload.</li>
+  <li>For scale: switch to binary protocols (msgpack) or shard by server instance. Use monitoring and analytics for throughput.</li>
+  <li>To generate resource files automatically or iterate on variations (different marker styling, clustering, or job-based filters), consider using a scripting workspace like Stellar AI to produce complete destination-labelled files: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For walkthroughs and deeper tutorials see the blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</li>
+  <li>If you want a ready scaffold for different front-end needs, the app can export variations and bundle them for deployment: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</li>
+</ul>
+
+<p>Follow the verification workflow: test locally first, validate secrets and logs, and deploy with TLS for public maps. This pattern keeps authority on your FiveM server, prevents spoofing, and is compatible with QBCore/ESX ecosystems when you need framework metadata.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>References and further reading:</p>
+<ul>
+  <li><a href="https://docs.fivem.net/" target="_blank">FiveM documentation</a> — server and client Lua APIs</li>
+  <li><a href="https://leafletjs.com/" target="_blank">Leaflet</a> — simple mapping library used in the example</li>
+  <li><a href="https://nodejs.org/" target="_blank">Node.js</a> — runtime for the WebSocket bridge</li>
+  <li><a href="https://github.com/" target="_blank">GitHub</a> — store your bridge and web assets securely</li>
+</ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

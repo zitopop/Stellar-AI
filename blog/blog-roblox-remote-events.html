@@ -68,32 +68,218 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Use RemoteEvents in Roblox — Complete Guide</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">RemoteEvents are how Roblox scripts communicate between the server and client. This guide covers how to use FireServer, FireClient and OnServerEvent correctly.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to use remoteevents in roblox — complete guide, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Introduction</h2>
+<p>This guide explains practical patterns for using RemoteEvents in Roblox to build secure, maintainable, and debuggable client-server interactions. It covers architecture decisions, naming and placement, Luau implementation examples, server validation, DataStore failure handling, testing techniques, and deployment/maintenance best practices. Use these patterns to reduce exploit risk, improve reliability, and make your game easier to iterate on.</p>
+
+<h2>Core architecture: server authority and event roles</h2>
+<p>RemoteEvents are a one-way asynchronous messaging primitive: clients call server handlers via :FireServer, and servers push updates to clients via :FireClient or :FireAllClients. Use RemoteFunctions sparingly because synchronous calls block and are harder to scale under load. The fundamental rule: the server is authoritative. Never trust any data that originates from the client—always validate and sanitize on the server.</p>
+<p>Typical roles for events:</p>
+<ul>
+  <li>Client -> Server: request actions (buy, equip, attack intent). Send minimal required data; the server reconstructs or verifies the rest.</li>
+  <li>Server -> Client: state updates, confirmations, and replicated events (damage numbers, leaderboards, or broadcasts).</li>
+  <li>Server -> Server (within one place): use ModuleScripts or MessagingService for cross-server coordination instead of RemoteEvents.</li>
+</ul>
+
+<h2>Where to place RemoteEvents and naming conventions</h2>
+<p>Place RemoteEvents in ReplicatedStorage or a dedicated folder under ReplicatedStorage like ReplicatedStorage.Events to make access simple and avoid duplication. Keep names consistent and descriptive. Prefer namespaced event names and versioning when you anticipate changes.</p>
+<pre><code>-- Proposed structure
+ReplicatedStorage
+  └─ Events
+     ├─ Player
+     │  ├─ RequestPurchase_v1 (RemoteEvent)
+     │  └─ EquipItem_v1 (RemoteEvent)
+     └─ Server
+        ├─ BroadcastAnnouncement_v1 (RemoteEvent)
+        └─ SyncLeaderboard_v1 (RemoteEvent)</code></pre>
+<p>Version suffixes (_v1, _v2) allow you to modify behavior without breaking older clients during staged rollouts.</p>
+
+<h2>Client-side patterns: minimal and explicit</h2>
+<p>Client code should only send the smallest amount of data the server needs to validate. Never send client-predicted authoritative values (health, money) as truth. Instead, send intent (e.g., "attemptBuy", itemId) and let the server check currency, ownership, cooldowns.</p>
+<pre><code>-- LocalScript example (Client)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Events = ReplicatedStorage:WaitForChild("Events")
+local PurchaseEvent = Events.Player:WaitForChild("RequestPurchase_v1")
+
+function attemptPurchase(itemId)
+    -- send just the intent and identifier
+    PurchaseEvent:FireServer(itemId)
+end</code></pre>
+<p>Use client-side debounce and UI state to prevent accidental spam: disable purchase buttons while a request is pending. But remember client-side debounces are UX only and not security.</p>
+
+<h2>Server-side patterns: validation, authority, and responses</h2>
+<p>Server handlers must validate player identity, check ownership, ensure resources, and enforce cooldowns/permissions. Always treat arguments from OnServerEvent as untrusted. Use safe deserialization and robust checks before changing state or writing to DataStore. Return explicit success/failure events or use a separate RemoteEvent that sends operation results back to the requesting client.</p>
+<pre><code>-- Script example (Server)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Events = ReplicatedStorage:WaitForChild("Events")
+local PurchaseEvent = Events.Player:WaitForChild("RequestPurchase_v1")
+local Players = game:GetService("Players")
+
+local function isValidItem(itemId)
+    -- lookup in a trusted server-side table
+    return true -- implement real checks
+end
+
+PurchaseEvent.OnServerEvent:Connect(function(player, itemId)
+    -- validate player and arguments
+    if typeof(itemId) ~= "string" then
+        -- optionally log suspicious activity
+        return
+    end
+
+    if not isValidItem(itemId) then
+        -- reject silently or notify
+        return
+    end
+
+    -- server checks currency and inventory
+    -- update databases and reply
+    -- use FireClient to send results
+    Events.Player:FindFirstChild("PurchaseResult_v1"):FireClient(player, true, "Bought " .. itemId)
+end)</code></pre>
+<p>Use dedicated result events instead of returning values through the same event. This pattern avoids race conditions and makes intent explicit.</p>
+
+<h3>Authorization and permission layers</h3>
+<p>Implement a permission check module on the server to centralize role checks (admin, moderator, free/paid features). Never hard-code permission logic in multiple handlers; centralization reduces mistakes and eases audits.</p>
+
+<h2>DataStore and failure handling</h2>
+<p>DataStore operations can fail due to throttling or transient errors. Always wrap DataStore calls with pcall and implement retry/backoff. Cache critical player state in memory for short durations and flush on success to DataStore. Prepare fallback behavior on save failure: queue writes, notify player, and retry in a bounded way to avoid indefinite memory growth.</p>
+<pre><code>-- DataStore save pattern (Server)
+local DataStoreService = game:GetService("DataStoreService")
+local PlayerData = DataStoreService:GetDataStore("PlayerData")
+
+local function savePlayerData(userId, data)
+    local maxRetries = 5
+    local retryDelay = 1
+    for i = 1, maxRetries do
+        local success, err = pcall(function()
+            PlayerData:SetAsync(tostring(userId), data)
+        end)
+        if success then
+            return true
+        end
+        warn("Save attempt failed", i, err)
+        wait(retryDelay)
+        retryDelay = retryDelay * 2 -- exponential backoff
+    end
+    -- if all retries fail, enqueue or persist to an alternative store
+    return false
+end</code></pre>
+<p>On player leave, attempt at least one save and handle failure by queueing the write and cleaning up server memory responsibly.</p>
+
+<h2>Security patterns, exploit mitigation, and rate limiting</h2>
+<p>Design server-side checks for:</p>
+<ul>
+  <li>Value ranges and types — reject out-of-range values.</li>
+  <li>Authority checks — verify requests against server state (e.g., currency, cooldowns).</li>
+  <li>Rate-limiting per player and per event — track timestamped counters in memory.</li>
+  <li>Logging suspicious behavior — maintain a bounded logging queue and flag accounts for review.</li>
+</ul>
+<p>Example rate limiter:</p>
+<pre><code>local rateLimits = {}
+local RATE_WINDOW = 2 -- seconds
+local MAX_CALLS = 5
+
+local function canCall(player, eventName)
+    local key = player.UserId .. ":" .. eventName
+    local now = tick()
+    rateLimits[key] = rateLimits[key] or {}
+    -- remove old timestamps
+    local list = rateLimits[key]
+    for i = #list, 1, -1 do
+        if now - list[i] > RATE_WINDOW then
+            table.remove(list, i)
+        end
+    end
+    if #list >= MAX_CALLS then
+        return false
+    end
+    table.insert(list, now)
+    return true
+end</code></pre>
+<p>Use logging for anomalies but avoid logging sensitive player data. Monitor server loads to adjust limits.</p>
+
+<h2>Testing and debugging</h2>
+<p>Use Roblox Studio's Play Solo and Start Server features to simulate multiple players and test event flows. Use the Output and Developer Console (F9) to capture server/client logs during runtime. For complex flows, instrument events with correlation IDs to trace a request across systems:</p>
+<pre><code>-- Example of adding a correlation ID
+local correlationId = HttpService:GenerateGUID(false)
+PurchaseEvent:FireServer(itemId, correlationId)
+-- server echoes correlationId in logs and responses for traceability</code></pre>
+<p>Write unit-like tests for ModuleScripts encapsulating validation logic. For integration tests, automate sequences in Studio or use CI with the Roblox Test Framework if available for your team. Consider fuzz testing by sending malformed payloads to ensure validation holds.</p>
+
+<h2>Deployment, versioning, and maintenance</h2>
+<p>Deploy updates in stages. Use versioned event names when changing the contract (arguments or semantics). Keep compatibility shims server-side for old clients during rollouts and monitor errors from mismatched payloads to know when it's safe to remove shims.</p>
+<p>Maintain a small set of durable events for long-term use to reduce surface area. Keep event handlers short and move complex logic into server-only ModuleScripts for easier testing and reuse.</p>
+<p>For operational monitoring, export key metrics (event failure counts, save failures, rate-limit hits) to your telemetry system. Tools like the Stellar AI app can help with observability — try the app for monitoring game telemetry and release metrics: <a href="https://trystellarai.com/app">Stellar AI monitoring</a>. If you run a blog or team knowledge base, publish postmortems for major issues and link them to release notes: <a href="https://trystellarai.com/blog">developer operations blog</a>.</p>
+<p>When rolling out features, notify players gracefully and use server flags to toggle behavior. If you use remote analytics, ensure you comply with platform policies and respect player privacy.</p>
+<p>For end-to-end change control and automated checks, integrate your repository with CI, and run static and dynamic checks before publishing new server scripts. You can also register alerts in your workflow tools; setup and monitoring often benefit from observability tooling — consider adding a lightweight telemetry agent or third-party observability tool during initial release: <a href="https://trystellarai.com/app">Stellar AI monitoring (tool)</a>.</p>
+
+<h2>Practical checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Area</th>
+      <th>Action</th>
+      <th>Why it matters</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Event placement</td>
+      <td>Store in ReplicatedStorage/Events and use namespaces</td>
+      <td>Consistency and simple discovery</td>
+    </tr>
+    <tr>
+      <td>Naming</td>
+      <td>Use descriptive names and version suffixes</td>
+      <td>Smoother rollouts and fewer breaking changes</td>
+    </tr>
+    <tr>
+      <td>Client data</td>
+      <td>Send only intent and identifiers</td>
+      <td>Reduces attack surface and validation complexity</td>
+    </tr>
+    <tr>
+      <td>Server validation</td>
+      <td>Type checks, bounds checks, permission checks</td>
+      <td>Prevents exploits and maintains game integrity</td>
+    </tr>
+    <tr>
+      <td>DataStore</td>
+      <td>Use pcall, retries, backoff, and caching</td>
+      <td>Improves reliability during transient failures</td>
+    </tr>
+    <tr>
+      <td>Rate limiting</td>
+      <td>Implement per-player and per-event limits</td>
+      <td>Protects servers and gameplay from abuse</td>
+    </tr>
+    <tr>
+      <td>Testing</td>
+      <td>Simulate multiple clients and use Dev Console</td>
+      <td>Detect race conditions and validation gaps</td>
+    </tr>
+    <tr>
+      <td>Monitoring</td>
+      <td>Track event errors, save failures, and rate hits</td>
+      <td>Helps with fast incident response</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Quick reference code summary</h2>
+<p>Short patterns to copy: validate everything on server, use results events to reply, wrap DataStore calls, and implement in-memory rate limiting. Use ModuleScripts for shared validation logic and unit test those modules.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/class/RemoteEvent">RemoteEvent — Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store">DataStore — Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/class/RemoteFunction">RemoteFunction — Roblox Developer Hub</a></li>
+  <li><a href="https://docs.fivem.net/docs/scripting-manual/intro/">FiveM scripting reference — FiveM Docs</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

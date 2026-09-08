@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Server Optimisation: Practical Guide for Faster, Stable Servers — Stellar AI</title>
+  <meta name="description" content="Concrete strategies for measuring and optimising FiveM servers. Covers resource tuning, network and tick handling, QBCore/ESX patterns, safe code examples, deployment checks, and a practical checklist.">
+  <meta name="keywords" content="FiveM optimisation, server performance, QBCore optimisation, ESX performance, fxmanifest, server tick, rate limiting, resource streaming, Roblox DataStore, RemoteEvent">
+  <meta property="og:title" content="FiveM Server Optimisation: Practical Guide for Faster, Stable Servers">
+  <meta property="og:description" content="Concrete strategies for measuring and optimising FiveM servers. Covers resource tuning, network and tick handling, QBCore/ESX patterns, safe code examples, deployment checks, and a practical checklist.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-server-optimisation">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Performance guide for FiveM builders</div>
+  <h1>FiveM Server Optimisation: Practical Guide for Faster, Stable Servers</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide gives a practical, repeatable approach to FiveM server optimisation. You’ll learn how to measure bottlenecks, prioritise fixes, apply configuration and code-level changes that respect server authority (QBCore/ESX/ox_lib boundaries), and verify improvements safely. There’s also a short Roblox comparison on server/client separation and DataStore safety.</p>
+  <h2>1. Start by measuring — not guessing</h2>
+<p>Optimisation begins with data. Use built-in FiveM profiling, txAdmin CPU and memory graphs, and in-resource logging around expensive hooks. Track these metrics before any change: server CPU, memory, tick durations, network bytes, connection counts, and player-per-resource usage. Avoid changing several variables at once; make one change, measure for a load window, and roll back if the net effect is harmful.</p>
+
+<h2>2. Common FiveM bottlenecks and quick wins</h2>
+<p>Most servers face similar issues. Address them in this order for fast wins:</p>
+<ul>
+  <li><strong>Resource count:</strong> Each resource adds startup overhead and runtime hooks. Disable unused resources and merge small, high-churn scripts where logical.</li>
+  <li><strong>High-frequency client events:</strong> Spamming server events from clients for position, input, or UI updates multiplies tick cost. Throttle, aggregate, or move logic client-side where authoritative state is not required.</li>
+  <li><strong>Streaming assets:</strong> Large or many streamed models can bloat bandwidth and client CPU. Use stream manifest limits and test with many simultaneous spawns.</li>
+  <li><strong>Database blocking:</strong> Synchronous DB calls on the server tick freeze processing. Use async workers, queues, or batched writes.</li>
+</ul>
+
+<h2>3. Respect server authority: validation and rate limiting</h2>
+<p>Never trust client inputs. Validate on the server and apply rate limiting. Below is a minimal server-side pattern you can adapt. Save this as server.lua in your resource; it validates input and enforces a per-player cooldown.</p>
+<pre><code>-- server.lua
+local playerCooldown = {}
+local COOLDOWN_MS = 500 -- half second
+
+RegisterNetEvent('myresource:submitAction')
+AddEventHandler('myresource:submitAction', function(payload)
+  local src = source
+  local now = os.time() * 1000
+  local last = playerCooldown[src] or 0
+  if now - last &lt; COOLDOWN_MS then
+    -- too frequent, ignore or punish
+    return
+  end
+  playerCooldown[src] = now
+
+  -- validate payload fields server-side
+  if type(payload) ~= 'table' or not payload.actionId then return end
+  local actionId = tostring(payload.actionId)
+  if #actionId &gt; 64 then return end
+
+  -- proceed with authoritative effects, e.g. currency change via QBCore
+  if exports['qb-core'] then
+    local QBCore = exports['qb-core']:GetCoreObject()
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Player then
+      -- safe method: server adjusts money, client never directly sets money
+      Player.Functions.AddMoney('bank', 50)
+    end
+  else
+    -- ESX fallback pattern
+    TriggerEvent('esx:getSharedObject', function(ESX)
+      local xPlayer = ESX.GetPlayerFromId(src)
+      if xPlayer then
+        xPlayer.addMoney(50)
+      end
+    end)
+  end
+end)
+</code></pre>
+
+<h3>Why this pattern?</h3>
+<p>It centralises authority, enforces spacing between requests, and keeps framework-specific calls behind detected exports/events. For ox_lib or other libraries, follow the same principle: detect presence, then call documented exports only from server scripts.</p>
+
+<h2>4. Resource manifest and fxmanifest tips</h2>
+<p>Keep your fxmanifest concise and explicitly list server and client scripts. Example fxmanifest (fxmanifest.lua):</p>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'OptimisedResource'
+version '1.0.0'
+
+server_scripts {
+  'server.lua'
+}
+
+client_scripts {
+  'client.lua'
+}
+
+-- provide/exports only when necessary
+</code></pre>
+<p>Listing scripts explicitly avoids runtime scanning overhead and makes debugging easier.</p>
+
+<h2>5. Database and IO: queue, batch, backoff</h2>
+<p>Move synchronous DB writes off the main tick. Use a small worker queue that batches writes every N seconds or when size threshold hits. If you use MySQL Async, prefer its async APIs; for high-volume logs consider a dedicated logger resource that limits write rate and only persists aggregated stats.</p>
+
+<h2>6. Roblox note: similar principles, different boundaries</h2>
+<p>Roblox developers face analogous problems: too-frequent RemoteEvent traffic, main-thread DataStore saves blocking other work, and trust boundaries between client and server. Use RemoteEvents to request actions and always validate on the server Script. Use pcall when calling DataStore:SetAsync and implement retry/backoff. Example ModuleScript wrapper:</p>
+<pre><code>-- DataStoreWrapper.server.lua (ModuleScript)
+local DataStoreService = game:GetService('DataStoreService')
+local store = DataStoreService:GetDataStore('MyGameStore')
+
+local M = {}
+function M:Save(key, value)
+  local ok, err
+  local attempts = 0
+  repeat
+    attempts = attempts + 1
+    ok, err = pcall(function()
+      store:SetAsync(key, value)
+    end)
+    if not ok then wait(1 * attempts) end -- exponential-ish backoff
+  until ok or attempts &gt;= 5
+  return ok, err
+end
+
+return M
+</code></pre>
+<p>Combine with RemoteEvent: client requests an action, server validates and calls DataStore via the wrapper.</p>
+
+<h2>7. Monitoring, automation, and rollback</h2>
+<p>Use txAdmin or Prometheus-like metrics to alert on rising ticks, memory, or DB latency. Automate deployment with versioned resources so you can quickly roll back if a change regresses performance. Keep a changelog of config changes and timestamps to correlate with monitoring signals.</p>
+
+<h2>8. Practical checklist (table)</h2>
+<table>
+  <thead>
+    <tr><th>Step</th><th>Impact</th><th>Where</th><th>Validation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Measure baseline</td><td>High</td><td>Server</td><td>Collect 24h CPU/memory/tick</td></tr>
+    <tr><td>Disable unused resources</td><td>Medium</td><td>Server</td><td>Compare startup time &amp; memory</td></tr>
+    <tr><td>Throttle client events</td><td>High</td><td>Client &amp; Server</td><td>Check event rate and server tick</td></tr>
+    <tr><td>Move DB writes to queue</td><td>High</td><td>Server</td><td>Measure DB latency and tick blocking</td></tr>
+    <tr><td>Stream asset audit</td><td>Medium</td><td>Client</td><td>Client FPS &amp; bandwidth under load</td></tr>
+  </tbody>
+</table>
+
+<h2>9. Next steps and resources</h2>
+<p>After applying fixes, run an A/B window under similar player counts to confirm net improvement. For iterative help and scripted planning, many builders use AI-assisted workflows — if you want a guided scripting workspace, consider trying Stellar AI’s app for planning and generating labelled files at <a href='https://trystellarai.com/app'>https://trystellarai.com/app</a>. If you need a deeper writeup and case studies, start with their blog at <a href='https://trystellarai.com/blog'>https://trystellarai.com/blog</a>.</p>
+
+<p>For a quick optimisation sprint, try their app to produce labelled resource templates and change lists: <a href='https://trystellarai.com/app'>https://trystellarai.com/app</a>.</p>
+
+<h2>10. Final validation checklist</h2>
+<ul>
+  <li>Run stress tests matching peak player count.</li>
+  <li>Verify server-side validation prevents spoofed actions.</li>
+  <li>Confirm DB queue does not drop critical writes; add retry logging.</li>
+  <li>Monitor for regressions for at least 48 hours post-deploy.</li>
+</ul>
+
+<p>Follow these steps iteratively: measure, change one variable, validate, and then deploy. Small, well-measured changes compound into a stable, scalable FiveM server without sacrificing gameplay or security.</p>
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><ul><li><a href='https://docs.fivem.net'>FiveM Documentation</a></li><li><a href='https://docs.qbcore.org'>QBCore Documentation (community)</a></li><li><a href='https://developer.roblox.com/en-us/'>Roblox Developer Hub</a></li><li><a href='https://forum.cfx.re/'>FiveM Forum</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

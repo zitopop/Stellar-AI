@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESX to QBCore Migration: A Practical, Server-First Guide for FiveM Projects — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to migrate a FiveM resource from ESX to QBCore. Planning, API mappings, fxmanifest changes, secure server-side examples, DB considerations, ox_lib/qb-target tips, and a short Roblox checklist for analogous server-client practices.">
+  <meta name="keywords" content="ESX to QBCore migration, FiveM migration, QBCore guide, ESX conversion, qb-core, fxmanifest, server validation, ox_lib, qb-target">
+  <meta property="og:title" content="ESX to QBCore Migration: A Practical, Server-First Guide for FiveM Projects">
+  <meta property="og:description" content="Step-by-step guide to migrate a FiveM resource from ESX to QBCore. Planning, API mappings, fxmanifest changes, secure server-side examples, DB considerations, ox_lib/qb-target tips, and a short Roblox checklist for analogous server-client practices.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/esx-to-qbcore-migration">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Migration guide</div>
+  <h1>ESX to QBCore Migration: A Practical, Server-First Guide for FiveM Projects</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">Migrate an ESX resource to QBCore without breaking server authority, accounts, or player data. This guide gives a realistic plan, API mappings, configuration examples, a secure server-side conversion pattern, database migration notes, and a short Roblox-oriented checklist for similar server-client concerns.</p>
+  <h2>Why migrate from ESX to QBCore?</h2>
+<p>QBCore (qb-core) offers a modern API, an active community, and modular patterns such as Player objects and ox_lib utilities. Many server teams choose QBCore for clearer abstractions around items, callbacks, and permissions. Migration should be driven by long-term maintainability, not hype: plan carefully and keep the server authoritative at all times.</p>
+
+<h2>High-level migration plan</h2>
+<p>Follow these phased steps to avoid downtime and data loss:</p>
+<ul>
+  <li>Audit the existing ESX resource and site-wide dependencies.</li>
+  <li>Map ESX APIs used (callbacks, usable items, player methods) to QBCore equivalents.</li>
+  <li>Create a QBCore-compatible resource skeleton and fxmanifest.</li>
+  <li>Implement server-side conversions with strict validation and logging.</li>
+  <li>Migrate persistent data (inventories, money, metadata) with tested SQL transforms.</li>
+  <li>Deploy behind a feature flag and test with a staging server.</li>
+</ul>
+
+<h2>Assumptions and dependencies</h2>
+<p>Assume your target server uses qb-core v1+ exported GetCoreObject pattern. If you rely on ox_lib, qb-target, or other addons, document versions. If you lack the ESX database schema, export it first. If you want assistance automating migrations, try the Stellar AI app for planning and file generation: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Key API mappings (quick reference)</h2>
+<ul>
+  <li>ESX.RegisterServerCallback -> QBCore.Functions.CreateCallback</li>
+  <li>ESX.RegisterUsableItem -> QBCore.Functions.CreateUseableItem</li>
+  <li>ESX.GetPlayerFromId(source) -> QBCore.Functions.GetPlayer(source)</li>
+  <li>xPlayer.addInventoryItem -> Player.Functions.AddItem</li>
+  <li>TriggerClientEvent/ServerEvent remain the same but validate on server</li>
+</ul>
+
+<h3>Server-side callback example (ESX -> QBCore)</h3>
+<p>ESX server callback (old pattern):</p>
+<pre><code>ESX.RegisterServerCallback('myresource:getBalance', function(source, cb)
+  local xPlayer = ESX.GetPlayerFromId(source)
+  if not xPlayer then return cb(0) end
+  cb(xPlayer.getMoney())
+end)
+</code></pre>
+<p>Convert to QBCore pattern with validation and nil checks:</p>
+<pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+
+QBCore.Functions.CreateCallback('myresource:getBalance', function(source, cb)
+  local Player = QBCore.Functions.GetPlayer(source)
+  if not Player then
+    cb(0)
+    return
+  end
+  -- Use Player.PlayerData.money or Player.Functions.GetMoney() depending on version
+  cb(Player.PlayerData.money['bank'] or 0)
+end)
+</code></pre>
+
+<h2>Converting usable items safely</h2>
+<p>ESX.RegisterUsableItem allowed client-side triggers; with QBCore you should create useable items and perform authoritative checks server-side before granting effects.</p>
+<pre><code>-- QBCore: create a usable item and validate inventory server-side
+QBCore.Functions.CreateUseableItem('thermite', function(source)
+  local Player = QBCore.Functions.GetPlayer(source)
+  if not Player then return end
+  local count = Player.Functions.GetItemByName('thermite') and Player.Functions.GetItemByName('thermite').amount or 0
+  if count < 1 then
+    TriggerClientEvent('QBCore:Notify', source, 'You do not have thermite', 'error')
+    return
+  end
+  -- remove one thermite, then trigger client effect
+  Player.Functions.RemoveItem('thermite', 1)
+  TriggerClientEvent('myresource:client:UseThermite', source)
+end)
+</code></pre>
+<p>Always remove items and apply cooldowns on the server to prevent client-side exploitation.</p>
+
+<h2>fxmanifest and resource layout</h2>
+<p>Switch your dependency from es_extended to qb-core and follow QBCore recommended structure. Example fxmanifest snippet:</p>
+<pre><code>fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'MyResource migrated to QBCore'
+version '1.0.0'
+
+shared_scripts {
+  '@qb-core/shared/locale.lua',
+  'config.lua'
+}
+
+server_scripts {
+  '@qb-core/server/main.lua',
+  'server/main.lua'
+}
+
+client_scripts {
+  'client/main.lua'
+}
+
+dependencies {
+  'qb-core'
+}
+</code></pre>
+
+<h2>Database and persistent data migration</h2>
+<p>ESX and QBCore manage player data differently. Do not guess schema fields — inspect both schemas and write idempotent SQL transforms. Typical steps:</p>
+<ol>
+  <li>Dump ESX player table(s) to staging.</li>
+  <li>Map identifiers (steam license, identifiers) exactly.</li>
+  <li>Transform inventory JSON formats if needed, testing with a single user after a backup.</li>
+  <li>Write transactional SQL scripts and test rollback.</li>
+</ol>
+<p>If you're unsure, start by migrating a low-risk subset (e.g., money only) and run both systems in parallel on a test server.</p>
+
+<h2>ox_lib, qb-target and permission boundaries</h2>
+<p>When migrating target interactions, replace ESX client-side triggers with qb-target exports or ox_target zones. Use server-side permission checks for admin commands and inventory changes. Never trust client assertions about amounts or item existence — always re-check on the server.</p>
+
+<h2>Roblox note: analogous server-client concerns</h2>
+<p>While Roblox is a different platform, the same server-authoritative principles apply. Use RemoteEvents/RemoteFunctions correctly and validate inputs on the server. Example Luau pattern for safe RemoteEvent handling and DataStore error handling:</p>
+<pre><code>-- ServerScript in Roblox
+local Players = game:GetService('Players')
+local DataStoreService = game:GetService('DataStoreService')
+local MyDS = DataStoreService:GetDataStore('PlayerData')
+local Remote = script:WaitForChild('SaveRequest') -- RemoteEvent
+
+Remote.OnServerEvent:Connect(function(player, data)
+  -- validate structure and types
+  if type(data) ~= 'table' then return end
+  local success, err = pcall(function()
+    MyDS:SetAsync('p_' .. player.UserId, data)
+  end)
+  if not success then
+    warn('DataStore Save failed for', player.UserId, err)
+    -- consider retry logic or queueing
+  end
+end)
+</code></pre>
+<p>Apply similar validation and retry/backoff strategies when moving persistent data between game frameworks.</p>
+
+<h2>Practical migration checklist</h2>
+<table>
+  <thead>
+    <tr><th>Step</th><th>Action</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Audit ESX usages and DB exports</td><td>❏</td></tr>
+    <tr><td>2</td><td>Create QBCore skeleton and fxmanifest</td><td>❏</td></tr>
+    <tr><td>3</td><td>Map callbacks and usable items</td><td>❏</td></tr>
+    <tr><td>4</td><td>Implement server-side validation</td><td>❏</td></tr>
+    <tr><td>5</td><td>Transform and test DB migration on staging</td><td>❏</td></tr>
+    <tr><td>6</td><td>Deploy behind feature flag and smoke-test</td><td>❏</td></tr>
+    <tr><td>7</td><td>Monitor logs and roll back if needed</td><td>❏</td></tr>
+  </tbody>
+</table>
+
+<h2>Next steps and resources</h2>
+<p>Run a staged migration on a private server and log every inventory and money change during tests. If you want help planning specific file conversions or auto-generating destination-labelled files for the migration, try the planning and code-generation tools at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For deeper walkthroughs and migration stories, see the blog: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<p>Keep these safety rules: always validate on the server, test DB transforms in a transaction-friendly environment, and preserve player account integrity. If you need a migration plan tailored to your resource set (inventory, shops, jobs), provide the ESX resource files and database schema and follow the plan-and-build order described in this guide.</p>
+
+<p>Good luck — migrate incrementally, validate aggressively, and keep the server authoritative. If you want a scaffold or code templates for common patterns (callbacks, usable items, inventory transforms), Stellar AI can help generate destination-labelled files and a checklist to run locally.</p>
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>References and further reading:</p><ul><li><a href="https://trystellarai.com/app">Stellar AI App</a> — planning and code generation for FiveM and Roblox builders.</li><li><a href="https://trystellarai.com/blog">Stellar AI Blog</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

@@ -68,32 +68,267 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Add Game Passes to Your Roblox Game</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Game passes are the main way to monetise your Roblox game. This guide covers how to check ownership, give perks and handle purchases server-side.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files — fxmanifest, client.lua, server.lua and config.lua — ready to drop into your resources folder.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any coordinates, prices or settings for your server. Restart and test everything works correctly before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script ready to drop into your server. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to add game passes to your roblox game, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Overview</h2>
+<p>
+This guide explains how to add Roblox Game Passes to your experience with robust server-side validation, RemoteEvent usage, DataStore patterns for caching, and testing and deployment best practices. The central principle is: the server is authoritative. Clients can request actions, prompt purchases, and display UI, but the server must verify ownership before granting persistent advantages.
+</p>
+
+<h2>Architecture: Where Game-Pass Logic Belongs</h2>
+<p>
+Design game-pass logic as a small set of responsibilities split between client and server:
+</p>
+<ul>
+  <li><strong>Client</strong>: UI, purchase prompts, local cosmetic changes that are purely visual and reversible, and sending requests for server-side features.</li>
+  <li><strong>Server</strong>: Ownership checks, persistent state updates, authoritative gating of gameplay-affecting features (weapons, abilities, currency multipliers, leaderboard advantages).</li>
+  <li><strong>DataStore and Cache</strong>: Optional server-side cache to reduce calls to MarketplaceService, backed by DataStore for long-term persistence of server-computed data related to passes.</li>
+</ul>
+<p>
+For background tooling and app integration (analytics, deployment pipelines), you can also connect to developer tooling such as the Stellar AI app for asset management and continuous workflows. Visit <a href="https://trystellarai.com/app">Stellar AI app</a> to learn more about that integration.
+</p>
+
+<h2>Core Implementation: Server-Side Ownership Checks</h2>
+<p>
+Always verify game-pass ownership on the server. Roblox provides MarketplaceService:UserOwnsGamePassAsync(userId, gamePassId) to determine official ownership. Use this call before granting any authoritative change (inventory, stats, role assignment).
+</p>
+<p>
+Typical server flow:
+</p>
+<ol>
+  <li>Client asks to perform a pass-protected action via RemoteEvent.</li>
+  <li>Server receives the request, reads player.UserId, and calls MarketplaceService:UserOwnsGamePassAsync.</li>
+  <li>If ownership is confirmed, server applies the effect and (optionally) records the entitlement in a DataStore.</li>
+  <li>If not, server returns a failure response and logs the attempt for debugging or abuse detection.</li>
+</ol>
+
+<h3>Sample server-side validation (Luau)</h3>
+<pre><code>-- ServerScriptService/GamePassHandler.server.lua
+local MarketplaceService = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
+local Remote = game.ReplicatedStorage:WaitForChild("GamePassRequest")
+
+local GAMEPASS_ID = 12345678
+
+Remote.OnServerEvent:Connect(function(player, actionName, ...)
+    -- Never trust any parameters from the client; validate everything here
+    if actionName == "UseSpecialAbility" then
+        local success, owns = pcall(MarketplaceService.UserOwnsGamePassAsync, MarketplaceService, player.UserId, GAMEPASS_ID)
+        if success and owns then
+            -- Grant ability server-side
+            -- applyAbilityToPlayer(player)
+            Remote:FireClient(player, "Granted", actionName)
+        else
+            Remote:FireClient(player, "Denied", actionName)
+        end
+    end
+end)</code></pre>
+
+<h2>Client Flow: Prompt Purchase and UI</h2>
+<p>
+Prompting a purchase must happen in a LocalScript. The client may open Roblox's purchase dialog, but post-purchase verification always happens on the server. Use MarketplaceService:PromptGamePassPurchase to start the flow.
+</p>
+
+<h3>LocalScript example</h3>
+<pre><code>-- StarterGui/BuyButton.local.lua
+local MarketplaceService = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local BUY_BUTTON = script.Parent
+local GAMEPASS_ID = 12345678
+
+BUY_BUTTON.MouseButton1Click:Connect(function()
+    MarketplaceService:PromptGamePassPurchase(player, GAMEPASS_ID)
+end)</code></pre>
+
+<p>
+After purchase, use a RemoteEvent to ask the server to re-check ownership and activate features, or rely on automatic server-side checks for feature gating. Do not rely on client-side storage or flags to indicate ownership.
+</p>
+
+<h2>Cache and DataStore Strategy</h2>
+<p>
+Calling MarketplaceService for every check can be slow and has rate limits. Implement a short-term in-memory cache on the server and an optional authoritative DataStore record for game logic that depends on the pass persistently.
+</p>
+<p>
+Design guidelines:
+</p>
+<ul>
+  <li>Cache ownership for a short period (e.g., 5–30 minutes) and invalidate on events like PlayerRemoving or explicit re-checks after purchases.</li>
+  <li>Use DataStore only for extra metadata (e.g., XP boosters tied to passes) and not to replicate Roblox's ownership database.</li>
+  <li>Wrap DataStore calls in pcall and implement exponential backoff and retry for transient failures.</li>
+</ul>
+
+<h3>DataStore failure handling pattern</h3>
+<p>
+Always assume DataStore calls can fail. Use pcall and return a safe fallback. Record telemetry to detect frequent throttling or failures.
+</p>
+<pre><code>local DataStoreService = game:GetService("DataStoreService")
+local ds = DataStoreService:GetDataStore("PassMeta")
+
+local function safeGet(key)
+    local ok, result = pcall(function()
+        return ds:GetAsync(key)
+    end)
+    if ok then
+        return true, result
+    else
+        warn("DataStore GetAsync failed for", key, result)
+        return false, nil
+    end
+end</code></pre>
+
+<h2>Security and Edge Cases</h2>
+<p>
+Robust security practices for passes:
+</p>
+<ul>
+  <li><strong>Never trust client input.</strong> For FiveM, never imply client input is trusted; always validate on server. The same applies to Roblox: validate every client request against server-side checks.</li>
+  <li>Rate-limit RemoteEvent requests by player and action type to avoid abuse or DoS attempts.</li>
+  <li>Use explicit whitelists for pass IDs and actions. Do not accept pass IDs from the client.</li>
+  <li>Log suspicious patterns such as repeated denied access, which could indicate tampering or bots.</li>
+</ul>
+
+<h2>Testing and QA</h2>
+<p>
+Testing game passes requires multiple player accounts and controlled scenarios:
+</p>
+<ol>
+  <li>Create a test account that does and does not own the pass.</li>
+  <li>Use the Roblox Studio "Start Server" and "Start Player" to simulate multiplayer and test server logic.</li>
+  <li>Verify UI prompts, server validation, cache invalidation after purchase, and DataStore behavior during simulated failures.</li>
+  <li>Test with limited network conditions and observe how pcall-backed DataStore code reacts to failures.</li>
+</ol>
+<p>
+Automated test scaffolding can include scripted players that attempt pass-protected actions while logging server responses. Ensure that granting code is unreachable without server validation by attempting to call RemoteEvents with crafted parameters.
+</p>
+
+<h2>Deployment and Maintenance</h2>
+<p>
+Before release:
+</p>
+<ul>
+  <li>Confirm pass IDs and product metadata in the web console match the values in code.</li>
+  <li>Ensure analytics capture purchases and denied attempts for future triage.</li>
+  <li>Implement a migration path for pass ID changes: map old passes to new features without breaking saved progress.</li>
+</ul>
+<p>
+After release, monitor DataStore latencies and MarketplaceService errors. For broader project management, consider end-to-end tooling to track releases and diagnostics; for example, tooling integration can be managed through services like the Stellar AI app. See <a href="https://trystellarai.com/app">Stellar AI app</a> for workflow options and deployment helpers.
+</p>
+
+<h2>Operational Checklist</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Responsibility</th>
+      <th>Validation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Prompt purchase from LocalScript</td>
+      <td>Client</td>
+      <td>Purchase dialog appears and returns to player</td>
+    </tr>
+    <tr>
+      <td>Verify ownership server-side</td>
+      <td>Server</td>
+      <td>MarketplaceService:UserOwnsGamePassAsync returns true</td>
+    </tr>
+    <tr>
+      <td>Cache ownership and apply features</td>
+      <td>Server</td>
+      <td>Cache entry exists; features applied only server-side</td>
+    </tr>
+    <tr>
+      <td>Persist any extra metadata</td>
+      <td>Server DataStore</td>
+      <td>pcall success or safe retry logged</td>
+    </tr>
+    <tr>
+      <td>Monitor and log abuse</td>
+      <td>Ops</td>
+      <td>Metrics show denied requests and error rates</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Code Snippets: Full Example</h2>
+<p>
+Below is a compact, practical layout showing end-to-end: LocalScript prompts, RemoteEvent request, server validation, cache, and DataStore fallback handling.
+</p>
+<pre><code>-- Server: ServerScriptService/GamePassSystem.lua
+local MarketplaceService = game:GetService("MarketplaceService")
+local DataStoreService = game:GetService("DataStoreService")
+local Players = game:GetService("Players")
+local Remote = game.ReplicatedStorage:WaitForChild("GamePassRequest")
+
+local PASS_ID = 12345678
+local cache = {}
+local passMetaStore = DataStoreService:GetDataStore("PassMeta")
+
+local function getOwnership(player)
+    local uid = player.UserId
+    -- Cache hit
+    if cache[uid] ~= nil then
+        return cache[uid]
+    end
+    -- Check Roblox ownership with pcall
+    local ok, owns = pcall(MarketplaceService.UserOwnsGamePassAsync, MarketplaceService, uid, PASS_ID)
+    if ok then
+        cache[uid] = owns
+        return owns
+    else
+        warn("MarketplaceService failed for", uid)
+        -- Fallback: consult DataStore if you track grants (optional)
+        local ok2, saved = pcall(passMetaStore.GetAsync, passMetaStore, "pass_"..uid)
+        if ok2 and saved then
+            cache[uid] = true
+            return true
+        end
+        return false
+    end
+end
+
+Remote.OnServerEvent:Connect(function(player, action)
+    if action == "Activate" then
+        local owns = getOwnership(player)
+        if owns then
+            -- Apply authoritative changes
+            Remote:FireClient(player, "Activated")
+        else
+            Remote:FireClient(player, "NotOwned")
+        end
+    end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    cache[player.UserId] = nil
+end)</code></pre>
+
+<h2>Maintenance Tips</h2>
+<ul>
+  <li>Rotate game-pass IDs only with a migration script that maps old entitlements to new ones.</li>
+  <li>Track MarketplaceService failures and DataStore throttling in logs or telemetry to detect regional issues.</li>
+  <li>Keep purchase UI and server gating logic decoupled so you can update UI without risking security changes.</li>
+  <li>Document pass IDs, their purposes, and any special handling in a developer README inside the project repo.</li>
+</ul>
+
+<h2>Further Reading and Resources</h2>
+<p>
+For additional project-level insights and release planning, read broader guides on continuous deployment and editorial workflows at our blog: <a href="https://trystellarai.com/blog">Stellar AI blog</a>.
+</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://developer.roblox.com/en-us/articles/Game-Passes">Roblox Developer Hub — Game Passes</a></li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/class/MarketplaceService#UserOwnsGamePassAsync">MarketplaceService: UserOwnsGamePassAsync</a></li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/class/MarketplaceService#PromptGamePassPurchase">MarketplaceService: PromptGamePassPurchase</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store-guide">DataStore Guide</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/RemoteEvent">RemoteEvent and RemoteFunction</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

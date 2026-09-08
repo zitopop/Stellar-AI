@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Roleplay Server Tips: Practical Guidance for Reliable RP Systems — Stellar AI</title>
+  <meta name="description" content="Actionable, senior-level FiveM roleplay server tips: planning, server-authority patterns for QBCore/ESX, validation, structure, performance, testing, and a safe example resource you can install.">
+  <meta name="keywords" content="FiveM, roleplay, QBCore, ESX, ox_lib, qb-target, server-authority, Lua, fxmanifest, validation, anti-cheat, deployment">
+  <meta property="og:title" content="FiveM Roleplay Server Tips: Practical Guidance for Reliable RP Systems">
+  <meta property="og:description" content="Actionable, senior-level FiveM roleplay server tips: planning, server-authority patterns for QBCore/ESX, validation, structure, performance, testing, and a safe example resource you can install.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-roleplay-server-tips">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Server-authoritative RP best practices</div>
+  <h1>FiveM Roleplay Server Tips: Practical Guidance for Reliable RP Systems</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide collects pragmatic tips that senior FiveM builders use to keep roleplay servers stable, secure, and fun. It focuses on server authority, validation patterns for QBCore and ESX, common performance traps, and a small ready-to-install example that demonstrates safe item purchases and validation.</p>
+  <div><h2>1. Start with a clear plan</h2><p>Every successful RP feature begins with a short implementation plan: purpose, actors (player, admin, job), data sources (database, player meta), and failure modes (network loss, DataStore failure equivalent for FiveM). Write two-sentence acceptance criteria: what must work from the player's perspective and what must be validated server-side. Keep the first iteration minimal — a single-server-authoritative flow you can test end-to-end.</p><h2>2. Enforce server authority — always</h2><p>Client scripts are for UI, animations, and local effects. Anything affecting economy, items, permissions, or persistent state must be performed and validated on the server. Use server events or callbacks that check player identity, money, item amounts, job, and permissions before mutating state. For QBCore, use QBCore.Functions.GetPlayer and Player.Functions.RemoveMoney/AddItem on the server; for ESX, use xPlayer functions server-side. Never trust values passed from the client.</p><h3>Example principles</h3><ul><li>Client -> Server: request purchase or action (no item giving, no money removal).</li><li>Server: validate cost, check player balance and inventory space, perform transaction, then notify client.</li><li>Log suspicious repeated failures and rate-limit requests.</li></ul><h2>3. Resource structure and manifest</h2><p>Keep a predictable resource layout: fxmanifest.lua, config.lua, server.lua, client.lua, and a modules folder for shared functions. Declare explicit dependencies in fxmanifest.lua to ensure startup ordering (qb-core, ox_lib, qb-target, etc.). Example and full files are shown below.</p><h2>4. Validation patterns (QBCore & ESX)</h2><p>QBCore pattern (server):</p><pre><code>local QBCore = exports['qb-core']:GetCoreObject()
+RegisterNetEvent('rpshop:server:buy', function(item, qty)
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  local price = Config.Items[item] and Config.Items[item].price * qty or nil
+  if not price then return end
+  if Player and Player.Functions.RemoveMoney('cash', price) then
+    Player.Functions.AddItem(item, qty)
+    TriggerClientEvent('QBCore:Notify', src, 'Purchase successful')
+  else
+    TriggerClientEvent('QBCore:Notify', src, 'Not enough money', 'error')
+  end
+end)</code></pre><p>ESX has analogous server checks. The key is atomic server-side checks and changes — never remove money on the client or assume the client will add the item.</p><h2>5. Use qb-target and ox_lib for UX but keep logic server-side</h2><p>qb-target and ox_lib help surface interactions; they run on the client to detect player context. When a player interacts, send a lightweight request to the server. Avoid sending rich state from client to server; pass only identifiers and quantities and let the server resolve prices and permission checks.</p><h2>6. Performance and resource limits</h2><p>Keep tick work minimal. Long loops, heavy math, or synchronous DB operations should run on the server in controlled coroutines. Use exports and callbacks efficiently. Limit use of global timers; prefer event-driven flows. Prefetch static config data into memory on startup rather than querying DB on every player action.</p><h2>7. Anti-cheat and audit</h2><p>Design your server to detect anomalies: impossible inventory amounts, rapid repeated purchases, or inconsistent balances between subsystems. Store an audit trail for sensitive actions (player, action, old_balance, new_balance, timestamp) and rotate logs. Rate-limit client requests and verify key state again before committing.</p><h2>8. Testing and deployment</h2><p>Test features on a local or staging server with realistic player flows. Use at least one dedicated test account with admin disabled to validate permission boundaries. When deploying: update one server at a time, monitor logs, and have a rollback plan (resource stop/start and DB transaction rollback if needed).</p><h2>9. Practical checklist</h2><table>
+  <thead>
+    <tr><th>Task</th><th>Why it matters</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server-authoritative transactions</td><td>Prevents money/item dupes</td><td>Planned/Done</td></tr>
+    <tr><td>Manifest dependencies</td><td>Ensures startup ordering</td><td>Planned/Done</td></tr>
+    <tr><td>Rate-limits on sensitive endpoints</td><td>Mitigates spam/cheats</td><td>Planned/Done</td></tr>
+    <tr><td>Audit logs for purchases</td><td>Investigations & rollback</td><td>Planned/Done</td></tr>
+    <tr><td>Staging tests</td><td>Catch regressions early</td><td>Planned/Done</td></tr>
+  </tbody>
+</table><h2>10. Small installable example: safe shop (QBCore)</h2><p>Implementation plan: a tiny resource named rp_shop that provides a server-authoritative purchase flow. Assumptions: QBCore v2-style GetCoreObject export is available and ox_lib/qb-target are present. Files below are complete and destination-labelled.</p><h3>Files included</h3><ol><li>fxmanifest.lua — declares dependencies</li><li>config.lua — item list and prices</li><li>server.lua — authoritative purchase handling</li><li>client.lua — UI trigger and qb-target integration</li></ol><p>Where to place: put the folder rp_shop in your server resources directory and add ensure rp_shop to server.cfg. Do not include secrets. Restart the server or start the resource.</p><h3>Installation and validation steps</h3><ol><li>Ensure dependencies are installed (qb-core, qb-target, ox_lib).</li><li>Add resource to server.cfg and start it.</li><li>Use a non-admin test account to attempt purchases, check balances and added items.</li><li>Review server console for logged purchase actions and errors.</li></ol><h2>11. Security considerations</h2><p>Never expose developer keys or DB credentials in resources. Limit admin commands, validate permissions server-side, and avoid long-running synchronous DB calls on the main server thread. If you must perform heavy DB work, queue it and perform in controlled worker threads or background tasks.</p><h2>12. Monitoring, iteration, and next steps</h2><p>After launch, collect errors, suspicious transaction rates, and player feedback. Iterate on UX (qb-target hints, ox_lib menus). For larger systems, consider modularizing services: an economy service, an inventory service, and job service with clear export APIs and access controls.</p><p>If you want to prototype features faster, try an AI-assisted scripting workspace to produce destination-labelled files and iterate on the first implementation using generated diffs. See the app at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> for guided generation and then open the same link to continue iterations in your browser. For longer-form best practices and community posts, check the blog at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p><p>Keep your server modular, authoritative, and auditable. Small, well-validated systems scale more easily than large, fragile ones. If you want a tailored resource example (ESX variant, deeper DB transactions, or Data persistence patterns), I can produce complete labelled files and deployment steps for your chosen framework.</p></div>
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>Further reading and tools:</p><ul><li><a href="https://trystellarai.com/app">Stellar AI App (prototype generator)</a></li><li><a href="https://trystellarai.com/blog">Stellar AI Blog</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

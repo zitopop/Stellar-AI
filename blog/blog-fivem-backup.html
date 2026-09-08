@@ -68,32 +68,166 @@
 <body>
 <nav><a href="/" class="nav-logo">✦ Stellar <span>AI</span></a><a href="/app" class="nav-cta">Try free →</a></nav>
 <div class="container">
-  <div class="blog-tag">FiveM Guide</div>
   <h1>How to Back Up Your FiveM Server Data</h1>
-  <div class="blog-meta">August 2026 · 5 min read · Stellar AI</div>
-  <p class="blog-intro">Losing your server data is catastrophic. This guide covers how to set up automatic database backups for your FiveM server so you never lose player progress.</p>
-  <h2>Step 1 — Generate your script with Stellar AI</h2>
-  <div class="tip-box">
-    <strong>Describe what you want:</strong>
-    <p style="margin-top:8px;">Open Stellar AI, describe your script in plain English and get all 4 files ready to drop into your server.</p>
-  </div>
-  <h2>Step 2 — Upload to your server</h2>
-  <div class="code-block">resources/
-└── your-resource/
-    ├── fxmanifest.lua
-    ├── client.lua
-    ├── server.lua
-    └── config.lua</div>
-  <h2>Step 3 — Add to server.cfg</h2>
-  <div class="code-block">ensure qb-core
-ensure your-resource</div>
-  <h2>Step 4 — Configure and test</h2>
-  <p>Open config.lua and update any settings for your server. Restart and test before opening to players.</p>
-  <div class="cta-box">
-    <h3>Generate this script in seconds</h3>
-    <p>Describe what you want and Stellar AI writes the complete script. Free to start, no coding needed.</p>
-    <a href="/app" class="cta-btn">Generate my script free →</a>
-  </div>
+
+<p class="intro">A practical guide to how to back up your fivem server data, with implementation decisions, validation steps, and security considerations for a production-minded project.</p>
+
+<h2>Introduction: why reliable backups matter for game servers</h2>
+<p>A good backup plan prevents hours or days of lost progress for players and avoids configuration drift that breaks servers. This guide focuses on practical, technical backup strategies for FiveM servers (including QBCore, ESX and ox_lib-based setups) and Roblox experiences. It covers architecture, implementation choices, security and validation, testing, deployment, and ongoing maintenance so you can recover quickly from hardware failure, corruption, ransomware or operator error.</p>
+
+<h2>Architecture overview</h2>
+<h3>FiveM server components to consider</h3>
+<p>Typical FiveM deployments have several critical components to back up:</p>
+<ul>
+  <li>Resource folders: custom scripts, maps, and config files stored in the server's resources directory.</li>
+  <li>Database: persistent state is commonly kept in a MySQL/MariaDB instance (player data, inventories, permissions, economy).</li>
+  <li>Server.cfg and startup scripts: command-line flags, sv_enforceGameBuild, and start order for resources.</li>
+  <li>Logs and snapshots: crash dumps, server console logs, and periodic state snapshots for debugging and audit.</li>
+</ul>
+<p>Key architectural principle: treat the server as authoritative and never trust client-supplied data. All persistence must be validated and sanitized on the server before write operations.</p>
+
+<h3>Roblox architecture and data flow</h3>
+<p>Roblox games separate client and server authority. For backup planning you must treat the server (ServerScripts/ServerStorage) as authoritative for sensitive state and use DataStores responsibly:</p>
+<ul>
+  <li>DataStores hold persistent player and game state. Plan for failure modes such as throttling and partial writes.</li>
+  <li>RemoteEvents and RemoteFunctions should only carry minimal, validated intent; server must verify every change before persisting.</li>
+  <li>ServerCode backups (ModuleScripts, ServerScripts) should be versioned in source control; DataStores cannot be exported directly and need to be recreated from snapshots or export tools.</li>
+</ul>
+
+<h2>Backup targets, priorities and frequency</h2>
+<p>Prioritize backups by recovery impact and regeneration cost:</p>
+<ul>
+  <li>High priority: player persistent data (inventories, money), central database schemas, server.cfg, essential resource configs.</li>
+  <li>Medium priority: custom assets that are recoverable from source control but costly to reconfigure (maps, selected mods).</li>
+  <li>Low priority: ephemeral logs older than your diagnostic window.</li>
+</ul>
+<p>Decide retention and frequency based on player activity and legal requirements. For example, critical DB tables may need hourly backups while resource folders can be daily with versioning.</p>
+
+<h2>Backup strategies and implementation choices</h2>
+<h3>File-level backups for FiveM resources</h3>
+<p>Use atomic file sync tools (rsync, Robocopy) or object storage sync (rclone) with snapshotting. Keep a read-only copy of server.cfg and resource manifests in source control, and include a periodic full filesystem snapshot for rapid restore.</p>
+<pre><code># Example mysqldump + files (Linux)
+mysqldump -u backupuser -p'REDACTED' fivem_database --single-transaction --routines --triggers > /backups/fivem_db_$(date +%F_%H%M).sql
+rsync -a --delete /opt/fivem/resources/ /backups/resources/
+</code></pre>
+
+<h3>Database backups and logical vs physical</h3>
+<p>For MySQL/MariaDB, logical dumps (mysqldump) produce portable SQL files but can be heavy for large datasets. Use --single-transaction for InnoDB to reduce locking. For larger installations prefer binary snapshots (LVM snapshots or Percona XtraBackup) for consistent, fast restores.</p>
+<p>Always test restores to a staging environment and ensure character sets and collation are preserved.</p>
+
+<h3>Roblox DataStore considerations</h3>
+<p>Roblox DataStores do not expose a filesystem; implement in-game snapshotting strategies:</p>
+<ul>
+  <li>Periodic server-side exports: push key-value snapshots to an external service you control using webhook aggregation from secure servers (not from clients).</li>
+  <li>Use robust retry and exponential backoff for DataStore:SetAsync or UpdateAsync to handle throttling. Detect failures and queue writes for later attempts.</li>
+  <li>Prefer UpdateAsync where possible to perform safe read-modify-write operations server-side and minimize race conditions.</li>
+</ul>
+
+<h2>Security, validation and server authority</h2>
+<h3>Never trust the client (FiveM)</h3>
+<p>Design every persistence operation so that only server-side code decides whether to accept a change. That includes item grants, currency transactions, and admin actions. Validate inputs server-side, re-check permissions in the database, and log authorization decisions. If you replicate client-sent values into your DB, run strict schema and type checks.</p>
+
+<h3>Roblox: respect server authority and safe Remote usage</h3>
+<p>Treat RemoteEvents/RemoteFunctions as untrusted transport. The server must re-authorize any requested state mutation, and any persistence to DataStores must be gated behind server-side checks. Implement server-side rate-limiting, anti-cheat checks, and canonical authority for leaderboards and critical economy state.</p>
+
+<h3>Encryption, access control and credentials</h3>
+<p>Store backup credentials, API keys, and database passwords in a secure secrets manager or encrypted environment variables. Rotate keys on a schedule and restrict access to backup storage buckets to minimal principals. Ensure backups at rest are encrypted (SSE for object storage or encrypted disks) and encrypt backups in transit using TLS.</p>
+
+<h2>Testing backups and restore procedures</h2>
+<p>Automated backups are only useful if restores are reliable. Define and implement a restore playbook:</p>
+<ol>
+  <li>Restore database to a staging server and run sanity checks (schema, row counts, sample users).</li>
+  <li>Start the FiveM server with the restored resources and simulate critical flows: login, item transfer, vehicle spawn, save/load.</li>
+  <li>For Roblox, import any external snapshot into a test environment and run acceptance tests that simulate player joins and data operations.</li>
+  <li>Document RTO (recovery time objective) and RPO (recovery point objective) and measure them annually.</li>
+</ol>
+<p>Maintain runbooks with step-by-step commands, required credentials, and contacts for escalation. Practice restores quarterly to verify your assumptions.</p>
+
+<h2>Deployment automation and monitoring</h2>
+<p>Automate backups using cron, systemd timers, or CI/CD pipelines so human error is minimized. Key automation patterns:</p>
+<ul>
+  <li>Pre-backup checks: ensure database is reachable and perform health-check queries.</li>
+  <li>Post-backup verification: checksum or validate dump file size and attempt quick restore into an ephemeral container for sanity checks.</li>
+  <li>Alerting and dashboards: integrate with your monitoring stack to notify on failed backups or degraded storage.</li>
+</ul>
+<p>Consider integrating backup job outputs with external workflow tools. For orchestration, use secure webhooks or CI runners; if you use advanced management tools, keep credentials out of source control and use the platform's secret storage.</p>
+<p>For workflow acceleration and lightweight orchestration, you can evaluate management tools at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a> as part of your deployment toolkit.</p>
+
+<h2>Retention policy, rotation and a practical backup table</h2>
+<p>Define a retention policy that balances restore needs and storage costs. Use incremental backups and periodic full backups to reduce storage while keeping restore speed acceptable.</p>
+<table>
+  <thead>
+    <tr>
+      <th>Data Type</th>
+      <th>Method</th>
+      <th>Frequency</th>
+      <th>Retention</th>
+      <th>Restore Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Critical DB tables (players, economy)</td>
+      <td>Incremental binary + daily logical dump</td>
+      <td>Incremental every 30 min, full daily</td>
+      <td>14 days incremental, 90 days full</td>
+      <td>DB primary / staging</td>
+    </tr>
+    <tr>
+      <td>Resources and configs</td>
+      <td>Git + daily snapshot to object storage</td>
+      <td>Daily</td>
+      <td>60 days</td>
+      <td>Fresh server instance</td>
+    </tr>
+    <tr>
+      <td>Logs and diagnostics</td>
+      <td>Rolling logs to object storage</td>
+      <td>Hourly sync</td>
+      <td>30 days</td>
+      <td>Forensic analysis VM</td>
+    </tr>
+    <tr>
+      <td>Roblox DataStore snapshots</td>
+      <td>Server-side export to external store</td>
+      <td>Daily + event-driven snapshots</td>
+      <td>30 days (event snapshots 7 days)</td>
+      <td>Test universe for validation</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Troubleshooting, edge cases and common pitfalls</h2>
+<p>Common issues and mitigations:</p>
+<ul>
+  <li>Partial writes: Use transactional DB writes where possible. Validate count hashes after batch writes.</li>
+  <li>DataStore throttling (Roblox): implement aggressive retry with jitter, backoff, and an offline queue for non-critical writes. Detect RateLimit exceptions and apply backoff.</li>
+  <li>Corrupted backups: always keep multiple generations and verify checksums. Automate a checksum verification step post-backup.</li>
+  <li>Operator mistakes: restrict who can run restores and require dual-approval for production restores.</li>
+  <li>Client spoofing (FiveM): never accept authoritative state changes from a client. Recalculate sensitive values server-side and require server-side RPC authorization for admin commands.</li>
+</ul>
+
+<h2>Maintenance, audits and continuous improvement</h2>
+<p>Schedule regular audits of your backup jobs, permissions, and retention. Key activities:</p>
+<ul>
+  <li>Quarterly restore drills with different team members to ensure knowledge spread.</li>
+  <li>Rotate encryption keys annually or after suspected compromise.</li>
+  <li>Monitor storage growth and prune according to policy; revise frequency and retention based on actual restore metrics.</li>
+</ul>
+<p>Document all changes in a central runbook and integrate backup job metrics into your incident playbooks. For centralized workflow and analytics that can help with scheduling and alerting, consider adding management tooling such as platforms available at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. For detailed operational articles on maintenance best practices, see <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>.</p>
+
+<h2>Conclusion and next steps</h2>
+<p>Backups are more than copying files. Plan around authoritative servers, consistent snapshots, validated writes, and tested restores. Implement automation, secure credentials, and periodic audits. For Roblox, respect server authority and add robust failure handling for DataStores and Remote calls. For FiveM, validate and sanitize every client-initiated change and ensure your database strategy supports both performance and point-in-time recovery.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://docs.fivem.net/">FiveM Documentation</a></li>
+  <li><a href="https://create.roblox.com/docs">Roblox Developer Hub</a></li>
+  <li><a href="https://developer.roblox.com/en-us/articles/Data-store">Roblox DataStore Documentation</a></li>
+  <li><a href="https://qbcore.org/">QBCore Documentation</a></li>
+  <li><a href="https://esx-framework.org/">ESX Framework</a></li>
+  <li><a href="https://github.com/overextended/ox_lib">ox_lib (GitHub)</a></li>
+</ul>
 </div>
 <footer>
   <div class="footer-copy">© 2026 Stellar AI</div>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QBCore Lawyer Job — Build a secure, server-authoritative Lawyer role for FiveM (+ Roblox notes) — Stellar AI</title>
+  <meta name="description" content="Step-by-step guide to implement a robust QBCore Lawyer job: server-side validation, qb-target interactions, invoices, permissions, and a short Roblox pattern for attorney-style workflows using RemoteEvents and DataStore safety.">
+  <meta name="keywords" content="QBCore lawyer job, FiveM lawyer script, qb-target lawyer, QBCore job tutorial, Roblox lawyer job, RemoteEvent DataStore, server-authoritative scripting">
+  <meta property="og:title" content="QBCore Lawyer Job — Build a secure, server-authoritative Lawyer role for FiveM (+ Roblox notes)">
+  <meta property="og:description" content="Step-by-step guide to implement a robust QBCore Lawyer job: server-side validation, qb-target interactions, invoices, permissions, and a short Roblox pattern for attorney-style workflows using RemoteEvents and DataStore safety.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/qbcore-lawyer-job">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">Implementation guide — QBCore Lawyer Job</div>
+  <h1>QBCore Lawyer Job — Build a secure, server-authoritative Lawyer role for FiveM (+ Roblox notes)</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide helps you create a secure, playable Lawyer job for QBCore servers, including server-side validation, qb-target points, invoice handling, and a compact Roblox pattern for translating similar workflows. Follow the file layout, install steps, and security notes to avoid common pitfalls.</p>
+  <h2>Why server authority matters</h2>
+<p>Lawyer gameplay touches money, player records, and case state. That means all authoritative operations — issuing invoices, paying fees, modifying case records — must run on the server. The client should only request actions and present UI. Below you'll find a minimal QBCore resource layout, a client-target example using qb-target, server validation for payroll/invoices, and a short Roblox pattern for similar UIs using RemoteEvents and safe DataStore access.</p>
+
+<h2>Implementation plan (short)</h2>
+<ul>
+  <li>Create a QBCore resource named <strong>qb-lawyer</strong> with fxmanifest, client.lua, server.lua, and config.lua.</li>
+  <li>Register qb-target zones to open case UI and show lawyer-only actions.</li>
+  <li>Implement server-side handlers for invoices, payments, and record changes using QBCore.Functions.GetPlayer and Player.Functions.AddMoney.</li>
+  <li>Validate all client requests on the server and log critical events.</li>
+  <li>Optional: mirror concept on Roblox with RemoteEvents + DataStore and pcall retry.</li>
+</ul>
+
+<h2>Assumptions and dependencies</h2>
+<ul>
+  <li>QBCore v1/v2 style core available via exports['qb-core']:GetCoreObject(). Adjust names if your core differs.</li>
+  <li>qb-target present for zone interactions. If using ox_target or a different targeting system adapt the target registration call.</li>
+  <li>Roblox readers assume standard ServerScriptService, ReplicatedStorage for RemoteEvents, and use of DataStoreService.</li>
+</ul>
+
+<h3>Files and where they belong</h3>
+<table>
+  <thead>
+    <tr><th>File</th><th>Purpose</th><th>Location</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>fxmanifest.lua</td><td>Resource metadata</td><td>resources/[local]/qb-lawyer/</td></tr>
+    <tr><td>config.lua</td><td>Config (positions, prices)</td><td>resources/[local]/qb-lawyer/</td></tr>
+    <tr><td>client.lua</td><td>qb-target registration, UI triggers</td><td>resources/[local]/qb-lawyer/</td></tr>
+    <tr><td>server.lua</td><td>Validate requests, issue invoices, money ops</td><td>resources/[local]/qb-lawyer/</td></tr>
+  </tbody>
+</table>
+
+<h2>Minimal QBCore example (safe, server-authoritative)</h2>
+<p>This example demonstrates a server-side handler for creating an invoice and a client registration for qb-target. The server validates the caller's job and player funds before applying money operations.</p>
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+author 'you'
+description 'QBCore Lawyer Job'
+version '1.0.0'
+shared_script 'config.lua'
+client_script 'client.lua'
+server_script 'server.lua'
+
+-- server.lua
+local QBCore = exports['qb-core']:GetCoreObject()
+
+RegisterNetEvent('qb-lawyer:server:CreateInvoice', function(targetPlayerId, amount, reason)
+    local src = source
+    local creator = QBCore.Functions.GetPlayer(src)
+    if not creator then return end
+
+    -- only lawyers can create invoices
+    if creator.PlayerData.job == nil or creator.PlayerData.job.name ~= 'lawyer' then
+        TriggerClientEvent('QBCore:Notify', src, 'Not authorized', 'error')
+        return
+    end
+
+    amount = tonumber(amount) or 0
+    if amount <= 0 or amount > 100000 then
+        TriggerClientEvent('QBCore:Notify', src, 'Invalid amount', 'error')
+        return
+    end
+
+    local target = QBCore.Functions.GetPlayer(targetPlayerId)
+    if not target then
+        TriggerClientEvent('QBCore:Notify', src, 'Player not found', 'error')
+        return
+    end
+
+    -- create invoice server-side (example uses qb-billing if present)
+    TriggerClientEvent('QBCore:Notify', target.PlayerData.source, 'You received an invoice: $'..amount, 'info')
+    -- If you integrate qb-billing, call its server event here instead of direct money ops
+    -- Log and persist the invoice in your database if needed
+end)
+
+-- client.lua (register qb-target)
+local lawyerDeskCoords = vector3(200.0, -900.0, 30.0) -- example
+
+Citizen.CreateThread(function()
+    exports['qb-target']:AddBoxZone('lawyer_desk', lawyerDeskCoords, 1.2, 1.2, {
+        name = 'lawyer_desk', heading = 0, debugPoly = false
+    }, {
+        options = {
+            { event = 'qb-lawyer:client:OpenMenu', icon = 'fas fa-gavel', label = 'Open Case File', job = 'lawyer' }
+        },
+        distance = 2.5
+    })
+end)
+
+RegisterNetEvent('qb-lawyer:client:OpenMenu', function()
+    -- open NUI or menu to create invoice; client only sends intent to server
+    -- sample: TriggerServerEvent('qb-lawyer:server:CreateInvoice', targetId, amount, reason)
+end)
+</code></pre>
+
+<h2>Roblox pattern: server-authoritative case updates + DataStore safety</h2>
+<p>On Roblox, the server must own case state and DataStore writes. The client sends a request via RemoteEvent; the server validates the player's role and writes to DataStore using pcall with retries.</p>
+<pre><code>-- ServerScript (ServerScriptService)
+local Replicated = game:GetService('ReplicatedStorage')
+local DataStoreService = game:GetService('DataStoreService')
+local CasesStore = DataStoreService:GetDataStore('LawyerCases')
+local ClaimEvent = Replicated:WaitForChild('LawyerClaimCase')
+
+local function safeSave(key, value)
+    for i = 1, 3 do
+        local success, err = pcall(function()
+            CasesStore:SetAsync(key, value)
+        end)
+        if success then return true end
+        wait(0.5 * i) -- exponential-ish backoff
+    end
+    return false
+end
+
+ClaimEvent.OnServerEvent:Connect(function(player, caseId)
+    -- validate player's role (example uses a BoolValue on player)
+    local isLawyer = player:FindFirstChild('IsLawyer') and player.IsLawyer.Value
+    if not isLawyer then
+        -- don't reveal details; send benign rejection
+        ClaimEvent:FireClient(player, false, 'Not authorized')
+        return
+    end
+
+    local key = 'case_' .. tostring(caseId)
+    local success = safeSave(key, {claimedBy = player.UserId, time = os.time()})
+    if success then
+        ClaimEvent:FireClient(player, true, 'Case claimed')
+    else
+        ClaimEvent:FireClient(player, false, 'DataStore error. Try later')
+    end
+end)
+</code></pre>
+
+<h3>Checklist before you publish</h3>
+<table>
+  <thead>
+    <tr><th>Step</th><th>Why</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Server-side validation for job checks</td><td>Prevents client spoofing and unauthorized money ops</td></tr>
+    <tr><td>Limit invoice amounts and rate</td><td>Avoid abuse and griefing</td></tr>
+    <tr><td>Log invoice creation/modification</td><td>Audit trail for disputes</td></tr>
+    <tr><td>pcall and retry for DataStore</td><td>Roblox DataStore can fail transiently</td></tr>
+    <tr><td>Test on multiple clients and with different job statuses</td><td>Confirm job gating works</td></tr>
+  </tbody>
+</table>
+
+<h2>Install & testing notes</h2>
+<p>For FiveM: drop the qb-lawyer folder in resources and add it to server.cfg or ensure it's started via txAdmin. Start with the console log enabled and try actions as a non-lawyer and lawyer account to confirm server rejections and successful invoice flows.</p>
+<p>For Roblox: place the RemoteEvent in ReplicatedStorage, the server script in ServerScriptService, and a LocalScript UI in StarterGui to call the RemoteEvent. Test DataStore writes in a development place with proper throttling and avoid spamming writes during tests.</p>
+
+<h2>Next steps and tooling</h2>
+<p>Consider these next improvements: integrate qb-billing for standardized invoices, add database persistence for case files, attach evidence UI with attachments, or build a courtroom mini-game. If you want a quick way to sketch and iterate on the resource files, try the Stellar AI app to auto-generate destination-labelled files and explanations in seconds at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. It can speed up planning and produce ready-to-install files you can copy into your resource folder.</p>
+<p>For tutorials and deeper patterns on game workflows, check the Stellar AI blog for related guides at <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>. When you need to prototype UI plus server code together, the web workspace helps keep file boundaries clear — learn more at <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<p><strong>Security reminder:</strong> Never perform money operations client-side or trust client-sent role flags. Keep all access checks and financial changes on the server. Log sensitive actions and implement rate limits for actions like invoice creation.</p>
+
+<h3>Useful next steps</h3>
+<ul>
+  <li>Add persistence for invoices and case notes with a database or table-backed storage</li>
+  <li>Create a small admin panel to resume or audit invoices</li>
+  <li>Implement automated unit tests for server handlers where possible</li>
+</ul>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><p>References and further reading:</p><ul><li><a href="https://docs.fivem.net/">FiveM documentation</a></li><li><a href="https://docs.roblox.com/">Roblox Developer Hub</a></li><li><a href="https://github.com/qbcore-framework/">QBCore community (GitHub)</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>
