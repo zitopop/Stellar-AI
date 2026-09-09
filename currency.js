@@ -1,6 +1,18 @@
 ﻿(() => {
   'use strict';
 
+  // Browser storage can be unavailable in private/restricted contexts. Keep every
+  // caller behind a fail-safe wrapper so UI features degrade instead of crashing.
+  if (typeof window.safeStorageGet !== 'function') {
+    window.safeStorageGet = (key) => { try { return window.localStorage.getItem(key); } catch (_) { return null; } };
+  }
+  if (typeof window.safeStorageSet !== 'function') {
+    window.safeStorageSet = (key, value) => { try { window.localStorage.setItem(key, value); return true; } catch (_) { return false; } };
+  }
+  if (typeof window.safeStorageRemove !== 'function') {
+    window.safeStorageRemove = (key) => { try { window.localStorage.removeItem(key); return true; } catch (_) { return false; } };
+  }
+
   const COUNTRY_CURRENCY = {
     GB: 'GBP', US: 'USD', CA: 'CAD', AU: 'AUD', NZ: 'NZD', IE: 'EUR', DE: 'EUR', FR: 'EUR', ES: 'EUR', IT: 'EUR', NL: 'EUR', BE: 'EUR', AT: 'EUR', PT: 'EUR', FI: 'EUR', GR: 'EUR', LU: 'EUR', CY: 'EUR', MT: 'EUR', EE: 'EUR', LV: 'EUR', LT: 'EUR', SI: 'EUR', SK: 'EUR', HR: 'EUR', IS: 'ISK', CH: 'CHF', NO: 'NOK', SE: 'SEK', DK: 'DKK', PL: 'PLN', CZ: 'CZK', HU: 'HUF', RO: 'RON', BG: 'BGN', IN: 'INR', SG: 'SGD', HK: 'HKD', JP: 'JPY', KR: 'KRW', AE: 'AED', SA: 'SAR', ZA: 'ZAR', BR: 'BRL', MX: 'MXN'
   };

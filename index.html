@@ -2549,7 +2549,7 @@ end)</div></div>
       if (standalone || (!apple && !android)) return;
       let deferred = null;
       let banner = null;
-      const dismissed = Number(localStorage.getItem('stellar-install-dismissed-at') || 0);
+      const dismissed = Number(window.safeStorageGet('stellar-install-dismissed-at') || 0);
       if (dismissed > Date.now() - 30 * 24 * 60 * 60 * 1000) return;
       const close = () => { banner?.remove(); banner = null; };
       const show = () => {
@@ -2563,7 +2563,7 @@ end)</div></div>
         banner.setAttribute('aria-label', 'Install Stellar AI');
         banner.innerHTML = '<div class="stellar-install-copy"><strong>Install Stellar AI</strong><span data-copy>' + (apple ? 'Add Stellar to your Home Screen for a faster app-like launch.' : 'Install Stellar for a faster, full-screen workspace.') + '</span></div><button type="button" data-install>' + (apple ? 'How to install' : 'Install app') + '</button><button type="button" data-dismiss aria-label="Dismiss install prompt">×</button>';
         document.body.appendChild(banner);
-        banner.querySelector('[data-dismiss]').addEventListener('click', () => { localStorage.setItem('stellar-install-dismissed-at', String(Date.now())); close(); });
+        banner.querySelector('[data-dismiss]').addEventListener('click', () => { window.safeStorageSet('stellar-install-dismissed-at', String(Date.now())); close(); });
         banner.querySelector('[data-install]').addEventListener('click', async () => {
           if (deferred) {
             deferred.prompt();
@@ -2574,7 +2574,7 @@ end)</div></div>
           }
           banner.querySelector('[data-copy]').textContent = 'In Safari, tap Share, then choose “Add to Home Screen”.';
           banner.querySelector('[data-install]').textContent = 'Got it';
-          banner.querySelector('[data-install]').addEventListener('click', () => { localStorage.setItem('stellar-install-dismissed-at', String(Date.now())); close(); }, { once: true });
+          banner.querySelector('[data-install]').addEventListener('click', () => { window.safeStorageSet('stellar-install-dismissed-at', String(Date.now())); close(); }, { once: true });
         });
       };
       window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); deferred = event; });

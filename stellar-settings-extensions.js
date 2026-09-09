@@ -13,7 +13,7 @@
 
   function readPrefs() {
     try {
-      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const stored = JSON.parse(window.safeStorageGet(STORAGE_KEY) || '{}');
       return { ...DEFAULTS, ...(stored && typeof stored === 'object' ? stored : {}) };
     } catch (_) {
       return { ...DEFAULTS };
@@ -28,7 +28,7 @@
 
   function writePrefs(next) {
     const merged = { ...readPrefs(), ...next };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    window.safeStorageSet(STORAGE_KEY, JSON.stringify(merged));
     applyPrefs(merged);
     return merged;
   }
@@ -177,7 +177,7 @@
     reset.className = 'stellar-pref-reset';
     reset.textContent = 'Reset UI preferences';
     reset.addEventListener('click', () => {
-      localStorage.removeItem(STORAGE_KEY);
+      window.safeStorageRemove(STORAGE_KEY);
       applyPrefs(DEFAULTS);
       document.querySelector('#settings-modal .set-tabs [data-tab="preferences"]')?.remove();
       panel.remove();
