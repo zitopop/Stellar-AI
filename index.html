@@ -2469,7 +2469,53 @@ end)</div></div>
   body:not(.light) #plans .plans .plan:nth-child(2) > .button:hover { background: #dfd4ff !important; }
   body:not(.light) #plans .plans .plan:nth-child(3) > .button:hover { background: #c4d3ff !important; }
   body:not(.light) #plans .plans .plan:nth-child(4) > .button:hover { filter: brightness(1.08); }
-</style>
+
+    /* Responsive breakpoint contract: 640 / 900 / 1024+ */
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+    .page-shell, main, section { max-width: 100%; overflow-x: clip; }
+    img, svg, video, canvas { max-width: 100%; height: auto; }
+    .hero-grid > *, .hero-capabilities > *, .launch-deck > *, .launch-grid > *,
+    .capability-grid > *, .capability-map-grid > *, .scenario-grid > *, .roblox-grid > *,
+    .difference-layout > *, .plans > *, .plan-decider > *, .proof-strip > *, .faq-layout > * { min-width: 0; }
+
+    @media (max-width: 640px) {
+      .container { width: min(calc(100% - 24px), 100%) !important; max-width: 100% !important; }
+      .nav-links, .nav-actions { display: none !important; }
+      .nav-toggle { display: inline-grid !important; place-items: center; }
+      .hero { padding-top: 56px !important; }
+      .hero h1, .hero-copy h1 { max-width: 100% !important; font-size: clamp(32px, 10vw, 40px) !important; line-height: 1.02 !important; letter-spacing: -.045em !important; }
+      .hero-lead { max-width: 100% !important; font-size: 15px !important; line-height: 1.6 !important; }
+      .hero-actions { display: grid !important; grid-template-columns: 1fr !important; gap: 10px !important; width: 100%; }
+      .hero-actions .button, .final-cta .button { width: 100% !important; max-width: none !important; }
+      .hero-grid, .product-main, .hero-capabilities, .launch-deck, .launch-grid,
+      .capability-grid, .capability-map-grid, .scenario-grid, .roblox-grid, .roblox-side,
+      .difference-layout, .plans, .plan-decider, .proof-strip, .comparison-grid,
+      .faq-layout, .footer, .review-grid, .comparison-points { grid-template-columns: 1fr !important; }
+      .hero-visual .preview-side { display: none !important; }
+      .plan, .capability, .capability-map-card, .roblox-card, .comparison, .final-cta { max-width: 100%; }
+      .frameworks, .footer-links { justify-content: flex-start !important; }
+      .price, .annual, .plan-desc, .plan li, .faq-answer, .roblox-directory { overflow-wrap: anywhere; }
+    }
+
+    @media (min-width: 641px) and (max-width: 900px) {
+      .container { width: min(calc(100% - 40px), 860px) !important; max-width: 860px !important; }
+      .hero-grid, .launch-deck, .scenario-grid, .difference-layout, .faq-layout, .footer { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .hero-capabilities, .launch-grid, .capability-grid, .capability-map-grid,
+      .roblox-grid, .roblox-side, .plans, .plan-decider, .proof-strip,
+      .review-grid, .comparison-points { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .hero h1, .hero-copy h1 { font-size: clamp(42px, 7vw, 56px) !important; }
+    }
+
+    @media (min-width: 1024px) {
+      .container { width: min(calc(100% - 48px), 1000px) !important; max-width: 1000px !important; }
+      .hero-grid, .launch-deck, .scenario-grid, .difference-layout, .faq-layout { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .launch-grid, .capability-grid, .plans, .plan-decider { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+      body:not(.light) .launch-grid, body:not(.light) .capability-grid, body:not(.light) .plans, body:not(.light) .plan-decider { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+      .capability-map-grid, .roblox-grid, .proof-strip, .review-grid, .comparison-points { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      .hero-capabilities { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+      .hero-capabilities-intro { grid-column: 1 / -1; }
+    }</style>
 <script src="/currency.js"></script>
 <script>
   (function () {
