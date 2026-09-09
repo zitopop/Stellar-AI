@@ -326,7 +326,7 @@ test('Task 98 gives the allowance-limit modal explicit labelled dialog semantics
 test('Task 99 manages focus for the allowance-limit dialog lifecycle', () => {
   assert.match(appHtml, /let limitDialogTrigger = null;\s+function captureLimitDialogTrigger\(\) \{\s+const active = document\.activeElement;\s+limitDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;/);
   assert.match(appHtml, /function openLimitDialog\(\) \{\s+document\.getElementById\('limit-modal'\)\.classList\.remove\('hidden'\);\s+setTimeout\(\(\) => document\.querySelector\('#limit-actions button'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
-  assert.match(appHtml, /function showLimit\(\) \{\s+captureLimitDialogTrigger\(\);/);
+  assert.match(appHtml, /function showLimit\(retryText = ''\) \{[\s\S]*?captureLimitDialogTrigger\(\);/);
   assert.match(appHtml, /function closeLimit\(\) \{\s+document\.getElementById\('limit-modal'\)\.classList\.add\('hidden'\);\s+const trigger = limitDialogTrigger;\s+limitDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
 

@@ -16,7 +16,7 @@ test('credit top-up checkout remains one-time, bounded, and actionable on failur
   assert.match(checkout, /if \(plan === 'topup'\)/);
   assert.match(checkout, /mode: 'payment'/);
   assert.match(checkout, /unit_amount: pence/);
-  assert.match(checkout, /pence < TOPUP_MIN_PENCE \|\| pence > TOPUP_MAX_PENCE/);
+  assert.match(checkout, /if \(!isValidTopupPence\(rawPence\)\)/);
   assert.match(app, /if \(response\.ok && data\.url\)/);
   assert.match(app, /response\.status === 401/);
   assert.match(app, /Credit checkout could not start/);
@@ -42,13 +42,15 @@ test('top-up UI uses the backend contract limits and corrected pack totals', () 
   assert.match(app, /£60\.00 credit/);
 });
 
-test('usage surfaces show money values as clearly labelled account credit', () => {
-  assert.match(app, /id="set-usage-wallet">£0\.00 credit<\/div>/);
-  assert.match(app, /id="u-total">£0\.00 credit<\/div>/);
-  assert.match(app, /id="u-promo">£0\.00 credit<\/span>/);
-  assert.match(app, /id="u-paid">£0\.00 credit<\/span>/);
-  assert.match(app, /moneyShort\(wallet\) \+ ' credit · ' \+ left \+ ' left'/);
-  assert.match(app, /moneyShort\(wallet\) \+ ' account credit, ' \+ left \+ ' requests left'/);
+test('usage surfaces separate included allowance from spendable overage credit', () => {
+  assert.match(app, /Included hourly allowance/);
+  assert.match(app, /Overage credit/);
+  assert.match(app, /Credit does not raise your hourly limit/);
+  assert.match(app, /5p per request after included allowance/);
+  assert.ok(app.includes('id="u-promo"'));
+  assert.ok(app.includes('id="u-paid"'));
+  assert.ok(app.includes("left + ' included left / ' + moneyShort(wallet) + ' overage credit'"));
+  assert.ok(app.includes("left + ' included requests left, ' + moneyShort(wallet) + ' overage credit'"));
   assert.match(app, /wr\.style\.display = \(wallet > 0 \|\| Store\.get\(\)\.user \|\| isOwner\(\)\) \? '' : 'none'/);
 });
 

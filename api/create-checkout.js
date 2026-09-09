@@ -1,7 +1,7 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
-import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, topupBonusPence } from '../lib/pricing.js';
+import { isValidTopupPence, topupBonusPence } from '../lib/pricing.js';
 import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
 
 function setCors(req, res) {
@@ -75,10 +75,11 @@ export default async function handler(req, res) {
     const stripe = new Stripe(stripeSecret);
 
     if (plan === 'topup') {
-      const pence = Math.round(Number(amount || qty) || 0);
-      if (pence < TOPUP_MIN_PENCE || pence > TOPUP_MAX_PENCE) {
-        return res.status(400).json({ error: 'Top-up amount must be between 50p and £200.' });
+      const rawPence = amount ?? qty;
+      if (!isValidTopupPence(rawPence)) {
+        return res.status(400).json({ error: 'Top-up amount must be between 50p and \u00a3200 in 50p steps.' });
       }
+      const pence = Number(rawPence);
 
       const bonus = topupBonusPence(pence);
       const attemptId = crypto.randomUUID();
