@@ -36,6 +36,7 @@ const ROUTING_ROLES = {
   planner: { model: 'gpt-5-mini', instruction: 'Return a compact implementation plan, assumptions, exact file tree, dependencies, and acceptance checks before code.' },
   implementer: { model: 'claude-sonnet-4-6', instruction: 'You are in IMPLEMENTER mode. Write complete production-ready code immediately. Every file complete. No placeholders. No explanations before code. Just build it perfectly.' },
   researcher: { model: 'gemini-3-flash-preview', instruction: 'You are in RESEARCH mode. Before writing any code, search your knowledge for the most current FiveM/Roblox APIs and conventions. Cite which framework version you are using. Label anything you are uncertain about. Check for common pitfalls in this specific framework. Then write the complete verified code.' },
+  reviewer: { model: 'gpt-5', instruction: 'You are in REVIEW mode. Treat the previous assistant output or supplied code as an untrusted draft. Compare it against the user request and confirmed platform/framework context. Check requirement coverage, correctness, missing files or dependencies, placeholders or TODOs, unsafe trust boundaries, invented APIs or exports, unsupported claims, and testability. Prioritize concrete fixes. Do not claim execution or verification that did not occur.' },
   security: { model: 'gpt-5', instruction: 'You are in SECURITY mode. Analyse the request for security vulnerabilities first. Check: server authority validation, client trust issues, SQL injection, exploit paths, duplicate request handling, economy exploits, remote event abuse. Report severity (LOW/MEDIUM/HIGH/CRITICAL) for each issue found. Then write secure code with all vulnerabilities fixed.' },
   tester: { model: 'claude-opus-4-7', instruction: 'You are in TEST mode. Write the complete script AND a comprehensive test checklist: edge cases (player disconnect mid-action, duplicate triggers, negative values, missing inventory items, server restart), common failure points, and step-by-step testing instructions. Format: Code first, then TEST CHECKLIST section.' },
 };
@@ -162,6 +163,26 @@ const ROLE_RESPONSE_SCHEMAS = {
       },
     },
   },
+  reviewer: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'stellar_quality_review',
+      strict: true,
+      schema: {
+        type: 'object',
+        properties: {
+          summary: { type: 'string' },
+          verdict: { type: 'string', enum: ['pass', 'needs_changes', 'blocked'] },
+          findings: { type: 'array', items: { type: 'object', properties: { severity: { type: 'string', enum: ['critical', 'high', 'medium', 'low', 'info'] }, category: { type: 'string', enum: ['requirements', 'correctness', 'security', 'completeness', 'evidence', 'maintainability'] }, issue: { type: 'string' }, fix: { type: 'string' } }, required: ['severity', 'category', 'issue', 'fix'], additionalProperties: false } },
+          missing_requirements: { type: 'array', items: { type: 'string' } },
+          validation_checks: { type: 'array', items: { type: 'string' } },
+          evidence_limits: { type: 'string' },
+        },
+        required: ['summary', 'verdict', 'findings', 'missing_requirements', 'validation_checks', 'evidence_limits'],
+        additionalProperties: false,
+      },
+    },
+  },
   security: {
     type: 'json_schema',
     json_schema: {
@@ -216,6 +237,7 @@ const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
   implementer: 'ROLE OUTPUT CONTRACT: Provide complete destination-labelled files, setup steps, and a short validation checklist. Do not omit critical logic or claim execution.',
   researcher: 'ROLE OUTPUT CONTRACT: Separate documented facts, source links, assumptions, and open questions. Never invent APIs, metrics, or competitor capabilities.',
+  reviewer: 'ROLE OUTPUT CONTRACT: Audit the supplied or previous AI output against the user request. Return a verdict, prioritized findings, missing requirements, concrete fixes, validation checks, and evidence limits. Do not claim execution or verification that did not occur.',
   security: 'ROLE OUTPUT CONTRACT: Return findings with severity, affected boundary, abuse path, concrete fix, and residual risk. Treat client input as untrusted.',
   tester: 'ROLE OUTPUT CONTRACT: Return a test matrix with setup, input, expected result, failure-path coverage, and evidence limits. Never claim code or a game was run.',
 };

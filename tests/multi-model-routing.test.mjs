@@ -29,7 +29,7 @@ test('uncertain coding requests use a bounded recovery contract instead of givin
 });
 
 test('Task 1 exposes the approved specialist role contract', () => {
-  assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'security', 'tester']);
+  assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'reviewer', 'security', 'tester']);
   assert.equal(FORGE_MODELS.has('gpt-5-mini'), true);
   assert.equal(FORGE_MODELS.has('gemini-3-flash-preview'), true);
 });
@@ -166,7 +166,7 @@ test('Task 216 keeps every recognised Nova alias available to the owner plan', (
 });
 
 test('Task 217 keeps specialist-role routing from elevating Free or Plus ultra requests to Nova', () => {
-  for (const role of ['planner', 'implementer', 'researcher', 'security', 'tester']) {
+  for (const role of ['planner', 'implementer', 'researcher', 'reviewer', 'security', 'tester']) {
     for (const plan of ['free', 'plus']) {
       const route = resolveRoute('ultra', role, plan);
       assert.notEqual(route.tier, 'nova', `${role} must not route ${plan} ultra requests to Nova`);
@@ -199,7 +199,7 @@ test('Task 219 keeps malformed role values from affecting non-Pro ultra plan gat
 });
 
 test('Task 220 keeps normalized premium-role labels gated to Star outside Pro', () => {
-  for (const [input, role] of [[' SECURITY ', 'security'], ['TeStEr', 'tester']]) {
+  for (const [input, role] of [[' SECURITY ', 'security'], [' ReVieWeR ', 'reviewer'], ['TeStEr', 'tester']]) {
     for (const plan of ['free', 'plus']) {
       const route = resolveRoute('ultra', input, plan);
       assert.equal(route.role, role);
@@ -211,7 +211,7 @@ test('Task 220 keeps normalized premium-role labels gated to Star outside Pro', 
 });
 
 test('Task 221 keeps every premium specialist model route available on Pro', () => {
-  for (const [role, model] of [['security', 'gpt-5'], ['tester', 'claude-opus-4-7']]) {
+  for (const [role, model] of [['reviewer', 'gpt-5'], ['security', 'gpt-5'], ['tester', 'claude-opus-4-7']]) {
     const route = resolveRoute('ultra', role, 'pro');
     assert.equal(route.role, role);
     assert.equal(route.provider, 'forge');
@@ -221,7 +221,7 @@ test('Task 221 keeps every premium specialist model route available on Pro', () 
 });
 
 test('Task 222 keeps every premium specialist route on Star for the legacy Lite plan', () => {
-  for (const role of ['security', 'tester']) {
+  for (const role of ['reviewer', 'security', 'tester']) {
     const route = resolveRoute('ultra', role, 'lite');
     assert.equal(route.role, role);
     assert.equal(route.provider, 'anthropic');
@@ -231,7 +231,7 @@ test('Task 222 keeps every premium specialist route on Star for the legacy Lite 
 });
 
 test('Task 223 keeps every premium specialist model route available to the owner plan', () => {
-  for (const [role, model] of [['security', 'gpt-5'], ['tester', 'claude-opus-4-7']]) {
+  for (const [role, model] of [['reviewer', 'gpt-5'], ['security', 'gpt-5'], ['tester', 'claude-opus-4-7']]) {
     const route = resolveRoute('ultra', role, 'owner');
     assert.equal(route.role, role);
     assert.equal(route.provider, 'forge');
@@ -908,6 +908,15 @@ test('Task 11 exposes strict planner and tester JSON Schema contracts', () => {
   assert.deepEqual(tester.schema.properties.cases.items.required, ['name', 'setup', 'input', 'expected', 'failure_path']);
 });
 
+test('Review AI exposes a strict quality-gate JSON Schema contract', () => {
+  const reviewer = ROLE_RESPONSE_SCHEMAS.reviewer.json_schema;
+  assert.equal(reviewer.strict, true);
+  assert.deepEqual(reviewer.schema.required, ['summary', 'verdict', 'findings', 'missing_requirements', 'validation_checks', 'evidence_limits']);
+  assert.deepEqual(reviewer.schema.properties.verdict.enum, ['pass', 'needs_changes', 'blocked']);
+  assert.deepEqual(reviewer.schema.properties.findings.items.required, ['severity', 'category', 'issue', 'fix']);
+  assert.equal(reviewer.schema.properties.findings.items.additionalProperties, false);
+  assert.deepEqual(reviewer.schema.properties.findings.items.properties.category.enum, ['requirements', 'correctness', 'security', 'completeness', 'evidence', 'maintainability']);
+});
 test('Task 10 exposes a strict security JSON Schema contract', () => {
   const schema = ROLE_RESPONSE_SCHEMAS.security;
   assert.equal(schema.type, 'json_schema');
@@ -921,7 +930,8 @@ test('Task 10 exposes a strict security JSON Schema contract', () => {
 test('Task 8 injects explicit contracts for every workspace role', () => {
   for (const role of Object.keys(ROLE_OUTPUT_CONTRACTS)) {
     const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', role);
-    assert.match(prompt, new RegExp(`ROLE OUTPUT CONTRACT:.*${role === 'planner' ? 'concise plan' : role === 'implementer' ? 'complete destination' : role === 'researcher' ? 'documented facts' : role === 'security' ? 'severity' : 'test matrix'}`));
+    const expected = { planner: 'concise plan', implementer: 'complete destination', researcher: 'documented facts', reviewer: 'Audit the supplied', security: 'severity', tester: 'test matrix' }[role];
+    assert.match(prompt, new RegExp(`ROLE OUTPUT CONTRACT:.*${expected}`));
   }
 });
 
