@@ -191,6 +191,35 @@
     if (heading) setText(heading, 'Recent chats');
   }
 
+  function enhanceUsageAccess() {
+    const credits = document.getElementById('credits-btn');
+    if (!credits) return;
+
+    const compact = window.matchMedia('(max-width: 1100px)').matches;
+    if (compact) {
+      credits.style.setProperty('display', 'inline-flex', 'important');
+      credits.style.setProperty('align-items', 'center', 'important');
+      credits.style.setProperty('justify-content', 'center', 'important');
+      credits.style.setProperty('flex', '0 0 auto', 'important');
+      credits.style.setProperty('max-width', 'min(48vw, 220px)', 'important');
+      const footRight = credits.closest('.composer-foot')?.querySelector('.foot-right');
+      if (footRight) {
+        footRight.style.setProperty('width', 'auto', 'important');
+        footRight.style.setProperty('margin-left', 'auto', 'important');
+      }
+    } else {
+      ['display', 'align-items', 'justify-content', 'flex', 'max-width'].forEach((property) => credits.style.removeProperty(property));
+      const footRight = credits.closest('.composer-foot')?.querySelector('.foot-right');
+      if (footRight) {
+        footRight.style.removeProperty('width');
+        footRight.style.removeProperty('margin-left');
+      }
+    }
+
+    setAttr(credits, 'aria-label', credits.getAttribute('aria-label') || 'Open usage and request limits');
+    setAttr(credits, 'title', credits.getAttribute('title') || 'Usage and request limits');
+  }
+
   function enhanceSettings() {
     const modal = document.getElementById('settings-modal');
     if (!modal) return;
@@ -305,6 +334,7 @@
     safeRun(ensureSpaceStrip);
     safeRun(ensureOrbitPrimaryNav);
     safeRun(enhanceSidebarLabels);
+    safeRun(enhanceUsageAccess);
     safeRun(enhanceSettings);
     safeRun(bindModelEvents);
     safeRun(syncLabel);
@@ -316,11 +346,13 @@
     safeRun(ensureSpaceStrip);
     safeRun(ensureOrbitPrimaryNav);
     safeRun(enhanceSidebarLabels);
+    safeRun(enhanceUsageAccess);
     safeRun(enhanceSettings);
     safeRun(bindModelEvents);
     safeRun(syncLabel);
     safeRun(addSchema);
     window.addEventListener('focus', syncAll, { passive:true });
+    window.addEventListener('resize', () => safeRun(enhanceUsageAccess), { passive:true });
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncAll(); });
     window.setInterval(syncAll, 2000);
     window.__stellarOrbitHealth = { version:'safe-v4', observers:0, startedAt:Date.now() };
