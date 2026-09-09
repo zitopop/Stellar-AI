@@ -127,7 +127,7 @@
   function addCurrentChatToProject(projectId) {
     const chatId = currentChatIdentifier();
     if (!chatId) {
-      alert('Start or open a chat first, then add it to a project.');
+      window.showStellarNotice?.('Start or open a chat first, then add it to a project.');
       return;
     }
     const projects = readProjects();
