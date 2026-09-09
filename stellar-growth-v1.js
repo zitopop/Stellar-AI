@@ -86,13 +86,13 @@
 
   function readProjects() {
     try {
-      const value = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]');
+      const value = JSON.parse(window.safeStorageGet(PROJECTS_KEY) || '[]');
       return Array.isArray(value) ? value.filter(x => x && x.id && x.name) : [];
     } catch { return []; }
   }
 
   function writeProjects(projects) {
-    localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+    window.safeStorageSet(PROJECTS_KEY, JSON.stringify(projects));
   }
 
   function currentChatIdentifier() {
@@ -119,7 +119,7 @@
     const project = { id:`project_${Date.now()}`, name, icon:'🪐', chatIds:[], createdAt:Date.now() };
     projects.unshift(project);
     writeProjects(projects);
-    localStorage.setItem(ACTIVE_PROJECT_KEY, project.id);
+    window.safeStorageSet(ACTIVE_PROJECT_KEY, project.id);
     renderProjects();
     openProject(project.id);
   }
@@ -167,7 +167,7 @@
     const project = projects.find(x => x.id === projectId);
     if (!project || !confirm(`Delete project “${project.name}”? Chats are kept.`)) return;
     writeProjects(projects.filter(x => x.id !== projectId));
-    if (localStorage.getItem(ACTIVE_PROJECT_KEY) === projectId) localStorage.removeItem(ACTIVE_PROJECT_KEY);
+    if (window.safeStorageGet(ACTIVE_PROJECT_KEY) === projectId) window.safeStorageRemove(ACTIVE_PROJECT_KEY);
     document.querySelector('.stellar-project-drawer')?.remove();
     renderProjects();
   }
@@ -192,7 +192,7 @@
     const list = document.querySelector('[data-project-list]');
     if (!list) return;
     const projects = readProjects();
-    const active = localStorage.getItem(ACTIVE_PROJECT_KEY);
+    const active = window.safeStorageGet(ACTIVE_PROJECT_KEY);
     if (!projects.length) {
       list.innerHTML = '<button type="button" class="stellar-project-empty" data-create-first><span>＋</span><div><strong>New project</strong><small>Group chats and build context</small></div></button>';
       list.querySelector('[data-create-first]')?.addEventListener('click', createProject);
@@ -210,7 +210,7 @@
   function openProject(projectId) {
     const project = readProjects().find(x => x.id === projectId);
     if (!project) return;
-    localStorage.setItem(ACTIVE_PROJECT_KEY, project.id);
+    window.safeStorageSet(ACTIVE_PROJECT_KEY, project.id);
     renderProjects();
 
     let drawer = document.querySelector('.stellar-project-drawer');
