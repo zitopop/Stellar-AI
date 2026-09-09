@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   'use strict';
 
   const COUNTRY_CURRENCY = {
@@ -30,7 +30,7 @@
   // Keep the visible plan price aligned with the payable amount; locale detection
   // remains available for checkout metadata and future regional price tables.
   function moneyLabel(gbp) {
-    return `£${Number(gbp || 0).toFixed(2)}`;
+    return `Â£${Number(gbp || 0).toFixed(2)}`;
   }
   function getCheckoutLocale() { const country = detectCountry(); return { country, currency: detectCurrency(country) }; }
 
@@ -39,7 +39,7 @@
   function applyCurrencyLabels() {
     document.querySelectorAll('[data-gbp-price]').forEach((node) => {
       const gbp = Number(node.getAttribute('data-gbp-price'));
-      if (Number.isFinite(gbp)) node.textContent = node.closest('.annual') ? `${moneyLabel(gbp)}/year · Save 30%` : moneyLabel(gbp);
+      if (Number.isFinite(gbp)) node.textContent = node.closest('.annual') ? `${moneyLabel(gbp)}/year Â· Save 30%` : moneyLabel(gbp);
     });
     document.querySelectorAll('.plan .price strong, #plan-card-free > div:nth-child(2), #plan-card-starter > div:nth-child(2), #plan-card-plus > div:nth-child(3), #plan-card-pro > div:nth-child(3)').forEach((node) => {
       if (node.hasAttribute('data-gbp-price')) return;
@@ -48,8 +48,8 @@
     });
     document.querySelectorAll('.plan .annual, #plan-btn-starter-annual, #plan-btn-plus-annual, #plan-btn-pro-annual').forEach((node) => {
       if (node.hasAttribute('data-gbp-price')) return;
-      const match = String(node.textContent || '').match(/£([0-9]+(?:\.[0-9]+)?)/);
-      if (match) node.textContent = `${moneyLabel(Number(match[1]))}/year · Save 30%`;
+      const match = String(node.textContent || '').match(/Â£([0-9]+(?:\.[0-9]+)?)/);
+      if (match) node.textContent = `${moneyLabel(Number(match[1]))}/year Â· Save 30%`;
     });
     document.querySelectorAll('[data-gbp-credit]').forEach((node) => {
       const gbp = Number(node.getAttribute('data-gbp-credit'));
@@ -57,7 +57,7 @@
     });
     document.querySelectorAll('[data-country-currency]').forEach((node) => {
       const { country, currency } = getCheckoutLocale();
-      node.textContent = `${country} · ${currency}`;
+      node.textContent = `${country} Â· ${currency}`;
     });
   }
 
@@ -83,7 +83,7 @@
     if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // Settings presentation/preferences so future Settings features stay modular.
-    ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=4');
+    ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
   }

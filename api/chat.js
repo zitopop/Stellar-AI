@@ -3,9 +3,9 @@
 // current-model routing, safe fallbacks, and signed-session plan enforcement.
 import { isIP } from 'node:net';
 import { isOwnerEmail, readSession } from '../lib/auth.js';
-import { PLAN_DEFINITIONS, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
+import { OVERAGE_REQUEST_COST_PENCE, PLAN_DEFINITIONS, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
 import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
-import { consumeUsage } from '../lib/usage.js';
+import { consumeUsage, refundUsageCredit } from '../lib/usage.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -349,11 +349,18 @@ function applyUsageHeaders(res, usage) {
   res.setHeader('X-RateLimit-Remaining', String(usage.remaining));
   res.setHeader('X-RateLimit-Reset', usage.resetAt);
   res.setHeader('X-Stellar-Plan', usage.plan);
+  res.setHeader('X-Stellar-Credit-Cost-Pence', String(usage.creditCostPence ?? OVERAGE_REQUEST_COST_PENCE));
+  res.setHeader('X-Stellar-Credit-Charged-Pence', String(usage.chargedCreditPence || 0));
+  if (Number.isFinite(Number(usage.walletPence))) res.setHeader('X-Stellar-Wallet-Pence', String(usage.walletPence));
 }
 
-async function consumeServerUsage(session, ip, plan) {
+function walletKeyForSession(session) {
+  return session?.email ? 'stellar:user:' + String(session.email).toLowerCase().trim() : '';
+}
+
+async function consumeServerUsage(session, ip, plan, allowCredit = false) {
   if (plan === 'owner') {
-    return { plan: 'owner', limit: PLAN_LIMITS.owner.requestsPerHour, used: 0, remaining: PLAN_LIMITS.owner.requestsPerHour, resetAt: new Date(Date.now() + (60 * 60 * 1000)).toISOString(), allowed: true };
+    return { plan: 'owner', limit: PLAN_LIMITS.owner.requestsPerHour, used: 0, remaining: PLAN_LIMITS.owner.requestsPerHour, resetAt: new Date(Date.now() + (60 * 60 * 1000)).toISOString(), allowed: true, chargedCreditPence: 0, walletPence: null, creditCostPence: OVERAGE_REQUEST_COST_PENCE };
   }
   if (!KV_URL || !KV_TOKEN) throw new Error('Usage storage is not configured.');
   return consumeUsage({
@@ -361,6 +368,9 @@ async function consumeServerUsage(session, ip, plan) {
     token: KV_TOKEN,
     identity: usageIdentity(session, ip),
     plan,
+    walletKey: walletKeyForSession(session),
+    allowCredit: allowCredit === true && Boolean(session?.email),
+    creditCostPence: OVERAGE_REQUEST_COST_PENCE,
   });
 }
 
@@ -735,7 +745,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
   if (!ANTHROPIC_KEY && !(FORGE_URL && FORGE_KEY)) return res.status(500).json({ error: 'The AI service is not configured.' });
 
-  const { model, role, messages, max_tokens: maxTokens, image, search_context: searchContext } = req.body || {};
+  const { model, role, messages, max_tokens: maxTokens, image, search_context: searchContext, use_credit: useCredit } = req.body || {};
   const cleanMessages = normaliseMessages(messages);
   if (!cleanMessages) return res.status(400).json({ error: 'Send at least one message before asking Stellar.' });
   const imageAttachment = normaliseImageAttachment(image);
@@ -756,7 +766,7 @@ export default async function handler(req, res) {
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);
   let usage;
   try {
-    usage = await consumeServerUsage(session, ip, plan);
+    usage = await consumeServerUsage(session, ip, plan, useCredit === true);
     applyUsageHeaders(res, usage);
   } catch (error) {
     console.error('Usage enforcement failed', error?.message || error);
@@ -764,7 +774,9 @@ export default async function handler(req, res) {
   }
   if (!usage.allowed) {
     return res.status(429).json({
-      error: `You have reached your ${usage.limit} requests per hour allowance. Upgrade when you need more room, or try again after the reset.`,
+      error: useCredit === true
+        ? `Your ${usage.limit} included requests are used and there is not enough account credit for another request.`
+        : `You have reached your ${usage.limit} included requests per hour. Turn on Usage credit to continue for ${OVERAGE_REQUEST_COST_PENCE}p per request, add credit, or wait for the reset.`,
       usage,
     });
   }
@@ -783,6 +795,8 @@ export default async function handler(req, res) {
     ? Math.max(64, Math.min(Math.floor(requestedMaxTokens), limits.maxTokens))
     : limits.maxTokens;
 
+  const creditChargedPence = Math.max(0, Number(usage.chargedCreditPence) || 0);
+  let streamCompleted = false;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 95_000);
   const abortOnDisconnect = () => {
@@ -813,8 +827,6 @@ export default async function handler(req, res) {
 
     const reader = upstream.body.getReader();
     const decoder = new TextDecoder();
-    let streamCompleted = false;
-
     try {
       while (true) {
         const { done, value } = await reader.read();
@@ -843,6 +855,18 @@ export default async function handler(req, res) {
   } finally {
     clearTimeout(timeout);
     res.removeListener('close', abortOnDisconnect);
+    if (creditChargedPence > 0 && !streamCompleted && session?.email && KV_URL && KV_TOKEN) {
+      try {
+        await refundUsageCredit({
+          url: KV_URL,
+          token: KV_TOKEN,
+          walletKey: walletKeyForSession(session),
+          amountPence: creditChargedPence,
+        });
+      } catch (refundError) {
+        console.error('Could not refund usage credit after failed generation', refundError?.message || refundError);
+      }
+    }
   }
 }
 

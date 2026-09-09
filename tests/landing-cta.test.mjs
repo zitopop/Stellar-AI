@@ -188,7 +188,7 @@ test('Task 186 keeps landing hash navigation visible beneath the sticky header',
   assert.match(landingHtml, /const revealHashTarget = \(hash, behavior = 'smooth'\) => \{/);
   assert.match(landingHtml, /target\.querySelectorAll\('\.reveal'\)\.forEach\(\(element\) => element\.classList\.add\('is-visible'\)\)/);
   assert.match(landingHtml, /history\.pushState\(null, '', hash\);/);
-  assert.match(landingHtml, /closeMobileNav\(\);\n      history\.pushState/);
+  assert.match(landingHtml, /closeMobileNav\(\);\r?\n      history\.pushState/);
   assert.match(landingHtml, /window\.addEventListener\('hashchange', \(\) => revealHashTarget\(window\.location\.hash\)\)/);
 });
 

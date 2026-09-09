@@ -2,7 +2,7 @@
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { recordCheckoutCancellation } from '../lib/conversion-metrics.js';
 import { achievementDefinitions, ensureReferralProfile, kvGet, unlockedAchievements } from '../lib/profile.js';
-import { getPlanDefinition, isPaidPlan, normalisePlan } from '../lib/pricing.js';
+import { OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, isPaidPlan, normalisePlan } from '../lib/pricing.js';
 import { getUsageSnapshot } from '../lib/usage.js';
 
 function setCors(req, res) {
@@ -82,6 +82,7 @@ export default async function handler(req, res) {
       plan,
       owner,
       walletPence: Math.max(0, Number(user.walletPence) || 0),
+      overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
       planBilling: isPaidPlan(plan) ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null,
       usage,
       referralCode: user.referralCode || null,

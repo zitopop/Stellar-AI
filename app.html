@@ -3271,6 +3271,9 @@
     #topup-buy:hover, #topup-buy:focus-visible { color: #000000 !important; background: #d4d4d8 !important; outline: none; }
     #topup-buy:disabled { color: #71717a !important; border-color: #3f3f46 !important; background: #27272a !important; cursor: wait; }
     .topup-trust { margin-top: 9px !important; color: #71717a !important; font-size: 10px !important; text-align: center; }
+    .topup-status { min-height: 18px; margin-top: 10px; color: #a1a1aa; font-size: 11px; font-weight: 650; line-height: 1.4; text-align: center; }
+    .topup-status.error { color: #fca5a5; }
+    .topup-status.success { color: #a7f3d0; }
     .topup-cancel { min-height: 44px !important; margin-top: 10px !important; border: 1px solid #3f3f46 !important; border-radius: 11px !important; color: #d4d4d8 !important; background: transparent !important; font-size: 13px !important; font-weight: 750 !important; }
     .topup-cancel:hover, .topup-cancel:focus-visible { border-color: #71717a !important; color: #ffffff !important; background: #27272a !important; outline: none; }
     body.light #topup-modal { background: rgba(24, 24, 27, .42) !important; }
@@ -3793,7 +3796,7 @@
       <div class="set-head flex justify-between mb-6">
         <div>
           <div id="settings-modal-heading" class="settings-title">Settings</div>
-          <div class="settings-subtitle">Account, plan and display.</div>
+          <div class="settings-subtitle">Account, plan, usage and workspace preferences.</div>
         </div>
         <button id="settings-modal-close" onclick="closeSettings()" class="modal-x" aria-label="Close settings" title="Close settings">×</button>
       </div>
@@ -3805,7 +3808,7 @@
         <button type="button" class="set-tab active" data-tab="account" onclick="setTab('account')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></i>Account</button>
         <button type="button" class="set-tab" data-tab="plan" onclick="setTab('plan')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg></i>Plan</button>
         <button type="button" class="set-tab" data-tab="usage" onclick="setTab('usage')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart"/></svg></i>Usage</button>
-        <button type="button" class="set-tab" data-tab="look" onclick="setTab('look')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-palette"/></svg></i>Look</button>
+        <button type="button" class="set-tab" data-tab="look" onclick="setTab('look')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-palette"/></svg></i>Display</button>
         <button type="button" class="set-tab" data-tab="about" onclick="setTab('about')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"/></svg></i>About</button>
       </div>
 
@@ -3890,11 +3893,11 @@
           <div class="set-val" id="set-usage-reset">6h 0m</div>
         </div>
         <div class="set-item set-click" id="set-usage-wallet-row" style="display:none" onclick="closeSettings(); openTopup()">
-          <div class="set-key"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wallet"/></svg></i>Balance</div>
+          <div class="set-key"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wallet"/></svg></i>Overage credit</div>
           <div class="set-val" id="set-usage-wallet">£0.00 credit</div><div class="set-chev" aria-hidden="true">›</div>
         </div>
         <div class="set-item set-click" onclick="toggleCreditsOn()">
-          <div class="set-key"><i class="sk-ico t-amber"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg></i>Usage credit</div>
+          <div class="set-key"><i class="sk-ico t-amber"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg></i>Use credit after limit</div>
           <div class="set-val set-toggle" id="set-autocredit">Off</div>
         </div>
         <div class="set-item set-click" onclick="closeSettings(); openTopup()">
@@ -4088,7 +4091,7 @@
         <!-- Usage section -->
         <div id="u-usage-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Used</div>
+            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Included hourly allowance</div>
           </div>
           <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;margin-bottom:10px;">
             <div id="u-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#087d60,#10a37f);border-radius:99px;transition:width 0.5s ease;"></div>
@@ -4102,7 +4105,7 @@
         <!-- Balance section -->
         <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Balance</div>
+            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">Overage credit</div>
             <div style="font-size:16px;font-weight:900;color:#ffffff;" id="u-total">£0.00 credit</div>
           </div>
           <div id="u-promo-line" style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:6px;">
@@ -4111,6 +4114,7 @@
           <div id="u-paid-line" style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:14px;">
             <span>💳 Credit you bought</span><span id="u-paid">£0.00 credit</span>
           </div>
+          <div id="u-credit-note" style="font-size:11px;line-height:1.45;color:rgba(255,255,255,0.58);margin:4px 0 12px;">Credit does not raise your hourly limit. When Usage credit is on, it pays for requests after the included allowance.</div>
           <button onclick="closeUsage(); openTopup()" style="width:100%;padding:10px;border-radius:10px;background:#087d60;border:none;color:#fff;font-weight:800;font-size:13px;cursor:pointer;">Add credit</button>
         </div>
 
@@ -4118,7 +4122,8 @@
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;margin-bottom:20px;">
           <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleCreditsOn()">
             <div>
-              <div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:3px;">Usage credit</div>
+              <div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:3px;">Use credit after limit</div>
+              <div id="u-credit-rate" style="font-size:11px;color:rgba(255,255,255,0.58);">5p per request after included allowance</div>
             </div>
             <div class="u-switch" id="u-switch" style="flex:none;margin-left:16px;"><div class="u-knob"></div></div>
           </div>
@@ -4245,7 +4250,8 @@
         <div class="topup-sum-total"><span>Credit added</span><strong id="sum-total">£5.00</strong></div>
       </div>
 
-      <button type="button" id="topup-buy" onclick="buyTopup(document.getElementById('topup-range').value)" class="side-new w-full mt-4">Add £5.00</button>
+      <button type="button" id="topup-buy" onclick="buyTopup(document.getElementById('topup-range').value)" class="side-new w-full mt-4" aria-describedby="topup-status">Add £5.00</button>
+      <div id="topup-status" class="topup-status" role="status" aria-live="polite" aria-atomic="true"></div>
       <div class="topup-trust"><span aria-hidden="true">Stripe</span> secure one-time payment · Credit never expires</div>
       <button type="button" onclick="closeTopup()" class="plan-btn glass w-full mt-2 topup-cancel">Cancel</button>
     </div>
@@ -4966,6 +4972,15 @@
         remaining: Number(response.headers.get('X-RateLimit-Remaining')),
         resetAt: response.headers.get('X-RateLimit-Reset'),
       };
+      const creditCost = Number(response.headers.get('X-Stellar-Credit-Cost-Pence'));
+      const walletHeader = response.headers.get('X-Stellar-Wallet-Pence');
+      if (Number.isFinite(creditCost) && creditCost > 0) usage.creditCostPence = creditCost;
+      if (walletHeader !== null && Number.isFinite(Number(walletHeader))) {
+        const localUsage = getUsage();
+        localUsage.balance = Math.max(0, Number(walletHeader));
+        Store.set({ usage: localUsage });
+        refreshCreditsDisplay();
+      }
       if (!usage || !Number.isFinite(Number(usage.limit)) || !Number.isFinite(Number(usage.remaining))) return;
       const current = Store.get().serverUsage || {};
       Store.set({ serverUsage: { ...current, ...usage, used: Math.max(0, Number(usage.limit) - Number(usage.remaining)) } });
@@ -4980,6 +4995,10 @@
       return BASE_ALLOWANCE[p] || BASE_ALLOWANCE.free;
     }
     function creditsOn() { return Store.get().creditsOn === true; }
+    function requestCreditCostPence() {
+      const cost = Number(serverUsage()?.creditCostPence);
+      return Number.isFinite(cost) && cost > 0 ? Math.round(cost) : MSG_COST_PENCE;
+    }
     function totalBalance() { const u = getUsage(); return (u.promoBalance || 0) + (u.balance || 0); }
     function remainingMsgs() {
       if (isOwner()) return Infinity;
@@ -5029,11 +5048,11 @@
       if (cb) {
         const lowNow = !owner && left <= Math.max(3, Math.ceil(allow * 0.1));
         const guest = !Store.get().user && !owner;
-        const memberSummary = owner ? moneyShort(wallet) + ' credit · Unlimited' : moneyShort(wallet) + ' credit · ' + left + ' left';
+        const memberSummary = owner ? moneyShort(wallet) + ' credit / Unlimited' : left + ' included left / ' + moneyShort(wallet) + ' overage credit';
         cb.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> '
           + (guest ? '40 requests/hr' : escapeHtml(memberSummary));
-        cb.setAttribute('aria-label', guest ? '40 requests per hour' : owner ? moneyShort(wallet) + ' account credit, unlimited requests' : moneyShort(wallet) + ' account credit, ' + left + ' requests left');
-        cb.setAttribute('title', guest ? '40 requests per hour' : owner ? moneyShort(wallet) + ' account credit · Unlimited requests' : moneyShort(wallet) + ' account credit · ' + left + ' requests left');
+        cb.setAttribute('aria-label', guest ? '40 included requests per hour' : owner ? moneyShort(wallet) + ' account credit, unlimited requests' : left + ' included requests left, ' + moneyShort(wallet) + ' overage credit');
+        cb.setAttribute('title', guest ? '40 included requests per hour' : owner ? moneyShort(wallet) + ' account credit, unlimited requests' : left + ' included requests left / ' + moneyShort(wallet) + ' overage credit');
         cb.classList.toggle('credits-low', lowNow);
       }
       const sfill = document.getElementById('set-meter-fill');
@@ -5045,11 +5064,11 @@
       }
       const sp = document.getElementById('set-usage-pct');
       if (sp) {
-        sp.textContent = owner ? 'Unlimited access' : left + ' of ' + allow + ' left';
+        sp.textContent = owner ? 'Unlimited access' : left + ' of ' + allow + ' included requests left';
         document.getElementById('set-usage-reset').textContent = owner ? 'No hourly cap' : refillTimeStr();
         const wr = document.getElementById('set-usage-wallet-row');
         wr.style.display = (wallet > 0 || Store.get().user || isOwner()) ? '' : 'none';
-        document.getElementById('set-usage-wallet').textContent = moneyShort(wallet) + ' credit';
+        document.getElementById('set-usage-wallet').textContent = moneyShort(wallet) + ' overage credit';
       }
     }
     let limitDialogTrigger = null;
@@ -5061,7 +5080,9 @@
       document.getElementById('limit-modal').classList.remove('hidden');
       setTimeout(() => document.querySelector('#limit-actions button')?.focus({ preventScroll: true }), 0);
     }
-    function showLimit() {
+    let limitRetryText = '';
+    function showLimit(retryText = '') {
+      limitRetryText = retryText;
       captureLimitDialogTrigger();
       const plan = Store.get().plan || 'free';
       document.getElementById('limit-sub').textContent = 'Your allowance refreshes in ' + refillTimeStr() + '.';
@@ -5075,9 +5096,9 @@
         openLimitDialog();
         return;
       }
-      if (!creditsOn() && totalBalance() >= MSG_COST_PENCE) {
+      if (!creditsOn() && totalBalance() >= requestCreditCostPence()) {
         document.getElementById('limit-sub').textContent =
-          'You have ' + money(totalBalance()) + ' of credit. Turn on usage credit to keep going, or wait ' + refillTimeStr() + '.';
+          'You have ' + money(totalBalance()) + ' of overage credit. Turn it on to continue for ' + requestCreditCostPence() + 'p per request after your included hourly allowance, or wait ' + refillTimeStr() + '.';
         acts.innerHTML = '<button onclick="enableCreditsAndSend()" class="side-new w-full" style="font-size:12px;padding:8px 12px;">Turn on usage credit</button>' +
           '<button onclick="closeLimit()" class="plan-btn glass">I will wait</button>';
         openLimitDialog();
@@ -5106,9 +5127,20 @@
       event.preventDefault();
       closeLimit();
     });
-    function enableCreditsAndSend() { Store.set({ creditsOn: true }); closeLimit(); renderMeter(); refreshSettings(); sendMessage(); }
+    function enableCreditsAndSend() {
+      const retryText = limitRetryText;
+      Store.set({ creditsOn: true });
+      closeLimit();
+      renderMeter();
+      refreshSettings();
+      if (retryText) sendMessage({ text: retryText });
+    }
     function toggleCreditsOn() { Store.set({ creditsOn: !creditsOn() }); renderUsagePage(); renderMeter(); refreshSettings(); }
-    function topupPricePence(p) { return Math.max(50, Math.min(20000, parseInt(p, 10) || 50)); }
+    function topupPricePence(p) {
+      const amount = Math.round(Number(p) || 50);
+      const clamped = Math.max(50, Math.min(20000, amount));
+      return Math.round(clamped / 50) * 50;
+    }
     function bonusFor(pence) {
       if (pence >= 5000) return Math.round(pence * 0.20);
       if (pence >= 2000) return Math.round(pence * 0.15);
@@ -5116,11 +5148,44 @@
       if (pence >= 500) return Math.round(pence * 0.05);
       return 0;
     }
+    function setTopupStatus(message = '', kind = '') {
+      const status = document.getElementById('topup-status');
+      if (!status) return;
+      status.textContent = message;
+      status.className = 'topup-status' + (kind ? ' ' + kind : '');
+    }
+    function readPendingTopup() {
+      try {
+        const value = JSON.parse(sessionStorage.getItem('stellar-pending-topup') || 'null');
+        return value && Number.isFinite(Number(value.amountPence)) ? value : null;
+      } catch { return null; }
+    }
+    function clearPendingTopup() { sessionStorage.removeItem('stellar-pending-topup'); }
+    const waitForTopupSync = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    async function syncTopupAfterPayment() {
+      const pending = readPendingTopup();
+      const before = Math.max(0, Number(pending?.walletPence) || 0);
+      const delays = [0, 350, 700, 1200, 2000, 3200, 5000];
+      let latest = null;
+      for (const delay of delays) {
+        if (delay) await waitForTopupSync(delay);
+        latest = await syncPlanFromServer();
+        renderMeter();
+        refreshSettings();
+        const wallet = Math.max(0, Number(latest?.walletPence ?? getUsage().balance) || 0);
+        if (!pending || wallet > before) {
+          clearPendingTopup();
+          return { synced: true, walletPence: wallet };
+        }
+      }
+      return { synced: false, walletPence: Math.max(0, Number(latest?.walletPence ?? getUsage().balance) || 0) };
+    }
     let topupDialogTrigger = null;
     function openTopup() {
       const active = document.activeElement;
       topupDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
       document.getElementById('topup-modal').classList.remove('hidden');
+      setTopupStatus('');
       setTopupQty(document.getElementById('topup-range').value);
       setTimeout(() => document.querySelector('#topup-modal .pack')?.focus({ preventScroll: true }), 0);
     }
@@ -5157,20 +5222,25 @@
     document.addEventListener('keydown', trapTopupDialogFocus);
     function setTopupQty(p) {
       const pence = topupPricePence(p);
+      const range = document.getElementById('topup-range');
+      if (range && Number(range.value) !== pence) range.value = String(pence);
       const bon = bonusFor(pence);
       document.getElementById('topup-live').textContent = money(pence);
       const bl = document.getElementById('topup-bonus');
       if (bl) {
-        bl.textContent = bon ? ('🎁 ' + money(bon) + ' free credit included') : 'Spend £5 or more to earn bonus credit';
+        bl.textContent = bon ? ('\u{1F381} ' + money(bon) + ' free credit included') : 'Spend £5 or more to earn bonus credit';
         bl.className = 'topup-bonus' + (bon ? ' active' : '');
       }
       const sp = document.getElementById('sum-pay'); if (sp) sp.textContent = money(pence);
       const sb = document.getElementById('sum-bonus'); if (sb) sb.textContent = bon ? '+' + money(bon) : money(0);
       const st = document.getElementById('sum-total'); if (st) st.textContent = money(pence + bon);
-      document.getElementById('topup-buy').textContent = 'Add ' + money(pence + bon) + ' credit';
-      // highlight a matching preset chip
+      const buyButton = document.getElementById('topup-buy');
+      if (buyButton && !buyButton.disabled) buyButton.textContent = 'Add ' + money(pence + bon) + ' credit';
+      setTopupStatus('');
       document.querySelectorAll('.pack').forEach(c => {
-        c.classList.toggle('on', Number(c.dataset.amt) === pence);
+        const selected = Number(c.dataset.amt) === pence;
+        c.classList.toggle('on', selected);
+        c.setAttribute('aria-pressed', String(selected));
       });
     }
     function pickTopup(pence) {
@@ -5178,18 +5248,22 @@
       if (r) { r.value = pence; }
       setTopupQty(pence);
     }
-    function buyTopup(qty) {
+    async function buyTopup(qty) {
       if (!Store.get().user && !isOwner()) { closeTopup(); openWelcome(); return; }
       qty = topupPricePence(qty);
+      setTopupQty(qty);
       const btn = document.getElementById('topup-buy');
+      if (btn?.disabled) return;
       const label = btn ? btn.textContent : '';
-      if (btn) { btn.disabled = true; btn.textContent = 'Opening checkout…'; }
       const restore = () => { if (btn) { btn.disabled = false; btn.textContent = label; } };
-      fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: apiHeaders(),
-        body: JSON.stringify({ plan: 'topup', qty, ...((window.StellarCurrency && StellarCurrency.getCheckoutLocale()) || {}) })
-      }).then(async (response) => {
+      if (btn) { btn.disabled = true; btn.textContent = 'Opening secure checkout...'; }
+      setTopupStatus('Connecting to Stripe securely...');
+      try {
+        const response = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: apiHeaders(),
+          body: JSON.stringify({ plan: 'topup', qty, ...((window.StellarCurrency && StellarCurrency.getCheckoutLocale()) || {}) })
+        });
         const data = await response.json().catch(() => ({}));
         if (response.status === 401) {
           restore();
@@ -5198,42 +5272,26 @@
           showCheckoutError('Your secure sign-in expired. Please sign in again to buy credit.');
           return;
         }
-        if (response.ok && data.url) { setTimeout(restore, 5000); window.location.href = data.url; return; }
+        if (!response.ok || !data.url) {
+          restore();
+          setTopupStatus(data.error || `Credit checkout could not start (${response.status}). Please try again.`, 'error');
+          return;
+        }
+        let checkoutUrl;
+        try { checkoutUrl = new URL(data.url); } catch { checkoutUrl = null; }
+        if (!checkoutUrl || checkoutUrl.protocol !== 'https:' || checkoutUrl.hostname !== 'checkout.stripe.com') {
+          restore();
+          setTopupStatus('The secure checkout link was invalid. Please try again.', 'error');
+          return;
+        }
+        const walletPence = Math.max(0, Number(getUsage().balance) || 0);
+        sessionStorage.setItem('stellar-pending-topup', JSON.stringify({ amountPence: qty, walletPence, startedAt: Date.now() }));
+        setTopupStatus('Stripe is ready. Redirecting...', 'success');
+        window.location.assign(checkoutUrl.href);
+      } catch {
         restore();
-        closeTopup();
-        showCheckoutError(data.error || `Credit checkout could not start (${response.status}). Please try again.`);
-      }).catch(() => { restore(); closeTopup(); showCheckoutError('Could not reach credit checkout. Please check your connection and try again.'); });
-    }
-    setInterval(renderMeter, 30000);
-
-    // A draft chat exists on screen but isn't saved to the sidebar until the first message
-    let pendingChat = false;
-    function newChat() {
-      // Clear search bar
-      const s = document.getElementById('search');
-      if (s) s.value = '';
-      const id = 'chat_' + Date.now();
-      currentChatId = id;
-      pendingChat = false;
-      pendingChat = true;
-      Store.set({ currentChat: id });
-      renderChatList();
-      const chatEl = document.getElementById('chat');
-      if (chatEl) chatEl.innerHTML = greetingMarkup();
-      const title = document.getElementById('chat-title');
-      if (title) title.textContent = 'Stellar AI';
-      document.getElementById('sidebar').classList.remove('open');
-      document.getElementById('overlay').classList.remove('open');
-      document.body.classList.remove('nav-open');
-      renderWorkspace();
-    }
-    // Turns the draft into a real saved chat (called on first send)
-    function commitPendingChat() {
-      if (!pendingChat) return;
-      chats.unshift({ id: currentChatId, name: 'New chat', messages: [] });
-      Store.set({ chats, currentChat: currentChatId });
-      pendingChat = false;
-      renderChatList();
+        setTopupStatus('Could not reach credit checkout. Please check your connection and try again.', 'error');
+      }
     }
 
     function timeGreeting() {
@@ -5998,6 +6056,7 @@
             max_tokens: isGuest() ? GUEST_MAX_TOKENS
               : (({ free: 2000, starter: 3500, plus: 5000, lite: 5000, pro: 8000, owner: 8000 })[s.plan || 'free'] || 2000),
             search_context: searchContext || '',
+            use_credit: creditsOn(),
             messages: chat.messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content }))
           })
         });
@@ -6005,7 +6064,12 @@
         if (!response.ok) {
           const err = await response.json().catch(() => ({}));
           updateServerUsageFromChatResponse(response, err.usage);
-          throw new Error(err.error || ('Server error ' + response.status));
+          const requestError = new Error(err.error || ('Server error ' + response.status));
+          if (response.status === 429) {
+            requestError.allowanceLimit = true;
+            requestError.retryText = text;
+          }
+          throw requestError;
         }
         updateServerUsageFromChatResponse(response);
         if (!response.body) throw new Error('The AI service returned an empty response. Please try again.');
@@ -6090,6 +6154,9 @@
           }
           loadChat(currentChatId);
           setGenerationStatus('Generation stopped.');
+        } else if (error?.allowanceLimit) {
+          showLimit(error.retryText || text);
+          setGenerationStatus('Included hourly allowance used.');
         } else if (!isRetry && !full && isRetryableGenerationFailure(error)) {
           setGenerationStatus('That attempt did not complete — checking again…');
           window.setTimeout(() => sendMessage({ text }), 450);
@@ -6425,7 +6492,7 @@
           plan: d.plan === 'lite' ? 'plus' : d.plan,
           owner: d.owner === true,
           planBilling: d.planBilling || null,
-          serverUsage: d.usage || null,
+          serverUsage: d.usage ? { ...d.usage, creditCostPence: Number(d.overageRequestCostPence) || MSG_COST_PENCE } : null,
           referralUrl: d.referralUrl || null,
           referralCode: d.referralCode || null,
           achievements: Array.isArray(d.achievements) ? d.achievements : [],
@@ -6439,7 +6506,8 @@
           Store.set({ usage });
           refreshCreditsDisplay();
         }
-      } catch {}
+        return d;
+      } catch { return null; }
     }
 
     async function saveWalletToServer() {
@@ -6539,13 +6607,15 @@
       if (usageCard) usageCard.classList.toggle('usage-unlimited', owner);
       el('u-fill').style.width = owner ? '0%' : pct + '%';
       el('u-fill').className = 'u-fill' + (owner ? ' unlimited' : pct >= 90 ? ' low' : pct > 60 ? ' mid' : '');
-      el('u-pct').textContent = owner ? 'Unlimited access' : remaining + ' of ' + allow + ' requests left';
+      el('u-pct').textContent = owner ? 'Unlimited access' : remaining + ' of ' + allow + ' included requests left';
       // Show a clear lower-tier upgrade route before a user runs out.
       const cta = el('u-upgrade-cta');
       if (cta) cta.style.display = (Store.get().plan === 'free' || !Store.get().plan) ? 'block' : 'none';
       el('u-reset').textContent = owner ? 'No hourly cap' : 'Resets in ' + refillTimeStr();
       const promo = u.promoBalance || 0, paid = u.balance || 0;
-      el('u-total').textContent = moneyShort(promo + paid) + ' credit';
+      el('u-total').textContent = moneyShort(promo + paid) + ' overage credit';
+      const creditRate = el('u-credit-rate');
+      if (creditRate) creditRate.textContent = requestCreditCostPence() + 'p per request after included allowance';
       el('u-promo').textContent = moneyShort(promo) + ' credit';
       el('u-paid').textContent = moneyShort(paid) + ' credit';
       el('u-promo-line').style.display = promo > 0 ? '' : 'none';
@@ -7026,20 +7096,26 @@
       if (paymentState === 'success') {
         const boughtPlan = params.get('plan');
         history.replaceState(null, '', location.pathname);
-        // Credit and plan granted server-side via Stripe webhook — sync from server
-        syncPlanFromServer().then(() => {
-          renderMeter(); refreshSettings();
-          const msg = boughtPlan === 'topup'
-            ? 'Credit added! It may take a moment to appear.'
-            : boughtPlan === 'pro'
+        (async () => {
+          let msg;
+          if (boughtPlan === 'topup') {
+            const result = await syncTopupAfterPayment();
+            msg = result.synced
+              ? `Payment complete. Your balance is now ${money(result.walletPence)} credit.`
+              : 'Payment complete. Your credit is still syncing securely and will refresh automatically.';
+          } else {
+            await syncPlanFromServer();
+            msg = boughtPlan === 'pro'
               ? 'Welcome to Pro. Nova is unlocked and you have the highest usage available.'
               : boughtPlan && boughtPlan.startsWith('starter')
                 ? 'Welcome to Starter. You now have 120 requests per hour and longer scripts.'
                 : 'Welcome to Plus. You now have 400 requests per hour and full game-system capacity.';
+          }
+          renderMeter(); refreshSettings();
           document.getElementById('thanks-sub').textContent = msg;
           openThanksDialog();
           fireConfetti();
-        });
+        })();
       } else if (paymentState === 'cancelled') {
         const attempt = params.get('attempt');
         if (attempt && Store.get().session) {

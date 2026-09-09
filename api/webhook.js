@@ -2,7 +2,8 @@
 // Stores subscription access and paid top-ups in the same KV user record used by the app.
 
 import Stripe from 'stripe';
-import { topupBonusPence, normalisePlan } from '../lib/pricing.js';
+import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, normalisePlan } from '../lib/pricing.js';
+import { applyTopupCheckout } from '../lib/topup.js';
 import { recordFirstUpgrade } from '../lib/profile.js';
 import { incrementConversionMetric, recordCheckoutCompletion, recordCheckoutExpiry } from '../lib/conversion-metrics.js';
 
@@ -82,15 +83,19 @@ export default async function handler(req, res) {
 
         if (checkoutPlan === 'topup') {
           const amount = Math.round(Number(session.metadata?.amount || session.metadata?.qty || 0));
-          if (amount > 0) {
-            const bonus = topupBonusPence(amount);
-            await kvSet(userKey, {
-              ...existing,
-              plan: existing.plan || 'free',
-              walletPence: Math.max(0, Number(existing.walletPence) || 0) + amount + bonus,
-              stripeCustomerId: session.customer || existing.stripeCustomerId,
-              updatedAt: Date.now(),
-            });
+          const paid = session.payment_status === 'paid';
+          const amountMatches = Number(session.amount_total) === amount;
+          if (!paid || !amountMatches || amount < TOPUP_MIN_PENCE || amount > TOPUP_MAX_PENCE || amount % 50 !== 0) {
+            throw new Error(`Invalid completed top-up session ${session.id}`);
+          }
+          const result = applyTopupCheckout(existing, {
+            sessionId: session.id,
+            amountPence: amount,
+            customerId: typeof session.customer === 'string' ? session.customer : '',
+          });
+          if (result.applied) {
+            const saved = await kvSet(userKey, result.record);
+            if (!saved) throw new Error(`Could not persist top-up for ${session.id}`);
             await Promise.all([
               incrementConversionMetric('checkout-completed'),
               incrementConversionMetric('topup-completed'),
@@ -144,7 +149,8 @@ export default async function handler(req, res) {
       }
     }
 
-    await kvSet(eventKey(event.id), { receivedAt: Date.now(), type: event.type }, 60 * 60 * 24 * 30);
+    const marked = await kvSet(eventKey(event.id), { receivedAt: Date.now(), type: event.type }, 60 * 60 * 24 * 30);
+    if (!marked) throw new Error(`Could not persist Stripe event marker ${event.id}`);
     return res.status(200).json({ received: true });
   } catch (error) {
     console.error('Stripe webhook failed', error?.message || error);
