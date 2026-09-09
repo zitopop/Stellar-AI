@@ -29,33 +29,28 @@ Static HTML/CSS/JS · Vercel serverless functions · AI API · Stripe payments �
 
 ## Structure
 
-```
-app.html            the chat app
-index.html          landing page
-terms.html          terms & privacy
-blog/               FiveM and Roblox guides, including competitor comparisons
-affiliate.html       FiveM server-owner and sharing information
-archive/              Historical documents, prompts, reports, and local audit material
-lib/assets/           Runtime visual assets used by the landing page
-lib/assets/pwa/        PWA favicon, app icons and splash screens
-manifest.json       installable app config
+```text
+index.html          landing page, plan comparison and first-run entry points
+app.html            authenticated/guest AI workspace and in-app plan modal
+blog.html           Guides hub
+blog/               published FiveM and Roblox guides at canonical clean routes
+models / models.html model directory/SEO route pair
+api/                serverless auth, chat, billing, search, email and account APIs
+lib/                shared runtime modules and visual/PWA assets
+docs/               product, release and implementation documentation
+scripts/            repository maintenance and publishing helpers
+tests/              regression, routing, pricing, accessibility and release contracts
+archive/            retired/legacy material kept away from active runtime files
+site-polish.css     shared dark public-page polish used by legacy content pages
+manifest.json       installable app configuration
 sw.js               service worker
-vercel.json         hosting config + security headers
-api/                serverless functions
-  auth.js           email auth
-  chat.js           AI chat + streaming
-  broadcast.js      broadcast email to all users
-  create-checkout.js Stripe checkout (monthly + annual)
-  discord-oauth.js  Discord OAuth (redirect + callback)
-  get-chats.js      load chat history
-  get-plan.js       plan, usage, referral, achievement and privacy-safe public stats view
-  grant.js          owner tools
-  save-chats.js     save chat history
-  search.js         Brave web search
-  send-welcome.js   Resend welcome email
-  webhook.js        Stripe webhook
+vercel.json         hosting routes, redirects, rewrites and security headers
+sitemap.xml         canonical public discovery URLs
+terms.html          terms and privacy information
+affiliate.html      FiveM server-owner and sharing information
 ```
 
+Route-critical public files stay in their existing locations. Add new active code to the matching folder above; move retired material to `archive/` instead of leaving temporary files at repository root.
 ---
 
 ## Plans

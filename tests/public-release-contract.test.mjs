@@ -99,14 +99,14 @@ test('the public support address remains a one-line mail link in settings', () =
   assert.match(appHtml, /href="mailto:support@trystellarai\.com"[^>]*white-space:nowrap[^>]*>support@trystellarai\.com<\/a>/);
 });
 
-test('Vercel routes clean blog slugs into the moved blog directory', () => {
-  const catchAll = vercel.rewrites.find(({ source }) => source === '/blog/:slug');
-  assert.deepEqual(catchAll, {
-    source: '/blog/:slug',
-    destination: '/blog/blog-:slug.html',
-  });
-  for (const slug of ['qbcore-police-job-script-free', 'roblox-tapping-simulator-script', 'stellar-ai-vs-enderdevelopment']) {
-    assert.ok(vercel.rewrites.some(({ source }) => source === `/blog/${slug}`), `${slug} requires an explicit clean route`);
+test('Vercel routes every canonical blog slug to its published HTML file', () => {
+  const sitemap = read('sitemap.xml');
+  const paths = [...sitemap.matchAll(/<loc>https:\/\/trystellarai\.com(\/blog\/[^<]+)<\/loc>/g)].map(([, pathname]) => pathname);
+  assert.equal(paths.length, 74);
+  assert.ok(!vercel.rewrites.some(({ source }) => source.startsWith('/blog/') && source.includes(':')));
+  for (const pathname of paths) {
+    const route = vercel.rewrites.find(({ source }) => source === pathname);
+    assert.deepEqual(route, { source: pathname, destination: `${pathname}.html` }, pathname);
   }
 });
 

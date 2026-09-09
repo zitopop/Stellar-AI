@@ -1,14 +1,15 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { summarizeTodayActivation } from '../lib/funnel-metrics.js';
 
-const root = new URL('../', import.meta.url);
-const landingHtml = readFileSync(join(root.pathname, 'index.html'), 'utf8');
-const appHtml = readFileSync(join(root.pathname, 'app.html'), 'utf8');
-const authJs = readFileSync(join(root.pathname, 'api/auth.js'), 'utf8');
-const welcomeJs = readFileSync(join(root.pathname, 'api/send-welcome.js'), 'utf8');
+const root = fileURLToPath(new URL('../', import.meta.url));
+const landingHtml = readFileSync(join(root, 'index.html'), 'utf8');
+const appHtml = readFileSync(join(root, 'app.html'), 'utf8');
+const authJs = readFileSync(join(root, 'api/auth.js'), 'utf8');
+const welcomeJs = readFileSync(join(root, 'api/send-welcome.js'), 'utf8');
 
 test('hero free-generation CTA opens the app with the first-run welcome signal', () => {
   assert.match(landingHtml, /<a href="\/app\?welcome=1" class="button button-primary">Generate your first script free/);
