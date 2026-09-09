@@ -451,6 +451,7 @@ test('Task 120 exposes the selected model with synchronized radio-menu semantics
   assert.match(appHtml, /pickModel\('smart'\)" data-model-choice="smart" role="menuitemradio" aria-checked="true"/);
   assert.match(appHtml, /pickModel\('ultra'\)" data-model-choice="ultra" role="menuitemradio" aria-checked="false"/);
   assert.match(appHtml, /pickModel\('researcher'\)" data-model-choice="researcher" role="menuitemradio" aria-checked="false"/);
+  assert.match(appHtml, /pickModel\('reviewer'\)" data-model-choice="reviewer" role="menuitemradio" aria-checked="false"/);
   assert.match(appHtml, /document\.querySelectorAll\('\[data-model-choice\]'\)\.forEach\(\(choice\) => \{\s+choice\.setAttribute\('aria-checked', String\(choice\.dataset\.modelChoice === cur\)\);\s+\}\);/);
   assert.match(appHtml, /closeModelMenu\(\); openPlans\(\)" role="menuitem"/);
 });
@@ -461,7 +462,7 @@ test('Task 121 keeps the mobile model menu scrollable within a bounded viewport'
 
 test('Task 122 refreshes existing selected-model indicators immediately after a permitted choice', () => {
   assert.match(appHtml, /function pickModel\(m\) \{/);
-  assert.match(appHtml, /\['researcher', 'security', 'tester'\]\.includes\(m\) && !\(s\.plan === 'plus' \|\| s\.plan === 'lite' \|\| s\.plan === 'pro' \|\| isOwner\(\)\)/);
+  assert.match(appHtml, /\['researcher', 'reviewer', 'security', 'tester'\]\.includes\(m\) && !\(s\.plan === 'plus' \|\| s\.plan === 'lite' \|\| s\.plan === 'pro' \|\| isOwner\(\)\)/);
   assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);/);
 });
 
@@ -473,6 +474,7 @@ test('Task 145 lets keyboard users jump to the first or last visible model-menu 
 
 test('Task 146 gives specialist model choices concise explicit accessible names', () => {
   assert.match(appHtml, /data-model-choice="researcher"[^>]*aria-label="Select Research AI for documented sources and uncertainty"/);
+  assert.match(appHtml, /data-model-choice="reviewer"[^>]*aria-label="Select Review AI to audit another AI output"/);
   assert.match(appHtml, /data-model-choice="security"[^>]*aria-label="Select Security AI for risk assessment and fixes"/);
   assert.match(appHtml, /data-model-choice="tester"[^>]*aria-label="Select Test AI for edge cases and evidence limits"/);
 });

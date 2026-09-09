@@ -64,7 +64,7 @@ test('Task 173 keeps the Settings sidebar control an explicit non-submit button'
 });
 
 test('Task 174 keeps every model chooser selection an explicit non-submit menuitemradio button', () => {
-  for (const model of ['fabie', 'smart', 'comet', 'ultra', 'researcher', 'security', 'tester']) {
+  for (const model of ['fabie', 'smart', 'comet', 'ultra', 'researcher', 'reviewer', 'security', 'tester']) {
     assert.match(workspaceHtml, new RegExp(`<button(?: type="button")?[^>]*data-model-choice="${model}"[^>]*role="menuitemradio"`));
     assert.match(workspaceHtml, new RegExp(`<button type="button"[^>]*data-model-choice="${model}"`));
   }

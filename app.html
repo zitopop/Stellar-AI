@@ -3642,6 +3642,10 @@
                   <div><div class="font-black text-sm">🔎 Research AI <span style="color:#8b8b9e;font-size:10px;">· sources + uncertainty</span></div></div>
                   <div id="researcher-check" class="font-black text-sm text-[#10a37f]">✓</div>
                 </button>
+                <button type="button" onclick="pickModel('reviewer')" data-model-choice="reviewer" role="menuitemradio" aria-checked="false" aria-label="Select Review AI to audit another AI output" title="Audit requirement coverage, correctness, missing pieces, unsafe assumptions, and verification limits." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                  <div><div class="font-black text-sm">Review AI <span style="color:#8b8b9e;font-size:10px;">· quality gate</span></div></div>
+                  <div id="reviewer-check" class="font-black text-sm text-[#10a37f]">✓</div>
+                </button>
                 <button type="button" onclick="pickModel('security')" data-model-choice="security" role="menuitemradio" aria-checked="false" aria-label="Select Security AI for risk assessment and fixes" title="Report severity, abuse path, concrete fix, and residual risk." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                   <div><div class="font-black text-sm">🛡 Security AI <span style="color:#8b8b9e;font-size:10px;">· severity + fixes</span></div></div>
                   <div id="security-check" class="font-black text-sm text-[#10a37f]">✓</div>
@@ -5992,8 +5996,8 @@
           method: 'POST',
           headers: apiHeaders(),
           body: JSON.stringify({
-            model: ['researcher', 'security', 'tester'].includes(model) ? 'smart' : model,
-            role: ['researcher', 'security', 'tester'].includes(model) ? model : 'implementer',
+            model: ['researcher', 'reviewer', 'security', 'tester'].includes(model) ? 'smart' : model,
+            role: ['researcher', 'reviewer', 'security', 'tester'].includes(model) ? model : 'implementer',
             image: uploadedImage || null,
             max_tokens: isGuest() ? GUEST_MAX_TOKENS
               : (({ free: 2000, starter: 3500, plus: 5000, lite: 5000, pro: 8000, owner: 8000 })[s.plan || 'free'] || 2000),
@@ -6128,7 +6132,7 @@
       document.getElementById('comet-check').style.visibility = cur === 'comet' ? 'visible' : 'hidden';
       document.getElementById('smart-check').style.visibility = cur === 'smart' ? 'visible' : 'hidden';
       document.getElementById('ultra-check').style.visibility = cur === 'ultra' ? 'visible' : 'hidden';
-      ['researcher', 'security', 'tester'].forEach(role => {
+      ['researcher', 'reviewer', 'security', 'tester'].forEach(role => {
         const check = document.getElementById(role + '-check');
         if (check) check.style.visibility = cur === role ? 'visible' : 'hidden';
       });
@@ -6161,11 +6165,11 @@
       modelButton?.focus({ preventScroll: true });
       const paid = ['starter', 'plus', 'pro'].includes(s.plan) || isOwner();
       if (m === 'ultra' && !(s.plan === 'pro' || isOwner())) { openPlans(); return; }
-      if (['researcher', 'security', 'tester'].includes(m) && !(s.plan === 'plus' || s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
+      if (['researcher', 'reviewer', 'security', 'tester'].includes(m) && !(s.plan === 'plus' || s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
       Store.set({ model: m });
       refreshModelMenu();
-      const labels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
-      const modelLabels = { fabie: 'Choose model: Spark for fast drafts', smart: 'Choose model: Star, recommended for most scripts', comet: 'Choose model: Comet for deep system work', ultra: 'Choose model: Nova for maximum quality, available on Pro', researcher: 'Choose Research AI', security: 'Choose Security AI', tester: 'Choose Test AI' };
+      const labels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', reviewer: '✓ Review AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
+      const modelLabels = { fabie: 'Choose model: Spark for fast drafts', smart: 'Choose model: Star, recommended for most scripts', comet: 'Choose model: Comet for deep system work', ultra: 'Choose model: Nova for maximum quality, available on Pro', researcher: 'Choose Research AI', reviewer: 'Choose Review AI', security: 'Choose Security AI', tester: 'Choose Test AI' };
       modelButton.innerHTML = labels[m] || labels.smart;
       modelButton.setAttribute('aria-label', modelLabels[m] || modelLabels.smart);
     }
@@ -7017,7 +7021,7 @@
       const s = Store.get();
       chats = s.chats;
       setMode('dark', 'dark-only');
-      const mLabels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
+      const mLabels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', reviewer: '✓ Review AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
       const mCur = (s.model === 'ultra' && s.plan !== 'pro') ? 'smart' : (s.model || 'smart');
       document.getElementById('model-btn').innerHTML = mLabels[mCur] || mLabels.smart;
       
