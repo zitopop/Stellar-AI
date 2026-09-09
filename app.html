@@ -4258,14 +4258,28 @@
   </div>
 
   <script>
+    function safeStorageGet(key) {
+      try { return window.localStorage.getItem(key); } catch { return null; }
+    }
+    function safeStorageSet(key, value) {
+      try { window.localStorage.setItem(key, value); return true; } catch { return false; }
+    }
+
     const Store = {
       get() {
-        const s = localStorage.getItem('stellar-store');
-        return s ? JSON.parse(s) : { mode: 'light', plan: 'free', chats: [], currentChat: null };
+        const fallback = { mode: 'light', plan: 'free', chats: [], currentChat: null };
+        const raw = safeStorageGet('stellar-store');
+        if (!raw) return fallback;
+        try {
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === 'object' ? parsed : fallback;
+        } catch {
+          return fallback;
+        }
       },
       set(data) {
         const current = this.get();
-        localStorage.setItem('stellar-store', JSON.stringify({ ...current, ...data }));
+        return safeStorageSet('stellar-store', JSON.stringify({ ...current, ...data }));
       }
     };
 
@@ -4672,8 +4686,22 @@
     }
     let lastMadeCode = '';
     let ownerDialogTrigger = null;
+    function closeOtherDialogs(next) {
+      const dialogs = [
+        ['plans', 'plans-modal', closePlans],
+        ['settings', 'settings-modal', closeSettings],
+        ['usage', 'usage-modal', closeUsage],
+        ['owner', 'owner-modal', closeOwner],
+      ];
+      for (const [name, id, close] of dialogs) {
+        if (name === next) continue;
+        const modal = document.getElementById(id);
+        if (modal && !modal.classList.contains('hidden')) close();
+      }
+    }
     function openOwner() {
       if (!isOwner()) return;
+      closeOtherDialogs('owner');
       const active = document.activeElement;
       ownerDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
       document.getElementById('own-msg').textContent = '';
@@ -6308,7 +6336,7 @@
       utilityDialogTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
-    function openPlans() { captureUtilityDialogTrigger(); refreshPlans(); const modal = document.getElementById('plans-modal'); modal.classList.remove('hidden'); const sheet = modal.firstElementChild; if (sheet) sheet.scrollTop = 0; requestAnimationFrame(() => { if (sheet) sheet.scrollTop = 0; }); focusUtilityDialogClose('plans-modal-close');
+    function openPlans() { closeOtherDialogs('plans'); captureUtilityDialogTrigger(); refreshPlans(); const modal = document.getElementById('plans-modal'); modal.classList.remove('hidden'); const sheet = modal.firstElementChild; if (sheet) sheet.scrollTop = 0; requestAnimationFrame(() => { if (sheet) sheet.scrollTop = 0; }); focusUtilityDialogClose('plans-modal-close');
       setTimeout(initPlansScroll, 100); }
     function initPlansScroll() {
       const grid = document.getElementById('plans-grid-inner');
@@ -6396,7 +6424,7 @@
       if (user && user.email) {
         const key = 'stellar-user-' + user.email;
         try {
-          const saved = localStorage.getItem(key);
+          const saved = safeStorageGet(key);
           if (saved) {
             const d = JSON.parse(saved);
             if (d.chats) { chats = d.chats; }
@@ -6540,7 +6568,7 @@
       const s = Store.get();
       if (s.user && s.user.email) {
         const key = 'stellar-user-' + s.user.email;
-        try { localStorage.setItem(key, JSON.stringify({
+        try { safeStorageSet(key, JSON.stringify({
           chats: s.chats, usage: s.usage, plan: s.plan,
           creditsOn: s.creditsOn, welcomed: s.welcomed, welcomeVersion: s.welcomeVersion
         })); } catch {}
@@ -6585,6 +6613,7 @@
     }
 
     function openUsage() {
+      closeOtherDialogs('usage');
       document.body.classList.add('usage-open');
       if (!Store.get().user && !isOwner()) { openWelcome(); return; }
       captureUtilityDialogTrigger(); renderUsagePage(); document.getElementById('usage-modal').classList.remove('hidden'); focusUtilityDialogClose('usage-modal-close');
@@ -6766,6 +6795,7 @@
       }
     }
     function openSettings() {
+      closeOtherDialogs('settings');
       captureUtilityDialogTrigger();
       document.body.classList.add('settings-open');
       setTimeout(() => setTab(Store.get().setTab || 'account'), 0);
@@ -7016,11 +7046,11 @@
       if (!user || !user.email) return;
       const key = 'stellar-first-signin-onboarding-v1-' + String(user.email).trim().toLowerCase();
       let alreadyShown = false;
-      try { alreadyShown = localStorage.getItem(key) === '1'; } catch {}
+      try { alreadyShown = safeStorageGet(key) === '1'; } catch {}
       if (alreadyShown) return;
       const wrap = document.querySelector('#chat .greet-wrap');
       if (!wrap) return;
-      try { localStorage.setItem(key, '1'); } catch {}
+      try { safeStorageSet(key, '1'); } catch {}
       wrap.classList.add('first-signin-welcome');
       const sub = wrap.querySelector('.welcome-sub');
       if (sub) {
@@ -10542,7 +10572,7 @@
       if (standalone || (!apple && !android)) return;
       let deferred = null;
       let banner = null;
-      const dismissed = Number(localStorage.getItem('stellar-install-dismissed-at') || 0);
+      const dismissed = Number(safeStorageGet('stellar-install-dismissed-at') || 0);
       if (dismissed > Date.now() - 30 * 24 * 60 * 60 * 1000) return;
       const close = () => { banner?.remove(); banner = null; };
       const show = () => {
@@ -10557,7 +10587,7 @@
         banner.setAttribute('aria-label', 'Install Stellar AI');
         banner.innerHTML = '<div class="stellar-install-copy"><strong>Install Stellar AI</strong><span data-copy>' + (apple ? 'Add Stellar to your Home Screen for a faster app-like launch.' : 'Install Stellar for a faster, full-screen workspace.') + '</span></div><button type="button" data-install>' + (apple ? 'How to install' : 'Install app') + '</button><button type="button" data-dismiss aria-label="Dismiss install prompt">×</button>';
         document.body.appendChild(banner);
-        banner.querySelector('[data-dismiss]').addEventListener('click', () => { localStorage.setItem('stellar-install-dismissed-at', String(Date.now())); close(); });
+        banner.querySelector('[data-dismiss]').addEventListener('click', () => { safeStorageSet('stellar-install-dismissed-at', String(Date.now())); close(); });
         banner.querySelector('[data-install]').addEventListener('click', async () => {
           if (deferred) {
             deferred.prompt();
@@ -10568,7 +10598,7 @@
           }
           banner.querySelector('[data-copy]').textContent = 'In Safari, tap Share, then choose “Add to Home Screen”.';
           banner.querySelector('[data-install]').textContent = 'Got it';
-          banner.querySelector('[data-install]').addEventListener('click', () => { localStorage.setItem('stellar-install-dismissed-at', String(Date.now())); close(); }, { once: true });
+          banner.querySelector('[data-install]').addEventListener('click', () => { safeStorageSet('stellar-install-dismissed-at', String(Date.now())); close(); }, { once: true });
         });
       };
       window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); deferred = event; });
@@ -10576,43 +10606,6 @@
       window.setTimeout(show, 30000);
     })();
   </script>
-<script>
-    // Auto close other modals when one opens
-    (function() {
-      const origOpenPlans = window.openPlans;
-      const origOpenSettings = window.openSettings || window.openSets;
-      const origOpenUsage = window.openUsage;
-      const origOpenOwner = window.openOwner;
-
-      function closeAll() {
-        try { closePlans && closePlans(); } catch(e) {}
-        try { closeSettings && closeSettings(); } catch(e) {}
-        try { closeUsage && closeUsage(); } catch(e) {}
-        try { closeOwner && closeOwner(); } catch(e) {}
-      }
-
-      window.openPlans = function() {
-        closeSettings && closeSettings();
-        closeUsage && closeUsage();
-        closeOwner && closeOwner();
-        if(origOpenPlans) origOpenPlans.apply(this, arguments);
-      };
-
-      window.openUsage = function() {
-        closePlans && closePlans();
-        closeSettings && closeSettings();
-        closeOwner && closeOwner();
-        if(origOpenUsage) origOpenUsage.apply(this, arguments);
-      };
-
-      window.openOwner = function() {
-        closePlans && closePlans();
-        closeSettings && closeSettings();
-        closeUsage && closeUsage();
-        if(origOpenOwner) origOpenOwner.apply(this, arguments);
-      };
-    })();
-</script>
   <script src="/stellar-orbit.js?v=2" defer></script>
   <script src="/stellar-growth-v1.js?v=1" defer></script>
 <style id="plans-premium-final">
