@@ -255,9 +255,9 @@ test('Task 86 manages close-control and trigger focus for scoped utility dialogs
   assert.match(appHtml, /let utilityDialogTrigger = null;\s+function captureUtilityDialogTrigger\(\) \{[\s\S]*?utilityDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;/);
   assert.match(appHtml, /function focusUtilityDialogClose\(id\) \{\s+setTimeout\(\(\) => document\.getElementById\(id\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
   assert.match(appHtml, /function restoreUtilityDialogFocus\(\) \{[\s\S]*?utilityDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);/);
-  assert.match(appHtml, /function openPlans\(\) \{ captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('plans-modal-close'\);/);
+  assert.match(appHtml, /function openPlans\(\) \{ closeOtherDialogs\('plans'\); captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('plans-modal-close'\);/);
   assert.match(appHtml, /captureUtilityDialogTrigger\(\); renderUsagePage\(\);[\s\S]*?focusUtilityDialogClose\('usage-modal-close'\);/);
-  assert.match(appHtml, /function openSettings\(\) \{\s+captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('settings-modal-close'\);/);
+  assert.match(appHtml, /function openSettings\(\) \{\s+closeOtherDialogs\('settings'\);\s+captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('settings-modal-close'\);/);
   assert.match(appHtml, /function closePlans\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
   assert.match(appHtml, /function closeUsage\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
   assert.match(appHtml, /function closeSettings\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
@@ -305,7 +305,7 @@ test('Task 94 lets keyboard users open owner tools from the settings entry', () 
 
 test('Task 95 moves focus into the owner-tools dialog and restores its trigger on close', () => {
   assert.match(appHtml, /<button id="owner-modal-close" onclick="closeOwner\(\)" class="modal-x" aria-label="Close owner tools">×<\/button>/);
-  assert.match(appHtml, /let ownerDialogTrigger = null;\s+function openOwner\(\) \{\s+if \(!isOwner\(\)\) return;\s+const active = document\.activeElement;\s+ownerDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?setTimeout\(\(\) => document\.getElementById\('owner-modal-close'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /let ownerDialogTrigger = null;[\s\S]*?function openOwner\(\) \{\s+if \(!isOwner\(\)\) return;\s+closeOtherDialogs\('owner'\);\s+const active = document\.activeElement;\s+ownerDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?setTimeout\(\(\) => document\.getElementById\('owner-modal-close'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
   assert.match(appHtml, /function closeOwner\(\) \{\s+document\.getElementById\('owner-modal'\)\.classList\.add\('hidden'\);\s+const trigger = ownerDialogTrigger;\s+ownerDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
 
