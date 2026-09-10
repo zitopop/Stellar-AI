@@ -23,6 +23,32 @@ app = insertBeforeLast(app, '</body>', appRouter, 'app </body>');
 fs.writeFileSync(appPath, app);
 
 const testPath = 'tests/upgrade-intent-routing.test.mjs';
-fs.writeFileSync(testPath, `import assert from 'node:assert/strict';\nimport { readFileSync } from 'node:fs';\nimport test from 'node:test';\n\nconst landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');\nconst app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');\n\ntest('landing pricing preserves paid plan intent when opening the workspace', () => {\n  assert.match(landing, /id="pricing-intent-bridge"/);\n  for (const plan of ['starter', 'plus', 'pro']) {\n    assert.match(landing, new RegExp(\\`/app\\\\?upgrade=\\\\$\\{plan\\}\\`));\n  }\n  assert.match(landing, /sessionStorage\\.setItem\\(intentKey, plan\\)/);\n});\n\ntest('workspace opens and focuses the paid plan requested from landing pricing', () => {\n  assert.match(app, /id="upgrade-intent-router"/);\n  assert.match(app, /allowedPlans = new Set\\(\\['starter', 'plus', 'pro'\\]\\)/);\n  assert.match(app, /if \\(typeof openPlans !== 'function'\\) return;\\s+openPlans\\(\\);/);\n  assert.match(app, /document\\.getElementById\\(\\`plan-card-\\$\\{plan\\}\\`\\)/);\n  assert.match(app, /document\\.getElementById\\(\\`plan-btn-\\$\\{plan\\}\\`\\)/);\n  assert.match(app, /url\\.searchParams\\.delete\\('upgrade'\\)/);\n});\n`);
+const testLines = [
+  "import assert from 'node:assert/strict';",
+  "import { readFileSync } from 'node:fs';",
+  "import test from 'node:test';",
+  '',
+  "const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');",
+  "const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');",
+  '',
+  "test('landing pricing preserves paid plan intent when opening the workspace', () => {",
+  "  assert.match(landing, /id=\"pricing-intent-bridge\"/);",
+  "  for (const plan of ['starter', 'plus', 'pro']) {",
+  "    assert.ok(landing.includes(`/app?upgrade=${plan}`));",
+  "  }",
+  "  assert.match(landing, /sessionStorage\\.setItem\\(intentKey, plan\\)/);",
+  "});",
+  '',
+  "test('workspace opens and focuses the paid plan requested from landing pricing', () => {",
+  "  assert.match(app, /id=\"upgrade-intent-router\"/);",
+  "  assert.match(app, /allowedPlans = new Set\\(\\['starter', 'plus', 'pro'\\]\\)/);",
+  "  assert.match(app, /if \\(typeof openPlans !== 'function'\\) return;\\s+openPlans\\(\\);/);",
+  "  assert.ok(app.includes('plan-card-${plan}'));",
+  "  assert.ok(app.includes('plan-btn-${plan}'));",
+  "  assert.match(app, /url\\.searchParams\\.delete\\('upgrade'\\)/);",
+  "});",
+  '',
+];
+fs.writeFileSync(testPath, testLines.join('\n'));
 
 console.log('Applied landing-to-app paid plan intent routing.');
