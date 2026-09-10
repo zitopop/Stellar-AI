@@ -24,7 +24,8 @@ function firstConfiguredPrice(env, ...keys) {
 }
 
 export function subscriptionPriceForPlan(plan, env = process.env, currency = 'GBP') {
-  // Local prices are opt-in. Never guess a price, reuse another tier, or trust a client to set billing.
+  // Local prices remain supported for internal compatibility, but the live checkout handler
+  // deliberately passes GBP so a customer's location cannot switch the billing currency.
   const code = String(currency || 'GBP').trim().toUpperCase().replace(/[^A-Z]/g, '');
   const suffix = code && code !== 'GBP' ? `_${code}` : '';
   const local = (base, localBase) => firstConfiguredPrice(env, ...localBase.map((key) => `${key}${suffix}`), ...base);
@@ -60,11 +61,11 @@ export default async function handler(req, res) {
 
   const sessionUser = requireSession(req, res);
   if (!sessionUser) return;
-  const { plan, amount, qty, currency: requestedCurrency, country: requestedCountry } = req.body || {};
+  const { plan, amount, qty, country: requestedCountry } = req.body || {};
   const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
   const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
-  const allowedCurrencies = new Set(['GBP', 'USD', 'EUR', 'CAD', 'AUD', 'NZD', 'CHF', 'NOK', 'SEK', 'DKK', 'PLN', 'CZK', 'HUF', 'INR', 'SGD', 'HKD', 'JPY', 'KRW', 'AED', 'SAR', 'ZAR', 'BRL', 'MXN', 'ISK']);
-  const currency = allowedCurrencies.has(String(requestedCurrency || '').toUpperCase()) ? String(requestedCurrency).toUpperCase() : 'GBP';
+  // Stellar bills every customer in GBP. Country is retained for analytics only.
+  const currency = 'GBP';
   if (!plan) return res.status(400).json({ error: 'Choose a plan before continuing.' });
 
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
@@ -77,7 +78,7 @@ export default async function handler(req, res) {
     if (plan === 'topup') {
       const rawPence = amount ?? qty;
       if (!isValidTopupPence(rawPence)) {
-        return res.status(400).json({ error: 'Top-up amount must be between 50p and \u00a3200 in 50p steps.' });
+        return res.status(400).json({ error: 'Top-up amount must be between 50p and £200 in 50p steps.' });
       }
       const pence = Number(rawPence);
 
@@ -102,7 +103,7 @@ export default async function handler(req, res) {
         success_url: 'https://trystellarai.com/app?payment=success&plan=topup',
         cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=topup&attempt=${encodeURIComponent(attemptId)}`,
         client_reference_id: attemptId,
-        metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
+        metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus), country, currency },
       });
       await incrementConversionMetric('checkout-started');
       return res.status(200).json({ url: checkout.url });
@@ -111,7 +112,7 @@ export default async function handler(req, res) {
     // Price IDs are server-owned. Historic Plus aliases remain supported, but a
     // missing Starter ID must never silently charge a Plus or Pro price.
     const price = subscriptionPriceForPlan(plan, process.env, currency);
-    if (!price) return res.status(400).json({ error: missingPlanMessage(plan) + (currency !== 'GBP' ? ` No ${currency} Stripe price is configured for this plan, so use GBP or configure the ${currency} price ID.` : ''), code: 'PLAN_PRICE_NOT_CONFIGURED', country, currency });
+    if (!price) return res.status(400).json({ error: missingPlanMessage(plan), code: 'PLAN_PRICE_NOT_CONFIGURED', country, currency });
 
     const attemptId = crypto.randomUUID();
     await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
