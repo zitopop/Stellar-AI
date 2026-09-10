@@ -5,10 +5,10 @@ import { readFile } from 'node:fs/promises';
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
 const conciseLabels = [
-  'Police job',
-  'Bank heist',
-  'Roblox pack',
-  'Fix script',
+  'Build a police job',
+  'Build a bank heist',
+  'Build a Roblox game',
+  'Fix my script',
 ];
 
 test('home suggestions use concise core-action labels in both render paths', () => {

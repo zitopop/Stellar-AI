@@ -3556,13 +3556,13 @@
         <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
         <div class="greet-wrap">
           <div class="greet-hi" id="greet-hi">Welcome to Stellar AI</div>
-          <p class="welcome-sub">Describe what you want, or choose a quick start.</p>
-          <div id="welcome-starters-heading" class="sr-only">Quick starts</div>
+          <p class="welcome-sub">Just say what you want. Stellar can build, fix or explain FiveM and Roblox scripts.</p>
+          <div id="welcome-starters-heading" class="welcome-starters-label">Try an example</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
-            <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Police job</span></button>
-            <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Bank heist</span></button>
-            <button type="button" onclick="useSuggestion('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist')" class="sug-chip"><span>🎮</span><span>Roblox pack</span></button>
-            <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix script</span></button>
+            <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job</span></button>
+            <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Build a bank heist</span></button>
+            <button type="button" onclick="useSuggestion('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist')" class="sug-chip"><span>🎮</span><span>Build a Roblox game</span></button>
+            <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix my script</span></button>
           </div>
           <a href="/blog" class="home-guides-link">Browse guides <span aria-hidden="true">→</span></a>
         </div>
@@ -3586,7 +3586,7 @@
         <p id="image-upload-status" class="image-upload-status" role="status" aria-live="polite"></p>
         <input id="image-upload-input" class="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain,text/lua,text/javascript" onchange="handleImageUpload(event)" multiple>
         <div class="flex gap-3">
-          <textarea id="txt" rows="1" autofocus placeholder="Ask Stellar…" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."
+          <textarea id="txt" rows="1" autofocus placeholder="Describe what you want to build or fix…" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."
                     class="flex-1 glass rounded-2xl px-5 py-3.5 resize-none focus:outline-none font-bold text-white"
                     onkeydown="if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!currentAbort) sendMessage(); }"></textarea>
           <div id="paste-chip" class="paste-chip hidden">
@@ -3684,7 +3684,7 @@
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;">
         <div>
           <div id="plans-modal-heading" style="font-size:22px;font-weight:900;letter-spacing:-0.5px;">Choose your plan</div>
-          <div class="plans-modal-subtitle" style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Cancel anytime · GBP pricing · Secure Stripe checkout</div>
+          <div class="plans-modal-subtitle" style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;">Clear GBP pricing · Secure Stripe checkout · Cancel anytime</div>
         </div>
         <button id="plans-modal-close" onclick="closePlans()" class="modal-x" aria-label="Close plans">×</button>
       </div>
@@ -3778,7 +3778,7 @@
       <!-- Pay as you go -->
       <div class="plans-topup" style="text-align:center;margin-bottom:16px;">
         <button onclick="closePlans(); openTopup()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:13px;cursor:pointer;font-weight:600;">
-          Prefer pay-as-you-go? <span style="color:rgba(139,92,246,0.8);">Add credit →</span>
+          Need extra usage without a subscription? <span style="color:rgba(139,92,246,0.8);">Add credit →</span>
         </button>
       </div>
 
@@ -4216,17 +4216,17 @@
       <div class="topup-head">
         <div>
           <div id="topup-modal-heading" class="topup-title">Add credit</div>
-          <div id="topup-modal-note" class="topup-sub">Buy once. Use anytime.</div>
+          <div id="topup-modal-note" class="topup-sub">One payment. No subscription. Credit stays in your wallet.</div><div class="topup-balance-pill">Current balance <strong id="topup-current-balance">£0.00</strong></div>
         </div>
         <button type="button" class="topup-close" onclick="closeTopup()" aria-label="Cancel credit purchase">×</button>
       </div>
 
-      <div class="topup-section-label">Choose an amount</div>
+      <div class="topup-section-label">Choose an amount</div><div class="topup-bonus-guide" aria-label="Credit bonus levels"><span>£5 <b>+5%</b></span><span>£10 <b>+10%</b></span><span>£20 <b>+15%</b></span><span>£50 <b>+20%</b></span></div>
       <div class="pack-grid">
         <button type="button" onclick="pickTopup(300)" data-amt="300" class="pack" aria-label="Choose £3 credit">
           <span class="pack-amt">£3</span>
           <span class="pack-get">£3.00 credit</span>
-          <span class="pack-tag">Starter</span>
+          <span class="pack-tag">Quick top-up</span>
         </button>
         <button type="button" onclick="pickTopup(1000)" data-amt="1000" class="pack" aria-label="Choose £10 credit with bonus">
           <span class="pack-amt">£10</span>
@@ -4255,7 +4255,7 @@
       <div class="topup-summary" id="topup-summary">
         <div class="topup-sum-row"><span>You pay</span><strong id="sum-pay">£5.00</strong></div>
         <div class="topup-sum-row"><span>Bonus credit</span><strong id="sum-bonus" class="sum-free">£0.00</strong></div>
-        <div class="topup-sum-total"><span>Credit added</span><strong id="sum-total">£5.00</strong></div>
+        <div class="topup-sum-total"><span>Total credit you receive</span><strong id="sum-total">£5.00</strong></div>
       </div>
 
       <button type="button" id="topup-buy" onclick="buyTopup(document.getElementById('topup-range').value)" class="side-new w-full mt-4" aria-describedby="topup-status">Add £5.00</button>
@@ -5299,6 +5299,8 @@
     document.addEventListener('keydown', trapTopupDialogFocus);
     function setTopupQty(p) {
       const pence = topupPricePence(p);
+      const balance = document.getElementById('topup-current-balance');
+      if (balance) balance.textContent = money(Math.max(0, Number(getUsage().balance) || 0));
       const range = document.getElementById('topup-range');
       if (range && Number(range.value) !== pence) range.value = String(pence);
       const bon = bonusFor(pence);
@@ -5389,13 +5391,13 @@
       return `
         <div class="greet-wrap">
           <div class="greet-hi" id="greet-hi">${timeGreeting()}</div>
-          <p class="welcome-sub">Describe what you want, or choose a quick start.</p>
-          <div id="welcome-starters-heading" class="sr-only">Quick starts</div>
+          <p class="welcome-sub">Just say what you want. Stellar can build, fix or explain FiveM and Roblox scripts.</p>
+          <div id="welcome-starters-heading" class="welcome-starters-label">Try an example</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
-            <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Police job</span></button>
-            <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Bank heist</span></button>
-            <button type="button" onclick="useSuggestion('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist')" class="sug-chip"><span>🎮</span><span>Roblox pack</span></button>
-            <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix script</span></button>
+            <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job</span></button>
+            <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Build a bank heist</span></button>
+            <button type="button" onclick="useSuggestion('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist')" class="sug-chip"><span>🎮</span><span>Build a Roblox game</span></button>
+            <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix my script</span></button>
           </div>
           <a href="/blog" class="home-guides-link">Browse guides <span aria-hidden="true">→</span></a>
         </div>`;
@@ -5429,11 +5431,7 @@
       const chatEl = document.getElementById('chat');
       
       if (chat.messages.length === 0) {
-        chatEl.innerHTML = `
-          <div class="greet-wrap">
-            <div class="greet-hi">${timeGreeting()}</div>
-          </div>
-        `;
+        chatEl.innerHTML = greetingMarkup();
       } else {
         chatEl.innerHTML = chat.messages.map(msg => {
           let content = msg.content;
@@ -6950,8 +6948,8 @@
       const referralLink = document.getElementById('set-referral-link');
       if (referralLink) referralLink.textContent = referralUrl || 'Your referral link will appear after sign-in.';
       if (isOwner()) {
-        document.getElementById('set-plan').textContent = '👑 Owner';
-        document.getElementById('set-plan-desc').textContent = 'Unlimited · All 4 models';
+        document.getElementById('set-plan').textContent = 'Owner';
+        document.getElementById('set-plan-desc').textContent = 'Unlimited usage · All models';
       }
       document.body.classList.remove('light');
     }
@@ -6970,7 +6968,7 @@
       const t = document.getElementById('txt');
       if (!t) return;
       const signedIn = !!Store.get().user || isOwner();
-      t.placeholder = 'Ask Stellar…';
+      t.placeholder = 'Describe what you want to build or fix…';
     }
     function completionSoundEnabled() {
       return Store.get().completionSound !== false;
@@ -7089,7 +7087,7 @@
       const greeting = document.getElementById('greet-hi');
       const sub = document.querySelector('.greet-wrap .welcome-sub');
       if (greeting) greeting.textContent = 'Welcome to Stellar AI';
-      if (sub) sub.textContent = 'Tell me what you want to build, then review and test the files I create.';
+      if (sub) sub.textContent = 'Tell Stellar what you want to build or fix in plain English.';
       const signInSub = document.querySelector('#page-signin .welcome-sub');
       const signUpSub = document.querySelector('#page-signup .welcome-sub');
       if (signInSub) signInSub.textContent = 'Welcome — sign in to start building and keep your chats saved.';
@@ -7109,7 +7107,7 @@
       wrap.classList.add('first-signin-welcome');
       const sub = wrap.querySelector('.welcome-sub');
       if (sub) {
-        sub.textContent = 'Type what you want to build — police job, drug system, heist — and Stellar will write the complete code.';
+        sub.textContent = 'Tell Stellar what you want to build or fix in plain English.';
         sub.classList.add('welcome-first-signin');
         sub.style.color = '#d7fff6';
         sub.style.fontWeight = '800';
@@ -10869,14 +10867,20 @@
   }
 </style>
 <style id="home-calm-performance-final">
-  #chat > .greet-wrap { width:min(100%,620px)!important; min-height:0!important; margin:auto!important; padding:clamp(28px,8vh,72px) 16px 30px!important; align-items:center!important; justify-content:center!important; text-align:center!important; }
-  #chat > .greet-wrap .greet-hi { margin:0!important; font-size:clamp(28px,5vw,40px)!important; line-height:1.08!important; }
-  #chat > .greet-wrap .welcome-sub { max-width:480px!important; margin:10px auto 20px!important; font-size:13px!important; line-height:1.55!important; }
-  #chat > .greet-wrap #suggestion-chips { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; width:min(100%,560px)!important; gap:8px!important; margin:0 auto!important; }
-  #chat > .greet-wrap .sug-chip { min-height:50px!important; padding:10px 12px!important; }
-  #chat > .greet-wrap .home-guides-link { display:inline-flex; align-items:center; justify-content:center; gap:5px; min-height:44px; margin-top:8px; padding:0 10px; color:#a1a1aa; font-size:11px; font-weight:750; text-decoration:none; }
+  #chat > .greet-wrap { width:min(100%,580px)!important; min-height:0!important; margin:auto!important; padding:clamp(24px,7vh,64px) 14px 26px!important; align-items:center!important; justify-content:center!important; text-align:center!important; }
+  #chat > .greet-wrap .greet-hi { margin:0!important; font-size:clamp(28px,5vw,38px)!important; line-height:1.08!important; }
+  #chat > .greet-wrap .welcome-sub { max-width:470px!important; margin:9px auto 16px!important; font-size:13px!important; line-height:1.55!important; color:#a1a1aa!important; }
+  #chat > .greet-wrap .welcome-starters-label { width:min(100%,520px)!important; margin:0 auto 7px!important; color:#d4d4d8!important; font-size:11px!important; font-weight:800!important; letter-spacing:0!important; text-align:left!important; text-transform:none!important; }
+  #chat > .greet-wrap #suggestion-chips { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; width:min(100%,520px)!important; gap:8px!important; margin:0 auto!important; }
+  #chat > .greet-wrap .sug-chip { min-height:48px!important; padding:9px 11px!important; font-size:12px!important; line-height:1.35!important; }
+  #chat > .greet-wrap .sug-chip span:last-child { min-width:0; }
+  #chat > .greet-wrap .home-guides-link { display:inline-flex; align-items:center; justify-content:center; gap:5px; min-height:44px; margin-top:7px; padding:0 10px; color:#a1a1aa; font-size:11px; font-weight:750; text-decoration:none; }
   #chat > .greet-wrap .home-guides-link:hover,#chat > .greet-wrap .home-guides-link:focus-visible { color:#f4f4f5; }
-  @media (max-width:360px) { #chat > .greet-wrap #suggestion-chips { grid-template-columns:1fr!important; } }
+  @media (max-width:600px) { #chat > .greet-wrap { padding-top:24px!important; } #chat > .greet-wrap #suggestion-chips { grid-template-columns:1fr!important; } }
+</style>
+
+<style id="credit-clarity-final">
+.topup-balance-pill{display:inline-flex;align-items:center;gap:7px;margin-top:9px;padding:6px 9px;border:1px solid rgba(143,232,207,.18);border-radius:999px;background:rgba(143,232,207,.06);color:#a7a7b0;font-size:11px;font-weight:700}.topup-balance-pill strong{color:#8fe8cf;font-size:12px}.topup-bonus-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px}.topup-bonus-guide span{padding:7px 4px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:rgba(255,255,255,.025);color:#b6b6be;font-size:10px;font-weight:750}.topup-bonus-guide b{display:block;margin-top:2px;color:#8fe8cf;font-size:10px}.topup-summary{border-color:rgba(143,232,207,.16)!important}.topup-sum-total{font-size:14px!important}.topup-sum-total strong{color:#8fe8cf!important}.pack.on{box-shadow:0 0 0 2px rgba(143,232,207,.28)!important}.pack-tag.bonus{color:#8fe8cf!important}@media(max-width:420px){.topup-bonus-guide{gap:4px}.topup-bonus-guide span{font-size:9px;padding:6px 2px}}
 </style>
 </body>
 </html>

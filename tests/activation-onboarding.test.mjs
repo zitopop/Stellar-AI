@@ -19,7 +19,7 @@ test('welcome entry gives new visitors an actionable first-build message and rem
   assert.match(appHtml, /function applyWelcomeEntry\(\) \{/);
   assert.match(appHtml, /params\.get\('welcome'\) !== '1'/);
   assert.match(appHtml, /greeting\.textContent = 'Welcome to Stellar AI'/);
-  assert.match(appHtml, /Tell me what you want to build, then review and test the files I create\./);
+  assert.match(appHtml, /Tell Stellar what you want to build or fix in plain English\./);
   assert.match(appHtml, /setGenerationStatus\('Welcome to Stellar AI\. Tell me what you want to build\.'\)/);
   assert.match(appHtml, /applyWelcomeEntry\(\);\s+maybeShowWelcome\(\);/);
 });
@@ -29,7 +29,7 @@ test('first signed-in users see an unmistakable first-build instruction once per
   assert.match(appHtml, /firstSignIn = true;/);
   assert.match(appHtml, /function showFirstSignInOnboarding\(user\) \{/);
   assert.match(appHtml, /stellar-first-signin-onboarding-v1-/);
-  assert.match(appHtml, /Type what you want to build — police job, drug system, heist — and Stellar will write the complete code\./);
+  assert.match(appHtml, /Tell Stellar what you want to build or fix in plain English\./);
   assert.match(appHtml, /Type a request<\/strong> or tap a starter below\./);
   assert.match(appHtml, /Or start with an example/);
   assert.match(appHtml, /Welcome\. Type what you want to build, or tap a starter example\./);

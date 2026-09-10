@@ -5,10 +5,10 @@ import test from 'node:test';
 const landingHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 test('Task 199 keeps the direct hero explanation and primary CTA honest, free, and routed to the workspace', () => {
-  assert.match(landingHtml, /<h1>From game idea to complete files — <span class="gradient-text">for FiveM &amp; Roblox\.<\/span><\/h1>/);
-  assert.match(landingHtml, /<p class="hero-lead">Tell Stellar what you want to build\. It plans the system, writes the files, explains what changed and stays with the next revision for QBCore, ESX and Roblox\.<\/p>/);
+  assert.match(landingHtml, /<h1>Build FiveM &amp; Roblox scripts by <span class="gradient-text">describing what you want\.<\/span><\/h1>/);
+  assert.match(landingHtml, /<p class="hero-lead">No coding jargon\. Tell Stellar what to build or fix, review the files, then test them in your own server or game\.<\/p>/);
   assert.match(landingHtml, /<a href="\/app\?welcome=1" class="button button-primary">Generate your first script free <span class="button-arrow">→<\/span><\/a>/);
-  assert.match(landingHtml, /<a href="#how-it-works" class="button button-secondary">See the 4-step workflow<\/a>/);
+  assert.match(landingHtml, /<a href="#how-it-works" class="button button-secondary">See how it works<\/a>/);
   assert.match(landingHtml, /<div class="hero-footnote"><span>No card needed to begin<\/span><span>Free starting credit<\/span><span>Review and test every script<\/span><\/div>/);
 });
 
@@ -253,8 +253,8 @@ test('landing polish keeps the first screen organised and hides only secondary r
   assert.match(landingHtml, /\.proof-note, \.framework-copy, \.hero-capabilities-intro span, \.launch-deck-copy p,/);
   assert.match(landingHtml, /#how-it-works \.section-heading > p, #how-it-works \.workflow-note,/);
   assert.match(landingHtml, /#capabilities \.section-heading > p \{ display: none !important; \}/);
-  assert.match(landingHtml, /From game idea to complete files/);
-  for (const cta of ['Generate your first script free', 'See the 4-step workflow']) assert.match(landingHtml, new RegExp(cta));
+  assert.match(landingHtml, /Build FiveM &amp; Roblox scripts by/);
+  for (const cta of ['Generate your first script free', 'See how it works']) assert.match(landingHtml, new RegExp(cta));
 });
 
 test('Task 190 keeps the landing hero-to-framework spacing compact without changing mobile spacing', () => {
@@ -390,7 +390,7 @@ test('Task 199 keeps the approved landing structure clear, test-oriented, and fr
     previousIndex = currentIndex;
   }
   assert.match(landingHtml, /<p class="workflow-note"><strong>What you get:<\/strong> a structured starting point, explained files and a clear next test\. You remain responsible for reviewing dependencies and testing the result in your own FiveM server or Roblox place\.<\/p>/);
-  assert.match(landingHtml, /<div class="eyebrow">A focused 4-step build loop<\/div><h2>Describe it\. Generate it\. Test it\. Improve it\.<\/h2>/);
+  assert.match(landingHtml, /<div class="eyebrow">How it works<\/div><h2>Say it\. Build it\. Test it\. Fix it\.<\/h2>/);
   for (const step of ['01 / DESCRIBE', '02 / GENERATE', '03 / TEST', '04 / IMPROVE']) {
     assert.match(landingHtml, new RegExp(`<span class="cap-number">${step}<\\/span>`));
   }
@@ -399,4 +399,12 @@ test('Task 199 keeps the approved landing structure clear, test-oriented, and fr
   assert.match(landingHtml, /\.workflow-note \{ max-width: 760px; margin: 20px auto 0;/);
   assert.match(landingHtml, /<div class="final-cta"><div class="eyebrow">Your next system starts here<\/div><h2>Start the next build while the idea is still fresh\.<\/h2><p>Open Stellar, describe the system, review the files, then test the next version in your own environment\.<\/p>/);
   assert.doesNotMatch(landingHtml, /guaranteed|no testing required|automatically install/i);
+});
+
+
+test('landing clarity keeps the public journey short and mobile-first', () => {
+  assert.match(landingHtml, /id="landing-clarity-final"/);
+  assert.match(landingHtml, /#builder-feedback[^}]*#capabilities[^}]*#roblox-worlds[^}]*#why-stellar[^}]*#comparison { display:none!important; }/);
+  assert.match(landingHtml, /@media \(max-width:640px\)\{ body:not\(\.light\) \.hero-visual\{display:none!important;\}/);
+  assert.match(landingHtml, /#plans \.plan-decider[^}]*#plans \.plan-compare \{ display:none!important; \}/);
 });
