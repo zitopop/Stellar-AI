@@ -5,9 +5,9 @@ import fs from 'node:fs';
 const read = (name) => fs.readFileSync(new URL(`../${name}`, import.meta.url), 'utf8');
 const app = read('app.html');
 const index = read('index.html');
-const growth = read('stellar-growth-v1.js');
-const settingsExt = read('stellar-settings-extensions.js');
-const currency = read('currency.js');
+const growth = read('assets/js/stellar-growth-v1.js');
+const settingsExt = read('assets/js/stellar-settings-extensions.js');
+const currency = read('assets/js/currency.js');
 const terms = read('terms.html');
 
 test('plans modal has one canonical openPlans declaration', () => {

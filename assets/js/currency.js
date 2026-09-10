@@ -95,9 +95,9 @@
     if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // Settings presentation/preferences so future Settings features stay modular.
-    ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
-    ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
-    ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
+    ensureStylesheet('data-stellar-settings-v4', '/assets/css/stellar-settings-v4.css?v=7');
+    ensureStylesheet('data-stellar-settings-extensions-style', '/assets/css/stellar-settings-extensions.css?v=1');
+    ensureScript('data-stellar-settings-extensions', '/assets/js/stellar-settings-extensions.js?v=1');
   }
 
   loadSettingsPresentation();

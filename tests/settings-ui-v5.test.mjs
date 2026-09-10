@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const appHtml = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-const currency = readFileSync(new URL('../currency.js', import.meta.url), 'utf8');
+const currency = readFileSync(new URL('../assets/js/currency.js', import.meta.url), 'utf8');
 const finalCss = appHtml.match(/<style id="tap-settings-reliability-final">([\s\S]*?)<\/style>/)?.[1] || '';
 
 test('Settings keeps the stable look route while presenting it as Display', () => {
@@ -40,5 +40,5 @@ test('Settings prevents content overflow and keeps email on one ellipsized line'
 });
 
 test('Settings stylesheet cache remains versioned for deployed browsers', () => {
-  assert.ok(currency.includes('/stellar-settings-v4.css?v=7'));
+  assert.ok(currency.includes('/assets/css/stellar-settings-v4.css?v=7'));
 });

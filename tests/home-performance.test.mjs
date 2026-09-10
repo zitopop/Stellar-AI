@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
-const orbit = await readFile(new URL('../stellar-orbit.js', import.meta.url), 'utf8');
-const growth = await readFile(new URL('../stellar-growth-v1.js', import.meta.url), 'utf8');
+const orbit = await readFile(new URL('../assets/js/stellar-orbit.js', import.meta.url), 'utf8');
+const growth = await readFile(new URL('../assets/js/stellar-growth-v1.js', import.meta.url), 'utf8');
 
 test('home stays focused on four quick starts', () => {
   assert.equal((app.match(/class="sug-chip"/g) || []).length, 8);
