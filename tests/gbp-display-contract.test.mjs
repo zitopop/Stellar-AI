@@ -22,3 +22,11 @@ test('landing and terms clearly state GBP worldwide', () => {
   assert.ok(terms.includes('subscription and credit checkout is charged in GBP (£) worldwide.'));
   assert.ok(!terms.includes('select a configured local Stripe price'));
 });
+
+test('Terms plan and top-up sections match GBP-only billing', () => {
+  assert.ok(terms.includes('Plan prices and checkout are shown and charged in GBP (£) worldwide.'));
+  assert.ok(terms.includes('top-up checkout is charged in GBP (£).'));
+  assert.ok(!terms.includes('Where a local Stripe price has been configured'));
+  assert.ok(!terms.includes('checkout displays a local currency'));
+  assert.ok(!terms.includes('configured local-currency equivalent'));
+});
