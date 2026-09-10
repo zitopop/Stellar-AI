@@ -11032,5 +11032,54 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
 @media(prefers-reduced-motion:reduce){.voice-call-orb,.voice-call-orb::before{animation:none!important;transition:none!important}}
 </style>
 
+
+<script id="upgrade-intent-router">
+(() => {
+  const intentKey = 'stellar:upgrade-intent';
+  const allowedPlans = new Set(['starter', 'plus', 'pro']);
+
+  function readUpgradeIntent() {
+    const params = new URLSearchParams(window.location.search);
+    const urlPlan = String(params.get('upgrade') || '').toLowerCase();
+    let storedPlan = '';
+    try { storedPlan = String(sessionStorage.getItem(intentKey) || '').toLowerCase(); } catch {}
+    const plan = allowedPlans.has(urlPlan) ? urlPlan : (allowedPlans.has(storedPlan) ? storedPlan : '');
+    if (plan) {
+      try { sessionStorage.removeItem(intentKey); } catch {}
+    }
+    return plan;
+  }
+
+  function clearUpgradeQuery() {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has('upgrade')) return;
+    url.searchParams.delete('upgrade');
+    const next = url.pathname + (url.search ? url.search : '') + (url.hash ? url.hash : '');
+    history.replaceState(history.state, '', next);
+  }
+
+  function openRequestedPlan() {
+    const plan = readUpgradeIntent();
+    if (!plan) return;
+    if (typeof openPlans !== 'function') return;
+
+    openPlans();
+    clearUpgradeQuery();
+
+    requestAnimationFrame(() => {
+      const card = document.getElementById(`plan-card-${plan}`);
+      const primaryAction = document.getElementById(`plan-btn-${plan}`);
+      card?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      primaryAction?.focus({ preventScroll: true });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(openRequestedPlan, 0), { once: true });
+  } else {
+    setTimeout(openRequestedPlan, 0);
+  }
+})();
+</script>
 </body>
 </html>
