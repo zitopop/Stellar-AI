@@ -18,6 +18,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Add diagnostic detail to migration guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/_repo_organize_migrate.py')
+          s=p.read_text(encoding='utf-8')
+          old="""app = tag_re.sub(replace_tag, app)\nif style_attr_re.search(app):\n    raise SystemExit('Static inline style attributes remain after extraction')\n"""
+          new="""app = tag_re.sub(replace_tag, app)\nremaining_inline = list(style_attr_re.finditer(app))\nif remaining_inline:\n    for rem in remaining_inline[:20]:\n        start = max(0, rem.start() - 180)\n        end = min(len(app), rem.end() + 180)\n        print('REMAINING_INLINE_CONTEXT', app[start:end].replace('\\n', ' '))\n    raise SystemExit(f'Static inline style attributes remain after extraction: {len(remaining_inline)}')\n"""
+          if old not in s: raise SystemExit('guard patch target missing')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
       - name: Apply zero-behaviour repository migration
         run: python scripts/_repo_organize_migrate.py
       - name: Verify generated structure before commit
