@@ -1,0 +1,83 @@
+name: Apply GBP display consistency
+on:
+  push:
+    branches: [fix/gbp-display-worldwide]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/gbp-display-worldwide
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply GBP-only display and legal wording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_required(path, old, new):
+              p = Path(path)
+              s = p.read_text(encoding='utf-8-sig')
+              if old not in s:
+                  raise SystemExit(f'Missing expected text in {path}: {old[:80]!r}')
+              p.write_text(s.replace(old, new), encoding='utf-8')
+
+          replace_required('currency.js',
+              "function detectCurrency(country = detectCountry()) { return COUNTRY_CURRENCY[country] || 'GBP'; }",
+              "function detectCurrency(country = detectCountry()) { return 'GBP'; }")
+
+          for path in ('index.html', 'app.html'):
+              replace_required(path, '<script src="/currency.js"></script>', '<script src="/currency.js?v=gbp-20260910"></script>')
+
+          replace_required('index.html',
+              'Prices are shown in local currency where available; checkout uses a configured local Stripe price or GBP fallback.',
+              'Prices and checkout are in GBP (£) worldwide.')
+
+          replace_required('terms.html',
+              'Your country and currency may be used to select a configured local Stripe price; if no matching local price exists, we use GBP rather than guessing or substituting another plan’s price.',
+              'Your country may be recorded for checkout analytics, but Stellar AI subscription and credit checkout is charged in GBP (£) worldwide.')
+
+          Path('tests/gbp-display-contract.test.mjs').write_text("""import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          import test from 'node:test';
+
+          const read = (name) => fs.readFileSync(new URL('../' + name, import.meta.url), 'utf8');
+          const currency = read('currency.js');
+          const index = read('index.html');
+          const app = read('app.html');
+          const terms = read('terms.html');
+
+          test('currency display is GBP regardless of detected country', () => {
+            assert.match(currency, /function detectCurrency\(country = detectCountry\(\)\) \{ return 'GBP'; \}/);
+          });
+
+          test('landing and app bust stale currency script caches', () => {
+            assert.match(index, /\/currency\.js\?v=gbp-20260910/);
+            assert.match(app, /\/currency\.js\?v=gbp-20260910/);
+          });
+
+          test('landing and terms clearly state GBP worldwide', () => {
+            assert.ok(index.includes('Prices and checkout are in GBP (£) worldwide.'));
+            assert.ok(terms.includes('subscription and credit checkout is charged in GBP (£) worldwide.'));
+            assert.ok(!terms.includes('select a configured local Stripe price'));
+          });
+          """, encoding='utf-8')
+          PY
+      - name: Install dependencies without rewriting lockfile
+        run: npm install --package-lock=false --ignore-scripts --no-audit --no-fund
+      - name: Run full test suite
+        run: node --test tests/*.test.mjs
+      - name: Verify diff
+        run: git diff --check
+      - name: Commit product changes only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add currency.js index.html app.html terms.html tests/gbp-display-contract.test.mjs
+          git commit -m 'Show GBP pricing worldwide'
+          git push origin fix/gbp-display-worldwide
