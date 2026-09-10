@@ -1,0 +1,100 @@
+name: Migrate moved-file test paths
+on:
+  push:
+    branches:
+      - refactor/repo-organize-performance
+    paths:
+      - .github/workflows/repo-organize-fix-test-paths.yml
+permissions:
+  contents: write
+jobs:
+  fix-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refactor/repo-organize-performance
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Rewrite test-only filesystem references
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+            "../currency.js": "../assets/js/currency.js",
+            "../stellar-growth-v1.js": "../assets/js/stellar-growth-v1.js",
+            "../stellar-orbit.js": "../assets/js/stellar-orbit.js",
+            "../stellar-settings-extensions.js": "../assets/js/stellar-settings-extensions.js",
+            "../site-polish.css": "../assets/css/site-polish.css",
+            "../stellar-growth-v1.css": "../assets/css/stellar-growth-v1.css",
+            "../stellar-orbit.css": "../assets/css/stellar-orbit.css",
+            "../stellar-orbit-extras.css": "../assets/css/stellar-orbit-extras.css",
+            "../stellar-settings-extensions.css": "../assets/css/stellar-settings-extensions.css",
+            "../stellar-settings-v4.css": "../assets/css/stellar-settings-v4.css",
+            "../og-image.png": "../assets/img/og-image.png",
+            "../lib/assets/stellar-": "../assets/img/stellar-",
+            "../lib/assets/pwa/icon-": "../assets/icons/icon-",
+            "../lib/assets/pwa/splash-": "../assets/splash/splash-",
+            "../lib/assets/pwa/favicon.svg": "../assets/icons/favicon.svg",
+            "../.github/workflows/audit-growth-release-74-live.yml": "../archive/ci/github-actions/audit-growth-release-74-live.yml",
+            "../.github/workflows/apply-growth-seo-v1.yml": "../archive/ci/github-actions/apply-growth-seo-v1.yml",
+          }
+          call_replacements = {
+            "read('currency.js')": "read('assets/js/currency.js')",
+            'read("currency.js")': 'read("assets/js/currency.js")',
+            "read('stellar-growth-v1.js')": "read('assets/js/stellar-growth-v1.js')",
+            'read("stellar-growth-v1.js")': 'read("assets/js/stellar-growth-v1.js")',
+            "read('stellar-orbit.js')": "read('assets/js/stellar-orbit.js')",
+            'read("stellar-orbit.js")': 'read("assets/js/stellar-orbit.js")',
+            "read('stellar-settings-extensions.js')": "read('assets/js/stellar-settings-extensions.js')",
+            'read("stellar-settings-extensions.js")': 'read("assets/js/stellar-settings-extensions.js")',
+            "read('site-polish.css')": "read('assets/css/site-polish.css')",
+            'read("site-polish.css")': 'read("assets/css/site-polish.css")',
+            "read('stellar-growth-v1.css')": "read('assets/css/stellar-growth-v1.css')",
+            "read('stellar-orbit.css')": "read('assets/css/stellar-orbit.css')",
+            "read('stellar-orbit-extras.css')": "read('assets/css/stellar-orbit-extras.css')",
+            "read('stellar-settings-extensions.css')": "read('assets/css/stellar-settings-extensions.css')",
+            "read('stellar-settings-v4.css')": "read('assets/css/stellar-settings-v4.css')",
+          }
+
+          changed=[]
+          for p in sorted(Path('tests').glob('*.mjs')):
+            text=p.read_text(encoding='utf-8')
+            original=text
+            for old,new in replacements.items():
+              text=text.replace(old,new)
+            for old,new in call_replacements.items():
+              text=text.replace(old,new)
+            if text != original:
+              p.write_text(text,encoding='utf-8')
+              changed.append(p.as_posix())
+
+          print('CHANGED_TEST_FILES', len(changed))
+          for p in changed: print(p)
+          print('REMAINING_OLD_FS_REFERENCES')
+          needles=('currency.js','stellar-growth-v1','stellar-orbit','stellar-settings','site-polish','lib/assets/pwa','og-image.png','.github/workflows')
+          for p in sorted(Path('tests').glob('*.mjs')):
+            for i,line in enumerate(p.read_text(encoding='utf-8').splitlines(),1):
+              if '../' in line and any(n in line for n in needles):
+                print(f'{p}:{i}:{line[:300]}')
+          PY
+      - name: Remove temporary workflow before verification
+        run: rm -f .github/workflows/repo-organize-fix-test-paths.yml && rmdir .github/workflows 2>/dev/null || true && rmdir .github 2>/dev/null || true
+      - name: Install dependencies without rewriting lockfile
+        run: npm install --package-lock=false --ignore-scripts --no-audit --no-fund
+      - name: Run full test suite
+        run: node --test tests/*.test.mjs
+      - name: Validate PWA
+        run: python scripts/validate_pwa.py
+      - name: Verify diff and commit only green test contracts
+        run: |
+          git diff --check
+          git status --short
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tests .github
+          git commit -m "Update test paths for organised repository"
+          git push origin refactor/repo-organize-performance
