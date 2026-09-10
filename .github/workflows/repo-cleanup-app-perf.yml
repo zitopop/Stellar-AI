@@ -54,6 +54,7 @@ jobs:
 
       - name: Apply refactor and repository organisation
         run: |
+          node scripts/normalize-duplicate-inline-styles.mjs
           node scripts/refactor-repository.mjs || {
             echo 'Remaining style attributes after attempted transform:'
             grep -n -C 1 -E 'style[[:space:]]*=' app.html || true
@@ -153,6 +154,7 @@ jobs:
         run: |
           mkdir -p archive/scripts archive/workflows
           mv scripts/refactor-repository.mjs archive/scripts/repository-refactor-2026-09-10.mjs
+          mv scripts/normalize-duplicate-inline-styles.mjs archive/scripts/normalize-duplicate-inline-styles-2026-09-10.mjs
           cp .github/workflows/repo-cleanup-app-perf.yml archive/workflows/repo-cleanup-app-perf-2026-09-10.yml
           rm .github/workflows/repo-cleanup-app-perf.yml
 
