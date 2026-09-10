@@ -479,11 +479,12 @@ test('Task 146 gives specialist model choices concise explicit accessible names'
   assert.match(appHtml, /data-model-choice="tester"[^>]*aria-label="Select Test AI for edge cases and evidence limits"/);
 });
 
-test('Task 148 synchronizes the workspace recording control state with recording mode', () => {
-  assert.match(appHtml, /<button class="rec-btn" id="rec-btn" onclick="toggleRecording\(\)" aria-pressed="false" aria-label="Start recording mode" title="Start recording mode">● REC<\/button>/);
-  assert.match(appHtml, /btn\.setAttribute\('aria-pressed', String\(on\)\);/);
-  assert.match(appHtml, /btn\.setAttribute\('aria-label', on \? 'Stop recording mode' : 'Start recording mode'\);/);
-  assert.match(appHtml, /btn\.title = on \? 'Stop recording mode' : 'Start recording mode';/);
+test('Task 148 launches the full voice call while preserving real speech input state', () => {
+  assert.match(appHtml, /id="mic-btn" onclick="openVoiceCall\(\)" class="mic-btn" aria-pressed="false" aria-label="Start voice call"/);
+  assert.match(appHtml, /window\.SpeechRecognition \|\| window\.webkitSpeechRecognition/);
+  assert.match(appHtml, /btn\.setAttribute\('aria-pressed','true'\)/);
+  assert.match(appHtml, /btn\.setAttribute\('aria-label','Listening'\)/);
+  assert.doesNotMatch(appHtml, /id="rec-btn"/);
 });
 
 test('Task 149 returns focus to the model chooser after choosing a model', () => {
