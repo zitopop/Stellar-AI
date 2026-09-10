@@ -1,0 +1,69 @@
+name: Apply repository organisation
+on:
+  push:
+    branches:
+      - refactor/repo-organize-performance
+    paths:
+      - .github/workflows/repo-organize-migrate.yml
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refactor/repo-organize-performance
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply zero-behaviour repository migration
+        run: python scripts/_repo_organize_migrate.py
+      - name: Verify generated structure before commit
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, re
+          allowed_files = {
+            '.gitignore','LICENSE','CONTRIBUTING.md','index.html','app.html','terms.html','blog.html','offline.html','affiliate.html',
+            'manifest.json','vercel.json','sw.js','robots.txt','sitemap.xml','llms.txt','README.md','package.json','package-lock.json'
+          }
+          allowed_dirs = {'api','blog','lib','scripts','tests','assets','archive'}
+          bad=[]
+          for p in Path('.').iterdir():
+            if p.name == '.git': continue
+            if p.is_dir() and p.name not in allowed_dirs: bad.append(p.name + '/')
+            if p.is_file() and p.name not in allowed_files and not p.name.lower().startswith('favicon'): bad.append(p.name)
+          assert not bad, f'Unexpected root items: {bad}'
+          app=Path('app.html').read_text(encoding='utf-8')
+          assert '<link rel="stylesheet" href="/assets/styles.css">' in app
+          assert not re.search(r'\sstyle=(["\']).*?\1', app, re.I|re.S)
+          assert Path('app.html').stat().st_size < 550000
+          assert Path('assets/styles.css').stat().st_size > 150000
+          cfg=json.loads(Path('vercel.json').read_text(encoding='utf-8'))
+          blog_routes=[x for x in cfg.get('rewrites',[]) if x.get('source','').startswith('/blog/') and re.fullmatch(r'/blog/[^/]+\.html',x.get('destination',''))]
+          assert len(blog_routes)==74, len(blog_routes)
+          for x in blog_routes: assert Path(x['destination'].lstrip('/')).exists(), x
+          for size in (57,72,76,114,120,144,152,180,192,512): assert Path(f'assets/icons/icon-{size}.png').exists()
+          for name in ('splash-iphone.png','splash-iphone-landscape.png','splash-ipad.png','splash-ipad-landscape.png'): assert Path('assets/splash',name).exists()
+          print('app.html bytes', Path('app.html').stat().st_size)
+          print('styles.css bytes', Path('assets/styles.css').stat().st_size)
+          print('canonical blog routes', len(blog_routes))
+          print('root verification OK')
+          PY
+          git diff --check
+          git status --short
+      - name: Commit migration to feature branch
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "Organise repository without changing product behaviour"
+          git push origin refactor/repo-organize-performance
+      - name: Install dependencies without rewriting lockfile
+        run: npm install --package-lock=false --ignore-scripts --no-audit --no-fund
+      - name: Run full Node test suite
+        run: node --test tests/*.test.mjs
+      - name: Validate PWA maintenance script
+        run: python scripts/validate_pwa.py
