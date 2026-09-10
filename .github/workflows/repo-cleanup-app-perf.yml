@@ -53,7 +53,12 @@ jobs:
           NODE
 
       - name: Apply refactor and repository organisation
-        run: node scripts/refactor-repository.mjs
+        run: |
+          node scripts/refactor-repository.mjs || {
+            echo 'Remaining style attributes after attempted transform:'
+            grep -n -C 1 -E 'style[[:space:]]*=' app.html || true
+            exit 1
+          }
 
       - name: Install dependencies
         run: npm ci
