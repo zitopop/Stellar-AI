@@ -19,6 +19,7 @@ jobs:
           node-version: 22
       - name: Apply refactor
         run: |
+          node scripts/prepare-refactor-run.mjs
           node scripts/normalize-duplicate-inline-styles.mjs
           node scripts/refactor-repository.mjs
           node scripts/finalize-refactor-output.mjs
