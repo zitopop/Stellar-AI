@@ -1,89 +1,94 @@
-# ✦ Stellar AI
+# Stellar AI
 
-AI script generator for FiveM (QBCore) and Roblox server owners. Describe what you need in plain English — get the script plus the fxmanifest, ready to drop into your resources folder.
+Stellar AI is an AI-assisted development workspace for building, organising, testing and refining Roblox Luau and FiveM/QBCore systems from plain-English requests. The web app combines project-oriented chat, selectable model power, account usage controls and Stripe-backed paid plans while keeping the public guides and product pages directly accessible.
 
-**Live at [trystellarai.com](https://trystellarai.com)**
+**Live:** https://trystellarai.com
 
----
+## Features
 
-## What it does
+- Roblox Luau and FiveM/QBCore code generation
+- Organised project files and project-based chat history
+- Fast, Balanced, Deep and Max model-power modes
+- Free and paid usage allowances with optional credit top-ups
+- Google and Discord sign-in
+- Stripe subscription and billing flows
+- Web search support for eligible requests
+- Installable PWA with mobile icons, splash screens and offline fallback
+- Public FiveM, QBCore and Roblox guide library
 
-- Generates complete Lua scripts for FiveM (QBCore, ESX, ox_lib, standalone) and Roblox
-- Fixes and improves broken or incomplete scripts
-- Four AI models: Spark (fast), **Star (the default)**, Comet (advanced), and Nova (Pro only)
-- Login with Google, Discord, or an email account
-- Workspace panel — every generated script becomes a downloadable file
-- Server-side, per-account hourly request enforcement with usage remaining and reset-time display
-- Referral links: eligible referrer and new user both receive £1 promotional credit after a validated sign-up
-- Achievement badges for first script, 10 scripts, 50 scripts, and first paid upgrade
-- Installable as an app on phone, tablet and desktop
-- Free, Starter (£8/mo or £67/yr), Plus (£20/mo or £168/yr), and Pro (£75/mo or £630/yr) plans
+## Tech stack
 
----
+- Static HTML, CSS and vanilla JavaScript frontend
+- Node.js Vercel Functions in `api/`
+- Vercel hosting and PWA service worker
+- Stripe for subscriptions, checkout and webhooks
+- Redis-compatible REST/KV storage for account and usage state
+- Google and Discord authentication
+- Resend for transactional email
+- Anthropic and configured AI/Forge providers
+- Brave Search API for web-search requests
 
-## Built with
-
-Static HTML/CSS/JS · Vercel serverless functions · AI API · Stripe payments · Google + Discord sign-in · Resend email
-
----
-
-## Structure
-
-```text
-index.html          landing page, plan comparison and first-run entry points
-app.html            authenticated/guest AI workspace and in-app plan modal
-blog.html           Guides hub
-blog/               published FiveM and Roblox guides at canonical clean routes
-models / models.html model directory/SEO route pair
-api/                serverless auth, chat, billing, search, email and account APIs
-lib/                shared runtime modules and visual/PWA assets
-docs/               product, release and implementation documentation
-scripts/            repository maintenance and publishing helpers
-tests/              regression, routing, pricing, accessibility and release contracts
-archive/            retired/legacy material kept away from active runtime files
-site-polish.css     shared dark public-page polish used by legacy content pages
-manifest.json       installable app configuration
-sw.js               service worker
-vercel.json         hosting routes, redirects, rewrites and security headers
-sitemap.xml         canonical public discovery URLs
-terms.html          terms and privacy information
-affiliate.html      FiveM server-owner and sharing information
-```
-
-Route-critical public files stay in their existing locations. Add new active code to the matching folder above; move retired material to `archive/` instead of leaving temporary files at repository root.
----
-
-## Plans
-
-| Plan | Monthly | Annual | Included |
-|------|---------|--------|----------|
-| Free | £0 | £0 | 40 requests/hour · £1 credit · Spark, Star and Comet |
-| Starter | £8/mo | £67/yr | 120 requests/hour · priority queue · longer scripts |
-| Plus | £20/mo | £168/yr (£14/mo) | 400 requests/hour · full game systems |
-| Pro | £75/mo | £630/yr (£52.50/mo) | 1,600 requests/hour · Nova · complete games |
-
----
-
-## Required environment variables
-
-The server routes validate billing and entitlements independently of the browser. Configure these values in the production environment before enabling paid checkout:
+## Folder structure
 
 ```text
-STRIPE_SECRET_KEY
-STRIPE_WEBHOOK_SECRET
-STRIPE_PRICE_ID_STARTER
-STRIPE_PRICE_ID_STARTER_ANNUAL
-STRIPE_PRICE_ID_PLUS
-STRIPE_PRICE_ID_PLUS_ANNUAL
-STRIPE_PRICE_ID_PRO
-STRIPE_PRICE_ID_PRO_ANNUAL
-UPSTASH_REDIS_REST_URL
-UPSTASH_REDIS_REST_TOKEN
-JWT_SECRET
+Stellar-AI/
+├── api/                 # Vercel serverless API handlers
+├── assets/
+│   ├── css/             # Shared product stylesheets
+│   ├── icons/           # PWA/app icons and favicon
+│   ├── img/             # Product/social images
+│   ├── js/              # Shared browser JavaScript
+│   ├── splash/          # PWA launch images
+│   └── styles.css       # Cacheable primary app stylesheet
+├── blog/                # Canonical published guide pages
+├── lib/                 # Shared server/runtime modules and auxiliary pages
+├── scripts/             # Active maintenance/validation scripts
+├── tests/               # Node test suite
+├── archive/             # Superseded docs, source files and tooling
+├── index.html           # Public landing page
+├── app.html             # Main Stellar AI application
+├── blog.html            # Guide index
+├── affiliate.html       # Affiliate page
+├── terms.html           # Terms and privacy
+├── offline.html         # PWA offline fallback
+├── manifest.json        # Web app manifest
+├── sw.js                # Service worker
+└── vercel.json          # Hosting routes and redirects
 ```
 
-`STRIPE_PRICE_ID_STARTER` and `STRIPE_PRICE_ID_STARTER_ANNUAL` are required for the Starter checkout path. User plan, request allowance, Nova access, referral credit and achievement state are resolved server-side; do not treat browser storage as an entitlement source.
+## Local setup
 
----
+1. Install Node.js 22 or newer.
+2. Run `npm install`.
+3. Create a local `.env` file with the required variables listed below.
+4. Start the Vercel-compatible local environment with `npx vercel dev`.
+5. Run the test suite with `node --test tests/*.test.mjs`.
 
-© 2026 Stellar AI
+Static pages can be inspected without API credentials, but authentication, AI, search, storage, email and billing flows require their corresponding environment variables.
+
+## Environment variables
+
+Names only; never commit secret values.
+
+- `ANTHROPIC_API_KEY`
+- `AUTH_SESSION_SECRET`
+- `BRAVE_SEARCH_API_KEY`
+- `BUILT_IN_FORGE_API_KEY`
+- `BUILT_IN_FORGE_API_URL`
+- `DISCORD_CLIENT_ID`
+- `DISCORD_CLIENT_SECRET`
+- `DISCORD_REDIRECT_URI`
+- `DISCORD_STATE_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `KV_REST_API_TOKEN`
+- `KV_REST_API_URL`
+- `OWNER_EMAIL`
+- `OWNER_EMAILS`
+- `OWNER_SECRET`
+- `RESEND_API_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+
+## Licence
+
+MIT — see [`LICENSE`](./LICENSE).

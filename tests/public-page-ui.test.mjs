@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const marker = '<link rel="stylesheet" href="/site-polish.css">';
+const marker = '<link rel="stylesheet" href="/assets/css/site-polish.css">';
 const sharedPolishPages = [
   'affiliate.html',
   'terms.html',
