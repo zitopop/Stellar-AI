@@ -13,6 +13,11 @@
   const ACTIVE_PROJECT_KEY = 'stellar_orbit_active_project_v1';
 
   const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const setNodeText = (node, value) => {
+    if (!node) return;
+    const next = String(value ?? '');
+    if (node.textContent !== next) node.textContent = next;
+  };
 
   function currentLevelKey() {
     const checked = document.querySelector('#model-menu [data-model-choice][aria-checked="true"]');
@@ -78,10 +83,10 @@
       button.setAttribute('aria-checked', String(active));
       button.classList.toggle('is-active', active);
     });
-    document.querySelectorAll('[data-growth-current-mode]').forEach(n => n.textContent = level.mode);
-    document.querySelectorAll('[data-growth-current-icon]').forEach(n => n.textContent = level.icon);
-    document.querySelectorAll('[data-growth-current-name]').forEach(n => n.textContent = `${level.name} · ${level.mode}`);
-    document.querySelectorAll('[data-growth-current-hint]').forEach(n => n.textContent = level.hint);
+    document.querySelectorAll('[data-growth-current-mode]').forEach(n => setNodeText(n, level.mode));
+    document.querySelectorAll('[data-growth-current-icon]').forEach(n => setNodeText(n, level.icon));
+    document.querySelectorAll('[data-growth-current-name]').forEach(n => setNodeText(n, `${level.name} · ${level.mode}`));
+    document.querySelectorAll('[data-growth-current-hint]').forEach(n => setNodeText(n, level.hint));
   }
 
   function readProjects() {
@@ -284,10 +289,10 @@
     const requestText = document.getElementById('u-pct')?.textContent?.trim() || '—';
     const reset = document.getElementById('u-reset')?.textContent?.trim() || 'Reset timing unavailable';
     const level = levelFor();
-    document.querySelectorAll('[data-growth-plan]').forEach(n => n.textContent = plan);
-    document.querySelectorAll('[data-growth-requests]').forEach(n => n.textContent = requestText.replace(' requests left',''));
-    document.querySelectorAll('[data-growth-reset]').forEach(n => n.textContent = reset);
-    document.querySelectorAll('[data-growth-usage-model]').forEach(n => n.textContent = `${level.name} · ${level.mode}`);
+    document.querySelectorAll('[data-growth-plan]').forEach(n => setNodeText(n, plan));
+    document.querySelectorAll('[data-growth-requests]').forEach(n => setNodeText(n, requestText.replace(' requests left','')));
+    document.querySelectorAll('[data-growth-reset]').forEach(n => setNodeText(n, reset));
+    document.querySelectorAll('[data-growth-usage-model]').forEach(n => setNodeText(n, `${level.name} · ${level.mode}`));
     document.querySelectorAll('[data-usage-tier]').forEach(n => n.classList.toggle('is-current', n.dataset.usageTier === level.key));
   }
 
@@ -316,12 +321,20 @@
   }
 
   function observe() {
+    let usageFrame = 0;
+    let projectFrame = 0;
     const menu = document.getElementById('model-menu');
     if (menu) new MutationObserver(() => syncReasoningControl()).observe(menu,{subtree:true,attributes:true,attributeFilter:['aria-checked']});
     const usage = document.getElementById('usage-modal');
-    if (usage) new MutationObserver(() => { ensureUsageExperience(); syncUsageExperience(); }).observe(usage,{subtree:true,childList:true,characterData:true,attributes:true});
+    if (usage) new MutationObserver(() => {
+      if (usageFrame) return;
+      usageFrame = requestAnimationFrame(() => { usageFrame = 0; ensureUsageExperience(); syncUsageExperience(); });
+    }).observe(usage,{subtree:true,childList:true,characterData:true,attributes:true});
     const chats = document.getElementById('chats-list');
-    if (chats) new MutationObserver(() => renderProjects()).observe(chats,{subtree:true,childList:true});
+    if (chats) new MutationObserver(() => {
+      if (projectFrame) return;
+      projectFrame = requestAnimationFrame(() => { projectFrame = 0; renderProjects(); });
+    }).observe(chats,{subtree:true,childList:true});
   }
 
   function init() {

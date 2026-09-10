@@ -354,7 +354,7 @@
     window.addEventListener('focus', syncAll, { passive:true });
     window.addEventListener('resize', () => safeRun(enhanceUsageAccess), { passive:true });
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncAll(); });
-    window.setInterval(syncAll, 2000);
+    window.setTimeout(syncAll, 250);
     window.__stellarOrbitHealth = { version:'safe-v4', observers:0, startedAt:Date.now() };
   }
 
