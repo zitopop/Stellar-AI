@@ -49,3 +49,10 @@ test('Settings has authoritative phone tablet and desktop sizing', () => {
   assert.match(finalCss, /overflow-x:\s*hidden\s*!important/);
   assert.match(finalCss, /text-overflow:\s*ellipsis\s*!important/);
 });
+
+test('final Settings sizing outranks legacy Stellar Orbit layout', () => {
+  assert.match(finalCss, /html body\.stellar-orbit-v3:not\(\.light\) #settings-modal > \.set-card/);
+  assert.match(finalCss, /html body\.stellar-orbit-v3\.light #settings-modal > \.set-card/);
+  assert.match(finalCss, /#settings-modal \.set-body,[\s\S]*?display:\s*block\s*!important/);
+  assert.match(finalCss, /#settings-modal \.set-tab,[\s\S]*?width:\s*100%\s*!important;\s*min-width:\s*0\s*!important/);
+});
