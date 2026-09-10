@@ -41,8 +41,8 @@ jobs:
           const app = fs.readFileSync('app.html', 'utf8');
           const checkout = fs.readFileSync('api/create-checkout.js', 'utf8');
           const failures = [];
+          if (!landing.includes('link.href = `/app?upgrade=${plan}`;')) failures.push('runtime landing upgrade route missing');
           for (const plan of ['starter','plus','pro']) {
-            if (!landing.includes(`/app?upgrade=${plan}`)) failures.push(`landing intent missing ${plan}`);
             if (!app.includes(`plan-card-${plan}`) || !app.includes(`plan-btn-${plan}`)) failures.push(`app plan target missing ${plan}`);
           }
           for (const token of ['STRIPE_SECRET_KEY','checkout.sessions.create','success_url','cancel_url']) {
