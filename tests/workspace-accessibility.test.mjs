@@ -91,7 +91,7 @@ test('Task 177 keeps the model-menu trigger an explicit non-submit button', () =
 });
 
 test('Task 178 keeps every Settings tab an explicit non-submit button', () => {
-  for (const tab of ['account', 'plan', 'usage', 'look', 'about']) {
+  for (const tab of ['account', 'plan', 'usage', 'look', 'voice', 'about']) {
     assert.match(workspaceHtml, new RegExp(`<button type="button" class="set-tab(?: active)?" data-tab="${tab}" onclick="setTab\\('${tab}'\\)">`));
   }
   assert.match(workspaceHtml, /document\.querySelectorAll\('\.set-tab'\)\.forEach\(t => t\.classList\.toggle\('active', t\.dataset\.tab === name\)\)/);
@@ -139,6 +139,14 @@ test('chat workspace refinement keeps the model picker descriptive, flat, and be
   assert.match(workspaceHtml, /#model-menu \[data-model-choice\]\[aria-checked="true"\] \{ border-color: #d4d4d8; color: #101010 !important; background: #f4f4f5 !important; \}/);
   assert.match(workspaceHtml, /\.message\.msg-user \.msg-content \{ padding: 12px 15px !important;[\s\S]*?background: #27272a !important;/);
   assert.match(workspaceHtml, /\*, \*::before, \*::after \{ animation: none !important; transition: none !important; box-shadow: none !important;/);
+});
+
+test('Appearance exposes a movable app-wide accent colour bar', () => {
+  assert.match(workspaceHtml, /id="accent-theme-track" class="accent-theme-track" role="radiogroup" aria-label="Accent colour"/);
+  assert.equal((workspaceHtml.match(/class="accent-swatch" data-accent-theme=/g) ?? []).length, 8);
+  assert.match(workspaceHtml, /function applyAccentTheme\(name, persist=true\)/);
+  assert.match(workspaceHtml, /track\.addEventListener\('pointermove'/);
+  assert.match(workspaceHtml, /--accent:#10a37f/);
 });
 
 test('workspace keeps the starter UI calm and removes redundant home guidance', () => {

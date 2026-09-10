@@ -3589,6 +3589,7 @@
           <textarea id="txt" rows="1" autofocus placeholder="Describe what you want to build or fix…" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."
                     class="flex-1 glass rounded-2xl px-5 py-3.5 resize-none focus:outline-none font-bold text-white"
                     onkeydown="if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!currentAbort) sendMessage(); }"></textarea>
+          <button type="button" id="mic-btn" onclick="openVoiceCall()" class="mic-btn" aria-pressed="false" aria-label="Start voice call" title="Start voice call"><span aria-hidden="true">🎙</span></button>
           <div id="paste-chip" class="paste-chip hidden">
             <div class="paste-ico">📄</div>
             <div class="paste-meta">
@@ -3661,6 +3662,31 @@
           </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="voice-call-modal" class="hidden voice-call-modal fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="voice-call-title" aria-hidden="true">
+    <div class="voice-call-shell">
+      <header class="voice-call-head">
+        <div><div id="voice-call-title" class="voice-call-title">Stellar Voice</div><div class="voice-call-sub">Live conversation</div></div>
+        <button type="button" class="voice-call-close" onclick="closeVoiceCall()" aria-label="End voice call" title="End voice call">×</button>
+      </header>
+      <main class="voice-call-main">
+        <button type="button" id="voice-call-orb" class="voice-call-orb" onclick="interruptVoiceCall()" aria-label="Voice activity. Tap to interrupt Stellar and listen">
+          <span class="voice-call-ring voice-call-ring-one" aria-hidden="true"></span><span class="voice-call-ring voice-call-ring-two" aria-hidden="true"></span><span class="voice-call-core" aria-hidden="true">✦</span>
+        </button>
+        <div id="voice-call-status" class="voice-call-status" role="status" aria-live="polite">Ready</div>
+        <div id="voice-call-caption" class="voice-call-caption" aria-live="polite">Start speaking when the microphone is ready.</div>
+        <div id="voice-call-hint" class="voice-call-hint">You can interrupt Stellar while it speaks.</div>
+      </main>
+
+      <div class="voice-call-controls" aria-label="Voice call controls">
+        <div class="voice-call-control-wrap"><button type="button" id="voice-call-mic" class="voice-call-control" onclick="toggleVoiceCallMic()" aria-pressed="false" aria-label="Mute microphone"><span aria-hidden="true">🎙</span></button><span id="voice-call-mic-label">Mute</span></div>
+        <div class="voice-call-control-wrap"><button type="button" class="voice-call-control" onclick="interruptVoiceCall()" aria-label="Interrupt Stellar and listen"><span aria-hidden="true">◼</span></button><span>Interrupt</span></div>
+        <div class="voice-call-control-wrap"><button type="button" class="voice-call-control" onclick="openVoiceSettingsFromCall()" aria-label="Open voice settings"><span aria-hidden="true">⚙</span></button><span>Voice</span></div>
+        <div class="voice-call-control-wrap"><button type="button" class="voice-call-control voice-call-end" onclick="closeVoiceCall()" aria-label="End voice call"><span aria-hidden="true">×</span></button><span>End</span></div>
       </div>
     </div>
   </div>
@@ -3810,6 +3836,7 @@
         <button type="button" class="set-tab" data-tab="plan" onclick="setTab('plan')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg></i>Plan</button>
         <button type="button" class="set-tab" data-tab="usage" onclick="setTab('usage')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart"/></svg></i>Usage</button>
         <button type="button" class="set-tab" data-tab="look" onclick="setTab('look')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-palette"/></svg></i>Display</button>
+        <button type="button" class="set-tab" data-tab="voice" onclick="setTab('voice')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-volume"/></svg></i>Voice</button>
         <button type="button" class="set-tab" data-tab="about" onclick="setTab('about')"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"/></svg></i>About</button>
       </div>
 
@@ -3923,6 +3950,21 @@
           <div class="set-key"><i class="sk-ico t-slate"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-volume"/></svg></i>Completion sound</div>
           <button type="button" id="completion-sound-toggle" class="completion-sound-toggle" onclick="toggleCompletionSound()" aria-pressed="true">On</button>
         </div>
+        <div class="set-item accent-theme-row">
+          <div class="accent-theme-head"><div class="set-key">Accent colour</div><div id="accent-theme-name" class="set-val">Green</div></div>
+          <div id="accent-theme-track" class="accent-theme-track" role="radiogroup" aria-label="Accent colour">
+            <span id="accent-theme-indicator" class="accent-theme-indicator" aria-hidden="true"></span>
+            <button type="button" class="accent-swatch" data-accent-theme="neutral" role="radio" aria-checked="false" aria-label="Neutral accent"><span style="--swatch:#f4f4f5"></span></button>
+            <button type="button" class="accent-swatch" data-accent-theme="blue" role="radio" aria-checked="false" aria-label="Blue accent"><span style="--swatch:#5b8cff"></span></button>
+            <button type="button" class="accent-swatch" data-accent-theme="cyan" role="radio" aria-checked="false" aria-label="Cyan accent"><span style="--swatch:#42c7e8"></span></button>
+            <button type="button" class="accent-swatch" data-accent-theme="green" role="radio" aria-checked="true" aria-label="Green accent"><span style="--swatch:#10a37f"></span></button>
+            <button type="button" class="accent-swatch" data-accent-theme="yellow" role="radio" aria-checked="false" aria-label="Yellow accent"><span style="--swatch:#f4c451"></span></button>
+            <button type="button" class="accent-swatch" data-accent-theme="orange" role="radio" aria-checked="false" aria-label="Orange accent"><span style="--swatch:#f28a3c"></span></button>
+            <button type="button" class="accent-swatch" data-accent-theme="pink" role="radio" aria-checked="false" aria-label="Pink accent"><span style="--swatch:#e85aad"></span></button>
+            <button type="button" class="accent-swatch" data-accent-theme="purple" role="radio" aria-checked="false" aria-label="Purple accent"><span style="--swatch:#9b7bff"></span></button>
+          </div>
+          <div class="accent-theme-help">Tap a colour or slide across the bar. Your accent is saved on this device.</div>
+        </div>
         <div class="set-item">
           <div class="set-key"><i class="sk-ico t-blue"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-type"/></svg></i>Text size</div>
           <div class="seg-wrap">
@@ -3935,6 +3977,21 @@
       <div class="set-note">Stellar uses a focused dark interface. Text size is saved on this device.</div>
 
       </div>
+      <div class="set-panel" data-panel="voice" style="display:none">
+      <div class="set-label">Voice</div>
+      <div class="voice-panel-intro">Talk naturally, then choose how Stellar speaks back.</div><button type="button" class="voice-start-call" onclick="closeSettings(); openVoiceCall()">🎙 Start voice call</button>
+      <div class="set-group">
+        <div class="set-item"><div class="set-key">Microphone</div><div id="voice-input-status" class="set-val">Checking browser support…</div></div>
+        <div class="set-item"><div class="set-key">Voice conversation</div><button type="button" id="voice-conversation-toggle" class="completion-sound-toggle" onclick="toggleVoiceConversation()" aria-pressed="false">Off</button></div>
+        <div class="set-item"><div class="set-key">Speak replies</div><button type="button" id="voice-autoplay-toggle" class="completion-sound-toggle" onclick="toggleVoiceAutoplay()" aria-pressed="false">Off</button></div>
+        <label class="set-item voice-select-row"><span class="set-key">Stellar voice</span><select id="voice-select" class="voice-select" aria-label="Stellar speaking voice" onchange="setVoice(this.value)"><option value="">System default</option></select></label>
+        <label class="set-item voice-rate-row"><span class="set-key">Speaking speed</span><span class="voice-rate-control"><input id="voice-rate" type="range" min="0.75" max="1.5" step="0.05" value="1" aria-label="Speaking speed" oninput="setVoiceRate(this.value)"><span id="voice-rate-value">1×</span></span></label>
+        <div class="set-item voice-actions"><button type="button" class="voice-action" onclick="previewVoice()">▶ Preview voice</button><button type="button" class="voice-action secondary" onclick="stopSpeaking()">Stop</button></div>
+      </div>
+      <div class="set-note">Voice input and available speaking voices come from your browser/device. Available voices vary by device. This adds no paid voice API.</div>
+      </div>
+
+
 
       <div class="set-panel" data-panel="about" style="display:none">
       <div class="set-label">Support</div>
@@ -5688,41 +5745,67 @@
       });
     }
 
-    // ── Voice input ─────────────────────────────────────────────
-    let recog = null, recogOn = false;
+    // ── Voice input + browser/device speech output ──────────────────
+    let recog = null, recogOn = false, voiceTurnHasFinal = false, synthVoices = [];
+    let voiceCallActive = false, voiceCallMuted = false, voiceCallDraftBeforeOpen = '';
+    function voiceConversationEnabled() { return Store.get().voiceConversation === true; }
+    function voiceAutoplayEnabled() { return Store.get().voiceAutoplay === true; }
     function initMic() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       const btn = document.getElementById('mic-btn');
-      if (!SR || !btn) { if (btn) btn.style.display = 'none'; return; }
-      recog = new SR();
-      recog.continuous = false;
-      recog.interimResults = true;
-      recog.lang = 'en-GB';
-      const txt = document.getElementById('txt');
-      let base = '';
-      recog.onstart = () => { recogOn = true; base = txt.value ? txt.value + ' ' : ''; btn.classList.add('mic-live'); };
-      recog.onresult = (e) => {
-        let said = '';
-        for (let i = e.resultIndex; i < e.results.length; i++) said += e.results[i][0].transcript;
-        txt.value = base + said;
-        txt.dispatchEvent(new Event('input'));
-      };
-      recog.onerror = () => stopMic();
-      recog.onend = () => stopMic();
+      if (!btn) return;
+      if (!SR) { btn.disabled = true; btn.title = 'Voice input is not supported by this browser'; refreshVoiceSettings(); initVoiceOutput(); return; }
+      recog = new SR(); recog.continuous = false; recog.interimResults = true;
+      const txt = document.getElementById('txt'); let base = '';
+      recog.onstart = () => { recogOn = true; voiceTurnHasFinal = false; base = txt.value ? txt.value + ' ' : ''; btn.classList.add('mic-live'); btn.setAttribute('aria-pressed','true'); btn.setAttribute('aria-label','Listening'); refreshVoiceSettings(); if (voiceCallActive) syncVoiceCallUi('listening','Listening…'); };
+      recog.onresult = (e) => { let said = '', final = false; for (let i=e.resultIndex;i<e.results.length;i++){ said += e.results[i][0].transcript; final = final || e.results[i].isFinal; } txt.value = base + said; txt.dispatchEvent(new Event('input')); voiceTurnHasFinal = voiceTurnHasFinal || final; if (voiceCallActive && said.trim()) syncVoiceCallUi('listening', said.trim()); };
+      recog.onerror = (e) => { voiceTurnHasFinal = false; if (e?.error && !['no-speech','aborted'].includes(e.error)) showStellarNotice('Microphone: ' + String(e.error).replaceAll('-',' '), 'error'); stopMic(); };
+      recog.onend = () => { const autoSend = (voiceCallActive || voiceConversationEnabled()) && voiceTurnHasFinal && txt.value.trim(); stopMic(); if (autoSend && !currentAbort) { if (voiceCallActive) syncVoiceCallUi('thinking','Thinking…'); setTimeout(() => sendMessage(), 0); } else if (voiceCallActive && !voiceCallMuted && !currentAbort && !window.speechSynthesis?.speaking) { setTimeout(startVoiceCallListening, 350); } };
+      initVoiceOutput(); refreshVoiceSettings();
     }
-    function stopMic() {
-      recogOn = false;
-      const btn = document.getElementById('mic-btn');
-      if (btn) btn.classList.remove('mic-live');
+    function stopMic() { recogOn = false; const btn=document.getElementById('mic-btn'); if(btn){ btn.classList.remove('mic-live'); btn.setAttribute('aria-pressed','false'); btn.setAttribute('aria-label','Start voice call'); } refreshVoiceSettings(); }
+    function toggleMic() { if(!recog){ showStellarNotice('Voice input is not available in this browser.','error'); return; } if(recogOn){ try{recog.stop();}catch{} return; } stopSpeaking(); try{ recog.lang = navigator.language || 'en-GB'; recog.start(); }catch{} }
+
+    function syncVoiceCallUi(state='ready', caption='') {
+      const modal=document.getElementById('voice-call-modal'), status=document.getElementById('voice-call-status'), cap=document.getElementById('voice-call-caption'), mic=document.getElementById('voice-call-mic'), label=document.getElementById('voice-call-mic-label');
+      if (!modal) return; modal.dataset.state=state; if(status)status.textContent=state==='listening'?'Listening':state==='thinking'?'Thinking':state==='speaking'?'Speaking':state==='muted'?'Mic off':'Ready';
+      if(cap && caption) cap.textContent=caption; if(mic){ const live=!voiceCallMuted; mic.setAttribute('aria-pressed',String(live)); mic.setAttribute('aria-label',live?'Mute microphone':'Unmute microphone'); } if(label)label.textContent=voiceCallMuted?'Unmute':'Mute'; const orb=document.getElementById('voice-call-orb'); if(orb) orb.setAttribute('aria-label', state==='speaking'?'Stellar is speaking. Tap to interrupt and listen':state==='listening'?'Stellar is listening':state==='thinking'?'Stellar is thinking':'Voice activity');
     }
-    function toggleMic() {
-      if (!recog) return;
-      if (recogOn) { try { recog.stop(); } catch {} return; }
-      try { recog.start(); } catch {}
+    function startVoiceCallListening() {
+      if (!voiceCallActive || voiceCallMuted || currentAbort || !recog || window.speechSynthesis?.speaking || recogOn) return;
+      const txt=document.getElementById('txt'); if(txt && !txt.value.trim()) txt.value='';
+      try { recog.lang=navigator.language||'en-GB'; recog.start(); } catch {}
     }
+    function openVoiceCall() {
+      if (!recog) { showStellarNotice('Voice calls are not supported by this browser.','error'); return; }
+      const modal=document.getElementById('voice-call-modal'), txt=document.getElementById('txt'); if(!modal)return;
+      voiceCallActive=true; voiceCallMuted=false; voiceCallDraftBeforeOpen=txt?.value||''; if(txt)txt.value=''; stopSpeaking();
+      modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('voice-call-active'); syncVoiceCallUi('ready','Start speaking when the microphone is ready.');
+      setTimeout(startVoiceCallListening,120);
+    }
+
+    function closeVoiceCall() {
+      voiceCallActive=false; voiceCallMuted=false; stopSpeaking(); if(recogOn){try{recog.abort();}catch{}}
+      const modal=document.getElementById('voice-call-modal'), txt=document.getElementById('txt'); if(modal){modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');modal.dataset.state='ready';}
+      document.body.classList.remove('voice-call-active'); if(txt && !txt.value.trim() && voiceCallDraftBeforeOpen) { txt.value=voiceCallDraftBeforeOpen; txt.dispatchEvent(new Event('input')); } voiceCallDraftBeforeOpen=''; document.getElementById('mic-btn')?.focus({preventScroll:true});
+    }
+    function toggleVoiceCallMic() {
+      if(!voiceCallActive)return; voiceCallMuted=!voiceCallMuted;
+      if(voiceCallMuted){ if(recogOn){try{recog.abort();}catch{}} syncVoiceCallUi('muted','Microphone is off.'); }
+      else { syncVoiceCallUi('ready','Microphone is on.'); setTimeout(startVoiceCallListening,120); }
+    }
+    function interruptVoiceCall() {
+      if (!voiceCallActive || voiceCallMuted) return;
+      if (window.speechSynthesis?.speaking || window.speechSynthesis?.pending) {
+        stopSpeaking(); syncVoiceCallUi('ready','Your turn.'); setTimeout(startVoiceCallListening,90); return;
+      }
+      if (!currentAbort && !recogOn) { syncVoiceCallUi('ready','Your turn.'); setTimeout(startVoiceCallListening,60); }
+    }
+    function openVoiceSettingsFromCall() { closeVoiceCall(); openSettings(); setTab('voice'); }
     function setGenerationStatus(label) {
       const el = document.getElementById('generation-status');
       if (el) el.textContent = label || '';
+      if (voiceCallActive && label && !window.speechSynthesis?.speaking) syncVoiceCallUi('thinking', label);
     }
     function setThinking(icon, label) {
       const message = (icon ? icon + ' ' : '') + label;
@@ -6225,6 +6308,7 @@
           setGenerationStatus('Generation completed.');
           maybeShowFreeUpgradeNudge();
           playCompletionTone();
+          maybeSpeakAssistantReply(full);
         }
       } catch (error) {
         loading.remove();
@@ -6269,7 +6353,9 @@
       const s = Store.get();
       const pro = s.plan === 'pro' || isOwner();
       const cur = (s.model === 'ultra' && !pro) ? 'smart' : (s.model || 'smart');
-      // Hide Nova button for non-Pro users
+      const modelButton = document.getElementById('model-btn');
+      if (modelButton)
+// Hide Nova button for non-Pro users
       const novaBtn2 = document.getElementById('nova-model-btn');
       if (novaBtn2) novaBtn2.style.display = pro ? '' : 'none';
       document.getElementById('fabie-check').style.visibility = cur === 'fabie' ? 'visible' : 'hidden';
@@ -6895,6 +6981,8 @@
     });
     function refreshSettings() {
       refreshCompletionSoundToggle();
+      refreshAccentThemeControl();
+      refreshVoiceSettings();
       (function(){ const t = Store.get().textSize || 'md';
         ['sm','md','lg'].forEach(k => { const b = document.getElementById('seg-txt-' + k); if (b) { const active = k === t; b.classList.toggle('on', active); b.setAttribute('aria-pressed', String(active)); } }); })();
       const s = Store.get();
@@ -7006,6 +7094,37 @@
         osc.addEventListener('ended', () => { if (ctx.close) ctx.close(); }, { once:true });
       } catch (e) { /* Optional enhancement; never block a response. */ }
     }
+    const ACCENT_THEMES = {
+      neutral:{label:'Neutral',hex:'#f4f4f5',rgb:'244,244,245',ink:'#101010'}, blue:{label:'Blue',hex:'#5b8cff',rgb:'91,140,255',ink:'#071226'}, cyan:{label:'Cyan',hex:'#42c7e8',rgb:'66,199,232',ink:'#06181d'}, green:{label:'Green',hex:'#10a37f',rgb:'16,163,127',ink:'#061b15'},
+      yellow:{label:'Yellow',hex:'#f4c451',rgb:'244,196,81',ink:'#211700'}, orange:{label:'Orange',hex:'#f28a3c',rgb:'242,138,60',ink:'#241006'}, pink:{label:'Pink',hex:'#e85aad',rgb:'232,90,173',ink:'#250718'}, purple:{label:'Purple',hex:'#9b7bff',rgb:'155,123,255',ink:'#100722'}
+    };
+    const ACCENT_ORDER = Object.keys(ACCENT_THEMES);
+    function applyAccentTheme(name, persist=true) { const key=Object.hasOwn(ACCENT_THEMES,name)?name:'green', t=ACCENT_THEMES[key], root=document.documentElement; root.dataset.accentTheme=key; root.style.setProperty('--accent',t.hex); root.style.setProperty('--accent-rgb',t.rgb); root.style.setProperty('--accent-ink',t.ink); if(persist) Store.set({accentTheme:key}); refreshAccentThemeControl(key); }
+    function positionAccentIndicator(key) { const track=document.getElementById('accent-theme-track'), indicator=document.getElementById('accent-theme-indicator'), button=track?.querySelector('[data-accent-theme="'+key+'"]'); if(!track||!indicator||!button)return; indicator.style.left=(button.offsetLeft + button.offsetWidth/2)+'px'; }
+    function refreshAccentThemeControl(forced) { const key=forced||Store.get().accentTheme||'green'; document.querySelectorAll('[data-accent-theme]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.accentTheme===key))); const n=document.getElementById('accent-theme-name'); if(n)n.textContent=(ACCENT_THEMES[key]||ACCENT_THEMES.green).label; requestAnimationFrame(()=>positionAccentIndicator(key)); }
+    function accentFromPointer(e) { const track=document.getElementById('accent-theme-track'); if(!track)return; const buttons=[...track.querySelectorAll('[data-accent-theme]')]; if(!buttons.length)return; let best=buttons[0], dist=Infinity; for(const b of buttons){ const r=b.getBoundingClientRect(), d=Math.abs(e.clientX-(r.left+r.width/2)); if(d<dist){best=b;dist=d;} } applyAccentTheme(best.dataset.accentTheme); }
+    function bindAccentThemeControl() { const track=document.getElementById('accent-theme-track'); if(!track||track.dataset.bound)return; track.dataset.bound='1'; let dragging=false; track.querySelectorAll('[data-accent-theme]').forEach((b,i)=>{ b.addEventListener('click',()=>applyAccentTheme(b.dataset.accentTheme)); b.addEventListener('keydown',e=>{ if(!['ArrowLeft','ArrowRight'].includes(e.key))return; e.preventDefault(); const ni=(i+(e.key==='ArrowRight'?1:-1)+ACCENT_ORDER.length)%ACCENT_ORDER.length; const next=track.querySelector('[data-accent-theme="'+ACCENT_ORDER[ni]+'"]'); applyAccentTheme(ACCENT_ORDER[ni]); next?.focus(); }); }); track.addEventListener('pointerdown',e=>{dragging=true;track.setPointerCapture?.(e.pointerId);accentFromPointer(e);}); track.addEventListener('pointermove',e=>{if(dragging)accentFromPointer(e);}); const end=()=>{dragging=false;}; track.addEventListener('pointerup',end); track.addEventListener('pointercancel',end); window.addEventListener('resize',()=>refreshAccentThemeControl()); }
+    function initVoiceOutput() { if(!('speechSynthesis' in window)){refreshVoiceSettings();return;} const load=()=>{ synthVoices=window.speechSynthesis.getVoices().slice().sort((a,b)=>(Number(b.localService)-Number(a.localService))||a.lang.localeCompare(b.lang)||a.name.localeCompare(b.name)); const sel=document.getElementById('voice-select'); if(!sel)return; const chosen=Store.get().voiceURI||''; sel.innerHTML='<option value="">System default</option>'+synthVoices.map(v=>'<option value="'+escapeHtml(v.voiceURI)+'">'+escapeHtml(v.name)+' · '+escapeHtml(v.lang)+(v.localService?' · device':'')+'</option>').join(''); sel.value=synthVoices.some(v=>v.voiceURI===chosen)?chosen:''; refreshVoiceSettings(); }; load(); window.speechSynthesis.onvoiceschanged=load; }
+    function setVoice(uri){ Store.set({voiceURI:String(uri||'')}); refreshVoiceSettings(); }
+    function setVoiceRate(value){ const rate=Math.max(.75,Math.min(1.5,Number(value)||1)); Store.set({voiceRate:rate}); refreshVoiceSettings(); }
+    function refreshVoiceSettings(){ const s=Store.get(), mic=document.getElementById('voice-input-status'), conv=document.getElementById('voice-conversation-toggle'), auto=document.getElementById('voice-autoplay-toggle'), rate=document.getElementById('voice-rate'), rv=document.getElementById('voice-rate-value'); if(mic)mic.textContent=recog?(recogOn?'Listening…':'Ready — use the microphone button'):'Not supported in this browser'; if(conv){conv.textContent=s.voiceConversation?'On':'Off';conv.setAttribute('aria-pressed',String(!!s.voiceConversation));} if(auto){auto.textContent=s.voiceAutoplay?'On':'Off';auto.setAttribute('aria-pressed',String(!!s.voiceAutoplay));} const r=Math.max(.75,Math.min(1.5,Number(s.voiceRate)||1)); if(rate)rate.value=String(r); if(rv)rv.textContent=r.toFixed(r===1?0:2).replace(/0+$/,'').replace(/.$/,'')+'×'; }
+    function toggleVoiceConversation(){ const on=!voiceConversationEnabled(); Store.set({voiceConversation:on}); refreshVoiceSettings(); showStellarNotice(on?'Voice conversation on — microphone turns are sent automatically and replies are spoken.':'Voice conversation off.','info'); }
+    function toggleVoiceAutoplay(){ Store.set({voiceAutoplay:!voiceAutoplayEnabled()}); refreshVoiceSettings(); }
+    function speechFriendlyText(text){ return String(text||'').replace(new RegExp('\x60{3}[\s\S]*?\x60{3}','g'),' Code block omitted. ').replace(new RegExp('\x60([^\x60]+)\x60','g'),'$1').replace(/[*#_>~-]+/g,' ').replace(/\s+/g,' ').trim().slice(0,5000); }
+    function stopSpeaking(){ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }
+    function speakText(text, force=false){
+      if(!('speechSynthesis' in window)){ if(force)showStellarNotice('Spoken replies are not supported by this browser.','error'); return; }
+      if(!force && !(voiceCallActive||voiceAutoplayEnabled()||voiceConversationEnabled())) return;
+      const copy=speechFriendlyText(text); if(!copy)return; if(voiceCallActive && recogOn){try{recog.abort();}catch{}} stopSpeaking();
+      const u=new SpeechSynthesisUtterance(copy), s=Store.get(), chosen=s.voiceURI||'', voice=synthVoices.find(v=>v.voiceURI===chosen); if(voice){u.voice=voice;u.lang=voice.lang;}
+      u.rate=Math.max(.75,Math.min(1.5,Number(s.voiceRate)||1)); u.pitch=1; u.volume=1;
+      u.onstart=()=>{ if(voiceCallActive)syncVoiceCallUi('speaking',copy.slice(0,240)); };
+      u.onend=()=>{ if(voiceCallActive){syncVoiceCallUi('ready','Your turn.');setTimeout(startVoiceCallListening,260);} };
+      u.onerror=()=>{ if(voiceCallActive){syncVoiceCallUi('ready','Your turn.');setTimeout(startVoiceCallListening,260);} };
+      window.speechSynthesis.speak(u);
+    }
+    function previewVoice(){ speakText('Hi, I’m Stellar AI. This is how I’ll sound when I speak with you.',true); }
+    function maybeSpeakAssistantReply(text){ speakText(text,false); }
     function setTextSize(size) {
       const s = ['sm','md','lg'].includes(size) ? size : 'md';
       document.body.classList.remove('txt-sm','txt-md','txt-lg');
@@ -7239,6 +7358,8 @@
       if (chats.length === 0) newChat();
       else loadChat(s.currentChat || chats[0].id);
       setTextSize(Store.get().textSize || 'md');
+      applyAccentTheme(Store.get().accentTheme || 'green', false);
+      bindAccentThemeControl();
       updateSignedOutHint();
       syncSidebarAccessibility();
       applyWelcomeEntry();
@@ -7256,19 +7377,9 @@
       setTimeout(() => txtEl.scrollIntoView({ block: 'nearest' }), 300);
     });
 
-    function toggleRecording() {
-      const btn = document.getElementById('rec-btn');
-      document.body.classList.toggle('recording-mode');
-      const on = document.body.classList.contains('recording-mode');
-      btn.textContent = on ? '● RECORDING' : '● REC';
-      btn.setAttribute('aria-pressed', String(on));
-      btn.setAttribute('aria-label', on ? 'Stop recording mode' : 'Start recording mode');
-      btn.title = on ? 'Stop recording mode' : 'Start recording mode';
-      btn.classList.toggle('active', on);
-    }
-
+    // Keep modal activity synchronized for bottom-sheet accessibility.
     // Keep the floating recording control from obscuring bottom sheets or dialogs.
-    const stellarModalIds = ['plans-modal', 'settings-modal', 'usage-modal', 'topup-modal', 'welcome-modal', 'redeem-modal', 'thanks-modal', 'limit-modal', 'owner-modal'];
+    const stellarModalIds = ['plans-modal', 'settings-modal', 'usage-modal', 'topup-modal', 'welcome-modal', 'redeem-modal', 'thanks-modal', 'limit-modal', 'owner-modal', 'voice-call-modal'];
     function syncModalActivity() {
       const modalIsOpen = stellarModalIds.some((id) => {
         const modal = document.getElementById(id);
@@ -7440,7 +7551,6 @@
       }, { passive: false });
     })();
   </script>
-  <button class="rec-btn" id="rec-btn" onclick="toggleRecording()" aria-pressed="false" aria-label="Start recording mode" title="Start recording mode">● REC</button>
 
 <script>
     (function () {
@@ -10882,5 +10992,45 @@
 <style id="credit-clarity-final">
 .topup-balance-pill{display:inline-flex;align-items:center;gap:7px;margin-top:9px;padding:6px 9px;border:1px solid rgba(143,232,207,.18);border-radius:999px;background:rgba(143,232,207,.06);color:#a7a7b0;font-size:11px;font-weight:700}.topup-balance-pill strong{color:#8fe8cf;font-size:12px}.topup-bonus-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px}.topup-bonus-guide span{padding:7px 4px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:rgba(255,255,255,.025);color:#b6b6be;font-size:10px;font-weight:750}.topup-bonus-guide b{display:block;margin-top:2px;color:#8fe8cf;font-size:10px}.topup-summary{border-color:rgba(143,232,207,.16)!important}.topup-sum-total{font-size:14px!important}.topup-sum-total strong{color:#8fe8cf!important}.pack.on{box-shadow:0 0 0 2px rgba(143,232,207,.28)!important}.pack-tag.bonus{color:#8fe8cf!important}@media(max-width:420px){.topup-bonus-guide{gap:4px}.topup-bonus-guide span{font-size:9px;padding:6px 2px}}
 </style>
+<style id="accent-voice-settings-final">
+:root{--accent:#10a37f;--accent-rgb:16,163,127;--accent-ink:#061b15}
+#settings-modal .set-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;overflow:visible!important}
+#settings-modal .set-tab{width:100%!important;min-width:0!important;justify-content:center!important}
+.accent-theme-row{display:block!important;padding:14px!important}.accent-theme-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.accent-theme-help{margin-top:8px;color:#85858e;font-size:10px;line-height:1.4}
+.accent-theme-track{position:relative;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;width:100%;min-height:64px;padding:8px;border:1px solid #303033;border-radius:16px;background:#0e0e10;touch-action:none;user-select:none}
+.accent-swatch{position:relative;z-index:2;display:grid;place-items:center;min-width:0;min-height:46px;border:0;border-radius:11px;background:transparent}.accent-swatch span{width:23px;height:23px;border-radius:999px;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(0,0,0,.16)}
+.accent-swatch[aria-checked="true"] span{transform:scale(1.08)}.accent-theme-indicator{position:absolute;z-index:1;top:10px;left:0;width:42px;height:42px;border:2px solid var(--accent);border-radius:13px;background:rgba(var(--accent-rgb),.10);transform:translateX(-50%);transition:left .18s cubic-bezier(.2,.8,.2,1),border-color .15s,background .15s;pointer-events:none}
+.voice-panel-intro{margin:-2px 0 14px;color:#9a9aa2;font-size:12px;line-height:1.5}.voice-select-row,.voice-rate-row{gap:14px}.voice-select{max-width:58%;min-height:38px;padding:0 30px 0 10px;border:1px solid #37373a;border-radius:10px;background:#0f0f11;color:#f4f4f5;font-size:11px}.voice-rate-control{display:flex;align-items:center;gap:8px;min-width:52%}.voice-rate-control input{width:100%;accent-color:var(--accent)}#voice-rate-value{min-width:34px;color:#d4d4d8;font-size:11px;text-align:right}
+.voice-actions{justify-content:flex-end!important;gap:8px}.voice-action{min-height:40px;padding:0 12px;border:1px solid rgba(var(--accent-rgb),.42);border-radius:10px;background:rgba(var(--accent-rgb),.12);color:#f4f4f5;font-size:11px;font-weight:800}.voice-action.secondary{border-color:#38383b;background:#1c1c1f;color:#b4b4bb}
+#mic-btn{display:inline-grid;place-items:center;min-width:46px;min-height:46px;border:1px solid #3a3a3d;border-radius:14px;background:#1c1c1f;color:#d4d4d8;font-size:17px}#mic-btn:hover,#mic-btn:focus-visible{border-color:rgba(var(--accent-rgb),.65);background:rgba(var(--accent-rgb),.10)}#mic-btn.mic-live{border-color:var(--accent);background:rgba(var(--accent-rgb),.18);color:var(--accent)}#mic-btn:disabled{opacity:.42;cursor:not-allowed}
+body:not(.light) #send-btn{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important}body:not(.light) .sidebar-item.active{border-left-color:var(--accent)!important;background:rgba(var(--accent-rgb),.09)!important}body:not(.light) #settings-modal .set-tab.active{border-color:rgba(var(--accent-rgb),.52)!important;background:rgba(var(--accent-rgb),.13)!important;color:#fff!important}body:not(.light) #settings-modal .set-tab.active i,body:not(.light) #settings-modal .set-label,body:not(.light) #settings-modal .set-chev{color:var(--accent)!important}
+body:not(.light) #model-menu [data-model-choice][aria-checked="true"]{border-color:var(--accent)!important;background:rgba(var(--accent-rgb),.12)!important;color:#fafafa!important}body:not(.light) #model-menu [data-model-choice][aria-checked="true"] [id$="-check"]{color:var(--accent)!important}body:not(.light) #model-menu [data-model-choice]:hover,body:not(.light) #model-menu [data-model-choice]:focus-visible{border-color:rgba(var(--accent-rgb),.55)!important;background:rgba(var(--accent-rgb),.08)!important}body:not(.light) .model-pill{border-color:rgba(var(--accent-rgb),.46)!important;background:rgba(var(--accent-rgb),.08)!important;color:#f4f4f5!important}
+body:not(.light) .starter-chip:hover,body:not(.light) .starter-chip:focus-visible,body:not(.light) .sug-chip:hover,body:not(.light) .side-act:hover{border-color:rgba(var(--accent-rgb),.36)!important;background:rgba(var(--accent-rgb),.075)!important}body:not(.light) #u-fill,body:not(.light) #u-fill.unlimited{background:var(--accent)!important}body:not(.light) #topup-range{accent-color:var(--accent)!important}body:not(.light) .completion-sound-toggle[aria-pressed="true"]{border-color:rgba(var(--accent-rgb),.58)!important;background:rgba(var(--accent-rgb),.14)!important;color:var(--accent)!important}
+body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(.light) select:focus-visible,body:not(.light) input:focus-visible{outline-color:var(--accent)!important}.home-guides-link:hover,.home-guides-link:focus-visible{color:var(--accent)!important}
+@media(max-width:600px){.accent-theme-track{gap:2px;padding:7px 5px}.accent-swatch{min-height:48px}.accent-swatch span{width:21px;height:21px}.accent-theme-indicator{top:10px;width:38px;height:42px}.voice-select-row,.voice-rate-row{align-items:flex-start!important;flex-direction:column!important}.voice-select,.voice-rate-control{width:100%;max-width:100%}.voice-actions{justify-content:stretch!important}.voice-action{flex:1 1 0}}
+</style>
+
+<style id="voice-call-layout-final">
+.voice-call-modal{display:flex;align-items:stretch;justify-content:center;padding:0;background:rgba(4,4,5,.96);backdrop-filter:blur(18px)}.voice-call-modal.hidden{display:none!important}.voice-call-shell{width:100vw;max-width:none;min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto;padding:max(22px,env(safe-area-inset-top)) 28px max(24px,calc(20px + env(safe-area-inset-bottom)));background:radial-gradient(circle at 50% 44%,rgba(var(--accent-rgb),.10),transparent 34%),#0b0b0c;color:#f4f4f5}
+.voice-call-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.voice-call-title{font-size:18px;font-weight:850;letter-spacing:-.025em}.voice-call-sub{margin-top:3px;color:#85858e;font-size:11px}.voice-call-close{width:46px;height:46px;border:1px solid #333337;border-radius:50%;background:#18181b;color:#d4d4d8;font-size:24px}.voice-call-close:hover,.voice-call-close:focus-visible{border-color:rgba(var(--accent-rgb),.7);background:rgba(var(--accent-rgb),.10);color:#fff}
+.voice-call-main{display:flex;min-height:0;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}.voice-call-orb{position:relative;display:grid;place-items:center;width:224px;height:224px;padding:0;border:0;border-radius:50%;background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.72),transparent 18%),radial-gradient(circle at 62% 62%,rgba(255,255,255,.18),transparent 28%),conic-gradient(from 210deg,rgba(var(--accent-rgb),.45),rgba(var(--accent-rgb),1),rgba(255,255,255,.38),rgba(var(--accent-rgb),.72),rgba(var(--accent-rgb),.45));box-shadow:0 0 78px rgba(var(--accent-rgb),.22)!important;cursor:pointer}.voice-call-orb::before{content:'';position:absolute;inset:-16px;border:1px solid rgba(var(--accent-rgb),.28);border-radius:50%}.voice-call-core{position:relative;z-index:3;font-size:54px;color:var(--accent-ink);filter:drop-shadow(0 2px 10px rgba(255,255,255,.15))}.voice-call-ring{position:absolute;inset:-8px;border:1px solid rgba(var(--accent-rgb),.20);border-radius:50%;opacity:.72}.voice-call-ring-two{inset:-24px;opacity:.36}
+.voice-call-modal[data-state="listening"] .voice-call-orb{animation:voicePulse 1.7s ease-in-out infinite!important}.voice-call-modal[data-state="thinking"] .voice-call-orb{animation:voiceThink 2.4s linear infinite!important}.voice-call-modal[data-state="speaking"] .voice-call-orb{animation:voiceSpeak .9s ease-in-out infinite alternate!important}.voice-call-modal[data-state="muted"] .voice-call-orb{filter:saturate(.2);opacity:.58}@keyframes voicePulse{50%{transform:scale(1.045);box-shadow:0 0 94px rgba(var(--accent-rgb),.30)!important}}@keyframes voiceThink{to{transform:rotate(360deg)}}@keyframes voiceSpeak{to{transform:scale(1.065)}}
+.voice-call-status{margin-top:34px;color:#f4f4f5;font-size:17px;font-weight:800}.voice-call-caption{width:min(100%,580px);min-height:46px;margin-top:9px;color:#aaaab2;font-size:14px;line-height:1.55}.voice-call-hint{margin-top:5px;color:#696970;font-size:11px}.voice-call-controls{display:flex;align-items:flex-start;justify-content:center;gap:18px;flex-wrap:nowrap}.voice-call-control-wrap{display:grid;justify-items:center;gap:7px;min-width:72px;color:#9b9ba3;font-size:10px;font-weight:750}.voice-call-control{display:grid;place-items:center;width:58px;height:58px;padding:0;border:1px solid #36363a;border-radius:50%;background:#1d1d20;color:#f4f4f5;font-size:20px}.voice-call-control:hover,.voice-call-control:focus-visible{border-color:rgba(var(--accent-rgb),.66);background:rgba(var(--accent-rgb),.12)}.voice-call-control[aria-pressed="false"]{color:#a1a1aa}.voice-call-end{border-color:#8a3943;background:#b33a47;color:#fff;font-size:25px}.voice-call-end:hover{border-color:#d86570;background:#c94653}
+
+.voice-start-call{width:100%;min-height:48px;margin:0 0 14px;padding:0 14px;border:1px solid rgba(var(--accent-rgb),.42);border-radius:12px;background:rgba(var(--accent-rgb),.12);color:#f4f4f5;font-size:12px;font-weight:850}.voice-start-call:hover,.voice-start-call:focus-visible{border-color:var(--accent);background:rgba(var(--accent-rgb),.18)}
+@media(min-width:900px){
+  body:not(.light) #settings-modal> .set-card{width:min(820px,calc(100vw - 64px))!important;max-width:820px!important;max-height:min(760px,88dvh)!important}
+  body:not(.light) #settings-modal .set-body{display:grid!important;grid-template-columns:180px minmax(0,1fr)!important;grid-template-rows:auto 1fr!important;gap:18px 24px!important;padding:22px 24px 26px!important;overflow:hidden!important}
+  body:not(.light) #settings-modal .set-ava-wrap{grid-column:1!important;grid-row:1!important;margin:0!important;padding:0 8px 14px!important;justify-content:flex-start!important;border-bottom:1px solid #292929}
+  body:not(.light) #settings-modal .set-tabs{grid-column:1!important;grid-row:2!important;display:flex!important;flex-direction:column!important;gap:5px!important;align-self:start!important;overflow:visible!important}
+  body:not(.light) #settings-modal .set-tab{width:100%!important;min-height:44px!important;justify-content:flex-start!important;padding:0 12px!important;font-size:12px!important}
+  body:not(.light) #settings-modal .set-panel{grid-column:2!important;grid-row:1 / span 2!important;min-width:0!important;max-height:620px!important;overflow-y:auto!important;padding:2px 4px 18px 0!important}
+  .accent-theme-track{min-height:68px;padding:9px 8px}.accent-swatch{min-height:48px}.accent-swatch span{width:24px;height:24px}.accent-theme-indicator{top:11px;width:44px;height:44px}
+}
+@media(max-width:899px){body:not(.light) #settings-modal .set-body{display:block!important;overflow-y:auto!important}body:not(.light) #settings-modal .set-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;margin-bottom:14px!important}body:not(.light) #settings-modal .set-tab{min-height:46px!important;padding:7px 4px!important;font-size:10px!important}body:not(.light) #settings-modal .set-panel{max-height:none!important;overflow:visible!important}}
+@media(max-width:600px){.voice-call-shell{padding:calc(16px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom))}.voice-call-main{padding:18px 4px}.voice-call-orb{width:166px;height:166px}.voice-call-orb::before{inset:-11px}.voice-call-core{font-size:42px}.voice-call-status{margin-top:26px;font-size:15px}.voice-call-caption{min-height:58px;font-size:13px}.voice-call-hint{font-size:10px}.voice-call-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:8px}.voice-call-control-wrap{min-width:0;width:100%}.voice-call-control{width:54px;height:54px;font-size:18px}.voice-call-end{font-size:24px}.accent-theme-track{min-height:60px;padding:6px 4px}.accent-swatch{min-height:46px}.accent-swatch span{width:21px;height:21px}.accent-theme-indicator{top:8px;width:38px;height:42px}}
+@media(prefers-reduced-motion:reduce){.voice-call-orb,.voice-call-orb::before{animation:none!important;transition:none!important}}
+</style>
+
 </body>
 </html>
