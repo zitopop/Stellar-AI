@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   'use strict';
 
   // Browser storage can be unavailable in private/restricted contexts. Keep every
@@ -31,7 +31,7 @@
     } catch (_) { return 'GB'; }
   }
 
-  function detectCurrency(country = detectCountry()) { return COUNTRY_CURRENCY[country] || 'GBP'; }
+  function detectCurrency(country = detectCountry()) { return 'GBP'; }
   function roundAmount(value, currency) { return currency === 'JPY' || currency === 'KRW' || currency === 'HUF' ? Math.round(value) : Math.round(value * 100) / 100; }
   function formatLocalFromGbp(gbp, currency = detectCurrency()) {
     const amount = roundAmount(Number(gbp || 0) * (GBP_RATES[currency] || 1), currency);
