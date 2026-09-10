@@ -33,3 +33,9 @@ test('background UI maintenance is event-driven and observer work is bounded', (
 test('wallet polling sleeps while the app is hidden or offline', () => {
   assert.match(app, /if \(document\.hidden \|\| navigator\.onLine === false\) return;/);
 });
+
+test('model picker observer cannot self-trigger an aria-checked mutation loop', () => {
+  assert.match(growth, /if \(button\.getAttribute\('aria-checked'\) !== checked\) button\.setAttribute\('aria-checked', checked\);/);
+  assert.match(growth, /records\.some\(\(record\) => record\.target\?\.matches\?\.\('\[data-model-choice\]'\)\)/);
+  assert.doesNotMatch(growth, /new MutationObserver\(\(\) => syncReasoningControl\(\)\)/);
+});
