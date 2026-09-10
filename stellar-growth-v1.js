@@ -80,7 +80,8 @@
     const level = levelFor();
     document.querySelectorAll('[data-growth-level]').forEach(button => {
       const active = button.dataset.growthLevel === level.key;
-      button.setAttribute('aria-checked', String(active));
+      const checked = String(active);
+      if (button.getAttribute('aria-checked') !== checked) button.setAttribute('aria-checked', checked);
       button.classList.toggle('is-active', active);
     });
     document.querySelectorAll('[data-growth-current-mode]').forEach(n => setNodeText(n, level.mode));
@@ -324,7 +325,9 @@
     let usageFrame = 0;
     let projectFrame = 0;
     const menu = document.getElementById('model-menu');
-    if (menu) new MutationObserver(() => syncReasoningControl()).observe(menu,{subtree:true,attributes:true,attributeFilter:['aria-checked']});
+    if (menu) new MutationObserver((records) => {
+      if (records.some((record) => record.target?.matches?.('[data-model-choice]'))) syncReasoningControl();
+    }).observe(menu,{subtree:true,attributes:true,attributeFilter:['aria-checked']});
     const usage = document.getElementById('usage-modal');
     if (usage) new MutationObserver(() => {
       if (usageFrame) return;
