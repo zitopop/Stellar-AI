@@ -32,12 +32,18 @@ jobs:
           for i,m in enumerate(blocks):
               attrs=m.group('attrs').strip()
               body=m.group('body')
-              print(f'STYLE_BLOCK_{i}_SIZE={len(body.encode("utf-8"))} ATTRS={attrs[:120]}')
+              print(f'STYLE_BLOCK_{i}_SIZE={len(body.encode("utf-8"))} ATTRS={attrs[:120]} START={m.start()} END={m.end()}')
+              if i < len(blocks)-1:
+                  between = app[m.end():blocks[i+1].start()].strip().replace('\n',' ')[:260]
+                  print(f'BETWEEN_{i}_{i+1}={between}')
           inline = re.findall(r'\sstyle=(?:"[^"]*"|\'[^\']*\')', app, re.I)
           print(f'INLINE_STYLE_ATTR_COUNT={len(inline)}')
           imgs = re.findall(r'<img\b[^>]*>', app, re.I)
           print(f'APP_IMG_COUNT={len(imgs)}')
           print(f'APP_IMG_WITH_LAZY={sum(1 for x in imgs if re.search(r"\bloading=[\"\']lazy[\"\']",x,re.I))}')
+          for i,tag in enumerate(imgs):
+              pos=app.find(tag)
+              print(f'APP_IMG_{i}_POS={pos} TAG={tag[:500]}')
           blogs = sorted(Path('blog').glob('*.html'))
           print(f'BLOG_FILE_COUNT={len(blogs)}')
           vc = Path('vercel.json').read_text(encoding='utf-8')
@@ -48,8 +54,9 @@ jobs:
                   for item in data.get(key,[]):
                       src=item.get('source','')
                       if src.startswith('/blog/'):
-                          routes.append(src)
+                          routes.append((key,src,item.get('destination','')))
               print(f'VERCEL_BLOG_ROUTE_COUNT={len(routes)}')
+              for row in routes: print('BLOG_ROUTE=' + '|'.join(row))
           except Exception as e:
               print('VERCEL_JSON_PARSE_ERROR',e)
           print('PWA_FILES')
