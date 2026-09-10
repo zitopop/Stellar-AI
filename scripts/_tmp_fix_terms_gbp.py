@@ -1,0 +1,31 @@
+from pathlib import Path
+
+terms = Path('terms.html')
+s = terms.read_text(encoding='utf-8')
+
+old6 = "The current plans are Free (£0), Starter (£8 per month or £67 per year), Plus (£20 per month or £168 per year), and Pro (£75 per month or £630 per year). The hourly request allowances are 40, 120, 400, and 1,600 respectively. Stellar AI may detect your approximate country from the request region supplied by our hosting provider or from your browser language and time-zone settings. Where a local Stripe price has been configured for the relevant plan, interval, and currency, the app may show and charge that local currency; otherwise, checkout uses the displayed GBP price. Local-currency display values are estimates based on the exchange rate used by the app and may differ from your bank or Stripe’s final conversion. The app shows the plan features, available models, remaining requests, and reset time before use. Nova is available only on Pro. Allowances, models, prices, and features may change; the pricing page shows the current offer. An allowance is a usage limit, not a promise that every generated answer will have the same length, quality, or result."
+new6 = "The current plans are Free (£0), Starter (£8 per month or £67 per year), Plus (£20 per month or £168 per year), and Pro (£75 per month or £630 per year). The hourly request allowances are 40, 120, 400, and 1,600 respectively. Stellar AI may detect your approximate country from the request region supplied by our hosting provider or from your browser language and time-zone settings for analytics and service context. Plan prices and checkout are shown and charged in GBP (£) worldwide. Your bank or card provider may convert the GBP charge into your local currency and may apply its own exchange rate or fees. The app shows the plan features, available models, remaining requests, and reset time before use. Nova is available only on Pro. Allowances, models, prices, and features may change; the pricing page shows the current offer. An allowance is a usage limit, not a promise that every generated answer will have the same length, quality, or result."
+
+old7 = "Signed-in users can buy one-off credit top-ups from 50p to £200. The amount is shown before checkout. Top-up account credit is always recorded and applied in pounds, even if checkout displays a local currency or Stripe charges a configured local-currency equivalent. Money paid for a top-up is converted into pounds of account credit using the applicable checkout conversion, and the app shows that value clearly, for example £5.00 credit. Local currency amounts may be rounded and can differ from a bank’s conversion. Credit is applied to eligible usage after the plan allowance is exhausted, and promotional or free credit is used before paid credit. Credit does not expire unless a specific promotion says otherwise. Credit is not cash, cannot be withdrawn, and cannot be transferred between accounts. A top-up is a separate one-off payment and does not change your subscription plan."
+new7 = "Signed-in users can buy one-off credit top-ups from 50p to £200. The amount is shown before checkout. Top-up account credit is always recorded and applied in pounds, and top-up checkout is charged in GBP (£). The app shows that pound value clearly, for example £5.00 credit. Your bank or card provider may convert the GBP charge into your local currency and may apply its own exchange rate or fees. Credit is applied to eligible usage after the plan allowance is exhausted, and promotional or free credit is used before paid credit. Credit does not expire unless a specific promotion says otherwise. Credit is not cash, cannot be withdrawn, and cannot be transferred between accounts. A top-up is a separate one-off payment and does not change your subscription plan."
+
+for old, new, label in ((old6, new6, 'section 6'), (old7, new7, 'section 7')):
+    if old not in s:
+        raise SystemExit(f'Expected {label} wording not found')
+    s = s.replace(old, new, 1)
+terms.write_text(s, encoding='utf-8')
+
+test_path = Path('tests/gbp-display-contract.test.mjs')
+t = test_path.read_text(encoding='utf-8')
+extra = """
+
+test('Terms plan and top-up sections match GBP-only billing', () => {
+  assert.ok(terms.includes('Plan prices and checkout are shown and charged in GBP (£) worldwide.'));
+  assert.ok(terms.includes('top-up checkout is charged in GBP (£).'));
+  assert.ok(!terms.includes('Where a local Stripe price has been configured'));
+  assert.ok(!terms.includes('checkout displays a local currency'));
+  assert.ok(!terms.includes('configured local-currency equivalent'));
+});
+"""
+if "Terms plan and top-up sections match GBP-only billing" not in t:
+    test_path.write_text(t.rstrip() + extra, encoding='utf-8')
