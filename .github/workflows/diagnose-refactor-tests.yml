@@ -1,0 +1,42 @@
+name: Diagnose refactor test failures
+
+on:
+  push:
+    branches:
+      - chore/repo-cleanup-app-perf
+
+jobs:
+  diagnose:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chore/repo-cleanup-app-perf
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply refactor
+        run: |
+          node scripts/normalize-duplicate-inline-styles.mjs
+          node scripts/refactor-repository.mjs
+      - name: Install test dependencies
+        run: npm install --package-lock=false --ignore-scripts --no-audit --no-fund
+      - name: Run each test file and print only failures
+        shell: bash
+        run: |
+          failed=0
+          passed=0
+          for f in tests/*.test.mjs; do
+            out="/tmp/$(basename "$f").log"
+            if node --test "$f" >"$out" 2>&1; then
+              passed=$((passed+1))
+            else
+              failed=$((failed+1))
+              echo "===== FAIL: $f ====="
+              tail -n 160 "$out"
+            fi
+          done
+          echo "TEST FILES: passed=$passed failed=$failed"
+          test "$failed" -eq 0
