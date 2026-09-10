@@ -117,7 +117,7 @@ test('Task 180 keeps Small, Normal, and Large text-size controls explicit non-su
 
 test('Task 181 keeps workspace suggestion chips explicit non-submit buttons', () => {
   const suggestionButtons = workspaceHtml.match(/<button type="button" onclick="useSuggestion\(/g) ?? [];
-  assert.equal(suggestionButtons.length, 14);
+  assert.equal(suggestionButtons.length, 8);
   assert.doesNotMatch(workspaceHtml, /<button onclick="useSuggestion\(/);
   assert.match(workspaceHtml, /useSuggestion\('QBCore police job with F6 menu, handcuffing, MDT and jail timer'\)/);
   assert.match(workspaceHtml, /useSuggestion\('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist'\)/);
@@ -141,20 +141,19 @@ test('chat workspace refinement keeps the model picker descriptive, flat, and be
   assert.match(workspaceHtml, /\*, \*::before, \*::after \{ animation: none !important; transition: none !important; box-shadow: none !important;/);
 });
 
-test('workspace keeps the starter UI calm without removing its underlying guidance contract', () => {
-  assert.match(workspaceHtml, /\.greet-wrap \.welcome-next-step, #settings-modal \.so-sub \{ display: none !important; \}/);
-  assert.match(workspaceHtml, /class="welcome-next-step" role="note"/);
-  assert.match(workspaceHtml, /class="welcome-guide-link">Guides/);
+test('workspace keeps the starter UI calm and removes redundant home guidance', () => {
+  assert.doesNotMatch(workspaceHtml, /class="welcome-next-step" role="note"/);
+  assert.doesNotMatch(workspaceHtml, /class="roblox-world-links"/);
+  assert.equal((workspaceHtml.match(/class="home-guides-link"/g) ?? []).length, 2);
   assert.match(workspaceHtml, /class="so-sub">Sign in to keep your plan and credit safe/);
 });
 
-test('workspace welcome states keep first-use guidance and Guides discovery consistent', () => {
-  const orientation = /<div class="welcome-next-step" role="note"><span class="welcome-next-step-label">Next<\/span><p><strong>Choose a starter,<\/strong> then review the files\.<\/p><a href="\/blog" class="welcome-guide-link">Guides <span aria-hidden="true">→<\/span><\/a><\/div>/g;
-  assert.equal(workspaceHtml.match(orientation)?.length, 2);
-  assert.equal((workspaceHtml.match(/id="welcome-starters-heading" class="welcome-starters-label">Choose a starting point<\/div>/g) ?? []).length, 2);
+test('workspace welcome states expose four quick starts and one secondary Guides route', () => {
+  assert.equal((workspaceHtml.match(/id="welcome-starters-heading" class="sr-only">Quick starts<\/div>/g) ?? []).length, 2);
   assert.equal((workspaceHtml.match(/id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading"/g) ?? []).length, 2);
-  assert.match(workspaceHtml, /\.welcome-next-step \{ display: grid; grid-template-columns: auto minmax\(0, 1fr\) auto;/);
-  assert.match(workspaceHtml, /@media \(max-width: 767px\) \{[\s\S]*?\.welcome-next-step \{ grid-template-columns: 1fr;/);
+  assert.equal((workspaceHtml.match(/class="sug-chip"/g) ?? []).length, 8);
+  assert.equal((workspaceHtml.match(/class="home-guides-link"/g) ?? []).length, 2);
+  assert.match(workspaceHtml, /#chat > \.greet-wrap #suggestion-chips \{ display:grid!important; grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important;/);
   assert.match(workspaceHtml, /\.greet-wrap \{ opacity: 1 !important; \}/);
 });
 
