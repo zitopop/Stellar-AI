@@ -148,13 +148,21 @@ test('workspace keeps the starter UI calm and removes redundant home guidance', 
   assert.match(workspaceHtml, /class="so-sub">Sign in to keep your plan and credit safe/);
 });
 
-test('workspace welcome states expose four quick starts and one secondary Guides route', () => {
-  assert.equal((workspaceHtml.match(/id="welcome-starters-heading" class="sr-only">Quick starts<\/div>/g) ?? []).length, 2);
+test('workspace welcome states expose four clear quick starts and one secondary Guides route', () => {
+  assert.equal((workspaceHtml.match(/id="welcome-starters-heading" class="welcome-starters-label">Try an example<\/div>/g) ?? []).length, 2);
   assert.equal((workspaceHtml.match(/id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading"/g) ?? []).length, 2);
   assert.equal((workspaceHtml.match(/class="sug-chip"/g) ?? []).length, 8);
   assert.equal((workspaceHtml.match(/class="home-guides-link"/g) ?? []).length, 2);
   assert.match(workspaceHtml, /#chat > \.greet-wrap #suggestion-chips \{ display:grid!important; grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important;/);
   assert.match(workspaceHtml, /\.greet-wrap \{ opacity: 1 !important; \}/);
+  assert.match(workspaceHtml, /Build a police job/);
+  assert.match(workspaceHtml, /Build a bank heist/);
+  assert.match(workspaceHtml, /Build a Roblox game/);
+  assert.match(workspaceHtml, /Fix my script/);
+  assert.match(workspaceHtml, /placeholder="Describe what you want to build or fix…"/);
+  assert.match(workspaceHtml, /if \(chat\.messages\.length === 0\) \{\s+chatEl\.innerHTML = greetingMarkup\(\);/);
+  assert.match(workspaceHtml, /@media \(max-width:600px\)/);
+  assert.match(workspaceHtml, /#chat > \.greet-wrap #suggestion-chips \{ grid-template-columns:1fr!important; \}/);
 });
 
 test('workspace sidebar retains an accessible persistent Guides-hub route', () => {

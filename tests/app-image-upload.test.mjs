@@ -72,7 +72,7 @@ test('Task 134 gives the existing workspace chat region a stable accessible name
 
 test('Task 135 exposes the existing workspace composer as a named form landmark', () => {
   assert.match(appHtml, /<div class="input-area p-6 glass border-t border-white\/10" role="form" aria-label="Message composer">/);
-  assert.match(appHtml, /id="txt" rows="1" autofocus placeholder="Ask Stellar…" aria-label="Message composer\. Press Enter to send and Shift\+Enter for a new line\."/);
+  assert.match(appHtml, /id="txt" rows="1" autofocus placeholder="Describe what you want to build or fix…" aria-label="Message composer\. Press Enter to send and Shift\+Enter for a new line\."/);
   assert.match(appHtml, /id="send-btn" onclick="stopOrSend\(\)" aria-label="Send message"/);
 });
 
@@ -344,7 +344,7 @@ test('workspace responsive sizing keeps phone and iPad controls usable', () => {
 test('Task 101 gives the credit top-up modal explicit labelled dialog semantics', () => {
   assert.match(appHtml, /<div class="glass rounded-3xl w-full max-w-sm mx-4 p-7 text-center thanks-card topup-card" role="dialog" aria-modal="true" aria-labelledby="topup-modal-heading" aria-describedby="topup-modal-note">/);
   assert.match(appHtml, /<div id="topup-modal-heading" class="topup-title">Add credit<\/div>/);
-  assert.match(appHtml, /<div id="topup-modal-note" class="topup-sub">Buy once\. Use anytime\.<\/div>/);
+  assert.match(appHtml, /<div id="topup-modal-note" class="topup-sub">One payment\. No subscription\. Credit stays in your wallet\.<\/div><div class="topup-balance-pill">Current balance <strong id="topup-current-balance">£0\.00<\/strong><\/div>/);
 });
 
 test('credit top-up modal keeps clean Cancel and close actions visible', () => {
