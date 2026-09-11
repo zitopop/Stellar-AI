@@ -5749,6 +5749,7 @@
     // ── Voice input + browser/device speech output ──────────────────
     let recog = null, recogOn = false, voiceTurnHasFinal = false, synthVoices = [];
     let voiceCallActive = false, voiceCallMuted = false, voiceCallDraftBeforeOpen = '';
+    let voiceRecognitionBlocked = false, voicePermissionState = 'unknown', voicePermissionPromise = null;
     function voiceConversationEnabled() { return Store.get().voiceConversation === true; }
     function voiceAutoplayEnabled() { return Store.get().voiceAutoplay === true; }
     function initMic() {
@@ -5756,13 +5757,22 @@
       const btn = document.getElementById('mic-btn');
       if (!btn) return;
       if (!SR) { btn.disabled = true; btn.title = 'Voice input is not supported by this browser'; refreshVoiceSettings(); initVoiceOutput(); return; }
-      recog = new SR(); recog.continuous = false; recog.interimResults = true;
+      recog = new SR(); recog.continuous = false; recog.interimResults = true; recog.maxAlternatives = 1;
       const txt = document.getElementById('txt'); let base = '';
       recog.onstart = () => { recogOn = true; voiceTurnHasFinal = false; base = txt.value ? txt.value + ' ' : ''; btn.classList.add('mic-live'); btn.setAttribute('aria-pressed','true'); btn.setAttribute('aria-label','Listening'); refreshVoiceSettings(); if (voiceCallActive) syncVoiceCallUi('listening','Listening…'); };
       recog.onresult = (e) => { let said = '', final = false; for (let i=e.resultIndex;i<e.results.length;i++){ said += e.results[i][0].transcript; final = final || e.results[i].isFinal; } txt.value = base + said; txt.dispatchEvent(new Event('input')); voiceTurnHasFinal = voiceTurnHasFinal || final; if (voiceCallActive && said.trim()) syncVoiceCallUi('listening', said.trim()); };
-      recog.onerror = (e) => { voiceTurnHasFinal = false; if (e?.error && !['no-speech','aborted'].includes(e.error)) showStellarNotice('Microphone: ' + String(e.error).replaceAll('-',' '), 'error'); stopMic(); };
-      recog.onend = () => { const autoSend = (voiceCallActive || voiceConversationEnabled()) && voiceTurnHasFinal && txt.value.trim(); stopMic(); if (autoSend && !currentAbort) { if (voiceCallActive) syncVoiceCallUi('thinking','Thinking…'); setTimeout(() => sendMessage(), 0); } else if (voiceCallActive && !voiceCallMuted && !currentAbort && !window.speechSynthesis?.speaking) { setTimeout(startVoiceCallListening, 350); } };
+      recog.onerror = (e) => { const code=String(e?.error||'unknown'); voiceTurnHasFinal=false; if(['not-allowed','service-not-allowed','audio-capture'].includes(code)){ voiceRecognitionBlocked=true; voicePermissionState=code==='audio-capture'?'unavailable':'denied'; if(voiceCallActive)syncVoiceCallUi('ready',code==='audio-capture'?'No microphone was found.':'Microphone access is blocked. Allow it in your browser settings, then tap the mic again.'); } else if(code==='network'){ if(voiceCallActive)syncVoiceCallUi('ready','Voice recognition lost connection. Tap the orb to try again.'); } else if(code==='no-speech'){ if(voiceCallActive)syncVoiceCallUi('ready','I did not hear anything. Speak when you are ready.'); } if(!['no-speech','aborted'].includes(code)) showStellarNotice('Microphone: ' + code.replaceAll('-',' '), 'error'); stopMic(); };
+      recog.onend = () => { const autoSend = !voiceRecognitionBlocked && (voiceCallActive || voiceConversationEnabled()) && voiceTurnHasFinal && txt.value.trim(); stopMic(); if (autoSend && !currentAbort) { if (voiceCallActive) syncVoiceCallUi('thinking','Thinking…'); setTimeout(() => sendMessage(), 0); } else if (voiceCallActive && !voiceRecognitionBlocked && !voiceCallMuted && !currentAbort && !window.speechSynthesis?.speaking) { setTimeout(startVoiceCallListening, 500); } };
       initVoiceOutput(); refreshVoiceSettings();
+    }
+    async function ensureVoiceMicrophonePermission() {
+      if (!navigator.mediaDevices?.getUserMedia) { voicePermissionState='browser-managed'; voiceRecognitionBlocked=false; return true; }
+      if (voicePermissionState === 'granted') { voiceRecognitionBlocked=false; return true; }
+      if (voicePermissionPromise) return voicePermissionPromise;
+      voicePermissionPromise = navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:true, noiseSuppression:true, autoGainControl:true } }).then((stream) => {
+        stream.getTracks().forEach((track) => track.stop()); voicePermissionState='granted'; voiceRecognitionBlocked=false; return true;
+      }).catch((error) => { voicePermissionState = error?.name === 'NotFoundError' ? 'unavailable' : 'denied'; voiceRecognitionBlocked=true; return false; }).finally(() => { voicePermissionPromise=null; });
+      return voicePermissionPromise;
     }
     function stopMic() { recogOn = false; const btn=document.getElementById('mic-btn'); if(btn){ btn.classList.remove('mic-live'); btn.setAttribute('aria-pressed','false'); btn.setAttribute('aria-label','Start voice call'); } refreshVoiceSettings(); }
     function toggleMic() { if(!recog){ showStellarNotice('Voice input is not available in this browser.','error'); return; } if(recogOn){ try{recog.stop();}catch{} return; } stopSpeaking(); try{ recog.lang = navigator.language || 'en-GB'; recog.start(); }catch{} }
@@ -5773,16 +5783,19 @@
       if(cap && caption) cap.textContent=caption; if(mic){ const live=!voiceCallMuted; mic.setAttribute('aria-pressed',String(live)); mic.setAttribute('aria-label',live?'Mute microphone':'Unmute microphone'); } if(label)label.textContent=voiceCallMuted?'Unmute':'Mute'; const orb=document.getElementById('voice-call-orb'); if(orb) orb.setAttribute('aria-label', state==='speaking'?'Stellar is speaking. Tap to interrupt and listen':state==='listening'?'Stellar is listening':state==='thinking'?'Stellar is thinking':'Voice activity');
     }
     function startVoiceCallListening() {
-      if (!voiceCallActive || voiceCallMuted || currentAbort || !recog || window.speechSynthesis?.speaking || recogOn) return;
+      if (!voiceCallActive || voiceRecognitionBlocked || voiceCallMuted || currentAbort || !recog || window.speechSynthesis?.speaking || recogOn) return;
       const txt=document.getElementById('txt'); if(txt && !txt.value.trim()) txt.value='';
-      try { recog.lang=navigator.language||'en-GB'; recog.start(); } catch {}
+      try { recog.lang=navigator.language||'en-GB'; recog.start(); } catch (error) { if(voiceCallActive)syncVoiceCallUi('ready','Tap the orb to start listening.'); }
     }
-    function openVoiceCall() {
-      if (!recog) { showStellarNotice('Voice calls are not supported by this browser.','error'); return; }
+    async function openVoiceCall() {
+      if (!recog) { showStellarNotice('Voice input is not supported by this browser. Try Chrome or Edge on a secure HTTPS connection.','error'); return; }
       const modal=document.getElementById('voice-call-modal'), txt=document.getElementById('txt'); if(!modal)return;
       voiceCallActive=true; voiceCallMuted=false; voiceCallDraftBeforeOpen=txt?.value||''; if(txt)txt.value=''; stopSpeaking();
-      modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('voice-call-active'); syncVoiceCallUi('ready','Start speaking when the microphone is ready.');
-      setTimeout(startVoiceCallListening,120);
+      modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('voice-call-active'); syncVoiceCallUi('ready','Connecting to your microphone…');
+      const allowed=await ensureVoiceMicrophonePermission();
+      if(!voiceCallActive)return;
+      if(!allowed){ syncVoiceCallUi('ready',voicePermissionState==='unavailable'?'No microphone was found.':'Microphone access is blocked. Allow it in browser settings, then tap the orb.'); return; }
+      syncVoiceCallUi('ready','Start speaking.'); setTimeout(startVoiceCallListening,60);
     }
 
     function closeVoiceCall() {
@@ -5793,14 +5806,14 @@
     function toggleVoiceCallMic() {
       if(!voiceCallActive)return; voiceCallMuted=!voiceCallMuted;
       if(voiceCallMuted){ if(recogOn){try{recog.abort();}catch{}} syncVoiceCallUi('muted','Microphone is off.'); }
-      else { syncVoiceCallUi('ready','Microphone is on.'); setTimeout(startVoiceCallListening,120); }
+      else { voiceRecognitionBlocked=false; syncVoiceCallUi('ready','Microphone is on.'); ensureVoiceMicrophonePermission().then((ok)=>{ if(ok&&voiceCallActive&&!voiceCallMuted)setTimeout(startVoiceCallListening,80); }); }
     }
     function interruptVoiceCall() {
       if (!voiceCallActive || voiceCallMuted) return;
       if (window.speechSynthesis?.speaking || window.speechSynthesis?.pending) {
         stopSpeaking(); syncVoiceCallUi('ready','Your turn.'); setTimeout(startVoiceCallListening,90); return;
       }
-      if (!currentAbort && !recogOn) { syncVoiceCallUi('ready','Your turn.'); setTimeout(startVoiceCallListening,60); }
+      if (!currentAbort && !recogOn) { voiceRecognitionBlocked=false; syncVoiceCallUi('ready','Your turn.'); ensureVoiceMicrophonePermission().then((ok)=>{ if(ok&&voiceCallActive&&!voiceCallMuted)setTimeout(startVoiceCallListening,60); }); }
     }
     function openVoiceSettingsFromCall() { closeVoiceCall(); openSettings(); setTab('voice'); }
     function setGenerationStatus(label) {
@@ -6355,8 +6368,7 @@
       const pro = s.plan === 'pro' || isOwner();
       const cur = (s.model === 'ultra' && !pro) ? 'smart' : (s.model || 'smart');
       const modelButton = document.getElementById('model-btn');
-      if (modelButton)
-// Hide Nova button for non-Pro users
+      // Hide Nova button for non-Pro users
       const novaBtn2 = document.getElementById('nova-model-btn');
       if (novaBtn2) novaBtn2.style.display = pro ? '' : 'none';
       document.getElementById('fabie-check').style.visibility = cur === 'fabie' ? 'visible' : 'hidden';
