@@ -12,3 +12,79 @@ body.stellar-growth-v1 #model-menu .stellar-model-note{margin-top:1px!important}
 
 @media(max-width:767px){.stellar-reasoning-track{grid-template-columns:repeat(2,minmax(0,1fr))}.stellar-reasoning-track button{min-height:62px}.stellar-project-drawer{align-items:end;padding:0}.stellar-project-card{width:100%;max-height:88dvh;border-radius:20px 20px 0 0}.stellar-usage-grid{grid-template-columns:1fr}.stellar-usage-models{grid-template-columns:repeat(2,minmax(0,1fr))}.stellar-project-actions{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.stellar-project-drawer,.stellar-reasoning-track button,.stellar-project-row{transition:none!important}}
+
+
+/* Galaxy reasoning rail: preserve the existing radio-control behaviour while making
+   model power read as one continuous Stellar spectrum instead of four ordinary cards. */
+.stellar-reasoning-track {
+  position: relative;
+  isolation: isolate;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  padding: 22px 4px 4px !important;
+  overflow: visible;
+}
+.stellar-reasoning-track::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  top: 11px;
+  left: 8%;
+  right: 8%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #72ead0 0%, #9f89ff 34%, #76a7ff 67%, #f1cc77 100%);
+  box-shadow: 0 0 18px rgba(159,137,255,.28), 0 0 28px rgba(114,234,208,.12);
+}
+.stellar-reasoning-track::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -9px -4px 34px;
+  border-radius: 999px;
+  opacity: .58;
+  background-image: radial-gradient(circle at 16% 45%, rgba(255,255,255,.92) 0 1px, transparent 1.5px), radial-gradient(circle at 43% 18%, rgba(205,191,255,.85) 0 1px, transparent 1.6px), radial-gradient(circle at 74% 62%, rgba(121,221,255,.82) 0 1px, transparent 1.5px), radial-gradient(circle at 91% 26%, rgba(255,225,157,.88) 0 1px, transparent 1.6px);
+  background-size: 53px 31px, 71px 39px, 83px 47px, 97px 41px;
+  filter: blur(.1px);
+  pointer-events: none;
+}.stellar-reasoning-track button {
+  min-height: 66px !important;
+  padding: 8px 2px 5px !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.stellar-reasoning-track button:hover,
+.stellar-reasoning-track button:focus-visible { background: rgba(255,255,255,.025) !important; }
+.stellar-reasoning-track button.is-active { background: rgba(255,255,255,.035) !important; box-shadow: none !important; }
+.stellar-reasoning-dot {
+  width: 30px !important;
+  height: 30px !important;
+  margin-top: -23px;
+  border: 3px solid #0b0812 !important;
+  border-radius: 50% !important;
+  color: #0b0812 !important;
+  background: #72ead0 !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 0 14px rgba(114,234,208,.44) !important;
+}
+[data-growth-level="smart"] .stellar-reasoning-dot { background: #aa94ff !important; box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 0 16px rgba(170,148,255,.48) !important; }
+[data-growth-level="comet"] .stellar-reasoning-dot { background: #7faeff !important; box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 0 17px rgba(127,174,255,.50) !important; }
+[data-growth-level="ultra"] .stellar-reasoning-dot { background: linear-gradient(135deg,#f1cc77,#f098b9,#b79cff) !important; box-shadow: 0 0 0 1px rgba(255,255,255,.18), 0 0 19px rgba(241,204,119,.50) !important; }
+.stellar-reasoning-track button.is-active .stellar-reasoning-dot { transform: scale(1.18); box-shadow: 0 0 0 3px rgba(255,255,255,.10), 0 0 24px currentColor !important; }
+.stellar-reasoning-track button strong { color: #eae5f3; font-size: 9px !important; }
+.stellar-reasoning-track button small { color: #81798d !important; }
+.stellar-reasoning-track:has([data-growth-level="ultra"].is-active)::before {
+  filter: saturate(1.35) brightness(1.15);
+  box-shadow: 0 0 22px rgba(159,137,255,.45), 0 0 38px rgba(241,204,119,.24), 0 0 46px rgba(114,234,208,.12);
+}`r`n@media (max-width: 420px) {
+  .stellar-reasoning-track { gap: 3px !important; padding-inline: 0 !important; }
+  .stellar-reasoning-track::before { left: 9%; right: 9%; }
+  .stellar-reasoning-track button { min-height: 60px !important; }
+  .stellar-reasoning-track button small { display: none; }
+  .stellar-reasoning-track em { top: 31px !important; right: 50% !important; transform: translateX(50%); font-size: 4.5px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stellar-reasoning-track button,
+  .stellar-reasoning-dot { transition: none !important; }
+  .stellar-reasoning-track button.is-active .stellar-reasoning-dot { transform: none; }
+}

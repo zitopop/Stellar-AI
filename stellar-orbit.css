@@ -524,3 +524,124 @@ body.stellar-orbit-v3.light .stellar-orbit-primary-link { color: #51485e !import
 @media (prefers-reduced-motion: reduce) {
   .stellar-space-orbit::before { animation: none !important; }
 }
+
+
+/* Premium new-chat home: keep the four-action contract, improve hierarchy and depth. */
+body.stellar-orbit-v3:not(.light) .greet-wrap {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 760px);
+  margin: clamp(28px, 8vh, 86px) auto 0;
+  padding: clamp(24px, 4vw, 42px);
+  overflow: hidden;
+  border: 1px solid rgba(203,184,255,.13);
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(178,154,255,.075), rgba(126,232,209,.025) 48%, rgba(255,255,255,.018));
+  box-shadow: 0 34px 90px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04);
+}
+body.stellar-orbit-v3:not(.light) .greet-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: .48;
+  background-image: radial-gradient(circle, rgba(255,255,255,.70) 0 1px, transparent 1.2px), radial-gradient(circle, rgba(178,154,255,.60) 0 1px, transparent 1.2px), radial-gradient(circle, rgba(126,232,209,.46) 0 1px, transparent 1.2px);
+  background-size: 67px 67px, 103px 103px, 137px 137px;
+  background-position: 8px 14px, 44px 11px, 80px 55px;
+  mask-image: linear-gradient(145deg, #000 0 48%, transparent 92%);
+}
+body.stellar-orbit-v3:not(.light) .greet-wrap::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 430px;
+  height: 430px;
+  right: -280px;
+  top: -250px;
+  border: 1px solid rgba(178,154,255,.14);
+  border-radius: 50%;
+  box-shadow: 0 0 0 38px rgba(178,154,255,.025), 0 0 0 82px rgba(126,232,209,.014);
+  pointer-events: none;
+}body.stellar-orbit-v3:not(.light) .greet-hi {
+  max-width: 12ch;
+  color: #fbf9ff !important;
+  font-size: clamp(32px, 5vw, 52px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -.055em !important;
+}
+body.stellar-orbit-v3:not(.light) .welcome-sub {
+  max-width: 50ch;
+  margin-top: 12px;
+  color: #aaa3b6 !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+body.stellar-orbit-v3:not(.light) .welcome-starters-label {
+  margin-top: 28px !important;
+  color: #7f778c !important;
+  font-size: 8px !important;
+  font-weight: 900 !important;
+  letter-spacing: .16em !important;
+  text-transform: uppercase;
+}
+body.stellar-orbit-v3:not(.light) #suggestion-chips {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 9px !important;
+  margin-top: 9px !important;
+}
+body.stellar-orbit-v3:not(.light) .sug-chip {
+  min-height: 64px !important;
+  justify-content: flex-start !important;
+  gap: 11px !important;
+  padding: 12px 14px !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  border-radius: 14px !important;
+  color: #e9e5ef !important;
+  background: rgba(255,255,255,.025) !important;
+  text-align: left !important;
+}
+body.stellar-orbit-v3:not(.light) .sug-chip:hover,
+body.stellar-orbit-v3:not(.light) .sug-chip:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(190,173,255,.28) !important;
+  background: linear-gradient(135deg, rgba(178,154,255,.10), rgba(126,232,209,.035)) !important;
+  box-shadow: 0 14px 32px rgba(0,0,0,.16) !important;
+}body.stellar-orbit-v3:not(.light) .sug-chip > span:first-child {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,.03);
+  font-size: 16px;
+}
+body.stellar-orbit-v3:not(.light) .home-guides-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px !important;
+  padding: 8px 11px;
+  border: 1px solid rgba(126,232,209,.10);
+  border-radius: 999px;
+  color: #9dded0 !important;
+  background: rgba(126,232,209,.025);
+  font-size: 10px !important;
+  font-weight: 800;
+  text-decoration: none !important;
+}
+body.stellar-orbit-v3:not(.light) .home-guides-link:hover,
+body.stellar-orbit-v3:not(.light) .home-guides-link:focus-visible { border-color: rgba(126,232,209,.28); background: rgba(126,232,209,.055); }
+@media (max-width: 640px) {
+  body.stellar-orbit-v3:not(.light) .greet-wrap { margin-top: 16px; padding: 22px 16px; border-radius: 22px; }
+  body.stellar-orbit-v3:not(.light) .greet-wrap::after { width: 280px; height: 280px; right: -210px; top: -180px; }
+  body.stellar-orbit-v3:not(.light) #suggestion-chips { grid-template-columns: 1fr; gap: 7px !important; }
+  body.stellar-orbit-v3:not(.light) .sug-chip { min-height: 56px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.stellar-orbit-v3:not(.light) .sug-chip { transition: none !important; }
+  body.stellar-orbit-v3:not(.light) .sug-chip:hover { transform: none; }
+}
