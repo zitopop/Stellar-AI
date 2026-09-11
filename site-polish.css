@@ -676,3 +676,61 @@ footer {
     margin-top: 16px;
   }
 }
+
+
+/* Final hero depth restore: keep the global calm public shell, but allow the hero
+   product preview to retain the premium 3D treatment designed for the first screen. */
+.page-shell .hero-visual {
+  perspective: 1700px !important;
+  padding: 38px 20px 36px !important;
+  isolation: isolate;
+}
+.page-shell .hero-depth-orbit,
+.page-shell .hero-visual::before,
+.page-shell .hero-visual::after {
+  display: block !important;
+}
+.page-shell .hero-depth-chip {
+  display: inline-flex !important;
+}
+.page-shell .hero-visual::before {
+  background-image: radial-gradient(circle at 35% 31%, rgba(198,180,255,.54), rgba(141,103,250,.19) 40%, transparent 69%) !important;
+  filter: blur(8px) !important;
+}
+.page-shell .hero-visual::after {
+  background-image: radial-gradient(ellipse, rgba(27,15,71,.74), transparent 68%) !important;
+  filter: blur(18px) !important;
+}
+.page-shell .hero-visual .product-frame {
+  background-image: linear-gradient(142deg, rgba(247,244,255,.9), rgba(182,151,255,.47) 19%, rgba(89,231,195,.54) 59%, rgba(118,80,242,.20)) !important;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0) !important;
+  transform-style: preserve-3d !important;
+  box-shadow: 34px 46px 100px rgba(0,0,0,.52), -18px 20px 58px rgba(125,91,240,.20), inset 0 0 0 1px rgba(255,255,255,.16) !important;
+  transition: transform .65s cubic-bezier(.23,1,.32,1), box-shadow .65s cubic-bezier(.23,1,.32,1) !important;
+}.page-shell .hero-visual .product-shell {
+  background-image: linear-gradient(148deg, rgba(36,25,75,.98), rgba(11,9,27,.99) 43%, rgba(10,20,39,.98)) !important;
+  transform: translateZ(2px) !important;
+  transform-style: preserve-3d !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.16), inset 0 -1px rgba(5,3,13,.55) !important;
+}
+.page-shell .hero-visual .product-top { transform: translateZ(18px) !important; }
+.page-shell .hero-visual .product-main { transform: translateZ(26px) !important; box-shadow: 0 18px 32px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.04) !important; }
+.page-shell .hero-visual .float-file { transform: translateZ(75px) !important; box-shadow: 0 18px 38px rgba(3,2,12,.42), inset 0 1px rgba(255,255,255,.18) !important; }
+.page-shell .hero-depth-chip { backdrop-filter: blur(18px) saturate(1.35) !important; -webkit-backdrop-filter: blur(18px) saturate(1.35) !important; box-shadow: 0 16px 32px rgba(1,1,10,.35), inset 0 1px rgba(255,255,255,.18) !important; }
+.page-shell .hero-visual:hover .product-frame {
+  transform: rotateX(1.5deg) rotateY(-3deg) translateZ(0) !important;
+  box-shadow: 40px 58px 112px rgba(0,0,0,.56), -22px 23px 68px rgba(125,91,240,.27), inset 0 0 0 1px rgba(255,255,255,.19) !important;
+}
+@media (max-width: 760px) {
+  .page-shell .hero-visual { perspective: none !important; padding: 26px 4px 34px !important; }
+  .page-shell .hero-visual .product-frame,
+  .page-shell .hero-visual .product-shell,
+  .page-shell .hero-visual .product-top,
+  .page-shell .hero-visual .product-main,
+  .page-shell .hero-visual .float-file { transform: none !important; }
+  .page-shell .hero-visual:hover .product-frame { transform: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-shell .hero-visual .product-frame { transform: none !important; transition: none !important; }
+  .page-shell .hero-visual:hover .product-frame { transform: none !important; }
+}
