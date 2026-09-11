@@ -1,0 +1,43 @@
+/* Final cross-device contract — loaded last on /app. */
+:root { color-scheme: dark; }
+html, body { max-width:100%; overflow-x:hidden !important; background:#101010 !important; }
+button, a, input, textarea, select, [role="button"], [role="tab"], [role="menuitem"], [role="menuitemradio"], summary, label {
+  touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+}
+#plans-modal,#settings-modal,#usage-modal,#owner-modal,#welcome-modal,#topup-modal,#redeem-modal,#limit-modal,#thanks-modal { z-index:100 !important; }
+#sidebar,#workspace,#model-menu { z-index:80; }
+#txt { font-size:16px !important; }
+.input-area { padding-bottom:max(24px, calc(16px + env(safe-area-inset-bottom))) !important; }
+.greet-hi { overflow-wrap:anywhere; text-wrap:balance; }
+#suggestion-chips { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+#suggestion-chips .sug-chip:last-child:nth-child(odd) { grid-column:1 / -1; }
+@media (max-width:639px) {
+  button,.sug-chip,.set-tab,.set-item,.modal-x,#usage-modal-close,#model-btn,#send-btn,.voice-call-control,.side-act { min-height:44px !important; }
+  .modal-x,#usage-modal-close { min-width:44px !important; width:44px !important; height:44px !important; }
+  #settings-modal,#plans-modal,#usage-modal,#owner-modal { align-items:flex-end !important; justify-content:stretch !important; padding:0 !important; }
+  #settings-modal .set-card,#plans-modal>div,#usage-modal>div,#owner-modal>div { width:100% !important; max-width:100% !important; margin:0 !important; border-radius:22px 22px 0 0 !important; max-height:90dvh !important; overflow-y:auto !important; overflow-x:hidden !important; padding-bottom:max(18px,calc(14px + env(safe-area-inset-bottom))) !important; }
+  #settings-modal .set-tabs { display:flex !important; overflow-x:auto !important; overflow-y:hidden !important; overscroll-behavior-x:contain; scrollbar-width:none; }
+  #settings-modal .set-tabs::-webkit-scrollbar { display:none; }
+  #settings-modal .set-tab { flex:0 0 auto !important; min-width:82px !important; }
+  #set-email-row .set-val,#settings-modal .acct-email,#settings-modal a[href^="mailto:"] { min-width:0 !important; max-width:100% !important; overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important; }
+  #plans-grid-inner { display:grid !important; grid-template-columns:1fr !important; overflow:visible !important; }
+  #plans-grid-inner>.plan-card { width:100% !important; min-width:0 !important; max-width:none !important; }
+  .msg,.bubble,.chat-bubble { max-width:88% !important; }
+  #suggestion-chips { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  #suggestion-chips .sug-chip { min-width:0 !important; }
+  #suggestion-chips .sug-chip:last-child { grid-column:1 / -1; }
+}
+@media (min-width:640px) and (max-width:1023px) {
+  #settings-modal .set-card { width:min(480px,calc(100vw - 32px)) !important; max-width:480px !important; max-height:90dvh !important; overflow:auto !important; }
+  #plans-modal>div { width:min(680px,calc(100vw - 32px)) !important; max-width:680px !important; max-height:90dvh !important; overflow:auto !important; }
+  #usage-modal>div { width:min(380px,calc(100vw - 32px)) !important; max-width:380px !important; }
+  #owner-modal>div { width:min(400px,calc(100vw - 32px)) !important; max-width:400px !important; }
+  #plans-grid-inner { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; overflow:visible !important; }
+}
+@media (min-width:1024px) {
+  #settings-modal .set-card { width:400px !important; max-width:400px !important; max-height:85vh !important; overflow:auto !important; }
+  #plans-modal>div { width:min(700px,calc(100vw - 48px)) !important; max-width:700px !important; max-height:85vh !important; overflow:auto !important; }
+  #usage-modal>div { width:380px !important; max-width:380px !important; }
+  #owner-modal>div { width:400px !important; max-width:400px !important; }
+  #plans-grid-inner { display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important; overflow:visible !important; gap:10px !important; }
+}

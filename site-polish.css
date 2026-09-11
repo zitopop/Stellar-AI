@@ -734,3 +734,28 @@ footer {
   .page-shell .hero-visual .product-frame { transform: none !important; transition: none !important; }
   .page-shell .hero-visual:hover .product-frame { transform: none !important; }
 }
+/* Final public responsive contract. */
+html,body { max-width:100%; overflow-x:hidden !important; }
+body { color-scheme:dark !important; background:#09090b !important; }
+button,a,input,textarea,select,summary,[role="button"],[role="tab"] { touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+.container,.wrap { width:min(calc(100% - 32px),1000px) !important; margin-inline:auto; }
+article,.article,.post,.post-body,.blog-post,.sheet { max-width:720px; margin-inline:auto; }
+pre,.code-block,code[class*="language-"] { max-width:100%; overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
+img,video,iframe,svg { max-width:100%; }
+@media (max-width:639px) {
+  body > nav .nav-links,.site-header .nav-links,.desktop-nav-links { display:none !important; }
+  .hero-grid,.capability-grid,.capability-map-grid,.plans,.plan-decider,.proof-strip,.launch-grid,.roblox-grid,.faq-layout,.related-grid { grid-template-columns:1fr !important; }
+  .hero-actions { display:grid !important; grid-template-columns:1fr !important; }
+  .hero-actions .button { width:100% !important; }
+  footer,.footer-inner,.footer-links { flex-direction:column !important; align-items:flex-start !important; }
+  article,.article,.post,.post-body,.blog-post,.sheet { width:100% !important; font-size:16px !important; line-height:1.75 !important; }
+  article h1,.article h1,.sheet h1 { font-size:clamp(30px,10vw,42px) !important; }
+  article h2,.article h2,.sheet h2 { font-size:clamp(24px,8vw,32px) !important; }
+}
+@media (min-width:640px) and (max-width:1023px) {
+  .capability-grid,.capability-map-grid,.plans,.plan-decider,.proof-strip,.launch-grid,.roblox-grid,.related-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+}
+@media (min-width:1024px) {
+  .capability-grid,.capability-map-grid,.launch-grid,.roblox-grid,.related-grid { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
+  .plans { grid-template-columns:repeat(4,minmax(0,1fr)) !important; }
+}
