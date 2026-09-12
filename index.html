@@ -1504,13 +1504,14 @@ end)</div></div>
           </div>
         </section>
         <section class="section builder-feedback" id="builder-feedback" aria-labelledby="builder-feedback-title">
-          <div class="section-heading center"><div class="eyebrow">Early builder feedback</div><h2 id="builder-feedback-title">The details builders notice first.</h2></div>
+          <div class="section-heading center"><div class="eyebrow">Customer reviews</div><h2 id="builder-feedback-title">Built to earn five stars — never to fake them.</h2><p>Verified customer ratings will appear here as they arrive. Until then, here is exactly what you can try for yourself.</p></div>
+          <div class="review-summary" aria-label="Customer review status"><div class="review-stars" aria-label="No verified rating published yet">☆☆☆☆☆</div><div><strong>Verified reviews coming soon</strong><span>No made-up ratings or testimonials.</span></div></div>
           <div class="review-grid" aria-label="What the Stellar AI workflow is built to deliver">
-            <article class="review-card"><div class="review-mark">01</div><h3>Start in plain English</h3><p>Describe the system you need without turning the first prompt into a specification document.</p><span class="review-source">Product promise · try it free</span></article>
-            <article class="review-card"><div class="review-mark">02</div><h3>Keep the files</h3><p>Review the structure, dependencies and next changes instead of receiving a vague answer that disappears in chat.</p><span class="review-source">Product promise · review before testing</span></article>
-            <article class="review-card"><div class="review-mark">03</div><h3>Return for the next version</h3><p>Bring back an error or a new idea and keep the build moving in the same workspace.</p><span class="review-source">Product promise · iterate when ready</span></article>
+            <article class="review-card"><div class="review-mark">01</div><h3>Start in plain English</h3><p>Describe the system you need without turning the first prompt into a specification document.</p><span class="review-source">Try it yourself · no card required</span></article>
+            <article class="review-card"><div class="review-mark">02</div><h3>Keep the files</h3><p>Review the structure, dependencies and next changes instead of receiving a vague answer that disappears in chat.</p><span class="review-source">Review before you test</span></article>
+            <article class="review-card"><div class="review-mark">03</div><h3>Return for the next version</h3><p>Bring back an error or a new idea and keep the build moving in the same workspace.</p><span class="review-source">Keep iterating when ready</span></article>
           </div>
-          <a class="text-link feedback-link" href="/app?welcome=1">Try the workflow and share feedback <span>→</span></a>
+          <a class="text-link feedback-link" href="/app?welcome=1">Try Stellar and share your feedback <span>→</span></a>
         </section>
         <div class="framework-rail" aria-label="Supported build contexts">
           <div class="framework-copy">Built for the frameworks and game workflows Stellar supports.</div>
@@ -2595,6 +2596,28 @@ end)</div></div>
   body:not(.light) #how-it-works .capability p { font-size:13px!important; line-height:1.6!important; }
   body:not(.light) .pricing-wrap { padding-top:48px!important; padding-bottom:58px!important; }
   @media (max-width:640px){ body:not(.light) .hero-visual{display:none!important;} body:not(.light) .hero{padding-top:34px!important;padding-bottom:30px!important;} body:not(.light) .hero h1{font-size:clamp(34px,11vw,46px)!important;} body:not(.light) .hero-lead{font-size:15px!important;} body:not(.light) #how-it-works .capability{min-height:0!important;} }
+
+  /* Readability + truthful review presentation */
+  .builder-feedback { display: block !important; max-width: 1120px; margin-inline: auto; }
+  .builder-feedback .section-heading p { display: block !important; max-width: 650px; margin: 12px auto 0; color: #c4c4cc !important; font-size: 15px; line-height: 1.7; }
+  .review-summary { display: flex; align-items: center; justify-content: center; gap: 16px; max-width: 620px; margin: 0 auto 22px; padding: 18px 22px; border: 1px solid #353535; border-radius: 16px; background: #151515; text-align: left; }
+  .review-stars { color: #d9c7ff; font-size: 26px; letter-spacing: .12em; line-height: 1; white-space: nowrap; }
+  .review-summary strong { display: block; color: #f4f4f5; font-size: 14px; }
+  .review-summary span { display: block; margin-top: 3px; color: #b3b3bd; font-size: 12px; line-height: 1.5; }
+  .review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .review-card { min-height: 210px; padding: 24px; border: 1px solid #343434; border-radius: 18px; background: #171717; }
+  .review-card h3 { margin: 18px 0 9px; color: #f4f4f5; font-size: 18px; letter-spacing: -.025em; }
+  .review-card p { color: #d0d0d6 !important; font-size: 14px; line-height: 1.7; }
+  .review-mark { color: #cbb8ff; font: 700 11px "DM Mono", monospace; }
+  .review-source { display: block; margin-top: 18px; color: #aaaab4; font-size: 11px; font-weight: 700; }
+  .feedback-link { display: table; margin: 22px auto 0; }
+  body:not(.light) .hero-lead, body:not(.light) .section-heading p, body:not(.light) .difference-copy p, body:not(.light) .plan-desc, body:not(.light) .plan-fit, body:not(.light) .faq-answer p, body:not(.light) .comparison-choice span { color: #c7c7cf !important; }
+  body:not(.light) .hero-footnote, body:not(.light) .pricing-note, body:not(.light) .comparison-foot { color: #aeb0ba !important; }
+  body.light .review-summary, body.light .review-card { border-color: #d6d6dc; background: #fff; }
+  body.light .review-summary strong, body.light .review-card h3 { color: #18181b; }
+  body.light .review-summary span, body.light .review-card p, body.light .review-source { color: #52525b !important; }
+  body.light .review-stars, body.light .review-mark { color: #6f50c9; }
+  @media (max-width: 760px) { .review-grid { grid-template-columns: 1fr; } .review-summary { align-items: flex-start; flex-direction: column; } .review-card { min-height: 0; } }
 </style>
 
 <script id="pricing-intent-bridge">
