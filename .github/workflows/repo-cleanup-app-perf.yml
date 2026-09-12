@@ -1,0 +1,167 @@
+name: Verify repository cleanup and app performance refactor
+
+on:
+  push:
+    branches:
+      - chore/repo-cleanup-app-perf
+
+permissions:
+  contents: write
+
+jobs:
+  refactor-and-verify:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chore/repo-cleanup-app-perf
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Capture pre-refactor page URLs
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          function walk(dir, out = []) {
+            for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+              if (['.git','node_modules','archive'].includes(e.name)) continue;
+              const p = path.join(dir, e.name);
+              if (e.isDirectory()) walk(p, out); else out.push(p);
+            }
+            return out;
+          }
+          const urls = [];
+          for (const file of walk('.')) {
+            const rel = file.replace(/^\.\//,'').replaceAll('\\','/');
+            const ext = path.extname(rel).toLowerCase();
+            let isPage = ext === '.html';
+            if (!ext) {
+              try { isPage = fs.readFileSync(file, 'utf8').trimStart().startsWith('<'); } catch {}
+            }
+            if (!isPage) continue;
+            urls.push(rel === 'index.html' ? '/' : '/' + rel);
+          }
+          fs.writeFileSync('/tmp/stellar-page-urls.json', JSON.stringify([...new Set(urls)].sort()));
+          console.log(`Captured ${urls.length} pre-refactor page URLs`);
+          NODE
+
+      - name: Apply refactor and repository organisation
+        run: |
+          node scripts/normalize-duplicate-inline-styles.mjs
+          node scripts/refactor-repository.mjs || {
+            echo 'Remaining style attributes after attempted transform:'
+            grep -n -C 1 -E 'style[[:space:]]*=' app.html || true
+            exit 1
+          }
+
+      - name: Install dependencies for verification without changing the stale lockfile
+        run: npm install --package-lock=false --ignore-scripts --no-audit --no-fund
+
+      - name: Run full test suite
+        run: node --test tests/*.test.mjs
+
+      - name: Verify pages, 74 blog routes, PWA assets, and checkout contract
+        run: |
+          node --check api/create-checkout.js
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const http = require('http');
+          const vercel = JSON.parse(fs.readFileSync('vercel.json','utf8'));
+          const redirects = new Map((vercel.redirects || []).filter(r => typeof r.source === 'string' && typeof r.destination === 'string').map(r => [r.source, r.destination]));
+          const rewrites = new Map((vercel.rewrites || []).filter(r => typeof r.source === 'string' && typeof r.destination === 'string').map(r => [r.source, r.destination]));
+          const mime = {'.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json','.xml':'application/xml','.png':'image/png','.svg':'image/svg+xml'};
+          function mappedPath(urlPath) {
+            let p = urlPath.split('?')[0];
+            if (rewrites.has(p)) p = new URL(rewrites.get(p), 'http://local').pathname;
+            if (p === '/') return 'index.html';
+            let file = p.replace(/^\//,'');
+            if (fs.existsSync(file) && fs.statSync(file).isFile()) return file;
+            if (!path.extname(file) && fs.existsSync(file + '.html')) return file + '.html';
+            if (file === 'blog' && fs.existsSync('blog.html')) return 'blog.html';
+            return null;
+          }
+          const server = http.createServer((req,res) => {
+            const p = new URL(req.url, 'http://local').pathname;
+            if (redirects.has(p)) {
+              res.statusCode = 308;
+              res.setHeader('Location', redirects.get(p));
+              return res.end();
+            }
+            const file = mappedPath(p);
+            if (!file) { res.statusCode = 404; return res.end('not found'); }
+            res.statusCode = 200;
+            res.setHeader('Content-Type', mime[path.extname(file)] || 'application/octet-stream');
+            fs.createReadStream(file).pipe(res);
+          });
+          server.listen(0, '127.0.0.1', async () => {
+            const port = server.address().port;
+            const base = `http://127.0.0.1:${port}`;
+            const failures = [];
+            async function expect200(url,label=url) {
+              try {
+                const r = await fetch(base + url, { redirect: 'follow' });
+                if (r.status !== 200) failures.push(`${label}: ${r.status}`);
+                return r;
+              } catch (e) { failures.push(`${label}: ${e}`); return null; }
+            }
+            const prePages = JSON.parse(fs.readFileSync('/tmp/stellar-page-urls.json','utf8'));
+            for (const url of prePages) await expect200(url, `page ${url}`);
+            for (const url of ['/', '/app', '/terms', '/blog', '/offline', '/affiliate']) await expect200(url, `core ${url}`);
+
+            const sitemap = fs.readFileSync('sitemap.xml','utf8');
+            const blogUrls = [...sitemap.matchAll(/<loc>\s*(https:\/\/trystellarai\.com\/blog\/[^<\s]+)\s*<\/loc>/g)].map(m => new URL(m[1]).pathname);
+            if (blogUrls.length !== 74 || new Set(blogUrls).size !== 74) failures.push(`blog route set ${blogUrls.length}/${new Set(blogUrls).size}`);
+            for (const url of blogUrls) await expect200(url, `blog ${url}`);
+
+            const manifest = JSON.parse(fs.readFileSync('manifest.json','utf8'));
+            for (const icon of manifest.icons || []) await expect200(new URL(icon.src, 'http://local').pathname, `PWA icon ${icon.src}`);
+            await expect200('/assets/styles.css', 'external app stylesheet');
+
+            const app = fs.readFileSync('app.html','utf8');
+            if (/\sstyle\s*=\s*["']/i.test(app)) failures.push('app.html still contains inline style attributes');
+            if (!app.includes('/assets/styles.css')) failures.push('app stylesheet link missing');
+            if (!app.includes("checkout('starter')") || !app.includes("checkout('plus')") || !app.includes("checkout('pro')")) failures.push('checkout buttons changed');
+            const checkout = fs.readFileSync('api/create-checkout.js','utf8');
+            for (const token of ['STRIPE_SECRET_KEY','checkout.sessions.create','success_url','cancel_url']) if (!checkout.includes(token)) failures.push(`checkout contract missing ${token}`);
+
+            server.close();
+            if (failures.length) {
+              console.error(failures.join('\n'));
+              process.exit(1);
+            }
+            console.log(`PASS pages=${prePages.length} blogRoutes=74 pwaIcons=${(manifest.icons||[]).length} checkout=contract-ok`);
+          });
+          NODE
+
+      - name: Show final repository root and diff summary
+        run: |
+          printf 'ROOT\n'
+          find . -maxdepth 1 -mindepth 1 -printf '%f\n' | sort
+          printf '\nDIFF\n'
+          git status --short
+          printf '\nAPP SIZE\n'
+          wc -c app.html assets/styles.css
+
+      - name: Archive one-off refactor tooling
+        run: |
+          mkdir -p archive/scripts archive/workflows
+          mv scripts/refactor-repository.mjs archive/scripts/repository-refactor-2026-09-10.mjs
+          mv scripts/normalize-duplicate-inline-styles.mjs archive/scripts/normalize-duplicate-inline-styles-2026-09-10.mjs
+          cp .github/workflows/repo-cleanup-app-perf.yml archive/workflows/repo-cleanup-app-perf-2026-09-10.yml
+          rm .github/workflows/repo-cleanup-app-perf.yml
+
+      - name: Commit verified changes to refactor branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Refactor app styles and organise repository"
+          git push origin HEAD:chore/repo-cleanup-app-perf
