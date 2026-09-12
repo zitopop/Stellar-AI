@@ -146,7 +146,7 @@ test('Appearance exposes a movable app-wide accent colour bar', () => {
   assert.equal((workspaceHtml.match(/class="accent-swatch" data-accent-theme=/g) ?? []).length, 8);
   assert.match(workspaceHtml, /function applyAccentTheme\(name, persist=true\)/);
   assert.match(workspaceHtml, /track\.addEventListener\('pointermove'/);
-  assert.match(workspaceHtml, /--accent:#10a37f/);
+  assert.match(workspaceHtml, /--accent:#7c3aed/);
 });
 
 test('workspace keeps the starter UI calm and removes redundant home guidance', () => {
