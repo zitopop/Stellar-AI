@@ -1,0 +1,94 @@
+name: Stellar AI CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stellar-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Syntax-check JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=()
+          while IFS= read -r -d '' file; do
+            files+=("$file")
+          done < <(find api lib scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 2>/dev/null || true)
+
+          for file in currency.js sw.js stellar-growth-v1.js; do
+            if [[ -f "$file" ]]; then
+              files+=("$file")
+            fi
+          done
+
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No JavaScript files found to check."
+            exit 1
+          fi
+
+          printf 'Checking %s JavaScript files...\n' "${#files[@]}"
+          for file in "${files[@]}"; do
+            node --check "$file"
+          done
+
+      - name: Run regression test suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t tests < <(find tests -maxdepth 1 -type f -name '*.test.mjs' | sort)
+          if [[ ${#tests[@]} -eq 0 ]]; then
+            echo "No regression tests found."
+            exit 1
+          fi
+          printf 'Running %s regression tests...\n' "${#tests[@]}"
+          node --test "${tests[@]}"
+
+      - name: Validate critical public files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            index.html
+            app.html
+            blog.html
+            manifest.json
+            sitemap.xml
+            vercel.json
+            README.md
+          )
+          for file in "${required[@]}"; do
+            test -s "$file" || { echo "Missing or empty critical file: $file"; exit 1; }
+          done
+
+      - name: Check for obvious committed secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE --exclude-dir=.git --exclude='*.md' --exclude='*.test.mjs' \
+            '(sk_live_[A-Za-z0-9]{16,}|sk-proj-[A-Za-z0-9_-]{16,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----)' .; then
+            echo "Potential secret detected in committed source."
+            exit 1
+          fi
+          echo "No obvious committed secret patterns found."
