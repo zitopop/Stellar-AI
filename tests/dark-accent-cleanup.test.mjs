@@ -12,7 +12,7 @@ test('dark app shell removes the legacy purple edge accent', () => {
 
 test('active dark workspace accents use neutral and emerald styling', () => {
   assert.match(appHtml, /Final dark palette: no blue or purple active accents/);
-  assert.match(appHtml, /body:not\(\.light\) #u-fill \{ background: linear-gradient\(90deg, #087d60, #10a37f\) !important; \}/);
+  assert.match(appHtml, /body:not\(\.light\) #u-fill \{ background: linear-gradient\(90deg, #087d60, #7c3aed\) !important; \}/);
   assert.match(appHtml, /body:not\(\.light\) ::-webkit-scrollbar-thumb \{ background: rgba\(255,255,255,\.22\) !important; \}/);
 });
 
