@@ -15,7 +15,7 @@ test('clean sidebar replaces footer utilities with a dedicated tools section', (
 test('desktop top bar exposes clean product and legal navigation', () => {
   assert.match(orbit, /stellar-top-nav/);
   assert.match(orbit, /href="\/models">Models<\/a>/);
-  assert.match(orbit, /data-stellar-top-plans>Plans<\/button>/);
+  assert.match(orbit, /data-stellar-top-plans[^>]*>Plans<\/button>/);
   assert.match(orbit, /href="\/terms\.html">Terms & privacy<\/a>/);
   assert.match(orbit, /data-stellar-top-picker/);
 });
