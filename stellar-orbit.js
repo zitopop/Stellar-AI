@@ -1,7 +1,7 @@
 (() => {
   'use strict';
-  if (window.__stellarOrbitV4Safe) return;
-  window.__stellarOrbitV4Safe = true;
+  if (window.__stellarOrbitV5Safe) return;
+  window.__stellarOrbitV5Safe = true;
 
   const TIERS = Object.freeze({
     fabie: { name:'Spark', mode:'Fast', symbol:'✦', desc:'Quick drafts, small fixes and lightweight work.', power:1 },
@@ -104,16 +104,21 @@
   }
 
   function closeSidebarOnMobile() {
-    if (window.innerWidth > 767) return;
+    if (window.innerWidth > 1100) return;
     const toggle = document.getElementById('mobile-menu-toggle');
     if (toggle?.getAttribute('aria-expanded') === 'true') {
       try { if (typeof toggleSidebar === 'function') toggleSidebar(); } catch {}
     }
   }
 
-  function openModelPickerFromOrbit() {
+  function afterResponsiveSidebarClose(action) {
+    const delay = window.innerWidth <= 1100 ? 180 : 0;
     closeSidebarOnMobile();
-    const open = () => {
+    window.setTimeout(action, delay);
+  }
+
+  function openModelPickerFromOrbit() {
+    afterResponsiveSidebarClose(() => {
       const button = document.getElementById('model-btn');
       const menu = document.getElementById('model-menu');
       if (!button || !menu) return;
@@ -121,8 +126,54 @@
       window.setTimeout(() => {
         menu.querySelector('[data-model-choice][aria-checked="true"]')?.focus({ preventScroll:true });
       }, 30);
-    };
-    window.setTimeout(open, window.innerWidth <= 767 ? 170 : 0);
+    });
+  }
+
+  function openUsageFromOrbit() {
+    afterResponsiveSidebarClose(() => {
+      try {
+        if (typeof openUsage === 'function') openUsage();
+        else document.getElementById('credits-btn')?.click();
+      } catch {}
+    });
+  }
+
+  function openPlansFromOrbit() {
+    afterResponsiveSidebarClose(() => {
+      try { if (typeof openPlans === 'function') openPlans(); } catch {}
+    });
+  }
+
+  function openSettingsFromOrbit() {
+    afterResponsiveSidebarClose(() => {
+      try { if (typeof openSettings === 'function') openSettings(); } catch {}
+    });
+  }
+
+  function ensureNavigationStyles() {
+    if (document.getElementById('stellar-clean-nav-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'stellar-clean-nav-styles';
+    style.textContent = `
+      body.stellar-orbit-v3 #sidebar .side-foot{display:none!important}
+      .stellar-orbit-tools-label{margin-top:12px!important}
+      .stellar-top-nav{display:flex;align-items:center;justify-content:center;gap:4px;margin-left:auto;margin-right:12px;padding:4px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(16,10,31,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+      .stellar-top-link{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 10px;border:0;border-radius:9px;color:rgba(255,255,255,.82)!important;background:transparent;text-decoration:none!important;font-size:12px;font-weight:750;letter-spacing:-.01em;white-space:nowrap;transition:background .16s ease,color .16s ease,border-color .16s ease}
+      .stellar-top-link:hover,.stellar-top-link:focus-visible{color:#fff!important;background:rgba(255,255,255,.12)}
+      .stellar-top-actions{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+      .stellar-top-model,.stellar-top-settings{display:inline-flex;align-items:center;justify-content:center;min-height:36px;border:1px solid rgba(255,255,255,.18);color:#fff;background:rgba(255,255,255,.08);box-shadow:inset 0 1px rgba(255,255,255,.07)}
+      .stellar-top-model{gap:7px;max-width:190px;padding:0 11px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .stellar-top-model-star{display:inline-grid;place-items:center;width:20px;height:20px;flex:0 0 20px;border-radius:50%;color:#f4e8ff;background:rgba(255,255,255,.09);font-size:10px}
+      .stellar-top-model:hover,.stellar-top-model:focus-visible,.stellar-top-settings:hover,.stellar-top-settings:focus-visible{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.34)}
+      .stellar-top-settings{width:36px;min-width:36px;padding:0;border-radius:10px;font-size:15px}
+      body.light .stellar-top-nav{border-color:rgba(32,22,56,.12);background:rgba(255,255,255,.42)}
+      body.light .stellar-top-link{color:#3a2c50!important}
+      body.light .stellar-top-link:hover,body.light .stellar-top-link:focus-visible{color:#1f1430!important;background:rgba(72,42,113,.08)}
+      body.light .stellar-top-model,body.light .stellar-top-settings{color:#2d1d43;background:rgba(255,255,255,.66);border-color:rgba(54,32,83,.16)}
+      @media(max-width:1100px){.stellar-top-nav{display:none}.stellar-top-actions{margin-left:auto}.stellar-top-model{max-width:170px}}
+      @media(max-width:760px){.stellar-top-settings{display:none}.stellar-top-model{max-width:148px;min-height:34px;padding:0 9px}.stellar-top-model-star{width:18px;height:18px;flex-basis:18px}.stellar-orbit-primary-copy span{display:none}.stellar-orbit-primary-btn,.stellar-orbit-primary-link{min-height:44px}.stellar-orbit-tools-label{margin-top:10px!important}}
+    `;
+    document.head.appendChild(style);
   }
 
   function ensureSpaceStrip() {
@@ -157,7 +208,7 @@
 
     const nav = document.createElement('section');
     nav.className = 'stellar-orbit-primary';
-    nav.setAttribute('aria-label', 'Stellar workspace');
+    nav.setAttribute('aria-label', 'Stellar workspace and account tools');
     nav.innerHTML = `
       <div class="stellar-orbit-rail-label">Workspace</div>
       <div class="stellar-orbit-primary-grid">
@@ -168,14 +219,37 @@
         </button>
         <button type="button" class="stellar-orbit-primary-btn" data-orbit-open-files>
           <span class="stellar-orbit-primary-icon" aria-hidden="true">◫</span>
-          <span class="stellar-orbit-primary-copy"><strong>Project files</strong><span>Open the current generated workspace</span></span>
+          <span class="stellar-orbit-primary-copy"><strong>Project files</strong><span>Open the generated workspace</span></span>
           <span class="stellar-orbit-primary-meta">Files</span>
         </button>
         <a class="stellar-orbit-primary-link" href="/blog">
           <span class="stellar-orbit-primary-icon" aria-hidden="true">⌁</span>
           <span class="stellar-orbit-primary-copy"><strong>Guides</strong><span>Roblox, FiveM and QBCore tutorials</span></span>
-          <span class="stellar-orbit-primary-meta">74</span>
+          <span class="stellar-orbit-primary-meta">Learn</span>
         </a>
+      </div>
+      <div class="stellar-orbit-rail-label stellar-orbit-tools-label">Tools & account</div>
+      <div class="stellar-orbit-primary-grid">
+        <button type="button" class="stellar-orbit-primary-btn" data-orbit-open-usage>
+          <span class="stellar-orbit-primary-icon" aria-hidden="true">◔</span>
+          <span class="stellar-orbit-primary-copy"><strong>Usage & credit</strong><span>Requests, balance and limits</span></span>
+          <span class="stellar-orbit-primary-meta">Usage</span>
+        </button>
+        <button type="button" class="stellar-orbit-primary-btn" data-orbit-open-plans>
+          <span class="stellar-orbit-primary-icon" aria-hidden="true">◇</span>
+          <span class="stellar-orbit-primary-copy"><strong>Plans</strong><span>Compare Stellar tiers</span></span>
+          <span class="stellar-orbit-primary-meta">Upgrade</span>
+        </button>
+        <a class="stellar-orbit-primary-link" href="/terms.html">
+          <span class="stellar-orbit-primary-icon" aria-hidden="true">§</span>
+          <span class="stellar-orbit-primary-copy"><strong>Terms & privacy</strong><span>Policies, privacy and data use</span></span>
+          <span class="stellar-orbit-primary-meta">Legal</span>
+        </a>
+        <button type="button" class="stellar-orbit-primary-btn" data-orbit-open-settings>
+          <span class="stellar-orbit-primary-icon" aria-hidden="true">⚙</span>
+          <span class="stellar-orbit-primary-copy"><strong>Settings</strong><span>Appearance, preferences and account</span></span>
+          <span class="stellar-orbit-primary-meta">Open</span>
+        </button>
       </div>`;
 
     nav.querySelector('[data-orbit-open-model]')?.addEventListener('click', openModelPickerFromOrbit);
@@ -183,7 +257,38 @@
       try { if (typeof toggleWorkspace === 'function') toggleWorkspace(); } catch {}
       closeSidebarOnMobile();
     });
+    nav.querySelector('[data-orbit-open-usage]')?.addEventListener('click', openUsageFromOrbit);
+    nav.querySelector('[data-orbit-open-plans]')?.addEventListener('click', openPlansFromOrbit);
+    nav.querySelector('[data-orbit-open-settings]')?.addEventListener('click', openSettingsFromOrbit);
     search.insertAdjacentElement('afterend', nav);
+  }
+
+  function ensureTopbarNavigation() {
+    const topbar = document.querySelector('#main-col .topbar');
+    if (!topbar || topbar.querySelector('.stellar-top-nav')) return;
+
+    const nav = document.createElement('nav');
+    nav.className = 'stellar-top-nav';
+    nav.setAttribute('aria-label', 'Stellar quick links');
+    nav.innerHTML = `
+      <a class="stellar-top-link" href="/models">Models</a>
+      <button type="button" class="stellar-top-link" data-stellar-top-plans>Plans</button>
+      <a class="stellar-top-link" href="/blog">Guides</a>
+      <a class="stellar-top-link" href="/terms.html">Terms & privacy</a>`;
+
+    const actions = document.createElement('div');
+    actions.className = 'stellar-top-actions';
+    actions.innerHTML = `
+      <button type="button" class="stellar-top-model" data-stellar-top-picker aria-label="Change Stellar model power" title="Change model power">
+        <span class="stellar-top-model-star" aria-hidden="true">★</span>
+        <span data-stellar-top-model>Star · Balanced</span>
+      </button>
+      <button type="button" class="stellar-top-settings" data-stellar-top-settings aria-label="Open Settings" title="Settings">⚙</button>`;
+
+    nav.querySelector('[data-stellar-top-plans]')?.addEventListener('click', openPlansFromOrbit);
+    actions.querySelector('[data-stellar-top-picker]')?.addEventListener('click', openModelPickerFromOrbit);
+    actions.querySelector('[data-stellar-top-settings]')?.addEventListener('click', openSettingsFromOrbit);
+    topbar.append(nav, actions);
   }
 
   function enhanceSidebarLabels() {
@@ -223,7 +328,7 @@
   function enhanceSettings() {
     const modal = document.getElementById('settings-modal');
     if (!modal) return;
-    setAttr(modal, 'data-stellar-orbit', 'v4');
+    setAttr(modal, 'data-stellar-orbit', 'v5');
     const subtitle = modal.querySelector('.settings-subtitle');
     if (subtitle) setText(subtitle, 'Your Stellar workspace, model power, appearance, usage and account controls.');
 
@@ -250,6 +355,7 @@
         <button type="button" data-orbit-usage>Usage</button>
         <button type="button" data-orbit-plans>Plans</button>
         <a href="/models">Model guide</a>
+        <a href="/terms.html">Terms & privacy</a>
         <a href="/blog">Guides</a>
       </div>`;
 
@@ -290,6 +396,7 @@
     document.querySelectorAll('[data-stellar-model]').forEach((n) => setText(n, `${tier.name} · ${tier.mode}`));
     document.querySelectorAll('[data-stellar-side-model]').forEach((n) => setText(n, `${tier.name} · ${tier.mode}`));
     document.querySelectorAll('[data-stellar-settings-model]').forEach((n) => setText(n, `${tier.name} · ${tier.mode}`));
+    document.querySelectorAll('[data-stellar-top-model]').forEach((n) => setText(n, `${tier.name} · ${tier.mode}`));
     document.querySelectorAll('[data-stellar-depth]').forEach((n) => setText(n, tier.mode));
     updatePowerUI(tier);
   }
@@ -314,7 +421,7 @@
     if (document.querySelector('script[data-stellar-app-schema]')) return;
     const script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.dataset.stellarAppSchema = 'safe-v4';
+    script.dataset.stellarAppSchema = 'safe-v5';
     script.textContent = JSON.stringify({
       '@context':'https://schema.org',
       '@type':'SoftwareApplication',
@@ -330,9 +437,11 @@
 
   function syncAll() {
     if (document.hidden) return;
+    safeRun(ensureNavigationStyles);
     safeRun(decorateMenu);
     safeRun(ensureSpaceStrip);
     safeRun(ensureOrbitPrimaryNav);
+    safeRun(ensureTopbarNavigation);
     safeRun(enhanceSidebarLabels);
     safeRun(enhanceUsageAccess);
     safeRun(enhanceSettings);
@@ -342,9 +451,11 @@
 
   function init() {
     document.body.classList.add('stellar-orbit-v2', 'stellar-orbit-v3');
+    safeRun(ensureNavigationStyles);
     safeRun(decorateMenu);
     safeRun(ensureSpaceStrip);
     safeRun(ensureOrbitPrimaryNav);
+    safeRun(ensureTopbarNavigation);
     safeRun(enhanceSidebarLabels);
     safeRun(enhanceUsageAccess);
     safeRun(enhanceSettings);
@@ -352,10 +463,13 @@
     safeRun(syncLabel);
     safeRun(addSchema);
     window.addEventListener('focus', syncAll, { passive:true });
-    window.addEventListener('resize', () => safeRun(enhanceUsageAccess), { passive:true });
+    window.addEventListener('resize', () => {
+      safeRun(enhanceUsageAccess);
+      safeRun(ensureTopbarNavigation);
+    }, { passive:true });
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncAll(); });
     window.setTimeout(syncAll, 250);
-    window.__stellarOrbitHealth = { version:'safe-v4', observers:0, startedAt:Date.now() };
+    window.__stellarOrbitHealth = { version:'safe-v5', observers:0, startedAt:Date.now() };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
