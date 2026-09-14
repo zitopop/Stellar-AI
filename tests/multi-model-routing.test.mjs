@@ -1449,3 +1449,12 @@ test('Task 2 falls back once when the built-in provider is unavailable', async (
     globalThis.fetch = originalFetch;
   }
 });
+
+
+test('system prompt keeps follow-up context and uses safe smart defaults', () => {
+  const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', '');
+  assert.match(prompt, /SMART CONVERSATION/);
+  assert.match(prompt, /Track the user’s current goal across follow-up messages/);
+  assert.match(prompt, /Prefer completing the task over asking unnecessary questions/);
+  assert.match(prompt, /Never pretend an action, test, deployment, tool call, purchase, message, or verification happened/);
+});
