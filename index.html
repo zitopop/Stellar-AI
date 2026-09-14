@@ -1625,6 +1625,16 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
 }
 @media(prefers-reduced-motion:reduce){body:not(.light){background-attachment:scroll!important;}}
 </style>
+
+<style id="stellar-live-home-composer">
+.landing-live-composer{position:relative;z-index:5;pointer-events:auto!important}
+.landing-live-composer .preview-input{display:block!important;min-width:0;min-height:44px;resize:none;outline:none;pointer-events:auto!important;cursor:text!important;color:#f5efff!important;caret-color:#d9b8ff!important;font:600 13px/1.45 Manrope,system-ui,sans-serif!important}
+.landing-live-composer .preview-input::placeholder{color:#8f879d!important;opacity:1}
+.landing-live-composer .preview-input:focus{border-color:rgba(205,120,255,.74)!important;box-shadow:0 0 0 3px rgba(161,76,255,.12)!important}
+.landing-live-composer .preview-send{border:0;cursor:pointer;pointer-events:auto!important}
+.landing-live-composer .preview-send span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(max-width:700px){.hero-visual .preview-compose.landing-live-composer{display:flex!important}.landing-live-composer .preview-input{font-size:16px!important}}
+</style>
 </head>
 <body>
   <div class="stellar-starfield" aria-hidden="true"></div>
@@ -1644,7 +1654,7 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
         </div>
         <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-controls="mobile-nav" aria-expanded="false"><span aria-hidden="true">☰</span></button>
         <div class="nav-actions">
-          <a href="/app" class="nav-login">Sign in</a>
+          <a href="/app?signin=1" class="nav-login">Sign in</a>
           <a href="/app" class="button button-primary nav-cta">Try it free <span class="button-arrow">→</span></a>
         </div>
       </nav>
@@ -1670,7 +1680,7 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
             <div class="hero-depth-orbit" aria-hidden="true"></div>
             <div class="hero-depth-chip hero-depth-chip--top" aria-hidden="true">QBCore context</div>
             <div class="hero-depth-chip hero-depth-chip--bottom" aria-hidden="true">Roblox ready</div>
-          <div class="product-frame" role="img" aria-label="Illustrated Stellar AI workspace preview showing a QBCore police resource plan, generated files, and a message composer">
+          <div class="product-frame" role="region" aria-label="Interactive Stellar AI workspace preview">
             <div class="product-shell">
               <div class="product-top"><div class="traffic"><i></i><i></i><i></i></div><div class="product-live">Resource generation live</div></div>
               <div class="product-main">
@@ -1695,7 +1705,7 @@ RegisterNetEvent(<em>'police:openMenu'</em>, function()
 end)</div></div>
                     </div>
                   </div>
-                  <div class="preview-compose"><div class="preview-input">Ask Stellar to change anything…</div><div class="preview-send">Send</div></div>
+                  <form class="preview-compose landing-live-composer" onsubmit="event.preventDefault();const q=this.querySelector('.preview-input').value.trim();if(q){window.location.href='/app?prompt='+encodeURIComponent(q);}"><textarea class="preview-input" rows="1" maxlength="2000" aria-label="Ask Stellar AI" placeholder="Ask Stellar anything…"></textarea><button class="preview-send" type="submit" aria-label="Send to Stellar AI"><span>Send</span></button></form>
                 </div>
               </div>
               <div class="float-file">fxmanifest.lua ready</div>

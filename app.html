@@ -5564,6 +5564,35 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       }
     }
 
+
+    // Draft chat state: only save a conversation after the first message.
+    let pendingChat = false;
+    function newChat() {
+      const search = document.getElementById('search');
+      if (search) search.value = '';
+      const id = 'chat_' + Date.now();
+      currentChatId = id;
+      pendingChat = true;
+      Store.set({ currentChat: id });
+      renderChatList();
+      const chatEl = document.getElementById('chat');
+      if (chatEl) chatEl.innerHTML = greetingMarkup();
+      const title = document.getElementById('chat-title');
+      if (title) title.textContent = 'Stellar AI';
+      document.getElementById('sidebar')?.classList.remove('open');
+      document.getElementById('overlay')?.classList.remove('open');
+      document.body.classList.remove('nav-open');
+      renderWorkspace();
+      requestAnimationFrame(() => document.getElementById('txt')?.focus({ preventScroll: true }));
+    }
+    function commitPendingChat() {
+      if (!pendingChat) return;
+      chats.unshift({ id: currentChatId, name: 'New chat', messages: [] });
+      Store.set({ chats, currentChat: currentChatId });
+      pendingChat = false;
+      renderChatList();
+    }
+
     function timeGreeting() {
       const h = new Date().getHours();
       const u = Store.get().user;
@@ -7039,8 +7068,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     });
     function maybeShowWelcome() {
       const s = Store.get();
-      if (!GOOGLE_CLIENT_ID) return;
-      if (s.user || s.seenWelcome) return;
+      if (!GOOGLE_CLIENT_ID || s.user || s.seenWelcome) return;
+      const params = new URLSearchParams(location.search);
+      const explicitAuth = params.get('signin') === '1' || params.get('signup') === '1';
+      if (!explicitAuth) {
+        requestAnimationFrame(() => document.getElementById('txt')?.focus({ preventScroll: true }));
+        return;
+      }
       document.getElementById('welcome-modal').classList.remove('hidden');
       focusWelcomeDialog();
     }
@@ -7421,6 +7455,22 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (document.getElementById('welcome-modal').classList.contains('hidden')) focusLandingStarterComposer();
     }
 
+
+    function applyLandingHomePrompt() {
+      const params = new URLSearchParams(location.search);
+      const prompt = (params.get('prompt') || '').trim().slice(0, 2000);
+      if (!prompt) return;
+      params.delete('prompt');
+      const remainingQuery = params.toString();
+      history.replaceState(null, '', location.pathname + (remainingQuery ? '?' + remainingQuery : '') + location.hash);
+      const input = document.getElementById('txt');
+      if (!input) return;
+      if (!input.value.trim()) input.value = prompt;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      requestAnimationFrame(() => { input.focus({ preventScroll: false }); input.setSelectionRange(input.value.length, input.value.length); });
+      setGenerationStatus('Your home-page prompt is ready to send.');
+    }
+
     function init() {
       // Handle Discord OAuth callback
       const urlParams = new URLSearchParams(window.location.search);
@@ -7526,6 +7576,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       applyWelcomeEntry();
       maybeShowWelcome();
       applyLandingStarterPrompt();
+      applyLandingHomePrompt();
     }
 
     // iPhone polish: box grows as you type, keyboard keeps it in view
