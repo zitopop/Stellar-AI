@@ -33,3 +33,12 @@ test('high-signal Stripe business incidents can reach owner escalation',()=>{
   assert.match(webhook,/radar\.early_fraud_warning\.created/);
   assert.match(webhook,/category: 'fraud'/);
 });
+
+test('urgent owner escalation falls back to configured owner email when phone calling fails',()=>{
+  const broadcast=readFileSync(new URL('../api/broadcast.js',import.meta.url),'utf8');
+  assert.match(broadcast,/sendOwnerFallbackEmail/);
+  assert.match(broadcast,/OWNER_EMAILS/);
+  assert.match(broadcast,/RESEND_API_KEY/);
+  assert.match(broadcast,/fallback: 'email'/);
+  assert.match(broadcast,/phone-unavailable/);
+});
