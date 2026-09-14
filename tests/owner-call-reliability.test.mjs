@@ -53,3 +53,27 @@ test('failed Twilio callback sends one owner fallback email', async()=>withEnv({
     assert.equal(calls.filter((call)=>call.url.includes('resend.com')).length,1);
   } finally { global.fetch=priorFetch; }
 }));
+
+test('failed fallback delivery releases claim so Twilio retry can send', async()=>withEnv({
+  TWILIO_AUTH_TOKEN:'twilio-secret', KV_REST_API_URL:'https://kv.test', KV_REST_API_TOKEN:'token',
+  RESEND_API_KEY:'resend', OWNER_EMAILS:'owner@example.com'
+},async()=>{
+  let claimed=false, resendAttempts=0; const priorFetch=global.fetch;
+  global.fetch=async(url,options={})=>{
+    if(String(url).includes('/pipeline')) {
+      const cmd=JSON.parse(options.body)[0];
+      if(cmd[0]==='GET') return {ok:true,json:async()=>[{result:JSON.stringify({fallback:{category:'security',severity:'critical',summary:'Retry alert'}})}]};
+      if(cmd[0]==='SET') { if(claimed) return {ok:true,json:async()=>[{result:null}]}; claimed=true; return {ok:true,json:async()=>[{result:'OK'}]}; }
+      if(cmd[0]==='DEL') { claimed=false; return {ok:true,json:async()=>[{result:1}]}; }
+    }
+    if(String(url).includes('resend.com')) { resendAttempts+=1; return {ok:resendAttempts>1,json:async()=>({})}; }
+    throw new Error(`unexpected fetch ${url}`);
+  };
+  try {
+    const context='22222222-2222-4222-8222-222222222222', body={CallStatus:'failed'};
+    const req={method:'POST',query:{context},body,headers:{'x-twilio-signature':twilioSignature(context,body,'twilio-secret')}};
+    const first=responseRecorder(); await callStatusHandler(req,first); assert.equal(first.statusCode,502); assert.equal(claimed,false);
+    const second=responseRecorder(); await callStatusHandler(req,second); assert.equal(second.statusCode,200); assert.equal(second.body?.fallback,'email');
+    assert.equal(resendAttempts,2);
+  } finally { global.fetch=priorFetch; }
+}));
