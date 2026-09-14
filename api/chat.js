@@ -6,6 +6,7 @@ import { isOwnerEmail, readSession } from '../lib/auth.js';
 import { OVERAGE_REQUEST_COST_PENCE, PLAN_DEFINITIONS, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
 import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
 import { consumeUsage, refundUsageCredit } from '../lib/usage.js';
+import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -792,6 +793,10 @@ export default async function handler(req, res) {
     applyUsageHeaders(res, usage);
   } catch (error) {
     console.error('Usage enforcement failed', error?.message || error);
+    await recordRepeatedServiceFailure({
+      key: 'usage-enforcement',
+      summary: 'Stellar usage enforcement failed repeatedly and is blocking customer requests.',
+    });
     return res.status(503).json({ error: 'Usage checks are temporarily unavailable. Please try again shortly.' });
   }
   if (!usage.allowed) {
@@ -836,9 +841,30 @@ export default async function handler(req, res) {
       signal: controller.signal,
     });
 
-    if (!upstream) return res.status(502).json({ error: 'The AI service did not return a response. Please try again.' });
-    if (!upstream.ok) return res.status(upstream.status).json({ error: await readAnthropicError(upstream) });
-    if (!upstream.body) return res.status(502).json({ error: 'The AI service returned an empty response. Please try again.' });
+    if (!upstream) {
+      await recordRepeatedServiceFailure({
+        key: 'ai-upstream-empty',
+        summary: 'Stellar AI upstream failed repeatedly without returning a response.',
+      });
+      return res.status(502).json({ error: 'The AI service did not return a response. Please try again.' });
+    }
+    if (!upstream.ok) {
+      const upstreamError = await readAnthropicError(upstream);
+      if (upstream.status >= 500) {
+        await recordRepeatedServiceFailure({
+          key: `ai-upstream-${upstream.status}`,
+          summary: `Stellar AI upstream returned repeated ${upstream.status} server errors.`,
+        });
+      }
+      return res.status(upstream.status).json({ error: upstreamError });
+    }
+    if (!upstream.body) {
+      await recordRepeatedServiceFailure({
+        key: 'ai-upstream-body',
+        summary: 'Stellar AI upstream repeatedly returned an empty response body.',
+      });
+      return res.status(502).json({ error: 'The AI service returned an empty response. Please try again.' });
+    }
 
     res.status(200);
     res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');

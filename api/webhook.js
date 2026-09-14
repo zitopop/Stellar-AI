@@ -6,6 +6,7 @@ import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, normalisePlan } from '../lib/pricing.
 import { applyTopupCheckout } from '../lib/topup.js';
 import { recordFirstUpgrade } from '../lib/profile.js';
 import { incrementConversionMetric, recordCheckoutCompletion, recordCheckoutExpiry } from '../lib/conversion-metrics.js';
+import { escalateOwner } from '../lib/owner-escalation.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -154,6 +155,13 @@ export default async function handler(req, res) {
     return res.status(200).json({ received: true });
   } catch (error) {
     console.error('Stripe webhook failed', error?.message || error);
+    if (event?.id) {
+      escalateOwner({
+        category: 'payment',
+        severity: 'critical',
+        summary: `Verified Stripe event ${event.type || 'unknown'} failed during processing.`,
+      }).catch((escalationError) => console.error('Payment escalation failed', escalationError?.message || escalationError));
+    }
     return res.status(400).json({ error: 'Webhook signature or processing failed.' });
   }
 }
