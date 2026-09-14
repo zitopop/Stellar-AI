@@ -4138,6 +4138,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         <button class="own-tab" data-otab="broadcast" onclick="ownerTab('broadcast')">📢 Email</button>
         <button class="own-tab" data-otab="metrics" onclick="ownerTab('metrics')">📈 Metrics</button>
         <button class="own-tab" data-otab="calls" onclick="ownerTab('calls')">📞 Calls</button>
+        <button class="own-tab" data-otab="jarvis" onclick="ownerTab('jarvis')">🤖 Jarvis</button>
       </div>
 
       <div class="own-panel" data-opanel="grant">
@@ -4216,6 +4217,28 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         <select id="owner-call-cooldown" class="own-input" style="margin-bottom:10px"><option value="5">5 minutes</option><option value="15" selected>15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select>
         <button class="plan-btn glass w-full" onclick="saveOwnerCallPolicy()">Save call policy</button>
         <div id="owner-call-policy" class="own-note" style="margin-top:10px">Open this tab to load the current policy.</div>
+      </div>
+
+      <div class="own-panel" data-opanel="jarvis" style="display:none">
+        <div class="own-label">Jarvis command centre</div>
+        <div class="own-note" style="margin-bottom:12px">Run focused owner missions from one place. Jarvis can prepare work automatically inside Stellar; connected external tools handle PC, email, social and deployment actions when available.</div>
+        <div id="jarvis-status-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+          <div class="glass" style="padding:10px;border-radius:12px"><div class="own-label">Core AI</div><div id="jarvis-core-status" class="own-note">Ready</div></div>
+          <div class="glass" style="padding:10px;border-radius:12px"><div class="own-label">Voice</div><div id="jarvis-voice-status" class="own-note">Checking…</div></div>
+          <div class="glass" style="padding:10px;border-radius:12px"><div class="own-label">Phone</div><div id="jarvis-phone-status" class="own-note">Checking…</div></div>
+          <div class="glass" style="padding:10px;border-radius:12px"><div class="own-label">Safety mode</div><div class="own-note">Auto for safe, reversible, no-spend work</div></div>
+        </div>
+        <div class="own-label">Mission controls</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="side-new" style="font-size:12px;padding:9px" onclick="runJarvisMission('Jarvis, run the business today. Prioritize revenue, customers, broken systems and anything urgent. Proceed automatically on safe reversible no-spend work and give me a concise command report.')">💷 Revenue day</button>
+          <button class="plan-btn glass" style="font-size:12px;padding:9px" onclick="runJarvisMission('Jarvis, check today’s sales opportunities, warm leads, customer replies and conversion blockers. Do the safe follow-up work you can and tell me what can make money fastest today.')">📈 Sales sprint</button>
+          <button class="plan-btn glass" style="font-size:12px;padding:9px" onclick="runJarvisMission('Jarvis, inspect my Stellar systems for errors, failed deployments, broken UI, calling issues and reliability problems. Fix safe reversible issues automatically and report what changed.')">🛠 Fix systems</button>
+          <button class="plan-btn glass" style="font-size:12px;padding:9px" onclick="runJarvisMission('Jarvis, prepare today’s social growth work for Instagram and connected channels. Prioritize real traffic and offers, use existing approved media where available, and do not spend money.')">📱 Social growth</button>
+          <button class="plan-btn glass" style="font-size:12px;padding:9px" onclick="runJarvisMission('Jarvis, review customer and business inbox activity, prioritize important replies, handle safe routine responses, and surface only decisions that need me.')">📨 Inbox sweep</button>
+          <button class="plan-btn glass" style="font-size:12px;padding:9px" onclick="runJarvisMission('Jarvis, run a full owner brief: revenue, customers, websites, deployments, finance, social, phone alerts, risks and the next best actions. Keep it concise and factual.')">🧠 Full brief</button>
+        </div>
+        <button class="plan-btn glass w-full" style="margin-top:10px" onclick="refreshJarvisCenter()">↻ Refresh Jarvis status</button>
+        <div id="jarvis-last-refresh" class="own-note" style="margin-top:8px">Not checked yet.</div>
       </div>
 
       </div>
@@ -5000,11 +5023,37 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       event.preventDefault();
       closeOwner();
     });
+    async function refreshJarvisCenter() {
+      const voice = document.getElementById('jarvis-voice-status');
+      const phone = document.getElementById('jarvis-phone-status');
+      const stamp = document.getElementById('jarvis-last-refresh');
+      const speechReady = !!(window.SpeechRecognition || window.webkitSpeechRecognition || window.speechSynthesis);
+      if (voice) voice.textContent = speechReady ? 'Ready in this browser' : 'Browser voice unavailable';
+      if (phone) phone.textContent = 'Checking provider…';
+      try {
+        const health = await checkOwnerCallHealth();
+        if (phone) phone.textContent = health?.ready ? 'Verified and ready' : (health?.configured ? 'Configured — provider test pending' : 'Needs provider setup');
+      } catch (_) { if (phone) phone.textContent = 'Provider check failed'; }
+      if (stamp) stamp.textContent = 'Last checked ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function runJarvisMission(prompt) {
+      if (!isOwner()) { showStellarNotice('Owner access is required for Jarvis missions.', 'error'); return; }
+      closeOwner();
+      const input = document.getElementById('txt');
+      if (!input) return;
+      input.value = String(prompt || '').trim();
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+      window.setTimeout(() => { if (!currentAbort) sendMessage(); }, 120);
+    }
+
     function ownerTab(name) {
       document.querySelectorAll('.own-tab').forEach(t => t.classList.toggle('active', t.dataset.otab === name));
       document.querySelectorAll('.own-panel').forEach(p => { p.style.display = (p.dataset.opanel === name) ? '' : 'none'; });
       if (name === 'metrics') loadConversionMetrics();
       if (name === 'calls') { loadOwnerCallPolicy(); checkOwnerCallHealth(); }
+      if (name === 'jarvis') refreshJarvisCenter();
     }
     let grantPlan = '';
     function pickGrantPlan(p) {
