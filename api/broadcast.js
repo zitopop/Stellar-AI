@@ -32,6 +32,19 @@ export default async function handler(req, res) {
   if (!session) return;
   if (!isOwnerEmail(session.email)) return res.status(403).json({ error: 'Owner access is required.' });
 
+  if (req.body?.action === 'verifyOwner') return res.status(200).json({ ok: true, owner: true });
+
+  if (req.body?.action === 'callOwner') {
+    const authorization = String(req.headers.authorization || '');
+    const purpose = String(req.body?.purpose || 'Owner requested a call from Jarvis in Stellar AI.').slice(0, 300);
+    try {
+      const bridge = await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: authorization }, body: JSON.stringify({ purpose }) });
+      const data = await bridge.json().catch(() => ({}));
+      if (!bridge.ok) return res.status(bridge.status >= 500 ? 502 : bridge.status).json({ error: data?.error || 'The phone service could not start the call.' });
+      return res.status(200).json({ ok: true, call_id: data?.call_id || null, status: data?.status || 'started' });
+    } catch (error) { console.error('Owner call bridge error', error?.message || error); return res.status(502).json({ error: 'The phone bridge is unavailable.' }); }
+  }
+
   if (req.body?.action === 'conversionMetrics') {
     const requestedDate = /^\d{4}-\d{2}-\d{2}$/.test(String(req.body?.date || '')) ? new Date(`${req.body.date}T00:00:00.000Z`) : new Date();
     const result = await readConversionMetrics(requestedDate);

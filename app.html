@@ -4495,7 +4495,7 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
 
     async function triggerOwnerCall(purpose = 'Owner requested a call from Jarvis in Stellar AI.') {
       if (!isOwner()) { showStellarNotice('Owner access is required for phone calls.', 'error'); return false; }
-      const { response, data } = await ownerRequest('/api/call-owner', { purpose });
+      const { response, data } = await ownerRequest('/api/broadcast', { action: 'callOwner', purpose });
       if (!response.ok) { showStellarNotice(data.error || 'Could not start the phone call.', 'error'); return false; }
       showStellarNotice('Jarvis is calling your saved owner number now.');
       return true;
