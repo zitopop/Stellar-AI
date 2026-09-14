@@ -26,3 +26,10 @@ test('repeated AI service failures feed the owner escalation system',()=>{
   assert.match(chat,/usage-enforcement/);
   assert.match(chat,/ai-upstream-/);
 });
+test('high-signal Stripe business incidents can reach owner escalation',()=>{
+  assert.match(webhook,/invoice\.payment_failed/);
+  assert.match(webhook,/payout\.failed/);
+  assert.match(webhook,/charge\.dispute\.created/);
+  assert.match(webhook,/radar\.early_fraud_warning\.created/);
+  assert.match(webhook,/category: 'fraud'/);
+});

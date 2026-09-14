@@ -125,6 +125,14 @@ export default async function handler(req, res) {
           }
         }
       }
+    } else if (event.type === 'invoice.payment_failed') {
+      await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI subscription invoice payment failed in Stripe.' });
+    } else if (event.type === 'payout.failed') {
+      await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI Stripe payout failed and needs owner attention.' });
+    } else if (event.type === 'charge.dispute.created') {
+      await escalateOwner({ category: 'fraud', severity: 'critical', summary: 'A new Stripe charge dispute was opened for Stellar AI.' });
+    } else if (event.type === 'radar.early_fraud_warning.created') {
+      await escalateOwner({ category: 'fraud', severity: 'urgent', summary: 'Stripe Radar created an early fraud warning for Stellar AI.' });
     } else if (event.type === 'checkout.session.expired') {
       const session = event.data.object;
       if (!session.client_reference_id) await incrementConversionMetric('checkout-cancelled-or-expired');
