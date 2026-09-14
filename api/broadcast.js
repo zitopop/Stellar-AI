@@ -120,7 +120,10 @@ export default async function handler(req, res) {
     const authorization = String(req.headers.authorization || '');
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
     try {
-      const data = await startOwnerCall({ purpose, authorization, bridgeToken });
+      const data = await startOwnerCall({ purpose, authorization, bridgeToken, metadata: { escalation: { category, severity, summary } } });
+      if (data?.provider === 'twilio') {
+        return res.status(200).json({ ok: true, called: false, pending: true, provider: 'twilio', call_id: data?.call_id || null, status: data?.status || 'queued' });
+      }
       const stamp = Date.now();
       await Promise.all([
         fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
