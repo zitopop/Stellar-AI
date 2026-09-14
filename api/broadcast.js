@@ -28,9 +28,16 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
-  const session = requireSession(req, res);
-  if (!session) return;
-  if (!isOwnerEmail(session.email)) return res.status(403).json({ error: 'Owner access is required.' });
+  const action = String(req.body?.action || '');
+  const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
+  const suppliedBridgeToken = String(req.headers['x-call-bridge-token'] || '');
+  const internalEscalation = action === 'escalateOwner' && bridgeToken && suppliedBridgeToken === bridgeToken;
+
+  if (!internalEscalation) {
+    const session = requireSession(req, res);
+    if (!session) return;
+    if (!isOwnerEmail(session.email)) return res.status(403).json({ error: 'Owner access is required.' });
+  }
 
   if (req.body?.action === 'verifyOwner') return res.status(200).json({ ok: true, owner: true });
 
@@ -54,7 +61,10 @@ export default async function handler(req, res) {
     const authorization = String(req.headers.authorization || '');
     const purpose = String(req.body?.purpose || 'Owner requested a call from Jarvis in Stellar AI.').slice(0, 300);
     try {
-      const bridge = await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: authorization }, body: JSON.stringify({ purpose }) });
+      const bridgeHeaders = { 'Content-Type': 'application/json' };
+      if (authorization) bridgeHeaders.Authorization = authorization;
+      if (bridgeToken) bridgeHeaders['x-call-bridge-token'] = bridgeToken;
+      const bridge = await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner', { method: 'POST', headers: bridgeHeaders, body: JSON.stringify({ purpose }) });
       const data = await bridge.json().catch(() => ({}));
       if (!bridge.ok) return res.status(bridge.status >= 500 ? 502 : bridge.status).json({ error: data?.error || 'The phone service could not start the call.' });
       return res.status(200).json({ ok: true, call_id: data?.call_id || null, status: data?.status || 'started' });
@@ -70,7 +80,7 @@ export default async function handler(req, res) {
     if(policy.enabled===false||!policy.categories?.includes(category))return res.status(200).json({ok:true,called:false,reason:'policy'});
     if(last&&Date.now()-last<policy.cooldownMinutes*60000)return res.status(200).json({ok:true,called:false,reason:'cooldown'});
     const authorization=String(req.headers.authorization||''); const purpose=`URGENT ${category.toUpperCase()}: ${summary}`;
-    try{ const bridge=await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner',{method:'POST',headers:{'Content-Type':'application/json',Authorization:authorization},body:JSON.stringify({purpose})}); const data=await bridge.json().catch(()=>({})); if(!bridge.ok)return res.status(bridge.status>=500?502:bridge.status).json({error:data?.error||'The phone service could not start the urgent call.'}); if(kvUrl&&kvToken){ const stamp=Date.now(); await Promise.all([fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`,{headers:{Authorization:`Bearer ${kvToken}`}}),fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({t:stamp,category,severity,summary,call_id:data?.call_id||null}))}`,{headers:{Authorization:`Bearer ${kvToken}`}})]).catch(()=>{}); } return res.status(200).json({ok:true,called:true,call_id:data?.call_id||null,status:data?.status||'started'}); }catch(error){console.error('Urgent owner escalation failed',error?.message||error);return res.status(502).json({error:'Urgent owner call failed.'});}
+    try{ const bridgeHeaders={'Content-Type':'application/json'}; if(authorization)bridgeHeaders.Authorization=authorization; if(bridgeToken)bridgeHeaders['x-call-bridge-token']=bridgeToken; const bridge=await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner',{method:'POST',headers:bridgeHeaders,body:JSON.stringify({purpose})}); const data=await bridge.json().catch(()=>({})); if(!bridge.ok)return res.status(bridge.status>=500?502:bridge.status).json({error:data?.error||'The phone service could not start the urgent call.'}); if(kvUrl&&kvToken){ const stamp=Date.now(); await Promise.all([fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`,{headers:{Authorization:`Bearer ${kvToken}`}}),fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({t:stamp,category,severity,summary,call_id:data?.call_id||null}))}`,{headers:{Authorization:`Bearer ${kvToken}`}})]).catch(()=>{}); } return res.status(200).json({ok:true,called:true,call_id:data?.call_id||null,status:data?.status||'started'}); }catch(error){console.error('Urgent owner escalation failed',error?.message||error);return res.status(502).json({error:'Urgent owner call failed.'});}
   }
 
   if (req.body?.action === 'conversionMetrics') {
