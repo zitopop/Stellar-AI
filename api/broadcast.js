@@ -2,6 +2,8 @@
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
+import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
+import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -54,6 +56,8 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
+  if (String(req.query?.jarvisVoice || '') === '1') return handleJarvisVoiceWebhook(req, res);
+
   const action = String(req.body?.action || '');
   const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
   const suppliedBridgeToken = String(req.headers['x-call-bridge-token'] || '');
@@ -85,70 +89,55 @@ export default async function handler(req, res) {
 
   if (req.body?.action === 'callHealth') {
     const authorization = String(req.headers.authorization || '');
-    try {
-      const bridgeHeaders = { 'Content-Type': 'application/json' };
-      if (authorization) bridgeHeaders.Authorization = authorization;
-      if (bridgeToken) bridgeHeaders['x-call-bridge-token'] = bridgeToken;
-      const bridge = await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner', { method: 'POST', headers: bridgeHeaders, body: JSON.stringify({ action: 'health' }), signal: AbortSignal.timeout(12000) });
-      const data = await bridge.json().catch(() => ({}));
-      if (!bridge.ok) return res.status(bridge.status >= 500 ? 502 : bridge.status).json({ error: data?.error || 'The phone service health check failed.' });
-      return res.status(200).json({ ok: true, ready: data?.ready === true, retell: data?.retell === true, ownerNumber: data?.ownerNumber === true, agent: data?.agent === true, outboundNumber: data?.outboundNumber === true, configuredAgent: data?.configuredAgent === true, configuredNumber: data?.configuredNumber === true });
-    } catch (error) { console.error('Owner call health error', error?.message || error); return res.status(502).json({ error: 'The phone bridge is unavailable.' }); }
+    const health = await readOwnerCallHealth({ authorization, bridgeToken });
+    if (!health.ok && !health.ready) return res.status(502).json({ error: health.error || 'The phone service health check failed.' });
+    return res.status(200).json(health);
   }
-
   if (req.body?.action === 'callOwner') {
     const authorization = String(req.headers.authorization || '');
     const purpose = String(req.body?.purpose || 'Owner requested a call from Jarvis in Stellar AI.').slice(0, 300);
     try {
-      const bridgeHeaders = { 'Content-Type': 'application/json' };
-      if (authorization) bridgeHeaders.Authorization = authorization;
-      if (bridgeToken) bridgeHeaders['x-call-bridge-token'] = bridgeToken;
-      const bridge = await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner', { method: 'POST', headers: bridgeHeaders, body: JSON.stringify({ purpose }), signal: AbortSignal.timeout(15000) });
-      const data = await bridge.json().catch(() => ({}));
-      if (!bridge.ok) return res.status(bridge.status >= 500 ? 502 : bridge.status).json({ error: data?.error || 'The phone service could not start the call.' });
-      return res.status(200).json({ ok: true, call_id: data?.call_id || null, status: data?.status || 'started' });
-    } catch (error) { console.error('Owner call bridge error', error?.message || error); return res.status(502).json({ error: 'The phone bridge is unavailable.' }); }
+      const data = await startOwnerCall({ purpose, authorization, bridgeToken });
+      return res.status(200).json({ ok: true, provider: data.provider, call_id: data.call_id || null, status: data.status || 'started' });
+    } catch (error) {
+      console.error('Owner call provider error', error?.provider || '', error?.message || error);
+      return res.status(error?.status >= 400 && error?.status < 500 ? error.status : 502).json({ error: 'The phone service could not start the call.' });
+    }
   }
-
   if (req.body?.action === 'escalateOwner') {
     const category=String(req.body?.category||'').toLowerCase(), severity=String(req.body?.severity||'').toLowerCase(), summary=String(req.body?.summary||'').trim().slice(0,300);
     const allowed=['security','fraud','payment','customer','service','approval'];
     if(!allowed.includes(category)||!['urgent','critical'].includes(severity)||!summary)return res.status(400).json({error:'A valid urgent escalation is required.'});
     const kvUrl=process.env.KV_REST_API_URL, kvToken=process.env.KV_REST_API_TOKEN; let policy={enabled:true,cooldownMinutes:15,categories:allowed}, last=0;
     if(!kvUrl||!kvToken)return res.status(200).json({ok:true,called:false,reason:'storage'});
-    if(kvUrl&&kvToken){ try{ const [pr,lr]=await Promise.all([fetch(`${kvUrl}/get/stellar:owner-call:policy`,{headers:{Authorization:`Bearer ${kvToken}`}}),fetch(`${kvUrl}/get/stellar:owner-call:last`,{headers:{Authorization:`Bearer ${kvToken}`}})]); const pd=await pr.json().catch(()=>({})),ld=await lr.json().catch(()=>({})); if(pd?.result)policy={...policy,...JSON.parse(pd.result)}; last=Number(ld?.result||0)||0; }catch(error){console.error('Owner call policy lookup failed',error?.message||error);return res.status(200).json({ok:true,called:false,reason:'storage'}); } }
+    try {
+      const [pr,lr]=await Promise.all([fetch(`${kvUrl}/get/stellar:owner-call:policy`,{headers:{Authorization:`Bearer ${kvToken}`}}),fetch(`${kvUrl}/get/stellar:owner-call:last`,{headers:{Authorization:`Bearer ${kvToken}`}})]);
+      const pd=await pr.json().catch(()=>({})),ld=await lr.json().catch(()=>({}));
+      if(pd?.result)policy={...policy,...JSON.parse(pd.result)}; last=Number(ld?.result||0)||0;
+    } catch(error) { console.error('Owner call policy lookup failed',error?.message||error); return res.status(200).json({ok:true,called:false,reason:'storage'}); }
     if(policy.enabled===false||!policy.categories?.includes(category))return res.status(200).json({ok:true,called:false,reason:'policy'});
     if(last&&Date.now()-last<policy.cooldownMinutes*60000)return res.status(200).json({ok:true,called:false,reason:'cooldown'});
     const authorization = String(req.headers.authorization || '');
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
     try {
-      const bridgeHeaders = { 'Content-Type': 'application/json' };
-      if (authorization) bridgeHeaders.Authorization = authorization;
-      if (bridgeToken) bridgeHeaders['x-call-bridge-token'] = bridgeToken;
-      const bridge = await fetch('https://ai-receptionist-live-chi.vercel.app/api/call-owner', { method: 'POST', headers: bridgeHeaders, body: JSON.stringify({ purpose }), signal: AbortSignal.timeout(15000) });
-      const data = await bridge.json().catch(() => ({}));
-      if (!bridge.ok) {
-        const emailed = await sendOwnerFallbackEmail({ category, severity, summary });
-        if (emailed) {
-          const stamp = Date.now();
-          await Promise.all([
-            fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
-            fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, channel: 'email' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
-          ]).catch(() => {});
-          return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable' });
-        }
-        return res.status(bridge.status >= 500 ? 502 : bridge.status).json({ error: data?.error || 'The phone service could not start the urgent call.' });
-      }
+      const data = await startOwnerCall({ purpose, authorization, bridgeToken });
       const stamp = Date.now();
       await Promise.all([
         fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
-        fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, call_id: data?.call_id || null, channel: 'phone' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
+        fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, call_id: data?.call_id || null, provider: data?.provider || null, channel: 'phone' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
       ]).catch(() => {});
-      return res.status(200).json({ ok: true, called: true, call_id: data?.call_id || null, status: data?.status || 'started' });
+      return res.status(200).json({ ok: true, called: true, provider: data?.provider || null, call_id: data?.call_id || null, status: data?.status || 'started' });
     } catch (error) {
-      console.error('Urgent owner escalation failed', error?.message || error);
+      console.error('Urgent owner escalation failed', error?.provider || '', error?.message || error);
       const emailed = await sendOwnerFallbackEmail({ category, severity, summary });
-      if (emailed) return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable' });
+      if (emailed) {
+        const stamp = Date.now();
+        await Promise.all([
+          fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
+          fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, channel: 'email' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
+        ]).catch(() => {});
+        return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable' });
+      }
       return res.status(502).json({ error: 'Urgent owner call failed.' });
     }
   }
