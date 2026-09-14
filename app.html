@@ -4206,6 +4206,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       <div class="own-panel" data-opanel="calls" style="display:none">
         <div class="own-label">Jarvis owner calling</div>
         <div class="own-note" style="margin-bottom:12px">Calls only the saved owner number. Urgent auto-escalation is limited to security, fraud, payment, important customer, service failure and approval-required issues.</div>
+        <button class="plan-btn glass w-full" style="margin-bottom:8px" onclick="checkOwnerCallHealth()">🩺 Check calling system</button>
+        <div id="owner-call-health" class="own-note" style="margin-bottom:10px">Checking Retell, agent and outbound number…</div>
         <button id="owner-test-call" class="side-new w-full" style="font-size:12px;padding:10px 12px;" onclick="runTestOwnerCall()">📞 Test call me now</button>
         <div id="owner-call-msg" class="redeem-msg" style="margin-top:8px"></div>
         <div class="own-label" style="margin-top:16px">Urgent calls</div>
@@ -4532,8 +4534,20 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       return true;
     }
 
+    async function checkOwnerCallHealth() {
+      const out=document.getElementById('owner-call-health');
+      if(out) out.textContent='Checking Retell, agent and outbound number…';
+      const {response,data}=await ownerRequest('/api/broadcast',{action:'callHealth'});
+      if(!response.ok){if(out)out.textContent=`⚠️ ${data.error||'Calling system is not ready.'}`;return false;}
+      const configured=data.configuredAgent&&data.configuredNumber;
+      if(out) out.textContent=data.ready?`✅ Calling system ready${configured?' — configured agent + number verified':' — fallback agent/number available'}.`:'⚠️ Calling system is not ready.';
+      return data.ready===true;
+    }
+
     async function runTestOwnerCall() {
       const out=document.getElementById('owner-call-msg'); if(out) out.textContent='Starting secure test call…';
+      const ready=await checkOwnerCallHealth();
+      if(!ready){if(out) out.textContent='Test call stopped because the calling system is not ready.';return;}
       const ok=await triggerOwnerCall('Owner requested a secure Stellar AI test call.');
       if(out) out.textContent=ok?'Test call started. Answer your saved owner number.':'Test call could not be started.';
     }
@@ -4990,7 +5004,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       document.querySelectorAll('.own-tab').forEach(t => t.classList.toggle('active', t.dataset.otab === name));
       document.querySelectorAll('.own-panel').forEach(p => { p.style.display = (p.dataset.opanel === name) ? '' : 'none'; });
       if (name === 'metrics') loadConversionMetrics();
-      if (name === 'calls') loadOwnerCallPolicy();
+      if (name === 'calls') { loadOwnerCallPolicy(); checkOwnerCallHealth(); }
     }
     let grantPlan = '';
     function pickGrantPlan(p) {
