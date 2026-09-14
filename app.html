@@ -3527,6 +3527,23 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
 @media(max-height:700px) and (min-width:768px){#chat{padding-top:12px!important}.greet-wrap{padding-top:4px!important}.stellar-v2-badge{margin-bottom:8px!important}.stellar-feature-grid{margin-top:12px!important}.stellar-feature-grid button{min-height:92px!important}.input-area>.flex{min-height:86px!important}}
 
 </style>
+<style id="stellar-home-composer-fix-v1">
+/* Home polish + composer hardening */
+body:not(.light) #main-col{background:radial-gradient(circle at 50% 8%,rgba(124,45,242,.13),transparent 28rem),#080b1f!important}
+body:not(.light) .greet-wrap{max-width:920px!important;padding-top:20px!important}
+body:not(.light) .greet-hi{font-size:clamp(40px,4.2vw,58px)!important;line-height:1!important;letter-spacing:-.045em!important}
+body:not(.light) .welcome-sub{max-width:660px!important;margin-inline:auto!important;color:#cec6df!important;line-height:1.5!important}
+body:not(.light) .stellar-feature-grid{max-width:900px!important;margin-inline:auto!important}
+body:not(.light) .stellar-feature-grid button{background:rgba(17,18,42,.72)!important;border:1px solid rgba(160,104,255,.20)!important;box-shadow:none!important}
+body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,255,.48)!important;background:rgba(24,21,52,.9)!important;transform:translateY(-2px)}
+.input-area{position:relative!important;z-index:80!important}
+.input-area>.flex{position:relative!important;z-index:81!important;isolation:isolate!important}
+#txt{position:relative!important;z-index:4!important;pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important;touch-action:manipulation!important;cursor:text!important;color:#f7f5ff!important;caret-color:#d4b7ff!important}
+#txt:focus{outline:none!important;border-color:rgba(192,132,252,.68)!important;box-shadow:inset 0 0 0 1px rgba(192,132,252,.16)!important}
+.mic-btn,.input-area #send-btn,.composer-foot{z-index:6!important}
+#overlay:not([style*="display: block"]){pointer-events:none!important}
+@media(max-width:767px){body:not(.light) .greet-wrap{padding-top:12px!important}.input-area{z-index:120!important}#txt{min-height:46px!important}}
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -11226,5 +11243,20 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
 })();
 </script>
 <script>function stellarQuick(prompt){ if(typeof useSuggestion==='function') useSuggestion(prompt); }</script>
+<script id="stellar-composer-focus-fix-v1">
+(function(){
+  const composer=document.querySelector('.input-area');
+  const txt=document.getElementById('txt');
+  if(!composer||!txt)return;
+  txt.disabled=false;
+  txt.readOnly=false;
+  composer.addEventListener('pointerdown',function(e){
+    if(e.target.closest('button,input,select,a,[role="menu"]'))return;
+    if(e.target===txt||e.target.closest('#txt'))return;
+    requestAnimationFrame(()=>txt.focus({preventScroll:true}));
+  });
+  window.addEventListener('pageshow',function(){txt.disabled=false;txt.readOnly=false;});
+})();
+</script>
 </body>
 </html>
