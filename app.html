@@ -4538,17 +4538,17 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const out=document.getElementById('owner-call-health');
       if(out) out.textContent='Checking Retell, agent and outbound number…';
       const {response,data}=await ownerRequest('/api/broadcast',{action:'callHealth'});
-      if(!response.ok){if(out)out.textContent=`⚠️ ${data.error||'Calling system is not ready.'}`;return false;}
-      const configured=data.configuredAgent&&data.configuredNumber;
-      if(out) out.textContent=data.ready?`✅ Calling system ready${configured?' — configured agent + number verified':' — fallback agent/number available'}.`:'⚠️ Calling system is not ready.';
-      return data.ready===true;
+      if(!response.ok){if(out)out.textContent=`⚠️ ${data.error||'Calling system is not ready.'}`;return {ready:false,configured:false};}
+      const configured=data.configured===true || (data.ownerNumber===true && data.agent===true && data.outboundNumber===true);
+      if(out) out.textContent=data.ready?'✅ Calling system verified and ready.':(configured?'🟡 Calling system is configured. A successful phone test is still required before it is marked verified.':'⚠️ Calling system is not ready.');
+      return { ...data, configured };
     }
 
     async function runTestOwnerCall() {
       const out=document.getElementById('owner-call-msg'); if(out) out.textContent='Starting secure test call…';
-      const ready=await checkOwnerCallHealth();
-      if(!ready){if(out) out.textContent='Test call stopped because the calling system is not ready.';return;}
-      const ok=await triggerOwnerCall('Owner requested a secure Stellar AI test call.');
+      const health=await checkOwnerCallHealth();
+      if(!health?.configured){if(out) out.textContent='Test call stopped because the phone provider is not fully configured.';return;}
+      const ok=await triggerOwnerCall('Owner requested a secure Stellar AI verification call.');
       if(out) out.textContent=ok?'Test call started. Answer your saved owner number.':'Test call could not be started.';
     }
     async function loadOwnerCallPolicy() {

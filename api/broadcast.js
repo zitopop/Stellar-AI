@@ -134,10 +134,7 @@ export default async function handler(req, res) {
       const emailed = await sendOwnerFallbackEmail({ category, severity, summary });
       if (emailed) {
         const stamp = Date.now();
-        await Promise.all([
-          fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
-          fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, channel: 'email' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
-        ]).catch(() => {});
+        await fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, channel: 'email' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }).catch(() => {});
         return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable' });
       }
       return res.status(502).json({ error: 'Urgent owner call failed.' });
