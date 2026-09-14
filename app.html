@@ -4488,6 +4488,19 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
       return { response, data };
     }
 
+    function ownerCallCommand(text) {
+      const value = String(text || '').trim();
+      return /^(?:jarvis[, ]+)?call me(?:\s+(?:about|for)\s+(.+))?$/i.test(value);
+    }
+
+    async function triggerOwnerCall(purpose = 'Owner requested a call from Jarvis in Stellar AI.') {
+      if (!isOwner()) { showStellarNotice('Owner access is required for phone calls.', 'error'); return false; }
+      const { response, data } = await ownerRequest('/api/call-owner', { purpose });
+      if (!response.ok) { showStellarNotice(data.error || 'Could not start the phone call.', 'error'); return false; }
+      showStellarNotice('Jarvis is calling your saved owner number now.');
+      return true;
+    }
+
     let chats = [];
     let currentChatId = null;
 
@@ -6249,6 +6262,21 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
       }, 3500);
       currentAbort = new AbortController();
       setSendControl('◼ Stop', 'Stop generating response');
+      if (ownerCallCommand(text)) {
+        const ok = await triggerOwnerCall('Owner requested a call from Jarvis in Stellar AI.');
+        clearInterval(stepTimer);
+        loading.remove();
+        chatEl.removeEventListener('wheel', pauseAutoScroll);
+        chatEl.removeEventListener('touchmove', pauseAutoScroll);
+        currentAbort = null;
+        sendLock = false;
+        setSendControl('Send', 'Send message');
+        document.getElementById('logo-star').classList.remove('logo-working');
+        setGenerationStatus(ok ? 'Call started.' : 'Call could not be started.');
+        chatEl.setAttribute('aria-busy', 'false');
+        restoreComposerFocusIfSendControlFocused();
+        return;
+      }
       if (tryCreditsCommand(text) || tryGiftCommand(text) || tryCodeCommand(text)) {
         clearInterval(stepTimer);
         loading.remove();
