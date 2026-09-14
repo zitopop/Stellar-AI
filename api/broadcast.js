@@ -120,7 +120,7 @@ export default async function handler(req, res) {
     const authorization = String(req.headers.authorization || '');
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
     try {
-      const data = await startOwnerCall({ purpose, authorization, bridgeToken });
+      const data = await startOwnerCall({ purpose, authorization, bridgeToken, fallback: { category, severity, summary } });
       const stamp = Date.now();
       await Promise.all([
         fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
