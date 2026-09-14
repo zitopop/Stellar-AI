@@ -58,9 +58,20 @@ export default async function handler(req, res) {
     if (!raw) return res.status(204).end();
     const context = JSON.parse(raw);
     if (!context?.fallback?.summary) return res.status(204).end();
-    const once = await redis(url, token, ['SET', `stellar:jarvis:call-fallback:${contextId}`, status, 'NX', 'EX', 3600]);
+    const fallbackKey = `stellar:jarvis:call-fallback:${contextId}`;
+    const once = await redis(url, token, ['SET', fallbackKey, status, 'NX', 'EX', 3600]);
     if (once !== 'OK') return res.status(204).end();
-    if (!await sendFallback(context.fallback)) return res.status(502).json({ error: 'Fallback email failed.' });
+    let delivered = false;
+    try {
+      delivered = await sendFallback(context.fallback);
+    } catch (error) {
+      await redis(url, token, ['DEL', fallbackKey]).catch(() => {});
+      throw error;
+    }
+    if (!delivered) {
+      await redis(url, token, ['DEL', fallbackKey]).catch(() => {});
+      return res.status(502).json({ error: 'Fallback email failed.' });
+    }
     return res.status(200).json({ ok: true, fallback: 'email' });
   } catch (error) {
     console.error('Jarvis call status callback failed', error?.message || error);
