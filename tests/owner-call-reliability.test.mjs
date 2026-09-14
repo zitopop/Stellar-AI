@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import test from 'node:test';
 import { getOwnerCallConfiguration } from '../lib/owner-call.js';
-import callStatusHandler from '../api/call-status.js';
+import { handleOwnerCallStatus as callStatusHandler } from '../lib/call-status.js';
 
 const ENV_KEYS=['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','KV_REST_API_URL','KV_REST_API_TOKEN','RESEND_API_KEY','OWNER_EMAILS'];
 function withEnv(values, fn) {
@@ -17,7 +17,7 @@ function responseRecorder() {
     end(){this.ended=true;return this;} };
 }
 function twilioSignature(context, body, token) {
-  let payload=`https://trystellarai.com/api/call-status?context=${encodeURIComponent(context)}`;
+  let payload=`https://trystellarai.com/api/broadcast?jarvisCallStatus=1&context=${encodeURIComponent(context)}`;
   for (const key of Object.keys(body).sort()) payload+=`${key}${body[key]}`;
   return createHmac('sha1',token).update(payload).digest('base64');
 }
