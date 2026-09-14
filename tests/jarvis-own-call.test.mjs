@@ -13,6 +13,9 @@ test('Jarvis can use a direct Twilio owner-call provider without exposing the ow
   assert.match(provider,/OWNER_PHONE/);
   assert.match(provider,/api\.twilio\.com\/2010-04-01\/Accounts/);
   assert.match(provider,/stellar:jarvis:call-context/);
+  assert.match(provider,/checkCallContextStorage/);
+  assert.match(provider,/stellar:jarvis:health-probe/);
+  assert.match(provider,/callContextStorageConfigured/);
   assert.doesNotMatch(provider,/07477|0477|160856/);
 });
 
@@ -23,7 +26,7 @@ test('direct Twilio failure keeps the existing Retell bridge as a fallback',()=>
   assert.match(provider,/provider: 'retell'/);
 });
 
-test('Jarvis voice webhook validates Twilio and supports bounded two-way speech',()=>{
+test('Jarvis voice webhook validates Twilio and supports guarded two-way speech',()=>{
   assert.match(voice,/x-twilio-signature/);
   assert.match(voice,/createHmac\('sha1'/);
   assert.match(voice,/<Gather input="speech"/);
@@ -36,6 +39,10 @@ test('Jarvis voice webhook validates Twilio and supports bounded two-way speech'
   assert.match(voice,/hints=/);
   assert.match(voice,/profanityFilter="false"/);
   assert.match(voice,/Confidence/);
+  assert.match(voice,/JARVIS_TWILIO_SPEECH_RATE/);
+  assert.match(voice,/<prosody rate=/);
+  assert.match(voice,/call-fallback-email/);
+  assert.match(voice,/do not say it in every reply/);
   assert.match(voice,/ANTHROPIC_API_KEY/);
   assert.match(voice,/inbound-owner/);
   assert.match(voice,/inbound-public/);
