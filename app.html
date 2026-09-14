@@ -4120,6 +4120,7 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
         <button class="own-tab" data-otab="codes" onclick="ownerTab('codes')">Codes</button>
         <button class="own-tab" data-otab="broadcast" onclick="ownerTab('broadcast')">📢 Email</button>
         <button class="own-tab" data-otab="metrics" onclick="ownerTab('metrics')">📈 Metrics</button>
+        <button class="own-tab" data-otab="calls" onclick="ownerTab('calls')">📞 Calls</button>
       </div>
 
       <div class="own-panel" data-opanel="grant">
@@ -4183,6 +4184,19 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
         <div id="metrics-out" class="own-note" style="margin-top:12px;line-height:1.75">Open this tab to load today’s private Stripe totals.</div>
         <div class="own-label" style="margin-top:16px">Activation and return cohorts</div>
         <div id="funnel-out" class="own-note" style="margin-top:8px;line-height:1.75">New cohort measurement starts after this release. No individual user data is shown here.</div>
+      </div>
+
+      <div class="own-panel" data-opanel="calls" style="display:none">
+        <div class="own-label">Jarvis owner calling</div>
+        <div class="own-note" style="margin-bottom:12px">Calls only the saved owner number. Urgent auto-escalation is limited to security, fraud, payment, important customer, service failure and approval-required issues.</div>
+        <button id="owner-test-call" class="side-new w-full" style="font-size:12px;padding:10px 12px;" onclick="runTestOwnerCall()">📞 Test call me now</button>
+        <div id="owner-call-msg" class="redeem-msg" style="margin-top:8px"></div>
+        <div class="own-label" style="margin-top:16px">Urgent calls</div>
+        <label class="own-note" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><input id="owner-call-enabled" type="checkbox" checked> Allow urgent Jarvis calls</label>
+        <div class="own-label">Anti-spam cooldown</div>
+        <select id="owner-call-cooldown" class="own-input" style="margin-bottom:10px"><option value="5">5 minutes</option><option value="15" selected>15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select>
+        <button class="plan-btn glass w-full" onclick="saveOwnerCallPolicy()">Save call policy</button>
+        <div id="owner-call-policy" class="own-note" style="margin-top:10px">Open this tab to load the current policy.</div>
       </div>
 
       </div>
@@ -4499,6 +4513,25 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
       if (!response.ok) { showStellarNotice(data.error || 'Could not start the phone call.', 'error'); return false; }
       showStellarNotice('Jarvis is calling your saved owner number now.');
       return true;
+    }
+
+    async function runTestOwnerCall() {
+      const out=document.getElementById('owner-call-msg'); if(out) out.textContent='Starting secure test call…';
+      const ok=await triggerOwnerCall('Owner requested a secure Stellar AI test call.');
+      if(out) out.textContent=ok?'Test call started. Answer your saved owner number.':'Test call could not be started.';
+    }
+    async function loadOwnerCallPolicy() {
+      const out=document.getElementById('owner-call-policy');
+      const {response,data}=await ownerRequest('/api/broadcast',{action:'getCallPolicy'});
+      if(!response.ok){if(out)out.textContent=data.error||'Could not load call policy.';return;}
+      const enabled=document.getElementById('owner-call-enabled'),cooldown=document.getElementById('owner-call-cooldown');
+      if(enabled)enabled.checked=data.enabled!==false; if(cooldown)cooldown.value=String(data.cooldownMinutes||15);
+      if(out)out.textContent='Urgent categories: security, fraud, payment, important customer, service failure and approval required.';
+    }
+    async function saveOwnerCallPolicy() {
+      const enabled=document.getElementById('owner-call-enabled')?.checked!==false, cooldown=Number(document.getElementById('owner-call-cooldown')?.value||15);
+      const out=document.getElementById('owner-call-policy'); const {response,data}=await ownerRequest('/api/broadcast',{action:'setCallPolicy',enabled,cooldownMinutes:cooldown});
+      if(out)out.textContent=response.ok?`Saved: ${data.enabled?'urgent calls on':'urgent calls off'}, ${data.cooldownMinutes}-minute cooldown.`:(data.error||'Could not save call policy.');
     }
 
     let chats = [];
@@ -4940,6 +4973,7 @@ body:not(.light){background:#070816!important;background-image:radial-gradient(c
       document.querySelectorAll('.own-tab').forEach(t => t.classList.toggle('active', t.dataset.otab === name));
       document.querySelectorAll('.own-panel').forEach(p => { p.style.display = (p.dataset.opanel === name) ? '' : 'none'; });
       if (name === 'metrics') loadConversionMetrics();
+      if (name === 'calls') loadOwnerCallPolicy();
     }
     let grantPlan = '';
     function pickGrantPlan(p) {
