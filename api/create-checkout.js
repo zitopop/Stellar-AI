@@ -64,7 +64,7 @@ export default async function handler(req, res) {
   const { plan, amount, qty, country: requestedCountry } = req.body || {};
   const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
   const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
-  // Stellar bills every customer in GBP. Country is retained for analytics only.
+  // GBP is the base price currency; eligible subscription checkouts use Stripe Adaptive Pricing for local presentment.
   const currency = 'GBP';
   if (!plan) return res.status(400).json({ error: 'Choose a plan before continuing.' });
 
@@ -125,6 +125,7 @@ export default async function handler(req, res) {
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       client_reference_id: attemptId,
       metadata: { email: sessionUser.email, plan, country, currency },
+      adaptive_pricing: { enabled: true },
     });
 
     await incrementConversionMetric('checkout-started');
