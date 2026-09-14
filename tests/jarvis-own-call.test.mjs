@@ -27,7 +27,10 @@ test('Jarvis voice webhook validates Twilio and supports bounded two-way speech'
   assert.match(voice,/x-twilio-signature/);
   assert.match(voice,/createHmac\('sha1'/);
   assert.match(voice,/<Gather input="speech"/);
-  assert.match(voice,/MAX_TURNS = 12/);
+  assert.match(voice,/MAX_PUBLIC_TURNS = 12/);
+  assert.match(voice,/MAX_OWNER_SILENCE_RETRIES = 5/);
+  assert.match(voice,/!ownerMode && turn >= MAX_PUBLIC_TURNS/);
+  assert.match(voice,/if \(ownerMode\) return sendXml\(res, gather\(reply/);
   assert.match(voice,/experimental_conversations/);
   assert.match(voice,/JARVIS_SPEECH_TIMEOUT \|\| '2'/);
   assert.match(voice,/hints=/);
