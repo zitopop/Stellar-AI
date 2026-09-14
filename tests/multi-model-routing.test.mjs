@@ -10,6 +10,14 @@ process.env.KV_REST_API_TOKEN = 'test-kv-token';
 
 const { addImageToLastUserMessage, buildSystemPrompt, default: chatHandler, detectFramework, detectPlatform, detectWorkflowMode, resolveRoute, createUpstreamStream, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, toForgeMessages, FORGE_MODELS, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE } = await import('../api/chat.js');
 
+test('Stellar uses conversation context and self-checking before answering', () => {
+  const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', '');
+  assert.match(prompt, /SMART CONTEXT & REASONING/);
+  assert.match(prompt, /do not ask the user to repeat information already present/);
+  assert.match(prompt, /Self-check the proposed answer/);
+  assert.match(prompt, /Do not repeatedly ask for confirmation for safe, reversible work/);
+});
+
 test('Stellar identifies as a capable FiveM and Roblox coding expert', () => {
   const prompt = buildSystemPrompt('', 'mixed', 'general', 'unknown', 'implementer');
   assert.match(prompt, /expert senior game-scripting engineer for FiveM and Roblox/);
