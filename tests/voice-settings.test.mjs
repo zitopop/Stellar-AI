@@ -6,3 +6,5 @@ test('voice settings expose device voices without a paid voice provider',()=>{ a
 test('spoken replies are opt-in and conversation mode is opt-in',()=>{ assert.match(app,/id="voice-autoplay-toggle"[^>]*aria-pressed="false"/); assert.match(app,/id="voice-conversation-toggle"[^>]*aria-pressed="false"/); assert.match(app,/voiceAutoplayEnabled\(\)/); });
 test('voice conversation can send a finished microphone turn and speak the reply',()=>{ assert.match(app,/\(voiceCallActive \|\| voiceConversationEnabled\(\)\) && voiceTurnHasFinal/); assert.match(app,/maybeSpeakAssistantReply\(full\)/); });
 test('voice controls include all enumerated device voices, speed, preview and stop',()=>{ assert.match(app,/id="voice-select"/); assert.match(app,/id="voice-rate" type="range" min="0.75" max="2"/); assert.match(app,/previewVoice\(\)/); assert.match(app,/stopSpeaking\(\)/); });
+
+test('voice prefers human-like natural English voices',()=>{ assert.match(app,/function naturalVoiceScore\(v\)/); assert.match(app,/natural\|neural\|premium\|enhanced/); assert.match(app,/function preferredNaturalVoice\(\)/); assert.match(app,/u\.pitch=\.98/); });
