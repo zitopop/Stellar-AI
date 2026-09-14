@@ -4,6 +4,7 @@ import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
+import { handleOwnerCallStatus } from '../lib/call-status.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -57,6 +58,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
   if (String(req.query?.jarvisVoice || '') === '1') return handleJarvisVoiceWebhook(req, res);
+  if (String(req.query?.jarvisCallStatus || '') === '1') return handleOwnerCallStatus(req, res);
 
   const action = String(req.body?.action || '');
   const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
@@ -120,7 +122,7 @@ export default async function handler(req, res) {
     const authorization = String(req.headers.authorization || '');
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
     try {
-      const data = await startOwnerCall({ purpose, authorization, bridgeToken });
+      const data = await startOwnerCall({ purpose, authorization, bridgeToken, fallback: { category, severity, summary } });
       const stamp = Date.now();
       await Promise.all([
         fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
