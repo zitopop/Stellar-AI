@@ -12,8 +12,8 @@ test('Task 199 keeps the direct hero explanation and primary CTA honest, free, a
   assert.match(landingHtml, /<div class="hero-footnote"><span>No card needed to begin<\/span><span>Free starting credit<\/span><span>Review and test every script<\/span><\/div>/);
 });
 
-test('Task 140 presents the landing workspace preview as one concise labelled visual', () => {
-  assert.match(landingHtml, /<div class="product-frame" role="img" aria-label="Illustrated Stellar AI workspace preview showing a QBCore police resource plan, generated files, and a message composer">/);
+test('Task 140 presents the landing workspace preview as one concise labelled interactive region', () => {
+  assert.match(landingHtml, /<div class="product-frame" role="region" aria-label="Interactive Stellar AI workspace preview">/);
   assert.match(landingHtml, /<div class="hero-depth-chip hero-depth-chip--top" aria-hidden="true">QBCore context<\/div>/);
   assert.match(landingHtml, /<div class="hero-depth-chip hero-depth-chip--bottom" aria-hidden="true">Roblox ready<\/div>/);
 });
@@ -22,7 +22,8 @@ test('Task 141 keeps the phone-sized hero preview focused on its readable worksp
   assert.match(landingHtml, /\.hero-visual \.product-main \{ grid-template-columns: 1fr; \}/);
   assert.match(landingHtml, /\.hero-visual \.preview-side \{ display: none; \}/);
   assert.match(landingHtml, /<div class="preview-work">/);
-  assert.match(landingHtml, /<div class="preview-compose"><div class="preview-input">Ask Stellar to change anything…<\/div><div class="preview-send">Send<\/div><\/div>/);
+  assert.match(landingHtml, /<form class="preview-compose landing-live-composer"[\s\S]*?<textarea class="preview-input"[^>]*placeholder="Ask Stellar anything…"><\/textarea><button class="preview-send" type="submit" aria-label="Send to Stellar AI"><span>Send<\/span><\/button><\/form>/);
+  assert.match(landingHtml, /@media \(max-width: 430px\) \{[\s\S]*?\.hero-visual \.preview-compose \{ display: none; \}/);
 });
 
 test('Task 144 gives each existing pricing action an explicit plan-oriented name', () => {
