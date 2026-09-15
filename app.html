@@ -4567,8 +4567,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
 
     function ownerCallCommand(text) {
-      const value = String(text || '').trim();
-      return /^(?:jarvis[, ]+)?call me(?:\s+(?:about|for)\s+(.+))?$/i.test(value);
+      const value = String(text || '')
+        .trim()
+        .replace(/[.!?]+$/g, '')
+        .replace(/\s+/g, ' ');
+      return /^(?:(?:hey\s+)?jarvis\s*[,\-:]?\s*)?call me(?:\s*[,\-:]?\s*jarvis)?(?:\s+please)?(?:\s+(?:about|for)\s+.+)?$/i.test(value);
     }
 
     async function triggerOwnerCall(purpose = 'Owner requested a call from Jarvis in Stellar AI.') {
