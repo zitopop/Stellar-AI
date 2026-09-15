@@ -35,7 +35,8 @@ test('outbound owner-call context is stored under the same key Jarvis voice read
   assert.match(ownerCall, /stellar:jarvis:call:\$\{id\}/);
   assert.doesNotMatch(ownerCall, /stellar:jarvis:call-context:/);
   assert.match(ownerCall, /mode: 'outbound-owner'/);
-  assert.match(ownerCall, /metadata, \.\.\.metadata/);
+  assert.match(ownerCall, /enrichedMetadata/);
+  assert.match(ownerCall, /ownerIdentity/);
   assert.match(voice, /stellar:jarvis:call:\$\{contextId\}/);
 });
 
