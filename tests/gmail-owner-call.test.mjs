@@ -3,8 +3,8 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const push = readFileSync(new URL('../lib/gmail-push.js', import.meta.url), 'utf8');
-const pushApi = readFileSync(new URL('../api/gmail-push.js', import.meta.url), 'utf8');
-const watchApi = readFileSync(new URL('../api/gmail-watch.js', import.meta.url), 'utf8');
+const pushApi = readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
+const watchApi = pushApi;
 const ownerCall = readFileSync(new URL('../lib/owner-call.js', import.meta.url), 'utf8');
 const voice = readFileSync(new URL('../lib/jarvis-voice.js', import.meta.url), 'utf8');
 
