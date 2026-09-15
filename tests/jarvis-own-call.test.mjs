@@ -12,7 +12,8 @@ test('Jarvis can use a direct Twilio owner-call provider without exposing the ow
   assert.match(provider,/TWILIO_FROM_NUMBER/);
   assert.match(provider,/OWNER_PHONE/);
   assert.match(provider,/api\.twilio\.com\/2010-04-01\/Accounts/);
-  assert.match(provider,/stellar:jarvis:call-context/);
+  assert.match(provider,/stellar:jarvis:call:\$\{id\}/);
+  assert.doesNotMatch(provider,/stellar:jarvis:call-context/);
   assert.match(provider,/checkCallContextStorage/);
   assert.match(provider,/stellar:jarvis:health-probe/);
   assert.match(provider,/callContextStorageConfigured/);
