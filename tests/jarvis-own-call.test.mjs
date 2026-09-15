@@ -43,7 +43,7 @@ test('Jarvis voice webhook validates Twilio and supports guarded two-way speech'
   assert.match(voice,/JARVIS_TWILIO_SPEECH_RATE/);
   assert.match(voice,/<prosody rate=/);
   assert.match(voice,/call-fallback-email/);
-  assert.match(voice,/do not say it in every reply/);
+  assert.match(voice,/never more than once in a reply/);
   assert.match(voice,/ANTHROPIC_API_KEY/);
   assert.match(voice,/inbound-owner/);
   assert.match(voice,/inbound-public/);
