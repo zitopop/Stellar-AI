@@ -1,0 +1,35 @@
+name: Gmail Owner Call Check
+
+on:
+  pull_request:
+    paths:
+      - 'lib/gmail-push.js'
+      - 'api/gmail-push.js'
+      - 'api/gmail-watch.js'
+      - 'lib/owner-call.js'
+      - 'lib/jarvis-voice.js'
+      - 'tests/gmail-owner-call.test.mjs'
+      - 'tests/jarvis-own-call.test.mjs'
+      - 'tests/owner-call-command.test.mjs'
+      - '.github/workflows/gmail-owner-call-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  focused-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Syntax check changed server files
+        run: |
+          node --check lib/gmail-push.js
+          node --check api/gmail-push.js
+          node --check api/gmail-watch.js
+          node --check lib/owner-call.js
+      - name: Focused regression tests
+        run: node --test tests/gmail-owner-call.test.mjs tests/jarvis-own-call.test.mjs tests/owner-call-command.test.mjs

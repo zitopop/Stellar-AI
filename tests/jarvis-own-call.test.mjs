@@ -12,7 +12,8 @@ test('Jarvis can use a direct Twilio owner-call provider without exposing the ow
   assert.match(provider,/TWILIO_FROM_NUMBER/);
   assert.match(provider,/OWNER_PHONE/);
   assert.match(provider,/api\.twilio\.com\/2010-04-01\/Accounts/);
-  assert.match(provider,/stellar:jarvis:call-context/);
+  assert.match(provider,/stellar:jarvis:call:\$\{id\}/);
+  assert.doesNotMatch(provider,/stellar:jarvis:call-context/);
   assert.match(provider,/checkCallContextStorage/);
   assert.match(provider,/stellar:jarvis:health-probe/);
   assert.match(provider,/callContextStorageConfigured/);
@@ -42,7 +43,7 @@ test('Jarvis voice webhook validates Twilio and supports guarded two-way speech'
   assert.match(voice,/JARVIS_TWILIO_SPEECH_RATE/);
   assert.match(voice,/<prosody rate=/);
   assert.match(voice,/call-fallback-email/);
-  assert.match(voice,/do not say it in every reply/);
+  assert.match(voice,/never more than once in a reply/);
   assert.match(voice,/ANTHROPIC_API_KEY/);
   assert.match(voice,/inbound-owner/);
   assert.match(voice,/inbound-public/);
