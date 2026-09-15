@@ -4515,6 +4515,28 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       }
     };
 
+    function buildCrossChatMemory(activeChatId, maxChars = 18000) {
+      const allChats = Array.isArray(Store.get().chats) ? Store.get().chats : [];
+      const sections = [];
+      let used = 0;
+      for (const chat of [...allChats].reverse()) {
+        if (!chat || chat.id === activeChatId || !Array.isArray(chat.messages) || !chat.messages.length) continue;
+        const lines = chat.messages.slice(-10).map(message => {
+          const role = message.role === 'ai' ? 'Assistant' : 'User';
+          return role + ': ' + String(message.content || '').replace(/\s+/g, ' ').slice(0, 900);
+        }).filter(line => line.length > 6);
+        if (!lines.length) continue;
+        const section = 'Chat: ' + String(chat.name || 'Untitled chat').slice(0, 80) + '\n' + lines.join('\n');
+        if (used + section.length > maxChars) {
+          const remaining = maxChars - used;
+          if (remaining > 300) sections.push(section.slice(0, remaining));
+          break;
+        }
+        sections.push(section); used += section.length + 2;
+      }
+      return sections.join('\n\n');
+    }
+
     function apiHeaders(json = true) {
       const headers = json ? { 'Content-Type': 'application/json' } : {};
       const session = Store.get().session;
@@ -6490,6 +6512,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
             max_tokens: isGuest() ? GUEST_MAX_TOKENS
               : (({ free: 2000, starter: 3500, plus: 5000, lite: 5000, pro: 8000, owner: 8000 })[s.plan || 'free'] || 2000),
             search_context: searchContext || '',
+            memory_context: buildCrossChatMemory(currentChatId),
             use_credit: creditsOn(),
             messages: chat.messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content }))
           })

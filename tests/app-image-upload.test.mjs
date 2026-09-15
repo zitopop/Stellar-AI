@@ -536,3 +536,10 @@ test('premium workspace redesign keeps the mobile composer controls compact with
   assert.match(appHtml, /\[href\*="smollaunch"\] \{ display: none !important; \}/);
   assert.match(appHtml, /@media \(min-width: 768px\) and \(max-width: 1100px\) \{\s+#credits-btn, #keyboard-hint \{ display: none !important; \}/);
 });
+
+test('workspace sends bounded memory from other saved chats with each request', () => {
+  assert.match(appHtml, /function buildCrossChatMemory\(activeChatId, maxChars = 18000\)/);
+  assert.match(appHtml, /chat\.id === activeChatId/);
+  assert.match(appHtml, /chat\.messages\.slice\(-10\)/);
+  assert.match(appHtml, /memory_context: buildCrossChatMemory\(currentChatId\)/);
+});
