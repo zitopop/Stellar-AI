@@ -28,8 +28,8 @@ test('Task 141 keeps the phone-sized hero preview focused on its readable worksp
 
 test('Task 144 gives each existing pricing action an explicit plan-oriented name', () => {
   assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Start free — Start with the Free plan">Start free<\/a>/);
-  assert.match(landingHtml, /<a href="\/app" class="button button-primary" aria-label="Get Plus — Choose the Plus plan">Get Plus <span class="button-arrow">→<\/span><\/a>/);
-  assert.match(landingHtml, /<a href="\/app" class="button button-secondary" aria-label="Get Pro — Choose the Pro plan">Get Pro<\/a>/);
+  assert.match(landingHtml, /<a href="\/app\?upgrade=plus" class="button button-primary" aria-label="Get Plus — Open the Plus plan">Get Plus <span class="button-arrow">→<\/span><\/a>/);
+  assert.match(landingHtml, /<a href="\/app\?upgrade=pro" class="button button-secondary" aria-label="Get Pro — Open the Pro plan">Get Pro<\/a>/);
 });
 
 test('Task 124 lets keyboard visitors skip the landing navigation and focus main content', () => {
@@ -204,12 +204,26 @@ test('Task 199 keeps plan positioning truthful, use-case-led, and pricing consis
   assert.match(landingHtml, /<div class="section-heading center"><div class="eyebrow">Straightforward pricing<\/div><h2>Pay for the room you actually need\.<\/h2><p>Try the workflow for free\. Upgrade when your scripts get longer, your builds get bigger or you simply need more headroom\.<\/p><\/div>/);
   assert.match(landingHtml, /<p class="plan-compare">No credit maze\. No surprise tiers\.[\s\S]*freedom to cancel when you need to\.<\/p>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-label">Starter<\/div><h3>More room for regular scripts\.<\/h3><p class="plan-desc">For when Free is useful but you keep hitting the ceiling on normal builds\.<\/p>/);
-  assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span><\/div><a href="\/app" class="button button-secondary" aria-label="Get Starter — Choose the Starter plan">Get Starter<\/a><div class="annual">£67\/year · Save 30%<\/div><div class="plan-includes">Everything in Free, plus<\/div><ul><li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul>/);
+  assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span><\/div><a href="\/app\?upgrade=starter" class="button button-secondary" aria-label="Get Starter — Open the Starter plan">Get Starter<\/a><div class="annual">£67\/year · Save 30%<\/div><div class="plan-includes">Everything in Free, plus<\/div><ul><li>3× usage · 120 requests\/hour<\/li><li>Priority queue<\/li><li>Longer scripts<\/li><li>Cancel anytime<\/li><\/ul>/);
   assert.match(landingHtml, /<article class="plan featured"><div class="plan-badge">Most popular<\/div><div class="plan-label">Plus<\/div>/);
   assert.match(landingHtml, /<article class="plan"><div class="plan-badge">For complete games<\/div><div class="plan-label">Pro<\/div>/);
   assert.match(landingHtml, /<strong>£8<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£20<\/strong><span>\/ month<\/span>/);
   assert.match(landingHtml, /<strong>£75<\/strong><span>\/ month<\/span>/);
+});
+
+test('conversion pass makes the paid path clearer without changing approved prices', () => {
+  assert.match(landingHtml, /<div class="eyebrow">FiveM &amp; Roblox AI workspace<\/div>/);
+  assert.match(landingHtml, /Build FiveM &amp; Roblox systems <span class="gradient-text">without starting from zero\.<\/span>/);
+  assert.match(landingHtml, /Try one real build free/);
+  assert.match(landingHtml, /Paid plans from £8\/month/);
+  assert.match(landingHtml, /<div class="pricing-assurance" aria-label="Pricing and checkout reassurance">[\s\S]*Secure checkout via Stripe[\s\S]*Cancel anytime[\s\S]*Annual plans save 30%[\s\S]*Prices shown in GBP/);
+  assert.match(landingHtml, /<a href="\/app\?upgrade=starter"[^>]*>Get Starter<\/a>/);
+  assert.match(landingHtml, /<a href="\/app\?upgrade=plus"[^>]*>Get Plus <span class="button-arrow">→<\/span><\/a>/);
+  assert.match(landingHtml, /<a href="\/app\?upgrade=pro"[^>]*>Get Pro<\/a>/);
+  assert.match(landingHtml, /Best value for[\s\S]*Full systems, frequent fixes and regular iteration\./);
+  assert.match(landingHtml, /Paid plans start at £8\/month when you need more usage\. Checkout is handled by Stripe\./);
+  for (const price of ['£0', '£8', '£20', '£75']) assert.match(landingHtml, new RegExp(price));
 });
 
 test('Task 188 keeps Roblox games and groups visible with approved destinations', () => {
