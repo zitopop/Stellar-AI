@@ -1,6 +1,8 @@
 /* Final cross-device contract — loaded last on /app. */
-:root { color-scheme:dark; }
-html,body { max-width:100%; overflow-x:hidden!important; background:#101010!important; }
+:root { color-scheme:dark; --stellar-content:860px; --stellar-touch:44px; }
+* { box-sizing:border-box; }
+html,body { width:100%; max-width:100%; min-width:0; overflow-x:hidden!important; background:#101010!important; }
+body { min-height:100vh; min-height:100dvh; overscroll-behavior-x:none; }
 button,a,input,textarea,select,[role="button"],[role="tab"],[role="menuitem"],[role="menuitemradio"],summary,label {
   touch-action:manipulation!important; -webkit-tap-highlight-color:transparent!important;
 }
@@ -11,43 +13,71 @@ button:disabled,[aria-disabled="true"] { cursor:not-allowed; pointer-events:none
 button:focus-visible,a:focus-visible,[role="button"]:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible {
   outline:2px solid rgba(167,139,250,.95)!important; outline-offset:2px!important;
 }
-#plans-modal,#settings-modal,#usage-modal,#owner-modal,#welcome-modal,#topup-modal,#redeem-modal,#limit-modal,#thanks-modal { z-index:100!important; }
+img,video,svg,canvas { max-width:100%; }
+#plans-modal,#settings-modal,#usage-modal,#owner-modal,#welcome-modal,#topup-modal,#redeem-modal,#limit-modal,#thanks-modal { z-index:100!important; overscroll-behavior:contain; }
 #sidebar,#workspace,#model-menu { z-index:80; }
-#model-menu { pointer-events:auto; }
-#txt { font-size:16px!important; }
+#model-menu { pointer-events:auto; max-width:calc(100vw - 24px); }
+#workspace { min-width:0; }
+#txt { font-size:16px!important; line-height:1.45; resize:none; }
 .input-area { padding-bottom:max(24px,calc(16px + env(safe-area-inset-bottom)))!important; }
 .greet-hi { overflow-wrap:anywhere; text-wrap:balance; }
+.msg,.bubble,.chat-bubble { overflow-wrap:anywhere; word-break:break-word; }
+pre,code { max-width:100%; }
+pre { overflow:auto; -webkit-overflow-scrolling:touch; }
 #suggestion-chips { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
 #suggestion-chips .sug-chip:last-child:nth-child(odd) { grid-column:1/-1; }
+
+/* Phone: one focused workspace, large tap targets, bottom-sheet dialogs. */
 @media (max-width:639px) {
-  button,a[role="button"],[role="button"],.sug-chip,.set-tab,.set-item,.modal-x,#usage-modal-close,#model-btn,#send-btn,.voice-call-control,.side-act { min-height:44px!important; }
-  .modal-x,#usage-modal-close { min-width:44px!important; width:44px!important; height:44px!important; }
-  #model-btn,#send-btn,.voice-call-control,.side-act { min-width:44px!important; }
+  button,a[role="button"],[role="button"],.sug-chip,.set-tab,.set-item,.modal-x,#usage-modal-close,#model-btn,#send-btn,.voice-call-control,.side-act { min-height:var(--stellar-touch)!important; }
+  .modal-x,#usage-modal-close { min-width:var(--stellar-touch)!important; width:var(--stellar-touch)!important; height:var(--stellar-touch)!important; }
+  #model-btn,#send-btn,.voice-call-control,.side-act { min-width:var(--stellar-touch)!important; }
+  #sidebar { max-width:min(88vw,320px)!important; }
+  #workspace { width:100%!important; min-width:0!important; }
   #settings-modal,#plans-modal,#usage-modal,#owner-modal { align-items:flex-end!important; justify-content:stretch!important; padding:0!important; }
-  #settings-modal .set-card,#plans-modal>div,#usage-modal>div,#owner-modal>div { width:100%!important; max-width:100%!important; margin:0!important; border-radius:22px 22px 0 0!important; max-height:90dvh!important; overflow-y:auto!important; overflow-x:hidden!important; padding-bottom:max(18px,calc(14px + env(safe-area-inset-bottom)))!important; }
-  #settings-modal .set-tabs { display:flex!important; overflow-x:auto!important; overflow-y:hidden!important; overscroll-behavior-x:contain; scrollbar-width:none; }
+  #settings-modal .set-card,#plans-modal>div,#usage-modal>div,#owner-modal>div { width:100%!important; max-width:100%!important; margin:0!important; border-radius:22px 22px 0 0!important; max-height:90dvh!important; overflow-y:auto!important; overflow-x:hidden!important; overscroll-behavior:contain; padding-bottom:max(18px,calc(14px + env(safe-area-inset-bottom)))!important; }
+  #settings-modal .set-tabs { display:flex!important; overflow-x:auto!important; overflow-y:hidden!important; overscroll-behavior-x:contain; scrollbar-width:none; scroll-snap-type:x proximity; }
   #settings-modal .set-tabs::-webkit-scrollbar { display:none; }
-  #settings-modal .set-tab { flex:0 0 auto!important; min-width:82px!important; }
+  #settings-modal .set-tab { flex:0 0 auto!important; min-width:82px!important; scroll-snap-align:start; }
   #set-email-row .set-val,#settings-modal .acct-email,#settings-modal a[href^="mailto:"] { min-width:0!important; max-width:100%!important; overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important; }
   #plans-grid-inner { display:grid!important; grid-template-columns:1fr!important; overflow:visible!important; }
   #plans-grid-inner>.plan-card { width:100%!important; min-width:0!important; max-width:none!important; }
-  .msg,.bubble,.chat-bubble { max-width:88%!important; }
-  #suggestion-chips { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
-  #suggestion-chips .sug-chip { min-width:0!important; }
-  #suggestion-chips .sug-chip:last-child { grid-column:1/-1; }
+  .msg,.bubble,.chat-bubble { max-width:92%!important; }
+  #suggestion-chips { grid-template-columns:1fr!important; gap:8px!important; }
+  #suggestion-chips .sug-chip { min-width:0!important; grid-column:auto!important; }
+  .input-area { padding-left:max(12px,env(safe-area-inset-left))!important; padding-right:max(12px,env(safe-area-inset-right))!important; }
 }
-@media (max-width:359px) { #suggestion-chips { grid-template-columns:1fr!important; } #suggestion-chips .sug-chip { grid-column:auto!important; } }
+
+/* Tablet: preserve breathing room without wasting the screen. */
 @media (min-width:640px) and (max-width:1023px) {
-  #settings-modal .set-card { width:min(480px,calc(100vw - 32px))!important; max-width:480px!important; max-height:90dvh!important; overflow:auto!important; }
-  #plans-modal>div { width:min(680px,calc(100vw - 32px))!important; max-width:680px!important; max-height:90dvh!important; overflow:auto!important; }
-  #usage-modal>div { width:min(380px,calc(100vw - 32px))!important; max-width:380px!important; }
-  #owner-modal>div { width:min(400px,calc(100vw - 32px))!important; max-width:400px!important; }
+  #sidebar { width:min(280px,34vw)!important; }
+  #workspace { min-width:0!important; }
+  #settings-modal .set-card { width:min(520px,calc(100vw - 32px))!important; max-width:520px!important; max-height:90dvh!important; overflow:auto!important; }
+  #plans-modal>div { width:min(760px,calc(100vw - 32px))!important; max-width:760px!important; max-height:90dvh!important; overflow:auto!important; }
+  #usage-modal>div { width:min(420px,calc(100vw - 32px))!important; max-width:420px!important; }
+  #owner-modal>div { width:min(440px,calc(100vw - 32px))!important; max-width:440px!important; }
   #plans-grid-inner { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; overflow:visible!important; }
+  .msg,.bubble,.chat-bubble { max-width:min(82%,720px)!important; }
 }
+
+/* Desktop: readable central chat column and compact utility dialogs. */
 @media (min-width:1024px) {
-  #settings-modal .set-card { width:400px!important; max-width:400px!important; max-height:85vh!important; overflow:auto!important; }
-  #plans-modal>div { width:min(700px,calc(100vw - 48px))!important; max-width:700px!important; max-height:85vh!important; overflow:auto!important; }
-  #usage-modal>div { width:380px!important; max-width:380px!important; }
-  #owner-modal>div { width:400px!important; max-width:400px!important; }
-  #plans-grid-inner { display:grid!important; grid-template-columns:repeat(4,minmax(0,1fr))!important; overflow:visible!important; gap:10px!important; }
+  #workspace { min-width:0!important; }
+  #settings-modal .set-card { width:420px!important; max-width:420px!important; max-height:85vh!important; overflow:auto!important; }
+  #plans-modal>div { width:min(900px,calc(100vw - 48px))!important; max-width:900px!important; max-height:85vh!important; overflow:auto!important; }
+  #usage-modal>div { width:400px!important; max-width:400px!important; }
+  #owner-modal>div { width:420px!important; max-width:420px!important; }
+  #plans-grid-inner { display:grid!important; grid-template-columns:repeat(4,minmax(0,1fr))!important; overflow:visible!important; gap:12px!important; }
+  .msg,.bubble,.chat-bubble { max-width:min(78%,var(--stellar-content))!important; }
+}
+
+/* Large desktop: avoid stretching controls and messages across ultrawide displays. */
+@media (min-width:1440px) {
+  #plans-modal>div { max-width:980px!important; }
+  .msg,.bubble,.chat-bubble { max-width:820px!important; }
+}
+
+/* Accessibility and motion comfort. */
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
 }
