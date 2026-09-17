@@ -1094,6 +1094,29 @@
       background: #34d399 !important;
       box-shadow: 0 0 8px #34d399 !important;
     }
+
+    /* Conversion-path clarity: truthful value framing and low-friction paid-plan routing. */
+    .pricing-assurance { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px 12px; margin:18px auto 24px; max-width:940px; }
+    .pricing-assurance span { display:inline-flex; align-items:center; min-height:34px; padding:7px 11px; border:1px solid rgba(214,204,255,.12); border-radius:999px; color:#c9c3d8; background:rgba(255,255,255,.035); font-size:11px; font-weight:750; line-height:1.2; }
+    .pricing-assurance span::before { content:"✓"; margin-right:6px; color:var(--emerald); font-weight:900; }
+    .plan-value { display:grid; gap:3px; margin:14px 0 2px; padding:11px 12px; border:1px solid rgba(214,204,255,.10); border-radius:12px; background:rgba(255,255,255,.025); }
+    .plan-value strong { color:#f1edff; font-size:10px; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+    .plan-value span { color:#aaa3b9; font-size:12px; font-weight:650; line-height:1.45; }
+    .plan.featured .plan-value { border-color:rgba(82,225,181,.18); background:rgba(82,225,181,.055); }
+    .plan.featured .plan-value strong { color:#a8f0d9; }
+    .final-offer { max-width:620px; margin:14px auto 0; color:#c7bfd6; font-size:12px; font-weight:700; line-height:1.5; }
+    body.light .pricing-assurance span { border-color:rgba(84,67,128,.16); color:#514967; background:rgba(255,255,255,.72); }
+    body.light .plan-value { border-color:rgba(84,67,128,.16); background:rgba(247,245,252,.9); }
+    body.light .plan-value strong { color:#332746; }
+    body.light .plan-value span { color:#5f566f; }
+    body.light .plan.featured .plan-value { border-color:rgba(20,140,112,.22); background:rgba(82,225,181,.1); }
+    body.light .plan.featured .plan-value strong { color:#116a55; }
+    @media (max-width:760px) {
+      .pricing-assurance { justify-content:flex-start; gap:7px; margin-top:14px; }
+      .pricing-assurance span { min-height:32px; font-size:10px; }
+      .plan-value { margin-top:12px; }
+      .final-offer { font-size:11px; }
+    }
 </style>
   <style>
     /* Final monochrome surface pass: remove blue/cyan/purple-tinted backgrounds. */
@@ -1671,14 +1694,14 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
       <section class="hero container">
         <div class="hero-grid">
           <div class="hero-copy">
-            <div class="eyebrow">AI workspace for builders</div>
-            <h1>Turn your idea into <span class="gradient-text">build-ready files.</span></h1>
-            <p class="hero-lead">Describe the FiveM or Roblox system you want. Stellar AI plans the work, writes and fixes the files, and keeps each revision in one workspace. Start free, then upgrade when you need more room.</p><template id="hero-copy-contract"><p class="hero-lead">Tell Stellar what you want to build. It plans the system, writes the files, explains what changed and stays with the next revision for QBCore, ESX and Roblox.</p></template>
+            <div class="eyebrow">FiveM &amp; Roblox AI workspace</div>
+            <h1>Build FiveM &amp; Roblox systems <span class="gradient-text">without starting from zero.</span></h1>
+            <p class="hero-lead">Tell Stellar what you need — a job, economy, GUI, bug fix or full game system. Get organised files you can review, download and improve in the same workspace. Start free; upgrade only when you need more usage and faster access.</p><template id="hero-copy-contract"><p class="hero-lead">Tell Stellar what you want to build. It plans the system, writes the files, explains what changed and stays with the next revision for QBCore, ESX and Roblox.</p></template>
             <div class="hero-actions">
-              <a href="/app?welcome=1" class="button button-primary">Start building free <span class="button-arrow">→</span></a>
-              <a href="#how-it-works" class="button button-secondary">See how it works</a>
+              <a href="/app?welcome=1" class="button button-primary">Try one real build free <span class="button-arrow">→</span></a>
+              <a href="#plans" class="button button-secondary">Compare plans</a>
             </div>
-            <div class="hero-footnote"><span>✓ No credit card required</span><span>✓ FiveM and Roblox workflows</span><span>✓ Review and test every script</span></div><p class="hero-plan-nudge">Ready to use Stellar regularly? <a href="#plans">Compare paid plans <span aria-hidden="true">→</span></a></p><template id="hero-trust-contract"><div class="hero-footnote"><span>No card needed to begin</span><span>Free starting credit</span><span>Review and test every script</span></div></template>
+            <div class="hero-footnote"><span>✓ No credit card required</span><span>✓ £1 starting credit</span><span>✓ Paid plans from £8/month</span></div><p class="hero-plan-nudge">Free is for trying the workflow. Paid plans add more requests, priority access, longer builds and Pro-only Nova. <a href="#plans">See what each plan adds <span aria-hidden="true">→</span></a></p><template id="hero-trust-contract"><div class="hero-footnote"><span>No card needed to begin</span><span>Free starting credit</span><span>Review and test every script</span></div></template>
             <div class="hero-orbit" aria-hidden="true"></div>
           </div>
 
@@ -1839,11 +1862,12 @@ end)</div></div>
           <div class="plan-decider" aria-label="How to choose a Stellar AI plan"><div><b>01</b><div><strong>Just kicking the tyres?</strong><span>Free lets you try a real build without a card.</span></div></div><div><b>02</b><div><strong>Writing scripts most weeks?</strong><span>Starter gives you longer scripts and more breathing room.</span></div></div><div><b>03</b><div><strong>Shipping full systems?</strong><span>Plus is the practical middle for bigger weekly builds.</span></div></div><div><b>04</b><div><strong>Building a whole game?</strong><span>Pro is for the large jobs where waiting gets old.</span></div></div></div>
           <p class="plan-compare">No credit maze. No surprise tiers. Every plan gives you a clear hourly allowance, full files to review, and the freedom to cancel when you need to.</p>
           <p class="plan-limit-note">Included request allowances reset hourly. Wallet credit is separate and can be used for additional requests after the included allowance.</p>
+          <div class="pricing-assurance" aria-label="Pricing and checkout reassurance"><span>Secure checkout via Stripe</span><span>Cancel anytime</span><span>Annual plans save 30%</span><span>Prices shown in GBP</span></div>
           <div class="plans">
-            <article class="plan"><div class="plan-label">Free</div><h3>See if it actually helps.</h3><p class="plan-desc">Use it for a first build, a small feature or the bug that has been winding you up all evening. No card, no sales pitch.</p><div class="plan-fit">A sensible place to start if you are still figuring out whether Stellar fits your workflow.</div><div class="price"><strong>£0</strong><span>/ forever</span></div><div class="annual">No card required</div><ul><li>40 requests/hour</li><li>£1 credit · Spark, Star and Comet</li><li>Full scripts and downloads</li></ul><a href="/app" class="button button-secondary" aria-label="Start free — Start with the Free plan">Start free</a></article>
-            <article class="plan"><div class="plan-label">Starter</div><h3>More room for regular scripts.</h3><p class="plan-desc">For when Free is useful but you keep hitting the ceiling on normal builds.</p><div class="plan-fit">The straightforward upgrade for early builders who are using Stellar regularly.</div><div class="price"><strong>£8</strong><span>/ month</span></div><a href="/app" class="button button-secondary" aria-label="Get Starter — Choose the Starter plan">Get Starter</a><div class="annual">£67/year · Save 30%</div><div class="plan-includes">Everything in Free, plus</div><ul><li>3× usage · 120 requests/hour</li><li>Priority queue</li><li>Longer scripts</li><li>Cancel anytime</li></ul></article>
-            <article class="plan featured"><div class="plan-badge">Most popular</div><div class="plan-label">Plus</div><h3>For the builds you keep shipping.</h3><p class="plan-desc">Enough headroom for full systems, regular updates and the jobs you do not want to split across ten tiny prompts.</p><div class="plan-fit">A good fit when Stellar is part of your weekly FiveM or Roblox workflow.</div><div class="price"><strong>£20</strong><span>/ month</span></div><div class="annual">£168/year · Save 30%</div><ul><li>400 requests/hour · 10× usage</li><li>Full game systems and priority access</li><li>Everything in Starter · cancel anytime</li></ul><a href="/app" class="button button-primary" aria-label="Get Plus — Choose the Plus plan">Get Plus <span class="button-arrow">→</span></a></article>
-            <article class="plan"><div class="plan-badge">For complete games</div><div class="plan-label">Pro</div><h3>For the big jobs.</h3><p class="plan-desc">The most room for complete games, complicated systems and projects that are too large for a quick experiment.</p><div class="plan-fit">Choose this when you need Nova and do not want your larger build squeezed into a smaller allowance.</div><div class="price"><strong>£75</strong><span>/ month</span></div><div class="annual">£630/year · Save 30%</div><ul><li>1,600 requests/hour · 40× usage</li><li>Nova model and complete games</li><li>Fastest access · cancel anytime</li></ul><a href="/app" class="button button-secondary" aria-label="Get Pro — Choose the Pro plan">Get Pro</a></article>
+            <article class="plan"><div class="plan-label">Free</div><h3>See if it actually helps.</h3><p class="plan-desc">Use it for a first build, a small feature or the bug that has been winding you up all evening. No card, no sales pitch.</p><div class="plan-fit">A sensible place to start if you are still figuring out whether Stellar fits your workflow.</div><div class="plan-value"><strong>Best for</strong><span>Trying one real task before you spend anything.</span></div><div class="price"><strong>£0</strong><span>/ forever</span></div><div class="annual">No card required</div><ul><li>40 requests/hour</li><li>£1 credit · Spark, Star and Comet</li><li>Full scripts and downloads</li></ul><a href="/app" class="button button-secondary" aria-label="Start free — Start with the Free plan">Start free</a></article>
+            <article class="plan"><div class="plan-label">Starter</div><h3>More room for regular scripts.</h3><p class="plan-desc">For when Free is useful but you keep hitting the ceiling on normal builds.</p><div class="plan-fit">The straightforward upgrade for early builders who are using Stellar regularly.</div><div class="plan-value"><strong>Best for</strong><span>Solo builders using Stellar most weeks.</span></div><div class="price"><strong>£8</strong><span>/ month</span></div><a href="/app?upgrade=starter" class="button button-secondary" aria-label="Get Starter — Open the Starter plan">Get Starter</a><div class="annual">£67/year · Save 30%</div><div class="plan-includes">Everything in Free, plus</div><ul><li>3× usage · 120 requests/hour</li><li>Priority queue</li><li>Longer scripts</li><li>Cancel anytime</li></ul></article>
+            <article class="plan featured"><div class="plan-badge">Most popular</div><div class="plan-label">Plus</div><h3>For the builds you keep shipping.</h3><p class="plan-desc">Enough headroom for full systems, regular updates and the jobs you do not want to split across ten tiny prompts.</p><div class="plan-fit">A good fit when Stellar is part of your weekly FiveM or Roblox workflow.</div><div class="plan-value"><strong>Best value for</strong><span>Full systems, frequent fixes and regular iteration.</span></div><div class="price"><strong>£20</strong><span>/ month</span></div><div class="annual">£168/year · Save 30%</div><ul><li>400 requests/hour · 10× usage</li><li>Full game systems and priority access</li><li>Everything in Starter · cancel anytime</li></ul><a href="/app?upgrade=plus" class="button button-primary" aria-label="Get Plus — Open the Plus plan">Get Plus <span class="button-arrow">→</span></a></article>
+            <article class="plan"><div class="plan-badge">For complete games</div><div class="plan-label">Pro</div><h3>For the big jobs.</h3><p class="plan-desc">The most room for complete games, complicated systems and projects that are too large for a quick experiment.</p><div class="plan-fit">Choose this when you need Nova and do not want your larger build squeezed into a smaller allowance.</div><div class="plan-value"><strong>Best for</strong><span>Heavy build days, Nova and maximum headroom.</span></div><div class="price"><strong>£75</strong><span>/ month</span></div><div class="annual">£630/year · Save 30%</div><ul><li>1,600 requests/hour · 40× usage</li><li>Nova model and complete games</li><li>Fastest access · cancel anytime</li></ul><a href="/app?upgrade=pro" class="button button-secondary" aria-label="Get Pro — Open the Pro plan">Get Pro</a></article>
           </div>
           <p class="pricing-note">Not sure yet? Start free. Paid plans can be cancelled anytime. If you only need a little extra usage now and then, add £3–£200 credit in your account instead of committing to a higher subscription.</p>
         </div>
@@ -1866,7 +1890,7 @@ end)</div></div>
       </section>
 
       <section class="container" style="padding-bottom:104px;">
-        <div class="final-cta"><div class="eyebrow">Your next system starts here</div><h2>Start the next build while the idea is still fresh.</h2><p>Open Stellar, describe the system, review the files, then test the next version in your own environment.</p><a href="/app" class="button button-primary" aria-label="Generate your first script free — Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→</span></a><div class="hero-footnote"><span>Free to begin</span><span>No card needed</span><span>FiveM & Roblox ready</span></div></div>
+        <div class="final-cta"><div class="eyebrow">Your next system starts here</div><h2>Start the next build while the idea is still fresh.</h2><p>Open Stellar, describe the system, review the files, then test the next version in your own environment.</p><a href="/app" class="button button-primary" aria-label="Generate your first script free — Generate your first Stellar AI script free">Generate your first script free <span class="button-arrow">→</span></a><div class="final-offer">Paid plans start at £8/month when you need more usage. Checkout is handled by Stripe.</div><div class="hero-footnote"><span>Free to begin</span><span>No card needed</span><span>FiveM & Roblox ready</span></div></div>
       </section>
     </main>
 
