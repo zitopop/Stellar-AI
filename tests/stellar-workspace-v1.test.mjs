@@ -21,9 +21,9 @@ test('workspace enhancement remains event driven and does not add mutation obser
 
 test('composer exposes Chat Search and Research modes plus attach tools', () => {
   assert.match(client, /allowedModes = new Set\(\['chat', 'search', 'research'\]\)/);
-  assert.match(client, /data-tool=\\"image\\"/);
-  assert.match(client, /data-tool=\\"files\\"/);
-  assert.match(client, /data-tool=\\"voice\\"/);
+  assert.match(client, /data-tool="image"/);
+  assert.match(client, /data-tool="files"/);
+  assert.match(client, /data-tool="voice"/);
 });
 
 test('signed-in workspace stores projects and explicit memories server side', () => {
