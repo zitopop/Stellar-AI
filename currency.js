@@ -91,6 +91,12 @@
     document.head.appendChild(script);
   }
 
+  function loadHomePresentation() {
+    if (!/^\/(?:index\.html)?$/.test(location.pathname)) return;
+    ensureStylesheet('data-stellar-home-v5', '/stellar-home-v5.css?v=1');
+    ensureScript('data-stellar-home-v5-script', '/stellar-home-v5.js?v=1');
+  }
+
   function loadSettingsPresentation() {
     if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
     // app.html owns the core Orbit runtime. currency.js only adds isolated
@@ -100,6 +106,7 @@
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
   }
 
+  loadHomePresentation();
   loadSettingsPresentation();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyCurrencyLabels, { once: true }); else applyCurrencyLabels();
 })();
