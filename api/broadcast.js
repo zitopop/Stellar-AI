@@ -3,6 +3,7 @@ import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
+import { getOutboundCallConfiguration, startOutboundCall } from '../lib/outbound-call.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
 
 function setCors(req, res) {
@@ -61,9 +62,11 @@ export default async function handler(req, res) {
   const action = String(req.body?.action || '');
   const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
   const suppliedBridgeToken = String(req.headers['x-call-bridge-token'] || '');
-  const internalEscalation = action === 'escalateOwner' && bridgeToken && suppliedBridgeToken === bridgeToken;
+  const internalAction = ['escalateOwner', 'callContactInternal'].includes(action)
+    && bridgeToken
+    && suppliedBridgeToken === bridgeToken;
 
-  if (!internalEscalation) {
+  if (!internalAction) {
     const session = requireSession(req, res);
     if (!session) return;
     if (!isOwnerEmail(session.email)) return res.status(403).json({ error: 'Owner access is required.' });
@@ -102,6 +105,31 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error('Owner call provider error', error?.provider || '', error?.message || error);
       return res.status(error?.status >= 400 && error?.status < 500 ? error.status : 502).json({ error: 'The phone service could not start the call.' });
+    }
+  }
+  if (req.body?.action === 'outboundCallHealth') {
+    const outbound = getOutboundCallConfiguration();
+    return res.status(200).json({ ok: true, ...outbound });
+  }
+  if (['callContact', 'callContactInternal'].includes(req.body?.action)) {
+    if (req.body?.confirmedByOwner !== true) return res.status(400).json({ error: 'Owner confirmation is required for each outbound call.' });
+    const to = String(req.body?.to || '').trim();
+    const purpose = String(req.body?.purpose || '').trim();
+    const contactName = String(req.body?.contactName || '').trim();
+    try {
+      const data = await startOutboundCall({ to, purpose, contactName });
+      return res.status(200).json({
+        ok: true,
+        pending: true,
+        provider: data.provider,
+        call_id: data.call_id || null,
+        status: data.status || 'queued',
+        destinationSuffix: data.destinationSuffix || null,
+      });
+    } catch (error) {
+      console.error('Outbound call provider error', error?.status || '', error?.message || error);
+      const status = error?.status >= 400 && error?.status < 500 ? error.status : 502;
+      return res.status(status).json({ error: error?.message || 'The phone service could not start the outbound call.' });
     }
   }
   if (req.body?.action === 'escalateOwner') {
