@@ -17,7 +17,8 @@
       general: 'Use the user’s stated stack and constraints. Do not invent missing project facts.',
       fivem: 'Treat this as a FiveM project. Keep client/server responsibilities clear, validate security-sensitive actions server-side, label resource/file paths, and do not assume QBCore, ESX, ox_lib, or another framework unless the user specifies it.',
       roblox: 'Treat this as a Roblox project. Use Luau conventions, keep client/server responsibilities clear, validate RemoteEvent/RemoteFunction input on the server, and label script placement in Studio.',
-      web: 'Treat this as a web project. Keep frontend/backend boundaries clear, preserve responsive and accessible behavior, call out environment variables, and include deployment/verification steps when relevant.'
+      web: 'Treat this as a web project. Keep frontend/backend boundaries clear, preserve responsive and accessible behavior, call out environment variables, and include deployment/verification steps when relevant.',
+      discord: 'Treat this as a Discord bot project. Separate bot commands, events, configuration and persistence cleanly; validate permissions and user input; keep tokens and secrets in environment variables; and label exact file paths and required bot intents.'
     };
     const modeRules = {
       chat: 'Answer normally and directly. Use project context when it materially improves the answer.',
@@ -86,7 +87,8 @@
     };
     const projects = [
       ['general','General','Any task or idea'],['fivem','FiveM','Lua, resources & server systems'],
-      ['roblox','Roblox','Luau, Studio & game systems'],['web','Website','Frontend, backend & deployment']
+      ['roblox','Roblox','Luau, Studio & game systems'],['web','Website','Frontend, backend & deployment'],
+      ['discord','Discord Bot','Commands, events & integrations']
     ];
 
     let mode = safeGet('stellar_workspace_mode', 'chat');
@@ -106,6 +108,13 @@
       b.addEventListener('click',()=>setMode(id));
       dock.appendChild(b);
     });
+
+    const voiceBtn = document.createElement('a');
+    voiceBtn.className='stellar-voice-btn';
+    voiceBtn.href='/jarvis';
+    voiceBtn.setAttribute('aria-label','Open Stellar Jarvis voice and vision workspace');
+    voiceBtn.innerHTML='<span aria-hidden="true">◉</span><span>Voice</span>';
+    dock.appendChild(voiceBtn);
 
     const projectBtn = document.createElement('button');
     projectBtn.type='button'; projectBtn.className='stellar-project-btn';
