@@ -2391,6 +2391,115 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     .stellar-firefield::after{animation:none!important}
   }
 </style>
+
+<style id="stellar-real-stars-v1">
+  /* Replace circular dot patterns with actual star / sparkle shapes. */
+  .stellar-starfield{
+    background-color:#05040c!important;
+    background-image:
+      radial-gradient(circle at 18% 18%,rgba(151,80,255,.18),transparent 24%),
+      radial-gradient(circle at 78% 42%,rgba(108,73,255,.13),transparent 24%),
+      radial-gradient(circle at 52% 82%,rgba(196,153,255,.10),transparent 20%),
+      linear-gradient(180deg,#05040c 0%,#090516 50%,#05040c 100%)!important;
+    background-size:auto!important;
+    background-position:0 0!important;
+  }
+
+  .stellar-starfield::before{
+    content:""!important;
+    position:absolute!important;
+    inset:-10%!important;
+    background:
+      radial-gradient(circle at 24% 22%,rgba(143,88,255,.16),transparent 22%),
+      radial-gradient(circle at 78% 42%,rgba(108,73,255,.13),transparent 24%),
+      radial-gradient(circle at 52% 82%,rgba(196,153,255,.10),transparent 20%)!important;
+    opacity:.95!important;
+  }
+
+  .stellar-starfield::after{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    background:
+      radial-gradient(circle at 20% 30%,rgba(255,255,255,.02),transparent 18%),
+      radial-gradient(circle at 74% 18%,rgba(211,182,255,.03),transparent 16%),
+      radial-gradient(circle at 48% 76%,rgba(255,255,255,.02),transparent 18%)!important;
+    animation:none!important;
+    opacity:1!important;
+    filter:none!important;
+    transform:none!important;
+  }
+
+  .stellar-starfield .live-twinkle-star{
+    position:absolute!important;
+    z-index:1!important;
+    display:block!important;
+    opacity:.45;
+    pointer-events:none!important;
+    background:#fff!important;
+    border-radius:0!important;
+    box-shadow:
+      0 0 5px rgba(255,255,255,.88),
+      0 0 11px rgba(255,255,255,.26)!important;
+    transform-origin:center!important;
+    will-change:transform,opacity,filter!important;
+  }
+
+  .stellar-starfield .live-twinkle-star.star-spark{
+    clip-path:polygon(
+      50% 0%,
+      61% 38%,
+      100% 50%,
+      61% 62%,
+      50% 100%,
+      39% 62%,
+      0% 50%,
+      39% 38%
+    )!important;
+  }
+
+  .stellar-starfield .live-twinkle-star.star-five{
+    clip-path:polygon(
+      50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 94%,
+      50% 72%,
+      21% 94%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    )!important;
+  }
+
+  .stellar-starfield .live-twinkle-star.is-purple{
+    background:#cdb8ff!important;
+    box-shadow:
+      0 0 6px rgba(205,184,255,.95),
+      0 0 14px rgba(139,92,246,.34)!important;
+  }
+
+  .stellar-starfield .live-twinkle-star.is-warm{
+    background:#fff0c7!important;
+    box-shadow:
+      0 0 6px rgba(255,240,199,.90),
+      0 0 13px rgba(255,163,74,.18)!important;
+  }
+
+  @media(max-width:700px){
+    .stellar-starfield .live-twinkle-star{
+      transform-origin:center!important;
+    }
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    .stellar-starfield .live-twinkle-star{
+      opacity:.62!important;
+      filter:none!important;
+    }
+  }
+</style>
 </head>
 <body>
   <div class="stellar-starfield" aria-hidden="true">
@@ -3645,34 +3754,48 @@ body.light .page-shell :is(p,li,label,summary,small,.hero-copy,.hero-subtitle,.m
   field.dataset.liveMotionReady = '1';
 
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) return;
+  const mobile = window.matchMedia?.('(max-width: 700px)').matches;
+  const starCount = mobile ? 36 : 76;
 
-  const starCount = window.matchMedia?.('(max-width: 700px)').matches ? 18 : 34;
   for (let i = 0; i < starCount; i += 1) {
     const star = document.createElement('span');
-    star.className = 'live-twinkle-star' + (i % 5 === 0 ? ' is-purple' : '');
-    const x = (i * 37.17 + 11) % 98;
-    const y = (i * 61.83 + 7) % 96;
-    const size = 1.6 + (i % 4) * 0.65;
+    const fivePoint = i % 4 === 0;
+    star.className =
+      'live-twinkle-star ' +
+      (fivePoint ? 'star-five' : 'star-spark') +
+      (i % 7 === 0 ? ' is-warm' : '') +
+      (i % 5 === 0 ? ' is-purple' : '');
+
+    const x = (i * 37.17 + 7.5) % 98.5;
+    const y = (i * 61.83 + 5.25) % 96.5;
+    const size = fivePoint
+      ? 4.2 + (i % 4) * 1.25
+      : 3.4 + (i % 5) * 1.0;
+
     star.style.left = x.toFixed(2) + '%';
     star.style.top = y.toFixed(2) + '%';
     star.style.width = size.toFixed(2) + 'px';
     star.style.height = size.toFixed(2) + 'px';
+    star.style.setProperty('--star-rotate', ((i * 29) % 360) + 'deg');
     field.appendChild(star);
 
-    star.animate([
-      { opacity: .18, transform: 'scale(.72)', filter: 'brightness(.78)' },
-      { opacity: .95, transform: 'scale(1.35)', filter: 'brightness(1.55)' },
-      { opacity: .38, transform: 'scale(.9)', filter: 'brightness(.92)' },
-      { opacity: 1, transform: 'scale(1.22)', filter: 'brightness(1.35)' }
-    ], {
-      duration: 1900 + (i % 7) * 410,
-      delay: (i % 9) * -310,
-      iterations: Infinity,
-      direction: 'alternate',
-      easing: 'ease-in-out'
-    });
+    if (!reduceMotion) {
+      star.animate([
+        { opacity: .12, transform: `rotate(var(--star-rotate)) scale(.55)`, filter: 'brightness(.72)' },
+        { opacity: 1, transform: `rotate(var(--star-rotate)) scale(1.45)`, filter: 'brightness(1.75)' },
+        { opacity: .28, transform: `rotate(var(--star-rotate)) scale(.78)`, filter: 'brightness(.88)' },
+        { opacity: .92, transform: `rotate(var(--star-rotate)) scale(1.18)`, filter: 'brightness(1.42)' }
+      ], {
+        duration: 1450 + (i % 9) * 330,
+        delay: (i % 13) * -240,
+        iterations: Infinity,
+        direction: 'alternate',
+        easing: 'ease-in-out'
+      });
+    }
   }
+
+  if (reduceMotion) return;
 
   const shoot = (selector, duration, delay, dx, dy, angle) => {
     const star = field.querySelector(selector);
@@ -3680,9 +3803,9 @@ body.light .page-shell :is(p,li,label,summary,small,.hero-copy,.hero-subtitle,.m
     star.style.display = 'block';
     star.animate([
       { opacity: 0, transform: `translate3d(0,0,0) rotate(${angle}deg) scaleX(.82)`, offset: 0 },
-      { opacity: 0, transform: `translate3d(0,0,0) rotate(${angle}deg) scaleX(.82)`, offset: .68 },
-      { opacity: .95, transform: `translate3d(-35px,18px,0) rotate(${angle}deg) scaleX(.95)`, offset: .72 },
-      { opacity: .92, transform: `translate3d(${dx * .82}px,${dy * .82}px,0) rotate(${angle}deg) scaleX(1)`, offset: .94 },
+      { opacity: 0, transform: `translate3d(0,0,0) rotate(${angle}deg) scaleX(.82)`, offset: .62 },
+      { opacity: .98, transform: `translate3d(-40px,20px,0) rotate(${angle}deg) scaleX(.98)`, offset: .68 },
+      { opacity: .94, transform: `translate3d(${dx * .84}px,${dy * .84}px,0) rotate(${angle}deg) scaleX(1)`, offset: .94 },
       { opacity: 0, transform: `translate3d(${dx}px,${dy}px,0) rotate(${angle}deg) scaleX(1)`, offset: 1 }
     ], {
       duration,
@@ -3692,12 +3815,12 @@ body.light .page-shell :is(p,li,label,summary,small,.hero-copy,.hero-subtitle,.m
     });
   };
 
-  shoot('.shooting-star-1', 6600, 300, -1150, 520, -24);
-  shoot('.shooting-star-2', 8200, 1600, -960, 470, -28);
-  shoot('.shooting-star-3', 10400, 3200, -1320, 500, -21);
-  shoot('.shooting-star-4', 7600, 900, -980, 360, -18);
-  shoot('.shooting-star-5', 11600, 4700, -1180, 610, -30);
-  shoot('.shooting-star-6', 9200, 2600, -860, 330, -16);
+  shoot('.shooting-star-1', 6200, 200, -1150, 520, -24);
+  shoot('.shooting-star-2', 7600, 1200, -960, 470, -28);
+  shoot('.shooting-star-3', 9400, 2400, -1320, 500, -21);
+  shoot('.shooting-star-4', 6800, 600, -980, 360, -18);
+  shoot('.shooting-star-5', 10600, 3600, -1180, 610, -30);
+  shoot('.shooting-star-6', 8200, 1800, -860, 330, -16);
 })();
 </script>
 </body>
