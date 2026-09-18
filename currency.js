@@ -96,7 +96,7 @@
     ensureStylesheet('data-stellar-home-v5', '/stellar-home-v5.css?v=2');
     ensureScript('data-stellar-home-v5-script', '/stellar-home-v5.js?v=2');
     ensureStylesheet('data-stellar-commerce-v1', '/stellar-commerce-v1.css?v=1');
-    ensureScript('data-stellar-commerce-v1-script', '/stellar-commerce-v1.js?v=1');
+    ensureScript('data-stellar-commerce-v1-script', '/stellar-commerce-v1.js?v=2');
   }
 
   function loadSettingsPresentation() {
