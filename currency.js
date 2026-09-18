@@ -106,8 +106,9 @@
     ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
-    ensureStylesheet('data-stellar-command-v1', '/stellar-command-v1.css?v=2');
-    ensureScript('data-stellar-command-v1-script', '/stellar-command-v1.js?v=2');
+    // The clean /app UI is owned by app.html. Do not dynamically reload the
+    // legacy command dock or its CSS here, or cached clients can restore the
+    // old Chat/Build/Fix/Deploy composer after the page has rendered.
   }
 
   loadHomePresentation();
