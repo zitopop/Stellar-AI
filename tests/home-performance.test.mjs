@@ -14,7 +14,7 @@ test('home stays focused on four quick starts', () => {
 });
 
 test('streaming response rendering is throttled instead of repainting every chunk', () => {
-  assert.match(app, /const STREAM_RENDER_INTERVAL_MS = 50;/);
+  assert.match(app, /const STREAM_RENDER_INTERVAL_MS = 40;/);
   assert.match(app, /scheduleStreamProgress\(\);/);
   assert.doesNotMatch(app, /const autoScroll = setInterval/);
   assert.match(app, /flushStreamProgress\(\);/);
@@ -38,4 +38,10 @@ test('model picker observer cannot self-trigger an aria-checked mutation loop', 
   assert.match(growth, /if \(button\.getAttribute\('aria-checked'\) !== checked\) button\.setAttribute\('aria-checked', checked\);/);
   assert.match(growth, /records\.some\(\(record\) => record\.target\?\.matches\?\.\('\[data-model-choice\]'\)\)/);
   assert.doesNotMatch(growth, /new MutationObserver\(\(\) => syncReasoningControl\(\)\)/);
+});
+
+test('home formats structured implementation bundles into usable files and next steps', () => {
+  assert.match(app, /function formatStructuredAssistantOutput\(raw\)/);
+  assert.match(app, /\*\*WHAT TO DO NEXT\*\*/);
+  assert.match(app, /Preparing files, placement steps and checks/);
 });
