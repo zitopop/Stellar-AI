@@ -5,37 +5,41 @@ export default async function handler(req, res) {
   const apiKey = process.env.BRAVE_SEARCH_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: 'Web search not set up. Get a free Brave Search API key from api.search.brave.com and add BRAVE_SEARCH_API_KEY to Vercel env vars.'
+      error: 'Web search not set up. Add BRAVE_SEARCH_API_KEY to the Vercel environment.'
     });
   }
 
   try {
-    const { query } = req.body;
+    const query = String(req.body?.query || '').trim().slice(0, 240);
+    const mode = String(req.body?.mode || 'search').toLowerCase() === 'research' ? 'research' : 'search';
     if (!query) return res.status(400).json({ error: 'Missing query' });
 
-    // count=8 and extra_snippets are free — Brave charges per search, not per result
-    // 6 second timeout on Brave API
+    const count = mode === 'research' ? 16 : 8;
+    const timeoutMs = mode === 'research' ? 10000 : 6500;
     const controller = new AbortController();
-    const tout = setTimeout(() => controller.abort(), 6000);
-    const response = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=8&extra_snippets=true`, {
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    const response = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${count}&extra_snippets=true`, {
       headers: {
-        'Accept': 'application/json',
-        'X-Subscription-Token': apiKey
+        Accept: 'application/json',
+        'X-Subscription-Token': apiKey,
       },
-      signal: controller.signal
+      signal: controller.signal,
     });
-    clearTimeout(tout);
+    clearTimeout(timeout);
+    if (!response.ok) return res.status(502).json({ error: 'Search provider request failed.' });
 
-    const strip = (s) => String(s || '').replace(/<[^>]+>/g, '');
+    const strip = (value) => String(value || '').replace(/<[^>]+>/g, '').trim();
     const data = await response.json();
-    const results = (data.web?.results || []).slice(0, 8).map(r => ({
-      title: strip(r.title),
-      url: r.url,
-      desc: strip(r.description),
-      extra: Array.isArray(r.extra_snippets) ? r.extra_snippets.slice(0, 3).map(strip) : []
-    }));
-    return res.status(200).json({ results });
-  } catch (err) {
-    return res.status(500).json({ error: 'Search failed: ' + err.message });
+    const results = (data.web?.results || []).slice(0, count).map((result) => ({
+      title: strip(result.title),
+      url: String(result.url || '').slice(0, 1600),
+      desc: strip(result.description),
+      extra: Array.isArray(result.extra_snippets) ? result.extra_snippets.slice(0, mode === 'research' ? 5 : 3).map(strip) : [],
+    })).filter((result) => result.url);
+
+    return res.status(200).json({ mode, query, results });
+  } catch (error) {
+    const message = error?.name === 'AbortError' ? 'Search timed out.' : 'Search failed.';
+    return res.status(500).json({ error: message });
   }
 }
