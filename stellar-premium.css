@@ -223,3 +223,376 @@ body:has(.stellar-app-shell){background:radial-gradient(circle at 55% -12%,rgba(
   #plans-modal>div,#settings-modal .set-card,#usage-modal>div,#owner-modal>div,#topup-modal>.topup-card,#welcome-modal>div{border-radius:22px 22px 0 0!important;}
 }
 @media(prefers-reduced-motion:reduce){.page-shell .product-frame,.page-shell .button-primary::before,.stellar-sidebar-nav button,.side-act,.input-area #send-btn{transform:none!important;transition:none!important;}}
+
+
+/* ═══════════════════════════════════════════════════════════
+   CLEAN OPEN LANDING COPY — 2026-09-18
+   Keep information out of boxed/square containers. Reserve
+   panels for actual product UI and controls.
+   ═══════════════════════════════════════════════════════════ */
+.page-shell{
+  --open-line:rgba(203,184,255,.11);
+  --open-muted:#aaa3b7;
+}
+.page-shell :is(h1,h2,h3,h4,p,li,small,strong,span){
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+  hyphens:none!important;
+}
+.page-shell :is(.section-heading h2,.difference-copy h2,.faq-intro h2,.comparison-head h2){
+  max-width:22ch!important;
+  line-height:1.06!important;
+  letter-spacing:-.045em!important;
+  text-wrap:balance!important;
+}
+.page-shell :is(.section-heading p,.difference-copy p,.faq-intro p,.comparison-head p){
+  max-width:66ch!important;
+  line-height:1.72!important;
+  text-wrap:pretty!important;
+}
+.page-shell .hero h1{
+  max-width:11.6ch!important;
+  line-height:1.01!important;
+  letter-spacing:-.052em!important;
+  text-wrap:balance!important;
+}
+.page-shell .hero-lead{
+  max-width:58ch!important;
+  line-height:1.72!important;
+  text-wrap:pretty!important;
+}
+
+/* Labels should read like labels, not chips floating in boxes. */
+.page-shell .eyebrow,
+.page-shell #how-it-works .section-heading .eyebrow,
+.page-shell .section-heading .eyebrow{
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Remove the giant boxed proof container and let the metrics breathe. */
+.page-shell #proof-section{
+  margin-top:18px!important;
+  padding:clamp(54px,6vw,80px) 0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell #proof-section .section-heading{
+  padding:0!important;
+  margin-bottom:30px!important;
+}
+.page-shell .proof-strip{
+  gap:0!important;
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+}
+.page-shell .proof-card{
+  min-height:0!important;
+  padding:24px clamp(18px,2.5vw,34px)!important;
+  border:0!important;
+  border-right:1px solid var(--open-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:left!important;
+}
+.page-shell .proof-card:last-child{border-right:0!important}
+.page-shell .proof-card:hover{
+  transform:none!important;
+  border-color:var(--open-line)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Informational grids become open columns with simple separators. */
+.page-shell :is(.capability,.capability-map-card,.difference-item,.launch-card,.hero-capability){
+  min-height:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell :is(.capability,.capability-map-card,.difference-item,.launch-card,.hero-capability):hover{
+  transform:none!important;
+  border-color:transparent!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell .capability-grid,
+.page-shell .capability-map-grid,
+.page-shell .launch-grid,
+.page-shell .hero-capabilities{
+  gap:0!important;
+  border-top:1px solid var(--open-line)!important;
+}
+.page-shell :is(.capability,.capability-map-card,.launch-card,.hero-capability){
+  padding:26px clamp(18px,2.3vw,30px)!important;
+  border-bottom:1px solid var(--open-line)!important;
+}
+.page-shell .capability-grid > *:not(:nth-child(4n+1)),
+.page-shell .capability-map-grid > *:not(:nth-child(3n+1)),
+.page-shell .hero-capabilities > *:not(:nth-child(3n+1)){
+  border-left:1px solid var(--open-line)!important;
+}
+.page-shell .launch-card{
+  align-items:flex-start!important;
+  min-height:0!important;
+}
+.page-shell .launch-grid > *:nth-child(even){
+  border-left:1px solid var(--open-line)!important;
+}
+.page-shell .cap-icon,
+.page-shell .launch-icon,
+.page-shell .difference-item .num{
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Large grouped sections should not look like square panels. */
+.page-shell :is(.launch-deck,.capability-map,.scenario,.roblox-worlds,.comparison){
+  padding-left:0!important;
+  padding-right:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell .launch-deck{
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+  padding-top:34px!important;
+  padding-bottom:34px!important;
+}
+
+/* Roblox information can be visual, but copy should not be trapped in boxes. */
+.page-shell .roblox-card{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:24px 0!important;
+  border-bottom:1px solid var(--open-line)!important;
+}
+.page-shell .roblox-card:hover{
+  transform:none!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border-color:var(--open-line)!important;
+}
+.page-shell .roblox-directory{
+  padding:16px 0!important;
+  border:0!important;
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* FAQ becomes clean editorial rows rather than stacked rounded boxes. */
+.page-shell .faq-item{
+  border:0!important;
+  border-bottom:1px solid var(--open-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell .faq-item:first-child{
+  border-top:1px solid var(--open-line)!important;
+}
+.page-shell .faq-item:hover{
+  transform:none!important;
+  border-color:var(--open-line)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell .faq-button{
+  min-height:64px!important;
+  padding:18px 0!important;
+  background:transparent!important;
+}
+.page-shell .faq-button:hover{background:transparent!important}
+.page-shell .faq-answer{
+  padding:0 0 20px!important;
+  max-width:72ch!important;
+  line-height:1.72!important;
+}
+
+/* Pricing stays structured, but remove the square-card feeling. */
+.page-shell .plans{
+  gap:0!important;
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+}
+.page-shell .plan,
+.page-shell .plan.featured{
+  min-height:0!important;
+  padding:30px clamp(18px,2.2vw,30px)!important;
+  border:0!important;
+  border-right:1px solid var(--open-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell .plan:last-child{border-right:0!important}
+.page-shell .plan:hover,
+.page-shell .plan.featured:hover{
+  transform:none!important;
+  background:rgba(155,92,255,.025)!important;
+  box-shadow:none!important;
+}
+.page-shell .plan-badge{
+  display:inline-flex!important;
+  border-radius:999px!important;
+}
+.page-shell .plan-decider{
+  gap:0!important;
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+}
+.page-shell .plan-decider>div{
+  padding:18px 16px!important;
+  border:0!important;
+  border-right:1px solid var(--open-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.page-shell .plan-decider>div:last-child{border-right:0!important}
+
+/* Comparison can read like a table rather than a rounded card. */
+.page-shell .comparison-grid{
+  border:0!important;
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+  border-radius:0!important;
+}
+.page-shell .comparison-grid>div{
+  background:transparent!important;
+}
+.page-shell .comparison-grid .comparison-title{
+  background:transparent!important;
+}
+
+/* Final CTA should feel like part of the page, not another box. */
+.page-shell .final-cta{
+  padding:clamp(54px,7vw,88px) 0!important;
+  border:0!important;
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Keep the actual product mockup as a framed UI — this is interface, not copy. */
+.page-shell .product-frame,
+.page-shell .product-shell,
+.page-shell .product-main{
+  overflow:hidden!important;
+}
+
+/* Desktop/tablet typography should stay roomy instead of compressed. */
+@media(min-width:901px) and (max-width:1180px){
+  .page-shell .hero-grid{
+    grid-template-columns:minmax(0,1fr) minmax(400px,.95fr)!important;
+    gap:clamp(28px,4vw,48px)!important;
+  }
+  .page-shell .hero h1{
+    max-width:12.8ch!important;
+    font-size:clamp(44px,5.4vw,64px)!important;
+  }
+  .page-shell :is(.section-heading h2,.difference-copy h2,.faq-intro h2){
+    max-width:24ch!important;
+  }
+}
+
+/* iPad portrait: preserve open spacing and readable lines. */
+@media(min-width:641px) and (max-width:900px){
+  .page-shell .hero h1{
+    max-width:14ch!important;
+    font-size:clamp(44px,7.2vw,62px)!important;
+  }
+  .page-shell .hero-lead{max-width:60ch!important}
+  .page-shell .capability-grid,
+  .page-shell .capability-map-grid,
+  .page-shell .hero-capabilities,
+  .page-shell .launch-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .page-shell .capability-grid > *,
+  .page-shell .capability-map-grid > *,
+  .page-shell .hero-capabilities > *,
+  .page-shell .launch-grid > *{
+    border-left:0!important;
+  }
+  .page-shell .capability-grid > *:nth-child(even),
+  .page-shell .capability-map-grid > *:nth-child(even),
+  .page-shell .hero-capabilities > *:nth-child(even),
+  .page-shell .launch-grid > *:nth-child(even){
+    border-left:1px solid var(--open-line)!important;
+  }
+  .page-shell .plans{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .page-shell .plan:nth-child(2n){border-right:0!important}
+  .page-shell .plan:nth-child(-n+2){border-bottom:1px solid var(--open-line)!important}
+  .page-shell .plan-decider{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .page-shell .plan-decider>div:nth-child(2n){border-right:0!important}
+}
+
+/* Phone: one clean reading column, no text squeezed into tiny boxes. */
+@media(max-width:640px){
+  .page-shell .hero h1{
+    max-width:none!important;
+    width:100%!important;
+    font-size:clamp(38px,11vw,50px)!important;
+    line-height:1.02!important;
+    letter-spacing:-.045em!important;
+  }
+  .page-shell .hero-lead{
+    max-width:none!important;
+    font-size:15px!important;
+    line-height:1.68!important;
+  }
+  .page-shell :is(.section-heading h2,.difference-copy h2,.faq-intro h2,.comparison-head h2){
+    max-width:none!important;
+    width:100%!important;
+    font-size:clamp(30px,9vw,42px)!important;
+    line-height:1.08!important;
+  }
+  .page-shell .proof-strip,
+  .page-shell .capability-grid,
+  .page-shell .capability-map-grid,
+  .page-shell .hero-capabilities,
+  .page-shell .launch-grid,
+  .page-shell .plans,
+  .page-shell .plan-decider{
+    grid-template-columns:1fr!important;
+  }
+  .page-shell .proof-card,
+  .page-shell .capability,
+  .page-shell .capability-map-card,
+  .page-shell .hero-capability,
+  .page-shell .launch-card,
+  .page-shell .plan,
+  .page-shell .plan-decider>div{
+    border-left:0!important;
+    border-right:0!important;
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+  .page-shell .proof-card:not(:last-child),
+  .page-shell .plan:not(:last-child),
+  .page-shell .plan-decider>div:not(:last-child){
+    border-bottom:1px solid var(--open-line)!important;
+  }
+  .page-shell .button{
+    border-radius:12px!important;
+  }
+}
