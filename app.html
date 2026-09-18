@@ -5359,6 +5359,92 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     body.settings-open #settings-modal{background:rgba(5,6,10,.94)!important}
   }
 </style>
+
+<style id="stellar-home-cleanup-v1">
+  /* Clean the app chrome. */
+  .stellar-app-shell #sidebar{
+    border-right-color:transparent!important;
+  }
+  .stellar-global-header{
+    border-bottom-color:transparent!important;
+  }
+  .topbar.glass{
+    border-bottom-color:transparent!important;
+  }
+
+  /* Make the wordmark plain and intentional. */
+  #sidebar .brand-title{
+    gap:8px!important;
+    font-size:20px!important;
+    font-weight:850!important;
+    letter-spacing:-.03em!important;
+  }
+  #sidebar .brand-star{
+    display:none!important;
+  }
+  #sidebar .brand-grad{
+    background:none!important;
+    -webkit-text-fill-color:initial!important;
+    color:#f7f6fb!important;
+  }
+  #sidebar .brand-grad::before{
+    content:"Stellar";
+  }
+  #sidebar .brand-grad{
+    font-size:0!important;
+  }
+  #sidebar .brand-grad::before,
+  #sidebar .brand-grad::after{
+    font-size:20px!important;
+  }
+  #sidebar .brand-grad::after{
+    content:" AI";
+    color:#8d72ff!important;
+  }
+  .update-pill{display:none!important}
+
+  /* Settings should visually take over, not leave app nav sitting behind it. */
+  body.settings-open-hide-sidebar #sidebar,
+  body.settings-open #sidebar{
+    visibility:hidden!important;
+    pointer-events:none!important;
+    opacity:0!important;
+  }
+  body.settings-open-hide-sidebar #overlay,
+  body.settings-open #overlay{
+    display:none!important;
+  }
+  body.settings-open-hide-sidebar .stellar-global-header,
+  body.settings-open .stellar-global-header{
+    opacity:.28!important;
+    pointer-events:none!important;
+  }
+
+  /* Once the user starts typing, remove all starter guidance. */
+  body.composer-has-text .landing-style-home .greet-eyebrow,
+  body.composer-has-text .landing-style-home .greet-brand,
+  body.composer-has-text .landing-style-home .greet-hi,
+  body.composer-has-text .landing-style-home .welcome-sub,
+  body.composer-has-text .landing-style-home #suggestion-chips,
+  body.composer-has-text .landing-style-home .home-disclaimer{
+    display:none!important;
+  }
+  body.composer-has-text .landing-style-home{
+    min-height:0!important;
+    padding:0!important;
+    margin:0!important;
+  }
+
+  /* Keep textarea growth controlled and clean. */
+  #txt{
+    overflow-y:auto!important;
+    max-height:160px!important;
+    resize:none!important;
+  }
+
+  /* Remove extra footer guide affordance everywhere. */
+  .side-guides-link{display:none!important}
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -6205,10 +6291,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
   <div id="welcome-gift" class="gift-pill hidden">
     🎁 Welcome! We've added £1 of free credit to get you started.
-  </div>
-
-  <div id="update-pill" class="update-pill hidden" onclick="location.reload()">
-    ✨ New version available — tap to refresh
   </div>
 
   <!-- WELCOME / SIGN-IN -->
@@ -13380,6 +13462,48 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
     requestAnimationFrame(()=>txt.focus({preventScroll:true}));
   });
   window.addEventListener('pageshow',function(){txt.disabled=false;txt.readOnly=false;});
+})();
+</script>
+
+<script id="stellar-home-typing-clean-v1">
+(function(){
+  const txt=document.getElementById('txt');
+  const sidebar=document.getElementById('sidebar');
+  if(!txt)return;
+
+  function syncTypingHome(){
+    const typing=!!txt.value.trim();
+    document.body.classList.toggle('composer-has-text',typing);
+    const chips=document.getElementById('suggestion-chips');
+    if(chips) chips.style.display=typing?'none':'';
+  }
+  txt.addEventListener('input',syncTypingHome);
+  txt.addEventListener('paste',()=>setTimeout(syncTypingHome,0));
+  txt.addEventListener('cut',()=>setTimeout(syncTypingHome,0));
+  syncTypingHome();
+
+  const originalOpen=window.openSettings;
+  if(typeof originalOpen==='function' && !window.__stellarSettingsSidebarWrapped){
+    window.__stellarSettingsSidebarWrapped=true;
+    window.openSettings=function(){
+      const sb=document.getElementById('sidebar');
+      const ov=document.getElementById('overlay');
+      sb?.classList.remove('open');
+      ov?.classList.remove('open');
+      document.body.classList.remove('nav-open');
+      document.body.classList.add('settings-open-hide-sidebar');
+      return originalOpen.apply(this,arguments);
+    };
+  }
+  const originalClose=window.closeSettings;
+  if(typeof originalClose==='function' && !window.__stellarSettingsCloseWrapped){
+    window.__stellarSettingsCloseWrapped=true;
+    window.closeSettings=function(){
+      const out=originalClose.apply(this,arguments);
+      document.body.classList.remove('settings-open-hide-sidebar');
+      return out;
+    };
+  }
 })();
 </script>
 </body>
