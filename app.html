@@ -3784,6 +3784,550 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
   </style>
 
+
+<style id="stellar-reference-chat-ui-v4">
+  :root{
+    --ref-bg:#090b10;
+    --ref-panel:#0f1218;
+    --ref-panel-2:#141820;
+    --ref-line:rgba(255,255,255,.09);
+    --ref-text:#f5f4f8;
+    --ref-muted:#9da3b2;
+    --ref-purple:#7b61ff;
+    --ref-purple-2:#a36cff;
+  }
+
+  body:not(.light){
+    background:var(--ref-bg)!important;
+    background-image:
+      radial-gradient(circle at 54% 18%,rgba(83,62,173,.09),transparent 32%),
+      linear-gradient(180deg,#0b0e14 0%,#090b10 100%)!important;
+  }
+  body:not(.light)::before{background:transparent!important;background-image:none!important}
+
+  .stellar-global-header{
+    left:258px!important;
+    right:0!important;
+    width:auto!important;
+    height:64px!important;
+    padding:0 28px!important;
+    background:rgba(10,12,17,.97)!important;
+    border-bottom:1px solid rgba(255,255,255,.055)!important;
+    box-shadow:none!important;
+    gap:0!important;
+  }
+  .stellar-top-spacer{flex:1}
+  .stellar-top-actions{display:flex!important;align-items:center!important;gap:28px!important;margin-left:auto!important}
+  .stellar-top-actions a{
+    color:#d8d9df!important;
+    text-decoration:none!important;
+    font-size:13px!important;
+    font-weight:650!important;
+  }
+  .stellar-top-actions a:hover{color:#fff!important}
+  .stellar-upgrade{
+    min-height:42px!important;
+    padding:0 19px!important;
+    border-radius:13px!important;
+    background:linear-gradient(135deg,#9b82ff,#7658ff)!important;
+    color:#0d0b14!important;
+    font-size:13px!important;
+    font-weight:900!important;
+    box-shadow:none!important;
+  }
+
+  .stellar-app-shell{padding-top:64px!important;height:100dvh!important}
+  .stellar-app-shell #sidebar{
+    position:fixed!important;
+    inset:0 auto 0 0!important;
+    width:258px!important;
+    height:100dvh!important;
+    padding:20px 16px 18px!important;
+    background:linear-gradient(180deg,#0c0f15,#0b0e14)!important;
+    border-right:1px solid rgba(255,255,255,.07)!important;
+    box-shadow:none!important;
+  }
+  .stellar-app-shell #main-col{
+    margin-left:258px!important;
+    min-width:0!important;
+    background:transparent!important;
+  }
+
+  #sidebar .sidebar-brand-row{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    margin:0 6px 24px!important;
+  }
+  #sidebar .brand-title{
+    display:flex!important;
+    align-items:center!important;
+    gap:9px!important;
+    color:#fff!important;
+    font-size:20px!important;
+    font-weight:850!important;
+    letter-spacing:-.025em!important;
+  }
+  #sidebar .brand-star{
+    color:#7468ff!important;
+    font-size:27px!important;
+    text-shadow:0 0 18px rgba(116,104,255,.25)!important;
+  }
+  #sidebar .brand-grad{
+    background:none!important;
+    -webkit-text-fill-color:initial!important;
+    color:#f6f4fa!important;
+  }
+  #sidebar .brand-grad::after{content:''}
+  #sidebar .sidebar-close{display:none!important}
+
+  #sidebar .side-new,
+  #sidebar #search,
+  #sidebar #chats-heading,
+  #sidebar #chats-list,
+  #sidebar .side-foot{display:none!important}
+
+  .stellar-sidebar-nav{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:4px!important;
+  }
+  .stellar-sidebar-nav button{
+    display:flex!important;
+    align-items:center!important;
+    gap:12px!important;
+    min-height:48px!important;
+    padding:0 14px!important;
+    border:1px solid transparent!important;
+    border-radius:12px!important;
+    background:transparent!important;
+    color:#d7d9e0!important;
+    font-size:13px!important;
+    font-weight:650!important;
+    text-align:left!important;
+    transition:background .14s ease,border-color .14s ease,color .14s ease!important;
+  }
+  .stellar-sidebar-nav button:hover{
+    background:rgba(255,255,255,.045)!important;
+    color:#fff!important;
+  }
+  .stellar-sidebar-nav button.active{
+    background:linear-gradient(90deg,rgba(106,77,210,.24),rgba(87,62,168,.18))!important;
+    border-color:rgba(130,102,242,.13)!important;
+    color:#fff!important;
+  }
+  .stellar-sidebar-nav .nav-ico{
+    display:grid!important;
+    width:20px!important;
+    height:20px!important;
+    place-items:center!important;
+    color:#c7c2ff!important;
+    font-size:16px!important;
+    flex:0 0 20px!important;
+  }
+
+  .stellar-quick-links{
+    margin-top:22px!important;
+    padding:22px 4px 0!important;
+    border-top:1px solid rgba(255,255,255,.075)!important;
+  }
+  .stellar-quick-title{
+    margin:0 6px 10px!important;
+    color:#858b9a!important;
+    font-size:11px!important;
+    font-weight:700!important;
+  }
+  .stellar-quick-links button,.stellar-quick-links a{
+    display:flex!important;
+    align-items:center!important;
+    gap:12px!important;
+    width:100%!important;
+    min-height:44px!important;
+    padding:0 10px!important;
+    border:0!important;
+    border-radius:10px!important;
+    background:transparent!important;
+    color:#cfd2da!important;
+    font:inherit!important;
+    font-size:12px!important;
+    font-weight:600!important;
+    text-align:left!important;
+    text-decoration:none!important;
+    cursor:pointer!important;
+  }
+  .stellar-quick-links button:hover,.stellar-quick-links a:hover{
+    background:rgba(255,255,255,.035)!important;
+    color:#fff!important;
+  }
+  .stellar-quick-links button span,.stellar-quick-links a span{
+    width:20px!important;
+    color:#bfc4d0!important;
+    text-align:center!important;
+  }
+
+  #account-box{
+    margin-top:auto!important;
+    padding:14px 8px 0!important;
+    border-top:1px solid rgba(255,255,255,.075)!important;
+  }
+  #account-box .acct-in,#account-box .acct-out{
+    min-height:48px!important;
+    padding:0!important;
+    background:transparent!important;
+    border:0!important;
+  }
+  #account-box .acct-avatar{
+    width:40px!important;height:40px!important;
+    background:#69739a!important;
+    color:#fff!important;
+  }
+  #account-box .acct-name{font-size:12px!important;color:#f0f1f4!important}
+  #account-box .acct-email{font-size:10px!important;color:#858b99!important}
+  #account-box .acct-out-btn{
+    width:34px!important;height:34px!important;overflow:hidden!important;text-indent:-9999px!important;
+  }
+  #account-box .acct-out-btn::after{content:'⚙';float:right;text-indent:0!important;color:#d8dae1!important;font-size:16px!important}
+  #account-box .acct-signin-btn{
+    min-height:42px!important;width:100%!important;border:1px solid var(--ref-line)!important;border-radius:11px!important;background:rgba(255,255,255,.03)!important;color:#fff!important;
+  }
+
+  .topbar.glass{
+    display:none!important;
+  }
+
+  #chat{
+    width:100%!important;
+    max-width:none!important;
+    padding:34px 24px 8px!important;
+    background:transparent!important;
+  }
+  .greet-wrap{
+    width:min(100%,940px)!important;
+    max-width:940px!important;
+    margin:0 auto!important;
+    padding:30px 0 18px!important;
+    text-align:center!important;
+  }
+  .greet-brand{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:13px!important;
+    margin-bottom:9px!important;
+  }
+  .greet-brand-mark{
+    color:#7068ff!important;
+    font-size:42px!important;
+    line-height:1!important;
+    filter:drop-shadow(0 0 18px rgba(112,104,255,.20))!important;
+  }
+  .greet-brand strong{
+    color:#fff!important;
+    font-size:33px!important;
+    font-weight:850!important;
+    letter-spacing:-.035em!important;
+  }
+  .greet-brand strong span{color:#8d72ff!important}
+  .greet-tagline{
+    margin-bottom:37px!important;
+    color:#9ea5b6!important;
+    font-size:14px!important;
+    font-weight:500!important;
+  }
+  .greet-hi{
+    margin:0!important;
+    background:none!important;
+    -webkit-background-clip:initial!important;
+    -webkit-text-fill-color:currentColor!important;
+    color:#f6f4f8!important;
+    font-size:clamp(34px,4vw,48px)!important;
+    line-height:1.08!important;
+    font-weight:850!important;
+    letter-spacing:-.045em!important;
+  }
+  .greet-hi::after,.welcome-sub::after{display:none!important;content:none!important}
+  .welcome-sub{
+    max-width:720px!important;
+    margin:14px auto 0!important;
+    color:#9da4b4!important;
+    font-size:14px!important;
+    line-height:1.6!important;
+    font-weight:500!important;
+  }
+
+  #suggestion-chips{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:880px!important;
+    margin:31px auto 0!important;
+    gap:14px!important;
+  }
+  #suggestion-chips .sug-chip{
+    display:grid!important;
+    grid-template-columns:52px minmax(0,1fr) 28px!important;
+    align-items:center!important;
+    min-width:0!important;
+    min-height:116px!important;
+    padding:20px 22px!important;
+    border:1px solid rgba(255,255,255,.09)!important;
+    border-radius:16px!important;
+    background:linear-gradient(145deg,rgba(18,21,28,.95),rgba(14,17,23,.97))!important;
+    color:#fff!important;
+    box-shadow:inset 0 1px rgba(255,255,255,.025)!important;
+    text-align:left!important;
+    transition:transform .15s ease,border-color .15s ease,background .15s ease!important;
+  }
+  #suggestion-chips .sug-chip:hover{
+    transform:translateY(-2px)!important;
+    border-color:rgba(126,99,255,.28)!important;
+    background:linear-gradient(145deg,rgba(22,25,34,.98),rgba(15,18,25,.98))!important;
+  }
+  #suggestion-chips .home-card-icon{
+    display:grid!important;
+    width:44px!important;
+    height:44px!important;
+    place-items:center!important;
+    border-radius:12px!important;
+    background:rgba(117,89,255,.11)!important;
+    color:#765fff!important;
+    font-size:25px!important;
+  }
+  #suggestion-chips .home-card-copy{min-width:0!important}
+  #suggestion-chips .home-card-copy b{
+    display:block!important;
+    color:#f5f5f7!important;
+    font-size:15px!important;
+    line-height:1.25!important;
+    font-weight:780!important;
+  }
+  #suggestion-chips .home-card-copy small{
+    display:block!important;
+    margin-top:7px!important;
+    color:#9299a8!important;
+    font-size:12px!important;
+    line-height:1.35!important;
+    font-weight:500!important;
+  }
+  #suggestion-chips .home-card-arrow{
+    color:#b5bbc8!important;
+    font-size:23px!important;
+    text-align:right!important;
+  }
+
+  .input-area.glass{
+    padding:8px 24px 0!important;
+    border:0!important;
+    background:transparent!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  .input-area>.flex{
+    position:relative!important;
+    width:min(100%,940px)!important;
+    max-width:940px!important;
+    min-height:106px!important;
+    margin:0 auto!important;
+    padding:14px 64px 42px 16px!important;
+    border:1px solid rgba(255,255,255,.14)!important;
+    border-radius:22px!important;
+    background:linear-gradient(145deg,#151920,#10141a)!important;
+    box-shadow:0 16px 42px rgba(0,0,0,.22)!important;
+  }
+  #txt{
+    min-height:44px!important;
+    max-height:150px!important;
+    padding:9px 10px!important;
+    color:#eef0f4!important;
+    font-size:15px!important;
+    line-height:1.45!important;
+    font-weight:500!important;
+  }
+  #txt::placeholder{color:#8f96a6!important}
+  .input-area #send-btn{
+    position:absolute!important;
+    right:15px!important;
+    bottom:13px!important;
+    top:auto!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    padding:0!important;
+    overflow:hidden!important;
+    text-indent:-9999px!important;
+    border-radius:12px!important;
+    background:linear-gradient(135deg,#856bff,#5e54d8)!important;
+    box-shadow:none!important;
+  }
+  .input-area #send-btn:not(.is-stop)::after{
+    content:'↑'!important;
+    display:grid!important;
+    place-items:center!important;
+    width:40px!important;
+    height:40px!important;
+    color:#fff!important;
+    font-size:21px!important;
+    text-indent:0!important;
+  }
+  .mic-btn{
+    position:absolute!important;
+    right:61px!important;
+    bottom:13px!important;
+    top:auto!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    border-radius:12px!important;
+    background:transparent!important;
+    color:#aeb4c1!important;
+  }
+  .composer-foot{
+    position:absolute!important;
+    left:17px!important;
+    right:110px!important;
+    bottom:10px!important;
+    width:auto!important;
+    margin:0!important;
+    gap:8px!important;
+    justify-content:flex-start!important;
+    overflow:hidden!important;
+  }
+  .composer-foot #credits-btn,.composer-foot #keyboard-hint{display:none!important}
+  .composer-foot .foot-right{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    margin-left:0!important;
+  }
+  .composer-foot button{
+    min-height:28px!important;
+    padding:0 9px!important;
+    border:0!important;
+    border-radius:8px!important;
+    background:transparent!important;
+    color:#aeb4c1!important;
+    font-size:10px!important;
+    box-shadow:none!important;
+  }
+  .composer-foot button:hover{background:rgba(255,255,255,.04)!important;color:#fff!important}
+
+  .home-prompt-pills{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    justify-content:center!important;
+    gap:10px!important;
+    width:min(100%,860px)!important;
+    margin:16px auto 0!important;
+  }
+  .home-prompt-pills button{
+    min-height:36px!important;
+    padding:0 16px!important;
+    border:1px solid rgba(255,255,255,.09)!important;
+    border-radius:999px!important;
+    background:rgba(255,255,255,.018)!important;
+    color:#aeb4c1!important;
+    font:inherit!important;
+    font-size:11px!important;
+    font-weight:500!important;
+  }
+  .home-prompt-pills button:hover{border-color:rgba(124,97,255,.24)!important;color:#fff!important}
+  .home-disclaimer{
+    margin:48px auto 0!important;
+    color:#666d7b!important;
+    font-size:10px!important;
+    font-weight:500!important;
+  }
+
+  /* Keep the prompt pills visually below the composer on desktop using reserved space. */
+  .greet-wrap{padding-bottom:142px!important}
+  .input-area{margin-top:-136px!important}
+  .home-prompt-pills,.home-disclaimer{transform:translateY(132px)!important}
+
+  body.light .stellar-global-header{
+    background:#f8f8fb!important;border-bottom-color:rgba(0,0,0,.06)!important
+  }
+  body.light .stellar-app-shell #sidebar{
+    background:#f3f3f7!important;border-right-color:rgba(0,0,0,.07)!important
+  }
+  body.light .stellar-app-shell #main-col{background:#fafafd!important}
+  body.light .greet-brand strong,body.light .greet-hi{color:#15151a!important}
+  body.light .greet-tagline,body.light .welcome-sub{color:#6e7380!important}
+  body.light #suggestion-chips .sug-chip{
+    background:#fff!important;border-color:rgba(0,0,0,.08)!important
+  }
+  body.light #suggestion-chips .home-card-copy b{color:#1b1b20!important}
+  body.light #suggestion-chips .home-card-copy small{color:#777d89!important}
+  body.light .input-area>.flex{
+    background:#fff!important;border-color:rgba(0,0,0,.10)!important;box-shadow:0 14px 36px rgba(0,0,0,.07)!important
+  }
+  body.light #txt{color:#17171c!important}
+  body.light .home-prompt-pills button{border-color:rgba(0,0,0,.08)!important;color:#6e7380!important}
+
+  @media(max-width:900px){
+    .stellar-global-header{left:0!important;padding:0 12px!important}
+    .stellar-top-actions a{display:none!important}
+    .stellar-app-shell #sidebar{
+      top:0!important;
+      width:min(86vw,300px)!important;
+      transform:translateX(-105%)!important;
+      z-index:1300!important;
+    }
+    .stellar-app-shell #sidebar.open{transform:translateX(0)!important}
+    .stellar-app-shell #main-col{margin-left:0!important}
+    .stellar-app-shell{padding-top:64px!important}
+    .topbar.glass{
+      display:flex!important;
+      position:fixed!important;
+      top:0!important;left:0!important;right:110px!important;
+      z-index:1301!important;
+      height:64px!important;
+      min-height:64px!important;
+      padding:0 12px!important;
+      background:transparent!important;
+      border:0!important;
+    }
+    .topbar #chat-title{opacity:1!important;color:#fff!important}
+    #sidebar .sidebar-close{display:grid!important}
+    #chat{padding:18px 14px 6px!important}
+    .greet-wrap{padding:20px 0 156px!important}
+    .greet-brand-mark{font-size:34px!important}
+    .greet-brand strong{font-size:27px!important}
+    .greet-tagline{margin-bottom:26px!important;font-size:12px!important}
+    .greet-hi{font-size:clamp(30px,8vw,38px)!important}
+    .welcome-sub{max-width:520px!important;font-size:13px!important}
+    #suggestion-chips{
+      grid-template-columns:1fr!important;
+      gap:10px!important;
+      margin-top:24px!important;
+    }
+    #suggestion-chips .sug-chip{
+      min-height:88px!important;
+      grid-template-columns:46px minmax(0,1fr) 24px!important;
+      padding:15px!important;
+    }
+    .input-area.glass{padding:8px 10px 0!important}
+    .input-area>.flex{min-height:98px!important;padding:11px 58px 38px 11px!important;border-radius:19px!important}
+    .home-prompt-pills{
+      gap:7px!important;
+      padding:0 3px!important;
+    }
+    .home-prompt-pills button{
+      min-height:34px!important;
+      padding:0 11px!important;
+      font-size:10px!important;
+    }
+    .home-disclaimer{margin-top:36px!important;padding:0 12px!important;line-height:1.5!important}
+  }
+  @media(max-width:430px){
+    .stellar-top-actions{gap:8px!important}
+    .stellar-upgrade{min-height:38px!important;padding:0 13px!important}
+    .greet-brand{margin-bottom:6px!important}
+    .greet-tagline{margin-bottom:22px!important}
+    .home-prompt-pills button{max-width:100%!important}
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -3812,7 +4356,14 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 <g id="i-plus"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>
 <g id="i-star"><path d="M12 3l2.6 5.6 6.1.8-4.4 4.3 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.3 9.4l6.1-.8z" fill="currentColor" stroke="none"/></g>
 </defs></svg>
-  <header class="stellar-global-header"><a class="stellar-global-brand" href="/"><b>Stellar AI</b><small>Smarter Tools. Bigger Ideas.</small></a><label class="stellar-global-search">⌕<input aria-label="Search Stellar" placeholder="Search anything…" onfocus="document.getElementById('search')?.focus()"></label><nav aria-label="App navigation"><a class="active" href="/app">⌂ Home</a><button type="button" onclick="document.getElementById('model-btn')?.click()">Models</button><button type="button" onclick="document.getElementById('txt')?.focus()">Tools</button><button type="button" onclick="openPlans()">Pricing</button></nav><button class="stellar-upgrade" type="button" onclick="openPlans()">Upgrade</button><button class="stellar-avatar" type="button" onclick="openSettings()" aria-label="Open settings">T</button></header>
+  <header class="stellar-global-header">
+    <div class="stellar-top-spacer" aria-hidden="true"></div>
+    <nav class="stellar-top-actions" aria-label="App shortcuts">
+      <a href="/blog">Help</a>
+      <a href="/blog">Updates</a>
+      <button class="stellar-upgrade" type="button" onclick="openPlans()">Upgrade</button>
+    </nav>
+  </header>
   <div class="flex h-screen stellar-app-shell">
     
     <!-- GLASS SIDEBAR -->
@@ -3828,7 +4379,21 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
       <input id="search" oninput="renderChatList()" placeholder="&#128269; Search chats" aria-label="Search chats" class="w-full mb-4 bg-white/5 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none focus:border-white/30 text-white placeholder-[#64748b]" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="search_stellar_20607">
 
-      <div class="stellar-sidebar-nav" aria-label="Stellar tools"><button type="button" onclick="document.getElementById('txt')?.focus()">⌂ <span>Home</span></button><button type="button" onclick="toggleWorkspace()">▣ <span>Library</span></button><button type="button" onclick="document.getElementById('model-btn')?.click()">♙ <span>AI Agents</span></button><button type="button" onclick="toggleWorkspace()">⌘ <span>Tools</span></button><button type="button" onclick="document.getElementById('image-upload-input')?.click()">▧ <span>Image Generation</span></button><button type="button" onclick="stellarQuick('Help me build and debug this code: ')">⌗ <span>Code Assistant</span></button><button type="button" onclick="openVoiceCall()">◉ <span>Voice Chat</span></button><button type="button" onclick="toggleWorkspace()">⌘ <span>Projects</span></button><button type="button" onclick="location.href='/jarvis'">✋ <span>Jarvis Vision</span></button></div>
+      <div class="stellar-sidebar-nav" aria-label="Stellar tools">
+        <button type="button" class="active" onclick="newChat()"><span class="nav-ico">▢</span><span>Chat</span></button>
+        <button type="button" onclick="toggleWorkspace()"><span class="nav-ico">□</span><span>Projects</span></button>
+        <button type="button" onclick="document.getElementById('image-upload-input')?.click()"><span class="nav-ico">▧</span><span>Files</span></button>
+        <button type="button" onclick="openVoiceCall()"><span class="nav-ico">◉</span><span>Voice</span></button>
+        <button type="button" onclick="document.getElementById('model-btn')?.click()"><span class="nav-ico">◇</span><span>Models</span></button>
+        <button type="button" onclick="openPlans()"><span class="nav-ico">▣</span><span>Billing</span></button>
+      </div>
+      <div class="stellar-quick-links">
+        <div class="stellar-quick-title">Quick Links</div>
+        <button type="button" onclick="stellarQuick('Help me build a production-ready FiveM system for: ')"><span>♧</span>FiveM Tools</button>
+        <button type="button" onclick="stellarQuick('Help me build a secure Roblox system for: ')"><span>◇</span>Roblox Tools</button>
+        <a href="/blog"><span>▤</span>Documentation</a>
+        <a href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer"><span>◎</span>Community</a>
+      </div>
       <div id="chats-heading" class="chats-label" role="heading" aria-level="2">Chats</div>
       <div class="flex-1 overflow-y-auto" id="chats-list" role="region" aria-labelledby="chats-heading"></div>
 
@@ -3880,16 +4445,43 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       <main id="chat" class="flex-1 overflow-y-auto p-6" aria-label="Chat conversation" aria-busy="false">
         <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
         <div class="greet-wrap">
-          <div class="greet-mark" aria-hidden="true">✦</div>
+          <div class="greet-brand" aria-label="Stellar AI">
+            <span class="greet-brand-mark" aria-hidden="true">✦</span>
+            <strong>Stellar <span>AI</span></strong>
+          </div>
+          <div class="greet-tagline">Build faster. Smarter. Together.</div>
           <div class="greet-hi" id="greet-hi">What can I help you build?</div>
-          <p class="welcome-sub">Ask anything, or start with one of these.</p>
+          <p class="welcome-sub">Get expert help with FiveM, Roblox, coding, or bring your ideas to life.</p>
           <div id="welcome-starters-heading" class="sr-only">Quick starts</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
-            <button type="button" onclick="useSuggestion('Build a clean QBCore FiveM system for: ')" class="sug-chip"><span aria-hidden="true">⌘</span><span>FiveM system</span></button>
-            <button type="button" onclick="useSuggestion('Build a secure Roblox game system for: ')" class="sug-chip"><span aria-hidden="true">◇</span><span>Roblox game</span></button>
-            <button type="button" onclick="useSuggestion('Fix and explain this code: ')" class="sug-chip"><span aria-hidden="true">⌗</span><span>Fix code</span></button>
-            <button type="button" onclick="useSuggestion('Create a clear step-by-step plan for: ')" class="sug-chip"><span aria-hidden="true">✓</span><span>Make a plan</span></button>
+            <button type="button" onclick="useSuggestion('Build a clean QBCore FiveM system for: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">🎮</span>
+              <span class="home-card-copy"><b>Build a FiveM system</b><small>Scripts, ESX/QB, UIs and more</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" onclick="useSuggestion('Build a secure Roblox game system for: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">◇</span>
+              <span class="home-card-copy"><b>Create a Roblox game</b><small>Scripting, systems, publishing</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" onclick="useSuggestion('Fix and explain this code: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">⌗</span>
+              <span class="home-card-copy"><b>Fix my code</b><small>Errors, bugs, optimisation</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" onclick="useSuggestion('Create a clear step-by-step plan for: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">▤</span>
+              <span class="home-card-copy"><b>Make a plan</b><small>Ideas, roadmaps, next steps</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
           </div>
+          <div class="home-prompt-pills" aria-label="Prompt examples">
+            <button type="button" onclick="useSuggestion('How do I add a car system to FiveM?')">How do I add a car system to FiveM?</button>
+            <button type="button" onclick="useSuggestion('Create a Roblox tycoon script')">Create a Roblox tycoon script</button>
+            <button type="button" onclick="useSuggestion('Fix this error for me: ')">Fix this error for me</button>
+            <button type="button" onclick="useSuggestion('Help me plan a game')">Help me plan a game</button>
+          </div>
+          <div class="home-disclaimer">Stellar AI can make mistakes. Always review code and follow platform rules.</div>
         </div>
 
       </main>
@@ -3911,7 +4503,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         <p id="image-upload-status" class="image-upload-status" role="status" aria-live="polite"></p>
         <input id="image-upload-input" class="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain,text/lua,text/javascript" onchange="handleImageUpload(event)" multiple>
         <div class="flex gap-3">
-          <textarea id="txt" rows="1" autofocus placeholder="Describe what you want to build or fix…" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."
+          <textarea id="txt" rows="1" autofocus placeholder="Ask anything..." aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."
                     class="flex-1 glass rounded-2xl px-5 py-3.5 resize-none focus:outline-none font-bold text-white"
                     onkeydown="if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!currentAbort) sendMessage(); }"></textarea>
           <button type="button" id="mic-btn" onclick="openVoiceCall()" class="mic-btn" aria-pressed="false" aria-label="Start voice call" title="Start voice call"><span aria-hidden="true">🎙</span></button>
