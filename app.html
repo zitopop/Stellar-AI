@@ -3546,6 +3546,244 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 </style>
 <link rel="stylesheet" href="/stellar-premium.css?v=1">
   <link rel="stylesheet" href="/stellar-chatgpt-layout.css?v=1">
+
+  <style id="stellar-clean-chat-home-v3">
+    /* Clean chat home: one focal point, restrained starters, calmer composer. */
+    #chat {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .greet-wrap {
+      width: min(100%, 760px) !important;
+      max-width: 760px !important;
+      margin: auto !important;
+      padding: clamp(48px, 9vh, 96px) 18px 34px !important;
+      text-align: center !important;
+    }
+    .greet-mark {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      margin: 0 auto 20px;
+      border: 1px solid rgba(190,170,255,.24);
+      border-radius: 14px;
+      background: rgba(255,255,255,.045);
+      color: #c8b8ff;
+      font-size: 20px;
+      box-shadow: none;
+    }
+    .greet-hi {
+      margin: 0 !important;
+      background: none !important;
+      -webkit-background-clip: initial !important;
+      -webkit-text-fill-color: currentColor !important;
+      color: #f7f5fb !important;
+      font-size: clamp(31px, 4vw, 46px) !important;
+      line-height: 1.08 !important;
+      font-weight: 760 !important;
+      letter-spacing: -.035em !important;
+    }
+    .greet-hi::after,
+    .welcome-sub::after { content: none !important; display: none !important; }
+    .welcome-sub {
+      max-width: 520px !important;
+      margin: 12px auto 0 !important;
+      color: rgba(235,231,243,.58) !important;
+      font-size: 14px !important;
+      line-height: 1.55 !important;
+      font-weight: 500 !important;
+    }
+    .stellar-v2-badge,
+    .stellar-feature-grid,
+    .home-guides-link { display: none !important; }
+
+    #suggestion-chips {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0,1fr)) !important;
+      width: 100% !important;
+      max-width: 720px !important;
+      margin: 30px auto 0 !important;
+      gap: 9px !important;
+    }
+    #suggestion-chips .sug-chip {
+      min-width: 0 !important;
+      min-height: 48px !important;
+      padding: 0 14px !important;
+      justify-content: flex-start !important;
+      gap: 9px !important;
+      border: 1px solid rgba(255,255,255,.095) !important;
+      border-radius: 13px !important;
+      background: rgba(255,255,255,.035) !important;
+      color: rgba(247,245,251,.82) !important;
+      box-shadow: none !important;
+      font-size: 12px !important;
+      font-weight: 650 !important;
+      text-align: left !important;
+      transition: background .14s ease, border-color .14s ease, transform .14s ease !important;
+    }
+    #suggestion-chips .sug-chip:hover {
+      background: rgba(255,255,255,.065) !important;
+      border-color: rgba(194,172,255,.25) !important;
+      transform: translateY(-1px);
+    }
+    #suggestion-chips .sug-chip span:first-child {
+      display: grid !important;
+      place-items: center !important;
+      width: 24px !important;
+      height: 24px !important;
+      flex: 0 0 24px !important;
+      border-radius: 7px !important;
+      background: rgba(176,144,255,.09) !important;
+      color: #cbbaff !important;
+      font-size: 12px !important;
+    }
+
+    .input-area.glass {
+      padding: 8px 24px calc(18px + env(safe-area-inset-bottom)) !important;
+      border: 0 !important;
+      background: linear-gradient(to top, rgba(8,6,14,.96) 46%, rgba(8,6,14,0)) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    .input-area > .flex {
+      position: relative !important;
+      width: min(100%, 820px) !important;
+      max-width: 820px !important;
+      min-height: 76px !important;
+      margin: 0 auto !important;
+      padding: 10px 60px 34px 12px !important;
+      border: 1px solid rgba(255,255,255,.13) !important;
+      border-radius: 20px !important;
+      background: rgba(20,18,27,.94) !important;
+      box-shadow: 0 12px 34px rgba(0,0,0,.24) !important;
+    }
+    #txt {
+      min-height: 34px !important;
+      max-height: 150px !important;
+      padding: 6px 8px !important;
+      font-size: 15px !important;
+      line-height: 1.45 !important;
+    }
+    .input-area #send-btn {
+      position: absolute !important;
+      right: 12px !important;
+      top: 11px !important;
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      min-height: 40px !important;
+      border-radius: 12px !important;
+      background: #f3efff !important;
+      color: #1b1428 !important;
+      box-shadow: none !important;
+    }
+    .mic-btn {
+      right: 60px !important;
+      top: 11px !important;
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      min-height: 40px !important;
+      border-radius: 12px !important;
+    }
+    .composer-foot {
+      left: 18px !important;
+      right: 112px !important;
+      bottom: 8px !important;
+      gap: 6px !important;
+    }
+    .composer-foot .ws-toggle,
+    .composer-foot .model-pill {
+      min-height: 25px !important;
+      padding: 0 9px !important;
+      border-color: rgba(255,255,255,.08) !important;
+      border-radius: 999px !important;
+      background: transparent !important;
+      color: rgba(238,234,246,.6) !important;
+      box-shadow: none !important;
+      font-size: 10px !important;
+    }
+
+    body.light .greet-mark {
+      border-color: rgba(0,0,0,.08);
+      background: rgba(0,0,0,.025);
+      color: #7055bd;
+    }
+    body.light .greet-hi { color: #18151f !important; }
+    body.light .welcome-sub { color: rgba(24,21,31,.55) !important; }
+    body.light #suggestion-chips .sug-chip {
+      border-color: rgba(0,0,0,.075) !important;
+      background: rgba(255,255,255,.58) !important;
+      color: rgba(24,21,31,.8) !important;
+    }
+    body.light #suggestion-chips .sug-chip span:first-child {
+      background: rgba(112,85,189,.08) !important;
+      color: #7055bd !important;
+    }
+    body.light .input-area.glass {
+      background: linear-gradient(to top, rgba(240,240,245,.98) 46%, rgba(240,240,245,0)) !important;
+    }
+    body.light .input-area > .flex {
+      border-color: rgba(0,0,0,.1) !important;
+      background: rgba(255,255,255,.94) !important;
+      box-shadow: 0 12px 28px rgba(0,0,0,.07) !important;
+    }
+
+    @media (max-width: 767px) {
+      #chat { padding: 10px 12px 4px !important; }
+      .greet-wrap {
+        width: 100% !important;
+        padding: clamp(34px, 8vh, 66px) 4px 22px !important;
+      }
+      .greet-mark {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+      }
+      .greet-hi { font-size: clamp(28px, 8vw, 36px) !important; }
+      .welcome-sub { margin-top: 9px !important; font-size: 13px !important; }
+      #suggestion-chips {
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+        gap: 8px !important;
+        margin-top: 24px !important;
+      }
+      #suggestion-chips .sug-chip {
+        min-height: 46px !important;
+        padding: 0 11px !important;
+        font-size: 11px !important;
+      }
+      .input-area.glass {
+        padding: 6px 10px calc(10px + env(safe-area-inset-bottom)) !important;
+      }
+      .input-area > .flex {
+        min-height: 72px !important;
+        padding: 8px 54px 31px 9px !important;
+        border-radius: 18px !important;
+      }
+      .input-area #send-btn {
+        right: 9px !important;
+        top: 8px !important;
+        width: 40px !important;
+        height: 40px !important;
+      }
+      .mic-btn {
+        right: 54px !important;
+        top: 8px !important;
+      }
+      .composer-foot {
+        left: 13px !important;
+        right: 102px !important;
+        bottom: 6px !important;
+      }
+    }
+    @media (max-width: 380px) {
+      #suggestion-chips { grid-template-columns: 1fr !important; }
+    }
+  </style>
+
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -3642,18 +3880,16 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       <main id="chat" class="flex-1 overflow-y-auto p-6" aria-label="Chat conversation" aria-busy="false">
         <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
         <div class="greet-wrap">
-          <div class="stellar-v2-badge">✦ <strong>Stellar AI v2.0</strong><span>More power. More tools. A smarter you.</span></div>
-          <div class="greet-hi" id="greet-hi">Welcome to Stellar AI</div>
-          <p class="welcome-sub">How can Stellar AI help you today?</p>
-          <div class="stellar-feature-grid" aria-label="Quick AI tools"><button type="button" onclick="stellarQuick('Brainstorm ideas for: ')"><i>💡</i><b>Get ideas</b><span>Brainstorm anything</span></button><button type="button" onclick="stellarQuick('Write this for me: ')"><i>✎</i><b>Write</b><span>Emails, blogs, posts</span></button><button type="button" onclick="stellarQuick('Build and debug this code: ')"><i>⌗</i><b>Code</b><span>Build and debug</span></button><button type="button" onclick="stellarQuick('Analyse this data or problem: ')"><i>▥</i><b>Analyse</b><span>Data and research</span></button><button type="button" onclick="stellarQuick('Create a plan for: ')"><i>☑</i><b>Plan</b><span>Tasks and strategy</span></button><button type="button" onclick="document.getElementById('image-upload-input')?.click()"><i>▧</i><b>Create</b><span>Images and designs</span></button><button type="button" onclick="document.getElementById('model-btn')?.click()"><i>🤖</i><b>Use Agents</b><span>Let AI work for you</span></button></div>
-          <div id="welcome-starters-heading" class="welcome-starters-label">Try an example</div>
+          <div class="greet-mark" aria-hidden="true">✦</div>
+          <div class="greet-hi" id="greet-hi">What can I help you build?</div>
+          <p class="welcome-sub">Ask anything, or start with one of these.</p>
+          <div id="welcome-starters-heading" class="sr-only">Quick starts</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
-            <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job</span></button>
-            <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Build a bank heist</span></button>
-            <button type="button" onclick="useSuggestion('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist')" class="sug-chip"><span>🎮</span><span>Build a Roblox game</span></button>
-            <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix my script</span></button>
+            <button type="button" onclick="useSuggestion('Build a clean QBCore FiveM system for: ')" class="sug-chip"><span aria-hidden="true">⌘</span><span>FiveM system</span></button>
+            <button type="button" onclick="useSuggestion('Build a secure Roblox game system for: ')" class="sug-chip"><span aria-hidden="true">◇</span><span>Roblox game</span></button>
+            <button type="button" onclick="useSuggestion('Fix and explain this code: ')" class="sug-chip"><span aria-hidden="true">⌗</span><span>Fix code</span></button>
+            <button type="button" onclick="useSuggestion('Create a clear step-by-step plan for: ')" class="sug-chip"><span aria-hidden="true">✓</span><span>Make a plan</span></button>
           </div>
-          <a href="/blog" class="home-guides-link">Browse guides <span aria-hidden="true">→</span></a>
         </div>
 
       </main>
