@@ -20,9 +20,12 @@ test('Gmail push watches only inbox additions and calls the owner once per messa
   assert.match(push, /GMAIL_CALL_ON_EMAIL/);
 });
 
-test('Gmail webhook requires a server secret and mailbox watch management stays owner/internal only', () => {
+test('Gmail webhook accepts a server secret or verified Google Pub/Sub identity and keeps watch management owner/internal only', () => {
   assert.match(pushApi, /GMAIL_PUSH_TOKEN/);
   assert.match(pushApi, /timingSafeEqual/);
+  assert.match(pushApi, /oauth2\.googleapis\.com\/tokeninfo/);
+  assert.match(pushApi, /GMAIL_PUSH_AUDIENCE/);
+  assert.match(pushApi, /GMAIL_PUSH_SERVICE_ACCOUNT/);
   assert.match(pushApi, /processGmailPush/);
   assert.match(watchApi, /requireSession/);
   assert.match(watchApi, /isOwnerEmail/);
