@@ -2949,6 +2949,69 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     }
   }
 </style>
+
+<style id="stellar-no-white-edge-gutters-v1">
+  /* Lock the entire viewport to the dark landing background — no white side gutters. */
+  html,
+  body{
+    margin:0!important;
+    padding:0!important;
+    width:100%!important;
+    min-width:320px!important;
+    min-height:100%!important;
+    background:#080808!important;
+    background-color:#080808!important;
+    background-image:none!important;
+    overflow-x:clip!important;
+  }
+
+  body{
+    position:relative!important;
+    min-height:100vh!important;
+  }
+
+  body::before,
+  body::after{
+    display:none!important;
+    content:none!important;
+    background:none!important;
+  }
+
+  .page-shell,
+  main{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    background:#080808!important;
+    background-color:#080808!important;
+    background-image:none!important;
+  }
+
+  #plans,
+  main > .section,
+  .final-cta-section{
+    background-color:#080808!important;
+  }
+
+  footer.container{
+    background-color:#080808!important;
+  }
+
+  /* Prevent transformed/glow elements from creating a visible canvas gutter. */
+  .hero,
+  .hero-visual,
+  .product-frame,
+  .pricing-wrap,
+  .faq-layout,
+  .final-cta,
+  footer{
+    max-width:100%!important;
+  }
+
+  @supports not (overflow:clip){
+    html,body{overflow-x:hidden!important}
+  }
+</style>
 </head>
 <body>
   
