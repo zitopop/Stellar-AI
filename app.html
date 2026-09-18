@@ -5163,6 +5163,84 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
   }
 </style>
+
+<style id="stellar-home-cleanup-v3">
+  /* Remove the gray divider bars from the app chrome. */
+  .stellar-global-header,
+  .topbar.glass{
+    border-bottom:0!important;
+    box-shadow:none!important;
+  }
+  .stellar-app-shell #sidebar,
+  #sidebar{
+    border-right:0!important;
+  }
+
+  /* Keep the Stellar wordmark crisp and ordinary — no inherited gradient/text-fill weirdness. */
+  .landing-style-home .greet-brand strong,
+  .landing-style-home .greet-brand strong span,
+  #sidebar .brand-grad{
+    font-family:inherit!important;
+    font-style:normal!important;
+    text-transform:none!important;
+    text-shadow:none!important;
+    background:none!important;
+    -webkit-background-clip:border-box!important;
+    background-clip:border-box!important;
+    -webkit-text-fill-color:currentColor!important;
+  }
+  .landing-style-home .greet-brand strong{
+    color:#f5f4f8!important;
+    font-weight:820!important;
+    letter-spacing:-.028em!important;
+  }
+  .landing-style-home .greet-brand strong span{
+    color:#8d72ff!important;
+  }
+
+  /* Settings gets the full focus: sidebar/header disappear while the modal is open. */
+  body.settings-open #sidebar,
+  body.settings-open #overlay{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  body.settings-open #main-col{
+    margin-left:0!important;
+  }
+  body.settings-open .stellar-global-header{
+    left:0!important;
+  }
+
+  /* While typing, hide the home guidance without moving the composer around. */
+  body.composer-has-text .landing-style-home .greet-eyebrow,
+  body.composer-has-text .landing-style-home .welcome-sub,
+  body.composer-has-text .landing-style-home #suggestion-chips,
+  body.composer-has-text .landing-style-home .home-disclaimer{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  /* Composer stays stable and readable while text grows. */
+  #txt{
+    resize:none!important;
+    overflow-x:hidden!important;
+    overscroll-behavior:contain!important;
+    line-height:1.5!important;
+    transition:none!important;
+  }
+  #txt:focus{
+    outline:none!important;
+  }
+  .input-area>.flex{
+    align-items:flex-end!important;
+  }
+
+  @media(max-width:900px){
+    body.settings-open .stellar-global-header{padding-left:12px!important}
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -5307,7 +5385,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           <a href="/terms.html" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>Terms</a>
           <button type="button" onclick="openSettings()" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"/></svg></span>Settings</button>
         </div>
-        <a href="/blog" class="side-act side-guides-link" aria-label="Open FiveM and Roblox Guides"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"/></svg></span>Guides</a>
       </div>
     </div>
 
@@ -7402,15 +7479,23 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           <div class="home-disclaimer">Review generated code before using it in production.</div>
         </div>`;
     }
+    function syncComposerInputState() {
+      const txt = document.getElementById('txt');
+      if (!txt) return;
+      const hasText = txt.value.trim().length > 0;
+      document.body.classList.toggle('composer-has-text', hasText);
+      txt.style.height = 'auto';
+      const maxHeight = window.matchMedia('(max-width: 640px)').matches ? 120 : 160;
+      const nextHeight = Math.min(txt.scrollHeight, maxHeight);
+      txt.style.height = Math.max(48, nextHeight) + 'px';
+      txt.style.overflowY = txt.scrollHeight > maxHeight ? 'auto' : 'hidden';
+    }
     function useSuggestion(text) {
       const txt = document.getElementById('txt');
       if (!txt) return;
       txt.value = text;
       txt.focus();
-      txt.style.height = 'auto';
-      txt.style.height = txt.scrollHeight + 'px';
-      const chips = document.getElementById('suggestion-chips');
-      if (chips) chips.style.display = 'none';
+      syncComposerInputState();
     }
     function scrollChatToEnd() {
       const el = document.getElementById('chat');
@@ -13116,6 +13201,10 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
   if(!composer||!txt)return;
   txt.disabled=false;
   txt.readOnly=false;
+  txt.addEventListener('input', syncComposerInputState, { passive:true });
+  txt.addEventListener('change', syncComposerInputState);
+  window.addEventListener('resize', syncComposerInputState, { passive:true });
+  requestAnimationFrame(syncComposerInputState);
   composer.addEventListener('pointerdown',function(e){
     if(e.target.closest('button,input,select,a,[role="menu"]'))return;
     if(e.target===txt||e.target.closest('#txt'))return;
