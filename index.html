@@ -2251,6 +2251,36 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     }
   }
 </style>
+
+<style id="stellar-live-star-motion-v1">
+  .stellar-starfield .live-twinkle-star{
+    position:absolute;
+    z-index:1;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:#fff;
+    opacity:.35;
+    box-shadow:0 0 6px rgba(255,255,255,.72),0 0 12px rgba(174,139,255,.20);
+    pointer-events:none;
+  }
+  .stellar-starfield .live-twinkle-star.is-purple{
+    background:#c9b5ff;
+    box-shadow:0 0 7px rgba(201,181,255,.92),0 0 16px rgba(139,92,246,.30);
+  }
+
+  /* JS drives motion so later CSS layers cannot accidentally freeze it. */
+  .stellar-starfield .shooting-star{
+    animation:none!important;
+    opacity:0;
+  }
+
+  @media(max-width:700px){
+    .stellar-starfield .live-twinkle-star:nth-of-type(3n){
+      display:none;
+    }
+  }
+</style>
 </head>
 <body>
   <div class="stellar-starfield" aria-hidden="true">
@@ -3493,6 +3523,66 @@ body:not(.light) .page-shell :is(p,li,label,summary,small,.hero-copy,.hero-subti
 body.light .page-shell :is(h1,h2,h3,h4,h5,h6,strong){color:#171020!important}
 body.light .page-shell :is(p,li,label,summary,small,.hero-copy,.hero-subtitle,.muted,.plan-copy,.faq-answer){color:#352b43!important}
 @media(max-width:760px){.page-shell :is(p,li,small,.hero-copy,.hero-subtitle,.plan-copy,.faq-answer){line-height:1.65!important}}</style>
+
+<script id="stellar-live-star-motion-script">
+(() => {
+  const field = document.querySelector('.stellar-starfield');
+  if (!field || field.dataset.liveMotionReady === '1') return;
+  field.dataset.liveMotionReady = '1';
+
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  const starCount = window.matchMedia?.('(max-width: 700px)').matches ? 18 : 34;
+  for (let i = 0; i < starCount; i += 1) {
+    const star = document.createElement('span');
+    star.className = 'live-twinkle-star' + (i % 5 === 0 ? ' is-purple' : '');
+    const x = (i * 37.17 + 11) % 98;
+    const y = (i * 61.83 + 7) % 96;
+    const size = 1.6 + (i % 4) * 0.65;
+    star.style.left = x.toFixed(2) + '%';
+    star.style.top = y.toFixed(2) + '%';
+    star.style.width = size.toFixed(2) + 'px';
+    star.style.height = size.toFixed(2) + 'px';
+    field.appendChild(star);
+
+    star.animate([
+      { opacity: .18, transform: 'scale(.72)', filter: 'brightness(.78)' },
+      { opacity: .95, transform: 'scale(1.35)', filter: 'brightness(1.55)' },
+      { opacity: .38, transform: 'scale(.9)', filter: 'brightness(.92)' },
+      { opacity: 1, transform: 'scale(1.22)', filter: 'brightness(1.35)' }
+    ], {
+      duration: 1900 + (i % 7) * 410,
+      delay: (i % 9) * -310,
+      iterations: Infinity,
+      direction: 'alternate',
+      easing: 'ease-in-out'
+    });
+  }
+
+  const shoot = (selector, duration, delay, dx, dy, angle) => {
+    const star = field.querySelector(selector);
+    if (!star) return;
+    star.style.display = 'block';
+    star.animate([
+      { opacity: 0, transform: `translate3d(0,0,0) rotate(${angle}deg) scaleX(.82)`, offset: 0 },
+      { opacity: 0, transform: `translate3d(0,0,0) rotate(${angle}deg) scaleX(.82)`, offset: .68 },
+      { opacity: .95, transform: `translate3d(-35px,18px,0) rotate(${angle}deg) scaleX(.95)`, offset: .72 },
+      { opacity: .92, transform: `translate3d(${dx * .82}px,${dy * .82}px,0) rotate(${angle}deg) scaleX(1)`, offset: .94 },
+      { opacity: 0, transform: `translate3d(${dx}px,${dy}px,0) rotate(${angle}deg) scaleX(1)`, offset: 1 }
+    ], {
+      duration,
+      delay,
+      iterations: Infinity,
+      easing: 'linear'
+    });
+  };
+
+  shoot('.shooting-star-1', 7200, 400, -1150, 520, -24);
+  shoot('.shooting-star-2', 9800, 2100, -960, 470, -28);
+  shoot('.shooting-star-3', 12400, 4300, -1320, 500, -21);
+})();
+</script>
 </body>
 </html>
 
