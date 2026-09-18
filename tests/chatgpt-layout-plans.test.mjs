@@ -7,7 +7,7 @@ const landing = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8
 const css = fs.readFileSync(new URL('../stellar-chatgpt-layout.css', import.meta.url), 'utf8');
 
 test('workspace uses the focused ChatGPT-inspired Stellar shell', () => {
-  assert.match(app, /stellar-chatgpt-layout\.css\?v=1/);
+  assert.match(app, /stellar-chatgpt-layout\.css\?v=2/);
   assert.match(css, /\.stellar-global-header\{display:none!important\}/);
   assert.match(css, /#chats-list\{display:block!important/);
   assert.match(css, /\.stellar-v2-badge,\.stellar-feature-grid/);
