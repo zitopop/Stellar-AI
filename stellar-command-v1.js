@@ -72,6 +72,19 @@
     window.__stellarWorkspaceFetchWrapped = true;
   }
 
+  // The approved clean chat UI is owned by app.html. Keep only the request-context
+  // enrichment above; do not inject workspace mode bars, banners, or project popovers.
+  try {
+    if (typeof window.safeStorageSet === 'function') {
+      window.safeStorageSet('stellar_workspace_mode', 'chat');
+      window.safeStorageSet('stellar_workspace_project', 'general');
+    } else {
+      localStorage.setItem('stellar_workspace_mode', 'chat');
+      localStorage.setItem('stellar_workspace_project', 'general');
+    }
+  } catch (_) {}
+  return;
+
   const onReady = (fn) => document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', fn, { once:true }) : fn();
   onReady(() => {
     document.documentElement.classList.add('stellar-command-v1');
