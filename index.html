@@ -3257,6 +3257,55 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     filter:initial;
   }
 </style>
+
+<style id="stellar-final-text-shooting-fix-v2">
+  /* Plans heading: solid, crisp text only — no purple glow/gradient/outline. */
+  body:not(.light) #plans .section-heading h2,
+  body:not(.light) #plans .section-heading p,
+  body:not(.light) #plans .plan h3,
+  body:not(.light) #plans .plan-desc,
+  body:not(.light) #plans .price,
+  body:not(.light) #plans .annual{
+    background:none!important;
+    background-image:none!important;
+    color:#f4f4f5!important;
+    -webkit-text-fill-color:currentColor!important;
+    -webkit-background-clip:border-box!important;
+    background-clip:border-box!important;
+    text-shadow:none!important;
+    -webkit-text-stroke:0!important;
+    filter:none!important;
+  }
+  body:not(.light) #plans .section-heading p,
+  body:not(.light) #plans .plan-desc,
+  body:not(.light) #plans .annual{
+    color:#9ea1a8!important;
+  }
+
+  /* Make shooting stars easier to actually see. */
+  .landing-shooting{
+    width:210px!important;
+    height:2px!important;
+    font-size:18px!important;
+    box-shadow:0 0 10px rgba(255,255,255,.48),0 0 24px rgba(139,92,246,.26)!important;
+  }
+  .shooting-one{top:13%!important;animation:landing-shoot-fast-a 6.2s linear infinite .7s!important}
+  .shooting-two{top:39%!important;animation:landing-shoot-fast-b 7.4s linear infinite 2.1s!important}
+  .shooting-three{top:66%!important;animation:landing-shoot-fast-a 8.8s linear infinite 3.6s!important}
+
+  @keyframes landing-shoot-fast-a{
+    0%,58%{opacity:0;transform:translate3d(0,0,0) rotate(-22deg)}
+    62%{opacity:1}
+    88%{opacity:.96}
+    100%{opacity:0;transform:translate3d(-1300px,520px,0) rotate(-22deg)}
+  }
+  @keyframes landing-shoot-fast-b{
+    0%,64%{opacity:0;transform:translate3d(0,0,0) rotate(-27deg)}
+    68%{opacity:.98}
+    90%{opacity:.92}
+    100%{opacity:0;transform:translate3d(-1120px,590px,0) rotate(-27deg)}
+  }
+</style>
 </head>
 <body>
   <div class="landing-starfield" aria-hidden="true">
