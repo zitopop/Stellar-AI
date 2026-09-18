@@ -2281,13 +2281,127 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     }
   }
 </style>
+
+<style id="stellar-fire-neutral-labels-v1">
+  /* Warm fire/ember atmosphere behind the content, never over it. */
+  .stellar-firefield{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+    opacity:.74;
+    background:
+      radial-gradient(ellipse at 50% 105%,rgba(255,88,24,.28) 0%,rgba(255,63,16,.14) 24%,transparent 58%),
+      radial-gradient(ellipse at 12% 88%,rgba(255,126,31,.16) 0%,transparent 30%),
+      radial-gradient(ellipse at 88% 82%,rgba(255,58,15,.15) 0%,transparent 30%);
+    filter:saturate(1.06);
+  }
+  .stellar-firefield::before,
+  .stellar-firefield::after{
+    content:"";
+    position:absolute;
+    left:-8%;
+    right:-8%;
+    bottom:-12%;
+    height:48vh;
+    pointer-events:none;
+    mix-blend-mode:screen;
+    filter:blur(30px);
+    transform-origin:50% 100%;
+  }
+  .stellar-firefield::before{
+    background:
+      radial-gradient(ellipse at 18% 100%,rgba(255,120,35,.34),transparent 34%),
+      radial-gradient(ellipse at 42% 100%,rgba(255,62,17,.28),transparent 30%),
+      radial-gradient(ellipse at 67% 100%,rgba(255,142,40,.26),transparent 32%),
+      radial-gradient(ellipse at 88% 100%,rgba(255,56,18,.24),transparent 30%);
+    animation:stellar-fire-breathe 4.2s ease-in-out infinite alternate;
+  }
+  .stellar-firefield::after{
+    height:34vh;
+    bottom:-8%;
+    background:
+      radial-gradient(ellipse at 30% 100%,rgba(255,184,72,.18),transparent 30%),
+      radial-gradient(ellipse at 54% 100%,rgba(255,104,26,.22),transparent 28%),
+      radial-gradient(ellipse at 78% 100%,rgba(255,180,66,.16),transparent 28%);
+    animation:stellar-fire-shift 5.4s ease-in-out infinite alternate;
+  }
+  @keyframes stellar-fire-breathe{
+    from{opacity:.52;transform:scaleY(.90) translateY(4%)}
+    to{opacity:.90;transform:scaleY(1.08) translateY(-2%)}
+  }
+  @keyframes stellar-fire-shift{
+    from{opacity:.40;transform:translateX(-2%) scale(1)}
+    to{opacity:.76;transform:translateX(2%) scale(1.04)}
+  }
+
+  /* Extra shooting stars. JS supplies the movement. */
+  .shooting-star-4{top:22%;right:-180px;width:150px}
+  .shooting-star-5{top:48%;right:-210px;width:190px}
+  .shooting-star-6{top:6%;right:-160px;width:130px}
+
+  /* Remove purple-neon treatment from small helper/metadata text. */
+  .eyebrow,
+  .cap-number,
+  .capability-map-label,
+  .plan-label,
+  .tiny-label,
+  .reply-label,
+  .preview-model,
+  .product-live,
+  .roblox-game-kicker{
+    color:#b9bdc8!important;
+    text-shadow:none!important;
+    filter:none!important;
+  }
+  .eyebrow,
+  .landing-hero-v2 .hero-copy .eyebrow,
+  #how-it-works>.section-heading .eyebrow,
+  #capabilities>.section-heading .eyebrow,
+  #why-stellar .difference-copy .eyebrow,
+  #plans .section-heading .eyebrow,
+  .faq-intro .eyebrow{
+    background:transparent!important;
+    border-color:rgba(255,255,255,.10)!important;
+    box-shadow:none!important;
+  }
+  .eyebrow::before{
+    background:#d4d7de!important;
+    box-shadow:none!important;
+  }
+  .cap-number,
+  .capability-map-label,
+  .plan-label,
+  .reply-label,
+  .product-live{
+    letter-spacing:.10em!important;
+  }
+
+  /* Keep the star/fire effects behind the interactive page. */
+  .page-shell{position:relative!important;z-index:1!important}
+
+  @media(max-width:700px){
+    .stellar-firefield{opacity:.50}
+    .shooting-star-5,
+    .shooting-star-6{display:none!important}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .stellar-firefield::before,
+    .stellar-firefield::after{animation:none!important}
+  }
+</style>
 </head>
 <body>
   <div class="stellar-starfield" aria-hidden="true">
     <span class="shooting-star shooting-star-1"></span>
     <span class="shooting-star shooting-star-2"></span>
     <span class="shooting-star shooting-star-3"></span>
+    <span class="shooting-star shooting-star-4"></span>
+    <span class="shooting-star shooting-star-5"></span>
+    <span class="shooting-star shooting-star-6"></span>
   </div>
+  <div class="stellar-firefield" aria-hidden="true"></div>
   <div class="page-shell">
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <header class="site-header">
@@ -3578,9 +3692,12 @@ body.light .page-shell :is(p,li,label,summary,small,.hero-copy,.hero-subtitle,.m
     });
   };
 
-  shoot('.shooting-star-1', 7200, 400, -1150, 520, -24);
-  shoot('.shooting-star-2', 9800, 2100, -960, 470, -28);
-  shoot('.shooting-star-3', 12400, 4300, -1320, 500, -21);
+  shoot('.shooting-star-1', 6600, 300, -1150, 520, -24);
+  shoot('.shooting-star-2', 8200, 1600, -960, 470, -28);
+  shoot('.shooting-star-3', 10400, 3200, -1320, 500, -21);
+  shoot('.shooting-star-4', 7600, 900, -980, 360, -18);
+  shoot('.shooting-star-5', 11600, 4700, -1180, 610, -30);
+  shoot('.shooting-star-6', 9200, 2600, -860, 330, -16);
 })();
 </script>
 </body>
