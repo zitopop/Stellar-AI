@@ -5268,8 +5268,23 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     -webkit-text-fill-color:currentColor!important;
   }
   #sidebar .brand-grad,
-  .landing-style-home .greet-brand strong{color:#f5f4f8!important}
-  .landing-style-home .greet-brand strong span{color:#8d72ff!important}
+  .landing-style-home .greet-brand strong,
+  .landing-style-home .greet-brand strong span{color:#f5f4f8!important}
+  .landing-style-home .greet-brand{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:10px!important;
+  }
+  .landing-style-home .greet-brand-mark{color:#8d72ff!important}
+  .landing-style-home .greet-brand strong,
+  .landing-style-home .greet-brand strong span{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter",system-ui,sans-serif!important;
+    font-style:normal!important;
+    font-weight:800!important;
+    letter-spacing:-.02em!important;
+    line-height:1!important;
+  }
 
   /* Settings owns the screen while open — app sidebar/header are fully removed visually. */
   body.settings-open #sidebar,
@@ -5292,6 +5307,23 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
   /* Never show the floating update pill in the cleaned app UI. */
   #update-pill{display:none!important}
+
+  /* Remove remaining gray divider bars from the home workspace. */
+  .input-area.glass{border-top:0!important}
+
+  /* Smooth visible streaming cursor while Stellar is writing. */
+  .streaming-response::after{
+    content:"";
+    display:inline-block;
+    width:7px;
+    height:1.05em;
+    margin-left:3px;
+    vertical-align:-.15em;
+    border-radius:2px;
+    background:#a78bfa;
+    animation:stellar-stream-caret .85s steps(1,end) infinite;
+  }
+  @keyframes stellar-stream-caret{50%{opacity:.18}}
 
   /* As soon as the user types, remove all starter/guide content from the home state. */
   body.composer-has-text .landing-style-home .greet-eyebrow,
@@ -5458,7 +5490,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
             <div class="acct-name" id="acct-name">—</div>
             <div class="acct-email" id="acct-email">—</div>
           </div>
-          <button type="button" onclick="openSettings()" class="acct-out-btn" title="Open Settings" aria-label="Open Settings">Settings</button>
+          <button type="button" onclick="signOut()" class="acct-out-btn" title="Sign out">Sign out</button>
         </div>
       </div>
 
@@ -6378,6 +6410,35 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       return headers;
     }
 
+    let sessionExpiryTimer = null;
+    function scheduleSessionExpiry() {
+      if (sessionExpiryTimer) clearTimeout(sessionExpiryTimer);
+      sessionExpiryTimer = null;
+      const session = Store.get().session;
+      if (!session) return;
+      try {
+        const encoded = session.split('.')[0] || '';
+        const padded = encoded.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - encoded.length % 4) % 4);
+        const payload = JSON.parse(atob(padded));
+        const expiresAt = Number(payload?.exp) * 1000;
+        if (!Number.isFinite(expiresAt)) return;
+        const checkExpiry = () => {
+          if (Store.get().session !== session) return;
+          const remaining = expiresAt - Date.now();
+          if (remaining <= 0) {
+            signOut();
+            setTimeout(() => {
+              openWelcome();
+              showStellarNotice('Your sign-in expired. Sign in again to continue.', 'info');
+            }, 0);
+            return;
+          }
+          sessionExpiryTimer = setTimeout(checkExpiry, Math.min(remaining, 2147480000));
+        };
+        checkExpiry();
+      } catch {}
+    }
+
     function recoverExpiredSession() {
       // A signed token can expire or be invalidated after a security-secret rotation.
       // Preserve the user's local copy before returning them to the verified sign-in flow.
@@ -6649,6 +6710,14 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         document.getElementById('overlay').classList.toggle('open');
         document.body.classList.toggle('nav-open', opening);
       }
+      syncSidebarAccessibility();
+    }
+
+    function closeResponsiveSidebar() {
+      const sb = document.getElementById('sidebar');
+      if (sb) sb.classList.remove('open');
+      document.getElementById('overlay')?.classList.remove('open');
+      document.body.classList.remove('nav-open');
       syncSidebarAccessibility();
     }
 
@@ -8221,7 +8290,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         loadChat(currentChatId);
         input.value = '';
         removeImage();
-        input.style.height = 'auto';
+        syncComposerInputState();
       }
 
       const chatEl = document.getElementById('chat');
@@ -8253,7 +8322,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       let streamStatus = null;
       let searchContext = null;
       let stepIdx = 0;
-      const STREAM_RENDER_INTERVAL_MS = 50;
+      const STREAM_RENDER_INTERVAL_MS = 40;
       let msgBubble = null;
       let streamRenderTimer = null;
       function renderStreamProgress() {
@@ -8425,7 +8494,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
                   // Mark all remaining steps as done, stop spinner, show completion
                   loading.remove();
                   msgBubble = document.createElement('div');
-                  msgBubble.className = 'message glass rounded-3xl px-5 py-3.5 mb-4 font-bold whitespace-pre-wrap';
+                  msgBubble.className = 'message glass rounded-3xl px-5 py-3.5 mb-4 font-bold whitespace-pre-wrap streaming-response';
                   chatEl.appendChild(msgBubble);
                   streamStatus = document.createElement('div');
                   streamStatus.className = 'stream-status';
@@ -8744,6 +8813,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         Store.set({ user });
       }
       updateSignedOutHint();
+      scheduleSessionExpiry();
       grantWelcomeCredits();
       checkOwnerEmail();
       document.getElementById('welcome-modal').classList.add('hidden');
@@ -8846,6 +8916,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       } catch { return []; }
     }
     function signOut() {
+      if (sessionExpiryTimer) clearTimeout(sessionExpiryTimer);
+      sessionExpiryTimer = null;
       // Save the current user's data keyed to their email before wiping
       const s = Store.get();
       if (s.user && s.user.email) {
@@ -8876,6 +8948,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       renderMeter();
       refreshSettings();
       loadChat(null);
+      const composer = document.getElementById('txt');
+      if (composer) {
+        composer.value = '';
+        syncComposerInputState();
+      }
       const chatEl = document.getElementById('chat');
       if (chatEl) chatEl.innerHTML = greetingMarkup();
       initGoogle();
@@ -9116,6 +9193,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
     function openSettings() {
       closeOtherDialogs('settings');
+      closeResponsiveSidebar();
       captureUtilityDialogTrigger();
       document.body.classList.add('settings-open');
       refreshSettings();
@@ -9537,6 +9615,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       checkOwnerEmail();
       grantWelcomeCredits();
       renderAccount();
+      scheduleSessionExpiry();
       handleDiscordReturn();
       initMic();
       initPaste();
@@ -9573,12 +9652,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       applyLandingHomePrompt();
     }
 
-    // iPhone polish: box grows as you type, keyboard keeps it in view
+    // Keep the composer state, guide visibility and height in sync on every device.
     const txtEl = document.getElementById('txt');
-    txtEl.addEventListener('input', () => {
-      txtEl.style.height = 'auto';
-      txtEl.style.height = Math.min(txtEl.scrollHeight, 120) + 'px';
-    });
+    txtEl.addEventListener('input', syncComposerInputState);
+    syncComposerInputState();
     txtEl.addEventListener('focus', () => {
       setTimeout(() => txtEl.scrollIntoView({ block: 'nearest' }), 300);
     });
