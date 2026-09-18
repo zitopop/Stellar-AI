@@ -5090,6 +5090,79 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
   }
 </style>
+
+<style id="stellar-global-header-model-v2">
+  .stellar-global-header{
+    display:flex!important;
+    align-items:center!important;
+    gap:14px!important;
+  }
+  .stellar-global-header .topbar-model-picker{
+    display:block!important;
+    position:relative!important;
+    flex:0 0 auto!important;
+    margin:0!important;
+    z-index:150!important;
+  }
+  .stellar-global-header .topbar-model-picker #model-btn{
+    min-width:116px!important;
+    min-height:40px!important;
+  }
+  .stellar-global-header .topbar-model-picker #model-menu{
+    top:calc(100% + 9px)!important;
+    bottom:auto!important;
+    right:0!important;
+    left:auto!important;
+    z-index:2000!important;
+  }
+
+  @media(max-width:900px){
+    .stellar-global-header{
+      padding-left:68px!important;
+      gap:9px!important;
+    }
+    .stellar-global-header .stellar-top-spacer{flex:1 1 auto!important}
+    .stellar-global-header .topbar-model-picker #model-btn{
+      min-width:102px!important;
+      min-height:38px!important;
+      padding:0 10px!important;
+      font-size:11px!important;
+    }
+  }
+
+  @media(max-width:640px){
+    .stellar-global-header{
+      height:58px!important;
+      padding:0 9px 0 58px!important;
+      gap:7px!important;
+    }
+    .stellar-global-header .topbar-model-picker{
+      margin:0!important;
+    }
+    .stellar-global-header .topbar-model-picker #model-btn{
+      min-width:92px!important;
+      max-width:106px!important;
+      min-height:38px!important;
+      padding:0 8px!important;
+      overflow:hidden!important;
+      text-overflow:ellipsis!important;
+      white-space:nowrap!important;
+    }
+    .stellar-global-header .topbar-model-picker #model-menu{
+      position:fixed!important;
+      top:62px!important;
+      right:9px!important;
+      left:9px!important;
+      width:auto!important;
+      max-height:70dvh!important;
+    }
+    .stellar-global-header .stellar-upgrade{
+      min-height:38px!important;
+      padding:0 10px!important;
+      font-size:11px!important;
+    }
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -5120,6 +5193,57 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 </defs></svg>
   <header class="stellar-global-header">
     <div class="stellar-top-spacer" aria-hidden="true"></div>
+    <div class="relative topbar-model-picker">
+            <button type="button" id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false">⭐ Star ▾</button>
+            <div id="model-menu" role="menu" aria-label="Choose an AI model" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
+              <div class="model-menu-heading" aria-hidden="true"><span>AI models</span><span>Select a focus</span></div>
+              <button type="button" onclick="pickModel('fabie')" data-model-choice="fabie" role="menuitemradio" aria-checked="false" aria-label="Select Spark for fast drafts" title="Fast drafts with Claude Haiku" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
+                </div>
+                <div id="fabie-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+              </button>
+              <button type="button" onclick="pickModel('smart')" data-model-choice="smart" role="menuitemradio" aria-checked="true" aria-label="Select Star, recommended for most scripts" title="Recommended scripts with Claude Sonnet" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-black text-sm">⭐ Star <span style="color:#8b8b9e;font-size:10px;">· best for most scripts</span></div>
+                </div>
+                <div id="smart-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+              </button>
+              <button type="button" onclick="pickModel('comet')" data-model-choice="comet" role="menuitemradio" aria-checked="false" aria-label="Select Comet for deep system work" title="Deep system work with Claude Opus" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-black text-sm">☄️ Comet <span style="color:#8b8b9e;font-size:10px;">· deep system work</span></div>
+                </div>
+                <div id="comet-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+              </button>
+              <button type="button" id="nova-model-btn" onclick="pickModel('ultra')" data-model-choice="ultra" role="menuitemradio" aria-checked="false" aria-label="Select Nova for maximum quality, available on Pro" title="Maximum quality with Claude Opus, Pro plan" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-black text-sm">🚀 Nova <span class="text-xs px-2 py-0.5 bg-[#7c3aed] rounded text-white">PRO</span><span style="color:#8b8b9e;font-size:10px;"> · max quality</span></div>
+                </div>
+                <div id="ultra-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+              </button>
+              <div id="provider-models" class="hidden border-t border-white/10 mt-2 pt-2">
+                <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/45">Specialist roles</div>
+                <button type="button" onclick="pickModel('researcher')" data-model-choice="researcher" role="menuitemradio" aria-checked="false" aria-label="Select Research AI for documented sources and uncertainty" title="Separate documented sources, assumptions, and open questions." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                  <div><div class="font-black text-sm">🔎 Research AI <span style="color:#8b8b9e;font-size:10px;">· sources + uncertainty</span></div></div>
+                  <div id="researcher-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+                </button>
+                <button type="button" onclick="pickModel('reviewer')" data-model-choice="reviewer" role="menuitemradio" aria-checked="false" aria-label="Select Review AI to audit another AI output" title="Audit requirement coverage, correctness, missing pieces, unsafe assumptions, and verification limits." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                  <div><div class="font-black text-sm">Review AI <span style="color:#8b8b9e;font-size:10px;">· quality gate</span></div></div>
+                  <div id="reviewer-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+                </button>
+                <button type="button" onclick="pickModel('security')" data-model-choice="security" role="menuitemradio" aria-checked="false" aria-label="Select Security AI for risk assessment and fixes" title="Report severity, abuse path, concrete fix, and residual risk." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                  <div><div class="font-black text-sm">🛡 Security AI <span style="color:#8b8b9e;font-size:10px;">· severity + fixes</span></div></div>
+                  <div id="security-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+                </button>
+                <button type="button" onclick="pickModel('tester')" data-model-choice="tester" role="menuitemradio" aria-checked="false" aria-label="Select Test AI for edge cases and evidence limits" title="Return an edge-case matrix and state what was not run." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+                  <div><div class="font-black text-sm">🧪 Test AI <span style="color:#8b8b9e;font-size:10px;">· matrix + evidence limits</span></div></div>
+                  <div id="tester-check" class="font-black text-sm text-[#7c3aed]">✓</div>
+                </button>
+              </div>
+              <div class="border-t border-white/10 mt-2"></div>
+              <button type="button" onclick="closeModelMenu(); openPlans()" role="menuitem" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 font-black text-sm">⭐ See all plans</button>
+            </div>
+          </div>
     <nav class="stellar-top-actions" aria-label="App shortcuts">
       <a href="/blog">Help</a>
       <a href="/blog">Updates</a>
@@ -5196,57 +5320,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           <button id="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar" class="menu-btn-mobile w-10 h-10 items-center justify-center rounded-xl text-xl hover:bg-white/10 transition-colors">☰</button>
           <div id="chat-title" class="font-black tracking-[-0.3px]">Stellar AI</div>
         </div>
-        <div class="relative topbar-model-picker">
-            <button type="button" id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false">⭐ Star ▾</button>
-            <div id="model-menu" role="menu" aria-label="Choose an AI model" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
-              <div class="model-menu-heading" aria-hidden="true"><span>AI models</span><span>Select a focus</span></div>
-              <button type="button" onclick="pickModel('fabie')" data-model-choice="fabie" role="menuitemradio" aria-checked="false" aria-label="Select Spark for fast drafts" title="Fast drafts with Claude Haiku" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                <div>
-                  <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
-                </div>
-                <div id="fabie-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-              </button>
-              <button type="button" onclick="pickModel('smart')" data-model-choice="smart" role="menuitemradio" aria-checked="true" aria-label="Select Star, recommended for most scripts" title="Recommended scripts with Claude Sonnet" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                <div>
-                  <div class="font-black text-sm">⭐ Star <span style="color:#8b8b9e;font-size:10px;">· best for most scripts</span></div>
-                </div>
-                <div id="smart-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-              </button>
-              <button type="button" onclick="pickModel('comet')" data-model-choice="comet" role="menuitemradio" aria-checked="false" aria-label="Select Comet for deep system work" title="Deep system work with Claude Opus" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                <div>
-                  <div class="font-black text-sm">☄️ Comet <span style="color:#8b8b9e;font-size:10px;">· deep system work</span></div>
-                </div>
-                <div id="comet-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-              </button>
-              <button type="button" id="nova-model-btn" onclick="pickModel('ultra')" data-model-choice="ultra" role="menuitemradio" aria-checked="false" aria-label="Select Nova for maximum quality, available on Pro" title="Maximum quality with Claude Opus, Pro plan" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                <div>
-                  <div class="font-black text-sm">🚀 Nova <span class="text-xs px-2 py-0.5 bg-[#7c3aed] rounded text-white">PRO</span><span style="color:#8b8b9e;font-size:10px;"> · max quality</span></div>
-                </div>
-                <div id="ultra-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-              </button>
-              <div id="provider-models" class="hidden border-t border-white/10 mt-2 pt-2">
-                <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/45">Specialist roles</div>
-                <button type="button" onclick="pickModel('researcher')" data-model-choice="researcher" role="menuitemradio" aria-checked="false" aria-label="Select Research AI for documented sources and uncertainty" title="Separate documented sources, assumptions, and open questions." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                  <div><div class="font-black text-sm">🔎 Research AI <span style="color:#8b8b9e;font-size:10px;">· sources + uncertainty</span></div></div>
-                  <div id="researcher-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-                </button>
-                <button type="button" onclick="pickModel('reviewer')" data-model-choice="reviewer" role="menuitemradio" aria-checked="false" aria-label="Select Review AI to audit another AI output" title="Audit requirement coverage, correctness, missing pieces, unsafe assumptions, and verification limits." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                  <div><div class="font-black text-sm">Review AI <span style="color:#8b8b9e;font-size:10px;">· quality gate</span></div></div>
-                  <div id="reviewer-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-                </button>
-                <button type="button" onclick="pickModel('security')" data-model-choice="security" role="menuitemradio" aria-checked="false" aria-label="Select Security AI for risk assessment and fixes" title="Report severity, abuse path, concrete fix, and residual risk." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                  <div><div class="font-black text-sm">🛡 Security AI <span style="color:#8b8b9e;font-size:10px;">· severity + fixes</span></div></div>
-                  <div id="security-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-                </button>
-                <button type="button" onclick="pickModel('tester')" data-model-choice="tester" role="menuitemradio" aria-checked="false" aria-label="Select Test AI for edge cases and evidence limits" title="Return an edge-case matrix and state what was not run." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
-                  <div><div class="font-black text-sm">🧪 Test AI <span style="color:#8b8b9e;font-size:10px;">· matrix + evidence limits</span></div></div>
-                  <div id="tester-check" class="font-black text-sm text-[#7c3aed]">✓</div>
-                </button>
-              </div>
-              <div class="border-t border-white/10 mt-2"></div>
-              <button type="button" onclick="closeModelMenu(); openPlans()" role="menuitem" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 font-black text-sm">⭐ See all plans</button>
-            </div>
-          </div>
+        
       </div>
 
       <div id="workspace" class="hidden">
