@@ -1,0 +1,42 @@
+name: Audit live Stellar blog HTTP
+
+on:
+  push:
+    branches:
+      - audit/live-blog-http-v1
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit all 66 production blog URLs in parallel
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const xml=fs.readFileSync('sitemap.xml','utf8');
+          const urls=[...xml.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/loc>/g)].map(m=>m[1]);
+          if(urls.length!==66) throw new Error(`Expected 66 sitemap blog URLs, got ${urls.length}`);
+          async function check(url){
+            try{
+              const r=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(12000),headers:{'user-agent':'StellarLiveAudit/1.0'}});
+              const text=await r.text();
+              const ctype=(r.headers.get('content-type')||'').toLowerCase();
+              return {url,status:r.status,ctype,canonical:text.includes(url),title:/<title[ >]/i.test(text),final:r.url};
+            }catch(e){return {url,status:0,ctype:'',canonical:false,title:false,final:'',error:String(e)}}
+          }
+          (async()=>{
+            const results=await Promise.all(urls.map(check));
+            let bad=0;
+            for(const x of results){
+              const ok=x.status===200 && x.ctype.startsWith('text/html') && x.canonical && x.title;
+              console.log(`${ok?'PASS':'FAIL'} | ${x.status} | ${x.ctype||'-'} | canonical=${x.canonical} | title=${x.title} | ${x.url} | final=${x.final||'-'}${x.error?' | '+x.error:''}`);
+              if(!ok) bad++;
+            }
+            console.log(`SUMMARY good=${results.length-bad} bad=${bad} total=${results.length}`);
+            if(bad) process.exit(1);
+          })();
+          NODE
