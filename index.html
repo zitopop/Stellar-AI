@@ -3012,8 +3012,244 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     html,body{overflow-x:hidden!important}
   }
 </style>
+
+<style id="stellar-plans-text-stars-final-v1">
+  /* Pricing typography: one visible text layer only. */
+  #plans .stellar-plan-badge,
+  #plans .stellar-plan-trust,
+  #plans .stellar-plan-footnote{
+    display:none!important;
+    visibility:hidden!important;
+  }
+
+  #plans .plan-label,
+  #plans .plan h3,
+  #plans .plan-desc,
+  #plans .price,
+  #plans .price strong,
+  #plans .price span,
+  #plans .annual,
+  #plans .plan-badge,
+  #plans .plan li,
+  #plans .plan .button{
+    text-shadow:none!important;
+    -webkit-text-stroke:0!important;
+    filter:none!important;
+    mix-blend-mode:normal!important;
+    backface-visibility:hidden!important;
+    -webkit-font-smoothing:antialiased!important;
+    text-rendering:geometricPrecision!important;
+  }
+
+  #plans .plan-label::before,
+  #plans .plan-label::after,
+  #plans .plan h3::before,
+  #plans .plan h3::after,
+  #plans .plan-desc::before,
+  #plans .plan-desc::after,
+  #plans .price::before,
+  #plans .price::after,
+  #plans .price strong::before,
+  #plans .price strong::after,
+  #plans .price span::before,
+  #plans .price span::after,
+  #plans .annual::before,
+  #plans .annual::after,
+  #plans .plan-badge::before,
+  #plans .plan-badge::after{
+    content:none!important;
+    display:none!important;
+  }
+
+  #plans .plan:not(.featured) .plan-badge{
+    display:none!important;
+  }
+
+  #plans .plan.featured .plan-badge{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+
+  /* Visible stars: literal star glyphs only, never circular dot textures. */
+  .landing-starfield{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+    background:transparent!important;
+  }
+
+  .landing-starfield .landing-star{
+    position:absolute;
+    width:auto;
+    height:auto;
+    line-height:1;
+    font-family:"Segoe UI Symbol","Arial Unicode MS",system-ui,sans-serif;
+    font-weight:700;
+    color:#f6f3ff;
+    opacity:.56;
+    text-shadow:0 0 6px rgba(255,255,255,.78),0 0 14px rgba(157,118,255,.20);
+    animation:landing-star-twinkle 3.4s ease-in-out infinite alternate;
+    transform-origin:center;
+    will-change:opacity,transform,filter;
+  }
+  .landing-starfield .star-b{
+    color:#d6c4ff;
+    animation-duration:4.1s;
+  }
+  .landing-starfield .star-c{
+    color:#ffffff;
+    animation-duration:2.7s;
+  }
+  .landing-starfield .star-d{
+    color:#e7ddff;
+    animation-duration:5s;
+  }
+
+  @keyframes landing-star-twinkle{
+    0%{opacity:.25;transform:scale(.78) rotate(-3deg);filter:brightness(.8)}
+    48%{opacity:1;transform:scale(1.26) rotate(3deg);filter:brightness(1.45)}
+    100%{opacity:.52;transform:scale(.94);filter:brightness(1)}
+  }
+
+  .landing-shooting{
+    position:absolute;
+    right:-220px;
+    width:170px;
+    height:2px;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    color:#fff;
+    font-size:15px;
+    line-height:1;
+    opacity:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),rgba(205,185,255,.68),rgba(255,255,255,.95));
+    box-shadow:0 0 8px rgba(255,255,255,.30),0 0 18px rgba(139,92,246,.18);
+    text-shadow:0 0 8px rgba(255,255,255,.9);
+    will-change:transform,opacity;
+  }
+  .shooting-one{top:14%;animation:landing-shoot-a 8.5s linear infinite 1.4s}
+  .shooting-two{top:42%;animation:landing-shoot-b 11s linear infinite 4.8s}
+  .shooting-three{top:68%;animation:landing-shoot-a 13s linear infinite 7.2s}
+
+  @keyframes landing-shoot-a{
+    0%,74%{opacity:0;transform:translate3d(0,0,0) rotate(-22deg)}
+    78%{opacity:.95}
+    96%{opacity:.88}
+    100%{opacity:0;transform:translate3d(-1250px,510px,0) rotate(-22deg)}
+  }
+  @keyframes landing-shoot-b{
+    0%,78%{opacity:0;transform:translate3d(0,0,0) rotate(-28deg)}
+    82%{opacity:.9}
+    96%{opacity:.82}
+    100%{opacity:0;transform:translate3d(-1050px,590px,0) rotate(-28deg)}
+  }
+
+  /* Let the star layer show through the page while preserving the black viewport edges. */
+  html,body{
+    background:#080808!important;
+    background-image:none!important;
+  }
+  .page-shell,
+  main,
+  #plans,
+  main > .section,
+  .final-cta-section,
+  footer.container{
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+    background-color:transparent!important;
+    background-image:none!important;
+  }
+
+  /* Cards/panels remain readable over the stars. */
+  #plans .plan,
+  .faq-item,
+  .final-cta,
+  .footer{
+    position:relative;
+    z-index:2;
+  }
+
+  @media(max-width:700px){
+    .landing-starfield .landing-star:nth-child(3n){
+      display:none;
+    }
+    .landing-shooting.shooting-two,
+    .landing-shooting.shooting-three{
+      display:none;
+    }
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    .landing-starfield .landing-star{
+      animation:none!important;
+      opacity:.62!important;
+      transform:none!important;
+      filter:none!important;
+    }
+    .landing-shooting{
+      display:none!important;
+      animation:none!important;
+    }
+  }
+</style>
 </head>
 <body>
+  <div class="landing-starfield" aria-hidden="true">
+    <span class="landing-star star-a" style="left:3%;top:8%;font-size:15px;animation-delay:-0s">✦</span>
+    <span class="landing-star star-b" style="left:9%;top:18%;font-size:11px;animation-delay:-0.37s">★</span>
+    <span class="landing-star star-c" style="left:15%;top:5%;font-size:14px;animation-delay:-0.74s">✧</span>
+    <span class="landing-star star-d" style="left:21%;top:31%;font-size:12px;animation-delay:-1.1099999999999999s">✦</span>
+    <span class="landing-star star-a" style="left:27%;top:12%;font-size:10px;animation-delay:-1.48s">★</span>
+    <span class="landing-star star-b" style="left:33%;top:24%;font-size:16px;animation-delay:-1.85s">✧</span>
+    <span class="landing-star star-c" style="left:39%;top:7%;font-size:11px;animation-delay:-2.2199999999999998s">✦</span>
+    <span class="landing-star star-d" style="left:45%;top:38%;font-size:13px;animation-delay:-2.59s">★</span>
+    <span class="landing-star star-a" style="left:51%;top:16%;font-size:12px;animation-delay:-2.96s">✧</span>
+    <span class="landing-star star-b" style="left:57%;top:29%;font-size:15px;animation-delay:-0s">✦</span>
+    <span class="landing-star star-c" style="left:63%;top:9%;font-size:10px;animation-delay:-0.37s">★</span>
+    <span class="landing-star star-d" style="left:69%;top:34%;font-size:14px;animation-delay:-0.74s">✧</span>
+    <span class="landing-star star-a" style="left:75%;top:14%;font-size:12px;animation-delay:-1.1099999999999999s">✦</span>
+    <span class="landing-star star-b" style="left:81%;top:27%;font-size:11px;animation-delay:-1.48s">★</span>
+    <span class="landing-star star-c" style="left:87%;top:6%;font-size:15px;animation-delay:-1.85s">✧</span>
+    <span class="landing-star star-d" style="left:93%;top:21%;font-size:12px;animation-delay:-2.2199999999999998s">✦</span>
+    <span class="landing-star star-c" style="left:6%;top:45%;font-size:10px;animation-delay:-2.59s">★</span>
+    <span class="landing-star star-a" style="left:13%;top:57%;font-size:14px;animation-delay:-2.96s">✧</span>
+    <span class="landing-star star-b" style="left:20%;top:72%;font-size:12px;animation-delay:-0s">✦</span>
+    <span class="landing-star star-d" style="left:27%;top:49%;font-size:11px;animation-delay:-0.37s">★</span>
+    <span class="landing-star star-c" style="left:34%;top:64%;font-size:15px;animation-delay:-0.74s">✧</span>
+    <span class="landing-star star-a" style="left:41%;top:52%;font-size:13px;animation-delay:-1.1099999999999999s">✦</span>
+    <span class="landing-star star-b" style="left:48%;top:78%;font-size:10px;animation-delay:-1.48s">★</span>
+    <span class="landing-star star-d" style="left:55%;top:59%;font-size:14px;animation-delay:-1.85s">✧</span>
+    <span class="landing-star star-c" style="left:62%;top:71%;font-size:12px;animation-delay:-2.2199999999999998s">✦</span>
+    <span class="landing-star star-a" style="left:69%;top:48%;font-size:11px;animation-delay:-2.59s">★</span>
+    <span class="landing-star star-b" style="left:76%;top:66%;font-size:16px;animation-delay:-2.96s">✧</span>
+    <span class="landing-star star-d" style="left:83%;top:54%;font-size:12px;animation-delay:-0s">✦</span>
+    <span class="landing-star star-c" style="left:90%;top:74%;font-size:10px;animation-delay:-0.37s">★</span>
+    <span class="landing-star star-a" style="left:96%;top:46%;font-size:14px;animation-delay:-0.74s">✧</span>
+    <span class="landing-star star-b" style="left:4%;top:88%;font-size:12px;animation-delay:-1.1099999999999999s">✦</span>
+    <span class="landing-star star-d" style="left:11%;top:80%;font-size:10px;animation-delay:-1.48s">★</span>
+    <span class="landing-star star-c" style="left:18%;top:94%;font-size:15px;animation-delay:-1.85s">✧</span>
+    <span class="landing-star star-a" style="left:25%;top:83%;font-size:11px;animation-delay:-2.2199999999999998s">✦</span>
+    <span class="landing-star star-b" style="left:32%;top:91%;font-size:10px;animation-delay:-2.59s">★</span>
+    <span class="landing-star star-d" style="left:40%;top:86%;font-size:14px;animation-delay:-2.96s">✧</span>
+    <span class="landing-star star-c" style="left:47%;top:96%;font-size:12px;animation-delay:-0s">✦</span>
+    <span class="landing-star star-a" style="left:54%;top:82%;font-size:11px;animation-delay:-0.37s">★</span>
+    <span class="landing-star star-b" style="left:61%;top:93%;font-size:15px;animation-delay:-0.74s">✧</span>
+    <span class="landing-star star-d" style="left:68%;top:84%;font-size:12px;animation-delay:-1.1099999999999999s">✦</span>
+    <span class="landing-star star-c" style="left:75%;top:97%;font-size:10px;animation-delay:-1.48s">★</span>
+    <span class="landing-star star-a" style="left:82%;top:88%;font-size:14px;animation-delay:-1.85s">✧</span>
+    <span class="landing-star star-b" style="left:89%;top:95%;font-size:12px;animation-delay:-2.2199999999999998s">✦</span>
+    <span class="landing-star star-d" style="left:95%;top:85%;font-size:11px;animation-delay:-2.59s">★</span>
+    <span class="landing-shooting shooting-one">✦</span>
+    <span class="landing-shooting shooting-two">★</span>
+    <span class="landing-shooting shooting-three">✦</span>
+  </div>
+  
   
   <div class="stellar-firefield" aria-hidden="true"></div>
   <div class="page-shell">
