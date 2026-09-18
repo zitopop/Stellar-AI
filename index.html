@@ -2170,6 +2170,249 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     animation:none!important;
   }
 </style>
+
+<style id="landing-premium-motion-v1">
+  :root{
+    --stellar-warm:#ff9d4d;
+    --stellar-warm-soft:rgba(255,157,77,.16);
+    --stellar-cyan:#63e8c4;
+  }
+
+  /* Keep the new energy in the product/UI, not decorative stars. */
+  .stellar-starfield,.shooting-star,.live-twinkle-star,.html-star{
+    display:none!important;
+  }
+
+  .hero::before{
+    content:"";
+    position:absolute;
+    width:min(680px,72vw);
+    height:360px;
+    left:50%;
+    top:8%;
+    transform:translateX(-50%);
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse at 28% 50%,rgba(130,88,255,.18),transparent 56%),
+      radial-gradient(ellipse at 72% 45%,rgba(255,157,77,.11),transparent 48%);
+    filter:blur(28px);
+    opacity:.9;
+    z-index:-1;
+  }
+
+  .landing-hero-v2 .hero-copy{
+    box-shadow:0 26px 76px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.04)!important;
+  }
+
+  .landing-hero-v2 .hero-copy h1 .gradient-text{
+    background:linear-gradient(100deg,#d1c4ff 3%,#ac8dff 43%,#63e8c4 76%,#ffb067 112%)!important;
+    background-clip:text!important;
+    -webkit-background-clip:text!important;
+  }
+
+  .button-primary{
+    background:linear-gradient(120deg,#d8cbff 0%,#a987ff 44%,#67e2c0 92%,#ffad61 135%)!important;
+    box-shadow:0 14px 34px rgba(125,91,240,.28),0 0 0 1px rgba(255,177,103,.04),inset 0 1px rgba(255,255,255,.56)!important;
+  }
+
+  .product-frame{
+    position:relative!important;
+    isolation:isolate;
+    border-color:rgba(255,255,255,.14)!important;
+    box-shadow:0 30px 90px rgba(0,0,0,.42),0 0 0 1px rgba(167,139,250,.05)!important;
+  }
+  .product-frame::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    z-index:-1;
+    border-radius:inherit;
+    background:linear-gradient(125deg,rgba(161,120,255,.38),rgba(99,232,196,.14) 55%,rgba(255,157,77,.24));
+    filter:blur(18px);
+    opacity:.34;
+    pointer-events:none;
+  }
+
+  .demo-status{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin:8px 0 7px;
+    color:#d1d4db;
+    font-size:7px;
+    font-weight:800;
+    letter-spacing:.04em;
+  }
+  .demo-status-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--stellar-warm);
+    box-shadow:0 0 10px rgba(255,157,77,.55);
+    animation:demo-status-pulse 1.15s ease-in-out infinite alternate;
+  }
+  @keyframes demo-status-pulse{
+    from{opacity:.4;transform:scale(.78)}
+    to{opacity:1;transform:scale(1.18)}
+  }
+
+  .demo-files{
+    display:grid;
+    gap:4px;
+    padding-top:2px;
+  }
+  .demo-file{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    min-height:18px;
+    padding:3px 5px;
+    border-radius:5px;
+    color:#d8d9e0;
+    background:rgba(255,255,255,.025);
+    font:600 6.7px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+    opacity:.26;
+    transform:translateY(4px);
+    animation:demo-file-ready 7.4s ease-in-out infinite;
+  }
+  .demo-file i{
+    color:#7de6c4;
+    font-style:normal;
+    opacity:.9;
+  }
+  .demo-file b{font-weight:650}
+  .demo-file:nth-child(1){animation-delay:0s}
+  .demo-file:nth-child(2){animation-delay:.44s}
+  .demo-file:nth-child(3){animation-delay:.88s}
+  .demo-file:nth-child(4){animation-delay:1.32s}
+  .demo-file:nth-child(5){animation-delay:1.76s}
+  @keyframes demo-file-ready{
+    0%,8%{opacity:.18;transform:translateY(4px)}
+    16%,78%{opacity:1;transform:translateY(0)}
+    92%,100%{opacity:.24;transform:translateY(2px)}
+  }
+
+  .float-file{
+    border-color:rgba(255,178,104,.20)!important;
+    box-shadow:0 10px 32px rgba(0,0,0,.26),0 0 18px rgba(255,157,77,.08)!important;
+  }
+
+  /* Section rhythm: quiet accent lines rather than background clutter. */
+  #how-it-works,
+  #capabilities,
+  #why-stellar,
+  #plans,
+  .faq-layout{
+    position:relative;
+  }
+  #capabilities::before,
+  #plans::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:50%;
+    width:min(760px,72%);
+    height:1px;
+    transform:translateX(-50%);
+    background:linear-gradient(90deg,transparent,rgba(167,139,250,.28),rgba(255,157,77,.22),transparent);
+  }
+
+  /* Premium hover language. */
+  #how-it-works .capability,
+  #capabilities .capability-map-card,
+  #why-stellar .difference-item,
+  #plans .plan,
+  .faq-item,
+  .landing-proof-row .proof-card{
+    transition:
+      transform .28s cubic-bezier(.2,.8,.2,1),
+      border-color .28s ease,
+      box-shadow .28s ease,
+      background .28s ease!important;
+  }
+  #how-it-works .capability:hover,
+  #capabilities .capability-map-card:hover,
+  #why-stellar .difference-item:hover,
+  #plans .plan:hover,
+  .landing-proof-row .proof-card:hover{
+    transform:translateY(-5px)!important;
+    border-color:rgba(255,255,255,.18)!important;
+    box-shadow:0 20px 52px rgba(0,0,0,.32),0 0 0 1px rgba(255,157,77,.045)!important;
+  }
+  #how-it-works .capability:hover .cap-icon{
+    transform:translateY(-2px) scale(1.06);
+    border-color:rgba(255,157,77,.22)!important;
+    box-shadow:0 8px 22px rgba(255,157,77,.09);
+  }
+  #how-it-works .cap-icon{
+    transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease!important;
+  }
+
+  #plans .plan.featured{
+    position:relative;
+    border-color:rgba(178,151,255,.30)!important;
+  }
+  #plans .plan.featured::after{
+    content:"";
+    position:absolute;
+    top:-1px;
+    left:18px;
+    right:18px;
+    height:1px;
+    background:linear-gradient(90deg,transparent,#a987ff,var(--stellar-warm),transparent);
+    opacity:.72;
+  }
+
+  .plan-badge{
+    box-shadow:none!important;
+  }
+
+  /* Scroll reveal only turns on when JS is confirmed running. */
+  html.landing-motion-ready .premium-reveal{
+    opacity:0;
+    transform:translateY(22px) scale(.992);
+    transition:opacity .68s ease,transform .68s cubic-bezier(.2,.8,.2,1);
+  }
+  html.landing-motion-ready .premium-reveal.is-visible{
+    opacity:1;
+    transform:none;
+  }
+  html.landing-motion-ready .premium-reveal[data-delay="1"]{transition-delay:.06s}
+  html.landing-motion-ready .premium-reveal[data-delay="2"]{transition-delay:.12s}
+  html.landing-motion-ready .premium-reveal[data-delay="3"]{transition-delay:.18s}
+
+  @media(max-width:700px){
+    .hero::before{
+      width:120vw;
+      height:300px;
+      opacity:.65;
+    }
+    .product-frame::before{opacity:.22}
+    #how-it-works .capability:hover,
+    #capabilities .capability-map-card:hover,
+    #why-stellar .difference-item:hover,
+    #plans .plan:hover,
+    .landing-proof-row .proof-card:hover{
+      transform:none!important;
+    }
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    .demo-status-dot,.demo-file{
+      animation:none!important;
+    }
+    .demo-file{
+      opacity:1!important;
+      transform:none!important;
+    }
+    html.landing-motion-ready .premium-reveal,
+    html.landing-motion-ready .premium-reveal.is-visible{
+      opacity:1!important;
+      transform:none!important;
+      transition:none!important;
+    }
+  }
+</style>
 </head>
 <body>
   
@@ -2225,16 +2468,19 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
                     <div class="preview-bar"><span class="preview-title">QBCore police resource</span><span class="preview-model">⭐ Star</span></div>
                     <div class="preview-convo">
                       <div class="preview-prompt">Build a QBCore police job with cuffing, MDT and a jail timer.</div>
-                      <div class="preview-reply">
+                      <div class="preview-reply demo-reply">
                         <div class="reply-label">STELLAR · COMPLETE BUILD</div>
                         <div class="reply-text">I’ll return the files, where each one goes, the install steps and checks to run.</div>
-                        <div class="preview-code">
-                          <div class="code-head"><span>FILES</span><span>5 ready</span></div>
-                          <div class="code-lines">fxmanifest.lua
-client/main.lua
-server/main.lua
-config.lua
-README.md</div>
+                        <div class="demo-status" aria-live="polite"><span class="demo-status-dot"></span><span data-demo-status>Generating files…</span></div>
+                        <div class="preview-code demo-code">
+                          <div class="code-head"><span>FILES</span><span data-demo-count>0 / 5</span></div>
+                          <div class="demo-files" aria-label="Generated files">
+                            <span class="demo-file"><i>✓</i><b>fxmanifest.lua</b></span>
+                            <span class="demo-file"><i>✓</i><b>client/main.lua</b></span>
+                            <span class="demo-file"><i>✓</i><b>server/main.lua</b></span>
+                            <span class="demo-file"><i>✓</i><b>config.lua</b></span>
+                            <span class="demo-file"><i>✓</i><b>README.md</b></span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3362,6 +3608,70 @@ body:not(.light) .product-frame{background:rgba(8,6,20,.12)!important;}
 .stellar-starfield::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 18% 34%,rgba(255,255,255,.95) 0 1.8px,transparent 2.5px),radial-gradient(circle at 74% 12%,rgba(221,197,255,.96) 0 1.6px,transparent 2.4px),radial-gradient(circle at 46% 76%,rgba(255,255,255,.86) 0 1.5px,transparent 2.2px),radial-gradient(circle at 91% 57%,rgba(168,126,255,.96) 0 1.8px,transparent 2.5px);background-size:310px 310px,370px 370px,420px 420px,460px 460px;opacity:.95;}
 @media(max-width:760px){body:not(.light) .launch-deck{grid-template-columns:1fr!important;}body:not(.light) .framework-rail{display:grid!important;}body:not(.light) .product-frame,body:not(.light) .plan,body:not(.light) .faq-item,body:not(.light) .capability-map-card{background:rgba(8,6,20,.12)!important;}}
 </style>
+
+<script id="landing-premium-motion">
+(() => {
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.classList.add('landing-motion-ready');
+
+  const revealSelectors = [
+    '.section-heading',
+    '#how-it-works .capability',
+    '#capabilities .capability-map-card',
+    '#why-stellar .difference-copy',
+    '#why-stellar .difference-item',
+    '.landing-proof-row .proof-card',
+    '.framework-rail',
+    '#plans .plan',
+    '.faq-intro',
+    '.faq-item',
+    '.final-cta'
+  ];
+  const revealNodes = [...document.querySelectorAll(revealSelectors.join(','))];
+  revealNodes.forEach((el, index) => {
+    el.classList.add('premium-reveal');
+    el.dataset.delay = String(index % 4);
+  });
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealNodes.forEach(el => el.classList.add('is-visible'));
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: .12, rootMargin: '0px 0px -6% 0px' });
+    revealNodes.forEach(el => observer.observe(el));
+  }
+
+  const status = document.querySelector('[data-demo-status]');
+  const count = document.querySelector('[data-demo-count]');
+  if (!status || !count || reduceMotion) {
+    if (status) status.textContent = 'Build ready';
+    if (count) count.textContent = '5 / 5';
+    return;
+  }
+
+  const states = [
+    ['Planning resource…','0 / 5'],
+    ['Writing client files…','2 / 5'],
+    ['Adding server checks…','3 / 5'],
+    ['Writing config + README…','4 / 5'],
+    ['Build ready ✓','5 / 5']
+  ];
+  let index = 0;
+  const tick = () => {
+    const [label, value] = states[index];
+    status.textContent = label;
+    count.textContent = value;
+    index = (index + 1) % states.length;
+  };
+  tick();
+  window.setInterval(tick, 1550);
+})();
+</script>
 </body>
 </html>
 
