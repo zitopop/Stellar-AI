@@ -6668,6 +6668,22 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
   }
 </style>
+
+<style id="stellar-workspace-v6-progress">
+  .build-progress-rail span.done{
+    color:#9ca3af!important;
+    background:#171b23!important;
+  }
+  .build-progress-rail span.done::before{
+    content:"✓ ";
+    color:#7ed1b4!important;
+  }
+  .build-progress-rail span.active{
+    color:#e0d9ff!important;
+    background:#21183a!important;
+    box-shadow:inset 0 0 0 1px rgba(139,92,246,.16)!important;
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -9696,6 +9712,21 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       let streamStatus = null;
       let searchContext = null;
       let stepIdx = 0;
+      function updateBuildProgressRail(stage) {
+        const rail = loading.querySelector('.build-progress-rail');
+        if (!rail) return;
+        [...rail.children].forEach((node, index) => {
+          node.classList.toggle('done', index < stage);
+          node.classList.toggle('active', index === stage);
+        });
+      }
+      function syncBuildProgressRail() {
+        const last = Math.max(1, STEPS.length - 1);
+        const ratio = stepIdx / last;
+        const stage = ratio < .24 ? 0 : ratio < .72 ? 1 : 2;
+        updateBuildProgressRail(stage);
+      }
+      syncBuildProgressRail();
       const STREAM_RENDER_INTERVAL_MS = 40;
       let msgBubble = null;
       let streamRenderTimer = null;
@@ -9730,6 +9761,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         if (stepIdx < STEPS.length - 1) {
           stepIdx++;
           setThinking(STEPS[stepIdx][0], STEPS[stepIdx][1]);
+          syncBuildProgressRail();
           if (streamStatus) streamStatus.textContent = STEPS[stepIdx][1];
         } else {
           clearInterval(stepTimer);
@@ -9865,8 +9897,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
               if (j.type === 'content_block_delta' && j.delta?.text) {
                 full += j.delta.text;
                 if (!msgBubble) {
-                  // Mark all remaining steps as done, stop spinner, show completion
-                  loading.remove();
+                  // Mark the build pipeline ready as streaming begins.
+                  updateBuildProgressRail(3);
+                  const readyStatus = loading.querySelector('.think-status');
+                  if (readyStatus) readyStatus.textContent = 'Build ready — streaming result…';
+                  window.setTimeout(() => loading.remove(), 180);
                   msgBubble = document.createElement('div');
                   msgBubble.className = 'message glass rounded-3xl px-5 py-3.5 mb-4 font-bold whitespace-pre-wrap streaming-response';
                   chatEl.appendChild(msgBubble);
