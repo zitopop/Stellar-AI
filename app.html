@@ -7632,28 +7632,24 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
 
 <style id="stellar-chatgpt-layout-v1">
-  /* ChatGPT-inspired structure, Stellar-branded. */
+  /* ChatGPT-style structure, Stellar branding. */
   body:not(.light){
     --cg-bg:#0d0d0d;
     --cg-side:#171717;
     --cg-panel:#212121;
-    --cg-panel-2:#2a2a2a;
-    --cg-border:rgba(255,255,255,.09);
+    --cg-panel-hover:#2a2a2a;
+    --cg-border:rgba(255,255,255,.10);
     --cg-text:#ececec;
-    --cg-muted:#9b9b9b;
-    --cg-accent:#8b5cf6;
-  }
-
-  body:not(.light){
+    --cg-muted:#8f8f8f;
+    --cg-accent:#a78bfa;
     background:var(--cg-bg)!important;
   }
 
-  /* One app header, not two stacked bars. */
   .stellar-global-header{
     height:52px!important;
     min-height:52px!important;
     padding:0 14px!important;
-    border-bottom:0!important;
+    border:0!important;
     background:var(--cg-bg)!important;
     box-shadow:none!important;
     backdrop-filter:none!important;
@@ -7664,11 +7660,16 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     background:var(--cg-bg)!important;
   }
 
+  #main-col{
+    min-width:0!important;
+    position:relative!important;
+    background:var(--cg-bg)!important;
+  }
+
+  /* Remove the second desktop top bar; keep only the mobile menu button. */
   #main-col>.topbar{
     position:absolute!important;
-    top:0!important;
-    left:0!important;
-    right:0!important;
+    inset:0 0 auto 0!important;
     z-index:12!important;
     height:0!important;
     min-height:0!important;
@@ -7698,7 +7699,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     color:#d4d4d4!important;
   }
 
-  /* Sidebar behaves like a chat history rail. */
+  /* Sidebar: simple chat-history rail. */
   #sidebar{
     width:260px!important;
     padding:10px 10px 12px!important;
@@ -7708,7 +7709,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   }
   #sidebar .sidebar-brand-row{
     min-height:38px!important;
-    margin:0 0 8px!important;
+    margin:0 0 7px!important;
     padding:0 6px!important;
   }
   #sidebar .brand-title{
@@ -7720,15 +7721,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     width:24px!important;
     height:24px!important;
     border:0!important;
-    border-radius:7px!important;
     background:transparent!important;
-    color:#a78bfa!important;
+    color:var(--cg-accent)!important;
   }
-
   #sidebar .side-new{
     min-height:40px!important;
     height:40px!important;
-    margin-bottom:8px!important;
+    margin-bottom:7px!important;
     padding:0 10px!important;
     justify-content:flex-start!important;
     border:0!important;
@@ -7740,12 +7739,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   }
   #sidebar .side-new:hover{
     background:#232323!important;
-    border:0!important;
   }
-
   #sidebar #search{
     min-height:38px!important;
-    margin-bottom:6px!important;
+    margin-bottom:5px!important;
     padding:0 11px!important;
     border:0!important;
     border-radius:9px!important;
@@ -7753,7 +7750,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     color:#ececec!important;
     box-shadow:none!important;
   }
-
   #sidebar .stellar-sidebar-nav{
     gap:1px!important;
     margin-bottom:8px!important;
@@ -7769,15 +7765,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     background:#232323!important;
     color:#fff!important;
   }
-
   #sidebar .chats-label{
     margin:14px 9px 6px!important;
     color:#777!important;
     font-size:9px!important;
-    letter-spacing:.08em!important;
+    letter-spacing:.04em!important;
     text-transform:none!important;
   }
-
   #sidebar .sidebar-utility-links{
     padding:8px 8px 2px!important;
   }
@@ -7790,31 +7784,35 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     border-top:1px solid rgba(255,255,255,.06)!important;
   }
 
-  /* Main conversation column. */
-  #main-col{
-    min-width:0!important;
-    position:relative!important;
-    background:var(--cg-bg)!important;
-  }
-  #chat{
-    padding:0 20px 170px!important;
-    background:var(--cg-bg)!important;
-    scroll-padding-bottom:170px!important;
-  }
+  /* Subtle Stellar star field, kept behind the app. */
   body:not(.light) #main-col::before{
-    opacity:.22!important;
+    opacity:.16!important;
   }
 
-  /* ChatGPT-like empty state: centered, simple, no quick starts. */
-  .landing-style-home{
-    width:min(100%,760px)!important;
-    min-height:calc(100dvh - 235px)!important;
+  /* ---------- Empty home ---------- */
+  body.stellar-empty-home #main-col{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  body.stellar-empty-home #chat{
+    flex:0 0 auto!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    margin-top:auto!important;
+    padding:0 20px 22px!important;
+    overflow:visible!important;
+    background:transparent!important;
+  }
+  body.stellar-empty-home .landing-style-home{
+    width:min(100%,768px)!important;
+    min-height:0!important;
     margin:0 auto!important;
     padding:0!important;
     display:flex!important;
     flex-direction:column!important;
-    justify-content:center!important;
     align-items:center!important;
+    justify-content:center!important;
     text-align:center!important;
   }
   .landing-style-home .greet-eyebrow,
@@ -7824,68 +7822,116 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   #suggestion-chips{
     display:none!important;
   }
-  .landing-style-home .greet-hi,
-  .landing-style-home #greet-hi .greet-hi-accent{
-    display:inline!important;
+  body.stellar-empty-home .landing-style-home .greet-hi{
     margin:0!important;
-    padding:0!important;
     color:var(--cg-text)!important;
     -webkit-text-fill-color:currentColor!important;
     background:none!important;
-    font-size:clamp(30px,4vw,38px)!important;
-    font-weight:650!important;
+    font-size:clamp(30px,3.8vw,38px)!important;
+    font-weight:600!important;
     line-height:1.16!important;
     letter-spacing:-.035em!important;
+    text-align:center!important;
     text-shadow:none!important;
   }
-  .landing-style-home #greet-hi .greet-hi-accent{
-    color:#c4b5fd!important;
-    -webkit-text-fill-color:#c4b5fd!important;
-  }
-  .landing-style-home .welcome-sub{
+  body.stellar-empty-home .landing-style-home .welcome-sub{
     max-width:560px!important;
-    margin:12px auto 0!important;
-    color:#8d8d8d!important;
+    margin:11px auto 0!important;
+    color:var(--cg-muted)!important;
     font-size:13px!important;
     font-weight:450!important;
     line-height:1.5!important;
+    text-align:center!important;
+  }
+  body.stellar-empty-home .input-area.glass{
+    position:static!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    margin:0 0 auto!important;
+    padding:0 20px!important;
+    border:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
   }
 
-  /* Conversation width. */
+  /* ---------- Conversation ---------- */
+  body:not(.stellar-empty-home) #chat{
+    flex:1 1 auto!important;
+    padding:28px max(18px,calc((100% - 768px)/2)) 170px!important;
+    background:transparent!important;
+    scroll-padding-bottom:170px!important;
+  }
+  body:not(.stellar-empty-home) .input-area.glass{
+    position:fixed!important;
+    z-index:25!important;
+    left:260px!important;
+    right:0!important;
+    bottom:0!important;
+    padding:0 18px max(14px,env(safe-area-inset-bottom))!important;
+    border:0!important;
+    background:linear-gradient(to top,var(--cg-bg) 68%,rgba(13,13,13,.96) 84%,rgba(13,13,13,0))!important;
+    box-shadow:none!important;
+  }
+
+  /* Center all generated/progress content in the same reading column. */
   #chat>.message,
-  #chat>.build-progress-card{
-    width:min(100%,768px)!important;
+  #chat>.build-progress-card,
+  #chat .msg-user,
+  #chat .msg-ai{
+    width:100%!important;
     max-width:768px!important;
     margin-left:auto!important;
     margin-right:auto!important;
   }
-  #chat .msg-user{
-    width:min(100%,768px)!important;
-    max-width:768px!important;
-  }
-  #chat .msg-ai{
-    width:min(100%,768px)!important;
-    max-width:768px!important;
+  #chat .build-progress-card{
+    margin-top:10px!important;
+    margin-bottom:24px!important;
   }
 
-  /* ChatGPT-like messages: less card chrome. */
+  /* User bubbles must never collapse into vertical text. */
+  #chat .msg-user{
+    display:flex!important;
+    justify-content:flex-end!important;
+    align-items:flex-start!important;
+    margin-top:18px!important;
+    margin-bottom:26px!important;
+    padding:0!important;
+    background:transparent!important;
+    border:0!important;
+  }
   #chat .msg-user .msg-content{
-    max-width:70%!important;
+    display:block!important;
+    width:auto!important;
+    min-width:36px!important;
+    max-width:min(70%,620px)!important;
     padding:10px 14px!important;
     border:0!important;
     border-radius:18px!important;
     background:#2f2f2f!important;
     color:#ececec!important;
     box-shadow:none!important;
+    white-space:pre-wrap!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+    writing-mode:horizontal-tb!important;
+    text-orientation:mixed!important;
+    line-height:1.45!important;
   }
+
   #chat .msg-ai{
+    display:grid!important;
     grid-template-columns:24px minmax(0,1fr)!important;
     gap:12px!important;
     margin-bottom:30px!important;
+    padding:0!important;
+    background:transparent!important;
+    border:0!important;
   }
   #chat .assistant-avatar{
     width:24px!important;
     height:24px!important;
+    display:grid!important;
+    place-items:center!important;
     border:0!important;
     border-radius:7px!important;
     background:#211a31!important;
@@ -7895,24 +7941,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     display:none!important;
   }
   #chat .msg-ai .msg-content{
+    min-width:0!important;
     color:#ddd!important;
     font-size:14px!important;
     line-height:1.7!important;
   }
 
-  /* Composer: one rounded ChatGPT-style box with a small toolbar inside it. */
-  .input-area.glass{
-    position:fixed!important;
-    z-index:25!important;
-    left:260px!important;
-    right:0!important;
-    bottom:0!important;
-    padding:0 18px max(14px,env(safe-area-inset-bottom))!important;
-    border:0!important;
-    background:linear-gradient(to top,var(--cg-bg) 66%,rgba(13,13,13,.96) 82%,rgba(13,13,13,0))!important;
-    box-shadow:none!important;
-  }
-
+  /* Composer: one ChatGPT-style rounded surface. */
   .input-area > .flex,
   .input-area .composer-foot{
     width:min(100%,768px)!important;
@@ -7923,7 +7958,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     border-color:var(--cg-border)!important;
     box-shadow:none!important;
   }
-
   .input-area > .flex{
     min-height:58px!important;
     align-items:center!important;
@@ -7933,7 +7967,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     border-bottom:0!important;
     border-radius:24px 24px 0 0!important;
   }
-
   .input-area #txt{
     min-height:44px!important;
     max-height:180px!important;
@@ -7950,7 +7983,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   .input-area #txt::placeholder{
     color:#8d8d8d!important;
   }
-
   .input-area #mic-btn{
     width:36px!important;
     min-width:36px!important;
@@ -7964,7 +7996,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   .input-area #mic-btn:hover{
     background:#303030!important;
   }
-
   .input-area #send-btn{
     width:36px!important;
     min-width:36px!important;
@@ -7978,13 +8009,26 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     box-shadow:none!important;
   }
   .input-area #send-btn::before{
+    content:"↑"!important;
     color:#111!important;
     font-size:17px!important;
+    font-weight:800!important;
   }
   .input-area #send-btn:hover{
     background:#ececec!important;
   }
-
+  .input-area #send-btn.is-stop{
+    width:auto!important;
+    min-width:72px!important;
+    padding:0 12px!important;
+    background:rgba(239,68,68,.12)!important;
+    color:#fecaca!important;
+    border:1px solid rgba(248,113,113,.28)!important;
+    font-size:11px!important;
+  }
+  .input-area #send-btn.is-stop::before{
+    display:none!important;
+  }
   .input-area .composer-foot{
     min-height:40px!important;
     display:flex!important;
@@ -7996,7 +8040,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     border-top:0!important;
     border-radius:0 0 24px 24px!important;
   }
-
   .input-area .credits-btn,
   .input-area .ws-toggle{
     min-height:32px!important;
@@ -8013,13 +8056,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     background:#2b2b2b!important;
     color:#ececec!important;
   }
-
-  /* Remove extra product controls from the composer. */
   .input-area #composer-model-trigger,
   .input-area #composer-plans-btn{
     display:none!important;
   }
-
   .input-area .image-attach-btn{
     min-width:36px!important;
     width:36px!important;
@@ -8031,13 +8071,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   .input-area #ws-btn{
     min-width:52px!important;
   }
-
-  /* Keep credit visible but low emphasis. */
   .input-area .credits-btn{
     color:#777!important;
   }
 
-  /* Model picker sits calmly in the top bar. */
+  /* Calm model selector/header controls. */
   #model-btn{
     min-height:36px!important;
     padding:0 10px!important;
@@ -8054,18 +8092,16 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     padding-left:0!important;
     color:#8d8d8d!important;
   }
-
   .stellar-top-actions .stellar-upgrade{
     min-height:34px!important;
     height:34px!important;
     padding:0 11px!important;
-    border-radius:9px!important;
     border:0!important;
+    border-radius:9px!important;
     background:#27202f!important;
     color:#d8ccff!important;
   }
 
-  /* Workspace drawer stays distinct without taking over the chat. */
   #workspace{
     top:52px!important;
     width:min(360px,92vw)!important;
@@ -8078,7 +8114,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     #sidebar{
       width:232px!important;
     }
-    .input-area.glass{
+    body:not(.stellar-empty-home) .input-area.glass{
       left:232px!important;
     }
   }
@@ -8106,27 +8142,25 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     #sidebar.open{
       transform:translateX(0)!important;
     }
-    .stellar-app-shell{
-      height:calc(100dvh - 52px)!important;
+    body.stellar-empty-home #chat{
+      padding:0 12px 18px!important;
     }
-    #chat{
-      padding:0 12px 150px!important;
+    body.stellar-empty-home .input-area.glass{
+      padding:0 8px!important;
     }
-    .landing-style-home{
-      min-height:calc(100dvh - 215px)!important;
-      padding:0 10px!important;
+    body:not(.stellar-empty-home) #chat{
+      padding:20px 12px 150px!important;
     }
-    .landing-style-home .greet-hi,
-    .landing-style-home #greet-hi .greet-hi-accent{
-      font-size:clamp(28px,9vw,36px)!important;
-    }
-    .landing-style-home .welcome-sub{
-      max-width:350px!important;
-      font-size:12.5px!important;
-    }
-    .input-area.glass{
+    body:not(.stellar-empty-home) .input-area.glass{
       left:0!important;
       padding:0 8px max(8px,env(safe-area-inset-bottom))!important;
+    }
+    body.stellar-empty-home .landing-style-home .greet-hi{
+      font-size:clamp(27px,8.6vw,35px)!important;
+    }
+    body.stellar-empty-home .landing-style-home .welcome-sub{
+      max-width:360px!important;
+      font-size:12.5px!important;
     }
     .input-area > .flex,
     .input-area .composer-foot{
@@ -8150,6 +8184,15 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       display:none!important;
     }
     #model-btn .model-mode{
+      display:none!important;
+    }
+  }
+
+  @media(max-width:420px){
+    body.stellar-empty-home .landing-style-home .welcome-sub{
+      display:none!important;
+    }
+    .input-area .credits-btn{
       display:none!important;
     }
   }
@@ -10415,6 +10458,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (!chat) return;
       document.getElementById('chat-title').textContent = chat.name;
       const chatEl = document.getElementById('chat');
+      document.body.classList.toggle('stellar-empty-home', chat.messages.length === 0);
       
       if (chat.messages.length === 0) {
         chatEl.innerHTML = greetingMarkup();
