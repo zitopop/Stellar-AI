@@ -5619,8 +5619,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
             <span class="greet-brand-mark" aria-hidden="true">✦</span>
             <strong>Stellar <span>AI</span></strong>
           </div>
-          <div class="greet-hi" id="greet-hi">Build what you need <span class="greet-hi-accent">without starting from zero.</span></div>
-          <p class="welcome-sub">Describe the system, script, game or bug. Stellar helps you build it, fix it and keep improving it.</p>
+          <div class="greet-hi" id="greet-hi">What do you want to <span class="greet-hi-accent">build?</span></div>
+          <p class="welcome-sub">Describe a FiveM system, Roblox game, script or bug. Stellar gives you the files, where they go, and the exact next steps.</p>
           <div id="welcome-starters-heading" class="sr-only">Quick starts</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
             <button type="button" onclick="useSuggestion('Build a clean QBCore FiveM system for: ')" class="sug-chip">
@@ -7650,6 +7650,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       renderChatList();
       const chatEl = document.getElementById('chat');
       if (chatEl) chatEl.innerHTML = greetingMarkup();
+      syncHomeGreeting();
       const title = document.getElementById('chat-title');
       if (title) title.textContent = 'Stellar AI';
       document.getElementById('sidebar')?.classList.remove('open');
@@ -7678,7 +7679,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       else if (h >= 21 && h < 24) hi = 'Evening';
       else if (h >= 0 && h < 3) hi = 'Night owl';
       else hi = 'Up early';
-      return name ? (hi + ', ' + escapeHtml(name)) : hi;
+      return name ? (hi + ', ' + name) : hi;
+    }
+    function syncHomeGreeting() {
+      const label = document.querySelector('.landing-style-home .greet-eyebrow-label');
+      if (label) label.textContent = timeGreeting() + ' · FiveM & Roblox';
     }
     function greetingMarkup() {
       return `
@@ -7688,8 +7693,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
             <span class="greet-brand-mark" aria-hidden="true">✦</span>
             <strong>Stellar <span>AI</span></strong>
           </div>
-          <div class="greet-hi" id="greet-hi">Build what you need <span class="greet-hi-accent">without starting from zero.</span></div>
-          <p class="welcome-sub">Describe the system, script, game or bug. Stellar helps you build it, fix it and keep improving it.</p>
+          <div class="greet-hi" id="greet-hi">What do you want to <span class="greet-hi-accent">build?</span></div>
+          <p class="welcome-sub">Describe a FiveM system, Roblox game, script or bug. Stellar gives you the files, where they go, and the exact next steps.</p>
           <div id="welcome-starters-heading" class="sr-only">Quick starts</div>
           <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
             <button type="button" onclick="useSuggestion('Build a clean QBCore FiveM system for: ')" class="sug-chip">
@@ -9705,8 +9710,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       initGoogle();
       checkForUpdate();
       syncPlanFromServer().then(() => { renderMeter(); refreshSettings(); });
-      const gh = document.getElementById('greet-hi');
-      if (gh) gh.textContent = timeGreeting();
+      syncHomeGreeting();
       renderMeter();
       // Tidy up: empty chats saved by older versions of the app shouldn't linger
       (function pruneEmptyChats() {
