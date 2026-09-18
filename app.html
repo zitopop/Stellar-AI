@@ -8099,7 +8099,12 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       setGenerationStatus(label);
     }
     function streamView(raw) {
-      const parts = String(raw).split('```');
+      const rawText = String(raw);
+      const trimmed = rawText.trim();
+      if (trimmed.startsWith('{') && /\"(?:files|setup_steps|validation_checks)\"\s*:/.test(trimmed)) {
+        return '<div class="code-writing"><span class="cw-dot"></span>Preparing files, placement steps and checks…</div>';
+      }
+      const parts = rawText.split('```');
       let out = '';
       for (let i = 0; i < parts.length; i++) {
         if (i % 2 === 0) { out += inlineFmt(parts[i]); continue; }
@@ -8114,6 +8119,76 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           : '<div class="code-writing"><span class="cw-dot"></span>Writing ' + escapeHtml(label) + ' · ' + count + ' lines…</div>';
       }
       return out;
+    }
+    function codeLanguageForPath(path) {
+      const clean = String(path || '').toLowerCase().split('?')[0];
+      if (clean.endsWith('.lua')) return 'lua';
+      if (clean.endsWith('.js') || clean.endsWith('.jsx')) return 'javascript';
+      if (clean.endsWith('.ts') || clean.endsWith('.tsx')) return 'typescript';
+      if (clean.endsWith('.json')) return 'json';
+      if (clean.endsWith('.html') || clean.endsWith('.htm')) return 'html';
+      if (clean.endsWith('.css')) return 'css';
+      if (clean.endsWith('.sql')) return 'sql';
+      if (clean.endsWith('.py')) return 'python';
+      if (clean.endsWith('.md')) return 'markdown';
+      return 'plaintext';
+    }
+    function fileNameOnly(path) {
+      const parts = String(path || 'file.txt').split(/[\\/]/).filter(Boolean);
+      return parts[parts.length - 1] || 'file.txt';
+    }
+    function fileNameComment(path, language) {
+      const name = fileNameOnly(path);
+      if (language === 'lua' || language === 'sql') return '-- ' + name;
+      if (language === 'javascript' || language === 'typescript') return '// ' + name;
+      if (language === 'python' || language === 'plaintext') return '# ' + name;
+      if (language === 'html') return '<!-- ' + name + ' -->';
+      if (language === 'css') return '/* ' + name + ' */';
+      return '';
+    }
+    function formatStructuredAssistantOutput(raw) {
+      const text = String(raw || '').trim();
+      if (!text.startsWith('{') || !text.endsWith('}')) return raw;
+      let bundle;
+      try { bundle = JSON.parse(text); } catch { return raw; }
+      if (!bundle || !Array.isArray(bundle.files) || !Array.isArray(bundle.setup_steps)) return raw;
+
+      const out = [];
+      out.push('**STATUS**');
+      out.push(bundle.execution_status === 'not_run'
+        ? 'Generated for you — not run or verified on your server/game yet.'
+        : 'Generated for you — verify it in your development server/game before release.');
+      if (bundle.summary) out.push('', '**ANSWER**', String(bundle.summary).trim());
+
+      if (bundle.files.length) {
+        out.push('', '**FILES**');
+        bundle.files.forEach((file) => {
+          const path = String(file?.path || 'file.txt').trim();
+          const purpose = String(file?.purpose || '').trim();
+          const content = String(file?.content || '');
+          const language = codeLanguageForPath(path);
+          const nameComment = fileNameComment(path, language);
+          out.push('', '### ' + path);
+          if (purpose) out.push(purpose);
+          out.push('', '```' + language);
+          if (nameComment) out.push(nameComment);
+          out.push(content.replace(/^\s+|\s+$/g, ''));
+          out.push('```');
+        });
+      }
+
+      out.push('', '**WHAT TO DO NEXT**');
+      if (bundle.setup_steps.length) {
+        bundle.setup_steps.forEach((step, index) => out.push((index + 1) + '. ' + String(step).trim()));
+      } else {
+        out.push('1. Put each file in the destination shown above.');
+        out.push('2. Restart or reload the resource/game in a private development environment.');
+      }
+      if (Array.isArray(bundle.validation_checks) && bundle.validation_checks.length) {
+        out.push('', '**CHECK IT WORKS**');
+        bundle.validation_checks.forEach((check) => out.push('- ' + String(check).trim()));
+      }
+      return out.join('\n');
     }
     const WELCOME_CREDITS = 100; // pence
     function grantWelcomeCredits() {
@@ -8597,6 +8672,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         flushStreamProgress();
         if (!full) throw new Error(streamError || 'The AI service returned no text. Please try again.');
         if (full) {
+          full = formatStructuredAssistantOutput(full);
           chargeForReply(full);
           chat.messages.push({ role: 'ai', content: full, t: Date.now() });
           Store.set({ chats: s.chats });
