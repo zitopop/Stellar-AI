@@ -2668,6 +2668,85 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     }
   }
 </style>
+
+<style id="stellar-obvious-stars-v4">
+  /* Make every sky point read unmistakably as a star. */
+  .stellar-starfield .html-star{
+    font-size:clamp(12px,1vw,17px)!important;
+    font-family:"Segoe UI Symbol","Arial Unicode MS",system-ui,sans-serif!important;
+    font-weight:700!important;
+    opacity:.82!important;
+  }
+  .stellar-starfield .html-star:nth-of-type(4n+1){font-size:15px!important}
+  .stellar-starfield .html-star:nth-of-type(4n+2){font-size:12px!important}
+  .stellar-starfield .html-star:nth-of-type(4n+3){font-size:17px!important}
+  .stellar-starfield .html-star:nth-of-type(4n){font-size:13px!important}
+
+  /* Frequent, obvious shooting stars. */
+  .stellar-starfield .shooting-star{
+    opacity:0!important;
+    animation-timing-function:linear!important;
+    animation-iteration-count:infinite!important;
+    height:2px!important;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),rgba(255,255,255,.96))!important;
+    box-shadow:0 0 8px rgba(255,255,255,.5),0 0 18px rgba(196,181,253,.32)!important;
+  }
+  .shooting-star-1{animation:shoot-visible-a 5.2s 0s infinite linear!important}
+  .shooting-star-2{animation:shoot-visible-b 6.4s 1.2s infinite linear!important}
+  .shooting-star-3{animation:shoot-visible-c 7.6s 2.3s infinite linear!important}
+  .shooting-star-4{animation:shoot-visible-a 6.1s 3.1s infinite linear!important}
+  .shooting-star-5{animation:shoot-visible-b 8.2s 4.4s infinite linear!important}
+  .shooting-star-6{animation:shoot-visible-c 7.1s 5.2s infinite linear!important}
+
+  @keyframes shoot-visible-a{
+    0%,44%{opacity:0;transform:translate3d(0,0,0) rotate(-23deg)}
+    48%{opacity:1}
+    78%{opacity:.95}
+    100%{opacity:0;transform:translate3d(-1150px,480px,0) rotate(-23deg)}
+  }
+  @keyframes shoot-visible-b{
+    0%,50%{opacity:0;transform:translate3d(0,0,0) rotate(-28deg)}
+    54%{opacity:.95}
+    82%{opacity:.9}
+    100%{opacity:0;transform:translate3d(-980px,560px,0) rotate(-28deg)}
+  }
+  @keyframes shoot-visible-c{
+    0%,56%{opacity:0;transform:translate3d(0,0,0) rotate(-18deg)}
+    60%{opacity:.98}
+    84%{opacity:.92}
+    100%{opacity:0;transform:translate3d(-1280px,410px,0) rotate(-18deg)}
+  }
+
+  /* Move the warm ambience up behind the hero so it is actually visible. */
+  .stellar-firefield{
+    opacity:.92!important;
+    background:
+      linear-gradient(180deg,transparent 0%,transparent 35%,rgba(255,92,24,.06) 58%,rgba(255,72,18,.16) 82%,rgba(255,54,14,.24) 100%)!important;
+  }
+  .stellar-firefield::before{
+    bottom:-2%!important;
+    height:72vh!important;
+    filter:blur(42px)!important;
+    opacity:.88!important;
+  }
+  .stellar-firefield::after{
+    bottom:4%!important;
+    height:52vh!important;
+    filter:blur(36px)!important;
+    opacity:.70!important;
+  }
+
+  @media(max-width:700px){
+    .stellar-starfield .html-star{
+      font-size:11px!important;
+    }
+    .shooting-star-4,.shooting-star-5,.shooting-star-6{display:none!important}
+    .stellar-firefield{opacity:.62!important}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .stellar-starfield .shooting-star{display:none!important;animation:none!important}
+  }
+</style>
 </head>
 <body>
   <div class="stellar-starfield" aria-hidden="true">
@@ -4029,12 +4108,12 @@ body.light .page-shell :is(p,li,label,summary,small,.hero-copy,.hero-subtitle,.m
     });
   };
 
-  shoot('.shooting-star-1', 6200, 200, -1150, 520, -24);
-  shoot('.shooting-star-2', 7600, 1200, -960, 470, -28);
-  shoot('.shooting-star-3', 9400, 2400, -1320, 500, -21);
-  shoot('.shooting-star-4', 6800, 600, -980, 360, -18);
-  shoot('.shooting-star-5', 10600, 3600, -1180, 610, -30);
-  shoot('.shooting-star-6', 8200, 1800, -860, 330, -16);
+
+
+
+
+
+
 })();
 </script>
 </body>
