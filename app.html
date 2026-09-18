@@ -7118,6 +7118,257 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   }
 </style>
 
+
+<style id="stellar-responsive-navigation-v3">
+  /* Authoritative navigation/button pass for phone, iPad and desktop. */
+  #sidebar{
+    -webkit-font-smoothing:antialiased!important;
+    backface-visibility:hidden!important;
+  }
+
+  #sidebar .side-new,
+  #sidebar .stellar-sidebar-nav button,
+  #sidebar .sidebar-item,
+  #sidebar .acct-signin-btn,
+  #sidebar .acct-out-btn,
+  #sidebar .side-act,
+  #sidebar .sidebar-utility-links a,
+  #mobile-menu-toggle{
+    -webkit-tap-highlight-color:transparent!important;
+    touch-action:manipulation!important;
+  }
+
+  #sidebar .side-new,
+  #sidebar .stellar-sidebar-nav button,
+  #sidebar .sidebar-item,
+  #sidebar .acct-signin-btn,
+  #sidebar .acct-out-btn,
+  #sidebar .side-act{
+    min-height:44px!important;
+    border-radius:11px!important;
+    transition:
+      background-color .18s ease,
+      border-color .18s ease,
+      color .18s ease,
+      opacity .18s ease,
+      transform .14s cubic-bezier(.2,.8,.2,1)!important;
+  }
+
+  #sidebar .stellar-sidebar-nav{
+    gap:5px!important;
+  }
+  #sidebar .stellar-sidebar-nav button{
+    display:flex!important;
+    align-items:center!important;
+    gap:10px!important;
+    width:100%!important;
+    padding:0 11px!important;
+    color:#b7bdc8!important;
+  }
+  #sidebar .stellar-sidebar-nav .nav-ico{
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 24px!important;
+    width:24px!important;
+    height:24px!important;
+    border-radius:7px!important;
+  }
+
+  #sidebar .side-new:active,
+  #sidebar .stellar-sidebar-nav button:active,
+  #sidebar .sidebar-item:active,
+  #sidebar .acct-signin-btn:active,
+  #sidebar .acct-out-btn:active,
+  #sidebar .side-act:active{
+    transform:scale(.985)!important;
+  }
+
+  @media (hover:hover) and (pointer:fine){
+    #sidebar .side-new:hover,
+    #sidebar .stellar-sidebar-nav button:hover,
+    #sidebar .sidebar-item:hover,
+    #sidebar .acct-signin-btn:hover,
+    #sidebar .acct-out-btn:hover,
+    #sidebar .side-act:hover{
+      transform:translateY(-1px)!important;
+    }
+  }
+
+  /* Smooth drawer/backdrop instead of hard display on/off. */
+  @media (max-width:1100px){
+    #sidebar{
+      position:fixed!important;
+      left:0!important;
+      transform:translate3d(-105%,0,0)!important;
+      will-change:transform!important;
+      transition:transform .30s cubic-bezier(.22,1,.36,1), box-shadow .30s ease!important;
+      contain:layout paint!important;
+      overflow-y:auto!important;
+      overscroll-behavior:contain!important;
+      -webkit-overflow-scrolling:touch!important;
+    }
+    #sidebar.open{
+      transform:translate3d(0,0,0)!important;
+      box-shadow:18px 0 50px rgba(0,0,0,.32)!important;
+    }
+
+    #overlay{
+      display:block!important;
+      position:fixed!important;
+      inset:0!important;
+      opacity:0!important;
+      visibility:hidden!important;
+      pointer-events:none!important;
+      background:rgba(0,0,0,.46)!important;
+      backdrop-filter:blur(2px)!important;
+      -webkit-backdrop-filter:blur(2px)!important;
+      transition:
+        opacity .24s ease,
+        visibility 0s linear .24s!important;
+    }
+    #overlay.open{
+      opacity:1!important;
+      visibility:visible!important;
+      pointer-events:auto!important;
+      transition:opacity .24s ease!important;
+    }
+
+    /* Keep the page visible behind the drawer so opening it feels continuous. */
+    body.nav-open #main-col{
+      visibility:visible!important;
+    }
+    body.nav-open{
+      overflow:hidden!important;
+      overscroll-behavior:contain!important;
+    }
+
+    #sidebar .side-new,
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .sidebar-item,
+    #sidebar .acct-signin-btn,
+    #sidebar .acct-out-btn,
+    #sidebar .side-act{
+      min-height:46px!important;
+    }
+
+    #mobile-menu-toggle,
+    #model-btn,
+    .stellar-global-header .stellar-upgrade,
+    #composer-model-trigger,
+    #composer-plans-btn,
+    .composer-foot #image-upload-btn,
+    .composer-foot #ws-btn,
+    .input-area #send-btn{
+      min-width:44px!important;
+      min-height:44px!important;
+    }
+
+    #composer-model-trigger,
+    #composer-plans-btn,
+    .composer-foot #image-upload-btn,
+    .composer-foot #ws-btn{
+      height:44px!important;
+    }
+  }
+
+  /* Phones: roomy drawer, easy thumb targets, safe-area spacing. */
+  @media (max-width:767px){
+    #sidebar{
+      width:min(88vw,304px)!important;
+      max-width:304px!important;
+      padding:14px 12px max(14px,env(safe-area-inset-bottom))!important;
+    }
+    #sidebar .sidebar-brand-row{
+      min-height:48px!important;
+      margin-bottom:10px!important;
+    }
+    #sidebar .side-new,
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .sidebar-item,
+    #sidebar .acct-signin-btn,
+    #sidebar .acct-out-btn,
+    #sidebar .side-act{
+      min-height:48px!important;
+      font-size:12.5px!important;
+    }
+    #sidebar .stellar-sidebar-nav{
+      gap:6px!important;
+    }
+    #sidebar .stellar-sidebar-nav button{
+      padding-inline:12px!important;
+    }
+    #sidebar .sidebar-utility-links{
+      flex-wrap:wrap!important;
+      gap:6px 12px!important;
+      padding:10px 8px max(8px,env(safe-area-inset-bottom))!important;
+    }
+    #sidebar .sidebar-utility-links a{
+      display:inline-flex!important;
+      align-items:center!important;
+      min-height:36px!important;
+      padding:0 2px!important;
+      font-size:10px!important;
+    }
+    #mobile-menu-toggle{
+      width:44px!important;
+      height:44px!important;
+    }
+    .stellar-global-header .stellar-upgrade{
+      height:44px!important;
+      padding-inline:13px!important;
+    }
+  }
+
+  /* iPad/tablet: same drawer mechanics with slightly wider navigation. */
+  @media (min-width:768px) and (max-width:1100px){
+    #sidebar{
+      width:min(42vw,320px)!important;
+      max-width:320px!important;
+      padding:18px 14px max(18px,env(safe-area-inset-bottom))!important;
+    }
+    #sidebar .side-new,
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .sidebar-item,
+    #sidebar .acct-signin-btn,
+    #sidebar .acct-out-btn,
+    #sidebar .side-act{
+      min-height:48px!important;
+      font-size:13px!important;
+    }
+    #sidebar .stellar-sidebar-nav{
+      gap:6px!important;
+    }
+  }
+
+  /* Desktop: compact but still deliberate and consistent. */
+  @media (min-width:1101px){
+    #sidebar .side-new,
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .sidebar-item,
+    #sidebar .acct-signin-btn,
+    #sidebar .acct-out-btn,
+    #sidebar .side-act{
+      min-height:44px!important;
+    }
+    #sidebar .stellar-sidebar-nav button{
+      font-size:12px!important;
+    }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    #sidebar,
+    #overlay,
+    #sidebar .side-new,
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .sidebar-item,
+    #sidebar .acct-signin-btn,
+    #sidebar .acct-out-btn,
+    #sidebar .side-act{
+      transition:none!important;
+    }
+  }
+</style>
+
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
