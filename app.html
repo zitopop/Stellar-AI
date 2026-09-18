@@ -4325,6 +4325,82 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     .home-prompt-pills button{max-width:100%!important}
   }
 </style>
+
+<style id="stellar-reference-composer-final">
+  /* Final reference-screen alignment: keep advanced controls in the sidebar, not the composer. */
+  .stellar-sidebar-nav button:not(.active){
+    background:transparent!important;
+    border-color:transparent!important;
+    box-shadow:none!important;
+  }
+  .stellar-sidebar-nav button.active{
+    background:linear-gradient(90deg,rgba(105,78,211,.25),rgba(83,61,166,.17))!important;
+    border-color:rgba(133,108,243,.14)!important;
+    box-shadow:none!important;
+  }
+
+  .composer-foot #credits-btn,
+  .composer-foot #ws-btn,
+  .composer-foot .relative:has(#model-btn),
+  .composer-foot #keyboard-hint{
+    display:none!important;
+  }
+  .composer-foot{
+    left:17px!important;
+    right:110px!important;
+    bottom:10px!important;
+    width:auto!important;
+    justify-content:flex-start!important;
+    overflow:visible!important;
+  }
+  .composer-foot .foot-right{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    margin-left:0!important;
+  }
+  .composer-foot #image-upload-btn{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:7px!important;
+    min-height:32px!important;
+    padding:0 10px!important;
+    border:0!important;
+    border-radius:9px!important;
+    background:transparent!important;
+    color:#aeb4c1!important;
+    font-size:11px!important;
+    font-weight:600!important;
+  }
+  .composer-foot #image-upload-btn:hover{
+    background:rgba(255,255,255,.045)!important;
+    color:#fff!important;
+  }
+
+  /* Voice remains available from the sidebar; remove duplicate composer control. */
+  .input-area .mic-btn{display:none!important}
+  .input-area #send-btn{
+    right:15px!important;
+    bottom:13px!important;
+  }
+  .input-area>.flex{
+    padding-right:64px!important;
+  }
+
+  #txt::placeholder{color:#8f96a6!important}
+
+  @media(max-width:900px){
+    .composer-foot{
+      left:13px!important;
+      right:70px!important;
+      bottom:7px!important;
+    }
+    .input-area>.flex{
+      padding-right:56px!important;
+    }
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -4521,7 +4597,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           <button type="button" onclick="openUsage()" id="credits-btn" class="ws-toggle credits-btn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> <span id="credits-val">—</span></button>
           <span id="keyboard-hint" class="keyboard-hint">Enter to send · Shift+Enter for new line</span>
           <div class="foot-right">
-          <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Image</span></button>
+          <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Attach</span></button>
           <button type="button" onclick="toggleWorkspace()" id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
           <div class="relative">
             <button type="button" id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false">⭐ Star ▾</button>
@@ -8199,7 +8275,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const t = document.getElementById('txt');
       if (!t) return;
       const signedIn = !!Store.get().user || isOwner();
-      t.placeholder = 'Describe what you want to build or fix…';
+      t.placeholder = 'Ask anything...';
     }
     function completionSoundEnabled() {
       return Store.get().completionSound !== false;
