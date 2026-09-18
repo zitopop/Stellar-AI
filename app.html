@@ -5423,7 +5423,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
   <!-- SETTINGS MODAL -->
   <div id="settings-modal"
-       class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+       class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+       onclick="if (event.target === this) closeSettings()">
     <div onclick="event.stopImmediatePropagation()" role="dialog" aria-modal="true" aria-labelledby="settings-modal-heading" class="set-card glass rounded-3xl w-full max-w-md mx-4 p-8">
       <div class="set-head flex justify-between mb-6">
         <div>
@@ -5972,6 +5973,9 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
     function safeStorageSet(key, value) {
       try { window.localStorage.setItem(key, value); return true; } catch { return false; }
+    }
+    function safeStorageRemove(key) {
+      try { window.localStorage.removeItem(key); return true; } catch { return false; }
     }
 
     function showStellarNotice(message, tone = 'info', options = {}) {
@@ -8608,12 +8612,40 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       el('u-paid-line').style.display = paid > 0 ? '' : 'none';
       el('u-switch').classList.toggle('on', creditsOn());
     }
+    function prepareSettingsInteractions() {
+      document.querySelectorAll('#settings-modal .set-click').forEach((row) => {
+        if (row.matches('a,button,[role="button"]')) return;
+        row.setAttribute('role', 'button');
+        row.setAttribute('tabindex', '0');
+        if (row.dataset.keyboardBound === '1') return;
+        row.dataset.keyboardBound = '1';
+        row.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          row.click();
+        });
+      });
+    }
     function setTab(name) {
-      document.querySelectorAll('.set-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-      document.querySelectorAll('.set-panel').forEach(p => { p.style.display = (p.dataset.panel === name) ? '' : 'none'; });
-      const body = document.querySelector('.set-body');
-      if (body) body.scrollTop = 0;
-      Store.set({ setTab: name });
+      const requested = String(name || 'account');
+      const hasTab = !!document.querySelector('#settings-modal .set-tab[data-tab="' + requested + '"]');
+      const hasPanel = !!document.querySelector('#settings-modal .set-panel[data-panel="' + requested + '"]');
+      const target = (hasTab && hasPanel) ? requested : 'account';
+      document.querySelectorAll('#settings-modal .set-tab').forEach(t => {
+        const active = t.dataset.tab === target;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', String(active));
+      });
+      document.querySelectorAll('#settings-modal .set-panel').forEach(p => {
+        const active = p.dataset.panel === target;
+        p.style.display = active ? '' : 'none';
+        p.setAttribute('aria-hidden', String(!active));
+      });
+      const activeTab = document.querySelector('#settings-modal .set-tab[data-tab="' + target + '"]');
+      activeTab?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+      const panel = document.querySelector('#settings-modal .set-panel[data-panel="' + target + '"]');
+      if (panel) panel.scrollTop = 0;
+      Store.set({ setTab: target });
     }
     function settingsAuthAction() {
       if (Store.get().user) { signOut(); refreshSettings(); }
@@ -8760,10 +8792,14 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       closeOtherDialogs('settings');
       captureUtilityDialogTrigger();
       document.body.classList.add('settings-open');
-      setTimeout(() => setTab(Store.get().setTab || 'account'), 0);
       refreshSettings();
+      prepareSettingsInteractions();
       document.getElementById('settings-modal').classList.remove('hidden');
-      focusUtilityDialogClose('settings-modal-close');
+      setTimeout(() => {
+        prepareSettingsInteractions();
+        setTab(Store.get().setTab || 'account');
+        focusUtilityDialogClose('settings-modal-close');
+      }, 0);
     }
     function closeSettings() {
       document.body.classList.remove('settings-open'); document.getElementById('settings-modal').classList.add('hidden'); restoreUtilityDialogFocus(); }
@@ -8955,7 +8991,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       Store.set({ textSize: s });
       ['sm','md','lg'].forEach(k => {
         const b = document.getElementById('seg-txt-' + k);
-        if (b) b.classList.toggle('on', k === s);
+        if (b) {
+          const active = k === s;
+          b.classList.toggle('on', active);
+          b.setAttribute('aria-pressed', String(active));
+        }
       });
     }
     function setMode(mode = 'dark', source = 'dark-only') {
