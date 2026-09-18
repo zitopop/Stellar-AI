@@ -1968,6 +1968,113 @@ body:not(.light) .hero-visual .product-frame{box-shadow:0 28px 80px rgba(0,0,0,.
     }
   }
 </style>
+
+<style id="stellar-how-clean-stars-v1">
+  /* How it works: no box-inside-box hierarchy. */
+  #how-it-works>.section-heading{
+    padding:0!important;
+    max-width:760px!important;
+    background:transparent!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    overflow:visible!important;
+  }
+  #how-it-works>.section-heading::before,
+  #how-it-works>.section-heading::after{
+    display:none!important;
+    content:none!important;
+  }
+  #how-it-works>.section-heading .eyebrow{
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+  }
+  #how-it-works .capability-grid{
+    margin-top:30px!important;
+    gap:12px!important;
+  }
+  #how-it-works .capability{
+    min-height:0!important;
+    padding:22px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:9px!important;
+  }
+  #how-it-works .capability .cap-number{
+    margin-bottom:3px!important;
+  }
+  #how-it-works .capability .cap-icon{
+    width:38px!important;
+    height:38px!important;
+    margin:2px 0 3px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:11px!important;
+  }
+  #how-it-works .capability h3{
+    margin:0!important;
+  }
+  #how-it-works .capability p{
+    margin:0!important;
+    line-height:1.58!important;
+  }
+  #how-it-works .workflow-note{
+    max-width:820px!important;
+    margin:18px auto 0!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+  }
+
+  /* Gentle twinkle: keep the galaxy alive without distracting from text. */
+  .stellar-starfield::after{
+    transform-origin:center!important;
+    animation:stellar-star-twinkle 4.8s ease-in-out infinite alternate!important;
+    will-change:opacity,filter,transform;
+  }
+  @keyframes stellar-star-twinkle{
+    0%{
+      opacity:.58;
+      filter:brightness(.82);
+      transform:scale(1);
+    }
+    38%{
+      opacity:.94;
+      filter:brightness(1.18);
+      transform:scale(1.002);
+    }
+    72%{
+      opacity:.72;
+      filter:brightness(.94);
+      transform:scale(1);
+    }
+    100%{
+      opacity:1;
+      filter:brightness(1.28) drop-shadow(0 0 2px rgba(202,181,255,.32));
+      transform:scale(1.003);
+    }
+  }
+  @media(max-width:700px){
+    #how-it-works .capability-grid{
+      gap:9px!important;
+    }
+    #how-it-works .capability{
+      padding:18px!important;
+    }
+  }
+  @media(prefers-reduced-motion:reduce){
+    .stellar-starfield::after{
+      animation:none!important;
+      opacity:.82!important;
+      filter:none!important;
+      transform:none!important;
+    }
+  }
+</style>
 </head>
 <body>
   <div class="stellar-starfield" aria-hidden="true"></div>
@@ -2060,10 +2167,10 @@ README.md</div>
       <section class="section container" id="how-it-works">
         <div class="section-heading center"><div class="eyebrow">How it works</div><h2>Describe it. Build it. Test it. Improve it.</h2><p>A simple path from an idea to files you can actually work with.</p></div>
         <div class="capability-grid">
-          <article class="capability"><span class="cap-number">01 / DESCRIBE</span><div class="cap-icon">✦</div><h3>Say what you want.</h3><p>Describe the feature in normal English. You do not need to write a technical specification.</p><div class="cap-ui"><div class="tiny-label">YOUR BRIEF</div><div class="mini-prompt">“Gang territory with zones, alerts and rewards”</div><div class="mini-files"><i></i><i></i><i></i></div></div></article>
-          <article class="capability"><span class="cap-number">02 / GENERATE</span><div class="cap-icon">↗</div><h3>Get the files.</h3><p>Stellar creates a structured first version with the files and notes you need to review.</p><div class="cap-ui"><div class="tiny-label">RESOURCE PACKAGE</div><div class="mini-flow"><i></i><b>→</b><i></i><b>→</b><i></i></div></div></article>
-          <article class="capability"><span class="cap-number">03 / TEST</span><div class="cap-icon">✓</div><h3>Test it.</h3><p>Review the files and run them in your own private FiveM server or Roblox place.</p><div class="cap-ui"><div class="tiny-label">TEST CHECKS</div><div class="mini-diagnosis"><i></i><i></i><i></i></div></div></article>
-          <article class="capability"><span class="cap-number">04 / IMPROVE</span><div class="cap-icon">↻</div><h3>Fix or improve it.</h3><p>Paste an error or describe the next change and keep working in the same chat.</p><div class="cap-ui"><div class="tiny-label">NEXT REVISION</div><div class="mini-prompt">“Add a cooldown and explain the changed files”</div><div class="mini-files"><i></i><i></i><i></i></div></div></article>
+          <article class="capability"><span class="cap-number">01 / DESCRIBE</span><div class="cap-icon">✦</div><h3>Say what you want.</h3><p>Describe the feature in normal English. You do not need to write a technical specification.</p></article>
+          <article class="capability"><span class="cap-number">02 / GENERATE</span><div class="cap-icon">↗</div><h3>Get the files.</h3><p>Stellar creates a structured first version with the files and notes you need to review.</p></article>
+          <article class="capability"><span class="cap-number">03 / TEST</span><div class="cap-icon">✓</div><h3>Test it.</h3><p>Review the files and run them in your own private FiveM server or Roblox place.</p></article>
+          <article class="capability"><span class="cap-number">04 / IMPROVE</span><div class="cap-icon">↻</div><h3>Fix or improve it.</h3><p>Paste an error or describe the next change and keep working in the same chat.</p></article>
         </div>
         <p class="workflow-note"><strong>What you get:</strong> a structured starting point, explained files and a clear next test. You remain responsible for reviewing dependencies and testing the result in your own FiveM server or Roblox place.</p>
       </section>
