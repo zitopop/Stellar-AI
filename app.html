@@ -7002,6 +7002,122 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   #welcome-starters-heading,
   #suggestion-chips{display:none!important}
 </style>
+
+<style id="stellar-home-composer-controls-v2">
+  #composer-model-trigger,
+  #composer-plans-btn{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:6px!important;
+    flex:0 0 auto!important;
+    min-width:0!important;
+    min-height:34px!important;
+    height:34px!important;
+    padding:0 10px!important;
+    border:1px solid rgba(255,255,255,.08)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#c8ced8!important;
+    font-size:10.5px!important;
+    font-weight:750!important;
+    white-space:nowrap!important;
+  }
+  #composer-model-trigger:hover,
+  #composer-plans-btn:hover{
+    color:#fff!important;
+    border-color:rgba(139,92,246,.28)!important;
+    background:rgba(124,58,237,.10)!important;
+  }
+  #composer-plans-btn{
+    color:#ddd4ff!important;
+    border-color:rgba(139,92,246,.22)!important;
+    background:rgba(124,58,237,.08)!important;
+  }
+  .composer-foot .foot-right{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    min-width:0!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scrollbar-width:none!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  .composer-foot .foot-right::-webkit-scrollbar{display:none!important}
+  .input-area.glass{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:120!important;
+  }
+  .input-area>.flex{min-width:0!important}
+  #txt{min-width:0!important}
+  #model-menu.composer-model-menu{
+    position:fixed!important;
+    top:auto!important;
+    bottom:92px!important;
+    right:24px!important;
+    left:auto!important;
+    width:min(320px,calc(100vw - 32px))!important;
+    max-height:min(62dvh,520px)!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    z-index:240!important;
+  }
+
+  @media (max-width:767px){
+    .stellar-global-header .stellar-top-actions{
+      display:flex!important;
+      margin-left:auto!important;
+    }
+    .stellar-global-header .stellar-top-actions>a{display:none!important}
+    .stellar-global-header .stellar-top-actions .stellar-upgrade{
+      display:inline-flex!important;
+      min-height:38px!important;
+      height:38px!important;
+      padding:0 12px!important;
+      font-size:11px!important;
+    }
+    .composer-foot{
+      left:10px!important;
+      right:58px!important;
+      bottom:max(7px,env(safe-area-inset-bottom))!important;
+      overflow:visible!important;
+    }
+    .composer-foot .foot-right{
+      width:100%!important;
+      max-width:calc(100vw - 82px)!important;
+      gap:5px!important;
+    }
+    #composer-model-trigger,
+    #composer-plans-btn,
+    .composer-foot #image-upload-btn,
+    .composer-foot #ws-btn{
+      min-height:36px!important;
+      height:36px!important;
+      padding:0 9px!important;
+      font-size:10px!important;
+    }
+    .input-area>.flex{
+      min-height:96px!important;
+      padding-bottom:45px!important;
+    }
+    #model-menu.composer-model-menu{
+      left:10px!important;
+      right:10px!important;
+      bottom:calc(102px + env(safe-area-inset-bottom))!important;
+      width:auto!important;
+      max-width:none!important;
+      max-height:58dvh!important;
+    }
+  }
+
+  @media (min-width:768px){
+    .composer-foot{overflow:visible!important}
+    .composer-foot .foot-right{max-width:100%!important}
+  }
+</style>
+
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -7085,7 +7201,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           </div>
     <nav class="stellar-top-actions" aria-label="Help and plan">
       <a href="/blog">Help</a>
-      <button class="stellar-upgrade" type="button" onclick="openPlans()">Upgrade</button>
+      <button class="stellar-upgrade" type="button" onclick="openPlans()">Plans</button>
     </nav>
   </header>
   <div class="flex h-screen stellar-app-shell">
@@ -7215,6 +7331,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           <button type="button" onclick="openUsage()" id="credits-btn" class="ws-toggle credits-btn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> <span id="credits-val">—</span></button>
           <span id="keyboard-hint" class="keyboard-hint">Enter to send · Shift+Enter for new line</span>
           <div class="foot-right">
+          <button type="button" id="composer-model-trigger" onclick="toggleModelMenu(event)" class="ws-toggle composer-model-trigger" aria-label="Choose AI mode" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span aria-hidden="true">✦</span> Modes</button>
+          <button type="button" id="composer-plans-btn" onclick="openPlans()" class="ws-toggle composer-plans-btn" aria-label="View plans"><span aria-hidden="true">◇</span> Plans</button>
           <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Attach</span></button>
           <button type="button" onclick="toggleWorkspace()" id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
           
@@ -10277,14 +10395,20 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       refreshModelMenu();
       const menu = document.getElementById('model-menu');
       const willOpen = menu.classList.contains('hidden');
+      const fromComposer = e.currentTarget?.id === 'composer-model-trigger';
       menu.classList.toggle('hidden', !willOpen);
+      menu.classList.toggle('composer-model-menu', willOpen && fromComposer);
       document.getElementById('model-btn').setAttribute('aria-expanded', String(willOpen));
+      document.getElementById('composer-model-trigger')?.setAttribute('aria-expanded', String(willOpen && fromComposer));
       if (willOpen && e.detail === 0) setTimeout(focusModelMenuFirstChoice, 0);
     }
 
     function closeModelMenu() {
-      document.getElementById('model-menu').classList.add('hidden');
+      const menu = document.getElementById('model-menu');
+      menu.classList.add('hidden');
+      menu.classList.remove('composer-model-menu');
       document.getElementById('model-btn').setAttribute('aria-expanded', 'false');
+      document.getElementById('composer-model-trigger')?.setAttribute('aria-expanded', 'false');
     }
 
     function pickModel(m) {
