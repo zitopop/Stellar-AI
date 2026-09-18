@@ -5241,6 +5241,92 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     body.settings-open .stellar-global-header{padding-left:12px!important}
   }
 </style>
+
+<style id="stellar-final-cleanup-v4">
+  /* No gray chrome bars/dividers on the app. */
+  .stellar-global-header,
+  .topbar.glass,
+  #sidebar,
+  .stellar-app-shell #sidebar{
+    border-color:transparent!important;
+    box-shadow:none!important;
+  }
+
+  /* Clean, normal Stellar wordmark. */
+  #sidebar .brand-title,
+  #sidebar .brand-grad,
+  .landing-style-home .greet-brand strong,
+  .landing-style-home .greet-brand strong span{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter",system-ui,sans-serif!important;
+    font-style:normal!important;
+    text-transform:none!important;
+    letter-spacing:-.025em!important;
+    text-shadow:none!important;
+    background:none!important;
+    -webkit-background-clip:border-box!important;
+    background-clip:border-box!important;
+    -webkit-text-fill-color:currentColor!important;
+  }
+  #sidebar .brand-grad,
+  .landing-style-home .greet-brand strong{color:#f5f4f8!important}
+  .landing-style-home .greet-brand strong span{color:#8d72ff!important}
+
+  /* Settings owns the screen while open — app sidebar/header are fully removed visually. */
+  body.settings-open #sidebar,
+  body.settings-open #overlay,
+  body.settings-open .stellar-global-header,
+  body.settings-open .topbar.glass{
+    display:none!important;
+  }
+  body.settings-open .stellar-app-shell{
+    padding-top:0!important;
+  }
+  body.settings-open #main-col{
+    margin-left:0!important;
+    width:100%!important;
+  }
+  body.settings-open #settings-modal{
+    z-index:3000!important;
+    background:rgba(5,6,10,.88)!important;
+  }
+
+  /* Never show the floating update pill in the cleaned app UI. */
+  #update-pill{display:none!important}
+
+  /* As soon as the user types, remove all starter/guide content from the home state. */
+  body.composer-has-text .landing-style-home .greet-eyebrow,
+  body.composer-has-text .landing-style-home .greet-brand,
+  body.composer-has-text .landing-style-home .greet-hi,
+  body.composer-has-text .landing-style-home .welcome-sub,
+  body.composer-has-text .landing-style-home #suggestion-chips,
+  body.composer-has-text .landing-style-home .home-disclaimer{
+    display:none!important;
+  }
+  body.composer-has-text .landing-style-home{
+    min-height:0!important;
+    padding:0!important;
+    margin:0 auto!important;
+  }
+
+  /* Stable composer growth: readable, capped, and no shifting gimmicks. */
+  #txt{
+    min-height:48px!important;
+    max-height:160px!important;
+    resize:none!important;
+    overflow-x:hidden!important;
+    line-height:1.5!important;
+    transition:none!important;
+  }
+  .input-area>.flex{align-items:flex-end!important}
+
+  /* Guides were removed from the sidebar; Documentation remains in Quick Links. */
+  .side-guides-link{display:none!important}
+
+  @media(max-width:640px){
+    #txt{max-height:120px!important}
+    body.settings-open #settings-modal{background:rgba(5,6,10,.94)!important}
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0]">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -7683,7 +7769,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         if (!stamp) return;
         if (!buildStamp) { buildStamp = stamp; return; }
         if (stamp !== buildStamp) {
-          document.getElementById('update-pill').classList.remove('hidden');
+          // A newer build is available. Keep the UI clean and refresh naturally on navigation/reload.
+          buildStamp = stamp;
         }
       } catch {}
     }
@@ -8778,7 +8865,12 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       currentChatId = null;
       pendingChat = false;
       updateSignedOutHint();
-      try { if (window.google && google.accounts) google.accounts.id.disableAutoSelect(); } catch {}
+      try {
+        if (window.google && google.accounts && google.accounts.id) {
+          google.accounts.id.disableAutoSelect();
+          google.accounts.id.cancel?.();
+        }
+      } catch {}
       renderAccount();
       renderChatList();
       renderMeter();
