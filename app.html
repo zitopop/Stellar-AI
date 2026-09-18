@@ -3457,9 +3457,6 @@
       body:not(.light) #settings-modal .set-item { min-height: 50px !important; }
     }
   </style>
-  <link rel="stylesheet" href="/stellar-orbit.css?v=2">
-  <link rel="stylesheet" href="/stellar-orbit-extras.css?v=2">
-  <link rel="stylesheet" href="/stellar-growth-v1.css?v=1">
   <link rel="stylesheet" href="/site-polish.css">
   <link rel="stylesheet" href="/stellar-final-responsive.css?v=1">
 <style id="stellar-reference-ui-v3">
@@ -6533,16 +6530,43 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     function greetingMarkup() {
       return `
         <div class="greet-wrap">
-          <div class="greet-hi" id="greet-hi">${timeGreeting()}</div>
-          <p class="welcome-sub">Just say what you want. Stellar can build, fix or explain FiveM and Roblox scripts.</p>
-          <div id="welcome-starters-heading" class="welcome-starters-label">Try an example</div>
-          <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
-            <button type="button" onclick="useSuggestion('QBCore police job with F6 menu, handcuffing, MDT and jail timer')" class="sug-chip"><span>👮</span><span>Build a police job</span></button>
-            <button type="button" onclick="useSuggestion('QBCore bank heist with planning stage, execution and police dispatch')" class="sug-chip"><span>🏦</span><span>Build a bank heist</span></button>
-            <button type="button" onclick="useSuggestion('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist')" class="sug-chip"><span>🎮</span><span>Build a Roblox game</span></button>
-            <button type="button" onclick="useSuggestion('Fix this broken script: ')" class="sug-chip"><span>🔨</span><span>Fix my script</span></button>
+          <div class="greet-brand" aria-label="Stellar AI">
+            <span class="greet-brand-mark" aria-hidden="true">✦</span>
+            <strong>Stellar <span>AI</span></strong>
           </div>
-          <a href="/blog" class="home-guides-link">Browse guides <span aria-hidden="true">→</span></a>
+          <div class="greet-tagline">Build faster. Smarter. Together.</div>
+          <div class="greet-hi" id="greet-hi">What can I help you build?</div>
+          <p class="welcome-sub">Get expert help with FiveM, Roblox, coding, or bring your ideas to life.</p>
+          <div id="welcome-starters-heading" class="sr-only">Quick starts</div>
+          <div id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading">
+            <button type="button" onclick="useSuggestion('Build a clean QBCore FiveM system for: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">🎮</span>
+              <span class="home-card-copy"><b>Build a FiveM system</b><small>Scripts, ESX/QB, UIs and more</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" onclick="useSuggestion('Build a secure Roblox game system for: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">◇</span>
+              <span class="home-card-copy"><b>Create a Roblox game</b><small>Scripting, systems, publishing</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" onclick="useSuggestion('Fix and explain this code: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">⌗</span>
+              <span class="home-card-copy"><b>Fix my code</b><small>Errors, bugs, optimisation</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" onclick="useSuggestion('Create a clear step-by-step plan for: ')" class="sug-chip">
+              <span class="home-card-icon" aria-hidden="true">▤</span>
+              <span class="home-card-copy"><b>Make a plan</b><small>Ideas, roadmaps, next steps</small></span>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+          <div class="home-prompt-pills" aria-label="Prompt examples">
+            <button type="button" onclick="useSuggestion('How do I add a car system to FiveM?')">How do I add a car system to FiveM?</button>
+            <button type="button" onclick="useSuggestion('Create a Roblox tycoon script')">Create a Roblox tycoon script</button>
+            <button type="button" onclick="useSuggestion('Fix this error for me: ')">Fix this error for me</button>
+            <button type="button" onclick="useSuggestion('Help me plan a game')">Help me plan a game</button>
+          </div>
+          <div class="home-disclaimer">Stellar AI can make mistakes. Always review code and follow platform rules.</div>
         </div>`;
     }
     function useSuggestion(text) {
@@ -11909,8 +11933,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       window.setTimeout(show, 30000);
     })();
   </script>
-  <script src="/stellar-orbit.js?v=2" defer></script>
-  <script src="/stellar-growth-v1.js?v=1" defer></script>
 
 <script id="tap-modal-reliability">
 (() => {
