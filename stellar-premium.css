@@ -596,3 +596,217 @@ body:has(.stellar-app-shell){background:radial-gradient(circle at 55% -12%,rgba(
     border-radius:12px!important;
   }
 }
+
+
+/* FINAL TYPOGRAPHY + ALIGNMENT PASS — 2026-09-18 */
+.page-shell .hero h1{
+  max-width:12.4ch!important;
+  line-height:1.015!important;
+  letter-spacing:-.048em!important;
+}
+.page-shell .hero h1 .gradient-text{
+  display:block!important;
+  margin-top:.04em!important;
+  line-height:1.015!important;
+}
+
+/* HTML already contains the checkmark — do not draw a second one. */
+.page-shell .hero-footnote span::before{
+  content:none!important;
+}
+.page-shell .hero-footnote{
+  gap:12px 22px!important;
+  line-height:1.5!important;
+}
+.page-shell .hero-footnote span{
+  gap:0!important;
+  white-space:normal!important;
+}
+
+/* Launch rows: icon and copy should share a clean top edge. */
+.page-shell .launch-card{
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr)!important;
+  align-items:start!important;
+  column-gap:12px!important;
+}
+.page-shell .launch-icon{
+  width:38px!important;
+  height:38px!important;
+  margin-top:1px!important;
+}
+.page-shell .launch-card>div:last-child{
+  min-width:0!important;
+}
+.page-shell .launch-card strong{
+  line-height:1.35!important;
+}
+.page-shell .launch-card span,
+.page-shell .launch-card .launch-note{
+  line-height:1.55!important;
+}
+
+/* Make the illustrative mini UIs readable instead of squashed. */
+.page-shell .cap-ui{
+  min-height:132px!important;
+  height:auto!important;
+  padding:15px!important;
+}
+.page-shell .tiny-label{
+  font-size:9px!important;
+  line-height:1.35!important;
+}
+.page-shell .mini-prompt{
+  margin-top:10px!important;
+  padding:9px 10px!important;
+  font-size:9px!important;
+  line-height:1.45!important;
+}
+.page-shell .mini-files{
+  gap:7px!important;
+  margin-top:10px!important;
+}
+.page-shell .mini-files i{
+  min-height:30px!important;
+}
+.page-shell .mini-flow{
+  gap:8px!important;
+  margin-top:18px!important;
+}
+.page-shell .mini-flow i{
+  min-height:38px!important;
+}
+.page-shell .mini-flow b{
+  font-size:12px!important;
+}
+.page-shell .mini-diagnosis{
+  gap:7px!important;
+  margin-top:12px!important;
+}
+.page-shell .mini-diagnosis i{
+  height:9px!important;
+}
+
+/* Lists need real breathing room between the checkmark and text. */
+.page-shell .capability-map-card ul{
+  gap:10px!important;
+  margin-top:18px!important;
+}
+.page-shell .capability-map-card li{
+  padding-left:25px!important;
+  font-size:13px!important;
+  line-height:1.62!important;
+}
+.page-shell .capability-map-card li::before{
+  left:1px!important;
+  top:.02em!important;
+}
+
+/* Comparison reads like open editorial rows, not narrow mini-cards. */
+.page-shell .comparison-directory{
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  border-top:1px solid var(--open-line)!important;
+  border-bottom:1px solid var(--open-line)!important;
+}
+.page-shell .comparison-choice,
+.page-shell .comparison-choice-stellar,
+.page-shell .comparison-choice-ender,
+.page-shell .comparison-choice-swisser,
+.page-shell .comparison-choice-general{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:18px!important;
+  min-height:0!important;
+  padding:20px 0!important;
+  border:0!important;
+  border-bottom:1px solid var(--open-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.page-shell .comparison-choice:last-child{
+  border-bottom:0!important;
+}
+.page-shell .comparison-choice:hover{
+  transform:none!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.page-shell .comparison-choice span{
+  max-width:70ch!important;
+  font-size:12px!important;
+  line-height:1.65!important;
+  text-wrap:pretty!important;
+}
+.page-shell .comparison-choice a{
+  align-self:center!important;
+  font-size:11px!important;
+}
+
+/* Keep footer links uniform so the last link never looks stranded. */
+.page-shell .footer{
+  align-items:start!important;
+}
+.page-shell .footer-links{
+  display:grid!important;
+  grid-template-columns:repeat(4,max-content)!important;
+  justify-content:end!important;
+  gap:12px 20px!important;
+  max-width:none!important;
+}
+.page-shell .footer-links a{
+  min-height:32px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+}
+
+/* Avoid over-tight wrapping on tablets. */
+@media(min-width:641px) and (max-width:1030px){
+  .page-shell .hero h1{
+    max-width:14ch!important;
+    line-height:1.025!important;
+  }
+  .page-shell .hero-footnote{
+    justify-content:center!important;
+    gap:10px 18px!important;
+  }
+  .page-shell .footer{
+    grid-template-columns:1fr!important;
+  }
+  .page-shell .footer-links{
+    justify-content:start!important;
+    grid-template-columns:repeat(4,max-content)!important;
+  }
+}
+
+/* Phone: remove all narrow-column pressure. */
+@media(max-width:640px){
+  .page-shell .hero h1{
+    max-width:none!important;
+    line-height:1.035!important;
+  }
+  .page-shell .hero h1 .gradient-text{
+    margin-top:.08em!important;
+  }
+  .page-shell .hero-footnote{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    font-size:11px!important;
+  }
+  .page-shell .cap-ui{
+    min-height:126px!important;
+  }
+  .page-shell .comparison-choice{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  .page-shell .comparison-choice a{
+    justify-self:start!important;
+  }
+  .page-shell .footer-links{
+    grid-template-columns:repeat(2,max-content)!important;
+    justify-content:start!important;
+    gap:10px 20px!important;
+  }
+}
