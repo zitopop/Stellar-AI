@@ -10458,7 +10458,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (!chat) return;
       document.getElementById('chat-title').textContent = chat.name;
       const chatEl = document.getElementById('chat');
-      document.body.classList.toggle('stellar-empty-home', chat.messages.length === 0);
+      const isEmptyHome = chat.messages.length === 0;
+      const isIntroResponse = chat.messages.length === 1 && chat.messages[0]?.role !== 'user';
+      document.body.classList.toggle('stellar-empty-home', isEmptyHome);
+      document.body.classList.toggle('stellar-start-state', isEmptyHome || isIntroResponse);
       
       if (chat.messages.length === 0) {
         chatEl.innerHTML = greetingMarkup();
