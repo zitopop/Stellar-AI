@@ -8198,8 +8198,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   }
 </style>
 
-<style id="stellar-final-centered-home-v1">
-  /* Final start-screen positioning: welcome high, composer truly centred in the main workspace. */
+<style id="stellar-final-centered-home-v2">
+  /* Start screen: centre the composer on the real viewport, independent of sidebar state or zoom. */
   body.stellar-start-state #main-col{
     position:relative!important;
   }
@@ -8222,15 +8222,22 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   body.stellar-start-state #main-col > .input-area.glass{
     position:fixed!important;
     top:50dvh!important;
-    right:0!important;
+    left:50%!important;
+    right:auto!important;
     bottom:auto!important;
-    left:260px!important;
-    width:auto!important;
+    width:min(820px,calc(100vw - 28px))!important;
     margin:0!important;
-    transform:translateY(-50%)!important;
+    padding:0!important;
+    transform:translate(-50%,-50%)!important;
     z-index:30!important;
-    padding:0 20px!important;
     background:transparent!important;
+  }
+  body.stellar-start-state #main-col > .input-area.glass > .flex,
+  body.stellar-start-state #main-col > .input-area.glass .composer-foot{
+    width:100%!important;
+    max-width:768px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
   }
   body.stellar-start-state:not(.stellar-empty-home) #chat{
     position:absolute!important;
@@ -8242,23 +8249,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     padding:0 max(20px,calc((100% - 768px)/2))!important;
     overflow:auto!important;
   }
-  @media(max-width:900px){
-    body.stellar-start-state #main-col > .input-area.glass{
-      top:50dvh!important;
-      left:232px!important;
-      padding-inline:14px!important;
-    }
-    body.stellar-start-state.stellar-empty-home #chat{
-      top:9%!important;
-      padding-inline:14px!important;
-    }
-  }
   @media(max-width:640px){
     body.stellar-start-state #main-col > .input-area.glass{
       top:50dvh!important;
-      left:0!important;
-      right:0!important;
-      padding-inline:8px!important;
+      width:calc(100vw - 16px)!important;
     }
     body.stellar-start-state.stellar-empty-home #chat{
       top:8%!important;
@@ -12617,8 +12611,9 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         }
       })();
       renderChatList();
-      if (chats.length === 0) newChat();
-      else loadChat(s.currentChat || chats[0].id);
+      // /app is the home workspace: always open a fresh draft so the composer starts centered.
+      // Saved conversations remain in Recent builds and open normally when the user selects one.
+      newChat();
       setTextSize(Store.get().textSize || 'md');
       applyAccentTheme(Store.get().accentTheme || 'green', false);
       bindAccentThemeControl();
