@@ -7525,12 +7525,17 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 </style>
 
 
-<style id="stellar-home-top-copy-bottom-chat-v1">
-  /* Final Home placement: copy high at the top, composer centered at the bottom. */
+<style id="stellar-home-top-copy-bottom-chat-v2">
+  /* Balanced Home layout: upper-third welcome, centered conversation lane, bottom composer. */
   #chat{
     position:relative!important;
-    width:100%!important;
+    width:min(100%,900px)!important;
+    max-width:900px!important;
     min-height:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:24px!important;
+    padding-right:24px!important;
   }
 
   #chat>.greet-wrap,
@@ -7542,14 +7547,15 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   }
 
   .landing-style-home{
-    min-height:calc(100dvh - 180px)!important;
+    min-height:0!important;
     justify-content:flex-start!important;
     align-items:center!important;
     text-align:center!important;
-    padding:30px 16px 170px!important;
+    padding:clamp(52px,8vh,86px) 16px 42px!important;
   }
 
   .landing-style-home .greet-eyebrow,
+  .landing-style-home .greet-brand,
   .landing-style-home .greet-hi,
   .landing-style-home .welcome-sub,
   .landing-style-home .home-disclaimer{
@@ -7558,15 +7564,19 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     text-align:center!important;
   }
 
-  .landing-style-home .greet-hi{
-    max-width:760px!important;
+  .landing-style-home .greet-hi{max-width:760px!important;}
+  .landing-style-home .welcome-sub{max-width:610px!important;}
+
+  /* Short user messages such as “hi” must never collapse into vertical text. */
+  #chat .message.msg-user{width:fit-content!important;min-width:52px!important;}
+  #chat .message.msg-user .msg-content{
+    min-width:52px!important;
+    white-space:pre-wrap!important;
+    word-break:normal!important;
+    overflow-wrap:anywhere!important;
   }
 
-  .landing-style-home .welcome-sub{
-    max-width:610px!important;
-  }
-
-  /* Keep the whole composer on the bottom edge while centering its actual chat bar. */
+  /* Keep the composer aligned to the same center axis without creating a giant dead zone. */
   .input-area.glass,
   .input-area{
     position:sticky!important;
@@ -7580,53 +7590,43 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
   .input-area>.flex,
   .input-area .composer-foot{
-    width:min(100%,760px)!important;
-    max-width:760px!important;
+    width:min(100%,800px)!important;
+    max-width:800px!important;
     margin-left:auto!important;
     margin-right:auto!important;
   }
 
-  .input-area>.flex{
-    left:auto!important;
-    right:auto!important;
+  .input-area>.flex{left:auto!important;right:auto!important;}
+  .composer-foot{
+    display:flex!important;
+    min-height:38px!important;
+    overflow:visible!important;
+    align-items:center!important;
   }
 
   @media (max-width:767px){
+    #chat{
+      width:100%!important;
+      max-width:none!important;
+      padding-left:14px!important;
+      padding-right:14px!important;
+    }
     .landing-style-home{
-      min-height:calc(100dvh - 160px)!important;
-      padding:18px 14px 150px!important;
+      padding:32px 8px 28px!important;
     }
-    .landing-style-home .greet-hi{
-      max-width:390px!important;
-    }
-    .landing-style-home .welcome-sub{
-      max-width:370px!important;
-    }
+    .landing-style-home .greet-hi{max-width:390px!important;}
+    .landing-style-home .welcome-sub{max-width:370px!important;}
     .input-area>.flex,
     .input-area .composer-foot{
       width:calc(100% - 18px)!important;
       max-width:none!important;
-      margin-left:auto!important;
-      margin-right:auto!important;
     }
   }
 
   @media (min-width:768px) and (max-width:1100px){
-    .landing-style-home{
-      padding-top:24px!important;
-      padding-bottom:160px!important;
-    }
+    .landing-style-home{padding-top:44px!important;}
     .input-area>.flex,
-    .input-area .composer-foot{
-      width:min(calc(100% - 32px),760px)!important;
-    }
-  }
-
-  @media (min-width:1101px){
-    .landing-style-home{
-      padding-top:30px!important;
-      padding-bottom:170px!important;
-    }
+    .input-area .composer-foot{width:min(calc(100% - 32px),780px)!important;}
   }
 </style>
 
