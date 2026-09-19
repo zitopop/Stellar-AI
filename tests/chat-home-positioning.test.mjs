@@ -29,20 +29,25 @@ test('fresh draft and signed-out home explicitly enter the centered start state'
 });
 
 
-test('final inline layout wins over older bottom-dock home rules', () => {
+test('final inline layout centers on the viewport independent of sidebar width', () => {
   assert.match(appHtml, /stellar-chatgpt-layout\.css\?v=4/);
-  assert.match(appHtml, /<style id="stellar-final-centered-home-v1">[\s\S]*body\.stellar-start-state #main-col > \.input-area\.glass\{[\s\S]*position:fixed!important;[\s\S]*top:50dvh!important;[\s\S]*left:260px!important;[\s\S]*bottom:auto!important;[\s\S]*transform:translateY\(-50%\)!important;/);
+  assert.match(appHtml, /<style id="stellar-final-centered-home-v2">[\s\S]*body\.stellar-start-state #main-col > \.input-area\.glass\{[\s\S]*position:fixed!important;[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*bottom:auto!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
   assert.match(appHtml, /body\.stellar-start-state\.stellar-empty-home #chat\{[\s\S]*top:10%!important;/);
 });
 
 
-test('responsive start composer stays centered on the viewport', () => {
-  assert.match(appHtml, /@media\(max-width:900px\)\{[\s\S]*body\.stellar-start-state #main-col > \.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:232px!important;/);
-  assert.match(appHtml, /@media\(max-width:640px\)\{[\s\S]*body\.stellar-start-state #main-col > \.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:0!important;/);
+test('mobile start composer stays centered on the viewport', () => {
+  assert.match(appHtml, /@media\(max-width:640px\)\{[\s\S]*body\.stellar-start-state #main-col > \.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*width:calc\(100vw - 16px\)!important;/);
 });
 
 
 test('final centered composer selector beats generic main-column positioning rules', () => {
   assert.match(appHtml, /#main-col > \*\{[\s\S]*position:relative!important;/);
   assert.match(appHtml, /body\.stellar-start-state #main-col > \.input-area\.glass\{[\s\S]*position:fixed!important;/);
+});
+
+
+test('app home always opens a fresh centered draft while preserving history', () => {
+  assert.match(appHtml, /renderChatList\(\);[\s\S]*\/\/ \/app is the home workspace:[\s\S]*newChat\(\);/);
+  assert.doesNotMatch(appHtml, /if \(chats\.length === 0\) newChat\(\);\s*else loadChat\(s\.currentChat \|\| chats\[0\]\.id\);/);
 });
