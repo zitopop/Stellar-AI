@@ -12,13 +12,14 @@ test('currency display is GBP regardless of detected country', () => {
   assert.match(currency, /function detectCurrency\(country = detectCountry\(\)\) \{ return 'GBP'; \}/);
 });
 
-test('landing and app bust stale currency script caches', () => {
-  assert.match(index, /\/currency\.js\?v=gbp-20260910/);
+test('homepage publishes GBP prices while the app retains its currency cache version', () => {
+  for (const price of [0, 8, 20, 75]) assert.ok(index.includes(`<strong>£${price}</strong>`));
+  assert.doesNotMatch(index, /src="\/currency\.js/);
   assert.match(app, /\/currency\.js\?v=gbp-20260910/);
 });
 
 test('landing and terms clearly state GBP worldwide', () => {
-  assert.match(index, /GBP pricing/);
+  assert.ok(index.includes('Prices and checkout are in GBP (£) worldwide.'));
   assert.match(index, /"priceCurrency":"GBP"/);
   assert.ok(terms.includes('subscription and credit checkout is charged in GBP (£) worldwide.'));
   assert.ok(!terms.includes('select a configured local Stripe price'));

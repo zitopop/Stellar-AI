@@ -6,8 +6,10 @@ const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8')
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const css = fs.readFileSync(new URL('../stellar-premium.css', import.meta.url), 'utf8');
 
-test('landing and app load the premium visual layer in head', () => {
-  for (const html of [index, app]) {
+test('homepage owns its stylesheet while the app retains its premium layer', () => {
+  assert.match(index, /href="\/lib\/assets\/homepage\.css\?v=/);
+  assert.doesNotMatch(index, /<style|stellar-premium\.css|currency\.js/);
+  for (const html of [app]) {
     const link = html.indexOf('/stellar-premium.css?v=1');
     const head = html.indexOf('</head>');
     assert.ok(link > 0 && link < head);
