@@ -17667,5 +17667,50 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
   }
 
 </style>
+
+<style id="stellar-home-mobile-regression-fix">
+  /* Keep the shared model menu renderable on phone/tablet while hiding desktop header chrome. */
+  @media (max-width:1100px){
+    html body.stellar-start-state.stellar-empty-home .stellar-global-header{
+      display:block!important;
+      position:fixed!important;
+      inset:0 auto auto 0!important;
+      width:0!important;
+      height:0!important;
+      min-height:0!important;
+      padding:0!important;
+      border:0!important;
+      background:transparent!important;
+      overflow:visible!important;
+      pointer-events:none!important;
+      z-index:239!important;
+    }
+    html body.stellar-start-state.stellar-empty-home .stellar-global-header .stellar-top-spacer,
+    html body.stellar-start-state.stellar-empty-home .stellar-global-header .stellar-top-actions,
+    html body.stellar-start-state.stellar-empty-home .stellar-global-header #model-btn{
+      display:none!important;
+    }
+    html body.stellar-start-state.stellar-empty-home .stellar-global-header .topbar-model-picker{
+      display:block!important;
+      position:static!important;
+      width:0!important;
+      height:0!important;
+      pointer-events:none!important;
+    }
+    html body.stellar-start-state.stellar-empty-home #model-menu.composer-model-menu{
+      visibility:visible!important;
+      pointer-events:auto!important;
+    }
+
+    /* Preserve the iPhone/iPad top safe area in the replacement mobile topbar. */
+    html body.stellar-start-state.stellar-empty-home #main-col>.topbar{
+      flex-basis:calc(var(--home-header) + env(safe-area-inset-top))!important;
+      height:calc(var(--home-header) + env(safe-area-inset-top))!important;
+      min-height:calc(var(--home-header) + env(safe-area-inset-top))!important;
+      padding:env(safe-area-inset-top) 12px 0!important;
+      box-sizing:border-box!important;
+    }
+  }
+</style>
 </body>
 </html>
