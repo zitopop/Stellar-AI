@@ -27,3 +27,10 @@ test('fresh draft and signed-out home explicitly enter the centered start state'
   const adds = appHtml.match(/classList\.add\('stellar-empty-home', 'stellar-start-state'\);/g) || [];
   assert.ok(adds.length >= 2, 'new draft and signed-out home should both restore start-state classes');
 });
+
+
+test('final inline layout wins over older bottom-dock home rules', () => {
+  assert.match(appHtml, /stellar-chatgpt-layout\.css\?v=4/);
+  assert.match(appHtml, /<style id="stellar-final-centered-home-v1">[\s\S]*body\.stellar-start-state \.input-area\.glass\{[\s\S]*position:absolute!important;[\s\S]*top:52%!important;[\s\S]*bottom:auto!important;[\s\S]*transform:translateY\(-50%\)!important;/);
+  assert.match(appHtml, /body\.stellar-start-state\.stellar-empty-home #chat\{[\s\S]*top:10%!important;/);
+});
