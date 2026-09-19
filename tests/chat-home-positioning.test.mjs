@@ -31,6 +31,12 @@ test('fresh draft and signed-out home explicitly enter the centered start state'
 
 test('final inline layout wins over older bottom-dock home rules', () => {
   assert.match(appHtml, /stellar-chatgpt-layout\.css\?v=4/);
-  assert.match(appHtml, /<style id="stellar-final-centered-home-v1">[\s\S]*body\.stellar-start-state \.input-area\.glass\{[\s\S]*position:absolute!important;[\s\S]*top:52%!important;[\s\S]*bottom:auto!important;[\s\S]*transform:translateY\(-50%\)!important;/);
+  assert.match(appHtml, /<style id="stellar-final-centered-home-v1">[\s\S]*body\.stellar-start-state \.input-area\.glass\{[\s\S]*position:fixed!important;[\s\S]*top:50dvh!important;[\s\S]*left:260px!important;[\s\S]*bottom:auto!important;[\s\S]*transform:translateY\(-50%\)!important;/);
   assert.match(appHtml, /body\.stellar-start-state\.stellar-empty-home #chat\{[\s\S]*top:10%!important;/);
+});
+
+
+test('responsive start composer stays centered on the viewport', () => {
+  assert.match(appHtml, /@media\(max-width:900px\)\{[\s\S]*body\.stellar-start-state \.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:232px!important;/);
+  assert.match(appHtml, /@media\(max-width:640px\)\{[\s\S]*body\.stellar-start-state \.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:0!important;/);
 });
