@@ -60,3 +60,13 @@ test('premium home stays minimal and keeps the composer at the true viewport cen
   assert.doesNotMatch(appHtml, /<div class="greet-brand" aria-label="Stellar AI">/);
   assert.match(appHtml, /placeholder="Ask Stellar anything…"/);
 });
+
+
+test('home layout v2 is the final cascade layer and preserves centered composition', () => {
+  assert.match(appHtml, /<style id="stellar-home-layout-v2">[\s\S]*#main-col>\.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
+  assert.match(appHtml, /#chat \.welcome-sub\{[\s\S]*display:block!important;/);
+  assert.match(appHtml, /#sidebar \.side-new\{[\s\S]*display:flex!important;/);
+  assert.match(appHtml, /#sidebar #chats-list\{[\s\S]*display:block!important;/);
+  assert.match(appHtml, /\.composer-foot #composer-plans-btn\{[\s\S]*display:none!important;/);
+  assert.ok(appHtml.lastIndexOf('stellar-home-layout-v2') > appHtml.lastIndexOf('home-calm-performance-final'));
+});
