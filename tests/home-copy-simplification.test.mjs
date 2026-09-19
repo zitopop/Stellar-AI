@@ -4,26 +4,11 @@ import { readFile } from 'node:fs/promises';
 
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
-const conciseLabels = [
-  'Build a police job',
-  'Build a bank heist',
-  'Build a Roblox game',
-  'Fix my script',
-];
-
-test('home suggestions use concise core-action labels in both render paths', () => {
-  for (const label of conciseLabels) {
-    assert.equal((appHtml.match(new RegExp(`<span>${label}</span>`, 'g')) || []).length, 2, `${label} should appear in both home render paths`);
-  }
-});
-
-test('home suggestions preserve their underlying generation prompts', () => {
-  for (const prompt of [
-    'QBCore police job with F6 menu, handcuffing, MDT and jail timer',
-    'QBCore bank heist with planning stage, execution and police dispatch',
-    'Roblox Build Pack:',
-    'Fix this broken script:',
-  ]) assert.match(appHtml, new RegExp(`useSuggestion\\('${prompt.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}`));
+test('home copy stays focused without quick-start clutter', () => {
+  assert.match(appHtml, /What do you want to <span class="greet-hi-accent">build\?<\/span>/);
+  assert.match(appHtml, /Build, fix, and improve FiveM or Roblox systems from one clear prompt\./);
+  assert.match(appHtml, /placeholder="Ask Stellar anything…"/);
+  assert.equal((appHtml.match(/class="sug-chip"/g) || []).length, 0);
 });
 
 test('the redundant ready-to-build helper is removed from the home screen', () => {

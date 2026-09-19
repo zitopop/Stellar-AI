@@ -24,8 +24,8 @@ test('Task 166 keeps the model-menu plan action an explicit non-submit menu butt
   assert.doesNotMatch(workspaceHtml, /<button onclick="closeModelMenu\(\); openPlans\(\)" role="menuitem"/);
 });
 
-test('Task 167 keeps the New Chat sidebar control an explicit non-submit button', () => {
-  assert.match(workspaceHtml, /<button type="button" onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">\s*New Chat\s*<\/button>/);
+test('Task 167 keeps the New build sidebar control an explicit non-submit button', () => {
+  assert.match(workspaceHtml, /<button type="button" onclick="newChat\(\)" class="side-new[^"]*">[\s\S]*New build[\s\S]*<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="newChat\(\)" class="side-new/);
 });
 
@@ -94,7 +94,8 @@ test('Task 178 keeps every Settings tab an explicit non-submit button', () => {
   for (const tab of ['account', 'plan', 'usage', 'look', 'voice', 'about']) {
     assert.match(workspaceHtml, new RegExp(`<button type="button" class="set-tab(?: active)?" data-tab="${tab}" onclick="setTab\\('${tab}'\\)">`));
   }
-  assert.match(workspaceHtml, /document\.querySelectorAll\('\.set-tab'\)\.forEach\(t => t\.classList\.toggle\('active', t\.dataset\.tab === name\)\)/);
+  assert.match(workspaceHtml, /document\.querySelectorAll\('#settings-modal \.set-tab'\)/);
+  assert.match(workspaceHtml, /const active = t\.dataset\.tab === target;[\s\S]*?t\.classList\.toggle\('active', active\);/);
 });
 
 test('Task 179 removes the Settings Theme control while preserving dark-only initialization', () => {
@@ -115,13 +116,9 @@ test('Task 180 keeps Small, Normal, and Large text-size controls explicit non-su
   assert.match(workspaceHtml, /const active = k === t; b\.classList\.toggle\('on', active\); b\.setAttribute\('aria-pressed', String\(active\)\)/);
 });
 
-test('Task 181 keeps workspace suggestion chips explicit non-submit buttons', () => {
-  const suggestionButtons = workspaceHtml.match(/<button type="button" onclick="useSuggestion\(/g) ?? [];
-  assert.equal(suggestionButtons.length, 8);
-  assert.doesNotMatch(workspaceHtml, /<button onclick="useSuggestion\(/);
-  assert.match(workspaceHtml, /useSuggestion\('QBCore police job with F6 menu, handcuffing, MDT and jail timer'\)/);
-  assert.match(workspaceHtml, /useSuggestion\('Roblox Build Pack: create a secure tapping simulator with rebirths, pets, leaderboards, server-authoritative currency, RemoteEvents, DataStore persistence, exact Studio file placement and a test checklist'\)/);
-  assert.match(workspaceHtml, /useSuggestion\('Fix this broken script: '\)/);
+test('Task 181 keeps the simplified workspace free of removed suggestion-chip controls', () => {
+  assert.equal((workspaceHtml.match(/class="sug-chip"/g) ?? []).length, 0);
+  assert.doesNotMatch(workspaceHtml, /<button[^>]*onclick="useSuggestion\(/);
 });
 
 test('Task 185 keeps top-up credit controls explicit non-submit buttons', () => {
@@ -152,31 +149,22 @@ test('Appearance exposes a movable app-wide accent colour bar', () => {
 test('workspace keeps the starter UI calm and removes redundant home guidance', () => {
   assert.doesNotMatch(workspaceHtml, /class="welcome-next-step" role="note"/);
   assert.doesNotMatch(workspaceHtml, /class="roblox-world-links"/);
-  assert.equal((workspaceHtml.match(/class="home-guides-link"/g) ?? []).length, 2);
+  assert.equal((workspaceHtml.match(/class="sug-chip"/g) ?? []).length, 0);
   assert.match(workspaceHtml, /class="so-sub">Sign in to keep your plan and credit safe/);
 });
 
-test('workspace welcome states expose four clear quick starts and one secondary Guides route', () => {
-  assert.equal((workspaceHtml.match(/id="welcome-starters-heading" class="welcome-starters-label">Try an example<\/div>/g) ?? []).length, 2);
-  assert.equal((workspaceHtml.match(/id="suggestion-chips" role="group" aria-labelledby="welcome-starters-heading"/g) ?? []).length, 2);
-  assert.equal((workspaceHtml.match(/class="sug-chip"/g) ?? []).length, 8);
-  assert.equal((workspaceHtml.match(/class="home-guides-link"/g) ?? []).length, 2);
-  assert.match(workspaceHtml, /#chat > \.greet-wrap #suggestion-chips \{ display:grid!important; grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important;/);
-  assert.match(workspaceHtml, /\.greet-wrap \{ opacity: 1 !important; \}/);
-  assert.match(workspaceHtml, /Build a police job/);
-  assert.match(workspaceHtml, /Build a bank heist/);
-  assert.match(workspaceHtml, /Build a Roblox game/);
-  assert.match(workspaceHtml, /Fix my script/);
-  assert.match(workspaceHtml, /placeholder="Describe what you want to build or fix…"/);
-  assert.match(workspaceHtml, /if \(chat\.messages\.length === 0\) \{\s+chatEl\.innerHTML = greetingMarkup\(\);/);
-  assert.match(workspaceHtml, /@media \(max-width:600px\)/);
-  assert.match(workspaceHtml, /#chat > \.greet-wrap #suggestion-chips \{ grid-template-columns:1fr!important; \}/);
+test('workspace welcome state stays minimal and keeps the composer accessible', () => {
+  assert.match(workspaceHtml, /What do you want to <span class="greet-hi-accent">build\?<\/span>/);
+  assert.match(workspaceHtml, /Build, fix, and improve FiveM or Roblox systems from one clear prompt\./);
+  assert.match(workspaceHtml, /Review generated code before using it in production\./);
+  assert.match(workspaceHtml, /placeholder="Ask Stellar anything…"/);
+  assert.match(workspaceHtml, /role="form" aria-label="Message composer"/);
+  assert.equal((workspaceHtml.match(/class="sug-chip"/g) ?? []).length, 0);
 });
 
 test('workspace sidebar retains an accessible persistent Guides-hub route', () => {
-  assert.match(workspaceHtml, /<a href="\/blog" class="side-act side-guides-link" aria-label="Open FiveM and Roblox Guides"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"\/><\/svg><\/span>Guides<\/a>/);
-  assert.match(workspaceHtml, /\.side-guides-link \{ flex-direction: row !important; justify-content: center; gap: 7px !important; min-height: 38px !important;/);
-  assert.match(workspaceHtml, /body\.light \.side-guides-link \{ color: #4b4658 !important; \}/);
+  assert.match(workspaceHtml, /<div class="sidebar-utility-links" aria-label="Legal and support">[\s\S]*?<a href="\/blog">Help<\/a>/);
+  assert.match(workspaceHtml, /<nav class="stellar-top-actions" aria-label="Help and plan">[\s\S]*?<a href="\/blog">Help<\/a>/);
 });
 
 

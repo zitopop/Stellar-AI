@@ -6,11 +6,11 @@ const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 const orbit = await readFile(new URL('../stellar-orbit.js', import.meta.url), 'utf8');
 const growth = await readFile(new URL('../stellar-growth-v1.js', import.meta.url), 'utf8');
 
-test('home stays focused on four quick starts', () => {
-  assert.equal((app.match(/class="sug-chip"/g) || []).length, 8);
-  assert.equal((app.match(/class="home-guides-link"/g) || []).length, 2);
+test('home stays focused without redundant quick-start UI', () => {
+  assert.equal((app.match(/class="sug-chip"/g) || []).length, 0);
   assert.doesNotMatch(app, /class="roblox-world-links"/);
   assert.doesNotMatch(app, /class="welcome-next-step" role="note"/);
+  assert.match(app, /Review generated code before using it in production\./);
 });
 
 test('streaming response rendering is throttled instead of repainting every chunk', () => {

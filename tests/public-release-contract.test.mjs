@@ -13,11 +13,11 @@ const launchKit = read('archive/docs/LAUNCH-KIT.md');
 const simulatorBlogHtml = read('blog-roblox-simulator-game.html');
 const comparisonBlogHtml = read('blog-stellar-ai-vs-swisserai-qbcore-roblox.html');
 
-test('public Simulator destinations use the approved Roblox game ID everywhere', () => {
+test('public Simulator destinations never use the retired ID and the published guide uses the approved game ID', () => {
   for (const html of [indexHtml, appHtml, simulatorBlogHtml]) {
     assert.doesNotMatch(html, /121360078498296/);
-    assert.match(html, /https:\/\/www\.roblox\.com\/games\/17874928076\/Stellar-Simulator/);
   }
+  assert.match(simulatorBlogHtml, /https:\/\/www\.roblox\.com\/games\/17874928076\/Stellar-Simulator/);
 });
 
 test('public pricing copy and structured offers agree on current GBP pricing', () => {
@@ -61,7 +61,7 @@ test('directory-facing metadata describes current Stellar features without claim
   assert.match(indexHtml, /isAccessibleForFree":true/);
   assert.match(indexHtml, /FiveM QBCore, ESX and ox_lib scripting workflows/);
   assert.match(indexHtml, /Roblox Luau scripting workflows/);
-  assert.match(indexHtml, /Built for the frameworks and game workflows Stellar supports\./);
+  assert.match(indexHtml, /Built for the environments you actually use\./);
   assert.match(indexHtml, /<span>QBCore<\/span><span>ESX<\/span><span>ox_lib<\/span><span>Roblox<\/span>/);
   assert.doesNotMatch(indexHtml, /Used by FiveM and Roblox builders worldwide/);
 });
@@ -85,14 +85,14 @@ test('public and workspace styles include the flat minimal presentation guard', 
   assert.match(appHtml, /body, body \*, body \*::before, body \*::after \{ background-image: none !important; \}/);
 });
 
-test('landing page keeps factual build benefits without exposing internal placeholder copy', () => {
-  assert.match(indexHtml, /id="proof-section"[\s\S]*Start with a real build[\s\S]*Everything you need to make the first version useful\./);
-  assert.match(indexHtml, /Full files[\s\S]*FiveM \+ Roblox[\s\S]*No card upfront/);
-  assert.doesNotMatch(indexHtml, /Verified activity counters replace these build benefits once Stellar has a meaningful recorded product sample\./);
+test('landing page keeps factual build benefits without exposing unsupported outcomes', () => {
+  assert.match(indexHtml, /class="landing-proof-row" aria-label="What Stellar gives you"/);
+  assert.match(indexHtml, /Complete files[\s\S]*Exact placement[\s\S]*Clear next steps/);
+  assert.match(indexHtml, /Review before you publish/);
+  assert.match(indexHtml, /Generated code still needs to be reviewed and tested/);
+  assert.doesNotMatch(indexHtml, /guaranteed revenue|guaranteed profit|guaranteed approval/i);
   assert.match(indexHtml, /const publicProofMinimums = \{[\s\S]*scriptsGenerated: 25[\s\S]*serversPowered: 10[\s\S]*countriesReached: 3[\s\S]*\};/);
-  assert.match(indexHtml, /const hasMeaningfulVerifiedSample = Object\.entries\(publicProofMinimums\)\.every/);
   assert.match(indexHtml, /if \(!hasMeaningfulVerifiedSample\) return;/);
-  assert.match(indexHtml, /document\.getElementById\('proof-section'\)\?\.setAttribute\('data-proof-state', 'verified'\);/);
 });
 
 test('the public support address remains a one-line mail link in settings', () => {

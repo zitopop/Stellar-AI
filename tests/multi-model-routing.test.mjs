@@ -857,7 +857,8 @@ test('Task 4 detects FiveM resource mode and injects install/test requirements',
   assert.equal(detectWorkflowMode(messages), 'fivem_resource');
   const prompt = buildSystemPrompt('', 'fivem', 'fivem_resource');
   assert.match(prompt, /WORKFLOW MODE: FIVEM RESOURCE/);
-  assert.match(prompt, /install\/restart steps/);
+  assert.match(prompt, /numbered install steps/);
+  assert.match(prompt, /restart order/);
 });
 
 test('Task 4 prioritizes audit mode when a platform request asks for review', () => {

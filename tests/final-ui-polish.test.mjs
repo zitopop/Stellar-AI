@@ -24,12 +24,11 @@ test('reasoning control remains semantic while presenting a galaxy power rail', 
   assert.match(growthCss, /data-growth-level="ultra"/);
 });
 
-test('new-chat home keeps the four-action contract inside the premium Orbit shell', () => {
+test('new-chat home stays focused inside the premium Orbit shell', () => {
   assert.match(orbit, /body\.stellar-orbit-v3:not\(\.light\) \.greet-wrap/);
-  assert.match(orbit, /body\.stellar-orbit-v3:not\(\.light\) #suggestion-chips/);
-  assert.match(orbit, /body\.stellar-orbit-v3:not\(\.light\) \.sug-chip/);
-  const quickStarts = [...app.matchAll(/class="sug-chip"/g)];
-  assert.equal(quickStarts.length, 8); // four quick starts in each of the two existing render paths
+  assert.match(app, /What do you want to <span class="greet-hi-accent">build\?<\/span>/);
+  assert.match(app, /Build, fix, and improve FiveM or Roblox systems from one clear prompt\./);
+  assert.equal((app.match(/class="sug-chip"/g) || []).length, 0);
 });
 
 test('final polish leaves voice, settings and plan infrastructure in place', () => {

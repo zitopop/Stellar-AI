@@ -18,7 +18,8 @@ test('landing and app bust stale currency script caches', () => {
 });
 
 test('landing and terms clearly state GBP worldwide', () => {
-  assert.ok(index.includes('Prices and checkout are in GBP (£) worldwide.'));
+  assert.match(index, /GBP pricing/);
+  assert.match(index, /"priceCurrency":"GBP"/);
   assert.ok(terms.includes('subscription and credit checkout is charged in GBP (£) worldwide.'));
   assert.ok(!terms.includes('select a configured local Stripe price'));
 });

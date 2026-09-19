@@ -12,7 +12,7 @@ const authJs = readFileSync(join(root, 'api/auth.js'), 'utf8');
 const welcomeJs = readFileSync(join(root, 'api/send-welcome.js'), 'utf8');
 
 test('hero free-generation CTA opens the app with the first-run welcome signal', () => {
-  assert.match(landingHtml, /<a href="\/app\?welcome=1" class="button button-primary">Generate your first script free/);
+  assert.match(landingHtml, /<a href="\/app\?welcome=1" class="button button-primary">Start building free/);
 });
 
 test('welcome entry gives new visitors an actionable first-build message and removes its query flag', () => {

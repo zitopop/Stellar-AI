@@ -72,7 +72,7 @@ test('Task 134 gives the existing workspace chat region a stable accessible name
 
 test('Task 135 exposes the existing workspace composer as a named form landmark', () => {
   assert.match(appHtml, /<div class="input-area p-6 glass border-t border-white\/10" role="form" aria-label="Message composer">/);
-  assert.match(appHtml, /id="txt" rows="1" autofocus placeholder="Describe what you want to build or fix…" aria-label="Message composer\. Press Enter to send and Shift\+Enter for a new line\."/);
+  assert.match(appHtml, /id="txt" rows="1" autofocus placeholder="Ask Stellar anything…" aria-label="Message composer\. Press Enter to send and Shift\+Enter for a new line\."/);
   assert.match(appHtml, /id="send-btn" onclick="stopOrSend\(\)" aria-label="Send message"/);
 });
 
@@ -120,18 +120,18 @@ test('Task 136 announces the existing pasted-content summary politely', () => {
 
 test('Task 137 exposes the existing workspace sidebar as named navigation', () => {
   assert.match(appHtml, /<div id="sidebar" class="w-72 glass border-r border-white\/10 flex flex-col p-4" role="navigation" aria-label="Workspace navigation">/);
-  assert.match(appHtml, /<button type="button" onclick="newChat\(\)" class="side-new w-full mb-4 transition-all active:scale-\[0\.985\]">/);
+  assert.match(appHtml, /<button type="button" onclick="newChat\(\)" class="side-new w-full mb-3 transition-all active:scale-\[0\.985\]">/);
   assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)"/);
   assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list"(?: role="region" aria-labelledby="chats-heading")?><\/div>/);
 });
 
 test('Task 138 gives workspace chat search an explicit accessible name', () => {
-  assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)" placeholder="&#128269; Search chats" aria-label="Search chats"/);
+  assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)" placeholder="Search builds" aria-label="Search builds"/);
   assert.match(appHtml, /autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="search_stellar_20607">/);
 });
 
 test('Task 139 relates the existing workspace chat-history label and list', () => {
-  assert.match(appHtml, /<div id="chats-heading" class="chats-label" role="heading" aria-level="2">Chats<\/div>/);
+  assert.match(appHtml, /<div id="chats-heading" class="chats-label" role="heading" aria-level="2">Recent builds<\/div>/);
   assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list" role="region" aria-labelledby="chats-heading"><\/div>/);
   assert.match(appHtml, /const container = document\.getElementById\('chats-list'\);\s+container\.innerHTML = '';/);
 });
@@ -155,7 +155,7 @@ test('Task 143 gives existing chat Options popups menu semantics and keyboard co
 
 test('Task 133 prevents the visual thinking bubble from duplicating the existing live generation status', () => {
   assert.match(appHtml, /id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
-  assert.match(appHtml, /loading\.innerHTML = '<div class="think-bubble" aria-hidden="true"><div class="think-spinner"><\/div><div class="think-status" id="think-status">' \+ STEPS\[0\]\[1\] \+ '<\/div><\/div>';/);
+  assert.match(appHtml, /loading\.innerHTML = '<div class="build-progress" aria-hidden="true">[\s\S]*?<div class="think-bubble">[\s\S]*?id="think-status">' \+ STEPS\[0\]\[1\]/);
   assert.match(appHtml, /setGenerationStatus\(STEPS\[0\]\[1\]\);/);
 });
 
@@ -257,7 +257,7 @@ test('Task 86 manages close-control and trigger focus for scoped utility dialogs
   assert.match(appHtml, /function restoreUtilityDialogFocus\(\) \{[\s\S]*?utilityDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);/);
   assert.match(appHtml, /function openPlans\(\) \{ closeOtherDialogs\('plans'\); captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('plans-modal-close'\);/);
   assert.match(appHtml, /captureUtilityDialogTrigger\(\); renderUsagePage\(\);[\s\S]*?focusUtilityDialogClose\('usage-modal-close'\);/);
-  assert.match(appHtml, /function openSettings\(\) \{\s+closeOtherDialogs\('settings'\);\s+captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('settings-modal-close'\);/);
+  assert.match(appHtml, /function openSettings\(\) \{[\s\S]*?closeOtherDialogs\('settings'\);[\s\S]*?closeResponsiveSidebar\(\);[\s\S]*?captureUtilityDialogTrigger\(\);[\s\S]*?focusUtilityDialogClose\('settings-modal-close'\);/);
   assert.match(appHtml, /function closePlans\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
   assert.match(appHtml, /function closeUsage\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
   assert.match(appHtml, /function closeSettings\(\) \{[\s\S]*?restoreUtilityDialogFocus\(\);/);
@@ -421,8 +421,8 @@ test('Task 114 gives model choices clear accessible descriptions aligned to rout
 test('Task 115 exposes synchronized disclosure semantics for the model menu', () => {
   assert.match(appHtml, /id="model-btn"[^>]*aria-haspopup="menu"[^>]*aria-controls="model-menu"[^>]*aria-expanded="false"/);
   assert.match(appHtml, /<div id="model-menu" role="menu" aria-label="Choose an AI model"/);
-  assert.match(appHtml, /function toggleModelMenu\(e\) \{\s+e\.stopPropagation\(\);\s+refreshModelMenu\(\);\s+const menu = document\.getElementById\('model-menu'\);\s+const willOpen = menu\.classList\.contains\('hidden'\);\s+menu\.classList\.toggle\('hidden', !willOpen\);\s+document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', String\(willOpen\)\);/);
-  assert.match(appHtml, /function closeModelMenu\(\) \{\s+document\.getElementById\('model-menu'\)\.classList\.add\('hidden'\);\s+document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', 'false'\);/);
+  assert.match(appHtml, /function toggleModelMenu\(e\) \{[\s\S]*?const willOpen = menu\.classList\.contains\('hidden'\);[\s\S]*?menu\.classList\.toggle\('hidden', !willOpen\);[\s\S]*?document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', String\(willOpen\)\);/);
+  assert.match(appHtml, /function closeModelMenu\(\) \{[\s\S]*?menu\.classList\.add\('hidden'\);[\s\S]*?document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', 'false'\);/);
   assert.match(appHtml, /document\.addEventListener\('click', closeModelMenu\);/);
 });
 
@@ -437,7 +437,7 @@ test('Task 117 keeps Tab navigation inside the open model menu', () => {
 });
 
 test('Task 118 moves keyboard-triggered model-menu opening focus to the first visible choice', () => {
-  assert.match(appHtml, /document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', String\(willOpen\)\);\s+if \(willOpen && e\.detail === 0\) setTimeout\(focusModelMenuFirstChoice, 0\);/);
+  assert.match(appHtml, /document\.getElementById\('model-btn'\)\.setAttribute\('aria-expanded', String\(willOpen\)\);[\s\S]*?if \(willOpen && e\.detail === 0\) setTimeout\(focusModelMenuFirstChoice, 0\);/);
   assert.match(appHtml, /function focusModelMenuFirstChoice\(\) \{\s+const menu = document\.getElementById\('model-menu'\);\s+if \(!menu \|\| menu\.classList\.contains\('hidden'\)\) return;\s+getVisibleModelMenuControls\(menu\)\[0\]\?\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
 

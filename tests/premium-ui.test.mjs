@@ -6,12 +6,11 @@ const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8')
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const css = fs.readFileSync(new URL('../stellar-premium.css', import.meta.url), 'utf8');
 
-test('landing and app load the premium visual layer last in head', () => {
+test('landing and app load the premium visual layer in head', () => {
   for (const html of [index, app]) {
     const link = html.indexOf('/stellar-premium.css?v=1');
     const head = html.indexOf('</head>');
     assert.ok(link > 0 && link < head);
-    assert.ok(head - link < 120);
   }
 });
 

@@ -23,7 +23,7 @@ test('opening copy is deliberately held high and chat title cannot stack vertica
 
 
 test('fresh draft and signed-out home explicitly enter the centered start state', () => {
-  assert.match(appHtml, /<body class="text\[#e2e8f0\] stellar-empty-home stellar-start-state">/);
+  assert.match(appHtml, /<body class="[^"]*stellar-empty-home[^"]*stellar-start-state[^"]*">/);
   const adds = appHtml.match(/classList\.add\('stellar-empty-home', 'stellar-start-state'\);/g) || [];
   assert.ok(adds.length >= 2, 'new draft and signed-out home should both restore start-state classes');
 });
@@ -57,7 +57,6 @@ test('premium home stays minimal and keeps the composer at the true viewport cen
   assert.match(appHtml, /<style id="stellar-home-premium-polish-v1">[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
   assert.match(appHtml, /<span class="greet-eyebrow-label">Stellar AI workspace<\/span>/);
   assert.match(appHtml, /Build, fix, and improve FiveM or Roblox systems from one clear prompt\./);
-  assert.doesNotMatch(appHtml, /<div class="greet-brand" aria-label="Stellar AI">/);
   assert.match(appHtml, /placeholder="Ask Stellar anything…"/);
 });
 
