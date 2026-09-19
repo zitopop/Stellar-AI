@@ -20,3 +20,10 @@ test('opening copy is deliberately held high and chat title cannot stack vertica
   assert.match(chatCss, /body\.stellar-empty-home \.greet-wrap\{[\s\S]*justify-content:flex-start!important;/);
   assert.match(chatCss, /\.topbar #chat-title\{[\s\S]*white-space:nowrap!important;[\s\S]*text-overflow:ellipsis!important;/);
 });
+
+
+test('fresh draft and signed-out home explicitly enter the centered start state', () => {
+  assert.match(appHtml, /<body class="text\[#e2e8f0\] stellar-empty-home stellar-start-state">/);
+  const adds = appHtml.match(/classList\.add\('stellar-empty-home', 'stellar-start-state'\);/g) || [];
+  assert.ok(adds.length >= 2, 'new draft and signed-out home should both restore start-state classes');
+});
