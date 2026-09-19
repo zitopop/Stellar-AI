@@ -8198,7 +8198,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
   }
 </style>
 </head>
-<body class="text-[#e2e8f0]">
+<body class="text-[#e2e8f0] stellar-empty-home stellar-start-state">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <g id="i-user"><circle cx="12" cy="8" r="4" fill="currentColor" stroke="none"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" stroke="none"/></g>
 <g id="i-mail"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor" stroke="none" opacity="0.85"/><path d="M3 7l9 6 9-6" fill="none" stroke="var(--bg,#120e1c)" stroke-width="1.8"/></g>
@@ -10374,6 +10374,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       Store.set({ currentChat: id });
       renderChatList();
       const chatEl = document.getElementById('chat');
+      document.body.classList.add('stellar-empty-home', 'stellar-start-state');
       if (chatEl) chatEl.innerHTML = greetingMarkup();
       syncHomeGreeting();
       const title = document.getElementById('chat-title');
@@ -11857,6 +11858,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         syncComposerInputState();
       }
       const chatEl = document.getElementById('chat');
+      document.body.classList.add('stellar-empty-home', 'stellar-start-state');
       if (chatEl) chatEl.innerHTML = greetingMarkup();
       initGoogle();
     }
