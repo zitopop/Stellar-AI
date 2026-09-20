@@ -18396,5 +18396,716 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
   }
 </style>
 
+
+<style id="stellar-workspace-shell-v3">
+  /*
+    Authoritative workspace shell.
+    Important: centre against #main-col, never the full viewport.
+    This intentionally comes after the older home experiments so browser zoom,
+    desktop sidebars, tablets and phones all use one geometry model.
+  */
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  body{
+    --shell-sidebar:248px;
+    --shell-header:56px;
+    --composer-width:780px;
+    background:#090a0f!important;
+  }
+  .stellar-app-shell{
+    display:block!important;
+    position:relative!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    height:100dvh!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    transform:none!important;
+  }
+
+  /* ---------- Desktop frame ---------- */
+  @media (min-width:1101px){
+    #sidebar{
+      display:flex!important;
+      position:fixed!important;
+      inset:0 auto 0 0!important;
+      left:0!important;
+      width:var(--shell-sidebar)!important;
+      max-width:var(--shell-sidebar)!important;
+      height:100dvh!important;
+      margin:0!important;
+      padding:14px 12px 12px!important;
+      box-sizing:border-box!important;
+      transform:none!important;
+      translate:none!important;
+      overflow:hidden!important;
+      z-index:1300!important;
+      background:#0d0e13!important;
+      border-right:1px solid rgba(255,255,255,.06)!important;
+      box-shadow:none!important;
+    }
+    #sidebar .sidebar-brand-row{
+      display:flex!important;
+      align-items:center!important;
+      justify-content:space-between!important;
+      width:100%!important;
+      min-height:44px!important;
+      margin:0 0 10px!important;
+      padding:0 4px!important;
+      box-sizing:border-box!important;
+      overflow:visible!important;
+    }
+    #sidebar .brand-title{
+      display:flex!important;
+      align-items:center!important;
+      gap:8px!important;
+      min-width:0!important;
+      margin:0!important;
+      padding:0!important;
+      white-space:nowrap!important;
+      overflow:visible!important;
+    }
+    #sidebar .brand-grad{
+      display:inline!important;
+      overflow:visible!important;
+      text-overflow:clip!important;
+      white-space:nowrap!important;
+    }
+
+    .stellar-global-header{
+      display:flex!important;
+      position:fixed!important;
+      top:0!important;
+      left:var(--shell-sidebar)!important;
+      right:0!important;
+      width:auto!important;
+      height:var(--shell-header)!important;
+      min-height:var(--shell-header)!important;
+      margin:0!important;
+      padding:0 18px!important;
+      box-sizing:border-box!important;
+      align-items:center!important;
+      background:rgba(9,10,15,.94)!important;
+      border-bottom:1px solid rgba(255,255,255,.045)!important;
+      box-shadow:none!important;
+      z-index:1250!important;
+    }
+    .stellar-global-header .stellar-top-spacer{display:none!important}
+    .stellar-global-header .stellar-top-actions{
+      display:flex!important;
+      align-items:center!important;
+      gap:6px!important;
+      margin-left:auto!important;
+    }
+    .stellar-global-header .stellar-top-actions a{
+      display:inline-flex!important;
+      align-items:center!important;
+      min-height:40px!important;
+      padding:0 10px!important;
+      color:#a8a8b1!important;
+      font-size:12px!important;
+      font-weight:650!important;
+    }
+    .stellar-global-header .stellar-top-actions a:hover{color:#fff!important}
+    .stellar-global-header .stellar-upgrade{
+      display:inline-flex!important;
+      align-items:center!important;
+      min-height:40px!important;
+      height:40px!important;
+      padding:0 14px!important;
+      border:1px solid rgba(167,139,250,.28)!important;
+      border-radius:11px!important;
+      background:rgba(124,58,237,.11)!important;
+      color:#eee9ff!important;
+      box-shadow:none!important;
+      font-size:12px!important;
+    }
+
+    #main-col{
+      position:relative!important;
+      display:flex!important;
+      flex:0 0 auto!important;
+      flex-direction:column!important;
+      width:calc(100vw - var(--shell-sidebar))!important;
+      max-width:calc(100vw - var(--shell-sidebar))!important;
+      height:100dvh!important;
+      min-width:0!important;
+      min-height:0!important;
+      margin:0 0 0 var(--shell-sidebar)!important;
+      padding:var(--shell-header) 0 0!important;
+      box-sizing:border-box!important;
+      overflow:hidden!important;
+      transform:none!important;
+      background:#090a0f!important;
+    }
+    #main-col>.topbar{
+      display:none!important;
+    }
+  }
+
+  /* ---------- Shared chat geometry ---------- */
+  #main-col #chat{
+    position:relative!important;
+    inset:auto!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    display:block!important;
+    flex:1 1 auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:28px max(18px,calc((100% - 820px)/2)) 170px!important;
+    box-sizing:border-box!important;
+    transform:none!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    background:transparent!important;
+    scroll-padding-bottom:170px!important;
+  }
+
+  /* Empty-home copy: high enough to feel intentional, but centred in MAIN content. */
+  body.stellar-empty-home #main-col #chat{
+    overflow:hidden!important;
+    padding:0 20px 155px!important;
+  }
+  body.stellar-empty-home #chat>.greet-wrap,
+  body.stellar-empty-home #chat>.landing-style-home{
+    position:relative!important;
+    inset:auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    width:min(100%,700px)!important;
+    max-width:700px!important;
+    min-height:0!important;
+    margin:clamp(70px,12dvh,140px) auto 0!important;
+    padding:0!important;
+    transform:none!important;
+    text-align:center!important;
+  }
+  body.stellar-empty-home #chat .greet-eyebrow{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    margin:0 0 10px!important;
+    color:rgba(186,176,236,.60)!important;
+    font-size:8px!important;
+    font-weight:800!important;
+    letter-spacing:.15em!important;
+    text-transform:uppercase!important;
+  }
+  body.stellar-empty-home #chat .greet-hi{
+    display:block!important;
+    width:100%!important;
+    max-width:700px!important;
+    margin:0!important;
+    padding:0!important;
+    color:#f5f4f8!important;
+    -webkit-text-fill-color:#f5f4f8!important;
+    background:none!important;
+    font-size:clamp(38px,4.1vw,52px)!important;
+    font-weight:720!important;
+    line-height:1.04!important;
+    letter-spacing:-.048em!important;
+    text-align:center!important;
+    text-wrap:balance!important;
+    white-space:normal!important;
+    overflow:visible!important;
+  }
+  body.stellar-empty-home #chat .greet-hi::after{
+    display:none!important;
+    content:none!important;
+  }
+  body.stellar-empty-home #chat .greet-hi-accent{
+    display:inline!important;
+    color:#b8a7ff!important;
+    -webkit-text-fill-color:#b8a7ff!important;
+    background:none!important;
+  }
+  body.stellar-empty-home #chat .welcome-sub{
+    display:block!important;
+    width:auto!important;
+    max-width:540px!important;
+    margin:11px auto 0!important;
+    padding:0!important;
+    color:rgba(194,196,207,.64)!important;
+    font-size:13px!important;
+    font-weight:520!important;
+    line-height:1.5!important;
+    text-align:center!important;
+  }
+  body.stellar-empty-home #chat .welcome-sub::after,
+  body.stellar-empty-home #chat .home-disclaimer,
+  body.stellar-empty-home #chat #suggestion-chips,
+  body.stellar-empty-home #chat .welcome-starters-label,
+  body.stellar-empty-home #chat .home-guides-link,
+  body.stellar-empty-home #chat .greet-brand{
+    display:none!important;
+    content:none!important;
+  }
+
+  /* ---------- Composer: bottom-centred inside #main-col ---------- */
+  #main-col>.input-area.glass{
+    position:absolute!important;
+    top:auto!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    margin:0!important;
+    padding:0 22px max(20px,env(safe-area-inset-bottom))!important;
+    box-sizing:border-box!important;
+    transform:none!important;
+    border:0!important;
+    background:linear-gradient(to top,#090a0f 70%,rgba(9,10,15,.94) 84%,rgba(9,10,15,0))!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+    z-index:120!important;
+  }
+  #main-col>.input-area.glass>.flex{
+    position:relative!important;
+    display:flex!important;
+    align-items:center!important;
+    width:min(100%,var(--composer-width))!important;
+    max-width:var(--composer-width)!important;
+    min-height:68px!important;
+    margin:0 auto!important;
+    padding:9px 10px 9px 14px!important;
+    gap:7px!important;
+    box-sizing:border-box!important;
+    border:1px solid rgba(255,255,255,.105)!important;
+    border-radius:22px!important;
+    background:#191b22!important;
+    box-shadow:0 16px 44px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035)!important;
+    -webkit-backdrop-filter:blur(16px)!important;
+    backdrop-filter:blur(16px)!important;
+    transition:border-color .16s ease,box-shadow .16s ease!important;
+  }
+  #main-col>.input-area.glass>.flex:hover{
+    border-color:rgba(255,255,255,.15)!important;
+  }
+  #main-col>.input-area.glass>.flex:focus-within{
+    border-color:rgba(167,139,250,.42)!important;
+    box-shadow:0 0 0 3px rgba(124,58,237,.07),0 18px 48px rgba(0,0,0,.30)!important;
+  }
+  #main-col>.input-area.glass #txt{
+    position:static!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    min-height:46px!important;
+    max-height:150px!important;
+    margin:0!important;
+    padding:11px 7px!important;
+    border:0!important;
+    border-radius:12px!important;
+    outline:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    color:#f5f4f8!important;
+    caret-color:#c4b5fd!important;
+    font-size:15.5px!important;
+    font-weight:500!important;
+    line-height:1.45!important;
+  }
+  #main-col>.input-area.glass #txt::placeholder{
+    color:rgba(184,186,197,.48)!important;
+  }
+  #main-col>.input-area.glass #mic-btn,
+  #main-col>.input-area.glass #send-btn{
+    position:static!important;
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 44px!important;
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:0!important;
+    border-radius:50%!important;
+  }
+  #main-col>.input-area.glass #mic-btn{
+    border:1px solid rgba(255,255,255,.075)!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#cacad2!important;
+    box-shadow:none!important;
+  }
+  #main-col>.input-area.glass #mic-btn:hover{
+    border-color:rgba(167,139,250,.25)!important;
+    background:rgba(124,58,237,.09)!important;
+    color:#fff!important;
+  }
+  #main-col>.input-area.glass #send-btn{
+    border:1px solid rgba(196,181,253,.42)!important;
+    background:linear-gradient(145deg,#9f7aea,#7c3aed)!important;
+    color:#fff!important;
+    box-shadow:0 8px 20px rgba(124,58,237,.22)!important;
+    font-size:0!important;
+  }
+  #main-col>.input-area.glass #send-btn::before{
+    display:none!important;
+    content:none!important;
+  }
+  #main-col>.input-area.glass #send-btn:not(.is-stop)::after{
+    display:block!important;
+    content:"↑"!important;
+    color:#fff!important;
+    font-size:20px!important;
+    font-weight:850!important;
+    line-height:1!important;
+    transform:translateY(-1px)!important;
+  }
+  #main-col>.input-area.glass #send-btn:hover{
+    transform:translateY(-1px)!important;
+    filter:brightness(1.06)!important;
+  }
+
+  /* Empty home is intentionally uncluttered; utilities remain available in sidebar. */
+  body.stellar-empty-home #main-col>.input-area.glass .composer-foot{
+    display:none!important;
+  }
+  body:not(.stellar-empty-home) #main-col>.input-area.glass .composer-foot{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    width:min(100%,var(--composer-width))!important;
+    max-width:var(--composer-width)!important;
+    min-height:34px!important;
+    margin:5px auto 0!important;
+    padding:0 5px!important;
+    box-sizing:border-box!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+
+  /* Model/mode pill: centred ABOVE the composer with a real gap. */
+  #main-col>.input-area.glass .composer-mode-dock{
+    position:absolute!important;
+    top:-8px!important;
+    left:50%!important;
+    right:auto!important;
+    bottom:auto!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:max-content!important;
+    max-width:calc(100% - 28px)!important;
+    margin:0!important;
+    transform:translate(-50%,-100%)!important;
+    pointer-events:none!important;
+    z-index:240!important;
+  }
+  #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger{
+    pointer-events:auto!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:7px!important;
+    min-width:112px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0 14px!important;
+    border:1px solid rgba(167,139,250,.25)!important;
+    border-radius:999px!important;
+    background:#171820!important;
+    color:#eeeaff!important;
+    box-shadow:0 10px 26px rgba(0,0,0,.24)!important;
+    font-size:11.5px!important;
+    font-weight:800!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger:hover,
+  #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger[aria-expanded="true"]{
+    border-color:rgba(196,181,253,.48)!important;
+    background:#211c31!important;
+    color:#fff!important;
+  }
+  .stellar-global-header .topbar-model-picker>#model-btn{
+    display:none!important;
+  }
+  #model-menu.composer-model-menu{
+    position:fixed!important;
+    top:auto!important;
+    left:50%!important;
+    right:auto!important;
+    bottom:154px!important;
+    width:min(330px,calc(100vw - 28px))!important;
+    max-height:min(60dvh,500px)!important;
+    margin:0!important;
+    transform:translateX(-50%)!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    z-index:2600!important;
+  }
+
+  /* ---------- Tablet / phone ---------- */
+  @media (max-width:1100px){
+    body{
+      --shell-header:54px;
+      --composer-width:760px;
+    }
+    .stellar-global-header{
+      display:block!important;
+      position:fixed!important;
+      inset:0 auto auto 0!important;
+      width:0!important;
+      height:0!important;
+      min-height:0!important;
+      padding:0!important;
+      border:0!important;
+      background:transparent!important;
+      overflow:visible!important;
+      pointer-events:none!important;
+      z-index:2390!important;
+    }
+    .stellar-global-header .stellar-top-spacer,
+    .stellar-global-header .stellar-top-actions,
+    .stellar-global-header #model-btn{
+      display:none!important;
+    }
+    .stellar-global-header .topbar-model-picker{
+      display:block!important;
+      position:static!important;
+      width:0!important;
+      height:0!important;
+      margin:0!important;
+      pointer-events:none!important;
+    }
+
+    #sidebar{
+      display:flex!important;
+      position:fixed!important;
+      top:0!important;
+      left:0!important;
+      bottom:0!important;
+      width:min(86vw,300px)!important;
+      max-width:300px!important;
+      height:100dvh!important;
+      margin:0!important;
+      padding:14px 12px calc(14px + env(safe-area-inset-bottom))!important;
+      box-sizing:border-box!important;
+      transform:translateX(-103%)!important;
+      translate:none!important;
+      transition:transform .2s ease!important;
+      overflow:hidden!important;
+      z-index:2200!important;
+      background:#0d0e13!important;
+      border-right:1px solid rgba(255,255,255,.07)!important;
+      box-shadow:18px 0 48px rgba(0,0,0,.34)!important;
+    }
+    #sidebar.open{transform:translateX(0)!important}
+    #sidebar .sidebar-brand-row{
+      display:flex!important;
+      align-items:center!important;
+      justify-content:space-between!important;
+      min-height:46px!important;
+      margin:0 0 10px!important;
+      padding:0 2px!important;
+    }
+    #sidebar .sidebar-close{
+      display:inline-flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      width:44px!important;
+      min-width:44px!important;
+      height:44px!important;
+      min-height:44px!important;
+      border-radius:12px!important;
+    }
+
+    #main-col{
+      position:relative!important;
+      display:flex!important;
+      flex-direction:column!important;
+      width:100vw!important;
+      max-width:100vw!important;
+      height:100dvh!important;
+      min-width:0!important;
+      min-height:0!important;
+      margin:0!important;
+      padding:0!important;
+      overflow:hidden!important;
+      transform:none!important;
+      background:#090a0f!important;
+    }
+    #main-col>.topbar{
+      display:flex!important;
+      position:relative!important;
+      inset:auto!important;
+      flex:0 0 calc(var(--shell-header) + env(safe-area-inset-top))!important;
+      width:100%!important;
+      height:calc(var(--shell-header) + env(safe-area-inset-top))!important;
+      min-height:calc(var(--shell-header) + env(safe-area-inset-top))!important;
+      margin:0!important;
+      padding:env(safe-area-inset-top) 12px 0!important;
+      box-sizing:border-box!important;
+      border:0!important;
+      border-bottom:1px solid rgba(255,255,255,.045)!important;
+      background:rgba(9,10,15,.96)!important;
+      z-index:150!important;
+    }
+    #mobile-menu-toggle{
+      display:inline-flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      width:44px!important;
+      min-width:44px!important;
+      height:44px!important;
+      min-height:44px!important;
+      border-radius:12px!important;
+    }
+    #chat-title{
+      display:block!important;
+      max-width:calc(100vw - 80px)!important;
+      overflow:hidden!important;
+      white-space:nowrap!important;
+      text-overflow:ellipsis!important;
+      opacity:1!important;
+      color:#d9d9df!important;
+      font-size:13px!important;
+    }
+    #main-col #chat{
+      padding:20px 14px 154px!important;
+    }
+    body.stellar-empty-home #main-col #chat{
+      padding:0 14px 148px!important;
+    }
+    body.stellar-empty-home #chat>.greet-wrap,
+    body.stellar-empty-home #chat>.landing-style-home{
+      width:min(100%,620px)!important;
+      margin:clamp(46px,9dvh,86px) auto 0!important;
+    }
+    body.stellar-empty-home #chat .greet-hi{
+      max-width:620px!important;
+      font-size:clamp(32px,6vw,45px)!important;
+    }
+
+    #main-col>.input-area.glass{
+      padding:0 12px max(12px,env(safe-area-inset-bottom))!important;
+    }
+    #model-menu.composer-model-menu{
+      left:12px!important;
+      right:12px!important;
+      bottom:142px!important;
+      width:auto!important;
+      max-width:none!important;
+      transform:none!important;
+      pointer-events:auto!important;
+    }
+  }
+
+  @media (max-width:640px){
+    body{
+      --composer-width:100%;
+    }
+    body.stellar-empty-home #chat>.greet-wrap,
+    body.stellar-empty-home #chat>.landing-style-home{
+      width:100%!important;
+      max-width:360px!important;
+      margin:clamp(34px,7dvh,58px) auto 0!important;
+    }
+    body.stellar-empty-home #chat .greet-eyebrow{
+      margin-bottom:8px!important;
+      font-size:7.5px!important;
+    }
+    body.stellar-empty-home #chat .greet-hi{
+      max-width:350px!important;
+      font-size:clamp(29px,8.7vw,38px)!important;
+      line-height:1.04!important;
+    }
+    body.stellar-empty-home #chat .welcome-sub{
+      max-width:330px!important;
+      margin-top:8px!important;
+      font-size:11.5px!important;
+      line-height:1.45!important;
+    }
+    #main-col>.input-area.glass{
+      padding:0 8px max(10px,env(safe-area-inset-bottom))!important;
+    }
+    #main-col>.input-area.glass>.flex{
+      min-height:64px!important;
+      padding:8px 8px 8px 12px!important;
+      gap:5px!important;
+      border-radius:20px!important;
+    }
+    #main-col>.input-area.glass #txt{
+      min-height:46px!important;
+      max-height:125px!important;
+      padding:10px 3px!important;
+      font-size:16px!important;
+    }
+    #main-col>.input-area.glass #mic-btn,
+    #main-col>.input-area.glass #send-btn{
+      flex-basis:44px!important;
+      width:44px!important;
+      min-width:44px!important;
+      height:44px!important;
+      min-height:44px!important;
+    }
+    #main-col>.input-area.glass .composer-mode-dock{
+      top:-7px!important;
+    }
+    #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger{
+      min-width:106px!important;
+      height:40px!important;
+      min-height:40px!important;
+      padding:0 12px!important;
+      font-size:11px!important;
+    }
+    #model-menu.composer-model-menu{
+      left:8px!important;
+      right:8px!important;
+      bottom:132px!important;
+    }
+  }
+
+  @media (max-height:720px){
+    body.stellar-empty-home #chat>.greet-wrap,
+    body.stellar-empty-home #chat>.landing-style-home{
+      margin-top:clamp(28px,6dvh,52px)!important;
+    }
+    body.stellar-empty-home #chat .greet-hi{
+      font-size:clamp(30px,5vw,42px)!important;
+    }
+    body.stellar-empty-home #chat .welcome-sub{
+      margin-top:7px!important;
+    }
+    #main-col>.input-area.glass{
+      padding-bottom:max(9px,env(safe-area-inset-bottom))!important;
+    }
+  }
+
+  @media (max-width:420px) and (max-height:720px){
+    body.stellar-empty-home #chat .greet-eyebrow{display:none!important}
+    body.stellar-empty-home #chat .welcome-sub{font-size:11px!important}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    #sidebar,
+    #main-col>.input-area.glass>.flex,
+    #main-col>.input-area.glass #send-btn{
+      transition:none!important;
+    }
+  }
+</style>
+
 </body>
 </html>
