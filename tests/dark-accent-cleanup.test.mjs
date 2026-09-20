@@ -22,12 +22,11 @@ test('strict dark UI removes blue and purple active accents', () => {
   assert.match(appHtml, /body:not\(\.light\) \.sug-chip > span:first-child \{ filter: grayscale\(1\) saturate\(0\) !important; \}/);
 });
 
-test('landing page removes colored section backgrounds in the final monochrome pass', () => {
-  assert.match(indexHtml, /Final monochrome surface pass: remove blue\/cyan\/purple-tinted backgrounds/);
-  assert.match(indexHtml, /body:not\(\.light\) \.pricing-wrap,[\s\S]*?background: #17191d !important;/);
-  assert.match(indexHtml, /body:not\(\.light\) \.product-main \{[\s\S]*?background: #0f1115 !important;/);
-  assert.match(indexHtml, /body:not\(\.light\) \.preview-nav\.active,[\s\S]*?background: #e5e7eb !important;/);
-  assert.match(indexHtml, /body:not\(\.light\) \.roblox-game-mark \{[\s\S]*?background: #e5e7eb !important;/);
+test('homepage uses a dedicated dark theme without legacy override passes', async () => {
+  const css = await readFile(new URL('../lib/assets/homepage.css', import.meta.url), 'utf8');
+  assert.match(indexHtml, /href="\/lib\/assets\/homepage\.css\?v=/);
+  assert.match(css, /color-scheme:\s*dark/);
+  assert.doesNotMatch(indexHtml, /<style|stellar-premium\.css/);
 });
 
 test('dark Settings terms link has no browser-blue underline', () => {

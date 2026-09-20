@@ -57,12 +57,10 @@ test('repository-owned pricing setup notes document the canonical four-plan bill
 
 test('directory-facing metadata describes current Stellar features without claiming listing or endorsement', () => {
   assert.match(indexHtml, /<meta name="application-name" content="Stellar AI">/);
-  assert.match(indexHtml, /applicationSubCategory":"Game development and scripting workspace"/);
+  assert.match(indexHtml, /applicationCategory":"DeveloperApplication"/);
   assert.match(indexHtml, /isAccessibleForFree":true/);
-  assert.match(indexHtml, /FiveM QBCore, ESX and ox_lib scripting workflows/);
-  assert.match(indexHtml, /Roblox Luau scripting workflows/);
-  assert.match(indexHtml, /Built for the environments you actually use\./);
-  assert.match(indexHtml, /<span>QBCore<\/span><span>ESX<\/span><span>ox_lib<\/span><span>Roblox<\/span>/);
+  assert.match(indexHtml, /FiveM QBCore, ESX, ox_lib and standalone resources, or Roblox Luau systems/);
+  for (const framework of ['FiveM', 'QBCore', 'ESX', 'ox_lib', 'Roblox']) assert.ok(indexHtml.includes(framework));
   assert.doesNotMatch(indexHtml, /Used by FiveM and Roblox builders worldwide/);
 });
 
@@ -78,21 +76,19 @@ test('Free users receive one dismissible post-generation Starter offer', () => {
   assert.doesNotMatch(appHtml, /fetch\(['"]\/api\/upgrade/);
 });
 
-test('public and workspace styles include the flat minimal presentation guard', () => {
-  assert.match(indexHtml, /Flat minimal presentation: decorative depth, gradients and motion are deliberately disabled\./);
-  assert.match(indexHtml, /animation: none !important; transition: none !important; box-shadow: none !important;/);
+test('homepage respects reduced motion while the workspace retains its flat presentation', () => {
+  const css = read('lib/assets/homepage.css');
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(appHtml, /Flat minimal presentation: keep every control and dialog, remove decorative depth and motion\./);
   assert.match(appHtml, /body, body \*, body \*::before, body \*::after \{ background-image: none !important; \}/);
 });
 
 test('landing page keeps factual build benefits without exposing unsupported outcomes', () => {
-  assert.match(indexHtml, /class="landing-proof-row" aria-label="What Stellar gives you"/);
-  assert.match(indexHtml, /Complete files[\s\S]*Exact placement[\s\S]*Clear next steps/);
-  assert.match(indexHtml, /Review before you publish/);
-  assert.match(indexHtml, /Generated code still needs to be reviewed and tested/);
+  assert.match(indexHtml, /Complete files\. Clear placement\./);
+  assert.match(indexHtml, /Ready for your review/);
+  assert.match(indexHtml, /Always review dependencies and test your build before going live/);
   assert.doesNotMatch(indexHtml, /guaranteed revenue|guaranteed profit|guaranteed approval/i);
-  assert.match(indexHtml, /const publicProofMinimums = \{[\s\S]*scriptsGenerated: 25[\s\S]*serversPowered: 10[\s\S]*countriesReached: 3[\s\S]*\};/);
-  assert.match(indexHtml, /if \(!hasMeaningfulVerifiedSample\) return;/);
+  assert.doesNotMatch(indexHtml, /scriptsGenerated|serversPowered|countriesReached/);
 });
 
 test('the public support address remains a one-line mail link in settings', () => {
