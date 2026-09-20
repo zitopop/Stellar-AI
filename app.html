@@ -20424,5 +20424,109 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
   }
 </style>
 
+
+<style id="stellar-home-center-stack-v1">
+  /* Empty home: one centred stack — copy first, model + composer on the next line. */
+  body.stellar-empty-home #main-col{
+    --home-stack-x:50%;
+    --home-copy-y:42%;
+    --home-composer-y:61%;
+    position:relative!important;
+  }
+
+  body.stellar-empty-home #main-col #chat{
+    position:absolute!important;
+    inset:0!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0 20px!important;
+    overflow:hidden!important;
+    pointer-events:auto!important;
+  }
+
+  body.stellar-empty-home #chat>.greet-wrap,
+  body.stellar-empty-home #chat>.landing-style-home{
+    position:absolute!important;
+    top:var(--home-copy-y)!important;
+    left:var(--home-stack-x)!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:min(760px,calc(100% - 40px))!important;
+    max-width:760px!important;
+    margin:0!important;
+    padding:0!important;
+    transform:translate(-50%,-50%)!important;
+    text-align:center!important;
+  }
+
+  body.stellar-empty-home #main-col>.input-area.glass{
+    position:absolute!important;
+    top:var(--home-composer-y)!important;
+    left:0!important;
+    right:0!important;
+    bottom:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0 20px!important;
+    transform:none!important;
+    background:transparent!important;
+    overflow:visible!important;
+  }
+
+  body.stellar-empty-home #main-col>.input-area.glass>.flex{
+    width:min(100%,740px)!important;
+    max-width:740px!important;
+    margin:0 auto!important;
+  }
+
+  body.stellar-empty-home #main-col>.input-area.glass .composer-mode-dock{
+    top:-8px!important;
+    left:50%!important;
+    transform:translate(-50%,-100%)!important;
+  }
+
+  @media(max-width:1100px){
+    body.stellar-empty-home #main-col{
+      --home-copy-y:39%;
+      --home-composer-y:60%;
+    }
+  }
+
+  @media(max-width:640px){
+    body.stellar-empty-home #main-col{
+      --home-copy-y:36%;
+      --home-composer-y:59%;
+    }
+    body.stellar-empty-home #main-col #chat{
+      padding-inline:12px!important;
+    }
+    body.stellar-empty-home #chat>.greet-wrap,
+    body.stellar-empty-home #chat>.landing-style-home{
+      width:min(360px,calc(100% - 24px))!important;
+    }
+    body.stellar-empty-home #main-col>.input-area.glass{
+      padding-inline:8px!important;
+    }
+    body.stellar-empty-home #main-col>.input-area.glass>.flex{
+      width:100%!important;
+    }
+  }
+
+  @media(max-height:720px){
+    body.stellar-empty-home #main-col{
+      --home-copy-y:34%;
+      --home-composer-y:61%;
+    }
+  }
+</style>
+
 </body>
 </html>
