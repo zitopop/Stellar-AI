@@ -26,8 +26,8 @@ test('reasoning control remains semantic while presenting a galaxy power rail', 
 
 test('new-chat home stays focused inside the premium Orbit shell', () => {
   assert.match(orbit, /body\.stellar-orbit-v3:not\(\.light\) \.greet-wrap/);
-  assert.match(app, /What do you want to <span class="greet-hi-accent">build\?<\/span>/);
-  assert.match(app, /Build, fix, and improve FiveM or Roblox systems from one clear prompt\./);
+  assert.match(app, /What will you <span class="greet-hi-accent">build next\\?<\\/span>/);
+  assert.match(app, /Turn your next FiveM or Roblox idea into something real — build it, fix it, and keep improving it with Stellar\\./);
   assert.equal((app.match(/class="sug-chip"/g) || []).length, 0);
 });
 
