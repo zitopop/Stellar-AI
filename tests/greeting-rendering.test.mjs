@@ -6,7 +6,7 @@ const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 const staticAppMarkup = appHtml.split('function timeGreeting()')[0];
 
 test('workspace keeps the build question stable while the small greeting updates by time', () => {
-  assert.match(appHtml, /<div class="greet-hi" id="greet-hi">What do you want to <span class="greet-hi-accent">build\?<\/span><\/div>/);
+  assert.ok(appHtml.includes('<div class="greet-hi" id="greet-hi">What will you <span class="greet-hi-accent">build next?</span></div>'));
   assert.match(appHtml, /function syncHomeGreeting\(\)/);
   assert.match(appHtml, /label\.textContent = timeGreeting\(\) \+ ' · FiveM & Roblox';/);
   assert.doesNotMatch(staticAppMarkup, /<div class="greet-hi" id="greet-hi">\$\{timeGreeting\(\)\}<\/div>/);

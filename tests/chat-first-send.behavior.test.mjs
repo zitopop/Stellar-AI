@@ -7,6 +7,24 @@ const html = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const send = html.slice(html.indexOf('    async function sendMessage('), html.indexOf('    function refreshModelMenu('));
 const commit = html.slice(html.indexOf('    function commitPendingChat('), html.indexOf('    function timeGreeting('));
 
+test('thinking updates work before and after the stream status is created', () => {
+  const thinking = html.slice(html.indexOf('    function setThinking('), html.indexOf('    function streamView('));
+  const progress = {};
+  let stream = null;
+  const statuses = [];
+  const context = vm.createContext({
+    document: { getElementById: () => progress, querySelector: () => stream },
+    setGenerationStatus: label => statuses.push(label)
+  });
+  vm.runInContext(thinking, context);
+  context.setThinking('', 'Reading your request');
+  assert.equal(progress.textContent, 'Reading your request');
+  stream = {};
+  context.setThinking('', 'Writing response');
+  assert.equal(stream.textContent, 'Writing response');
+  assert.deepEqual(statuses, ['Reading your request', 'Writing response']);
+});
+
 function harness({ text = 'Build a checkpoint', pending = true, saved = [] } = {}) {
   let stored = { chats: structuredClone(saved), currentChat:'draft', plan:'free' };
   const input = { value:text };

@@ -154,8 +154,8 @@ test('workspace keeps the starter UI calm and removes redundant home guidance', 
 });
 
 test('workspace welcome state stays minimal and keeps the composer accessible', () => {
-  assert.match(workspaceHtml, /What do you want to <span class="greet-hi-accent">build\?<\/span>/);
-  assert.match(workspaceHtml, /Build, fix, and improve FiveM or Roblox systems from one clear prompt\./);
+  assert.match(workspaceHtml, /What will you <span class="greet-hi-accent">build next\?<\/span>/);
+  assert.match(workspaceHtml, /Turn your next FiveM or Roblox idea into something real — build it, fix it, and keep improving it with Stellar\./);
   assert.match(workspaceHtml, /Review generated code before using it in production\./);
   assert.match(workspaceHtml, /placeholder="Ask Stellar anything…"/);
   assert.match(workspaceHtml, /role="form" aria-label="Message composer"/);

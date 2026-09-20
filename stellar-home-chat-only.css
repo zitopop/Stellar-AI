@@ -1,0 +1,75 @@
+/* Stellar AI — minimal home chat state.
+   Applied late from currency.js so the fresh /app home shows only the chat composer
+   without welcome copy, starter cards, guides, or other home-only clutter. */
+
+body.stellar-empty-home .greet-wrap,
+body.stellar-empty-home .greet-hi,
+body.stellar-empty-home .welcome-sub,
+body.stellar-empty-home #welcome-starters-heading,
+body.stellar-empty-home #suggestion-chips,
+body.stellar-empty-home .stellar-v2-badge,
+body.stellar-empty-home .stellar-feature-grid,
+body.stellar-empty-home .home-guides-link {
+  display:none!important;
+}
+
+/* Keep the empty home visually quiet: just the workspace shell + composer. */
+body.stellar-empty-home #chat {
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
+
+/* True viewport-centred chat bar on the fresh home screen. */
+body.stellar-empty-home.stellar-start-state #main-col > .input-area.glass,
+body.stellar-empty-home.stellar-start-state .stellar-app-shell .input-area.glass {
+  position:fixed!important;
+  top:50dvh!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:min(820px,calc(100vw - 32px))!important;
+  max-width:820px!important;
+  padding:0!important;
+  transform:translate(-50%,-50%)!important;
+  background:transparent!important;
+  z-index:60!important;
+}
+
+body.stellar-empty-home.stellar-start-state .input-area > .flex {
+  width:min(100%,768px)!important;
+  max-width:768px!important;
+  margin-inline:auto!important;
+}
+
+body.stellar-empty-home.stellar-start-state .composer-foot {
+  width:min(100%,768px)!important;
+  max-width:768px!important;
+  margin-inline:auto!important;
+}
+
+/* Preserve the normal docked composer after a real conversation begins. */
+body:not(.stellar-empty-home):not(.stellar-start-state) .stellar-app-shell .input-area.glass {
+  top:auto!important;
+  bottom:0!important;
+  transform:none!important;
+}
+
+@media (max-width:767px) {
+  body.stellar-empty-home.stellar-start-state #main-col > .input-area.glass,
+  body.stellar-empty-home.stellar-start-state .stellar-app-shell .input-area.glass {
+    top:50dvh!important;
+    left:50%!important;
+    right:auto!important;
+    width:calc(100vw - 16px)!important;
+    max-width:none!important;
+    padding:0!important;
+    transform:translate(-50%,-50%)!important;
+  }
+}
+
+@media (max-width:390px) {
+  body.stellar-empty-home.stellar-start-state #main-col > .input-area.glass,
+  body.stellar-empty-home.stellar-start-state .stellar-app-shell .input-area.glass {
+    width:calc(100vw - 12px)!important;
+  }
+}

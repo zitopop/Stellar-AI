@@ -56,17 +56,16 @@ test('app home always opens a fresh centered draft while preserving history', ()
 test('premium home stays minimal and keeps the composer at the true viewport centre', () => {
   assert.match(appHtml, /<style id="stellar-home-premium-polish-v1">[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
   assert.match(appHtml, /<span class="greet-eyebrow-label">Stellar AI workspace<\/span>/);
-  assert.match(appHtml, /Build, fix, and improve FiveM or Roblox systems from one clear prompt\./);
+  assert.ok(appHtml.includes('Turn your next FiveM or Roblox idea into something real — build it, fix it, and keep improving it with Stellar.'));
   assert.match(appHtml, /placeholder="Ask Stellar anything…"/);
 });
 
 
-test('workspace layout replaces the old fixed home layer and respects reduced motion', async () => {
-  const css = await readFile(new URL('../lib/assets/chat-home.css', import.meta.url), 'utf8');
-  assert.match(appHtml, /href="\/lib\/assets\/chat-home\.css\?v=/);
-  assert.doesNotMatch(appHtml, /<style id="stellar-home-layout-v2">/);
-  assert.ok(appHtml.lastIndexOf('chat-home.css') > appHtml.lastIndexOf('home-calm-performance-final'));
-  assert.match(css, /grid-template-rows:minmax\(32px,1fr\) auto auto/);
-  assert.match(css, /prefers-reduced-motion:reduce/);
-  assert.match(css, /env\(safe-area-inset-top\)/);
+test('home layout v2 is the final cascade layer and preserves centered composition', () => {
+  assert.match(appHtml, /<style id="stellar-home-layout-v2">[\s\S]*#main-col>\.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
+  assert.match(appHtml, /#chat \.welcome-sub\{[\s\S]*display:block!important;/);
+  assert.match(appHtml, /#sidebar \.side-new\{[\s\S]*display:flex!important;/);
+  assert.match(appHtml, /#sidebar #chats-list\{[\s\S]*display:block!important;/);
+  assert.match(appHtml, /\.composer-foot #composer-plans-btn\{[\s\S]*display:none!important;/);
+  assert.ok(appHtml.lastIndexOf('stellar-home-layout-v2') > appHtml.lastIndexOf('home-calm-performance-final'));
 });
