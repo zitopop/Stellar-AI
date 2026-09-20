@@ -9293,7 +9293,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     <!-- GLASS SIDEBAR -->
     <div id="sidebar" class="w-72 glass border-r border-white/10 flex flex-col p-4" role="navigation" aria-label="Workspace navigation">
       <div class="mb-6 sidebar-brand-row">
-        <div class="brand-title"><span class="brand-star" id="logo-star">✦</span> <span class="brand-grad">Stellar AI</span></div>
+        <div class="brand-title"><span class="brand-star" id="logo-star">✦</span> <span class="brand-grad">Stellar<span class="brand-ai">AI</span></span></div>
         <button type="button" class="sidebar-close" onclick="toggleSidebar()" aria-label="Close navigation">×</button>
       </div>
 
@@ -19526,6 +19526,900 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
     }
     #main-col>.input-area.glass #txt{
       font-size:15px!important;
+    }
+  }
+</style>
+
+
+<style id="stellar-landing-parity-v1">
+  /*
+    Landing-page parity layer.
+    Uses the public homepage's actual visual tokens and component language.
+  */
+  body{
+    --lp-bg:#09090e!important;
+    --lp-panel:#111117!important;
+    --lp-panel-2:#101016!important;
+    --lp-panel-deep:#0d0d12!important;
+    --lp-line:#25252e!important;
+    --lp-line-soft:#302936!important;
+    --lp-ink:#f5f3fa!important;
+    --lp-muted:#9a99a9!important;
+    --lp-purple:#b5a0f7!important;
+    --lp-purple-rgb:181,160,247!important;
+    --lp-green:#95ccb3!important;
+    --accent:#b5a0f7!important;
+    --accent-rgb:181,160,247!important;
+    font-family:Manrope,Arial,sans-serif!important;
+    color:var(--lp-ink)!important;
+    background:var(--lp-bg)!important;
+  }
+
+  /* Main app background = landing page atmosphere, restrained and uncluttered. */
+  body::before{
+    display:block!important;
+    content:""!important;
+    position:fixed!important;
+    inset:0!important;
+    z-index:-2!important;
+    pointer-events:none!important;
+    background:
+      radial-gradient(ellipse at 55% 30%,rgba(62,36,95,.20) 0,transparent 48%),
+      var(--lp-bg)!important;
+    opacity:1!important;
+  }
+  #main-col,
+  body.stellar-empty-home #main-col{
+    background:transparent!important;
+  }
+
+  /* Header mirrors the public landing header. */
+  .stellar-global-header{
+    background:rgba(9,9,14,.91)!important;
+    border-bottom:1px solid rgba(255,255,255,.06)!important;
+    box-shadow:none!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+  .stellar-global-header .stellar-top-actions a{
+    color:#a9a7b5!important;
+    font-size:11px!important;
+    font-weight:600!important;
+  }
+  .stellar-global-header .stellar-top-actions a:hover{
+    color:var(--lp-ink)!important;
+  }
+  .stellar-global-header .stellar-upgrade{
+    min-height:38px!important;
+    height:38px!important;
+    padding:0 15px!important;
+    border:1px solid transparent!important;
+    border-radius:7px!important;
+    background:var(--lp-purple)!important;
+    color:#14121e!important;
+    font-size:10.5px!important;
+    font-weight:750!important;
+    box-shadow:inset 0 1px 0 #d4c5ff,0 4px 24px #a58aed14!important;
+  }
+  .stellar-global-header .stellar-upgrade:hover{
+    background:#c9b8ff!important;
+  }
+
+  /* Sidebar = landing page workspace preview sidebar. */
+  #sidebar{
+    background:#101015!important;
+    border-right:1px solid #25222c!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  #sidebar .sidebar-brand-row{
+    border:0!important;
+  }
+  #sidebar .brand-title{
+    gap:8px!important;
+    color:var(--lp-ink)!important;
+    font-size:13px!important;
+    font-weight:750!important;
+    letter-spacing:-.035em!important;
+  }
+  #sidebar .brand-star{
+    display:inline-grid!important;
+    place-items:center!important;
+    width:20px!important;
+    height:20px!important;
+    margin:0!important;
+    color:var(--lp-purple)!important;
+    font-size:19px!important;
+    filter:none!important;
+    background:transparent!important;
+    border:0!important;
+  }
+  #sidebar .brand-grad{
+    color:var(--lp-ink)!important;
+    -webkit-text-fill-color:var(--lp-ink)!important;
+    background:none!important;
+  }
+  #sidebar .brand-ai{
+    margin-left:3px!important;
+    color:var(--lp-purple)!important;
+    -webkit-text-fill-color:var(--lp-purple)!important;
+    font-weight:500!important;
+  }
+  #sidebar .side-new{
+    min-height:38px!important;
+    height:38px!important;
+    padding:0 10px!important;
+    gap:9px!important;
+    border:1px solid #302936!important;
+    border-radius:6px!important;
+    background:transparent!important;
+    color:#bbb1cd!important;
+    font-size:10px!important;
+    font-weight:600!important;
+    box-shadow:none!important;
+  }
+  #sidebar .side-new:hover{
+    border-color:#49395b!important;
+    background:#201927!important;
+    color:#efe7fb!important;
+  }
+  #sidebar #search{
+    height:34px!important;
+    min-height:34px!important;
+    padding:0 9px!important;
+    border:1px solid #24212a!important;
+    border-radius:6px!important;
+    background:#0d0d12!important;
+    color:#c7c1cf!important;
+    font-size:10px!important;
+    font-weight:500!important;
+  }
+  #sidebar #search::placeholder{
+    color:#6f6978!important;
+  }
+  #sidebar #search:focus{
+    border-color:#443551!important;
+    background:#121018!important;
+  }
+  #sidebar .stellar-sidebar-nav{
+    gap:3px!important;
+  }
+  #sidebar .stellar-sidebar-nav button{
+    min-height:37px!important;
+    padding:8px!important;
+    gap:8px!important;
+    border:1px solid transparent!important;
+    border-radius:6px!important;
+    background:transparent!important;
+    color:#9f96ae!important;
+    font-size:10px!important;
+    font-weight:550!important;
+  }
+  #sidebar .stellar-sidebar-nav button:hover{
+    color:#ede4fc!important;
+    background:#1e1828!important;
+    border-color:transparent!important;
+  }
+  #sidebar .stellar-sidebar-nav button:first-child{
+    color:#d2bef7!important;
+    background:#b5a0f714!important;
+    border-color:#b5a0f724!important;
+  }
+  #sidebar .stellar-sidebar-nav .nav-ico{
+    color:#806f92!important;
+  }
+  #sidebar #chats-heading{
+    margin:16px 9px 8px!important;
+    color:#898090!important;
+    font-family:'DM Mono',monospace!important;
+    font-size:7px!important;
+    font-weight:600!important;
+    letter-spacing:.1em!important;
+  }
+  #sidebar .sidebar-item{
+    min-height:36px!important;
+    padding:7px 9px!important;
+    border-radius:5px!important;
+    background:transparent!important;
+    color:#a297b2!important;
+    font-size:9.5px!important;
+    font-weight:500!important;
+  }
+  #sidebar .sidebar-item:hover{
+    background:#a583e412!important;
+    color:#cbb4f1!important;
+  }
+  #sidebar #account-box{
+    border-top:1px solid #211e27!important;
+  }
+  #sidebar .acct-signin-btn,
+  #sidebar .acct-out-btn{
+    min-height:38px!important;
+    border:1px solid #302936!important;
+    border-radius:6px!important;
+    background:transparent!important;
+    color:#bbb1cd!important;
+    font-size:9.5px!important;
+    font-weight:650!important;
+  }
+  #sidebar .acct-signin-btn:hover,
+  #sidebar .acct-out-btn:hover{
+    background:#201927!important;
+    color:#efe7fb!important;
+  }
+  #sidebar .sidebar-utility-links a{
+    color:#777180!important;
+    font-size:7.5px!important;
+  }
+  #sidebar .sidebar-utility-links a:hover{
+    color:#bcb3c8!important;
+  }
+
+  /* Home copy = landing hero hierarchy. */
+  body.stellar-empty-home #chat>.greet-wrap,
+  body.stellar-empty-home #chat>.landing-style-home{
+    max-width:760px!important;
+  }
+  body.stellar-empty-home #chat .greet-eyebrow{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    margin-bottom:11px!important;
+    padding:5px 10px!important;
+    border:1px solid #b5a0f72c!important;
+    border-radius:999px!important;
+    background:#b5a0f708!important;
+    color:var(--lp-purple)!important;
+    font-size:7.5px!important;
+    font-weight:700!important;
+    letter-spacing:.09em!important;
+  }
+  body.stellar-empty-home #chat .greet-eyebrow-dot{
+    width:auto!important;
+    height:auto!important;
+    flex:0 0 auto!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  body.stellar-empty-home #chat .greet-eyebrow-dot::before{
+    content:"✦"!important;
+    color:var(--lp-purple)!important;
+    font-size:11px!important;
+    line-height:1!important;
+  }
+  body.stellar-empty-home #chat .greet-hi{
+    max-width:760px!important;
+    color:var(--lp-ink)!important;
+    -webkit-text-fill-color:var(--lp-ink)!important;
+    font-size:clamp(34px,4vw,48px)!important;
+    font-weight:600!important;
+    line-height:1.06!important;
+    letter-spacing:-.055em!important;
+    text-shadow:none!important;
+  }
+  body.stellar-empty-home #chat .greet-hi-accent{
+    color:var(--lp-purple)!important;
+    -webkit-text-fill-color:transparent!important;
+    background:linear-gradient(110deg,#e2d4ff 10%,#b6a0f0 53%,#9c7ae0)!important;
+    -webkit-background-clip:text!important;
+    background-clip:text!important;
+  }
+  body.stellar-empty-home #chat .welcome-sub{
+    max-width:520px!important;
+    margin-top:10px!important;
+    color:#aaa6b9!important;
+    font-size:11px!important;
+    font-weight:400!important;
+    line-height:1.75!important;
+  }
+
+  /* Composer = public landing page build form. */
+  #main-col>.input-area.glass{
+    background:linear-gradient(180deg,transparent,rgba(9,9,14,.88) 34%,rgba(9,9,14,.99))!important;
+  }
+  #main-col>.input-area.glass>.flex{
+    min-height:64px!important;
+    padding:8px 8px 8px 12px!important;
+    gap:6px!important;
+    border:1px solid #3a2d4b!important;
+    border-radius:10px!important;
+    background:#15111d!important;
+    box-shadow:0 0 15px #ad7bf908!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  #main-col>.input-area.glass>.flex:hover{
+    border-color:#4c3a61!important;
+  }
+  #main-col>.input-area.glass>.flex:focus-within{
+    border-color:#66507f!important;
+    box-shadow:0 0 0 1px #b5a0f71a,0 0 22px #ad7bf90d!important;
+  }
+  #main-col>.input-area.glass #txt{
+    min-height:46px!important;
+    padding:9px 5px!important;
+    color:#e5d9f5!important;
+    caret-color:var(--lp-purple)!important;
+    font-size:12px!important;
+    font-weight:450!important;
+    line-height:1.6!important;
+  }
+  #main-col>.input-area.glass #txt::placeholder{
+    color:#94829f!important;
+    font-size:11px!important;
+  }
+  #main-col>.input-area.glass #mic-btn{
+    border:1px solid #2d2638!important;
+    border-radius:6px!important;
+    background:#17131f!important;
+    color:#9f96ae!important;
+    box-shadow:none!important;
+  }
+  #main-col>.input-area.glass #mic-btn:hover{
+    border-color:#4b3a59!important;
+    background:#201927!important;
+    color:#e9ddf8!important;
+  }
+  #main-col>.input-area.glass #send-btn{
+    border:0!important;
+    border-radius:6px!important;
+    background:var(--lp-purple)!important;
+    color:#23172e!important;
+    box-shadow:none!important;
+  }
+  #main-col>.input-area.glass #send-btn:not(.is-stop)::after{
+    color:#23172e!important;
+    font-size:18px!important;
+    font-weight:700!important;
+  }
+  #main-col>.input-area.glass #send-btn:hover{
+    background:#c9b8ff!important;
+  }
+
+  /* Model selector copies landing workspace's model tag. */
+  #main-col>.input-area.glass .composer-mode-dock{
+    top:-8px!important;
+  }
+  #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger{
+    min-width:88px!important;
+    min-height:30px!important;
+    height:30px!important;
+    padding:0 9px!important;
+    gap:5px!important;
+    border:1px solid #362b42!important;
+    border-radius:5px!important;
+    background:#111017!important;
+    color:#c7b2e9!important;
+    box-shadow:none!important;
+    font-size:8px!important;
+    font-weight:500!important;
+  }
+  #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger:hover,
+  #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger[aria-expanded="true"]{
+    border-color:#5b466f!important;
+    background:#18131f!important;
+    color:#e9dbfb!important;
+  }
+
+  /* Model dropdown = landing page panels. */
+  #model-menu.composer-model-menu,
+  #model-menu{
+    border:1px solid #302936!important;
+    border-radius:9px!important;
+    background:#101016!important;
+    color:#d8cfdf!important;
+    box-shadow:0 22px 50px rgba(0,0,0,.40)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  #model-menu .model-menu-heading{
+    color:#898090!important;
+    font-family:'DM Mono',monospace!important;
+    font-size:7px!important;
+    letter-spacing:.08em!important;
+  }
+  #model-menu [data-model-choice]{
+    min-height:38px!important;
+    border:1px solid transparent!important;
+    border-radius:6px!important;
+    background:transparent!important;
+    color:#a89daf!important;
+  }
+  #model-menu [data-model-choice]:hover,
+  #model-menu [data-model-choice]:focus-visible{
+    color:#ede4fc!important;
+    background:#1e1828!important;
+    border-color:transparent!important;
+  }
+  #model-menu [data-model-choice][aria-checked="true"]{
+    color:#d2bef7!important;
+    background:#b5a0f714!important;
+    border-color:#b5a0f724!important;
+  }
+
+  /* Conversation bubbles = the workspace preview style. */
+  #chat .message{
+    color:#b4aabe!important;
+    font-size:11px!important;
+    line-height:1.8!important;
+  }
+  #chat .message.msg-user .msg-content,
+  #chat .message.msg-user .msg-inner{
+    max-width:min(78%,620px)!important;
+    margin-left:auto!important;
+    padding:12px 15px!important;
+    border:1px solid #2d2638!important;
+    border-radius:11px 11px 3px 11px!important;
+    background:#201b29!important;
+    color:#d2c8df!important;
+    box-shadow:none!important;
+    font-size:11px!important;
+    line-height:1.75!important;
+  }
+  #chat .message.msg-ai .msg-content,
+  #chat .message.msg-ai .msg-inner{
+    color:#b4aabe!important;
+    font-size:11px!important;
+    line-height:1.8!important;
+  }
+  .assistant-avatar{
+    border:0!important;
+    background:transparent!important;
+    color:var(--lp-purple)!important;
+    box-shadow:none!important;
+  }
+  .assistant-response-kicker,
+  .assistant-name{
+    color:#e5dcef!important;
+    font-size:10.5px!important;
+    font-weight:700!important;
+  }
+  .assistant-response-state,
+  #chat .msg-time,
+  #chat .msg-meta{
+    color:#7f768f!important;
+    font-family:'DM Mono',monospace!important;
+    font-size:7px!important;
+  }
+  #chat pre,
+  #chat code{
+    font-family:'DM Mono',monospace!important;
+  }
+  #chat pre{
+    border:1px solid #26202f!important;
+    border-radius:7px!important;
+    background:#0d0d12!important;
+    box-shadow:none!important;
+  }
+
+  /* Project-files workspace matches landing preview's right rail. */
+  #workspace{
+    width:300px!important;
+    background:#0d0d12!important;
+    border-left:1px solid #282330!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  #workspace .ws-head{
+    padding:14px 15px!important;
+    border-bottom:1px solid #26202f!important;
+  }
+  #workspace .ws-title{
+    color:#c8c0d4!important;
+    font-size:10px!important;
+    font-weight:600!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+  }
+  #workspace .ws-subtitle{
+    color:#7f778c!important;
+    font-size:8px!important;
+  }
+  #workspace .ws-close{
+    color:#8d849a!important;
+  }
+  #workspace .ws-list{
+    gap:5px!important;
+    padding:10px!important;
+  }
+  #workspace .ws-file{
+    padding:9px!important;
+    border:1px solid #25212b!important;
+    border-radius:6px!important;
+    background:#101015!important;
+  }
+  #workspace .ws-file-name{
+    color:#c8c0d4!important;
+    font-family:'DM Mono',monospace!important;
+    font-size:9px!important;
+    font-weight:500!important;
+  }
+  #workspace .ws-file-meta{
+    color:#7f778c!important;
+    font-size:8px!important;
+  }
+  #workspace .ws-act{
+    border:1px solid #302936!important;
+    border-radius:5px!important;
+    color:#a99db8!important;
+    font-size:8px!important;
+  }
+  #workspace .ws-act:hover,
+  #workspace .ws-act-primary{
+    border-color:#49395b!important;
+    background:#201927!important;
+    color:#e9ddf8!important;
+  }
+
+  /* All modal surfaces use the same landing cards, not a separate app theme. */
+  #plans-modal,
+  #settings-modal,
+  #usage-modal,
+  #owner-modal,
+  #topup-modal,
+  #welcome-modal,
+  #redeem-modal,
+  #limit-modal{
+    background:rgba(4,4,8,.70)!important;
+    backdrop-filter:blur(10px)!important;
+    -webkit-backdrop-filter:blur(10px)!important;
+  }
+  #plans-modal>div,
+  #settings-modal .set-card,
+  #usage-modal>div,
+  #owner-modal>div,
+  #topup-modal>.topup-card,
+  #welcome-modal .welcome-card,
+  #redeem-modal>.thanks-card,
+  #limit-modal>div{
+    border:1px solid #302936!important;
+    border-radius:12px!important;
+    background:#101014!important;
+    color:var(--lp-ink)!important;
+    box-shadow:0 28px 70px rgba(0,0,0,.46)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  .modal-x,
+  .topup-close,
+  #usage-modal-close{
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
+    min-height:36px!important;
+    border:1px solid #302936!important;
+    border-radius:6px!important;
+    background:transparent!important;
+    color:#968d9f!important;
+    box-shadow:none!important;
+  }
+  .modal-x:hover,
+  .topup-close:hover,
+  #usage-modal-close:hover{
+    background:#201927!important;
+    color:#efe7fb!important;
+    border-color:#49395b!important;
+  }
+
+  /* Settings is treated like a landing card system. */
+  #settings-modal .set-card{
+    max-width:620px!important;
+    padding:22px!important;
+  }
+  #settings-modal .settings-title{
+    color:var(--lp-ink)!important;
+    font-size:18px!important;
+    font-weight:600!important;
+    letter-spacing:-.04em!important;
+  }
+  #settings-modal .settings-subtitle{
+    color:var(--lp-muted)!important;
+    font-size:10px!important;
+    line-height:1.6!important;
+  }
+  #settings-modal .set-tabs{
+    gap:4px!important;
+    padding:4px!important;
+    border:1px solid #25222c!important;
+    border-radius:8px!important;
+    background:#0d0d12!important;
+  }
+  #settings-modal .set-tab{
+    min-height:34px!important;
+    padding:0 9px!important;
+    border:1px solid transparent!important;
+    border-radius:6px!important;
+    background:transparent!important;
+    color:#938b9f!important;
+    font-size:9px!important;
+    font-weight:600!important;
+  }
+  #settings-modal .set-tab.active{
+    border-color:#b5a0f724!important;
+    background:#b5a0f714!important;
+    color:#d2bef7!important;
+  }
+  #settings-modal .set-label{
+    color:#8f789f!important;
+    font-family:'DM Mono',monospace!important;
+    font-size:7px!important;
+    letter-spacing:.1em!important;
+  }
+  #settings-modal .set-group{
+    border:1px solid #29242f!important;
+    border-radius:9px!important;
+    background:#111117!important;
+    overflow:hidden!important;
+  }
+  #settings-modal .set-item{
+    min-height:46px!important;
+    padding:10px 12px!important;
+    border-bottom:1px solid #25222c!important;
+    background:transparent!important;
+    color:#cfc7d7!important;
+  }
+  #settings-modal .set-item:last-child{
+    border-bottom:0!important;
+  }
+  #settings-modal .set-item.set-click:hover{
+    background:#17131f!important;
+  }
+  #settings-modal .set-key{
+    color:#c8c0d4!important;
+    font-size:10px!important;
+    font-weight:550!important;
+  }
+  #settings-modal .set-val,
+  #settings-modal .profile-sub,
+  #settings-modal .set-note{
+    color:#8f8798!important;
+    font-size:9px!important;
+  }
+  #settings-modal .profile-name{
+    color:#e5dcef!important;
+    font-size:12px!important;
+  }
+  #settings-modal .set-avatar,
+  #settings-modal .profile-av{
+    background:#352845!important;
+    color:#d1b8f2!important;
+    border:1px solid #4a385c!important;
+    box-shadow:none!important;
+  }
+  #settings-modal .sk-ico{
+    background:#19151f!important;
+    color:#a990cc!important;
+    border:1px solid #2d2537!important;
+  }
+
+  /* Plan cards now literally follow the landing pricing cards. */
+  #plans-modal>div{
+    max-width:960px!important;
+    padding:28px!important;
+  }
+  #plans-modal #plans-modal-heading{
+    color:var(--lp-ink)!important;
+    font-size:20px!important;
+    font-weight:600!important;
+    letter-spacing:-.04em!important;
+  }
+  #plans-modal .plans-modal-subtitle,
+  #plans-modal .plans-payment-note{
+    color:#93869e!important;
+    font-size:9px!important;
+  }
+  #plans-modal #plans-grid-inner{
+    gap:12px!important;
+  }
+  #plans-modal #plans-grid-inner>.plan-card{
+    padding:22px 18px!important;
+    border:1px solid #302736!important;
+    border-radius:12px!important;
+    background:#101014!important;
+    box-shadow:none!important;
+  }
+  #plans-modal #plans-grid-inner>.plan-card:hover{
+    border-color:#4a3b55!important;
+    background:#121017!important;
+  }
+  #plans-modal #plan-card-plus{
+    border-color:#8e6fbb!important;
+    background:radial-gradient(ellipse at 50% 0,#78509930,transparent 73%),#151019!important;
+  }
+  #plans-modal .plan-head-name{
+    color:#8f789f!important;
+    font-family:'DM Mono',monospace!important;
+    font-size:8px!important;
+    font-weight:500!important;
+  }
+  #plans-modal .plan-head-price{
+    color:var(--lp-ink)!important;
+    font-size:34px!important;
+    font-weight:500!important;
+    letter-spacing:-.06em!important;
+  }
+  #plans-modal .plan-head-per{
+    color:#92829e!important;
+    font-size:9px!important;
+  }
+  #plans-modal .plan-fit-line,
+  #plans-modal .plan-features{
+    color:#a89bad!important;
+    font-size:9px!important;
+    line-height:1.65!important;
+  }
+  #plans-modal .plan-usage-pill{
+    border:1px solid #2d2638!important;
+    border-radius:7px!important;
+    background:#15111d!important;
+  }
+  #plans-modal .plan-card>button{
+    min-height:40px!important;
+    border-radius:7px!important;
+    font-size:10px!important;
+    font-weight:700!important;
+  }
+
+  /* Usage/topup/redeem cards. */
+  #usage-modal>div{
+    max-width:430px!important;
+  }
+  #usage-modal [style*="background:rgba(255,255,255,0.05)"],
+  #usage-modal [style*="background:rgba(255,255,255,0.03)"]{
+    background:#111117!important;
+    border-color:#29242f!important;
+    border-radius:9px!important;
+  }
+  #usage-modal button,
+  #topup-modal button,
+  #redeem-modal button{
+    border-radius:7px!important;
+  }
+  #usage-modal button[onclick*="openTopup"]{
+    background:var(--lp-purple)!important;
+    color:#23172e!important;
+  }
+  #usage-modal #u-fill{
+    background:linear-gradient(90deg,var(--lp-green),var(--lp-purple))!important;
+  }
+  .redeem-input,
+  .own-input,
+  #welcome-modal input{
+    border:1px solid #302936!important;
+    border-radius:7px!important;
+    background:#0d0d12!important;
+    color:#e5d9f5!important;
+  }
+  .redeem-input:focus,
+  .own-input:focus,
+  #welcome-modal input:focus{
+    border-color:#66507f!important;
+    outline:none!important;
+  }
+
+  /* Generic app buttons/menus should inherit landing language. */
+  .ws-toggle,
+  .credits-btn,
+  .side-act,
+  .plan-btn{
+    border-radius:6px!important;
+  }
+  .side-act{
+    color:#9f96ae!important;
+  }
+  .side-act:hover{
+    color:#ede4fc!important;
+    background:#1e1828!important;
+  }
+
+  /* Focus follows landing page. */
+  :where(.stellar-app-shell,#plans-modal,#settings-modal,#usage-modal,#owner-modal,#topup-modal,#welcome-modal,#redeem-modal) a:focus-visible,
+  :where(.stellar-app-shell,#plans-modal,#settings-modal,#usage-modal,#owner-modal,#topup-modal,#welcome-modal,#redeem-modal) button:focus-visible,
+  :where(.stellar-app-shell,#plans-modal,#settings-modal,#usage-modal,#owner-modal,#topup-modal,#welcome-modal,#redeem-modal) input:focus-visible,
+  :where(.stellar-app-shell,#plans-modal,#settings-modal,#usage-modal,#owner-modal,#topup-modal,#welcome-modal,#redeem-modal) textarea:focus-visible{
+    outline:2px solid var(--lp-purple)!important;
+    outline-offset:3px!important;
+  }
+
+  /* Mobile keeps the landing page feel while preserving touch safety. */
+  @media(max-width:1100px){
+    #main-col>.topbar{
+      background:rgba(9,9,14,.94)!important;
+      border-bottom:1px solid rgba(255,255,255,.06)!important;
+      backdrop-filter:blur(18px)!important;
+      -webkit-backdrop-filter:blur(18px)!important;
+    }
+    #mobile-menu-toggle{
+      color:#b9b3c7!important;
+      border-radius:7px!important;
+    }
+    #mobile-menu-toggle:hover{
+      background:#17131f!important;
+    }
+    #sidebar{
+      background:#101015!important;
+      border-right-color:#25222c!important;
+    }
+    #model-menu.composer-model-menu{
+      background:#101016!important;
+    }
+    #settings-modal .set-card{
+      max-width:560px!important;
+    }
+  }
+
+  @media(max-width:640px){
+    body.stellar-empty-home #chat .greet-eyebrow{
+      padding:5px 9px!important;
+      font-size:7px!important;
+    }
+    body.stellar-empty-home #chat .greet-hi{
+      font-size:clamp(29px,8.6vw,36px)!important;
+    }
+    body.stellar-empty-home #chat .welcome-sub{
+      max-width:320px!important;
+      font-size:10px!important;
+    }
+    #main-col>.input-area.glass>.flex{
+      min-height:62px!important;
+      border-radius:9px!important;
+    }
+    #main-col>.input-area.glass #txt{
+      font-size:16px!important;
+    }
+    #main-col>.input-area.glass #txt::placeholder{
+      font-size:13px!important;
+    }
+    #main-col>.input-area.glass #mic-btn,
+    #main-col>.input-area.glass #send-btn{
+      min-width:44px!important;
+      width:44px!important;
+      min-height:44px!important;
+      height:44px!important;
+      border-radius:7px!important;
+    }
+    #main-col>.input-area.glass .composer-mode-dock #composer-model-trigger{
+      min-height:40px!important;
+      height:40px!important;
+      min-width:100px!important;
+      border-radius:6px!important;
+      font-size:9px!important;
+    }
+
+    #plans-modal>div,
+    #settings-modal .set-card,
+    #usage-modal>div,
+    #owner-modal>div,
+    #topup-modal>.topup-card,
+    #welcome-modal .welcome-card,
+    #redeem-modal>.thanks-card,
+    #limit-modal>div{
+      border-radius:14px 14px 0 0!important;
+      border-bottom:0!important;
+    }
+    #settings-modal .set-card{
+      padding:0!important;
+    }
+    #settings-modal .set-head{
+      padding:16px 15px 12px!important;
+      margin:0!important;
+      border-bottom:1px solid #25222c!important;
+    }
+    #settings-modal .set-body{
+      padding:12px 15px max(18px,env(safe-area-inset-bottom))!important;
+    }
+    #settings-modal .set-tabs{
+      overflow-x:auto!important;
+      scrollbar-width:none!important;
+    }
+    #settings-modal .set-tabs::-webkit-scrollbar{
+      display:none!important;
+    }
+    #settings-modal .set-tab{
+      min-width:max-content!important;
+      min-height:40px!important;
     }
   }
 </style>
