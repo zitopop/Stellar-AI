@@ -68,6 +68,6 @@ test('client explicitly separates included allowance from overage credit', () =>
   assert.match(app, /Credit does not raise your hourly limit/);
   assert.match(app, /5p per request after included allowance/);
   assert.ok(app.includes('use_credit: creditsOn()'));
-  assert.ok(app.includes('showLimit(error.retryText || text)'));
-  assert.ok(app.includes('sendMessage({ text: retryText })'));
+  assert.ok(app.includes('showLimit(error.retryText || text, requestImage, requestChatId)'));
+  assert.ok(app.includes('sendMessage({ text: retryText, image: retryImage, chatId: retryChatId })'));
 });

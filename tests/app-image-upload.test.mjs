@@ -45,7 +45,7 @@ test('generation retries one transient empty attempt with a clear checking-again
   assert.match(appHtml, /if \(!isRetry\) \{/);
   assert.match(appHtml, /else if \(!isRetry && !full && isRetryableGenerationFailure\(error\)\)/);
   assert.match(appHtml, /That attempt did not complete — checking again…/);
-  assert.match(appHtml, /window\.setTimeout\(\(\) => sendMessage\(\{ text \}\), 450\)/);
+  assert.match(appHtml, /window\.setTimeout\(\(\) => sendMessage\(\{ text, image: requestImage, chatId: requestChatId \}\), 450\)/);
 });
 
 test('Task 69 exposes live generation status for thinking, completion, stop, and failure outcomes', () => {
@@ -326,7 +326,7 @@ test('Task 98 gives the allowance-limit modal explicit labelled dialog semantics
 test('Task 99 manages focus for the allowance-limit dialog lifecycle', () => {
   assert.match(appHtml, /let limitDialogTrigger = null;\s+function captureLimitDialogTrigger\(\) \{\s+const active = document\.activeElement;\s+limitDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;/);
   assert.match(appHtml, /function openLimitDialog\(\) \{\s+document\.getElementById\('limit-modal'\)\.classList\.remove\('hidden'\);\s+setTimeout\(\(\) => document\.querySelector\('#limit-actions button'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
-  assert.match(appHtml, /function showLimit\(retryText = ''\) \{[\s\S]*?captureLimitDialogTrigger\(\);/);
+  assert.match(appHtml, /function showLimit\(retryText = '', retryImage = null, retryChatId = currentChatId\) \{[\s\S]*?captureLimitDialogTrigger\(\);/);
   assert.match(appHtml, /function closeLimit\(\) \{\s+document\.getElementById\('limit-modal'\)\.classList\.add\('hidden'\);\s+const trigger = limitDialogTrigger;\s+limitDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
 });
 
@@ -427,7 +427,7 @@ test('Task 115 exposes synchronized disclosure semantics for the model menu', ()
 });
 
 test('Task 116 closes only the open model menu with an unhandled Escape key and restores trigger focus', () => {
-  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const menu = document\.getElementById\('model-menu'\);\s+if \(!menu \|\| menu\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeModelMenu\(\);\s+document\.getElementById\('model-btn'\)\?\.focus\(\{ preventScroll: true \}\);\s+\}\);/);
+  assert.match(appHtml, /document\.addEventListener\('keydown', \(event\) => \{\s+if \(event\.key !== 'Escape' \|\| event\.defaultPrevented\) return;\s+const menu = document\.getElementById\('model-menu'\);\s+if \(!menu \|\| menu\.classList\.contains\('hidden'\)\) return;\s+event\.preventDefault\(\);\s+closeModelMenu\(\);\s+\(modelMenuTrigger \|\| document\.getElementById\('model-btn'\)\)\?\.focus\(\{ preventScroll: true \}\);\s+\}\);/);
 });
 
 test('Task 117 keeps Tab navigation inside the open model menu', () => {
@@ -488,7 +488,7 @@ test('Task 148 launches the full voice call while preserving real speech input s
 });
 
 test('Task 149 returns focus to the model chooser after choosing a model', () => {
-  assert.match(appHtml, /function pickModel\(m\) \{\s+const s = Store\.get\(\);\s+closeModelMenu\(\);\s+const modelButton = document\.getElementById\('model-btn'\);\s+modelButton\?\.focus\(\{ preventScroll: true \}\);/);
+  assert.match(appHtml, /function pickModel\(m\) \{\s+const s = Store\.get\(\);\s+closeModelMenu\(\);\s+const modelButton = document\.getElementById\('model-btn'\);\s+\(modelMenuTrigger \|\| modelButton\)\?\.focus\(\{ preventScroll: true \}\);/);
   assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);[\s\S]*?modelButton\.innerHTML = labels\[m\] \|\| labels\.smart;/);
 });
 
