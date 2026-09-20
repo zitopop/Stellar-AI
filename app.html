@@ -9104,7 +9104,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 </style>
 
 </head>
-<body class="text-[#e2e8f0] stellar-empty-home stellar-start-state">
+<body class="text-[#e2e8f0] stellar-chat-workspace stellar-empty-home stellar-start-state">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <g id="i-user"><circle cx="12" cy="8" r="4" fill="currentColor" stroke="none"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" stroke="none"/></g>
 <g id="i-mail"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor" stroke="none" opacity="0.85"/><path d="M3 7l9 6 9-6" fill="none" stroke="var(--bg,#120e1c)" stroke-width="1.8"/></g>
@@ -9264,8 +9264,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         </div>
         <div id="ws-list" class="ws-list"></div>
       </div>
+      <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
       <main id="chat" class="flex-1 overflow-y-auto p-6" aria-label="Chat conversation" aria-busy="false">
-        <div id="generation-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
         <div class="greet-wrap landing-style-home">
           <div class="greet-eyebrow"><span class="greet-eyebrow-dot" aria-hidden="true"></span><span class="greet-eyebrow-label">Stellar AI workspace</span></div>
           <div class="greet-hi" id="greet-hi">What do you want to <span class="greet-hi-accent">build?</span></div>
@@ -9320,6 +9320,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           
           </div>
         </div>
+        <p class="chat-composer-note">Stellar can make mistakes. Review and test your code.</p>
       </div>
     </div>
   </div>
@@ -11050,8 +11051,12 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       setTimeout(() => document.querySelector('#limit-actions button')?.focus({ preventScroll: true }), 0);
     }
     let limitRetryText = '';
-    function showLimit(retryText = '') {
+    let limitRetryImage = null;
+    let limitRetryChatId = null;
+    function showLimit(retryText = '', retryImage = null, retryChatId = currentChatId) {
       limitRetryText = retryText;
+      limitRetryImage = retryImage;
+      limitRetryChatId = retryChatId;
       captureLimitDialogTrigger();
       const plan = Store.get().plan || 'free';
       document.getElementById('limit-sub').textContent = 'Your allowance refreshes in ' + refillTimeStr() + '.';
@@ -11098,11 +11103,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     });
     function enableCreditsAndSend() {
       const retryText = limitRetryText;
+      const retryImage = limitRetryImage;
+      const retryChatId = limitRetryChatId;
       Store.set({ creditsOn: true });
       closeLimit();
       renderMeter();
       refreshSettings();
-      if (retryText) sendMessage({ text: retryText });
+      if (retryText && retryChatId === currentChatId) sendMessage({ text: retryText, image: retryImage, chatId: retryChatId });
     }
     function toggleCreditsOn() { Store.set({ creditsOn: !creditsOn() }); renderUsagePage(); renderMeter(); refreshSettings(); }
     function topupPricePence(p) {
@@ -11279,6 +11286,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const chatEl = document.getElementById('chat');
       document.body.classList.add('stellar-empty-home', 'stellar-start-state');
       if (chatEl) chatEl.innerHTML = greetingMarkup();
+      const upgradeNudge = document.getElementById('free-upgrade-nudge');
+      if (upgradeNudge) upgradeNudge.hidden = true;
       syncHomeGreeting();
       const title = document.getElementById('chat-title');
       if (title) title.textContent = 'Stellar AI';
@@ -12038,21 +12047,27 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         setSendControl('Send', 'Send message');
         setGenerationStatus('Ready to build.');
       }
-      const chips = document.getElementById('suggestion-chips');
-      if (chips) chips.style.display = 'none';
-      const gw = document.querySelector('.greet-wrap');
-      if (gw) gw.style.display = 'none';
       if (currentAbort || sendLock) return;
-      sendLock = true;
       const input = document.getElementById('txt');
       const isRetry = Boolean(retryContext?.text);
+      if (isRetry && retryContext.chatId && retryContext.chatId !== currentChatId) return;
       let text = isRetry ? retryContext.text : input.value.trim();
-      if (!text || !currentChatId) { sendLock = false; return; }
+      if (!text || !currentChatId) return;
+      sendLock = true;
+      // A new draft is not in storage until its first valid message. Read the
+      // saved snapshot only after creating it, so the first send has a chat.
+      if (!isRetry) commitPendingChat();
       const s = Store.get();
       const chat = s.chats.find(c => c.id === currentChatId);
+      if (!chat) {
+        sendLock = false;
+        setGenerationStatus('Could not open this chat. Start a new build and try again.');
+        return;
+      }
+      const requestImage = isRetry ? (retryContext.image || null) : (uploadedImage || null);
+      const requestChatId = currentChatId;
       if (!isRetry) {
         // api/chat.js owns allowance enforcement. The browser only renders the latest server usage snapshot.
-        commitPendingChat();
         chat.messages.push({ role: 'user', content: text, t: Date.now() });
         if (chat.name === 'New chat') {
           chat.name = text.substring(0, 28) + (text.length > 28 ? '…' : '');
@@ -12232,7 +12247,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           body: JSON.stringify({
             model: ['researcher', 'reviewer', 'security', 'tester'].includes(model) ? 'smart' : model,
             role: ['researcher', 'reviewer', 'security', 'tester'].includes(model) ? model : 'implementer',
-            image: uploadedImage || null,
+            image: requestImage,
             max_tokens: isGuest() ? GUEST_MAX_TOKENS
               : (({ free: 2000, starter: 3500, plus: 5000, lite: 5000, pro: 8000, owner: 8000 })[s.plan || 'free'] || 2000),
             search_context: searchContext || '',
@@ -12325,11 +12340,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           loadChat(currentChatId);
           setGenerationStatus('Generation stopped.');
         } else if (error?.allowanceLimit) {
-          showLimit(error.retryText || text);
+          showLimit(error.retryText || text, requestImage, requestChatId);
           setGenerationStatus('Included hourly allowance used.');
         } else if (!isRetry && !full && isRetryableGenerationFailure(error)) {
           setGenerationStatus('That attempt did not complete — checking again…');
-          window.setTimeout(() => sendMessage({ text }), 450);
+          window.setTimeout(() => sendMessage({ text, image: requestImage, chatId: requestChatId }), 450);
         } else {
           const msg = (error && error.message && !/failed to fetch|load failed|networkerror/i.test(error.message))
             ? error.message : 'Connection error — try again.';
@@ -12375,18 +12390,47 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       document.querySelectorAll('[data-model-choice]').forEach((choice) => {
         choice.setAttribute('aria-checked', String(choice.dataset.modelChoice === cur));
       });
+      const composerModel = document.getElementById('composer-model-trigger');
+      const names = { fabie:'Spark', smart:'Star', comet:'Comet', ultra:'Nova', researcher:'Research', reviewer:'Review', security:'Security', tester:'Test' };
+      if (composerModel) {
+        composerModel.textContent = '✦ ' + (names[cur] || 'Star') + ' ▾';
+        composerModel.setAttribute('aria-label', 'Choose AI mode: ' + (names[cur] || 'Star'));
+      }
     }
 
+    let modelMenuTrigger = null;
+    function positionModelMenu() {
+      const menu = document.getElementById('model-menu');
+      if (!menu || menu.classList.contains('hidden') || !modelMenuTrigger) return;
+      const rect = modelMenuTrigger.getBoundingClientRect();
+      const width = Math.min(320, window.innerWidth - 24);
+      const below = window.innerHeight - rect.bottom - 20;
+      const above = rect.top - 20;
+      const opensBelow = below >= 300 || below >= above;
+      const maxHeight = Math.max(100, Math.min(460, opensBelow ? below : above));
+      menu.style.setProperty('position', 'fixed', 'important');
+      menu.style.setProperty('width', width + 'px', 'important');
+      menu.style.setProperty('max-height', maxHeight + 'px', 'important');
+      menu.style.setProperty('left', Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)) + 'px', 'important');
+      menu.style.setProperty('right', 'auto', 'important');
+      menu.style.setProperty('bottom', 'auto', 'important');
+      menu.style.setProperty('transform', 'none', 'important');
+      const height = Math.min(menu.scrollHeight, maxHeight);
+      menu.style.setProperty('top', (opensBelow ? rect.bottom + 8 : Math.max(12, rect.top - height - 8)) + 'px', 'important');
+    }
+    window.addEventListener('resize', positionModelMenu);
     function toggleModelMenu(e) {
       e.stopPropagation();
       refreshModelMenu();
       const menu = document.getElementById('model-menu');
       const willOpen = menu.classList.contains('hidden');
       const fromComposer = e.currentTarget?.id === 'composer-model-trigger';
+      if (willOpen) modelMenuTrigger = e.currentTarget;
       menu.classList.toggle('hidden', !willOpen);
       menu.classList.toggle('composer-model-menu', willOpen && fromComposer);
       document.getElementById('model-btn').setAttribute('aria-expanded', String(willOpen));
       document.getElementById('composer-model-trigger')?.setAttribute('aria-expanded', String(willOpen && fromComposer));
+      if (willOpen) positionModelMenu();
       if (willOpen && e.detail === 0) setTimeout(focusModelMenuFirstChoice, 0);
     }
 
@@ -12402,7 +12446,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const s = Store.get();
       closeModelMenu();
       const modelButton = document.getElementById('model-btn');
-      modelButton?.focus({ preventScroll: true });
+      (modelMenuTrigger || modelButton)?.focus({ preventScroll: true });
       const paid = ['starter', 'plus', 'pro'].includes(s.plan) || isOwner();
       if (m === 'ultra' && !(s.plan === 'pro' || isOwner())) { openPlans(); return; }
       if (['researcher', 'reviewer', 'security', 'tester'].includes(m) && !(s.plan === 'plus' || s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
@@ -12439,7 +12483,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (!menu || menu.classList.contains('hidden')) return;
       event.preventDefault();
       closeModelMenu();
-      document.getElementById('model-btn')?.focus({ preventScroll: true });
+      (modelMenuTrigger || document.getElementById('model-btn'))?.focus({ preventScroll: true });
     });
     function trapModelMenuFocus(event) {
       if (event.key !== 'Tab') return;
@@ -13562,6 +13606,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
 
     window.addEventListener('load', init);
+    window.addEventListener('load', refreshModelMenu);
 
     /* SCROLL ANYWHERE: let vertical drags on the topbar/input padding scroll the chat too */
     (function () {
@@ -17238,992 +17283,6 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
   }
 })();
 </script>
-<style id="stellar-home-layout-v2">
-  /* Final home layout layer. Kept at the end of the document so older experimental CSS cannot override it. */
-  html body.stellar-start-state.stellar-empty-home {
-    --home-sidebar: 248px;
-    --home-header: 60px;
-    --home-card: min(780px, calc(100vw - 36px));
-    background:#090a0f!important;
-  }
-
-  html body.stellar-start-state.stellar-empty-home::before{
-    background:
-      radial-gradient(720px 440px at 52% 34%, rgba(var(--accent-rgb),.10), transparent 68%),
-      radial-gradient(500px 300px at 80% 12%, rgba(91,213,181,.035), transparent 72%),
-      radial-gradient(1px 1px at 18% 22%, rgba(255,255,255,.34), transparent 1.5px),
-      radial-gradient(1px 1px at 72% 18%, rgba(218,210,255,.30), transparent 1.5px),
-      radial-gradient(1px 1px at 84% 68%, rgba(255,255,255,.22), transparent 1.5px),
-      #090a0f!important;
-    background-size:auto,auto,240px 240px,310px 310px,390px 390px,auto!important;
-    opacity:1!important;
-  }
-
-  /* Desktop app frame */
-  @media (min-width:1101px){
-    html body.stellar-start-state.stellar-empty-home .stellar-global-header{
-      display:flex!important;
-      position:fixed!important;
-      top:0!important;
-      left:var(--home-sidebar)!important;
-      right:0!important;
-      width:auto!important;
-      height:var(--home-header)!important;
-      padding:0 22px!important;
-      align-items:center!important;
-      gap:14px!important;
-      background:rgba(9,10,15,.74)!important;
-      border-bottom:1px solid rgba(255,255,255,.045)!important;
-      -webkit-backdrop-filter:blur(18px) saturate(1.1)!important;
-      backdrop-filter:blur(18px) saturate(1.1)!important;
-      box-shadow:none!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-top-spacer{display:none!important}
-    html body.stellar-start-state.stellar-empty-home .stellar-top-actions{
-      display:flex!important;
-      align-items:center!important;
-      gap:8px!important;
-      margin-left:auto!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-top-actions a{
-      display:inline-flex!important;
-      align-items:center!important;
-      min-height:40px!important;
-      padding:0 10px!important;
-      color:rgba(222,223,230,.68)!important;
-      font-size:12px!important;
-      font-weight:650!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-top-actions a:hover{color:#fff!important}
-    html body.stellar-start-state.stellar-empty-home .stellar-upgrade{
-      min-height:40px!important;
-      padding:0 15px!important;
-      border:1px solid rgba(var(--accent-rgb),.36)!important;
-      border-radius:12px!important;
-      background:rgba(var(--accent-rgb),.12)!important;
-      color:#efeaff!important;
-      box-shadow:none!important;
-      font-size:12px!important;
-      font-weight:800!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-upgrade:hover{
-      background:rgba(var(--accent-rgb),.19)!important;
-      border-color:rgba(var(--accent-rgb),.55)!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-app-shell{
-      padding-top:var(--home-header)!important;
-      height:100dvh!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #sidebar{
-      display:flex!important;
-      position:fixed!important;
-      inset:0 auto 0 0!important;
-      width:var(--home-sidebar)!important;
-      height:100dvh!important;
-      padding:16px 12px 14px!important;
-      transform:none!important;
-      overflow:hidden!important;
-      background:linear-gradient(180deg,rgba(14,15,21,.98),rgba(10,11,16,.99))!important;
-      border-right:1px solid rgba(255,255,255,.055)!important;
-      box-shadow:inset -1px 0 rgba(255,255,255,.018)!important;
-      -webkit-backdrop-filter:none!important;
-      backdrop-filter:none!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col{
-      width:auto!important;
-      height:calc(100dvh - var(--home-header))!important;
-      min-height:0!important;
-      margin-left:var(--home-sidebar)!important;
-      overflow:hidden!important;
-      background:transparent!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.topbar{display:none!important}
-  }
-
-  /* Sidebar hierarchy */
-  html body.stellar-start-state.stellar-empty-home #sidebar::before{display:none!important}
-  html body.stellar-start-state.stellar-empty-home #sidebar .sidebar-brand-row{
-    display:flex!important;
-    align-items:center!important;
-    justify-content:space-between!important;
-    min-height:46px!important;
-    margin:0 4px 12px!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .brand-title{
-    display:flex!important;
-    align-items:center!important;
-    gap:8px!important;
-    color:#f7f6fb!important;
-    -webkit-text-fill-color:initial!important;
-    background:none!important;
-    font-size:16px!important;
-    font-weight:820!important;
-    letter-spacing:-.035em!important;
-    opacity:1!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .brand-grad{
-    color:#f7f6fb!important;
-    -webkit-text-fill-color:initial!important;
-    background:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .brand-star{
-    color:#b5a2ff!important;
-    font-size:22px!important;
-    filter:drop-shadow(0 0 9px rgba(var(--accent-rgb),.28))!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .side-new{
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-start!important;
-    gap:9px!important;
-    width:100%!important;
-    min-height:42px!important;
-    margin:0 0 8px!important;
-    padding:0 12px!important;
-    border:1px solid rgba(255,255,255,.075)!important;
-    border-radius:11px!important;
-    background:rgba(255,255,255,.045)!important;
-    color:#f0eff4!important;
-    box-shadow:none!important;
-    font-size:12px!important;
-    font-weight:720!important;
-    letter-spacing:0!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .side-new:hover{
-    transform:none!important;
-    border-color:rgba(var(--accent-rgb),.24)!important;
-    background:rgba(var(--accent-rgb),.08)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar #search{
-    display:block!important;
-    width:100%!important;
-    height:36px!important;
-    min-height:36px!important;
-    margin:0 0 10px!important;
-    padding:0 11px!important;
-    border:1px solid rgba(255,255,255,.055)!important;
-    border-radius:10px!important;
-    background:rgba(255,255,255,.024)!important;
-    color:#ecebf1!important;
-    font-size:11.5px!important;
-    font-weight:580!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar #search::placeholder{
-    color:rgba(180,183,194,.42)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .stellar-sidebar-nav{
-    display:flex!important;
-    flex-direction:column!important;
-    gap:2px!important;
-    margin:0!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .stellar-sidebar-nav button{
-    display:flex!important;
-    align-items:center!important;
-    gap:10px!important;
-    width:100%!important;
-    min-height:40px!important;
-    padding:0 10px!important;
-    border:1px solid transparent!important;
-    border-radius:10px!important;
-    background:transparent!important;
-    color:rgba(207,209,219,.76)!important;
-    font-size:11.5px!important;
-    font-weight:650!important;
-    text-align:left!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .stellar-sidebar-nav button:hover{
-    background:rgba(255,255,255,.038)!important;
-    color:#fff!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .stellar-sidebar-nav .nav-ico{
-    display:grid!important;
-    width:20px!important;
-    height:20px!important;
-    place-items:center!important;
-    color:rgba(196,190,226,.68)!important;
-    flex:0 0 20px!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar #chats-heading{
-    display:block!important;
-    margin:14px 6px 6px!important;
-    color:rgba(151,154,168,.50)!important;
-    font-size:8.5px!important;
-    font-weight:800!important;
-    letter-spacing:.13em!important;
-    text-transform:uppercase!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar #chats-list{
-    display:block!important;
-    flex:1 1 auto!important;
-    min-height:0!important;
-    overflow-y:auto!important;
-    padding:0 1px 8px!important;
-    scrollbar-width:thin!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar #account-box{
-    margin:8px 0 0!important;
-    padding:9px 3px 0!important;
-    border-top:1px solid rgba(255,255,255,.055)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .acct-signin-btn{
-    min-height:40px!important;
-    width:100%!important;
-    padding:0 11px!important;
-    border:1px solid rgba(255,255,255,.065)!important;
-    border-radius:10px!important;
-    background:transparent!important;
-    color:rgba(224,225,232,.72)!important;
-    font-size:10.5px!important;
-    font-weight:700!important;
-    letter-spacing:.04em!important;
-    text-transform:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .acct-signin-btn:hover{
-    background:rgba(255,255,255,.035)!important;
-    color:#fff!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .sidebar-utility-links{
-    display:flex!important;
-    justify-content:center!important;
-    gap:12px!important;
-    margin:7px 0 0!important;
-    padding:0!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .sidebar-utility-links a{
-    color:rgba(151,154,166,.42)!important;
-    font-size:8.5px!important;
-    font-weight:620!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .side-foot{display:none!important}
-
-  /* Home welcome */
-  html body.stellar-start-state.stellar-empty-home #chat{
-    position:absolute!important;
-    top:18dvh!important;
-    left:0!important;
-    right:0!important;
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    margin:0!important;
-    padding:0 18px!important;
-    overflow:visible!important;
-    background:transparent!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat>.greet-wrap{
-    display:flex!important;
-    flex-direction:column!important;
-    align-items:center!important;
-    justify-content:flex-start!important;
-    width:min(100%,680px)!important;
-    max-width:680px!important;
-    min-height:0!important;
-    margin:0 auto!important;
-    padding:0!important;
-    gap:0!important;
-    text-align:center!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .greet-eyebrow{
-    display:inline-flex!important;
-    align-items:center!important;
-    gap:7px!important;
-    margin:0 0 12px!important;
-    color:rgba(186,176,236,.66)!important;
-    font-size:8.5px!important;
-    font-weight:800!important;
-    letter-spacing:.16em!important;
-    text-transform:uppercase!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .greet-eyebrow-dot{
-    display:inline-block!important;
-    width:5px!important;
-    height:5px!important;
-    flex:0 0 5px!important;
-    border-radius:999px!important;
-    background:#ae9cff!important;
-    box-shadow:0 0 0 3px rgba(var(--accent-rgb),.07),0 0 13px rgba(var(--accent-rgb),.26)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .greet-hi{
-    max-width:680px!important;
-    margin:0 auto!important;
-    padding:0!important;
-    color:#f6f5f9!important;
-    -webkit-text-fill-color:#f6f5f9!important;
-    background:none!important;
-    font-size:clamp(36px,4vw,50px)!important;
-    font-weight:760!important;
-    line-height:1.03!important;
-    letter-spacing:-.052em!important;
-    text-wrap:balance!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .greet-hi::after{display:none!important;content:none!important}
-  html body.stellar-start-state.stellar-empty-home #chat .greet-hi-accent{
-    display:inline!important;
-    color:#b9a8ff!important;
-    -webkit-text-fill-color:#b9a8ff!important;
-    background:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .welcome-sub{
-    display:block!important;
-    max-width:520px!important;
-    margin:11px auto 0!important;
-    color:rgba(192,194,205,.64)!important;
-    font-size:12.5px!important;
-    font-weight:540!important;
-    line-height:1.5!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .welcome-sub::after{display:none!important;content:none!important}
-  html body.stellar-start-state.stellar-empty-home #chat .home-disclaimer{
-    display:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat #suggestion-chips,
-  html body.stellar-start-state.stellar-empty-home #chat .welcome-starters-label,
-  html body.stellar-start-state.stellar-empty-home #chat .home-guides-link,
-  html body.stellar-start-state.stellar-empty-home #chat .greet-brand{
-    display:none!important;
-  }
-
-  /* Main composer */
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass{
-    position:fixed!important;
-    top:50dvh!important;
-    left:50%!important;
-    right:auto!important;
-    bottom:auto!important;
-    width:var(--home-card)!important;
-    margin:0!important;
-    padding:0!important;
-    transform:translate(-50%,-50%)!important;
-    border:0!important;
-    background:transparent!important;
-    -webkit-backdrop-filter:none!important;
-    backdrop-filter:none!important;
-    z-index:35!important;
-    overflow:visible!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass>.flex{
-    position:relative!important;
-    display:flex!important;
-    align-items:center!important;
-    width:100%!important;
-    max-width:none!important;
-    min-height:94px!important;
-    margin:0!important;
-    padding:12px 12px 38px 15px!important;
-    gap:8px!important;
-    border:1px solid rgba(255,255,255,.095)!important;
-    border-radius:24px!important;
-    background:linear-gradient(145deg,rgba(26,28,36,.96),rgba(15,17,23,.975))!important;
-    box-shadow:
-      0 24px 70px rgba(0,0,0,.34),
-      0 0 0 1px rgba(var(--accent-rgb),.025),
-      inset 0 1px rgba(255,255,255,.045)!important;
-    -webkit-backdrop-filter:blur(20px) saturate(1.12)!important;
-    backdrop-filter:blur(20px) saturate(1.12)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #txt{
-    flex:1 1 auto!important;
-    min-width:0!important;
-    min-height:48px!important;
-    max-height:150px!important;
-    margin:0!important;
-    padding:10px 7px!important;
-    border:0!important;
-    border-radius:13px!important;
-    outline:0!important;
-    background:transparent!important;
-    box-shadow:none!important;
-    color:#f6f5f9!important;
-    font-size:15px!important;
-    font-weight:540!important;
-    line-height:1.5!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #txt::placeholder{
-    color:rgba(186,189,201,.43)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #mic-btn{
-    position:static!important;
-    display:grid!important;
-    place-items:center!important;
-    flex:0 0 42px!important;
-    width:42px!important;
-    min-width:42px!important;
-    height:42px!important;
-    min-height:42px!important;
-    margin:0!important;
-    border:1px solid rgba(255,255,255,.075)!important;
-    border-radius:14px!important;
-    background:rgba(255,255,255,.028)!important;
-    color:rgba(232,232,239,.72)!important;
-    box-shadow:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #mic-btn:hover{
-    border-color:rgba(var(--accent-rgb),.25)!important;
-    background:rgba(var(--accent-rgb),.07)!important;
-    color:#fff!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn{
-    position:static!important;
-    display:inline-flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    flex:0 0 auto!important;
-    min-width:70px!important;
-    width:auto!important;
-    height:42px!important;
-    min-height:42px!important;
-    margin:0!important;
-    padding:0 16px!important;
-    border:1px solid rgba(var(--accent-rgb),.50)!important;
-    border-radius:14px!important;
-    background:linear-gradient(135deg,rgba(var(--accent-rgb),.98),rgba(var(--accent-rgb),.78))!important;
-    color:#fff!important;
-    box-shadow:0 8px 22px rgba(var(--accent-rgb),.18)!important;
-    font-size:12.5px!important;
-    font-weight:850!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn:hover{
-    transform:translateY(-1px)!important;
-    filter:brightness(1.08)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass .composer-foot{
-    position:absolute!important;
-    left:18px!important;
-    right:18px!important;
-    bottom:7px!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-start!important;
-    width:auto!important;
-    max-width:none!important;
-    min-height:25px!important;
-    margin:0!important;
-    gap:5px!important;
-    overflow:visible!important;
-  }
-  html body.stellar-start-state.stellar-empty-home .composer-foot .keyboard-hint,
-  html body.stellar-start-state.stellar-empty-home .composer-foot .credits-btn,
-  html body.stellar-start-state.stellar-empty-home .composer-foot #composer-plans-btn{
-    display:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home .composer-foot .foot-right{
-    display:flex!important;
-    align-items:center!important;
-    gap:4px!important;
-    margin-left:0!important;
-  }
-  html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle{
-    display:inline-flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    flex:0 0 auto!important;
-    height:27px!important;
-    min-height:27px!important;
-    padding:0 8px!important;
-    border:1px solid transparent!important;
-    border-radius:9px!important;
-    background:transparent!important;
-    color:rgba(173,176,188,.56)!important;
-    font-size:10px!important;
-    font-weight:690!important;
-    box-shadow:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle:hover{
-    border-color:rgba(255,255,255,.055)!important;
-    background:rgba(255,255,255,.035)!important;
-    color:#f1f0f5!important;
-  }
-
-  /* Tablet and phone: one clean topbar, off-canvas sidebar, same centered composer. */
-  @media (max-width:1100px){
-    html body.stellar-start-state.stellar-empty-home{
-      --home-card:min(760px,calc(100vw - 24px));
-      --home-header:56px;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-global-header{display:none!important}
-    html body.stellar-start-state.stellar-empty-home .stellar-app-shell{
-      padding-top:0!important;
-      height:100dvh!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col{
-      width:100%!important;
-      height:100dvh!important;
-      margin-left:0!important;
-      overflow:hidden!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.topbar{
-      display:flex!important;
-      position:relative!important;
-      z-index:40!important;
-      flex:0 0 var(--home-header)!important;
-      width:100%!important;
-      height:var(--home-header)!important;
-      min-height:var(--home-header)!important;
-      padding:0 12px!important;
-      border-bottom:1px solid rgba(255,255,255,.045)!important;
-      background:rgba(9,10,15,.76)!important;
-      -webkit-backdrop-filter:blur(16px)!important;
-      backdrop-filter:blur(16px)!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #mobile-menu-toggle{
-      display:inline-flex!important;
-      width:44px!important;
-      min-width:44px!important;
-      height:44px!important;
-      min-height:44px!important;
-      border-radius:12px!important;
-      color:rgba(237,236,243,.76)!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat-title{
-      color:rgba(241,240,246,.78)!important;
-      opacity:1!important;
-      font-size:13px!important;
-      font-weight:760!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #sidebar{
-      display:flex!important;
-      position:fixed!important;
-      top:0!important;
-      left:0!important;
-      bottom:0!important;
-      z-index:200!important;
-      width:min(86vw,286px)!important;
-      max-width:286px!important;
-      height:100dvh!important;
-      padding:14px 12px calc(14px + env(safe-area-inset-bottom))!important;
-      transform:translateX(-103%)!important;
-      transition:transform .22s ease!important;
-      overflow:hidden!important;
-      background:#0d0e13!important;
-      border-right:1px solid rgba(255,255,255,.07)!important;
-      box-shadow:16px 0 42px rgba(0,0,0,.30)!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #sidebar.open{transform:translateX(0)!important}
-    html body.stellar-start-state.stellar-empty-home #sidebar .sidebar-close{
-      display:inline-flex!important;
-      align-items:center!important;
-      justify-content:center!important;
-      width:44px!important;
-      min-width:44px!important;
-      height:44px!important;
-      min-height:44px!important;
-      border:1px solid rgba(255,255,255,.07)!important;
-      border-radius:12px!important;
-      background:rgba(255,255,255,.035)!important;
-      color:#e8e7ed!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat{
-      top:14dvh!important;
-      padding-inline:16px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .greet-hi{
-      font-size:clamp(33px,6vw,45px)!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass{
-      top:50dvh!important;
-      width:var(--home-card)!important;
-    }
-  }
-
-  @media (max-width:640px){
-    html body.stellar-start-state.stellar-empty-home{
-      --home-card:calc(100vw - 16px);
-    }
-    html body.stellar-start-state.stellar-empty-home #chat{
-      top:12.5dvh!important;
-      padding-inline:12px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .greet-eyebrow{
-      margin-bottom:10px!important;
-      font-size:8px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .greet-hi{
-      max-width:350px!important;
-      font-size:clamp(29px,8.8vw,38px)!important;
-      line-height:1.04!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .welcome-sub{
-      max-width:330px!important;
-      margin-top:9px!important;
-      font-size:11.5px!important;
-      line-height:1.45!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass>.flex{
-      min-height:86px!important;
-      padding:10px 8px 35px 12px!important;
-      gap:6px!important;
-      border-radius:21px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #txt{
-      min-height:44px!important;
-      padding:9px 3px!important;
-      font-size:16px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #mic-btn{
-      flex-basis:40px!important;
-      width:40px!important;
-      min-width:40px!important;
-      height:40px!important;
-      min-height:40px!important;
-      border-radius:13px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn{
-      min-width:58px!important;
-      height:40px!important;
-      min-height:40px!important;
-      padding:0 11px!important;
-      border-radius:13px!important;
-      font-size:11.5px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass .composer-foot{
-      left:12px!important;
-      right:12px!important;
-      bottom:5px!important;
-      overflow-x:auto!important;
-      scrollbar-width:none!important;
-      -webkit-overflow-scrolling:touch!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass .composer-foot::-webkit-scrollbar{display:none!important}
-    html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle{
-      min-width:44px!important;
-      height:28px!important;
-      min-height:28px!important;
-      padding:0 7px!important;
-      font-size:9.5px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .composer-foot #ws-btn{
-      font-size:0!important;
-      width:34px!important;
-      min-width:34px!important;
-      padding:0!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .composer-foot #ws-btn .ic{
-      width:14px!important;
-      height:14px!important;
-    }
-  }
-
-  @media (max-height:700px) and (min-width:641px){
-    html body.stellar-start-state.stellar-empty-home #chat{top:12dvh!important}
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass{top:52dvh!important}
-  }
-
-  /* home-polish-2026-09-19-v3 */
-  /* Cleaner ChatGPT-like home: less chrome, stronger hierarchy, and compact touch-safe controls. */
-  html body.stellar-start-state.stellar-empty-home{
-    --home-sidebar:252px;
-    --home-card:min(760px,calc(100vw - 36px));
-  }
-
-  html body.stellar-start-state.stellar-empty-home #main-col{
-    background:
-      radial-gradient(640px 360px at 50% 37%,rgba(var(--accent-rgb),.075),transparent 70%),
-      #090a0f!important;
-  }
-
-  html body.stellar-start-state.stellar-empty-home #chat{
-    top:22dvh!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat>.greet-wrap{
-    width:min(100%,640px)!important;
-    max-width:640px!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .greet-eyebrow{
-    margin-bottom:10px!important;
-    color:rgba(190,181,236,.58)!important;
-    font-size:8px!important;
-    letter-spacing:.14em!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .greet-hi{
-    max-width:620px!important;
-    font-size:clamp(34px,3.7vw,46px)!important;
-    font-weight:720!important;
-    line-height:1.04!important;
-    letter-spacing:-.047em!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .greet-hi-accent{
-    color:#b7a6ff!important;
-    -webkit-text-fill-color:#b7a6ff!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #chat .welcome-sub{
-    max-width:500px!important;
-    margin-top:10px!important;
-    color:rgba(194,196,207,.60)!important;
-    font-size:12px!important;
-    line-height:1.5!important;
-  }
-
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass{
-    top:50dvh!important;
-    width:var(--home-card)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass>.flex{
-    min-height:78px!important;
-    padding:10px 10px 32px 14px!important;
-    gap:7px!important;
-    border-color:rgba(255,255,255,.10)!important;
-    border-radius:22px!important;
-    background:linear-gradient(145deg,rgba(28,30,38,.965),rgba(17,19,25,.985))!important;
-    box-shadow:
-      0 20px 58px rgba(0,0,0,.30),
-      0 0 0 1px rgba(var(--accent-rgb),.025),
-      inset 0 1px rgba(255,255,255,.05)!important;
-    transition:border-color .18s ease,box-shadow .18s ease,background .18s ease!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass>.flex:hover{
-    border-color:rgba(255,255,255,.14)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass>.flex:focus-within{
-    border-color:rgba(var(--accent-rgb),.50)!important;
-    box-shadow:
-      0 0 0 3px rgba(var(--accent-rgb),.075),
-      0 22px 62px rgba(0,0,0,.31),
-      inset 0 1px rgba(255,255,255,.05)!important;
-  }
-
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #txt{
-    min-height:44px!important;
-    max-height:154px!important;
-    padding:10px 6px!important;
-    font-size:15px!important;
-    font-weight:520!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #txt::placeholder{
-    color:rgba(190,192,202,.46)!important;
-  }
-
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #mic-btn,
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn{
-    flex:0 0 44px!important;
-    width:44px!important;
-    min-width:44px!important;
-    height:44px!important;
-    min-height:44px!important;
-    padding:0!important;
-    border-radius:50%!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #mic-btn{
-    border-color:rgba(255,255,255,.07)!important;
-    background:rgba(255,255,255,.03)!important;
-    color:rgba(235,235,241,.72)!important;
-    font-size:16px!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn{
-    border-color:rgba(var(--accent-rgb),.55)!important;
-    background:linear-gradient(135deg,rgba(var(--accent-rgb),1),rgba(var(--accent-rgb),.78))!important;
-    color:#fff!important;
-    box-shadow:0 8px 20px rgba(var(--accent-rgb),.18)!important;
-    font-size:0!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn::after{
-    content:"↑"!important;
-    display:block!important;
-    color:#fff!important;
-    font-size:20px!important;
-    font-weight:850!important;
-    line-height:1!important;
-    transform:translateY(-1px)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn:hover{
-    transform:translateY(-1px) scale(1.025)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #mic-btn:focus-visible,
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn:focus-visible,
-  html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle:focus-visible,
-  html body.stellar-start-state.stellar-empty-home #sidebar button:focus-visible,
-  html body.stellar-start-state.stellar-empty-home #sidebar a:focus-visible{
-    outline:2px solid rgba(var(--accent-rgb),.78)!important;
-    outline-offset:2px!important;
-  }
-
-  html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass .composer-foot{
-    left:14px!important;
-    right:14px!important;
-    bottom:4px!important;
-    min-height:27px!important;
-    gap:4px!important;
-  }
-  html body.stellar-start-state.stellar-empty-home .composer-foot .foot-right{
-    gap:2px!important;
-  }
-  html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle{
-    min-height:30px!important;
-    height:30px!important;
-    padding:0 9px!important;
-    color:rgba(177,180,191,.62)!important;
-    font-size:10px!important;
-  }
-  html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle:hover{
-    background:rgba(255,255,255,.045)!important;
-    color:#f5f4f8!important;
-  }
-
-  html body.stellar-start-state.stellar-empty-home #sidebar .side-new{
-    min-height:44px!important;
-    border-color:transparent!important;
-    background:transparent!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .side-new:hover{
-    border-color:rgba(255,255,255,.055)!important;
-    background:rgba(255,255,255,.04)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar #search{
-    height:38px!important;
-    min-height:38px!important;
-    border-color:transparent!important;
-    background:rgba(255,255,255,.022)!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar #search:focus{
-    border-color:rgba(var(--accent-rgb),.22)!important;
-    background:rgba(255,255,255,.035)!important;
-    outline:none!important;
-  }
-  html body.stellar-start-state.stellar-empty-home #sidebar .sidebar-item{
-    min-height:40px!important;
-    border-radius:9px!important;
-  }
-
-  @media (max-width:1100px){
-    html body.stellar-start-state.stellar-empty-home{
-      --home-card:min(740px,calc(100vw - 24px));
-    }
-    html body.stellar-start-state.stellar-empty-home #chat{
-      top:21dvh!important;
-    }
-  }
-
-  @media (max-width:640px){
-    html body.stellar-start-state.stellar-empty-home{
-      --home-card:calc(100vw - 16px);
-    }
-    html body.stellar-start-state.stellar-empty-home #chat{
-      top:19dvh!important;
-      padding-inline:14px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .greet-eyebrow{
-      margin-bottom:8px!important;
-      font-size:7.5px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .greet-hi{
-      max-width:330px!important;
-      font-size:clamp(28px,8.2vw,36px)!important;
-      line-height:1.04!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .welcome-sub{
-      max-width:315px!important;
-      margin-top:8px!important;
-      font-size:11px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass{
-      top:50dvh!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass>.flex{
-      min-height:80px!important;
-      padding:9px 8px 33px 11px!important;
-      gap:5px!important;
-      border-radius:20px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #txt{
-      min-height:44px!important;
-      padding:9px 4px!important;
-      font-size:16px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #mic-btn,
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn{
-      flex-basis:44px!important;
-      width:44px!important;
-      min-width:44px!important;
-      height:44px!important;
-      min-height:44px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass .composer-foot{
-      left:9px!important;
-      right:9px!important;
-      bottom:3px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle{
-      min-height:30px!important;
-      height:30px!important;
-      padding:0 7px!important;
-      font-size:9.5px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .composer-foot .image-attach-label{
-      display:none!important;
-    }
-  }
-
-  @media (max-width:390px){
-    html body.stellar-start-state.stellar-empty-home #chat{
-      top:17.5dvh!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #chat .welcome-sub{
-      max-width:285px!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .composer-foot .ws-toggle{
-      padding-inline:6px!important;
-    }
-  }
-
-  @media (max-height:700px){
-    html body.stellar-start-state.stellar-empty-home #chat{
-      top:15dvh!important;
-    }
-  }
-
-  @media (prefers-reduced-motion:reduce){
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass>.flex,
-    html body.stellar-start-state.stellar-empty-home #main-col>.input-area.glass #send-btn,
-    html body.stellar-start-state.stellar-empty-home #sidebar{
-      transition:none!important;
-    }
-  }
-
-</style>
-
-<style id="stellar-home-mobile-regression-fix">
-  /* Keep the shared model menu renderable on phone/tablet while hiding desktop header chrome. */
-  @media (max-width:1100px){
-    html body.stellar-start-state.stellar-empty-home .stellar-global-header{
-      display:block!important;
-      position:fixed!important;
-      inset:0 auto auto 0!important;
-      width:0!important;
-      height:0!important;
-      min-height:0!important;
-      padding:0!important;
-      border:0!important;
-      background:transparent!important;
-      overflow:visible!important;
-      pointer-events:none!important;
-      z-index:239!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-global-header .stellar-top-spacer,
-    html body.stellar-start-state.stellar-empty-home .stellar-global-header .stellar-top-actions,
-    html body.stellar-start-state.stellar-empty-home .stellar-global-header #model-btn{
-      display:none!important;
-    }
-    html body.stellar-start-state.stellar-empty-home .stellar-global-header .topbar-model-picker{
-      display:block!important;
-      position:static!important;
-      width:0!important;
-      height:0!important;
-      pointer-events:none!important;
-    }
-    html body.stellar-start-state.stellar-empty-home #model-menu.composer-model-menu{
-      visibility:visible!important;
-      pointer-events:auto!important;
-    }
-
-    /* Preserve the iPhone/iPad top safe area in the replacement mobile topbar. */
-    html body.stellar-start-state.stellar-empty-home #main-col>.topbar{
-      flex-basis:calc(var(--home-header) + env(safe-area-inset-top))!important;
-      height:calc(var(--home-header) + env(safe-area-inset-top))!important;
-      min-height:calc(var(--home-header) + env(safe-area-inset-top))!important;
-      padding:env(safe-area-inset-top) 12px 0!important;
-      box-sizing:border-box!important;
-    }
-  }
-</style>
+<link rel="stylesheet" href="/lib/assets/chat-home.css?v=20260920">
 </body>
 </html>

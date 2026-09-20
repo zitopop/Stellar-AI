@@ -61,11 +61,12 @@ test('premium home stays minimal and keeps the composer at the true viewport cen
 });
 
 
-test('home layout v2 is the final cascade layer and preserves centered composition', () => {
-  assert.match(appHtml, /<style id="stellar-home-layout-v2">[\s\S]*#main-col>\.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
-  assert.match(appHtml, /#chat \.welcome-sub\{[\s\S]*display:block!important;/);
-  assert.match(appHtml, /#sidebar \.side-new\{[\s\S]*display:flex!important;/);
-  assert.match(appHtml, /#sidebar #chats-list\{[\s\S]*display:block!important;/);
-  assert.match(appHtml, /\.composer-foot #composer-plans-btn\{[\s\S]*display:none!important;/);
-  assert.ok(appHtml.lastIndexOf('stellar-home-layout-v2') > appHtml.lastIndexOf('home-calm-performance-final'));
+test('workspace layout replaces the old fixed home layer and respects reduced motion', async () => {
+  const css = await readFile(new URL('../lib/assets/chat-home.css', import.meta.url), 'utf8');
+  assert.match(appHtml, /href="\/lib\/assets\/chat-home\.css\?v=/);
+  assert.doesNotMatch(appHtml, /<style id="stellar-home-layout-v2">/);
+  assert.ok(appHtml.lastIndexOf('chat-home.css') > appHtml.lastIndexOf('home-calm-performance-final'));
+  assert.match(css, /grid-template-rows:minmax\(32px,1fr\) auto auto/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  assert.match(css, /env\(safe-area-inset-top\)/);
 });
