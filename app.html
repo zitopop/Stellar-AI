@@ -9107,6 +9107,101 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 </style>
 
   <link rel="stylesheet" href="/stellar-app-landing-ui.css?v=1">
+
+<style id="stellar-centered-composer-mode-v1">
+  /* One visible model/mode control: centred on the top edge of the chat composer. */
+  .stellar-global-header .topbar-model-picker > #model-btn{
+    display:none!important;
+  }
+  .input-area.glass{
+    position:sticky!important;
+    bottom:0!important;
+    overflow:visible!important;
+  }
+  .composer-mode-dock{
+    position:absolute!important;
+    left:50%!important;
+    top:0!important;
+    z-index:230!important;
+    transform:translate(-50%,-52%)!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:max-content!important;
+    max-width:calc(100% - 32px)!important;
+    pointer-events:none!important;
+  }
+  .composer-mode-dock #composer-model-trigger{
+    pointer-events:auto!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:7px!important;
+    min-width:118px!important;
+    min-height:44px!important;
+    height:44px!important;
+    padding:0 14px!important;
+    border:1px solid rgba(167,139,250,.30)!important;
+    border-radius:999px!important;
+    background:rgba(18,20,29,.96)!important;
+    color:#f2efff!important;
+    font-size:12px!important;
+    font-weight:800!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    box-shadow:0 10px 30px rgba(0,0,0,.28),0 0 0 1px rgba(124,58,237,.07)!important;
+    backdrop-filter:blur(16px)!important;
+    -webkit-backdrop-filter:blur(16px)!important;
+  }
+  .composer-mode-dock #composer-model-trigger:hover,
+  .composer-mode-dock #composer-model-trigger[aria-expanded="true"]{
+    color:#fff!important;
+    border-color:rgba(196,181,253,.48)!important;
+    background:rgba(38,28,65,.98)!important;
+  }
+  .composer-mode-caret{
+    opacity:.72!important;
+    font-size:10px!important;
+  }
+  #model-menu.composer-model-menu{
+    left:50%!important;
+    right:auto!important;
+    top:auto!important;
+    bottom:104px!important;
+    transform:translateX(-50%)!important;
+    width:min(320px,calc(100vw - 32px))!important;
+    max-height:min(62dvh,520px)!important;
+    z-index:260!important;
+  }
+  body.light .composer-mode-dock #composer-model-trigger{
+    border-color:rgba(91,33,182,.20)!important;
+    background:rgba(255,255,255,.98)!important;
+    color:#3f286b!important;
+    box-shadow:0 10px 28px rgba(30,20,60,.10)!important;
+  }
+  @media(max-width:767px){
+    .composer-mode-dock{
+      max-width:calc(100% - 24px)!important;
+      transform:translate(-50%,-50%)!important;
+    }
+    .composer-mode-dock #composer-model-trigger{
+      min-width:108px!important;
+      min-height:44px!important;
+      height:44px!important;
+      padding:0 13px!important;
+      font-size:11.5px!important;
+    }
+    #model-menu.composer-model-menu{
+      left:10px!important;
+      right:10px!important;
+      bottom:calc(108px + env(safe-area-inset-bottom))!important;
+      width:auto!important;
+      transform:none!important;
+      max-height:58dvh!important;
+    }
+  }
+</style>
+
 </head>
 <body class="text-[#e2e8f0] stellar-empty-home stellar-start-state">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -9279,6 +9374,9 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
       </main>
       <div class="input-area p-6 glass border-t border-white/10" role="form" aria-label="Message composer">
+        <div class="composer-mode-dock" aria-label="AI mode selector">
+          <button type="button" id="composer-model-trigger" onclick="toggleModelMenu(event)" class="ws-toggle composer-model-trigger" aria-label="Choose AI mode. Current: Star" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span aria-hidden="true">✦</span><span class="composer-mode-name">Star</span><span class="composer-mode-caret" aria-hidden="true">▾</span></button>
+        </div>
         <div id="free-upgrade-nudge" hidden role="status" aria-live="polite" style="align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:0 auto 10px;padding:11px 13px;border:1px solid rgba(143,232,207,.30);border-radius:12px;background:linear-gradient(100deg,rgba(82,225,181,.12),rgba(255,255,255,.04));color:#f5f3f7;font-size:12px;line-height:1.4;box-shadow:inset 0 1px rgba(255,255,255,.04);">
           <span><strong>You just built this.</strong> Unlock 3× more usage and longer scripts with Starter for £8/mo.</span>
           <span style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><button type="button" onclick="showPlansAfterFreeUpgradeNudge()" style="min-height:36px;padding:0 11px;border:1px solid #bdf5e2;border-radius:9px;background:#bdf5e2;color:#06251d;font:inherit;font-weight:800;cursor:pointer;">Unlock Starter</button><button type="button" onclick="dismissFreeUpgradeNudge()" aria-label="Dismiss Starter offer" title="Dismiss Starter offer" style="width:36px;height:36px;border:1px solid rgba(143,232,207,.26);border-radius:9px;background:transparent;color:#f5f3f7;font-size:18px;cursor:pointer;">×</button></span>
@@ -9317,7 +9415,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           <button type="button" onclick="openUsage()" id="credits-btn" class="ws-toggle credits-btn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> <span id="credits-val">—</span></button>
           <span id="keyboard-hint" class="keyboard-hint">Enter to send · Shift+Enter for new line</span>
           <div class="foot-right">
-          <button type="button" id="composer-model-trigger" onclick="toggleModelMenu(event)" class="ws-toggle composer-model-trigger" aria-label="Choose AI mode" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span aria-hidden="true">✦</span> Modes</button>
           <button type="button" id="composer-plans-btn" onclick="openPlans()" class="ws-toggle composer-plans-btn" aria-label="View plans"><span aria-hidden="true">◇</span> Plans</button>
           <button id="image-upload-btn" type="button" onclick="document.getElementById('image-upload-input').click()" class="ws-toggle image-attach-btn" aria-label="Attach an image" title="Attach a PNG, JPEG, GIF, or WebP image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg><span class="image-attach-label">Attach</span></button>
           <button type="button" onclick="toggleWorkspace()" id="ws-btn" aria-expanded="false" aria-controls="workspace" class="ws-toggle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg> Files</button>
@@ -12363,6 +12460,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const pro = s.plan === 'pro' || isOwner();
       const cur = (s.model === 'ultra' && !pro) ? 'smart' : (s.model || 'smart');
       const modelButton = document.getElementById('model-btn');
+      const composerModelButton = document.getElementById('composer-model-trigger');
+      const composerModelNames = { fabie: 'Spark', smart: 'Star', comet: 'Comet', ultra: 'Nova', researcher: 'Research AI', reviewer: 'Review AI', security: 'Security AI', tester: 'Test AI' };
+      if (composerModelButton) {
+        const currentName = composerModelNames[cur] || 'Star';
+        composerModelButton.innerHTML = '<span aria-hidden="true">✦</span><span class="composer-mode-name">' + currentName + '</span><span class="composer-mode-caret" aria-hidden="true">▾</span>';
+        composerModelButton.setAttribute('aria-label', 'Choose AI mode. Current: ' + currentName);
+      }
       // Hide Nova button for non-Pro users
       const novaBtn2 = document.getElementById('nova-model-btn');
       if (novaBtn2) novaBtn2.style.display = pro ? '' : 'none';
@@ -12406,7 +12510,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const s = Store.get();
       closeModelMenu();
       const modelButton = document.getElementById('model-btn');
-      modelButton?.focus({ preventScroll: true });
+      (document.getElementById('composer-model-trigger') || modelButton)?.focus({ preventScroll: true });
       const paid = ['starter', 'plus', 'pro'].includes(s.plan) || isOwner();
       if (m === 'ultra' && !(s.plan === 'pro' || isOwner())) { openPlans(); return; }
       if (['researcher', 'reviewer', 'security', 'tester'].includes(m) && !(s.plan === 'plus' || s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
