@@ -21440,5 +21440,86 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
   }
 </style>
 
+
+<style id="stellar-home-axis-sync-v1">
+  /* One shared horizontal axis for welcome copy + mode + composer. */
+  body.stellar-empty-home #main-col,
+  body.stellar-start-state #main-col{
+    --home-content-width:760px!important;
+  }
+
+  body.stellar-empty-home #chat>.greet-wrap,
+  body.stellar-empty-home #chat>.landing-style-home,
+  body.stellar-start-state #chat>.greet-wrap,
+  body.stellar-start-state #chat>.landing-style-home{
+    left:0!important;
+    right:0!important;
+    width:min(100%,var(--home-content-width))!important;
+    max-width:var(--home-content-width)!important;
+    margin:0 auto!important;
+    transform:translateY(-50%)!important;
+    text-align:center!important;
+  }
+
+  body.stellar-empty-home #chat .greet-eyebrow,
+  body.stellar-start-state #chat .greet-eyebrow{
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.stellar-empty-home #chat .greet-hi,
+  body.stellar-start-state #chat .greet-hi{
+    width:100%!important;
+    max-width:var(--home-content-width)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    text-align:center!important;
+  }
+
+  body.stellar-empty-home #chat .welcome-sub,
+  body.stellar-start-state #chat .welcome-sub{
+    margin-left:auto!important;
+    margin-right:auto!important;
+    text-align:center!important;
+  }
+
+  body.stellar-empty-home #main-col>.input-area.glass>.flex,
+  body.stellar-start-state #main-col>.input-area.glass>.flex{
+    width:min(100%,var(--home-content-width))!important;
+    max-width:var(--home-content-width)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.stellar-empty-home #main-col>.input-area.glass .composer-mode-dock,
+  body.stellar-start-state #main-col>.input-area.glass .composer-mode-dock{
+    left:50%!important;
+    right:auto!important;
+    transform:translate(-50%,-100%)!important;
+  }
+
+  @media(max-width:1100px){
+    body.stellar-empty-home #main-col,
+    body.stellar-start-state #main-col{
+      --home-content-width:720px!important;
+    }
+  }
+
+  @media(max-width:640px){
+    body.stellar-empty-home #main-col,
+    body.stellar-start-state #main-col{
+      --home-content-width:100%!important;
+    }
+
+    body.stellar-empty-home #chat>.greet-wrap,
+    body.stellar-empty-home #chat>.landing-style-home,
+    body.stellar-start-state #chat>.greet-wrap,
+    body.stellar-start-state #chat>.landing-style-home{
+      width:min(360px,calc(100% - 24px))!important;
+      max-width:360px!important;
+    }
+  }
+</style>
+
 </body>
 </html>
