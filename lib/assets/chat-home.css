@@ -1,4 +1,16 @@
 /* Interaction fixes layered over the current chat-only home design. */
+html:root body.stellar-chat-workspace #generation-status {
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
 html:root body.stellar-chat-workspace #model-menu {
   overflow-y:auto!important;
   z-index:1500!important;
@@ -24,4 +36,9 @@ html:root body.stellar-chat-workspace:is(.txt-sm,.txt-lg) #chat .message :is(.ms
 @media(max-width:1024px) {
   html:root body.stellar-chat-workspace.txt-sm #chat .message { font-size:13px!important; }
   html:root body.stellar-chat-workspace.txt-lg #chat .message { font-size:17px!important; }
+}
+@media(max-width:767px) {
+  html:root body.stellar-chat-workspace:not(.stellar-empty-home) #main-col>#chat {
+    padding-top:calc(64px + env(safe-area-inset-top))!important;
+  }
 }
