@@ -11378,6 +11378,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       Store.set({ currentChat: id });
       renderChatList();
       const chatEl = document.getElementById('chat');
+      document.getElementById('workspace')?.classList.add('hidden');
+      document.body.classList.remove('workspace-open');
       document.body.classList.add('stellar-empty-home', 'stellar-start-state');
       if (chatEl) chatEl.innerHTML = greetingMarkup();
       syncHomeGreeting();
@@ -11463,6 +11465,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (!chat) return;
       document.getElementById('chat-title').textContent = chat.name;
       const chatEl = document.getElementById('chat');
+      document.getElementById('workspace')?.classList.add('hidden');
+      document.body.classList.remove('workspace-open');
       const isEmptyHome = chat.messages.length === 0;
       const isIntroResponse = chat.messages.length === 1 && chat.messages[0]?.role !== 'user';
       document.body.classList.toggle('stellar-empty-home', isEmptyHome);
@@ -11986,8 +11990,9 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const ws = document.getElementById('workspace');
       const opening = ws.classList.contains('hidden');
       ws.classList.toggle('hidden');
+      document.body.classList.toggle('workspace-open', opening);
       document.getElementById('ws-btn')?.setAttribute('aria-expanded', String(opening));
-      if (!ws.classList.contains('hidden')) renderWorkspace();
+      if (opening) renderWorkspace();
     }
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
@@ -12603,7 +12608,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       utilityDialogTrigger = null;
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
-    function openPlans() { closeOtherDialogs('plans'); captureUtilityDialogTrigger(); refreshPlans(); const modal = document.getElementById('plans-modal'); modal.classList.remove('hidden'); const sheet = modal.firstElementChild; if (sheet) sheet.scrollTop = 0; requestAnimationFrame(() => { if (sheet) sheet.scrollTop = 0; }); focusUtilityDialogClose('plans-modal-close');
+    function openPlans() { closeOtherDialogs('plans'); captureUtilityDialogTrigger(); refreshPlans(); document.body.classList.add('plans-open'); const modal = document.getElementById('plans-modal'); modal.classList.remove('hidden'); const sheet = modal.firstElementChild; if (sheet) sheet.scrollTop = 0; requestAnimationFrame(() => { if (sheet) sheet.scrollTop = 0; }); focusUtilityDialogClose('plans-modal-close');
       setTimeout(initPlansScroll, 100); }
     function initPlansScroll() {
       const grid = document.getElementById('plans-grid-inner');
@@ -12647,6 +12652,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     function closePlans() {
       const m = document.getElementById('plans-modal');
       if (m) m.classList.add('hidden');
+      document.body.classList.remove('plans-open');
       restoreUtilityDialogFocus();
     }
 
@@ -12898,7 +12904,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     function openUsage() {
       closeOtherDialogs('usage');
       document.body.classList.add('usage-open');
-      if (!Store.get().user && !isOwner()) { openWelcome(); return; }
+      if (!Store.get().user && !isOwner()) { document.body.classList.remove('usage-open'); openWelcome(); return; }
       captureUtilityDialogTrigger(); renderUsagePage(); document.getElementById('usage-modal').classList.remove('hidden'); focusUtilityDialogClose('usage-modal-close');
     }
     function closeUsage() {
@@ -21922,6 +21928,91 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
       width:100%!important;
       max-width:none!important;
       border-radius:13px!important;
+    }
+  }
+</style>
+
+
+<style id="stellar-home-only-chat-v1">
+  /*
+    Home/New Build owns the chat.
+    Other app sections get their own clean main-area presentation.
+  */
+  body.workspace-open #main-col>#chat,
+  body.workspace-open #main-col>.input-area,
+  body.settings-open #main-col>#chat,
+  body.settings-open #main-col>.input-area,
+  body.plans-open #main-col>#chat,
+  body.plans-open #main-col>.input-area,
+  body.usage-open #main-col>#chat,
+  body.usage-open #main-col>.input-area{
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  /* Projects becomes its own page instead of a narrow rail over the chat. */
+  body.workspace-open #workspace{
+    display:flex!important;
+    position:absolute!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    max-width:none!important;
+    height:100%!important;
+    z-index:150!important;
+    background:#09090e!important;
+    border:0!important;
+    box-shadow:none!important;
+  }
+
+  body.workspace-open #workspace .ws-head{
+    min-height:58px!important;
+    padding:14px max(20px,calc((100% - 900px)/2))!important;
+    border-bottom:1px solid #25222c!important;
+    background:#0d0d12!important;
+  }
+
+  body.workspace-open #workspace .ws-title{
+    color:#f5f3fa!important;
+    font-size:14px!important;
+    font-weight:650!important;
+  }
+
+  body.workspace-open #workspace .ws-subtitle{
+    margin-top:3px!important;
+    color:#8f8798!important;
+    font-size:9px!important;
+  }
+
+  body.workspace-open #workspace .ws-list{
+    width:min(100%,900px)!important;
+    margin:0 auto!important;
+    padding:22px!important;
+    gap:8px!important;
+  }
+
+  body.workspace-open #workspace .ws-file{
+    padding:12px 14px!important;
+    border:1px solid #29242f!important;
+    border-radius:8px!important;
+    background:#111117!important;
+  }
+
+  /* Utility dialogs stand on a clean background instead of showing chat beneath. */
+  body.settings-open #main-col,
+  body.plans-open #main-col,
+  body.usage-open #main-col{
+    background:#09090e!important;
+  }
+
+  @media(max-width:640px){
+    body.workspace-open #workspace .ws-head{
+      padding:12px 14px!important;
+    }
+    body.workspace-open #workspace .ws-list{
+      padding:14px 10px max(16px,env(safe-area-inset-bottom))!important;
     }
   }
 </style>
