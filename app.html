@@ -14834,6 +14834,53 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       setGenerationStatus('Your home-page prompt is ready to send.');
     }
 
+
+    function openAgentMenuFromJarvis() {
+      refreshModelMenu();
+      const menu = document.getElementById('model-menu');
+      const trigger = document.getElementById('composer-model-trigger') || document.getElementById('model-btn');
+      if (!menu || !trigger) return;
+      modelMenuTrigger = trigger;
+      menu.classList.remove('hidden');
+      menu.classList.add('composer-model-menu');
+      document.getElementById('model-btn')?.setAttribute('aria-expanded','true');
+      document.getElementById('composer-model-trigger')?.setAttribute('aria-expanded','true');
+      positionModelMenu();
+      setTimeout(() => {
+        const specialist = menu.querySelector('[onclick*="researcher"],[onclick*="reviewer"],[onclick*="security"],[onclick*="tester"]');
+        specialist?.focus({preventScroll:true});
+      }, 40);
+      showStellarNotice('Choose a specialist AI: Research, Review, Security or Test.','success');
+    }
+
+    function applyJarvisIntent() {
+      const params = new URLSearchParams(location.search);
+      const intent = (params.get('jarvis') || '').toLowerCase();
+      if (!intent) return;
+      params.delete('jarvis');
+      const remaining = params.toString();
+      history.replaceState(null,'',location.pathname + (remaining ? '?' + remaining : '') + location.hash);
+
+      if (intent === 'chat') {
+        requestAnimationFrame(() => document.getElementById('txt')?.focus({preventScroll:true}));
+        return;
+      }
+      if (intent === 'voice') {
+        setTimeout(() => openVoiceCall(), 120);
+        return;
+      }
+      if (intent === 'projects') {
+        setTimeout(() => {
+          const ws = document.getElementById('workspace');
+          if (ws?.classList.contains('hidden')) toggleWorkspace();
+        }, 80);
+        return;
+      }
+      if (intent === 'agents') {
+        setTimeout(openAgentMenuFromJarvis, 120);
+      }
+    }
+
     function init() {
       // Handle Discord OAuth callback
       const urlParams = new URLSearchParams(window.location.search);
@@ -14945,6 +14992,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       maybeShowWelcome();
       applyLandingStarterPrompt();
       applyLandingHomePrompt();
+      applyJarvisIntent();
       requestAnimationFrame(ensureHomeGreetingVisible);
       setTimeout(ensureHomeGreetingVisible, 120);
       setTimeout(ensureHomeGreetingVisible, 600);
