@@ -1100,3 +1100,59 @@ html body:not(.light) .input-area>.flex:focus-within{
     outline-offset:2px!important;
   }
 }
+
+
+/* Collapsed rail leak + fresh composer repair v5 */
+@media(min-width:1101px){
+  /* The compact rail must never expose full-sidebar text/content. */
+  #sidebar.collapsed{
+    overflow:hidden!important;
+  }
+  #sidebar.collapsed .brand-title,
+  #sidebar.collapsed #search,
+  #sidebar.collapsed #chats-heading,
+  #sidebar.collapsed #chats-list,
+  #sidebar.collapsed #account-box,
+  #sidebar.collapsed .sidebar-utility-links,
+  #sidebar.collapsed .side-foot{
+    display:none!important;
+  }
+  #sidebar.collapsed .side-new{
+    font-size:0!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+  }
+  #sidebar.collapsed .side-new>span[aria-hidden="true"]{
+    display:grid!important;
+    place-items:center!important;
+    font-size:22px!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav button{
+    overflow:hidden!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav button>span:last-child{
+    display:none!important;
+  }
+
+  /* Fresh-home composer remains centered in the viewport when the rail collapses. */
+  body.stellar-empty-home.stellar-start-state #sidebar.collapsed ~ #main-col>.input-area.glass,
+  body.stellar-empty-home.stellar-start-state #sidebar.collapsed ~ #main-col .input-area.glass{
+    position:fixed!important;
+    top:50dvh!important;
+    left:50%!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:min(820px,calc(100vw - 32px))!important;
+    max-width:820px!important;
+    padding:0!important;
+    transform:translate(-50%,-50%)!important;
+    background:transparent!important;
+    z-index:60!important;
+  }
+  body.stellar-empty-home.stellar-start-state #sidebar.collapsed ~ #main-col .input-area>.flex,
+  body.stellar-empty-home.stellar-start-state #sidebar.collapsed ~ #main-col .composer-foot{
+    width:min(100%,768px)!important;
+    max-width:768px!important;
+    margin-inline:auto!important;
+  }
+}
