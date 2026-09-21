@@ -3122,3 +3122,84 @@ body.light.stellar-empty-home.stellar-start-state .input-area > .flex{
   background:rgba(250,249,252,.985)!important;
   box-shadow:0 18px 45px rgba(65,45,78,.09)!important;
 }
+
+
+/* Model picker visibility hardening — 2026-09-21 */
+/* Keep the public picker visible regardless of its legacy absolute-positioning parent. */
+#model-menu.stellar-model-picker-v2:not(.hidden){
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:132px!important;
+  transform:translateX(-50%)!important;
+  z-index:99999!important;
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  isolation:isolate!important;
+}
+
+/* Public models must never inherit an accidental hidden/display state. */
+#model-menu.stellar-model-picker-v2:not(.hidden) > [data-model-choice="fabie"],
+#model-menu.stellar-model-picker-v2:not(.hidden) > [data-model-choice="smart"],
+#model-menu.stellar-model-picker-v2:not(.hidden) > [data-model-choice="comet"],
+#model-menu.stellar-model-picker-v2:not(.hidden) > [data-model-choice="ultra"]{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+/* Keep private owner models private while preserving all four public choices. */
+#model-menu.stellar-model-picker-v2 #provider-models.hidden,
+#model-menu.stellar-model-picker-v2 #provider-models[aria-hidden="true"]{
+  display:none!important;
+}
+
+/* Make the opener more obviously interactive. */
+#composer-model-trigger.stellar-model-trigger-v2,
+.stellar-model-proxy.stellar-model-trigger-v2{
+  cursor:pointer!important;
+}
+#composer-model-trigger.stellar-model-trigger-v2::after,
+.stellar-model-proxy.stellar-model-trigger-v2::after{
+  content:""!important;
+  position:absolute!important;
+  inset:-4px!important;
+  border-radius:16px!important;
+  pointer-events:none!important;
+}
+
+/* At conversation bottom the picker sits just above the composer instead of behind it. */
+body:not(.stellar-empty-home) #model-menu.stellar-model-picker-v2:not(.hidden){
+  bottom:128px!important;
+}
+
+/* Fresh home is vertically centered, so put the menu immediately above that card. */
+body.stellar-empty-home.stellar-start-state #model-menu.stellar-model-picker-v2:not(.hidden){
+  bottom:auto!important;
+  top:calc(51.5% - 88px)!important;
+  transform:translate(-50%,-100%)!important;
+}
+
+@media (max-width:767px){
+  #model-menu.stellar-model-picker-v2:not(.hidden),
+  body:not(.stellar-empty-home) #model-menu.stellar-model-picker-v2:not(.hidden){
+    left:9px!important;
+    right:9px!important;
+    width:auto!important;
+    bottom:118px!important;
+    top:auto!important;
+    transform:none!important;
+    max-height:min(60dvh,520px)!important;
+  }
+  body.stellar-empty-home.stellar-start-state #model-menu.stellar-model-picker-v2:not(.hidden){
+    left:9px!important;
+    right:9px!important;
+    width:auto!important;
+    top:calc(52% - 76px)!important;
+    bottom:auto!important;
+    transform:translateY(-100%)!important;
+  }
+}
