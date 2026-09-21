@@ -11401,10 +11401,46 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
     function commitPendingChat() {
       if (!pendingChat) return;
-      chats.unshift({ id: currentChatId, name: 'New chat', messages: [] });
+      chats = Store.get().chats || [];
+      if (!chats.some(chat => chat.id === currentChatId)) {
+        chats.unshift({ id: currentChatId, name: 'New chat', messages: [] });
+      }
       Store.set({ chats, currentChat: currentChatId });
       pendingChat = false;
       renderChatList();
+    }
+    function restoreCurrentChat() {
+      repairDuplicateChats();
+      const s = Store.get();
+      const savedChat = (s.chats || []).find(chat => chat.id === s.currentChat);
+      if (savedChat) loadChat(savedChat.id);
+      else newChat();
+    }
+    function repairDuplicateChats() {
+      const saved = Store.get().chats || [];
+      const byId = new Map();
+      let changed = false;
+      for (const chat of saved) {
+        if (!byId.has(chat.id)) {
+          byId.set(chat.id, { ...chat, messages: [...chat.messages] });
+          continue;
+        }
+        changed = true;
+        const existing = byId.get(chat.id);
+        const seen = new Set();
+        existing.messages = [...existing.messages, ...chat.messages].filter(message => {
+          // Only remove exact copies with the same recorded time. Repeated user text is valid.
+          if (!Number.isFinite(message.t)) return true;
+          const key = JSON.stringify([message.role, message.content, message.t]);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).sort((a, b) => Number.isFinite(a.t) && Number.isFinite(b.t) ? a.t - b.t : 0);
+      }
+      if (changed) {
+        chats = [...byId.values()];
+        Store.set({ chats });
+      }
     }
 
     function timeGreeting() {
@@ -11466,11 +11502,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       setTimeout(jump, 250);
     }
     function loadChat(id) {
-      setTimeout(renderWorkspace, 0);
-      currentChatId = id;
       const s = Store.get();
       const chat = s.chats.find(c => c.id === id);
       if (!chat) return;
+      currentChatId = id;
+      pendingChat = false;
+      Store.set({ currentChat: id });
+      setTimeout(renderWorkspace, 0);
       document.getElementById('chat-title').textContent = chat.name;
       const chatEl = document.getElementById('chat');
       document.getElementById('workspace')?.classList.add('hidden');
@@ -13604,9 +13642,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         }
       })();
       renderChatList();
-      // /app is the home workspace: always open a fresh draft so the composer starts centered.
-      // Saved conversations remain in Recent builds and open normally when the user selects one.
-      newChat();
+      // Keep the active conversation across reloads. New build explicitly opens a fresh centered draft.
+      restoreCurrentChat();
       setTextSize(Store.get().textSize || 'md');
       applyAccentTheme(Store.get().accentTheme || 'green', false);
       bindAccentThemeControl();
