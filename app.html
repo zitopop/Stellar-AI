@@ -10473,10 +10473,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       <input id="search" type="search" inputmode="search" readonly onpointerdown="prepareBuildSearch(this)" onfocus="prepareBuildSearch(this)" oninput="markBuildSearchUserInput(this); renderChatList()" placeholder="Search builds" aria-label="Search builds" class="w-full mb-3 bg-white/5 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none focus:border-white/30 text-white placeholder-[#64748b]" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="stellar_build_filter" data-form-type="other" data-1p-ignore="true" data-lpignore="true">
 
       <div class="stellar-sidebar-nav" aria-label="Workspace">
-        <button type="button" onclick="toggleWorkspace()" title="Projects" aria-label="Projects"><span class="nav-ico">□</span><span>Projects</span></button>
-        <button type="button" onclick="document.getElementById('image-upload-input')?.click()" title="Files" aria-label="Files"><span class="nav-ico">▧</span><span>Files</span></button>
-        <button type="button" onclick="location.href='/jarvis'" title="Jarvis Vision" aria-label="Jarvis Vision"><span class="nav-ico">◉</span><span>Jarvis Vision</span></button>
-        <button type="button" onclick="openSettings()" title="Settings" aria-label="Settings"><span class="nav-ico">⚙</span><span>Settings</span></button>
+        <button type="button" onclick="toggleWorkspace()" title="Projects" aria-label="Projects"><span class="nav-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg></span><span>Projects</span></button>
+        <button type="button" onclick="document.getElementById('image-upload-input')?.click()" title="Files" aria-label="Files"><span class="nav-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><span>Files</span></button>
+        <button type="button" onclick="location.href='/jarvis'" title="Jarvis Vision" aria-label="Jarvis Vision"><span class="nav-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span><span>Jarvis Vision</span></button>
+        <button type="button" onclick="openSettings()" title="Settings" aria-label="Settings"><span class="nav-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"/></svg></span><span>Settings</span></button>
       </div>
       <div id="chats-heading" class="chats-label" role="heading" aria-level="2">Recent builds</div>
       <div class="flex-1 overflow-y-auto" id="chats-list" role="region" aria-labelledby="chats-heading"></div>
@@ -11557,19 +11557,19 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       sorted.forEach(chat => {
         if (q && !(chat.name || '').toLowerCase().includes(q)) return;
         const div = document.createElement('div');
-        div.className = `sidebar-item px-4 py-3 rounded-2xl text-sm cursor-pointer mb-2 ${chat.id === currentChatId ? 'active bg-white/20 border-white/30' : ''}`;
+        div.className = `sidebar-item ${chat.id === currentChatId ? 'active' : ''} ${chat.pinned ? 'is-pinned' : ''}`;
         const isCurrent = chat.id === currentChatId;
         const currentAttribute = isCurrent ? ' aria-current="page"' : '';
         const chatLabel = chat.name || 'Untitled chat';
-        const lastMsg = chat.messages?.length > 0 ? chat.messages[chat.messages.length-1].content.substring(0, 40) : 'No messages';
+        const lastMsg = chat.messages?.length > 0 ? chat.messages[chat.messages.length-1].content.substring(0, 56) : 'No messages yet';
         div.innerHTML = `
-          <div class="flex justify-between items-center gap-2">
-            <button type="button" class="chat-open flex-1 min-w-0" onclick="loadChat('${chat.id}')" aria-label="Open chat: ${escapeHtml(chatLabel)}"${currentAttribute}>
-              <div class="font-bold truncate">${chat.pinned ? '📌 ' : ''}${escapeHtml(chat.name)}</div>
-              <div class="text-xs text-[#64748b] truncate mt-0.5">${escapeHtml(lastMsg)}</div>
+          <div class="sidebar-chat-row">
+            <button type="button" class="chat-open" onclick="loadChat('${chat.id}')" aria-label="Open chat: ${escapeHtml(chatLabel)}"${currentAttribute}>
+              <div class="chat-row-title"><span class="chat-row-name">${escapeHtml(chatLabel)}</span>${chat.pinned ? '<span class="chat-pin-badge">Pinned</span>' : ''}</div>
+              <div class="chat-row-preview">${escapeHtml(lastMsg)}</div>
             </button>
-            <div class="chat-actions flex">
-              <button type="button" onclick="event.stopPropagation(); openChatMenu(event, '${chat.id}')" title="Pin, rename or delete" data-tooltip="Pin · Rename · Delete" aria-label="Chat actions: pin, rename or delete" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯</button>
+            <div class="chat-actions">
+              <button type="button" onclick="event.stopPropagation(); openChatMenu(event, '${chat.id}')" title="Chat options" data-tooltip="Chat options" aria-label="Chat options for ${escapeHtml(chatLabel)}" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯</button>
             </div>
           </div>`;
         container.appendChild(div);
@@ -11588,9 +11588,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const chat = (Store.get().chats || []).find(c => c.id === id);
       const pinned = chat && chat.pinned;
       menu.innerHTML =
-        '<button type="button" role="menuitem" onclick="closeChatMenu(); togglePin(\'' + id + '\')">📌 ' + (pinned ? 'Unpin' : 'Pin') + '</button>' +
-        '<button type="button" role="menuitem" onclick="closeChatMenu(); renameChat(\'' + id + '\')">✏️ Rename</button>' +
-        '<button type="button" role="menuitem" class="cm-danger" onclick="closeChatMenu(); deleteChat(\'' + id + '\')">🗑️ Delete</button>';
+        '<button type="button" role="menuitem" onclick="closeChatMenu(); togglePin(\'' + id + '\')"><span aria-hidden="true">📌</span>' + (pinned ? 'Unpin chat' : 'Pin chat') + '</button>' +
+        '<button type="button" role="menuitem" onclick="closeChatMenu(); renameChat(\'' + id + '\')"><span aria-hidden="true">✏️</span>Rename</button>' +
+        (pinned
+          ? '<button type="button" role="menuitem" class="cm-disabled" disabled aria-disabled="true" title="Unpin this chat before deleting it"><span aria-hidden="true">🔒</span>Unpin to delete</button>'
+          : '<button type="button" role="menuitem" class="cm-danger" onclick="closeChatMenu(); deleteChat(\'' + id + '\')"><span aria-hidden="true">🗑️</span>Delete</button>');
       menu.classList.remove('hidden');
       menu.setAttribute('aria-hidden', 'false');
       const r = e.currentTarget.getBoundingClientRect();
@@ -11687,8 +11689,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
 
     function deleteChat(id) {
-      if (!confirm('Delete this chat?')) return;
       const s = Store.get();
+      const chat = (s.chats || []).find(c => c.id === id);
+      if (chat?.pinned) {
+        showStellarNotice('Unpin this chat before deleting it.', 'info');
+        return;
+      }
+      if (!confirm('Delete this chat?')) return;
       const remaining = s.chats.filter(c => c.id !== id);
       Store.set({ chats: remaining });
       chats = remaining;
@@ -25317,6 +25324,699 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
       min-height:50px!important;
       touch-action:manipulation!important;
       -webkit-tap-highlight-color:transparent!important;
+    }
+  }
+</style>
+
+<style id="stellar-sidebar-premium-v7">
+  /* Final sidebar authority — one clean visual system. */
+  @media (min-width:1101px){
+    html body #sidebar:not(.collapsed){
+      width:268px!important;
+      min-width:268px!important;
+      max-width:268px!important;
+      height:calc(100dvh - 64px)!important;
+      padding:12px 12px 14px!important;
+      border-right:1px solid rgba(255,255,255,.055)!important;
+      background:
+        radial-gradient(circle at 12% 0,rgba(139,92,246,.075),transparent 220px),
+        linear-gradient(180deg,rgba(12,13,20,.98),rgba(9,10,16,.985))!important;
+      box-shadow:10px 0 40px rgba(0,0,0,.16)!important;
+    }
+  }
+
+  #sidebar .sidebar-brand-row{
+    min-height:46px!important;
+    margin:0 0 10px!important;
+    padding:2px 2px 6px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+  }
+
+  #sidebar .brand-title{
+    display:flex!important;
+    align-items:center!important;
+    gap:8px!important;
+    min-width:0!important;
+    color:#f3eff6!important;
+    font-size:14px!important;
+    font-weight:790!important;
+    letter-spacing:-.025em!important;
+  }
+
+  #sidebar .brand-star{
+    width:28px!important;
+    height:28px!important;
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 28px!important;
+    border:1px solid rgba(167,139,250,.14)!important;
+    border-radius:9px!important;
+    background:rgba(139,92,246,.07)!important;
+    color:#c9b8ee!important;
+    font-size:13px!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .brand-grad,
+  #sidebar .brand-ai{
+    background:none!important;
+    -webkit-text-fill-color:currentColor!important;
+    color:inherit!important;
+  }
+
+  #sidebar .brand-ai{
+    color:#a68bd7!important;
+    margin-left:2px!important;
+  }
+
+  #sidebar .sidebar-close{
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
+    min-height:36px!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:0!important;
+    border:1px solid rgba(255,255,255,.055)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.018)!important;
+    color:#7d7786!important;
+    font-size:19px!important;
+    line-height:1!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .sidebar-close:hover,
+  #sidebar .sidebar-close:focus-visible{
+    border-color:rgba(167,139,250,.16)!important;
+    background:rgba(139,92,246,.055)!important;
+    color:#e6deed!important;
+    outline:none!important;
+  }
+
+  #sidebar .side-new{
+    min-height:44px!important;
+    height:44px!important;
+    margin:0 0 9px!important;
+    padding:0 12px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:9px!important;
+    border:1px solid rgba(167,139,250,.16)!important;
+    border-radius:11px!important;
+    background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(99,72,168,.075))!important;
+    color:#e8e0ef!important;
+    font-size:11.5px!important;
+    font-weight:720!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .side-new>span[aria-hidden="true"]{
+    width:22px!important;
+    height:22px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:7px!important;
+    background:rgba(167,139,250,.10)!important;
+    color:#c5b3ea!important;
+    font-size:15px!important;
+    line-height:1!important;
+  }
+
+  #sidebar .side-new:hover,
+  #sidebar .side-new:focus-visible{
+    border-color:rgba(167,139,250,.26)!important;
+    background:linear-gradient(135deg,rgba(139,92,246,.17),rgba(99,72,168,.10))!important;
+    transform:none!important;
+    filter:none!important;
+    outline:none!important;
+  }
+
+  #sidebar #search{
+    width:100%!important;
+    min-height:40px!important;
+    height:40px!important;
+    margin:0 0 10px!important;
+    padding:0 12px 0 34px!important;
+    border:1px solid rgba(255,255,255,.05)!important;
+    border-radius:10px!important;
+    background:
+      linear-gradient(90deg,rgba(255,255,255,.025),rgba(255,255,255,.018))!important;
+    color:#d8d2df!important;
+    font-size:10.5px!important;
+    font-weight:560!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar #search::placeholder{
+    color:#696471!important;
+    opacity:1!important;
+  }
+
+  #sidebar #search:focus{
+    border-color:rgba(167,139,250,.20)!important;
+    background:rgba(255,255,255,.03)!important;
+    box-shadow:0 0 0 3px rgba(139,92,246,.035)!important;
+  }
+
+  #sidebar:has(#search:not([hidden]))::after{
+    content:'⌕';
+    position:absolute;
+    top:119px;
+    left:24px;
+    z-index:2;
+    pointer-events:none;
+    color:#655f6c;
+    font-size:15px;
+    line-height:1;
+  }
+
+  #sidebar .stellar-sidebar-nav{
+    margin:0 0 13px!important;
+    padding:4px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:2px!important;
+    border:1px solid rgba(255,255,255,.035)!important;
+    border-radius:12px!important;
+    background:rgba(255,255,255,.012)!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button{
+    position:relative!important;
+    width:100%!important;
+    min-height:42px!important;
+    height:42px!important;
+    margin:0!important;
+    padding:0 10px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    border:1px solid transparent!important;
+    border-radius:9px!important;
+    background:transparent!important;
+    color:#9c96a4!important;
+    font-size:10.5px!important;
+    font-weight:650!important;
+    text-align:left!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button:hover,
+  #sidebar .stellar-sidebar-nav button:focus-visible{
+    border-color:rgba(255,255,255,.045)!important;
+    background:rgba(255,255,255,.026)!important;
+    color:#e4dee9!important;
+    outline:none!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button.active{
+    border-color:rgba(167,139,250,.12)!important;
+    background:linear-gradient(90deg,rgba(139,92,246,.10),rgba(139,92,246,.035))!important;
+    color:#f0ebf5!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button.active::before{
+    content:''!important;
+    position:absolute!important;
+    left:0!important;
+    top:10px!important;
+    bottom:10px!important;
+    width:2px!important;
+    border-radius:999px!important;
+    background:#a98adf!important;
+    box-shadow:0 0 10px rgba(169,138,223,.28)!important;
+  }
+
+  #sidebar .stellar-sidebar-nav .nav-ico{
+    width:26px!important;
+    min-width:26px!important;
+    height:26px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    border:1px solid rgba(167,139,250,.08)!important;
+    border-radius:8px!important;
+    background:rgba(139,92,246,.035)!important;
+    color:#9d8ec0!important;
+    font-size:0!important;
+    flex:0 0 26px!important;
+  }
+
+  #sidebar .stellar-sidebar-nav .nav-ico .ic{
+    width:13px!important;
+    height:13px!important;
+  }
+
+  #sidebar .chats-label{
+    min-height:28px!important;
+    margin:0!important;
+    padding:8px 7px 5px!important;
+    display:flex!important;
+    align-items:center!important;
+    color:#615c67!important;
+    font-size:8px!important;
+    font-weight:760!important;
+    letter-spacing:.105em!important;
+    text-transform:uppercase!important;
+  }
+
+  #sidebar #chats-list{
+    min-height:0!important;
+    padding:0 1px 8px!important;
+    margin:0!important;
+    scrollbar-width:thin!important;
+    scrollbar-color:rgba(255,255,255,.08) transparent!important;
+  }
+
+  #sidebar .chat-list-empty{
+    padding:14px 8px!important;
+    color:#5f5a64!important;
+    font-size:9.5px!important;
+    font-weight:560!important;
+    text-align:left!important;
+  }
+
+  #sidebar .sidebar-item{
+    position:relative!important;
+    width:100%!important;
+    min-height:58px!important;
+    margin:2px 0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    border:1px solid transparent!important;
+    border-radius:10px!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    transform:none!important;
+  }
+
+  #sidebar .sidebar-item:hover{
+    border-color:rgba(255,255,255,.04)!important;
+    background:rgba(255,255,255,.022)!important;
+    transform:none!important;
+  }
+
+  #sidebar .sidebar-item.active{
+    border-color:rgba(167,139,250,.12)!important;
+    background:linear-gradient(90deg,rgba(139,92,246,.09),rgba(139,92,246,.025))!important;
+  }
+
+  #sidebar .sidebar-item.active::before{
+    content:''!important;
+    position:absolute!important;
+    left:0!important;
+    top:9px!important;
+    bottom:9px!important;
+    width:2px!important;
+    border-radius:999px!important;
+    background:#a98adf!important;
+  }
+
+  #sidebar .sidebar-chat-row{
+    width:100%!important;
+    min-height:58px!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:4px!important;
+    padding:5px 5px 5px 9px!important;
+  }
+
+  #sidebar .chat-open{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    min-height:46px!important;
+    padding:6px 4px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:center!important;
+    border:0!important;
+    background:transparent!important;
+    color:inherit!important;
+    text-align:left!important;
+  }
+
+  #sidebar .chat-row-title{
+    min-width:0!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+  }
+
+  #sidebar .chat-row-name{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    color:#cfc9d5!important;
+    font-size:10.5px!important;
+    font-weight:680!important;
+    line-height:1.25!important;
+  }
+
+  #sidebar .sidebar-item.active .chat-row-name{
+    color:#f1edf5!important;
+  }
+
+  #sidebar .chat-pin-badge{
+    flex:0 0 auto!important;
+    min-height:18px!important;
+    padding:0 5px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    border:1px solid rgba(167,139,250,.10)!important;
+    border-radius:999px!important;
+    background:rgba(139,92,246,.05)!important;
+    color:#9f8fc4!important;
+    font-size:6.5px!important;
+    font-weight:780!important;
+    letter-spacing:.05em!important;
+    text-transform:uppercase!important;
+  }
+
+  #sidebar .chat-row-preview{
+    margin-top:4px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    color:#615c67!important;
+    font-size:8.5px!important;
+    font-weight:520!important;
+    line-height:1.25!important;
+  }
+
+  #sidebar .chat-actions{
+    flex:0 0 auto!important;
+    width:34px!important;
+    height:34px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    opacity:0!important;
+    transition:opacity .12s ease!important;
+  }
+
+  #sidebar .sidebar-item:hover .chat-actions,
+  #sidebar .sidebar-item:focus-within .chat-actions{
+    opacity:1!important;
+  }
+
+  #sidebar .chat-dots{
+    width:32px!important;
+    min-width:32px!important;
+    height:32px!important;
+    min-height:32px!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:0!important;
+    border:1px solid transparent!important;
+    border-radius:8px!important;
+    background:transparent!important;
+    color:#77717f!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    letter-spacing:0!important;
+  }
+
+  #sidebar .chat-dots:hover,
+  #sidebar .chat-dots:focus-visible{
+    border-color:rgba(255,255,255,.05)!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#ddd7e4!important;
+    outline:none!important;
+  }
+
+  #account-box{
+    margin:7px 0 0!important;
+    padding:8px 0 0!important;
+    border-top:1px solid rgba(255,255,255,.045)!important;
+  }
+
+  #sidebar #signed-in.acct-in{
+    min-height:66px!important;
+    padding:8px!important;
+    gap:8px!important;
+    border:1px solid rgba(255,255,255,.05)!important;
+    border-radius:11px!important;
+    background:linear-gradient(135deg,rgba(139,92,246,.055),rgba(255,255,255,.012))!important;
+  }
+
+  #sidebar .acct-avatar{
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
+    min-height:36px!important;
+    border-radius:10px!important;
+    background:rgba(139,92,246,.10)!important;
+    color:#cbbce9!important;
+    font-size:12px!important;
+  }
+
+  #sidebar .acct-status{
+    margin-bottom:2px!important;
+    color:#625c69!important;
+    font-size:6.5px!important;
+    letter-spacing:.10em!important;
+  }
+
+  #sidebar .acct-name{
+    color:#eee9f2!important;
+    font-size:11px!important;
+    font-weight:730!important;
+  }
+
+  #sidebar .acct-email{
+    margin-top:2px!important;
+    color:#6f6875!important;
+    font-size:8.5px!important;
+  }
+
+  #sidebar .acct-out-btn{
+    width:auto!important;
+    min-width:48px!important;
+    height:30px!important;
+    min-height:30px!important;
+    padding:0 8px!important;
+    overflow:visible!important;
+    text-indent:0!important;
+    border:1px solid rgba(255,255,255,.045)!important;
+    border-radius:8px!important;
+    background:rgba(255,255,255,.018)!important;
+    color:#746e7a!important;
+    font-size:8px!important;
+    font-weight:650!important;
+  }
+
+  #sidebar .acct-out-btn::after{
+    content:none!important;
+    display:none!important;
+  }
+
+  #sidebar .acct-out-btn:hover{
+    border-color:rgba(248,113,113,.12)!important;
+    background:rgba(248,113,113,.035)!important;
+    color:#b98b91!important;
+  }
+
+  #sidebar .sidebar-utility-links{
+    margin:7px 2px 0!important;
+    padding:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:2px!important;
+    border:0!important;
+  }
+
+  #sidebar .sidebar-utility-links a{
+    min-height:28px!important;
+    padding:0 6px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    border-radius:7px!important;
+    color:#5f5965!important;
+    font-size:7.5px!important;
+    font-weight:620!important;
+    text-decoration:none!important;
+  }
+
+  #sidebar .sidebar-utility-links a:hover,
+  #sidebar .sidebar-utility-links a:focus-visible{
+    background:rgba(255,255,255,.025)!important;
+    color:#8e8795!important;
+    outline:none!important;
+  }
+
+  #sidebar .side-foot{
+    margin-top:7px!important;
+    padding:8px 0 0!important;
+    border-top:1px solid rgba(255,255,255,.045)!important;
+  }
+
+  #sidebar .side-row-2{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:6px!important;
+  }
+
+  #sidebar .side-row-3{
+    display:none!important;
+  }
+
+  #sidebar .side-act{
+    min-width:0!important;
+    min-height:38px!important;
+    height:38px!important;
+    padding:0 8px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:6px!important;
+    border:1px solid rgba(255,255,255,.045)!important;
+    border-radius:9px!important;
+    background:rgba(255,255,255,.016)!important;
+    color:#817a88!important;
+    font-size:8.5px!important;
+    font-weight:660!important;
+    text-decoration:none!important;
+  }
+
+  #sidebar .side-act .ico{
+    width:18px!important;
+    height:18px!important;
+    display:grid!important;
+    place-items:center!important;
+    color:#8e80ad!important;
+  }
+
+  #sidebar .side-act .ic{
+    width:12px!important;
+    height:12px!important;
+  }
+
+  #sidebar .side-act:hover,
+  #sidebar .side-act:focus-visible{
+    border-color:rgba(167,139,250,.12)!important;
+    background:rgba(139,92,246,.045)!important;
+    color:#d9d2e1!important;
+    outline:none!important;
+  }
+
+  /* Chat context menu matches the sidebar. */
+  #chat-menu{
+    min-width:184px!important;
+    padding:6px!important;
+    border:1px solid rgba(255,255,255,.065)!important;
+    border-radius:12px!important;
+    background:rgba(16,17,23,.985)!important;
+    box-shadow:0 18px 50px rgba(0,0,0,.42)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+
+  #chat-menu button{
+    min-height:38px!important;
+    padding:0 9px!important;
+    gap:8px!important;
+    border:1px solid transparent!important;
+    border-radius:8px!important;
+    color:#b5afbb!important;
+    font-size:9.5px!important;
+    font-weight:650!important;
+  }
+
+  #chat-menu button:hover,
+  #chat-menu button:focus-visible{
+    border-color:rgba(255,255,255,.045)!important;
+    background:rgba(255,255,255,.028)!important;
+    color:#eee8f2!important;
+    outline:none!important;
+  }
+
+  #chat-menu .cm-danger{
+    color:#bb858b!important;
+  }
+
+  #chat-menu .cm-danger:hover{
+    border-color:rgba(248,113,113,.09)!important;
+    background:rgba(248,113,113,.035)!important;
+    color:#d9a0a6!important;
+  }
+
+  #chat-menu .cm-disabled{
+    cursor:not-allowed!important;
+    opacity:.42!important;
+    color:#817b85!important;
+  }
+
+  #chat-menu .cm-disabled:hover{
+    border-color:transparent!important;
+    background:transparent!important;
+    color:#817b85!important;
+  }
+
+  /* Tablet drawer */
+  @media (min-width:641px) and (max-width:1100px){
+    html body #sidebar{
+      width:min(300px,78vw)!important;
+      max-width:300px!important;
+      padding:12px!important;
+    }
+  }
+
+  /* Phone drawer */
+  @media (max-width:640px){
+    html body #sidebar{
+      width:min(300px,88vw)!important;
+      max-width:300px!important;
+      padding:12px 12px max(14px,env(safe-area-inset-bottom))!important;
+      background:rgba(10,11,17,.99)!important;
+      border-right:1px solid rgba(255,255,255,.06)!important;
+      box-shadow:20px 0 60px rgba(0,0,0,.48)!important;
+    }
+
+    #sidebar .side-new,
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .side-act{
+      min-height:44px!important;
+      height:44px!important;
+      touch-action:manipulation!important;
+      -webkit-tap-highlight-color:transparent!important;
+    }
+
+    #sidebar .chat-actions{
+      opacity:1!important;
+    }
+
+    #sidebar .chat-dots{
+      width:40px!important;
+      min-width:40px!important;
+      height:40px!important;
+      min-height:40px!important;
+    }
+
+    #sidebar .sidebar-item{
+      min-height:62px!important;
+    }
+
+    #sidebar .sidebar-chat-row{
+      min-height:62px!important;
+    }
+
+    #sidebar #signed-in.acct-in{
+      min-height:72px!important;
+    }
+
+    #sidebar .acct-out-btn{
+      min-width:54px!important;
+      min-height:36px!important;
     }
   }
 </style>
