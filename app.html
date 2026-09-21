@@ -9723,6 +9723,158 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
   }
 </style>
+
+<style id="stellar-auth-straight-stack-v3">
+  /* Straight, line-by-line auth stack: every control shares one clean width. */
+  #welcome-modal .auth-page{
+    width:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+  }
+  #welcome-modal .auth-page.hidden{
+    display:none!important;
+  }
+  #welcome-modal .welcome-btn-wrap,
+  #welcome-modal .auth-google-fallback,
+  #welcome-modal a.welcome-btn-wrap,
+  #welcome-modal .own-input,
+  #welcome-modal .auth-page>.side-new,
+  #welcome-modal .auth-switch,
+  #welcome-modal .welcome-skip,
+  #welcome-modal .welcome-legal{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+
+  /* Google: remove the awkward outer white tray and let the provider button fill the row. */
+  #welcome-modal #g-signin-main,
+  #welcome-modal #g-signup-main{
+    position:relative!important;
+    width:100%!important;
+    min-height:50px!important;
+    height:50px!important;
+    margin:0 0 10px!important;
+    padding:0!important;
+    overflow:hidden!important;
+    border:1px solid rgba(255,255,255,.12)!important;
+    border-radius:13px!important;
+    background:#17181d!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+  }
+  #welcome-modal #g-signin-main>div,
+  #welcome-modal #g-signup-main>div,
+  #welcome-modal #g-signin-main iframe,
+  #welcome-modal #g-signup-main iframe{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:100%!important;
+    height:50px!important;
+    margin:0!important;
+    border:0!important;
+  }
+
+  /* Fallback remains hidden while the real Google control is available. */
+  #welcome-modal .auth-google-fallback{
+    display:none!important;
+    min-height:50px!important;
+    margin:0 0 10px!important;
+    border-radius:13px!important;
+  }
+
+  /* Discord, fields and primary CTA all follow the exact same row geometry. */
+  #welcome-modal a.welcome-btn-wrap{
+    display:block!important;
+    min-height:50px!important;
+    height:50px!important;
+    margin:0 0 10px!important;
+    overflow:hidden!important;
+    border-radius:13px!important;
+  }
+  #welcome-modal a.welcome-btn-wrap>div{
+    width:100%!important;
+    min-height:50px!important;
+    height:50px!important;
+    padding:0 16px!important;
+    border-radius:12px!important;
+  }
+
+  #welcome-modal .auth-or{
+    width:100%!important;
+    margin:6px 0 12px!important;
+  }
+
+  #welcome-modal .own-input{
+    display:block!important;
+    min-height:50px!important;
+    height:50px!important;
+    margin:0!important;
+    padding:0 15px!important;
+    border-radius:13px!important;
+  }
+  #welcome-modal #si-pass,
+  #welcome-modal #su-pass{
+    margin-top:10px!important;
+  }
+
+  #welcome-modal .auth-page>.side-new{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:50px!important;
+    height:50px!important;
+    margin:12px 0 0!important;
+    padding:0 16px!important;
+    border-radius:13px!important;
+    font-size:13px!important;
+    line-height:1!important;
+  }
+  #welcome-modal .auth-page>.side-new::before,
+  #welcome-modal .auth-page>.side-new::after{
+    content:none!important;
+    display:none!important;
+  }
+
+  #welcome-modal .redeem-msg{
+    width:100%!important;
+    margin:8px 0 0!important;
+  }
+  #welcome-modal .auth-switch{
+    margin-top:18px!important;
+    text-align:center!important;
+  }
+  #welcome-modal .welcome-skip{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:44px!important;
+    margin-top:16px!important;
+    text-align:center!important;
+  }
+  #welcome-modal .welcome-legal{
+    margin-top:10px!important;
+    text-align:center!important;
+  }
+
+  @media(max-width:640px){
+    #welcome-modal #g-signin-main,
+    #welcome-modal #g-signup-main,
+    #welcome-modal #g-signin-main>div,
+    #welcome-modal #g-signup-main>div,
+    #welcome-modal #g-signin-main iframe,
+    #welcome-modal #g-signup-main iframe,
+    #welcome-modal a.welcome-btn-wrap,
+    #welcome-modal a.welcome-btn-wrap>div,
+    #welcome-modal .own-input,
+    #welcome-modal .auth-page>.side-new{
+      min-height:50px!important;
+      height:50px!important;
+    }
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0] stellar-chat-workspace stellar-empty-home stellar-start-state">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -13730,7 +13882,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           const el = document.getElementById(id);
           if (el) {
             el.innerHTML = '';
-            google.accounts.id.renderButton(el, { theme: 'filled_black', size: 'large', width: 300, text: idx === 1 ? 'signup_with' : 'continue_with', shape: 'pill' });
+            google.accounts.id.renderButton(el, { theme: 'filled_black', size: 'large', width: 370, text: idx === 1 ? 'signup_with' : 'continue_with', shape: 'rectangular' });
           }
         });
       } catch {}
