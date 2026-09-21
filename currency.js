@@ -73,6 +73,48 @@
     });
   }
 
+  function sidebarHelpText(label, control, sidebar) {
+    const raw = String(label || '').replace(/^[+＋✦\\s]+/, '').trim();
+    const key = raw.toLowerCase();
+
+    if (control.classList.contains('sidebar-close')) {
+      return sidebar.classList.contains('collapsed')
+        ? 'Expand navigation — open the full sidebar'
+        : 'Collapse navigation — shrink the sidebar to icons';
+    }
+    if (control.classList.contains('side-new')) {
+      return 'New build — start a fresh Stellar AI chat';
+    }
+    if (/usage|credit|wallet|requests/.test(key)) {
+      return `${raw || 'Usage'} — check requests, reset time and credit`;
+    }
+    if (/plan|upgrade|pricing|subscription/.test(key)) {
+      return `${raw || 'Plans'} — view plans and manage your subscription`;
+    }
+    if (/setting|preference/.test(key)) {
+      return `${raw || 'Settings'} — change app and account preferences`;
+    }
+    if (/model/.test(key)) {
+      return `${raw || 'Models'} — choose or learn about available AI models`;
+    }
+    if (/chat|history|conversation/.test(key)) {
+      return `${raw || 'Chats'} — open your saved conversations`;
+    }
+    if (/file|download|workspace/.test(key)) {
+      return `${raw || 'Files'} — open your generated files and workspace`;
+    }
+    if (/home/.test(key)) {
+      return `${raw || 'Home'} — return to your main Stellar workspace`;
+    }
+    if (/term|privacy|legal/.test(key)) {
+      return `${raw || 'Legal'} — view terms and privacy information`;
+    }
+    if (/account|profile|sign in|login/.test(key)) {
+      return `${raw || 'Account'} — manage your sign-in and account`;
+    }
+    return raw ? `${raw} — open this section` : 'Open this section';
+  }
+
   function applySidebarRailLabels() {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
@@ -87,7 +129,9 @@
       }
       label = label.replace(/^[+＋✦\\s]+/, '').trim();
       if (!label && control.classList.contains('side-new')) label = 'New build';
-      control.setAttribute('data-sidebar-label', label);
+
+      const help = sidebarHelpText(label, control, sidebar);
+      control.setAttribute('data-sidebar-label', help);
       if (label && !control.hasAttribute('aria-label')) control.setAttribute('aria-label', label);
     });
   }
@@ -132,7 +176,7 @@
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // presentation/preferences so future features stay modular.
     ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
-    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=4');
+    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=5');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
     // The clean /app UI is owned by app.html. Do not dynamically reload the
