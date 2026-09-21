@@ -1187,3 +1187,271 @@ body.light #sidebar .sidebar-close::before{
 body.light #sidebar .sidebar-close:hover::before{
   color:#241d2a!important;
 }
+
+
+/* Premium voice + send controls — 2026-09-21 */
+/* Match the approved mock: understated voice control, subtle divider,
+   bright Stellar send action. CSS-only so existing click handlers stay intact. */
+.input-area #mic-btn,
+.input-area .mic-btn {
+  position:relative!important;
+  inset:auto!important;
+  flex:0 0 46px!important;
+  width:46px!important;
+  min-width:46px!important;
+  height:46px!important;
+  min-height:46px!important;
+  margin:0 4px 0 0!important;
+  padding:0!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  border:1px solid rgba(181,160,247,.30)!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 35% 25%,rgba(211,198,255,.11),transparent 38%),
+    linear-gradient(180deg,rgba(181,160,247,.08),rgba(124,58,237,.035))!important;
+  color:#cdbfff!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 0 0 1px rgba(124,58,237,.025),
+    0 8px 24px rgba(0,0,0,.14)!important;
+  font-size:0!important;
+  line-height:1!important;
+  overflow:visible!important;
+  transition:
+    transform .16s ease,
+    border-color .16s ease,
+    background .16s ease,
+    box-shadow .16s ease,
+    color .16s ease!important;
+}
+
+.input-area #mic-btn > span,
+.input-area .mic-btn > span {
+  display:none!important;
+}
+
+.input-area #mic-btn::before,
+.input-area .mic-btn::before {
+  content:""!important;
+  display:block!important;
+  width:20px!important;
+  height:20px!important;
+  background:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm-1-9a1 1 0 1 1 2 0v6a1 1 0 1 1-2 0V5Zm7 6a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.91V19H8.5a1 1 0 1 0 0 2h7a1 1 0 1 0 0-2H13v-2.09A6 6 0 0 0 18 11Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm-1-9a1 1 0 1 1 2 0v6a1 1 0 1 1-2 0V5Zm7 6a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.91V19H8.5a1 1 0 1 0 0 2h7a1 1 0 1 0 0-2H13v-2.09A6 6 0 0 0 18 11Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+}
+
+/* The slim separator from the approved mock. */
+.input-area #mic-btn::after,
+.input-area .mic-btn::after {
+  content:""!important;
+  position:absolute!important;
+  top:50%!important;
+  right:-11px!important;
+  width:1px!important;
+  height:26px!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,transparent,rgba(214,204,224,.30),transparent)!important;
+  transform:translateY(-50%)!important;
+  pointer-events:none!important;
+}
+
+.input-area #mic-btn:hover,
+.input-area .mic-btn:hover {
+  border-color:rgba(202,183,255,.52)!important;
+  background:
+    radial-gradient(circle at 35% 25%,rgba(220,208,255,.16),transparent 40%),
+    rgba(124,58,237,.10)!important;
+  color:#eee7ff!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 20px rgba(139,92,246,.12),
+    0 8px 24px rgba(0,0,0,.16)!important;
+  transform:translateY(-1px)!important;
+}
+
+.input-area #mic-btn:active,
+.input-area .mic-btn:active {
+  transform:translateY(0) scale(.97)!important;
+}
+
+.input-area #mic-btn[aria-pressed="true"],
+.input-area .mic-btn[aria-pressed="true"] {
+  border-color:rgba(211,190,255,.72)!important;
+  background:rgba(139,92,246,.17)!important;
+  color:#fff!important;
+  box-shadow:
+    0 0 0 4px rgba(139,92,246,.08),
+    0 0 26px rgba(139,92,246,.20)!important;
+}
+
+.input-area #send-btn {
+  position:relative!important;
+  inset:auto!important;
+  flex:0 0 50px!important;
+  width:50px!important;
+  min-width:50px!important;
+  height:50px!important;
+  min-height:50px!important;
+  margin:0!important;
+  padding:0!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  border:1px solid rgba(228,216,255,.28)!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 32% 24%,rgba(255,255,255,.28),transparent 34%),
+    linear-gradient(145deg,#b69cff 0%,#9b72ef 48%,#7c3aed 100%)!important;
+  color:#fff!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 0 0 1px rgba(139,92,246,.12),
+    0 0 24px rgba(139,92,246,.26),
+    0 10px 24px rgba(42,20,78,.28)!important;
+  font-size:0!important;
+  line-height:1!important;
+  overflow:hidden!important;
+  transition:
+    transform .16s ease,
+    filter .16s ease,
+    box-shadow .16s ease,
+    border-color .16s ease!important;
+}
+
+.input-area #send-btn::after {
+  content:""!important;
+  display:block!important;
+  width:21px!important;
+  height:21px!important;
+  background:#fff!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='m3.7 3.9 16.7 7.2c.8.35.8 1.48 0 1.83L3.7 20.1c-.78.34-1.56-.42-1.25-1.21l2.3-5.82 8.23-1.05-8.23-1.06-2.3-5.84c-.31-.8.47-1.56 1.25-1.22Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='m3.7 3.9 16.7 7.2c.8.35.8 1.48 0 1.83L3.7 20.1c-.78.34-1.56-.42-1.25-1.21l2.3-5.82 8.23-1.05-8.23-1.06-2.3-5.84c-.31-.8.47-1.56 1.25-1.22Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+  transform:translateX(1px)!important;
+}
+
+.input-area #send-btn:hover {
+  border-color:rgba(238,229,255,.48)!important;
+  filter:brightness(1.07) saturate(1.05)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.36),
+    0 0 0 1px rgba(139,92,246,.16),
+    0 0 34px rgba(139,92,246,.36),
+    0 12px 28px rgba(42,20,78,.34)!important;
+  transform:translateY(-1px) scale(1.025)!important;
+}
+
+.input-area #send-btn:active {
+  transform:translateY(0) scale(.96)!important;
+}
+
+/* Preserve stop semantics if generation flips the button label/title. */
+.input-area #send-btn[aria-label*="stop" i]::after,
+.input-area #send-btn[title*="stop" i]::after {
+  width:15px!important;
+  height:15px!important;
+  border-radius:4px!important;
+  background:#fff!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  transform:none!important;
+}
+
+/* Strong, accessible keyboard focus without changing the visual language. */
+.input-area #mic-btn:focus-visible,
+.input-area .mic-btn:focus-visible,
+.input-area #send-btn:focus-visible {
+  outline:2px solid rgba(216,198,255,.90)!important;
+  outline-offset:3px!important;
+}
+
+/* Fresh home gets the wider spacing from the mock while preserving the centered bar. */
+body.stellar-empty-home.stellar-start-state .input-area > .flex {
+  gap:10px!important;
+  padding-right:10px!important;
+}
+
+/* In conversation mode keep the same controls but slightly tighter. */
+body:not(.stellar-empty-home) .input-area #mic-btn,
+body:not(.stellar-empty-home) .input-area .mic-btn {
+  flex-basis:44px!important;
+  width:44px!important;
+  min-width:44px!important;
+  height:44px!important;
+  min-height:44px!important;
+}
+body:not(.stellar-empty-home) .input-area #send-btn {
+  flex-basis:46px!important;
+  width:46px!important;
+  min-width:46px!important;
+  height:46px!important;
+  min-height:46px!important;
+}
+
+/* Light theme keeps the hierarchy without the heavy dark glow. */
+body.light .input-area #mic-btn,
+body.light .input-area .mic-btn {
+  border-color:rgba(105,75,155,.20)!important;
+  background:rgba(124,58,237,.045)!important;
+  color:#6f52a7!important;
+  box-shadow:0 6px 18px rgba(74,50,103,.08)!important;
+}
+body.light .input-area #mic-btn::after,
+body.light .input-area .mic-btn::after {
+  background:linear-gradient(180deg,transparent,rgba(76,58,96,.20),transparent)!important;
+}
+body.light .input-area #send-btn {
+  border-color:rgba(109,77,173,.18)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.38),
+    0 0 20px rgba(124,58,237,.16),
+    0 8px 20px rgba(74,50,103,.14)!important;
+}
+
+@media (max-width:767px) {
+  .input-area #mic-btn,
+  .input-area .mic-btn,
+  body:not(.stellar-empty-home) .input-area #mic-btn,
+  body:not(.stellar-empty-home) .input-area .mic-btn {
+    flex-basis:44px!important;
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin-right:3px!important;
+  }
+
+  .input-area #send-btn,
+  body:not(.stellar-empty-home) .input-area #send-btn {
+    flex-basis:46px!important;
+    width:46px!important;
+    min-width:46px!important;
+    height:46px!important;
+    min-height:46px!important;
+  }
+
+  .input-area #mic-btn::after,
+  .input-area .mic-btn::after {
+    right:-9px!important;
+    height:24px!important;
+  }
+
+  .input-area #mic-btn::before,
+  .input-area .mic-btn::before {
+    width:19px!important;
+    height:19px!important;
+  }
+
+  .input-area #send-btn::after {
+    width:20px!important;
+    height:20px!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .input-area #mic-btn,
+  .input-area .mic-btn,
+  .input-area #send-btn {
+    transition:none!important;
+  }
+}
