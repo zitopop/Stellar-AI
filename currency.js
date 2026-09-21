@@ -176,12 +176,106 @@
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // presentation/preferences so future features stay modular.
     ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
-    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=9');
+    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=10');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
     // The clean /app UI is owned by app.html. Do not dynamically reload the
     // legacy command dock or its CSS here, or cached clients can restore the
     // old Chat/Build/Fix/Deploy composer after the page has rendered.
+  }
+
+  function enhanceModelPicker() {
+    if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
+    const menu = document.getElementById('model-menu');
+    if (!menu) return;
+
+    const configs = {
+      fabie: {
+        icon: '⚡',
+        name: 'Spark',
+        badge: 'FAST',
+        description: 'Quick drafts, small fixes and lightweight work'
+      },
+      smart: {
+        icon: '✦',
+        name: 'Star',
+        badge: 'RECOMMENDED',
+        description: 'Best balance for most FiveM and Roblox builds'
+      },
+      comet: {
+        icon: '☄',
+        name: 'Comet',
+        badge: 'DEEP',
+        description: 'Architecture, debugging and larger systems'
+      },
+      ultra: {
+        icon: '◆',
+        name: 'Nova',
+        badge: 'PRO',
+        description: 'Maximum Stellar quality for difficult project work'
+      }
+    };
+
+    menu.classList.add('stellar-model-picker-v2');
+    const heading = menu.querySelector('.model-menu-heading');
+    if (heading && heading.dataset.stellarEnhanced !== 'true') {
+      heading.dataset.stellarEnhanced = 'true';
+      heading.innerHTML = '<span><strong>Choose a model</strong><small>Match Stellar to the job</small></span><span class="stellar-model-heading-mark" aria-hidden="true">✦</span>';
+    }
+
+    Object.entries(configs).forEach(([key, config]) => {
+      const option = menu.querySelector('[data-model-choice="' + key + '"]');
+      if (!option) return;
+      option.classList.add('stellar-model-option');
+      option.dataset.modelTone = key;
+      if (option.dataset.stellarEnhanced === 'true') return;
+      option.dataset.stellarEnhanced = 'true';
+      option.innerHTML =
+        '<span class="stellar-model-icon" aria-hidden="true">' + config.icon + '</span>' +
+        '<span class="stellar-model-copy">' +
+          '<span class="stellar-model-title-row">' +
+            '<strong class="stellar-model-title">' + config.name + '</strong>' +
+            '<span class="stellar-model-badge">' + config.badge + '</span>' +
+          '</span>' +
+          '<span class="stellar-model-description">' + config.description + '</span>' +
+        '</span>' +
+        '<span class="stellar-model-selected" aria-hidden="true">✓</span>';
+    });
+
+    const ownerModels = menu.querySelectorAll('#provider-models [data-model-choice]');
+    ownerModels.forEach((option) => option.classList.add('stellar-owner-model-option'));
+
+    const planButton = Array.from(menu.querySelectorAll('button')).find((button) =>
+      !button.hasAttribute('data-model-choice') && /plans/i.test(String(button.textContent || ''))
+    );
+    if (planButton) planButton.classList.add('stellar-model-plans-link');
+
+    const selectedConfig = () => {
+      const selected = menu.querySelector('[data-model-choice][aria-checked="true"]');
+      return configs[selected?.getAttribute('data-model-choice')] || configs.smart;
+    };
+
+    const syncTrigger = () => {
+      const config = selectedConfig();
+      document.querySelectorAll('#composer-model-trigger, .stellar-model-proxy').forEach((trigger) => {
+        trigger.dataset.modelTone = Object.keys(configs).find((key) => configs[key] === config) || 'smart';
+        trigger.classList.add('stellar-model-trigger-v2');
+        trigger.innerHTML =
+          '<span class="stellar-trigger-orb" aria-hidden="true"></span>' +
+          '<span class="composer-mode-name">' + config.name + '</span>' +
+          '<span class="stellar-trigger-meta">' + (config.badge === 'RECOMMENDED' ? 'Balanced' : config.badge.charAt(0) + config.badge.slice(1).toLowerCase()) + '</span>' +
+          '<span aria-hidden="true" class="composer-mode-caret">⌄</span>';
+        trigger.setAttribute('aria-label', 'Choose AI model. Current: ' + config.name);
+      });
+    };
+
+    syncTrigger();
+    if (menu.dataset.stellarPickerWatch !== 'true') {
+      menu.dataset.stellarPickerWatch = 'true';
+      const observer = new MutationObserver(syncTrigger);
+      observer.observe(menu, { subtree:true, attributes:true, attributeFilter:['aria-checked'] });
+      menu.addEventListener('click', () => window.setTimeout(syncTrigger, 0));
+    }
   }
 
   function enhanceAppComposer() {
@@ -335,11 +429,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       applyCurrencyLabels();
       watchSidebarRailLabels();
+      enhanceModelPicker();
       enhanceAppComposer();
+      enhanceModelPicker();
     }, { once: true });
   } else {
     applyCurrencyLabels();
     watchSidebarRailLabels();
+    enhanceModelPicker();
     enhanceAppComposer();
+    enhanceModelPicker();
   }
 })();
