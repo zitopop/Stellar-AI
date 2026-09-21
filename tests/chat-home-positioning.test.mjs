@@ -47,9 +47,9 @@ test('final centered composer selector beats generic main-column positioning rul
 });
 
 
-test('app home always opens a fresh centered draft while preserving history', () => {
-  assert.match(appHtml, /renderChatList\(\);[\s\S]*\/\/ \/app is the home workspace:[\s\S]*newChat\(\);/);
-  assert.doesNotMatch(appHtml, /if \(chats\.length === 0\) newChat\(\);\s*else loadChat\(s\.currentChat \|\| chats\[0\]\.id\);/);
+test('app resumes the active conversation and keeps New build as the fresh-home action', () => {
+  assert.match(appHtml, /renderChatList\(\);\s*\/\/ Keep the active conversation across reloads\.[^\n]*\s*restoreCurrentChat\(\);/);
+  assert.match(appHtml, /onclick="newChat\(\)"/);
 });
 
 
