@@ -9418,6 +9418,311 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
   }
 </style>
+
+<style id="stellar-premium-auth-v2">
+  /* Premium sign-in / create-account experience */
+  #welcome-modal{
+    padding:24px!important;
+    background:
+      radial-gradient(circle at 50% 28%,rgba(124,58,237,.16),transparent 30rem),
+      radial-gradient(circle at 72% 72%,rgba(79,70,229,.08),transparent 28rem),
+      rgba(4,5,10,.86)!important;
+    backdrop-filter:blur(22px) saturate(118%)!important;
+    -webkit-backdrop-filter:blur(22px) saturate(118%)!important;
+  }
+  #welcome-modal .welcome-card{
+    position:relative!important;
+    width:min(430px,calc(100vw - 32px))!important;
+    max-width:430px!important;
+    margin:0!important;
+    padding:34px 30px 24px!important;
+    overflow:hidden!important;
+    border:1px solid rgba(196,181,253,.17)!important;
+    border-radius:26px!important;
+    background:
+      radial-gradient(circle at 50% -10%,rgba(139,92,246,.16),transparent 15rem),
+      linear-gradient(165deg,rgba(21,21,30,.98),rgba(12,13,20,.99))!important;
+    box-shadow:
+      0 34px 110px rgba(0,0,0,.62),
+      0 0 0 1px rgba(255,255,255,.018) inset,
+      0 0 64px rgba(109,40,217,.10)!important;
+    text-align:center!important;
+  }
+  #welcome-modal .welcome-card::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:
+      linear-gradient(115deg,rgba(255,255,255,.035),transparent 20% 80%,rgba(168,85,247,.025))!important;
+  }
+  #welcome-modal-heading{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    padding:0!important;
+    margin:-1px!important;
+    overflow:hidden!important;
+    clip:rect(0,0,0,0)!important;
+    white-space:nowrap!important;
+    border:0!important;
+  }
+  #welcome-modal .welcome-star{
+    display:grid!important;
+    place-items:center!important;
+    width:52px!important;
+    height:52px!important;
+    margin:0 auto 18px!important;
+    border:1px solid rgba(196,181,253,.24)!important;
+    border-radius:16px!important;
+    background:
+      radial-gradient(circle at 50% 20%,rgba(196,181,253,.20),transparent 70%),
+      linear-gradient(145deg,rgba(83,54,139,.58),rgba(31,27,50,.90))!important;
+    color:#f3efff!important;
+    font-size:24px!important;
+    line-height:1!important;
+    filter:none!important;
+    box-shadow:
+      0 12px 30px rgba(76,29,149,.24),
+      0 0 26px rgba(139,92,246,.16),
+      inset 0 1px 0 rgba(255,255,255,.055)!important;
+  }
+  #welcome-modal .welcome-title{
+    margin:0 0 8px!important;
+    color:#f7f7fb!important;
+    background:none!important;
+    -webkit-text-fill-color:initial!important;
+    font-size:30px!important;
+    font-weight:820!important;
+    letter-spacing:-.045em!important;
+    line-height:1.08!important;
+  }
+  #welcome-modal .welcome-sub{
+    max-width:330px!important;
+    margin:0 auto 24px!important;
+    color:#8f909c!important;
+    font-size:13px!important;
+    font-weight:520!important;
+    line-height:1.55!important;
+  }
+  #welcome-modal .welcome-btn-wrap{
+    width:100%!important;
+    min-height:48px!important;
+    margin:0 0 10px!important;
+    border-radius:13px!important;
+    overflow:hidden!important;
+  }
+  #welcome-modal #g-signin-main,
+  #welcome-modal #g-signup-main{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:48px!important;
+    padding:0!important;
+    background:#fff!important;
+    border:1px solid rgba(255,255,255,.15)!important;
+    border-radius:13px!important;
+  }
+  #welcome-modal #g-signin-main>div,
+  #welcome-modal #g-signup-main>div{
+    max-width:100%!important;
+  }
+  #welcome-modal .auth-google-fallback{
+    display:none!important;
+  }
+  #welcome-modal a.welcome-btn-wrap{
+    display:block!important;
+    min-height:48px!important;
+    margin-top:0!important;
+    text-decoration:none!important;
+    border:1px solid rgba(123,135,255,.28)!important;
+    border-radius:13px!important;
+    background:linear-gradient(145deg,rgba(88,101,242,.18),rgba(58,68,180,.10))!important;
+    transition:transform .15s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease!important;
+  }
+  #welcome-modal a.welcome-btn-wrap>div{
+    min-height:48px!important;
+    padding:0 16px!important;
+    border-radius:12px!important;
+    background:transparent!important;
+    color:#f5f6ff!important;
+    font-size:13px!important;
+    font-weight:750!important;
+  }
+  #welcome-modal a.welcome-btn-wrap:hover,
+  #welcome-modal a.welcome-btn-wrap:focus-visible{
+    border-color:rgba(129,140,248,.48)!important;
+    background:linear-gradient(145deg,rgba(88,101,242,.26),rgba(72,80,185,.15))!important;
+    box-shadow:0 0 24px rgba(88,101,242,.12)!important;
+    transform:translateY(-1px)!important;
+    outline:none!important;
+  }
+  #welcome-modal .auth-or{
+    margin:16px 0!important;
+    gap:12px!important;
+    color:#6f707c!important;
+    font-size:10px!important;
+    font-weight:750!important;
+    text-transform:uppercase!important;
+    letter-spacing:.10em!important;
+  }
+  #welcome-modal .auth-or::before,
+  #welcome-modal .auth-or::after{
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.10))!important;
+  }
+  #welcome-modal .auth-or::after{
+    background:linear-gradient(90deg,rgba(255,255,255,.10),transparent)!important;
+  }
+  #welcome-modal .own-input{
+    width:100%!important;
+    min-height:50px!important;
+    padding:0 14px!important;
+    border:1px solid rgba(255,255,255,.085)!important;
+    border-radius:13px!important;
+    background:rgba(5,6,11,.54)!important;
+    color:#f4f4f7!important;
+    font-size:13px!important;
+    font-weight:560!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.012)!important;
+    transition:border-color .15s ease,box-shadow .15s ease,background .15s ease!important;
+  }
+  #welcome-modal .own-input::placeholder{
+    color:#6f707b!important;
+  }
+  #welcome-modal .own-input:hover{
+    border-color:rgba(196,181,253,.15)!important;
+    background:rgba(8,9,15,.64)!important;
+  }
+  #welcome-modal .own-input:focus{
+    outline:none!important;
+    border-color:rgba(167,139,250,.48)!important;
+    background:rgba(9,10,17,.74)!important;
+    box-shadow:
+      0 0 0 3px rgba(124,58,237,.10),
+      0 0 24px rgba(124,58,237,.08)!important;
+  }
+  #welcome-modal .auth-page>.side-new{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-height:50px!important;
+    margin:12px 0 0!important;
+    padding:0 16px!important;
+    border:1px solid rgba(216,180,254,.30)!important;
+    border-radius:13px!important;
+    background:linear-gradient(135deg,#a78bfa 0%,#8b5cf6 48%,#6d28d9 100%)!important;
+    color:#fff!important;
+    font-size:13px!important;
+    font-weight:800!important;
+    letter-spacing:-.01em!important;
+    box-shadow:
+      0 10px 28px rgba(109,40,217,.26),
+      inset 0 1px 0 rgba(255,255,255,.18)!important;
+  }
+  #welcome-modal .auth-page>.side-new:hover,
+  #welcome-modal .auth-page>.side-new:focus-visible{
+    filter:brightness(1.06)!important;
+    box-shadow:
+      0 13px 34px rgba(109,40,217,.34),
+      0 0 24px rgba(139,92,246,.18)!important;
+    outline:none!important;
+  }
+  #welcome-modal .redeem-msg{
+    min-height:18px!important;
+    margin-top:8px!important;
+    font-size:11px!important;
+  }
+  #welcome-modal .auth-switch{
+    margin-top:18px!important;
+    color:#838490!important;
+    font-size:12px!important;
+    font-weight:600!important;
+  }
+  #welcome-modal .auth-switch button{
+    color:#d4c5ff!important;
+    font-weight:750!important;
+    text-decoration:none!important;
+    border-bottom:1px solid rgba(196,181,253,.40)!important;
+  }
+  #welcome-modal .welcome-skip{
+    width:100%!important;
+    min-height:44px!important;
+    margin-top:18px!important;
+    padding:0 12px!important;
+    border:1px solid transparent!important;
+    border-radius:11px!important;
+    color:#9a9aa5!important;
+    font-size:12px!important;
+    font-weight:650!important;
+    background:transparent!important;
+  }
+  #welcome-modal .welcome-skip:hover,
+  #welcome-modal .welcome-skip:focus-visible{
+    border-color:rgba(255,255,255,.065)!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#f0f0f4!important;
+    outline:none!important;
+  }
+  #welcome-modal .welcome-legal{
+    margin-top:12px!important;
+    color:#5f606b!important;
+    font-size:10px!important;
+    line-height:1.45!important;
+  }
+  #welcome-modal .welcome-legal a{
+    color:#858691!important;
+    font-weight:700!important;
+    text-decoration:underline!important;
+    text-underline-offset:2px!important;
+  }
+
+  @media(max-width:640px){
+    #welcome-modal{
+      align-items:flex-end!important;
+      padding:0!important;
+    }
+    #welcome-modal .welcome-card{
+      width:100%!important;
+      max-width:none!important;
+      max-height:92dvh!important;
+      overflow-y:auto!important;
+      padding:30px 18px calc(18px + env(safe-area-inset-bottom))!important;
+      border-radius:24px 24px 0 0!important;
+      border-bottom:0!important;
+    }
+    #welcome-modal .welcome-card::after{
+      content:""!important;
+      position:absolute!important;
+      top:8px!important;
+      left:50%!important;
+      width:38px!important;
+      height:4px!important;
+      transform:translateX(-50%)!important;
+      border-radius:999px!important;
+      background:rgba(255,255,255,.14)!important;
+    }
+    #welcome-modal .welcome-star{
+      width:48px!important;
+      height:48px!important;
+      margin-bottom:15px!important;
+    }
+    #welcome-modal .welcome-title{
+      font-size:27px!important;
+    }
+    #welcome-modal .welcome-sub{
+      margin-bottom:20px!important;
+      font-size:12.5px!important;
+    }
+    #welcome-modal .own-input,
+    #welcome-modal .auth-page>.side-new,
+    #welcome-modal a.welcome-btn-wrap,
+    #welcome-modal #g-signin-main,
+    #welcome-modal #g-signup-main{
+      min-height:48px!important;
+    }
+  }
+</style>
 </head>
 <body class="text-[#e2e8f0] stellar-chat-workspace stellar-empty-home stellar-start-state">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
