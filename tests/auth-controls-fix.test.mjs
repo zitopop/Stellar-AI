@@ -21,3 +21,11 @@ test('account controls remain explicit touch-safe buttons', () => {
   assert.match(app, /#account-box \.acct-out-btn\{[\s\S]*?min-width:86px!important;[\s\S]*?text-indent:0!important/);
   assert.match(app, /#account-box \.acct-out-btn::after\{[\s\S]*?content:none!important/);
 });
+
+
+test('Settings keeps an authenticated session active', () => {
+  assert.match(app, /function settingsAuthAction\(\) \{[\s\S]*?if \(signedInUser && signedInUser\.email\) \{[\s\S]*?Opening Settings will not sign you out\.[\s\S]*?return;[\s\S]*?closeSettings\(\);[\s\S]*?openWelcome\(\);/);
+  assert.doesNotMatch(app, /function settingsAuthAction\(\) \{[\s\S]*?if \(Store\.get\(\)\.user\) \{ signOut\(\)/);
+  assert.match(app, /if \(authKey\) authKey\.textContent = signedIn \? 'Signed in' : 'Sign in with Google';/);
+  assert.match(app, /authRow\.classList\.toggle\('set-click', !signedIn\)/);
+});
