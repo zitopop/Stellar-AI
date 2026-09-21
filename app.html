@@ -10405,32 +10405,32 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
             <button type="button" id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span class="model-icon" aria-hidden="true">⭐</span><span class="model-name">Star</span><span class="model-mode">Smart</span><span class="model-caret" aria-hidden="true">▾</span></button>
             <div id="model-menu" role="menu" aria-label="Choose an AI model" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
               <div class="model-menu-heading" aria-hidden="true"><span>AI models</span><span>Select a focus</span></div>
-              <button type="button" onclick="pickModel('fabie')" data-model-choice="fabie" role="menuitemradio" aria-checked="false" aria-label="Select Spark for fast drafts" title="Fast drafts with Claude Haiku" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button type="button" onclick="pickModel('fabie')" data-model-choice="fabie" role="menuitemradio" aria-checked="false" aria-label="Select Spark for fast drafts" title="Quick drafts, small fixes and lightweight work" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
                 </div>
                 <div id="fabie-check" class="font-black text-sm text-[#7c3aed]">✓</div>
               </button>
-              <button type="button" onclick="pickModel('smart')" data-model-choice="smart" role="menuitemradio" aria-checked="true" aria-label="Select Star, recommended for most scripts" title="Recommended scripts with Claude Sonnet" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button type="button" onclick="pickModel('smart')" data-model-choice="smart" role="menuitemradio" aria-checked="true" aria-label="Select Star, recommended for most scripts" title="Balanced quality for most FiveM and Roblox builds" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">⭐ Star <span style="color:#8b8b9e;font-size:10px;">· best for most scripts</span></div>
                 </div>
                 <div id="smart-check" class="font-black text-sm text-[#7c3aed]">✓</div>
               </button>
-              <button type="button" onclick="pickModel('comet')" data-model-choice="comet" role="menuitemradio" aria-checked="false" aria-label="Select Comet for deep system work" title="Deep system work with Claude Opus" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button type="button" onclick="pickModel('comet')" data-model-choice="comet" role="menuitemradio" aria-checked="false" aria-label="Select Comet for deep system work" title="Deeper architecture, debugging and larger systems" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">☄️ Comet <span style="color:#8b8b9e;font-size:10px;">· deep system work</span></div>
                 </div>
                 <div id="comet-check" class="font-black text-sm text-[#7c3aed]">✓</div>
               </button>
-              <button type="button" id="nova-model-btn" onclick="pickModel('ultra')" data-model-choice="ultra" role="menuitemradio" aria-checked="false" aria-label="Select Nova for maximum quality, available on Pro" title="Maximum quality with Claude Opus, Pro plan" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
+              <button type="button" id="nova-model-btn" onclick="pickModel('ultra')" data-model-choice="ultra" role="menuitemradio" aria-checked="false" aria-label="Select Nova for maximum quality, available on Pro" title="Maximum Stellar capability for difficult project work" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">🚀 Nova <span class="text-xs px-2 py-0.5 bg-[#7c3aed] rounded text-white">PRO</span><span style="color:#8b8b9e;font-size:10px;"> · max quality</span></div>
                 </div>
                 <div id="ultra-check" class="font-black text-sm text-[#7c3aed]">✓</div>
               </button>
-              <div id="provider-models" class="hidden border-t border-white/10 mt-2 pt-2">
-                <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/45">Specialist roles</div>
+              <div id="provider-models" class="hidden owner-models border-t border-white/10 mt-2 pt-2" aria-hidden="true">
+                <div class="owner-models-heading"><span>Owner modes</span><span>Private</span></div>
                 <button type="button" onclick="pickModel('researcher')" data-model-choice="researcher" role="menuitemradio" aria-checked="false" aria-label="Select Research AI for documented sources and uncertainty" title="Separate documented sources, assumptions, and open questions." class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                   <div><div class="font-black text-sm">🔎 Research AI <span style="color:#8b8b9e;font-size:10px;">· sources + uncertainty</span></div></div>
                   <div id="researcher-check" class="font-black text-sm text-[#7c3aed]">✓</div>
@@ -11940,8 +11940,20 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         if (modal && !modal.classList.contains('hidden')) close();
       }
     }
-    function openOwner() {
+    async function openOwner() {
       if (!isOwner()) return;
+      try {
+        const { response, data } = await ownerRequest('/api/broadcast', { action: 'verifyOwner' });
+        if (!response.ok || data?.owner !== true) {
+          Store.set({ owner: false });
+          refreshSettings();
+          showStellarNotice('Owner access could not be verified.', 'error');
+          return;
+        }
+      } catch {
+        showStellarNotice('Owner access could not be verified.', 'error');
+        return;
+      }
       closeOtherDialogs('owner');
       const active = document.activeElement;
       ownerDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
@@ -13803,7 +13815,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         if (check) check.style.visibility = cur === role ? 'visible' : 'hidden';
       });
       const providerModels = document.getElementById('provider-models');
-      if (providerModels) providerModels.classList.toggle('hidden', !(pro || s.plan === 'plus' || s.plan === 'lite'));
+      if (providerModels) {
+        const ownerOnlyVisible = isOwner();
+        providerModels.classList.toggle('hidden', !ownerOnlyVisible);
+        providerModels.setAttribute('aria-hidden', String(!ownerOnlyVisible));
+      }
       document.querySelectorAll('[data-model-choice]').forEach((choice) => {
         choice.setAttribute('aria-checked', String(choice.dataset.modelChoice === cur));
       });
@@ -13860,7 +13876,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       (modelMenuTrigger || modelButton)?.focus({ preventScroll: true });
       const paid = ['starter', 'plus', 'pro'].includes(s.plan) || isOwner();
       if (m === 'ultra' && !(s.plan === 'pro' || isOwner())) { openPlans(); return; }
-      if (['researcher', 'reviewer', 'security', 'tester'].includes(m) && !(s.plan === 'plus' || s.plan === 'lite' || s.plan === 'pro' || isOwner())) { openPlans(); return; }
+      if (['researcher', 'reviewer', 'security', 'tester'].includes(m) && !isOwner()) {
+        showStellarNotice('That specialist mode is available only in the private Owner workspace.', 'error');
+        return;
+      }
       Store.set({ model: m });
       refreshModelMenu();
       const labels = {
@@ -14836,6 +14855,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
 
     function openAgentMenuFromJarvis() {
+      if (!isOwner()) {
+        showStellarNotice('Specialist AI modes are part of the private Owner workspace.', 'info');
+        return;
+      }
       refreshModelMenu();
       const menu = document.getElementById('model-menu');
       const trigger = document.getElementById('composer-model-trigger') || document.getElementById('model-btn');
@@ -25128,6 +25151,172 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
     #plans-modal .plan-card>button{
       min-height:44px!important;
       height:44px!important;
+    }
+  }
+</style>
+
+<style id="stellar-model-menu-private-v6">
+  #model-menu{
+    width:min(350px,calc(100vw - 24px))!important;
+    padding:8px!important;
+    border:1px solid rgba(188,164,232,.16)!important;
+    border-radius:16px!important;
+    background:rgba(14,15,21,.985)!important;
+    box-shadow:0 26px 72px rgba(0,0,0,.48)!important;
+    backdrop-filter:blur(22px)!important;
+    -webkit-backdrop-filter:blur(22px)!important;
+  }
+
+  #model-menu .model-menu-heading{
+    min-height:44px!important;
+    margin:0 0 6px!important;
+    padding:7px 8px 9px!important;
+    display:flex!important;
+    align-items:flex-end!important;
+    justify-content:space-between!important;
+    gap:12px!important;
+    border-bottom:1px solid rgba(255,255,255,.055)!important;
+    color:#817a89!important;
+    font-size:8px!important;
+    font-weight:700!important;
+    letter-spacing:.05em!important;
+  }
+
+  #model-menu .model-menu-heading span:first-child{
+    color:#e8e2ed!important;
+    font-size:11px!important;
+    font-weight:760!important;
+    letter-spacing:-.01em!important;
+  }
+
+  #model-menu [data-model-choice]{
+    position:relative!important;
+    min-height:54px!important;
+    margin:3px 0!important;
+    padding:8px 10px!important;
+    border:1px solid transparent!important;
+    border-radius:11px!important;
+    background:transparent!important;
+    color:#d9d3df!important;
+    box-shadow:none!important;
+    transition:background .14s ease,border-color .14s ease,transform .14s ease!important;
+  }
+
+  #model-menu [data-model-choice]:hover,
+  #model-menu [data-model-choice]:focus-visible{
+    border-color:rgba(167,139,250,.14)!important;
+    background:rgba(139,92,246,.055)!important;
+    transform:translateX(1px)!important;
+    outline:none!important;
+  }
+
+  #model-menu [data-model-choice][aria-checked="true"]{
+    border-color:rgba(167,139,250,.24)!important;
+    background:linear-gradient(90deg,rgba(139,92,246,.12),rgba(139,92,246,.045))!important;
+    color:#fff!important;
+  }
+
+  #model-menu [data-model-choice] .font-black.text-sm{
+    color:inherit!important;
+    font-size:11.5px!important;
+    font-weight:720!important;
+    line-height:1.35!important;
+  }
+
+  #model-menu [data-model-choice] [style*="font-size:10px"]{
+    color:#817a89!important;
+    font-size:9px!important;
+    font-weight:560!important;
+  }
+
+  #model-menu [data-model-choice] [id$="-check"]{
+    width:22px!important;
+    height:22px!important;
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 22px!important;
+    border-radius:7px!important;
+    color:#bca8ec!important;
+    font-size:10px!important;
+  }
+
+  #model-menu #nova-model-btn{
+    border-color:rgba(242,201,121,.11)!important;
+    background:rgba(242,201,121,.025)!important;
+  }
+
+  #model-menu #nova-model-btn [class*="bg-[#7c3aed]"]{
+    padding:2px 5px!important;
+    border-radius:5px!important;
+    background:rgba(242,201,121,.12)!important;
+    color:#ceb77f!important;
+    font-size:7px!important;
+    font-weight:800!important;
+    letter-spacing:.06em!important;
+  }
+
+  #provider-models.owner-models{
+    margin-top:7px!important;
+    padding-top:7px!important;
+    border-top:1px solid rgba(255,255,255,.06)!important;
+  }
+
+  #provider-models.owner-models.hidden{
+    display:none!important;
+  }
+
+  #provider-models .owner-models-heading{
+    min-height:28px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    padding:0 8px!important;
+    color:#9a91a5!important;
+    font-size:8px!important;
+    font-weight:760!important;
+    letter-spacing:.08em!important;
+    text-transform:uppercase!important;
+  }
+
+  #provider-models .owner-models-heading span:last-child{
+    padding:3px 6px!important;
+    border:1px solid rgba(242,201,121,.11)!important;
+    border-radius:999px!important;
+    background:rgba(242,201,121,.025)!important;
+    color:#aa986f!important;
+    font-size:6.5px!important;
+  }
+
+  #model-menu>[role="menuitem"]{
+    min-height:38px!important;
+    margin-top:5px!important;
+    padding:0 10px!important;
+    display:flex!important;
+    align-items:center!important;
+    border-radius:9px!important;
+    color:#8e8796!important;
+    font-size:9.5px!important;
+    font-weight:650!important;
+  }
+
+  #model-menu>[role="menuitem"]:hover,
+  #model-menu>[role="menuitem"]:focus-visible{
+    background:rgba(255,255,255,.03)!important;
+    color:#dcd6e3!important;
+    outline:none!important;
+  }
+
+  @media(max-width:640px){
+    #model-menu{
+      width:min(330px,calc(100vw - 16px))!important;
+      max-height:min(65dvh,460px)!important;
+      padding:7px!important;
+      border-radius:14px!important;
+    }
+    #model-menu [data-model-choice]{
+      min-height:50px!important;
+      touch-action:manipulation!important;
+      -webkit-tap-highlight-color:transparent!important;
     }
   }
 </style>
