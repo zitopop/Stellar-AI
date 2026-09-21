@@ -10577,7 +10577,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           </div>
           
           <button type="button" id="send-btn" onclick="stopOrSend()" aria-label="Send message" title="Send message" class="primary-btn px-6 hover:bg-white/15 rounded-2xl font-black transition-all active:scale-[0.985]">
-            Send
+            <svg class="send-arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 19V5"></path>
+              <path d="M6.5 10.5 12 5l5.5 5.5"></path>
+            </svg>
           </button>
         </div>
         <div class="composer-foot">
@@ -13361,10 +13364,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     function setSendControl(label, ariaLabel) {
       const button = document.getElementById('send-btn');
       if (!button) return;
-      button.textContent = label;
+      const isStop = label === '◼ Stop';
       button.setAttribute('aria-label', ariaLabel);
       button.title = ariaLabel;
-      button.classList.toggle('is-stop', label === '◼ Stop');
+      button.classList.toggle('is-stop', isStop);
+      button.innerHTML = isStop
+        ? '<span class="send-stop-mark" aria-hidden="true"></span><span class="send-stop-text">Stop</span>'
+        : '<svg class="send-arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5"></path><path d="M6.5 10.5 12 5l5.5 5.5"></path></svg>';
     }
     function restoreComposerFocusIfSendControlFocused() {
       const button = document.getElementById('send-btn');
@@ -24695,6 +24701,104 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
     #settings-modal .voice-action{
       flex:1 1 0!important;
       min-height:42px!important;
+    }
+  }
+</style>
+
+<style id="stellar-send-arrow-final-v1">
+  /* One real send icon everywhere. Old pseudo-element arrows are disabled. */
+  #main-col .input-area #send-btn:not(.is-stop){
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:50%!important;
+    line-height:0!important;
+    font-size:0!important;
+    overflow:hidden!important;
+  }
+
+  #main-col .input-area #send-btn:not(.is-stop)::before,
+  #main-col .input-area #send-btn:not(.is-stop)::after{
+    content:none!important;
+    display:none!important;
+  }
+
+  #main-col .input-area #send-btn .send-arrow-icon{
+    display:block!important;
+    width:20px!important;
+    height:20px!important;
+    margin:0!important;
+    overflow:visible!important;
+    color:currentColor!important;
+    stroke:currentColor!important;
+    fill:none!important;
+    stroke-width:2.25!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+    transform:translateY(-.5px)!important;
+    transform-origin:center!important;
+    pointer-events:none!important;
+    transition:transform .14s ease!important;
+  }
+
+  #main-col .input-area #send-btn:not(.is-stop):hover .send-arrow-icon,
+  #main-col .input-area #send-btn:not(.is-stop):focus-visible .send-arrow-icon{
+    transform:translateY(-1.25px)!important;
+  }
+
+  #main-col .input-area #send-btn.is-stop::before,
+  #main-col .input-area #send-btn.is-stop::after{
+    content:none!important;
+    display:none!important;
+  }
+
+  #main-col .input-area #send-btn.is-stop{
+    width:auto!important;
+    min-width:72px!important;
+    max-width:none!important;
+    height:44px!important;
+    min-height:44px!important;
+    padding:0 12px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:7px!important;
+    border-radius:12px!important;
+    font-size:11px!important;
+    line-height:1!important;
+  }
+
+  #main-col .input-area #send-btn .send-stop-mark{
+    width:9px!important;
+    height:9px!important;
+    flex:0 0 9px!important;
+    border-radius:2px!important;
+    background:currentColor!important;
+  }
+
+  #main-col .input-area #send-btn .send-stop-text{
+    display:inline!important;
+    font-size:11px!important;
+    font-weight:700!important;
+    line-height:1!important;
+  }
+
+  @media(max-width:640px){
+    #main-col .input-area #send-btn:not(.is-stop){
+      width:44px!important;
+      min-width:44px!important;
+      height:44px!important;
+      min-height:44px!important;
+    }
+    #main-col .input-area #send-btn .send-arrow-icon{
+      width:19px!important;
+      height:19px!important;
     }
   }
 </style>
