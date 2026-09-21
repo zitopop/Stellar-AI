@@ -11091,21 +11091,33 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
     window.showStellarNotice = showStellarNotice;
 
+    let stellarStoreMemory = null;
     const Store = {
       get() {
         const fallback = { mode: 'light', plan: 'free', chats: [], currentChat: null };
         const raw = safeStorageGet('stellar-store');
-        if (!raw) return fallback;
-        try {
-          const parsed = JSON.parse(raw);
-          return parsed && typeof parsed === 'object' ? parsed : fallback;
-        } catch {
-          return fallback;
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+              stellarStoreMemory = parsed;
+              return parsed;
+            }
+          } catch {}
         }
+        return stellarStoreMemory && typeof stellarStoreMemory === 'object' ? stellarStoreMemory : fallback;
       },
       set(data) {
         const current = this.get();
-        return safeStorageSet('stellar-store', JSON.stringify({ ...current, ...data }));
+        const next = { ...current, ...data };
+        stellarStoreMemory = next;
+        const saved = safeStorageSet('stellar-store', JSON.stringify(next));
+        if (!saved && next.user?.email) {
+          // Signed-in chat history is server-backed; keep the current session responsive
+          // even when browser storage is full, then let saveChatsToServer persist changes.
+          return true;
+        }
+        return saved;
       }
     };
 
