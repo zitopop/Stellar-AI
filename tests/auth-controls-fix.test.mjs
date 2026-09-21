@@ -29,3 +29,9 @@ test('Settings keeps an authenticated session active', () => {
   assert.match(app, /if \(authKey\) authKey\.textContent = signedIn \? 'Signed in' : 'Sign in with Google';/);
   assert.match(app, /authRow\.classList\.toggle\('set-click', !signedIn\)/);
 });
+
+
+test('Settings hides Discord sign-in once authenticated', () => {
+  assert.match(app, /const discordRow = document\.getElementById\('discord-signin-btn'\);/);
+  assert.match(app, /if \(discordRow\) discordRow\.style\.display = signedIn \? 'none' : '';/);
+});
