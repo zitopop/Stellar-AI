@@ -33,6 +33,9 @@ const FORGE_MODELS = new Set([
   'claude-haiku-4-5', 'claude-sonnet-4-6', 'claude-opus-4-6', 'claude-opus-4-7',
 ]);
 
+const PUBLIC_MODEL_INPUTS = new Set(['spark', 'fabie', 'star', 'smart', 'comet', 'nova', 'ultra']);
+const OWNER_ONLY_ROLES = new Set(['planner', 'researcher', 'reviewer', 'security', 'tester']);
+
 const ROUTING_ROLES = {
   planner: { model: 'gpt-5-mini', instruction: 'Return a compact implementation plan, assumptions, exact file tree, dependencies, and acceptance checks before code.' },
   implementer: { model: 'claude-sonnet-4-6', instruction: 'You are in IMPLEMENTER mode. Write complete production-ready code with every required file complete and no placeholders. Keep pre-code explanation brief. After the files, give exact numbered instructions for where each file goes, required dependencies or configuration, install/restart commands or Studio actions, and how the user can verify the result.' },
@@ -811,6 +814,19 @@ export default async function handler(req, res) {
 
   const session = readSession(req);
   const plan = await getPlanFromServer(session?.email);
+
+  // Owner-only routing is enforced on the server. Hiding controls in the browser
+  // is presentation only; a crafted request must not unlock private models or roles.
+  if (plan !== 'owner') {
+    const requestedModelKey = normaliseRoutingInput(model);
+    const requestedRoleKey = normaliseRoutingInput(role);
+    const ownerRoleRequested = OWNER_ONLY_ROLES.has(requestedRoleKey);
+    const privateModelRequested = Boolean(requestedModelKey) && !PUBLIC_MODEL_INPUTS.has(requestedModelKey);
+    if (ownerRoleRequested || privateModelRequested) {
+      return res.status(403).json({ error: 'That AI mode is available only in the private Owner workspace.' });
+    }
+  }
+
   const limits = getPlanDefinition(plan);
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);
   let usage;
