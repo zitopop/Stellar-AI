@@ -10473,10 +10473,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       <input id="search" type="search" inputmode="search" readonly onpointerdown="prepareBuildSearch(this)" onfocus="prepareBuildSearch(this)" oninput="markBuildSearchUserInput(this); renderChatList()" placeholder="Search builds" aria-label="Search builds" class="w-full mb-3 bg-white/5 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none focus:border-white/30 text-white placeholder-[#64748b]" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="stellar_build_filter" data-form-type="other" data-1p-ignore="true" data-lpignore="true">
 
       <div class="stellar-sidebar-nav" aria-label="Workspace">
-        <button type="button" onclick="toggleWorkspace()"><span class="nav-ico">□</span><span>Projects</span></button>
-        <button type="button" onclick="document.getElementById('image-upload-input')?.click()"><span class="nav-ico">▧</span><span>Files</span></button>
-        <button type="button" onclick="location.href='/jarvis'"><span class="nav-ico">◉</span><span>Jarvis Vision</span></button>
-        <button type="button" onclick="openSettings()"><span class="nav-ico">⚙</span><span>Settings</span></button>
+        <button type="button" onclick="toggleWorkspace()" title="Projects" aria-label="Projects"><span class="nav-ico">□</span><span>Projects</span></button>
+        <button type="button" onclick="document.getElementById('image-upload-input')?.click()" title="Files" aria-label="Files"><span class="nav-ico">▧</span><span>Files</span></button>
+        <button type="button" onclick="location.href='/jarvis'" title="Jarvis Vision" aria-label="Jarvis Vision"><span class="nav-ico">◉</span><span>Jarvis Vision</span></button>
+        <button type="button" onclick="openSettings()" title="Settings" aria-label="Settings"><span class="nav-ico">⚙</span><span>Settings</span></button>
       </div>
       <div id="chats-heading" class="chats-label" role="heading" aria-level="2">Recent builds</div>
       <div class="flex-1 overflow-y-auto" id="chats-list" role="region" aria-labelledby="chats-heading"></div>
@@ -10503,12 +10503,12 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
       <div class="mt-auto pt-4 border-t border-white/10 side-foot">
         <div class="side-row-2">
-          <button type="button" onclick="openUsage()" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-card"/></svg></span>Credit</button>
-          <button type="button" onclick="openPlans()" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg></span>Plans</button>
+          <button type="button" onclick="openUsage()" class="side-act side-act-key" title="Credit" aria-label="Credit"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-card"/></svg></span>Credit</button>
+          <button type="button" onclick="openPlans()" class="side-act side-act-key" title="Plans" aria-label="Plans"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg></span>Plans</button>
         </div>
         <div class="side-row-3">
-          <a href="/terms.html" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>Terms</a>
-          <button type="button" onclick="openSettings()" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"/></svg></span>Settings</button>
+          <a href="/terms.html" class="side-act" title="Terms" aria-label="Terms"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>Terms</a>
+          <button type="button" onclick="openSettings()" class="side-act" title="Settings" aria-label="Settings"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"/></svg></span>Settings</button>
         </div>
       </div>
     </div>
@@ -11570,7 +11570,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
               <div class="text-xs text-[#64748b] truncate mt-0.5">${escapeHtml(lastMsg)}</div>
             </button>
             <div class="chat-actions flex">
-              <button onclick="event.stopPropagation(); openChatMenu(event, '${chat.id}')" title="Options" aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯</button>
+              <button type="button" onclick="event.stopPropagation(); openChatMenu(event, '${chat.id}')" title="Pin, rename or delete" data-tooltip="Pin · Rename · Delete" aria-label="Chat actions: pin, rename or delete" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯</button>
             </div>
           </div>`;
         container.appendChild(div);
@@ -23342,5 +23342,304 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
 </style>
 
 <link rel="stylesheet" href="/lib/assets/chat-home.css?v=20260920">
+
+<style id="stellar-sidebar-posh-v2">
+  /* Final sidebar/chat-history polish: one clean axis, visible chat actions, touch-safe controls. */
+  #sidebar{
+    --sb-border:rgba(255,255,255,.075);
+    --sb-hover:rgba(255,255,255,.055);
+    --sb-active:rgba(139,92,246,.13);
+    --sb-text:#eeeaf5;
+    --sb-muted:#8f879a;
+  }
+
+  #sidebar .side-new{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:8px!important;
+    min-height:44px!important;
+    margin-bottom:10px!important;
+    border-radius:11px!important;
+  }
+
+  #sidebar #search{
+    display:block!important;
+    width:100%!important;
+    min-height:40px!important;
+    margin:0 0 10px!important;
+    padding:0 12px!important;
+    border:1px solid var(--sb-border)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.025)!important;
+    color:var(--sb-text)!important;
+  }
+
+  #sidebar #search[hidden]{
+    display:none!important;
+  }
+
+  #sidebar .stellar-sidebar-nav{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:3px!important;
+    margin-bottom:10px!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button,
+  #sidebar .side-act{
+    position:relative!important;
+    width:100%!important;
+    min-height:42px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    padding:0 10px!important;
+    border:1px solid transparent!important;
+    border-radius:10px!important;
+    background:transparent!important;
+    color:var(--sb-text)!important;
+    font-size:12.5px!important;
+    font-weight:650!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+    text-decoration:none!important;
+    text-align:left!important;
+    transform:none!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button:hover,
+  #sidebar .stellar-sidebar-nav button:focus-visible,
+  #sidebar .side-act:hover,
+  #sidebar .side-act:focus-visible{
+    background:var(--sb-hover)!important;
+    border-color:var(--sb-border)!important;
+    color:#fff!important;
+    outline:none!important;
+  }
+
+  #sidebar .nav-ico,
+  #sidebar .side-act .ico{
+    width:24px!important;
+    min-width:24px!important;
+    height:24px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    color:#b9a7e8!important;
+    font-size:14px!important;
+  }
+
+  #sidebar .side-foot{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:3px!important;
+    padding-top:10px!important;
+    margin-top:10px!important;
+    border-top:1px solid var(--sb-border)!important;
+  }
+
+  #sidebar .side-row-2,
+  #sidebar .side-row-3{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:3px!important;
+    width:100%!important;
+  }
+
+  #sidebar #chats-heading{
+    display:block!important;
+    margin:8px 8px 6px!important;
+    color:var(--sb-muted)!important;
+    font-size:9.5px!important;
+    font-weight:800!important;
+    letter-spacing:.12em!important;
+    text-transform:uppercase!important;
+  }
+
+  #sidebar #chats-list{
+    display:block!important;
+    min-height:0!important;
+    padding:0 2px 4px 0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+
+  #sidebar .chat-list-empty{
+    padding:14px 10px!important;
+    color:#777181!important;
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+
+  #sidebar .sidebar-item{
+    position:relative!important;
+    margin:0 0 4px!important;
+    padding:3px!important;
+    border:1px solid transparent!important;
+    border-radius:11px!important;
+    background:transparent!important;
+    transform:none!important;
+    transition:background .14s ease,border-color .14s ease!important;
+  }
+
+  #sidebar .sidebar-item:hover,
+  #sidebar .sidebar-item:focus-within{
+    background:var(--sb-hover)!important;
+    border-color:var(--sb-border)!important;
+  }
+
+  #sidebar .sidebar-item.active{
+    background:var(--sb-active)!important;
+    border-color:rgba(167,139,250,.22)!important;
+  }
+
+  #sidebar .sidebar-item > .flex{
+    min-width:0!important;
+    gap:4px!important;
+  }
+
+  #sidebar .chat-open{
+    min-width:0!important;
+    min-height:46px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    gap:2px!important;
+    padding:5px 6px 5px 8px!important;
+    border-radius:8px!important;
+    text-align:left!important;
+    color:var(--sb-text)!important;
+  }
+
+  #sidebar .chat-open .font-bold{
+    font-size:12px!important;
+    font-weight:700!important;
+    line-height:1.25!important;
+    color:#f2eef8!important;
+  }
+
+  #sidebar .chat-open .text-xs{
+    color:#7f7789!important;
+    font-size:10px!important;
+    line-height:1.25!important;
+  }
+
+  #sidebar .chat-actions{
+    flex:0 0 auto!important;
+    align-items:center!important;
+  }
+
+  #sidebar .chat-dots{
+    position:relative!important;
+    width:38px!important;
+    min-width:38px!important;
+    height:38px!important;
+    min-height:38px!important;
+    border:1px solid transparent!important;
+    border-radius:9px!important;
+    color:#938aa0!important;
+    background:transparent!important;
+    opacity:.78!important;
+    transition:opacity .14s ease,background .14s ease,border-color .14s ease,color .14s ease!important;
+  }
+
+  #sidebar .sidebar-item:hover .chat-dots,
+  #sidebar .sidebar-item:focus-within .chat-dots,
+  #sidebar .chat-dots:hover,
+  #sidebar .chat-dots:focus-visible{
+    opacity:1!important;
+    background:rgba(255,255,255,.07)!important;
+    border-color:var(--sb-border)!important;
+    color:#fff!important;
+    outline:none!important;
+  }
+
+  #chat-menu{
+    min-width:196px!important;
+    padding:6px!important;
+    border:1px solid rgba(255,255,255,.11)!important;
+    border-radius:12px!important;
+    background:rgba(18,17,24,.96)!important;
+    box-shadow:0 18px 46px rgba(0,0,0,.45)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+
+  #chat-menu button{
+    min-height:42px!important;
+    padding:0 11px!important;
+    border-radius:8px!important;
+    font-size:12.5px!important;
+    font-weight:650!important;
+  }
+
+  #chat-menu button:hover,
+  #chat-menu button:focus-visible{
+    background:rgba(255,255,255,.07)!important;
+    outline:none!important;
+  }
+
+  #chat-menu .cm-danger{
+    margin-top:4px!important;
+    border-top:1px solid rgba(255,255,255,.07)!important;
+    border-radius:0 0 8px 8px!important;
+  }
+
+  body.light #sidebar{
+    --sb-border:rgba(0,0,0,.08);
+    --sb-hover:rgba(0,0,0,.04);
+    --sb-active:rgba(124,58,237,.08);
+    --sb-text:#282331;
+    --sb-muted:#777080;
+  }
+
+  body.light #sidebar .chat-open .font-bold{color:#241f2d!important;}
+  body.light #sidebar .chat-open .text-xs{color:#837c89!important;}
+  body.light #sidebar .chat-dots{color:#786f81!important;}
+  body.light #chat-menu{
+    background:rgba(255,255,255,.97)!important;
+    border-color:rgba(0,0,0,.10)!important;
+  }
+
+  @media (hover:none),(pointer:coarse){
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .side-act,
+    #sidebar .chat-open,
+    #sidebar .chat-dots{
+      min-height:44px!important;
+      touch-action:manipulation!important;
+      -webkit-tap-highlight-color:transparent!important;
+    }
+    #sidebar .chat-dots{
+      width:44px!important;
+      min-width:44px!important;
+      height:44px!important;
+      opacity:1!important;
+    }
+  }
+
+  @media (max-width:767px){
+    #sidebar{
+      width:min(88vw,300px)!important;
+      max-width:300px!important;
+      padding:12px!important;
+    }
+    #sidebar #chats-list{
+      max-height:none!important;
+    }
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .side-act{
+      min-height:46px!important;
+      font-size:13px!important;
+    }
+    #sidebar .chat-open{
+      min-height:48px!important;
+    }
+  }
+</style>
 </body>
 </html>
