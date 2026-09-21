@@ -10576,12 +10576,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
             <button type="button" onclick="clearPaste()" class="paste-x" aria-label="Remove pasted content" title="Remove pasted content">×</button>
           </div>
           
-          <button type="button" id="send-btn" onclick="stopOrSend()" aria-label="Send message" title="Send message" class="primary-btn px-6 hover:bg-white/15 rounded-2xl font-black transition-all active:scale-[0.985]">
-            <svg class="send-arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M12 19V5"></path>
-              <path d="M6.5 10.5 12 5l5.5 5.5"></path>
-            </svg>
-          </button>
+          <button type="button" id="send-btn" onclick="stopOrSend()" aria-label="Send message" title="Send message" class="primary-btn px-6 hover:bg-white/15 rounded-2xl font-black transition-all active:scale-[0.985]"></button>
         </div>
         <div class="composer-foot">
           <button type="button" onclick="openUsage()" id="credits-btn" class="ws-toggle credits-btn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> <span id="credits-val">—</span></button>
@@ -13370,7 +13365,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       button.classList.toggle('is-stop', isStop);
       button.innerHTML = isStop
         ? '<span class="send-stop-mark" aria-hidden="true"></span><span class="send-stop-text">Stop</span>'
-        : '<svg class="send-arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5"></path><path d="M6.5 10.5 12 5l5.5 5.5"></path></svg>';
+        : '';
     }
     function restoreComposerFocusIfSendControlFocused() {
       const button = document.getElementById('send-btn');
@@ -24799,6 +24794,56 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
     #main-col .input-area #send-btn .send-arrow-icon{
       width:19px!important;
       height:19px!important;
+    }
+  }
+</style>
+
+<style id="stellar-send-clean-circle-v2">
+  /* Final send control: clean accent circle with no arrow/icon. */
+  #main-col .input-area #send-btn:not(.is-stop){
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    padding:0!important;
+    border-radius:50%!important;
+    display:block!important;
+    font-size:0!important;
+    line-height:0!important;
+    overflow:hidden!important;
+  }
+
+  #main-col .input-area #send-btn:not(.is-stop)::before,
+  #main-col .input-area #send-btn:not(.is-stop)::after,
+  #main-col .input-area #send-btn:not(.is-stop) .send-arrow-icon{
+    content:none!important;
+    display:none!important;
+  }
+
+  #main-col .input-area #send-btn:not(.is-stop){
+    background:
+      radial-gradient(circle at 38% 32%,rgba(255,255,255,.20),transparent 34%),
+      linear-gradient(145deg,rgba(var(--accent-rgb,155,123,255),1),rgba(var(--accent-rgb,155,123,255),.76))!important;
+    border:1px solid rgba(255,255,255,.12)!important;
+    box-shadow:
+      0 8px 20px rgba(var(--accent-rgb,155,123,255),.16),
+      inset 0 1px 0 rgba(255,255,255,.16)!important;
+  }
+
+  #main-col .input-area #send-btn:not(.is-stop):hover,
+  #main-col .input-area #send-btn:not(.is-stop):focus-visible{
+    transform:translateY(-1px) scale(1.02)!important;
+    filter:brightness(1.05)!important;
+  }
+
+  @media(max-width:640px){
+    #main-col .input-area #send-btn:not(.is-stop){
+      width:44px!important;
+      min-width:44px!important;
+      height:44px!important;
+      min-height:44px!important;
     }
   }
 </style>
