@@ -10523,8 +10523,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       const mobileSidebarIsClosed = isMobile && !sidebar.classList.contains('open');
       sidebar.setAttribute('aria-hidden', String(mobileSidebarIsClosed));
       const isTablet = window.matchMedia('(min-width: 768px) and (max-width: 1100px)').matches;
-      sidebar.setAttribute('aria-hidden', String(mobileSidebarIsClosed || (isTablet && !sidebar.classList.contains('open'))));
       const isDrawer = isMobile || isTablet;
+      // A desktop collapsed rail must never leak into phone/tablet layout.
+      if (isDrawer && sidebar.classList.contains('collapsed')) sidebar.classList.remove('collapsed');
+      sidebar.setAttribute('aria-hidden', String(mobileSidebarIsClosed || (isTablet && !sidebar.classList.contains('open'))));
       const drawerIsClosed = isDrawer && !sidebar.classList.contains('open');
       const toggle = document.getElementById('mobile-menu-toggle');
       if (!toggle) return;
@@ -10553,9 +10555,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (window.innerWidth > 1100) {
         sb.classList.toggle('collapsed');
       } else {
+        sb.classList.remove('collapsed');
         const opening = !sb.classList.contains('open');
         sb.classList.toggle('open');
-        document.getElementById('overlay').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('open', opening);
         document.body.classList.toggle('nav-open', opening);
       }
       syncSidebarAccessibility();
