@@ -13051,8 +13051,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       Store.set({ setTab: target });
     }
     function settingsAuthAction() {
-      if (Store.get().user) { signOut(); refreshSettings(); }
-      else { closeSettings(); openWelcome(); }
+      const signedInUser = Store.get().user;
+      if (signedInUser && signedInUser.email) {
+        showStellarNotice('You are signed in. Opening Settings will not sign you out.', 'info');
+        return;
+      }
+      closeSettings();
+      openWelcome();
     }
     let welcomeTrigger = null;
     let landingStarterFocusPending = false;
@@ -13295,7 +13300,17 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (eRow) eRow.style.display = signedIn ? '' : 'none';
       document.getElementById('set-name').textContent = su ? (su.name || '—') : '—';
       document.getElementById('set-email').textContent = su ? su.email : '—';
-      document.getElementById('set-auth-key').textContent = su ? 'Sign out' : 'Sign in with Google';
+      const authRow = document.getElementById('set-auth-row');
+      const authKey = document.getElementById('set-auth-key');
+      if (authKey) authKey.textContent = signedIn ? 'Signed in' : 'Sign in with Google';
+      if (authRow) {
+        authRow.classList.toggle('set-click', !signedIn);
+        authRow.setAttribute('aria-disabled', String(signedIn));
+        authRow.setAttribute('title', signedIn ? 'Your Stellar AI session stays signed in' : 'Sign in to Stellar AI');
+        authRow.style.cursor = signedIn ? 'default' : '';
+        const authChev = authRow.querySelector('.set-chev');
+        if (authChev) authChev.style.visibility = signedIn ? 'hidden' : '';
+      }
       document.getElementById('set-plan-desc').textContent = p[1];
       const referralSection = document.getElementById('set-referral-section');
       const referralUrl = s.referralUrl || '';
