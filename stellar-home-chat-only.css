@@ -429,3 +429,329 @@ body:not(.stellar-empty-home):not(.stellar-start-state) .stellar-app-shell .inpu
     display:none!important;
   }
 }
+
+
+/* Posh sidebar system v1 — final /app sidebar presentation. */
+#sidebar {
+  --sb-line:rgba(194,171,255,.12);
+  --sb-line-strong:rgba(194,171,255,.24);
+  --sb-panel:rgba(255,255,255,.025);
+  --sb-panel-hover:rgba(156,116,255,.085);
+  --sb-text:#f4f0fa;
+  --sb-muted:#91899d;
+  --sb-icon:#cbbcff;
+}
+
+body:not(.light) #sidebar {
+  padding:12px 10px calc(14px + env(safe-area-inset-bottom))!important;
+  border-right:1px solid rgba(185,158,255,.11)!important;
+  background:
+    radial-gradient(circle at 14% 0%,rgba(123,78,216,.12),transparent 15rem),
+    linear-gradient(180deg,#100d16 0%,#0d0b12 48%,#0a090f 100%)!important;
+  box-shadow:16px 0 48px rgba(0,0,0,.22)!important;
+}
+
+#sidebar .sidebar-brand-row {
+  min-height:50px!important;
+  margin:0 2px 10px!important;
+  padding:0 2px!important;
+  align-items:center!important;
+}
+
+#sidebar .brand-title {
+  font-size:15px!important;
+  font-weight:800!important;
+  letter-spacing:-.025em!important;
+}
+
+#sidebar .brand-star {
+  width:36px!important;
+  min-width:36px!important;
+  height:36px!important;
+  border-radius:11px!important;
+  border:1px solid rgba(212,193,255,.22)!important;
+  background:linear-gradient(145deg,rgba(167,139,250,.22),rgba(91,55,170,.18))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 24px rgba(73,38,139,.16)!important;
+}
+
+#sidebar .sidebar-close {
+  border-color:rgba(255,255,255,.07)!important;
+  background:rgba(255,255,255,.028)!important;
+  color:#a89fb4!important;
+  box-shadow:none!important;
+}
+#sidebar .sidebar-close:hover,
+#sidebar .sidebar-close:focus-visible {
+  border-color:var(--sb-line-strong)!important;
+  background:rgba(151,111,239,.10)!important;
+  color:#fff!important;
+}
+
+/* Primary CTA */
+#sidebar .side-new {
+  min-height:48px!important;
+  margin:0 0 10px!important;
+  padding:0 13px!important;
+  border:1px solid rgba(195,169,255,.26)!important;
+  border-radius:13px!important;
+  background:
+    linear-gradient(135deg,rgba(118,75,203,.48),rgba(75,43,133,.34))!important;
+  color:#fff!important;
+  font-weight:720!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 10px 28px rgba(69,35,128,.16)!important;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease!important;
+}
+#sidebar .side-new:hover,
+#sidebar .side-new:focus-visible {
+  transform:translateY(-1px)!important;
+  border-color:rgba(216,195,255,.42)!important;
+  background:linear-gradient(135deg,rgba(135,91,223,.58),rgba(86,50,150,.40))!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 12px 30px rgba(74,39,139,.22)!important;
+}
+
+/* Search */
+#sidebar #search {
+  width:100%!important;
+  min-height:44px!important;
+  margin:0 0 12px!important;
+  padding:0 13px!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#f5f1f8!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.018)!important;
+}
+#sidebar #search::placeholder { color:#756f7e!important; }
+#sidebar #search:hover { border-color:rgba(194,171,255,.14)!important; }
+#sidebar #search:focus {
+  border-color:rgba(194,171,255,.34)!important;
+  background:rgba(129,91,206,.055)!important;
+  box-shadow:0 0 0 3px rgba(124,86,200,.07)!important;
+}
+
+/* Remove the chunky grouped-box look from both legacy and Orbit navigation. */
+#sidebar .stellar-sidebar-nav,
+#sidebar .stellar-orbit-primary,
+#sidebar .stellar-orbit-primary-grid {
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#sidebar .stellar-sidebar-nav {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  width:100%!important;
+  margin:0 0 13px!important;
+  padding:0!important;
+}
+#sidebar .stellar-orbit-primary {
+  width:100%!important;
+  margin:0 0 13px!important;
+}
+#sidebar .stellar-orbit-primary-grid {
+  display:grid!important;
+  gap:4px!important;
+}
+
+/* Posh nav rows */
+#sidebar .stellar-sidebar-nav button,
+#sidebar .stellar-orbit-primary-btn,
+#sidebar .stellar-orbit-primary-link,
+#sidebar .side-act {
+  position:relative!important;
+  width:100%!important;
+  min-height:46px!important;
+  margin:0!important;
+  padding:6px 10px!important;
+  border:1px solid transparent!important;
+  border-radius:12px!important;
+  background:transparent!important;
+  color:#a9a2b1!important;
+  box-shadow:none!important;
+  text-decoration:none!important;
+  transition:
+    color .14s ease,
+    border-color .14s ease,
+    background .14s ease,
+    transform .14s ease!important;
+}
+#sidebar .stellar-sidebar-nav button:hover,
+#sidebar .stellar-sidebar-nav button:focus-visible,
+#sidebar .stellar-orbit-primary-btn:hover,
+#sidebar .stellar-orbit-primary-btn:focus-visible,
+#sidebar .stellar-orbit-primary-link:hover,
+#sidebar .stellar-orbit-primary-link:focus-visible,
+#sidebar .side-act:hover,
+#sidebar .side-act:focus-visible {
+  color:#f7f3fb!important;
+  border-color:rgba(194,171,255,.12)!important;
+  background:
+    linear-gradient(90deg,rgba(132,93,211,.095),rgba(255,255,255,.018))!important;
+  transform:translateX(1px)!important;
+}
+
+/* Consistent icon tiles */
+#sidebar .stellar-sidebar-nav .nav-ico,
+#sidebar .stellar-orbit-primary-icon,
+#sidebar .side-act .ico {
+  display:inline-grid!important;
+  place-items:center!important;
+  flex:0 0 30px!important;
+  width:30px!important;
+  min-width:30px!important;
+  height:30px!important;
+  margin:0!important;
+  border:1px solid rgba(207,189,255,.085)!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.026)!important;
+  color:#bfb1e7!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
+}
+#sidebar .stellar-sidebar-nav button:hover .nav-ico,
+#sidebar .stellar-sidebar-nav button:focus-visible .nav-ico,
+#sidebar .stellar-orbit-primary-btn:hover .stellar-orbit-primary-icon,
+#sidebar .stellar-orbit-primary-btn:focus-visible .stellar-orbit-primary-icon,
+#sidebar .stellar-orbit-primary-link:hover .stellar-orbit-primary-icon,
+#sidebar .stellar-orbit-primary-link:focus-visible .stellar-orbit-primary-icon {
+  border-color:rgba(206,181,255,.21)!important;
+  background:rgba(137,96,220,.12)!important;
+  color:#f1eaff!important;
+}
+
+/* Copy and metadata hierarchy */
+#sidebar .stellar-orbit-primary-copy strong {
+  color:inherit!important;
+  font-size:11.5px!important;
+  font-weight:760!important;
+  letter-spacing:-.015em!important;
+}
+#sidebar .stellar-orbit-primary-copy span {
+  margin-top:1px!important;
+  color:#77717f!important;
+  font-size:9px!important;
+  line-height:1.25!important;
+}
+#sidebar .stellar-orbit-primary-meta {
+  padding:4px 6px!important;
+  border:1px solid rgba(255,255,255,.05)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.018)!important;
+  color:#746e7d!important;
+  font-size:7px!important;
+  font-weight:800!important;
+  letter-spacing:.04em!important;
+}
+
+/* Section labels */
+#sidebar .stellar-orbit-rail-label,
+#sidebar .chats-label,
+#sidebar #chats-heading {
+  margin:12px 8px 6px!important;
+  padding:0!important;
+  color:#686270!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+
+/* Chat history */
+#sidebar #chats-list {
+  padding:0 0 4px!important;
+}
+#sidebar .sidebar-item {
+  width:100%!important;
+  min-height:42px!important;
+  margin:1px 0!important;
+  padding:8px 10px!important;
+  border:1px solid transparent!important;
+  border-radius:11px!important;
+  color:#9e97a5!important;
+  background:transparent!important;
+}
+#sidebar .sidebar-item:hover {
+  border-color:rgba(194,171,255,.09)!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#eee9f3!important;
+}
+#sidebar .sidebar-item.active {
+  border-color:rgba(194,171,255,.15)!important;
+  background:
+    linear-gradient(90deg,rgba(127,87,203,.15),rgba(255,255,255,.018))!important;
+  color:#fff!important;
+  box-shadow:inset 2px 0 0 rgba(187,158,255,.68)!important;
+}
+
+/* Account/sign-in block */
+#sidebar .acct-box,
+#sidebar #account-box {
+  margin-top:auto!important;
+  padding:10px!important;
+  border:1px solid rgba(194,171,255,.09)!important;
+  border-radius:14px!important;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.028),rgba(255,255,255,.012))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
+}
+#sidebar .acct-box button,
+#sidebar #account-box button,
+#sidebar .acct-signin-btn {
+  min-height:44px!important;
+  border-radius:11px!important;
+}
+#sidebar .acct-signin-btn {
+  border:1px solid rgba(194,171,255,.15)!important;
+  background:rgba(128,89,205,.08)!important;
+  color:#eee7fa!important;
+}
+#sidebar .acct-signin-btn:hover,
+#sidebar .acct-signin-btn:focus-visible {
+  border-color:rgba(211,190,255,.28)!important;
+  background:rgba(132,91,216,.14)!important;
+}
+
+/* Open desktop sidebar stays restrained; collapsed rail rules below remain authoritative. */
+@media (min-width:1101px) {
+  #sidebar:not(.collapsed) {
+    width:264px!important;
+    min-width:264px!important;
+  }
+}
+
+/* Tablet/phone drawer: same premium language, larger touch spacing. */
+@media (max-width:1100px) {
+  .stellar-app-shell #sidebar {
+    width:min(88vw,300px)!important;
+    max-width:300px!important;
+    padding:12px 10px calc(14px + env(safe-area-inset-bottom))!important;
+  }
+  #sidebar .side-new,
+  #sidebar #search,
+  #sidebar .stellar-sidebar-nav button,
+  #sidebar .stellar-orbit-primary-btn,
+  #sidebar .stellar-orbit-primary-link,
+  #sidebar .side-act,
+  #sidebar .sidebar-item {
+    min-height:46px!important;
+  }
+  #sidebar .stellar-orbit-primary-copy strong {
+    font-size:12px!important;
+  }
+}
+
+/* Narrow phones keep comfortable edges without horizontal clipping. */
+@media (max-width:390px) {
+  .stellar-app-shell #sidebar {
+    width:min(92vw,288px)!important;
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  #sidebar .stellar-orbit-primary-meta {
+    display:none!important;
+  }
+}
