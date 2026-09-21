@@ -290,7 +290,12 @@
     bottom.appendChild(actions);
     composer.appendChild(bottom);
 
-    if (oldAttach) oldAttach.classList.add('stellar-legacy-attach');
+    if (oldAttach) {
+      oldAttach.classList.add('stellar-legacy-attach');
+      oldAttach.hidden = true;
+      oldAttach.setAttribute('aria-hidden', 'true');
+      oldAttach.tabIndex = -1;
+    }
     const modeDock = area?.querySelector('.composer-mode-dock');
     if (modeDock) modeDock.classList.add('stellar-empty-mode-dock');
 
