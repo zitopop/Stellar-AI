@@ -176,7 +176,7 @@
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // presentation/preferences so future features stay modular.
     ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
-    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=7');
+    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=8');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
     // The clean /app UI is owned by app.html. Do not dynamically reload the
@@ -184,7 +184,39 @@
     // old Chat/Build/Fix/Deploy composer after the page has rendered.
   }
 
+  function enhanceAppComposer() {
+    if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
+    const input = document.getElementById('txt');
+    if (!input || input.dataset.stellarAutosize === 'true') return;
+    input.dataset.stellarAutosize = 'true';
+
+    const resize = () => {
+      input.style.height = 'auto';
+      const max = window.innerWidth <= 767 ? 132 : 180;
+      input.style.height = Math.min(Math.max(input.scrollHeight, 46), max) + 'px';
+      input.style.overflowY = input.scrollHeight > max ? 'auto' : 'hidden';
+    };
+
+    input.addEventListener('input', resize, { passive: true });
+    input.addEventListener('paste', () => window.setTimeout(resize, 0));
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.shiftKey) window.setTimeout(resize, 0);
+    });
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+  }
+
   loadHomePresentation();
   loadSettingsPresentation();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { applyCurrencyLabels(); watchSidebarRailLabels(); }, { once: true }); else { applyCurrencyLabels(); watchSidebarRailLabels(); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      applyCurrencyLabels();
+      watchSidebarRailLabels();
+      enhanceAppComposer();
+    }, { once: true });
+  } else {
+    applyCurrencyLabels();
+    watchSidebarRailLabels();
+    enhanceAppComposer();
+  }
 })();
