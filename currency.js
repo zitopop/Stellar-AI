@@ -278,6 +278,55 @@
     }
   }
 
+  function installReliableModelPickerToggle() {
+    if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
+    if (document.documentElement.dataset.stellarModelToggleInstalled === 'true') return;
+    document.documentElement.dataset.stellarModelToggleInstalled = 'true';
+
+    const syncExpanded = (open) => {
+      document.querySelectorAll('#composer-model-trigger, .stellar-model-proxy, #model-btn').forEach((trigger) => {
+        trigger.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+    };
+
+    const close = () => {
+      const menu = document.getElementById('model-menu');
+      if (!menu) return;
+      menu.classList.add('hidden');
+      syncExpanded(false);
+    };
+
+    document.addEventListener('click', (event) => {
+      const trigger = event.target.closest?.('#composer-model-trigger, .stellar-model-proxy, #model-btn');
+      if (trigger) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+
+        const menu = document.getElementById('model-menu');
+        if (!menu) return;
+
+        enhanceModelPicker();
+        const willOpen = menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !willOpen);
+        syncExpanded(willOpen);
+
+        if (willOpen) {
+          const selected = menu.querySelector('[data-model-choice][aria-checked="true"]');
+          window.requestAnimationFrame(() => selected?.scrollIntoView?.({ block:'nearest' }));
+        }
+        return;
+      }
+
+      const menu = document.getElementById('model-menu');
+      if (menu && !menu.classList.contains('hidden') && !event.target.closest?.('#model-menu')) close();
+    }, true);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') close();
+    });
+  }
+
   function enhanceAppComposer() {
     if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
     const input = document.getElementById('txt');
@@ -430,6 +479,7 @@
       applyCurrencyLabels();
       watchSidebarRailLabels();
       enhanceModelPicker();
+      installReliableModelPickerToggle();
       enhanceAppComposer();
       enhanceModelPicker();
     }, { once: true });
@@ -437,6 +487,7 @@
     applyCurrencyLabels();
     watchSidebarRailLabels();
     enhanceModelPicker();
+    installReliableModelPickerToggle();
     enhanceAppComposer();
     enhanceModelPicker();
   }
