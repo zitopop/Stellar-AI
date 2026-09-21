@@ -10510,6 +10510,14 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         toggle.setAttribute('aria-expanded', String(responsiveNavigationIsExpanded));
         toggle.setAttribute('aria-label', responsiveNavigationIsExpanded ? 'Close navigation' : 'Open navigation');
       }
+      const sidebarClose = sidebar.querySelector('.sidebar-close');
+      if (sidebarClose) {
+        const sidebarControlLabel = isDrawer
+          ? (responsiveNavigationIsExpanded ? 'Close navigation' : 'Open navigation')
+          : (navigationIsExpanded ? 'Collapse navigation' : 'Expand navigation');
+        sidebarClose.setAttribute('aria-label', sidebarControlLabel);
+        sidebarClose.setAttribute('title', sidebarControlLabel);
+      }
     }
 
     function toggleSidebar() {
