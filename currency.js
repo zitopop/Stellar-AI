@@ -176,7 +176,7 @@
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // presentation/preferences so future features stay modular.
     ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
-    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=8');
+    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=9');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
     // The clean /app UI is owned by app.html. Do not dynamically reload the
@@ -187,23 +187,90 @@
   function enhanceAppComposer() {
     if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
     const input = document.getElementById('txt');
-    if (!input || input.dataset.stellarAutosize === 'true') return;
-    input.dataset.stellarAutosize = 'true';
+    const composer = document.querySelector('.input-area > .flex');
+    if (!input || !composer) return;
 
-    const resize = () => {
-      input.style.height = 'auto';
-      const max = window.innerWidth <= 767 ? 132 : 180;
-      input.style.height = Math.min(Math.max(input.scrollHeight, 46), max) + 'px';
-      input.style.overflowY = input.scrollHeight > max ? 'auto' : 'hidden';
-    };
+    if (input.dataset.stellarAutosize !== 'true') {
+      input.dataset.stellarAutosize = 'true';
+      const resize = () => {
+        input.style.height = 'auto';
+        const max = window.innerWidth <= 767 ? 132 : 180;
+        input.style.height = Math.min(Math.max(input.scrollHeight, 46), max) + 'px';
+        input.style.overflowY = input.scrollHeight > max ? 'auto' : 'hidden';
+      };
+      input.addEventListener('input', resize, { passive: true });
+      input.addEventListener('paste', () => window.setTimeout(resize, 0));
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) window.setTimeout(resize, 0);
+      });
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+    }
 
-    input.addEventListener('input', resize, { passive: true });
-    input.addEventListener('paste', () => window.setTimeout(resize, 0));
-    input.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' && !event.shiftKey) window.setTimeout(resize, 0);
-    });
-    window.addEventListener('resize', resize, { passive: true });
-    resize();
+    if (composer.dataset.stellarPremiumComposer === 'true') return;
+    composer.dataset.stellarPremiumComposer = 'true';
+
+    const area = composer.closest('.input-area');
+    const modeTrigger = document.getElementById('composer-model-trigger');
+    const mic = document.getElementById('mic-btn');
+    const send = document.getElementById('send-btn');
+    const oldAttach = document.getElementById('image-upload-btn');
+
+    const bottom = document.createElement('div');
+    bottom.className = 'stellar-composer-bottom';
+
+    const tools = document.createElement('div');
+    tools.className = 'stellar-composer-tools';
+
+    const attach = document.createElement('button');
+    attach.type = 'button';
+    attach.className = 'stellar-composer-plus';
+    attach.setAttribute('aria-label', 'Attach files or images');
+    attach.title = 'Attach files or images';
+    attach.innerHTML = '<span aria-hidden="true">＋</span><span class="stellar-composer-plus-label">Attach</span>';
+    attach.addEventListener('click', () => document.getElementById('image-upload-input')?.click());
+    tools.appendChild(attach);
+
+    if (modeTrigger) {
+      modeTrigger.classList.add('stellar-inline-model-trigger');
+      tools.appendChild(modeTrigger);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'stellar-composer-actions';
+    if (mic) actions.appendChild(mic);
+    if (send) actions.appendChild(send);
+
+    bottom.appendChild(tools);
+    bottom.appendChild(actions);
+    composer.appendChild(bottom);
+
+    if (oldAttach) oldAttach.classList.add('stellar-legacy-attach');
+    const modeDock = area?.querySelector('.composer-mode-dock');
+    if (modeDock) modeDock.classList.add('stellar-empty-mode-dock');
+
+    if (area && !area.querySelector('.stellar-home-intro')) {
+      const intro = document.createElement('div');
+      intro.className = 'stellar-home-intro';
+      intro.innerHTML = '<div class="stellar-home-kicker" id="stellar-home-kicker">Stellar AI</div><div class="stellar-home-question">What can I help you build?</div><div class="stellar-home-sub">Build, fix, research, or improve something with Stellar.</div>';
+      area.insertBefore(intro, area.firstChild);
+
+      const nameNode = document.getElementById('acct-name');
+      const syncName = () => {
+        const raw = String(nameNode?.textContent || '').trim();
+        const valid = raw && raw !== '—' && raw !== '?' && raw.length <= 80;
+        const first = valid ? raw.split(/\\s+/)[0] : '';
+        const h = new Date().getHours();
+        const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Good evening';
+        const kicker = document.getElementById('stellar-home-kicker');
+        if (kicker) kicker.textContent = first ? greeting + ', ' + first : 'Stellar AI';
+      };
+      syncName();
+      if (nameNode) {
+        const observer = new MutationObserver(syncName);
+        observer.observe(nameNode, { childList:true, characterData:true, subtree:true });
+      }
+    }
   }
 
   loadHomePresentation();
