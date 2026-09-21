@@ -120,6 +120,7 @@ test('existing duplicate chat records recover both parts of the conversation', (
   assert.deepEqual(h.state().chats[0].messages.map(m=>m.content), [
     'Original question','Original answer','Follow-up question'
   ]);
+  assert.equal(h.state().chats[0].name, 'Original');
   assert.equal(h.state().chats[1].messages[0].content, 'Keep separate');
   h.context.Store.set = () => assert.fail('Repair must be idempotent');
   h.context.repairDuplicateChats();
