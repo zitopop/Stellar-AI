@@ -10488,6 +10488,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         <div id="signed-in" class="acct-in" style="display:none">
           <div class="acct-avatar" id="acct-initial">?</div>
           <div class="acct-meta">
+            <div class="acct-status">Signed in</div>
             <div class="acct-name" id="acct-name">—</div>
             <div class="acct-email" id="acct-email">—</div>
           </div>
@@ -12688,6 +12689,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (!raw && user && user.email) {
         raw = String(user.email).split('@')[0].replace(/[._-]+/g, ' ').trim();
       }
+      if (!raw) {
+        const accountName = document.getElementById('acct-name')?.textContent?.trim();
+        if (accountName && accountName !== '—' && accountName !== 'Signed in') raw = accountName;
+      }
       let firstName = raw ? raw.split(/\s+/)[0] : '';
       if (firstName) firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
       if (firstName.length > 18) firstName = firstName.slice(0, 18) + '…';
@@ -12706,6 +12711,13 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
       const sub = document.querySelector('.landing-style-home .welcome-sub');
       if (sub) sub.textContent = 'Build something new, fix a problem, improve a project, or ask Stellar anything.';
+    }
+    function ensureHomeGreetingVisible() {
+      if (!document.body.classList.contains('stellar-empty-home') && !document.body.classList.contains('stellar-start-state')) return;
+      const chat = document.getElementById('chat');
+      if (!chat) return;
+      if (!chat.querySelector('.greet-wrap')) chat.insertAdjacentHTML('afterbegin', greetingMarkup());
+      syncHomeGreeting();
     }
     function greetingMarkup() {
       const firstName = homeFirstName();
@@ -12950,7 +12962,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       checkForUpdate();
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshEverything(); });
-    window.addEventListener('focus', refreshEverything);
+    window.addEventListener('focus', () => { refreshEverything(); ensureHomeGreetingVisible(); });
     window.addEventListener('online', refreshEverything);
     setInterval(refreshEverything, 5 * 60 * 1000);
     setInterval(checkForUpdate, 2 * 60 * 1000);
@@ -14933,8 +14945,9 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       maybeShowWelcome();
       applyLandingStarterPrompt();
       applyLandingHomePrompt();
-      requestAnimationFrame(syncHomeGreeting);
-      setTimeout(syncHomeGreeting, 120);
+      requestAnimationFrame(ensureHomeGreetingVisible);
+      setTimeout(ensureHomeGreetingVisible, 120);
+      setTimeout(ensureHomeGreetingVisible, 600);
     }
 
     // Keep the composer state, guide visibility and height in sync on every device.
@@ -24489,6 +24502,584 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
     html body.stellar-empty-home #main-col>.input-area.glass,
     html body.stellar-start-state #main-col>.input-area.glass{
       top:58%!important;
+    }
+  }
+</style>
+
+<style id="stellar-ui-polish-v5">
+  /* ===== Home + account card + plans: final coherent UI pass ===== */
+
+  /* Sidebar account card */
+  #sidebar #account-box{
+    margin:10px 0 8px!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+  }
+
+  #sidebar #signed-in.acct-in{
+    width:100%!important;
+    min-height:74px!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:10px!important;
+    padding:10px!important;
+    border:1px solid rgba(255,255,255,.075)!important;
+    border-radius:13px!important;
+    background:linear-gradient(135deg,rgba(139,92,246,.075),rgba(255,255,255,.018))!important;
+    box-shadow:inset 0 1px rgba(255,255,255,.025)!important;
+  }
+
+  #sidebar .acct-avatar{
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    border:1px solid rgba(167,139,250,.22)!important;
+    border-radius:11px!important;
+    background:rgba(139,92,246,.14)!important;
+    color:#d8ccf7!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .acct-meta{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    display:block!important;
+    overflow:hidden!important;
+  }
+
+  #sidebar .acct-status{
+    margin:0 0 2px!important;
+    color:#766e7f!important;
+    font-size:8px!important;
+    font-weight:750!important;
+    letter-spacing:.10em!important;
+    text-transform:uppercase!important;
+    line-height:1.1!important;
+  }
+
+  #sidebar .acct-name{
+    display:block!important;
+    width:100%!important;
+    margin:0!important;
+    color:#f2eef7!important;
+    font-size:13px!important;
+    font-weight:760!important;
+    line-height:1.25!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  #sidebar .acct-email{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    margin-top:3px!important;
+    color:#817a89!important;
+    font-size:9.5px!important;
+    font-weight:520!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  #sidebar .acct-out-btn{
+    flex:0 0 auto!important;
+    min-width:54px!important;
+    min-height:34px!important;
+    height:34px!important;
+    padding:0 9px!important;
+    border:1px solid rgba(255,255,255,.07)!important;
+    border-radius:9px!important;
+    background:rgba(255,255,255,.022)!important;
+    color:#8c8494!important;
+    font-size:9px!important;
+    font-weight:680!important;
+  }
+
+  #sidebar .acct-out-btn:hover,
+  #sidebar .acct-out-btn:focus-visible{
+    border-color:rgba(167,139,250,.18)!important;
+    background:rgba(139,92,246,.07)!important;
+    color:#e7dfef!important;
+  }
+
+  /* Home: make the personalized greeting impossible to miss. */
+  html body.stellar-empty-home #chat>.greet-wrap,
+  html body.stellar-empty-home #chat>.landing-style-home,
+  html body.stellar-start-state #chat>.greet-wrap,
+  html body.stellar-start-state #chat>.landing-style-home{
+    top:35.5%!important;
+    width:min(780px,calc(100% - 48px))!important;
+    max-width:780px!important;
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:15!important;
+  }
+
+  html body.stellar-empty-home #chat .greet-eyebrow,
+  html body.stellar-start-state #chat .greet-eyebrow{
+    margin-bottom:10px!important;
+    color:#8d8598!important;
+    font-size:9px!important;
+  }
+
+  html body.stellar-empty-home #chat .greet-hi,
+  html body.stellar-start-state #chat .greet-hi{
+    max-width:780px!important;
+    color:#f4f1f7!important;
+    font-size:clamp(36px,4vw,54px)!important;
+    font-weight:730!important;
+    line-height:1.035!important;
+    letter-spacing:-.05em!important;
+    text-wrap:balance!important;
+  }
+
+  html body.stellar-empty-home #chat .welcome-sub,
+  html body.stellar-start-state #chat .welcome-sub{
+    max-width:560px!important;
+    margin-top:11px!important;
+    color:#8d8993!important;
+    font-size:12px!important;
+    line-height:1.6!important;
+  }
+
+  html body.stellar-empty-home #main-col>.input-area.glass,
+  html body.stellar-start-state #main-col>.input-area.glass{
+    top:56%!important;
+  }
+
+  html body.stellar-empty-home #main-col>.input-area.glass>.flex,
+  html body.stellar-start-state #main-col>.input-area.glass>.flex{
+    width:min(100%,820px)!important;
+    max-width:820px!important;
+    min-height:96px!important;
+    border-color:rgba(190,166,235,.17)!important;
+    border-radius:20px!important;
+    background:linear-gradient(180deg,rgba(22,23,31,.985),rgba(17,18,25,.995))!important;
+    box-shadow:0 22px 58px rgba(0,0,0,.30)!important;
+  }
+
+  html body.stellar-empty-home #main-col>.input-area.glass>.flex:focus-within,
+  html body.stellar-start-state #main-col>.input-area.glass>.flex:focus-within{
+    border-color:rgba(var(--accent-rgb,155,123,255),.34)!important;
+    box-shadow:0 0 0 3px rgba(var(--accent-rgb,155,123,255),.045),0 26px 62px rgba(0,0,0,.34)!important;
+  }
+
+  /* Plans modal shell */
+  #plans-modal{
+    padding:22px!important;
+    background:rgba(3,3,8,.78)!important;
+    backdrop-filter:blur(14px)!important;
+    -webkit-backdrop-filter:blur(14px)!important;
+  }
+
+  #plans-modal>div{
+    width:min(1120px,calc(100vw - 44px))!important;
+    max-width:1120px!important;
+    max-height:min(820px,calc(100dvh - 44px))!important;
+    margin:0!important;
+    padding:22px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    border:1px solid rgba(255,255,255,.085)!important;
+    border-radius:18px!important;
+    background:
+      radial-gradient(circle at 50% 0,rgba(139,92,246,.07),transparent 28%),
+      #0f1015!important;
+    box-shadow:0 32px 90px rgba(0,0,0,.55)!important;
+    scrollbar-width:thin!important;
+    scrollbar-color:#34313a transparent!important;
+  }
+
+  #plans-modal>div>div:first-child{
+    position:sticky!important;
+    top:-22px!important;
+    z-index:8!important;
+    min-height:66px!important;
+    margin:-22px -22px 16px!important;
+    padding:17px 18px!important;
+    align-items:center!important;
+    border-bottom:1px solid rgba(255,255,255,.06)!important;
+    background:rgba(15,16,21,.96)!important;
+  }
+
+  #plans-modal-heading{
+    color:#f3f0f6!important;
+    font-size:20px!important;
+    font-weight:760!important;
+    letter-spacing:-.025em!important;
+  }
+
+  #plans-modal .plans-modal-subtitle{
+    margin-top:4px!important;
+    color:#7f7987!important;
+    font-size:10px!important;
+    line-height:1.35!important;
+  }
+
+  #plans-modal .modal-x{
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    border:1px solid rgba(255,255,255,.08)!important;
+    border-radius:10px!important;
+    background:#15161c!important;
+    color:#9f98a7!important;
+    font-size:18px!important;
+  }
+
+  #plans-modal .plans-choice-guide{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:7px!important;
+    margin:0 0 10px!important;
+  }
+
+  #plans-modal .plans-choice-guide span{
+    min-height:48px!important;
+    padding:8px 10px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    border:1px solid rgba(255,255,255,.055)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.015)!important;
+    color:#aaa3b1!important;
+    font-size:9.5px!important;
+    line-height:1.35!important;
+  }
+
+  #plans-modal .plans-choice-guide b{
+    margin-bottom:2px!important;
+    color:#7f7788!important;
+    font-size:7.5px!important;
+    letter-spacing:.10em!important;
+  }
+
+  #plans-modal .plans-clarity-note{
+    margin:0 0 14px!important;
+    padding:10px 12px!important;
+    border:1px solid rgba(167,139,250,.12)!important;
+    border-radius:10px!important;
+    background:rgba(139,92,246,.045)!important;
+    color:#9b94a3!important;
+    font-size:10px!important;
+    line-height:1.5!important;
+  }
+
+  #plans-modal .plans-clarity-note strong{
+    color:#d9d2e2!important;
+  }
+
+  /* Plans grid/cards */
+  #plans-modal #plans-grid-inner{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:10px!important;
+    margin:0 0 16px!important;
+    align-items:stretch!important;
+  }
+
+  #plans-modal .plan-card{
+    min-width:0!important;
+    min-height:510px!important;
+    padding:17px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    border-radius:14px!important;
+    border:1px solid rgba(255,255,255,.075)!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.024),rgba(255,255,255,.012))!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+
+  #plans-modal #plan-card-free{
+    border-color:rgba(112,220,195,.20)!important;
+    background:linear-gradient(180deg,rgba(112,220,195,.04),rgba(255,255,255,.012))!important;
+  }
+
+  #plans-modal #plan-card-starter{
+    border-color:rgba(167,139,250,.20)!important;
+    background:linear-gradient(180deg,rgba(139,92,246,.06),rgba(255,255,255,.012))!important;
+  }
+
+  #plans-modal #plan-card-plus{
+    border-color:rgba(138,183,255,.28)!important;
+    background:linear-gradient(180deg,rgba(91,140,255,.07),rgba(255,255,255,.012))!important;
+  }
+
+  #plans-modal #plan-card-pro{
+    border-color:rgba(242,201,121,.28)!important;
+    background:linear-gradient(180deg,rgba(242,201,121,.055),rgba(255,255,255,.012))!important;
+  }
+
+  #plans-modal .plan-head-name{
+    margin:0 0 8px!important;
+    font-size:9px!important;
+    font-weight:780!important;
+    letter-spacing:.11em!important;
+  }
+
+  #plans-modal .plan-head-price{
+    margin:0!important;
+    font-size:31px!important;
+    font-weight:780!important;
+    letter-spacing:-.045em!important;
+  }
+
+  #plans-modal .plan-head-per{
+    margin:4px 0 12px!important;
+    color:#746d7d!important;
+    font-size:9px!important;
+  }
+
+  #plans-modal .plan-head-fit{
+    min-height:76px!important;
+    margin:0 0 12px!important;
+    padding:10px 0 12px!important;
+    border-top:1px solid rgba(255,255,255,.05)!important;
+    border-bottom:1px solid rgba(255,255,255,.05)!important;
+    color:#9a93a2!important;
+    font-size:9.5px!important;
+    line-height:1.45!important;
+  }
+
+  #plans-modal .plan-head-fit b{
+    display:block!important;
+    margin-bottom:4px!important;
+    color:#66606e!important;
+    font-size:7.5px!important;
+    letter-spacing:.10em!important;
+  }
+
+  #plans-modal .plan-usage-pill{
+    min-height:52px!important;
+    margin:0 0 10px!important;
+    padding:8px 10px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:8px!important;
+    border:1px solid rgba(255,255,255,.06)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.018)!important;
+  }
+
+  #plans-modal .plan-usage-pill small{
+    max-width:78px!important;
+    color:#77707f!important;
+    font-size:8px!important;
+    line-height:1.15!important;
+  }
+
+  #plans-modal .plan-usage-pill strong{
+    color:#ebe7ef!important;
+    font-size:10.5px!important;
+    font-weight:760!important;
+    white-space:nowrap!important;
+  }
+
+  #plans-modal .plan-card>button{
+    min-height:42px!important;
+    height:42px!important;
+    padding:0 10px!important;
+    border-radius:10px!important;
+    font-size:10.5px!important;
+    font-weight:720!important;
+    box-shadow:none!important;
+  }
+
+  #plans-modal .plan-card>button[id$="-annual"]{
+    min-height:36px!important;
+    height:36px!important;
+    margin-bottom:15px!important;
+    font-size:9px!important;
+  }
+
+  #plans-modal #plan-btn-starter,
+  #plans-modal #plan-btn-plus{
+    background:#f1eef6!important;
+    color:#141119!important;
+  }
+
+  #plans-modal #plan-btn-pro{
+    background:#f1eee7!important;
+    color:#17120b!important;
+  }
+
+  #plans-modal #plan-btn-free{
+    border-color:rgba(112,220,195,.16)!important;
+    background:rgba(112,220,195,.045)!important;
+    color:#91d9c9!important;
+  }
+
+  #plans-modal .plan-features{
+    margin-top:auto!important;
+    gap:8px!important;
+  }
+
+  #plans-modal .plan-features>div{
+    font-size:10px!important;
+    line-height:1.35!important;
+    color:#a8a1af!important;
+  }
+
+  #plans-modal .plan-features>div:first-child{
+    margin-bottom:2px!important;
+    color:#6f6976!important;
+    font-size:7.5px!important;
+    letter-spacing:.10em!important;
+  }
+
+  /* Existing badge divs on Plus/Pro become clean floating pills. */
+  #plans-modal #plan-card-plus>div:first-child,
+  #plans-modal #plan-card-pro>div:first-child{
+    top:10px!important;
+    right:10px!important;
+    left:auto!important;
+    transform:none!important;
+    padding:5px 8px!important;
+    border:1px solid rgba(255,255,255,.08)!important;
+    border-radius:999px!important;
+    background:#eceaf0!important;
+    color:#1a171e!important;
+    font-size:7px!important;
+    font-weight:800!important;
+    letter-spacing:.09em!important;
+  }
+
+  #plans-modal #plan-card-plus .plan-head-name,
+  #plans-modal #plan-card-pro .plan-head-name{
+    margin-top:0!important;
+    padding-right:72px!important;
+  }
+
+  #plans-modal .plans-topup{
+    margin:2px 0 12px!important;
+  }
+
+  #plans-modal .plans-topup button{
+    min-height:38px!important;
+    padding:0 12px!important;
+    border:1px solid rgba(255,255,255,.055)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.015)!important;
+    color:#8f8897!important;
+    font-size:10px!important;
+  }
+
+  #plans-modal .plans-payment-note{
+    padding-top:12px!important;
+    color:#66606d!important;
+    font-size:8.5px!important;
+  }
+
+  /* Tablet plans: roomy 2x2 grid */
+  @media(min-width:641px) and (max-width:980px){
+    #plans-modal{
+      padding:14px!important;
+    }
+
+    #plans-modal>div{
+      width:calc(100vw - 28px)!important;
+      max-height:calc(100dvh - 28px)!important;
+      padding:18px!important;
+    }
+
+    #plans-modal #plans-grid-inner{
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    }
+
+    #plans-modal .plan-card{
+      min-height:440px!important;
+    }
+
+    #plans-modal .plans-choice-guide{
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    }
+  }
+
+  /* Phone plans: proper bottom sheet with single-card flow */
+  @media(max-width:640px){
+    #sidebar #signed-in.acct-in{
+      min-height:76px!important;
+    }
+
+    html body.stellar-empty-home #chat>.greet-wrap,
+    html body.stellar-empty-home #chat>.landing-style-home,
+    html body.stellar-start-state #chat>.greet-wrap,
+    html body.stellar-start-state #chat>.landing-style-home{
+      top:29%!important;
+      width:min(360px,calc(100% - 26px))!important;
+    }
+
+    html body.stellar-empty-home #chat .greet-hi,
+    html body.stellar-start-state #chat .greet-hi{
+      font-size:clamp(29px,8.8vw,38px)!important;
+    }
+
+    html body.stellar-empty-home #main-col>.input-area.glass,
+    html body.stellar-start-state #main-col>.input-area.glass{
+      top:52%!important;
+    }
+
+    #plans-modal{
+      padding:0!important;
+      align-items:flex-end!important;
+    }
+
+    #plans-modal>div{
+      width:100%!important;
+      max-width:100%!important;
+      max-height:92dvh!important;
+      margin:0!important;
+      padding:14px 12px max(18px,env(safe-area-inset-bottom))!important;
+      border-radius:20px 20px 0 0!important;
+      border-bottom:0!important;
+    }
+
+    #plans-modal>div>div:first-child{
+      top:-14px!important;
+      margin:-14px -12px 12px!important;
+      padding:12px!important;
+      min-height:62px!important;
+    }
+
+    #plans-modal .plans-choice-guide{
+      grid-template-columns:1fr 1fr!important;
+      gap:6px!important;
+    }
+
+    #plans-modal #plans-grid-inner{
+      display:flex!important;
+      flex-direction:column!important;
+      gap:9px!important;
+    }
+
+    #plans-modal .plan-card{
+      width:100%!important;
+      min-height:0!important;
+      padding:15px!important;
+    }
+
+    #plans-modal .plan-head-fit{
+      min-height:0!important;
+    }
+
+    #plans-modal .plan-card>button{
+      min-height:44px!important;
+      height:44px!important;
     }
   }
 </style>
