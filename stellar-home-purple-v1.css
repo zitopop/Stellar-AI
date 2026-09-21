@@ -631,3 +631,226 @@ html body:not(.light) .input-area>.flex:focus-within{
     min-height:44px!important;
   }
 }
+
+
+/* Sidebar rail responsive repair v3 */
+/* Never render the legacy pseudo + beside the real New build icon. */
+#sidebar .side-new::before{
+  content:none!important;
+  display:none!important;
+}
+#sidebar .side-new>span[aria-hidden="true"]{
+  display:inline-grid!important;
+  place-items:center!important;
+  flex:0 0 28px!important;
+  width:28px!important;
+  height:28px!important;
+  margin:0 8px 0 0!important;
+  border:1px solid rgba(167,139,250,.13)!important;
+  border-radius:8px!important;
+  background:rgba(124,58,237,.08)!important;
+  color:#c4b5fd!important;
+  font-size:17px!important;
+  line-height:1!important;
+}
+
+/* Full sidebar rows: one visual language, aligned icons, no cramped buttons. */
+#sidebar .stellar-sidebar-nav{
+  padding:6px!important;
+  gap:4px!important;
+  border-radius:14px!important;
+}
+#sidebar .stellar-sidebar-nav button{
+  min-height:46px!important;
+  padding:0 10px!important;
+  gap:10px!important;
+  border:1px solid transparent!important;
+  border-radius:11px!important;
+}
+#sidebar .stellar-sidebar-nav .nav-ico{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 30px!important;
+  width:30px!important;
+  min-width:30px!important;
+  height:30px!important;
+  border:1px solid rgba(167,139,250,.07)!important;
+  border-radius:9px!important;
+  background:rgba(124,58,237,.065)!important;
+  color:#b9abe6!important;
+  font-size:14px!important;
+  line-height:1!important;
+}
+#sidebar .stellar-sidebar-nav button:hover .nav-ico,
+#sidebar .stellar-sidebar-nav button:focus-visible .nav-ico{
+  border-color:rgba(192,132,252,.22)!important;
+  background:rgba(124,58,237,.14)!important;
+  color:#fff!important;
+  box-shadow:0 0 16px rgba(139,92,246,.10)!important;
+}
+
+/* Desktop icon rail: genuinely narrow, centred and balanced. */
+@media(min-width:1101px){
+  #sidebar.collapsed{
+    width:68px!important;
+    min-width:68px!important;
+    max-width:68px!important;
+    padding:10px 8px 12px!important;
+    overflow:hidden!important;
+  }
+  #sidebar.collapsed ~ #main-col{
+    margin-left:68px!important;
+  }
+  #sidebar.collapsed ~ #main-col .input-area.glass{
+    left:68px!important;
+  }
+  #sidebar.collapsed .sidebar-brand-row{
+    width:52px!important;
+    min-height:52px!important;
+    margin:0 auto 8px!important;
+    padding:0!important;
+    justify-content:center!important;
+  }
+  #sidebar.collapsed .sidebar-close{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    border-radius:12px!important;
+  }
+  #sidebar.collapsed .side-new{
+    display:grid!important;
+    place-items:center!important;
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0 auto 8px!important;
+    padding:0!important;
+  }
+  #sidebar.collapsed .side-new>span[aria-hidden="true"]{
+    width:auto!important;
+    min-width:0!important;
+    height:auto!important;
+    margin:0!important;
+    border:0!important;
+    background:transparent!important;
+    font-size:20px!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav{
+    width:52px!important;
+    margin:0 auto!important;
+    padding:4px!important;
+    gap:4px!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav button{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    padding:0!important;
+    justify-content:center!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav .nav-ico{
+    width:30px!important;
+    min-width:30px!important;
+    height:30px!important;
+    margin:0!important;
+  }
+}
+
+/* Phone/tablet must never inherit the desktop icon-only state.
+   Drawer is either fully open with labels or completely off-canvas. */
+@media(max-width:1100px){
+  .stellar-app-shell #sidebar{
+    width:min(86vw,286px)!important;
+    max-width:286px!important;
+    min-width:0!important;
+    margin-left:0!important;
+    padding:12px 10px calc(12px + env(safe-area-inset-bottom))!important;
+    transform:translate3d(-105%,0,0)!important;
+    overflow-y:auto!important;
+  }
+  .stellar-app-shell #sidebar.open{
+    transform:translate3d(0,0,0)!important;
+  }
+  .stellar-app-shell #sidebar.collapsed:not(.open){
+    width:min(86vw,286px)!important;
+    max-width:286px!important;
+    transform:translate3d(-105%,0,0)!important;
+  }
+  #sidebar.collapsed .brand-title,
+  #sidebar.collapsed #search,
+  #sidebar.collapsed #chats-heading,
+  #sidebar.collapsed #chats-list,
+  #sidebar.collapsed #account-box,
+  #sidebar.collapsed .sidebar-utility-links{
+    display:initial!important;
+  }
+  #sidebar.collapsed .brand-title{
+    display:flex!important;
+  }
+  #sidebar.collapsed #search{
+    display:block!important;
+  }
+  #sidebar.collapsed #chats-heading{
+    display:block!important;
+  }
+  #sidebar.collapsed #chats-list{
+    display:block!important;
+  }
+  #sidebar.collapsed #account-box{
+    display:block!important;
+  }
+  #sidebar.collapsed .sidebar-utility-links{
+    display:flex!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav{
+    width:auto!important;
+    margin:0 0 8px!important;
+    padding:6px!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav button{
+    width:100%!important;
+    min-height:46px!important;
+    height:auto!important;
+    padding:0 10px!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+  }
+  #sidebar.collapsed .stellar-sidebar-nav button>span:last-child{
+    display:inline!important;
+  }
+  #sidebar.collapsed .side-new{
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:46px!important;
+    margin:0 0 8px!important;
+    padding:0 10px!important;
+    justify-content:flex-start!important;
+    font-size:13px!important;
+  }
+  #sidebar.collapsed .side-new>span[aria-hidden="true"]{
+    display:inline-grid!important;
+    width:28px!important;
+    min-width:28px!important;
+    height:28px!important;
+    margin-right:8px!important;
+    border:1px solid rgba(167,139,250,.13)!important;
+    background:rgba(124,58,237,.08)!important;
+    font-size:17px!important;
+  }
+  #sidebar .sidebar-brand-row{
+    min-height:50px!important;
+    margin:0 2px 10px!important;
+    padding:0 2px!important;
+  }
+  #sidebar .sidebar-close{
+    flex:0 0 42px!important;
+    width:42px!important;
+    min-width:42px!important;
+    height:42px!important;
+    min-height:42px!important;
+  }
+}
