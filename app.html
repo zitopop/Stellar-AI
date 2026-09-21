@@ -23641,5 +23641,278 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
     }
   }
 </style>
+
+<style id="stellar-sidebar-buttons-v3">
+  /* One unified sidebar button system — matches the Projects row everywhere. */
+  #sidebar{
+    --side-row-bg:rgba(255,255,255,.018);
+    --side-row-hover:rgba(255,255,255,.065);
+    --side-row-border:rgba(255,255,255,.055);
+    --side-row-border-hover:rgba(167,139,250,.20);
+    --side-icon-bg:rgba(139,92,246,.085);
+    --side-icon-border:rgba(167,139,250,.12);
+    --side-icon:#b9a7e8;
+    --side-label:#e8e4ee;
+    --side-muted:#817989;
+  }
+
+  #sidebar .stellar-sidebar-nav,
+  #sidebar .side-foot{
+    gap:5px!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button,
+  #sidebar .side-act,
+  #sidebar .sidebar-utility-links a{
+    position:relative!important;
+    width:100%!important;
+    min-height:44px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    margin:0!important;
+    padding:5px 9px!important;
+    border:1px solid var(--side-row-border)!important;
+    border-radius:11px!important;
+    background:var(--side-row-bg)!important;
+    color:var(--side-label)!important;
+    font-size:12.5px!important;
+    font-weight:650!important;
+    line-height:1.2!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+    text-decoration:none!important;
+    text-align:left!important;
+    box-shadow:none!important;
+    transform:none!important;
+    transition:
+      background .14s ease,
+      border-color .14s ease,
+      color .14s ease,
+      transform .14s ease!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button:hover,
+  #sidebar .stellar-sidebar-nav button:focus-visible,
+  #sidebar .side-act:hover,
+  #sidebar .side-act:focus-visible,
+  #sidebar .sidebar-utility-links a:hover,
+  #sidebar .sidebar-utility-links a:focus-visible{
+    background:var(--side-row-hover)!important;
+    border-color:var(--side-row-border-hover)!important;
+    color:#fff!important;
+    transform:translateX(1px)!important;
+    outline:none!important;
+  }
+
+  #sidebar .stellar-sidebar-nav button:active,
+  #sidebar .side-act:active,
+  #sidebar .sidebar-utility-links a:active{
+    transform:translateX(1px) scale(.985)!important;
+  }
+
+  #sidebar .stellar-sidebar-nav .nav-ico,
+  #sidebar .side-act .ico{
+    flex:0 0 28px!important;
+    width:28px!important;
+    min-width:28px!important;
+    height:28px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    border:1px solid var(--side-icon-border)!important;
+    border-radius:8px!important;
+    background:var(--side-icon-bg)!important;
+    color:var(--side-icon)!important;
+    font-size:13px!important;
+    line-height:1!important;
+  }
+
+  #sidebar .side-act .ico .ic{
+    width:14px!important;
+    height:14px!important;
+  }
+
+  #sidebar .side-row-2,
+  #sidebar .side-row-3{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:5px!important;
+    width:100%!important;
+  }
+
+  #sidebar .side-foot{
+    padding-top:10px!important;
+    border-top:1px solid rgba(255,255,255,.055)!important;
+  }
+
+  /* Keep support/legal tidy, but give it the same component language. */
+  #sidebar .sidebar-utility-links{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+    padding:8px 0 0!important;
+  }
+
+  #sidebar .sidebar-utility-links a{
+    min-height:34px!important;
+    justify-content:center!important;
+    padding:0 6px!important;
+    border-radius:9px!important;
+    color:#8f8798!important;
+    font-size:10px!important;
+    font-weight:650!important;
+  }
+
+  #sidebar .sidebar-utility-links a:hover,
+  #sidebar .sidebar-utility-links a:focus-visible{
+    color:#ddd7e5!important;
+    transform:none!important;
+  }
+
+  /* Account controls use the same radius/border/interaction as Projects. */
+  #sidebar .acct-signin-btn{
+    min-height:44px!important;
+    height:44px!important;
+    border:1px solid var(--side-row-border)!important;
+    border-radius:11px!important;
+    background:var(--side-row-bg)!important;
+    color:var(--side-label)!important;
+    font-size:12.5px!important;
+    font-weight:650!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .acct-signin-btn:hover,
+  #sidebar .acct-signin-btn:focus-visible{
+    background:var(--side-row-hover)!important;
+    border-color:var(--side-row-border-hover)!important;
+    color:#fff!important;
+    outline:none!important;
+  }
+
+  #sidebar .acct-out-btn{
+    min-height:34px!important;
+    padding:0 10px!important;
+    border:1px solid var(--side-row-border)!important;
+    border-radius:9px!important;
+    background:var(--side-row-bg)!important;
+    color:#938b9d!important;
+    font-size:10px!important;
+    font-weight:650!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+  }
+
+  #sidebar .acct-out-btn:hover,
+  #sidebar .acct-out-btn:focus-visible{
+    background:var(--side-row-hover)!important;
+    border-color:var(--side-row-border-hover)!important;
+    color:#fff!important;
+    outline:none!important;
+  }
+
+  /* Primary action belongs to the same family, with a stronger accent. */
+  #sidebar .side-new{
+    min-height:44px!important;
+    height:44px!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    padding:5px 9px!important;
+    border:1px solid rgba(167,139,250,.22)!important;
+    border-radius:11px!important;
+    background:rgba(139,92,246,.10)!important;
+    color:#f2edff!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar .side-new > span{
+    flex:0 0 28px!important;
+    width:28px!important;
+    height:28px!important;
+    display:grid!important;
+    place-items:center!important;
+    border:1px solid rgba(167,139,250,.16)!important;
+    border-radius:8px!important;
+    background:rgba(139,92,246,.11)!important;
+    color:#cabdff!important;
+    font-size:15px!important;
+  }
+
+  #sidebar .side-new:hover,
+  #sidebar .side-new:focus-visible{
+    background:rgba(139,92,246,.16)!important;
+    border-color:rgba(167,139,250,.30)!important;
+    color:#fff!important;
+    transform:translateX(1px)!important;
+    outline:none!important;
+  }
+
+  /* Search visually aligns with the button stack without pretending to be a button. */
+  #sidebar #search{
+    min-height:42px!important;
+    height:42px!important;
+    padding:0 12px!important;
+    border:1px solid var(--side-row-border)!important;
+    border-radius:11px!important;
+    background:rgba(255,255,255,.014)!important;
+    box-shadow:none!important;
+  }
+
+  #sidebar #search:focus{
+    border-color:rgba(167,139,250,.24)!important;
+    background:rgba(255,255,255,.026)!important;
+    box-shadow:0 0 0 3px rgba(139,92,246,.08)!important;
+  }
+
+  body.light #sidebar{
+    --side-row-bg:rgba(17,24,39,.018);
+    --side-row-hover:rgba(17,24,39,.045);
+    --side-row-border:rgba(17,24,39,.07);
+    --side-row-border-hover:rgba(124,58,237,.18);
+    --side-icon-bg:rgba(124,58,237,.06);
+    --side-icon-border:rgba(124,58,237,.10);
+    --side-icon:#6d4fc3;
+    --side-label:#29242f;
+    --side-muted:#777080;
+  }
+
+  @media(max-width:767px){
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .side-act,
+    #sidebar .acct-signin-btn{
+      min-height:46px!important;
+      font-size:13px!important;
+    }
+
+    #sidebar .stellar-sidebar-nav .nav-ico,
+    #sidebar .side-act .ico,
+    #sidebar .side-new > span{
+      flex-basis:30px!important;
+      width:30px!important;
+      min-width:30px!important;
+      height:30px!important;
+    }
+
+    #sidebar .sidebar-utility-links a{
+      min-height:38px!important;
+    }
+  }
+
+  @media(hover:none),(pointer:coarse){
+    #sidebar .stellar-sidebar-nav button,
+    #sidebar .side-act,
+    #sidebar .sidebar-utility-links a,
+    #sidebar .acct-signin-btn,
+    #sidebar .acct-out-btn,
+    #sidebar .side-new{
+      touch-action:manipulation!important;
+      -webkit-tap-highlight-color:transparent!important;
+    }
+  }
+</style>
 </body>
 </html>
