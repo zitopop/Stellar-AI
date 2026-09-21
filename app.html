@@ -9302,7 +9302,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         <span aria-hidden="true">＋</span> New build
       </button>
 
-      <input id="search" oninput="renderChatList()" placeholder="Search builds" aria-label="Search builds" class="w-full mb-3 bg-white/5 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none focus:border-white/30 text-white placeholder-[#64748b]" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="search_stellar_20607">
+      <input id="search" type="search" inputmode="search" readonly onpointerdown="prepareBuildSearch(this)" onfocus="prepareBuildSearch(this)" oninput="markBuildSearchUserInput(this); renderChatList()" placeholder="Search builds" aria-label="Search builds" class="w-full mb-3 bg-white/5 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none focus:border-white/30 text-white placeholder-[#64748b]" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="stellar_build_filter" data-form-type="other" data-1p-ignore="true" data-lpignore="true">
 
       <div class="stellar-sidebar-nav" aria-label="Workspace">
         <button type="button" onclick="toggleWorkspace()"><span class="nav-ico">□</span><span>Projects</span></button>
@@ -10322,6 +10322,33 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
     let chats = [];
     let currentChatId = null;
+    let buildSearchUserActivated = false;
+
+    function looksLikeAutofilledEmail(value) {
+      const text = String(value || '').trim();
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text);
+    }
+
+    function clearAccidentalBuildSearchAutofill() {
+      const search = document.getElementById('search');
+      if (!search || buildSearchUserActivated) return;
+      if (looksLikeAutofilledEmail(search.value)) {
+        search.value = '';
+        search.dispatchEvent(new Event('input', { bubbles: false }));
+      }
+    }
+
+    function prepareBuildSearch(search) {
+      if (!search) return;
+      if (looksLikeAutofilledEmail(search.value)) search.value = '';
+      search.readOnly = false;
+      buildSearchUserActivated = true;
+    }
+
+    function markBuildSearchUserInput(search) {
+      buildSearchUserActivated = true;
+      if (search) search.readOnly = false;
+    }
 
     function renderChatList() {
       const s = Store.get();
@@ -10337,6 +10364,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         searchEl.setAttribute('aria-hidden', String(!hasChats));
         if (!hasChats) searchEl.value = '';
       }
+      if (searchEl && !buildSearchUserActivated && looksLikeAutofilledEmail(searchEl.value)) searchEl.value = '';
       const q = (searchEl?.value || '').toLowerCase();
       const container = document.getElementById('chats-list');
       container.innerHTML = '';
@@ -13599,6 +13627,11 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
 
       const s = Store.get();
       chats = s.chats;
+      // Chrome/password managers can misclassify the sidebar chat filter as an email field.
+      // Keep it inert until the user actually chooses to search and scrub any accidental autofill.
+      [0, 120, 500, 1500, 3500].forEach((delay) => {
+        setTimeout(clearAccidentalBuildSearchAutofill, delay);
+      });
       setMode('dark', 'dark-only');
       const mLabels = { fabie: '✨ Spark · Fast ▾', smart: '⭐ Star · Smart ▾', comet: '☄️ Comet · Deep ▾', ultra: '🚀 Nova · Max ▾', researcher: '🔎 Research AI ▾', reviewer: '✓ Review AI ▾', security: '🛡 Security AI ▾', tester: '🧪 Test AI ▾' };
       const mCur = (s.model === 'ultra' && s.plan !== 'pro') ? 'smart' : (s.model || 'smart');
