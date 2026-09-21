@@ -1099,3 +1099,91 @@ body.light #sidebar .sidebar-item.active{
   background:#ebe4f5!important;
   color:#211927!important;
 }
+
+
+/* Sidebar single-close cleanup — 2026-09-21 */
+/* Use one close affordance only. The top mobile menu control disappears while
+   the drawer is open; the drawer keeps the single close button. */
+@media (max-width:1100px){
+  #mobile-menu-toggle[aria-expanded="true"]{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  #sidebar .sidebar-close{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0!important;
+    border:1px solid rgba(255,255,255,.07)!important;
+    border-radius:11px!important;
+    background:rgba(255,255,255,.035)!important;
+    color:transparent!important;
+    font-size:0!important;
+    line-height:1!important;
+    box-shadow:none!important;
+  }
+  #sidebar .sidebar-close::before{
+    content:"×"!important;
+    color:#cfc5d8!important;
+    font-size:24px!important;
+    font-weight:400!important;
+    line-height:1!important;
+  }
+  #sidebar .sidebar-close:hover{
+    border-color:rgba(181,160,247,.18)!important;
+    background:rgba(181,160,247,.09)!important;
+  }
+  #sidebar .sidebar-close:hover::before{
+    color:#fff!important;
+  }
+}
+
+/* On desktop this control collapses the rail, so use a chevron instead of
+   presenting it as a destructive-looking close X. */
+@media (min-width:1101px){
+  #sidebar .sidebar-close{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0!important;
+    border:1px solid transparent!important;
+    border-radius:11px!important;
+    background:transparent!important;
+    color:transparent!important;
+    font-size:0!important;
+  }
+  #sidebar .sidebar-close::before{
+    content:"‹"!important;
+    color:#9f94aa!important;
+    font-size:26px!important;
+    font-weight:450!important;
+    line-height:1!important;
+    transform:translateY(-1px)!important;
+  }
+  #sidebar .sidebar-close:hover{
+    border-color:rgba(181,160,247,.12)!important;
+    background:rgba(181,160,247,.07)!important;
+  }
+  #sidebar .sidebar-close:hover::before{
+    color:#eee7f6!important;
+  }
+  #sidebar.collapsed .sidebar-close::before{
+    content:"›"!important;
+  }
+}
+
+body.light #sidebar .sidebar-close::before{
+  color:#665d70!important;
+}
+body.light #sidebar .sidebar-close:hover::before{
+  color:#241d2a!important;
+}
