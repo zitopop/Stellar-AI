@@ -10536,8 +10536,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       <main id="chat" class="flex-1 overflow-y-auto p-6" aria-label="Chat conversation" aria-busy="false">
         <div class="greet-wrap landing-style-home">
           <div class="greet-eyebrow"><span class="greet-eyebrow-dot" aria-hidden="true"></span><span class="greet-eyebrow-label">Stellar AI</span></div>
-          <div class="greet-hi" id="greet-hi">What will you <span class="greet-hi-accent">build next?</span></div>
-          <p class="welcome-sub">Build, fix and improve your next FiveM or Roblox project with Stellar.</p>
+          <div class="greet-hi" id="greet-hi">What can I help you with?</div>
+          <p class="welcome-sub">Build something new, fix a problem, improve a project, or ask Stellar anything.</p>
           <div class="home-disclaimer">Review generated code before using it in production.</div>
         </div>
 
@@ -12683,8 +12683,20 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       return name ? (hi + ', ' + name) : hi;
     }
     function syncHomeGreeting() {
+      const user = Store.get().user;
+      let firstName = user && user.name ? String(user.name).trim().split(/\s+/)[0] : '';
+      if (firstName.length > 18) firstName = firstName.slice(0, 18) + '…';
+
       const label = document.querySelector('.landing-style-home .greet-eyebrow-label');
-      if (label) label.textContent = timeGreeting() + ' · FiveM & Roblox';
+      if (label) label.textContent = firstName ? 'Welcome back · Stellar AI' : 'Stellar AI';
+
+      const heading = document.getElementById('greet-hi');
+      if (heading) heading.textContent = firstName
+        ? firstName + ', what can I help you with?'
+        : 'What can I help you with?';
+
+      const sub = document.querySelector('.landing-style-home .welcome-sub');
+      if (sub) sub.textContent = 'Build something new, fix a problem, improve a project, or ask Stellar anything.';
     }
     function greetingMarkup() {
       return `
@@ -12694,8 +12706,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
             <span class="greet-brand-mark" aria-hidden="true">✦</span>
             <strong>Stellar <span>AI</span></strong>
           </div>
-          <div class="greet-hi" id="greet-hi">What will you <span class="greet-hi-accent">build next?</span></div>
-          <p class="welcome-sub">Turn your next FiveM or Roblox idea into something real — build it, fix it, and keep improving it with Stellar.</p>
+          <div class="greet-hi" id="greet-hi">What can I help you with?</div>
+          <p class="welcome-sub">Build something new, fix a problem, improve a project, or ask Stellar anything.</p>
           <div class="home-disclaimer">Review generated code before using it in production.</div>
         </div>`;
     }
@@ -12745,6 +12757,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       
       if (chat.messages.length === 0) {
         chatEl.innerHTML = greetingMarkup();
+        syncHomeGreeting();
       } else {
         chatEl.innerHTML = chat.messages.map(msg => {
           let content = msg.content;
@@ -14182,7 +14195,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       }
       const chatEl = document.getElementById('chat');
       document.body.classList.add('stellar-empty-home', 'stellar-start-state');
-      if (chatEl) chatEl.innerHTML = greetingMarkup();
+      if (chatEl) {
+        chatEl.innerHTML = greetingMarkup();
+        syncHomeGreeting();
+      }
       initGoogle();
     }
 
@@ -14202,6 +14218,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         inBox.style.display = 'none';
         outBox.style.display = '';
       }
+      syncHomeGreeting();
     }
 
     function openUsage() {
