@@ -73,6 +73,34 @@
     });
   }
 
+  function applySidebarRailLabels() {
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+
+    const controls = sidebar.querySelectorAll('.sidebar-close, .side-new, .stellar-sidebar-nav button');
+    controls.forEach((control) => {
+      let label = '';
+      if (control.classList.contains('sidebar-close')) {
+        label = control.getAttribute('aria-label') || (sidebar.classList.contains('collapsed') ? 'Expand navigation' : 'Collapse navigation');
+      } else {
+        label = control.getAttribute('aria-label') || control.getAttribute('title') || String(control.textContent || '').replace(/\\s+/g, ' ').trim();
+      }
+      label = label.replace(/^[+＋✦\\s]+/, '').trim();
+      if (!label && control.classList.contains('side-new')) label = 'New build';
+      control.setAttribute('data-sidebar-label', label);
+      if (label && !control.hasAttribute('aria-label')) control.setAttribute('aria-label', label);
+    });
+  }
+
+  function watchSidebarRailLabels() {
+    applySidebarRailLabels();
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar || sidebar.dataset.railLabelsWatching === 'true') return;
+    sidebar.dataset.railLabelsWatching = 'true';
+    const observer = new MutationObserver(() => applySidebarRailLabels());
+    observer.observe(sidebar, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-label'] });
+  }
+
   function ensureStylesheet(marker, href) {
     if (document.querySelector(`link[${marker}]`)) return;
     const style = document.createElement('link');
@@ -104,7 +132,7 @@
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // presentation/preferences so future features stay modular.
     ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=7');
-    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=3');
+    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=4');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
     // The clean /app UI is owned by app.html. Do not dynamically reload the
@@ -114,5 +142,5 @@
 
   loadHomePresentation();
   loadSettingsPresentation();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyCurrencyLabels, { once: true }); else applyCurrencyLabels();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { applyCurrencyLabels(); watchSidebarRailLabels(); }, { once: true }); else { applyCurrencyLabels(); watchSidebarRailLabels(); }
 })();
