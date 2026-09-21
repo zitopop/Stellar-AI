@@ -1991,3 +1991,37 @@ body.light #model-menu{
     transition:none!important;
   }
 }
+
+
+/* Composer/sidebar alignment correction — 2026-09-21 */
+/* Keep the docked conversation composer aligned to the actual content column.
+   The empty-home composer remains viewport-centred by design. */
+@media (min-width:1101px){
+  #sidebar:not(.collapsed) ~ #main-col{
+    margin-left:264px!important;
+  }
+  #sidebar.collapsed ~ #main-col{
+    margin-left:72px!important;
+  }
+  body:not(.stellar-empty-home) #sidebar:not(.collapsed) ~ #main-col > .input-area.glass{
+    left:264px!important;
+  }
+  body:not(.stellar-empty-home) #sidebar.collapsed ~ #main-col > .input-area.glass{
+    left:72px!important;
+  }
+}
+@media (min-width:981px) and (max-width:1100px){
+  body:not(.stellar-empty-home) .stellar-app-shell .input-area.glass{
+    left:260px!important;
+  }
+}
+@media (min-width:768px) and (max-width:980px){
+  body:not(.stellar-empty-home) .stellar-app-shell .input-area.glass{
+    left:244px!important;
+  }
+}
+@media (max-width:767px){
+  body:not(.stellar-empty-home) .stellar-app-shell .input-area.glass{
+    left:0!important;
+  }
+}
