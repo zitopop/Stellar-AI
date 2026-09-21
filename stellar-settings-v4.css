@@ -971,3 +971,78 @@ body.light #settings-modal .profile-head{
   border-color:#e7e7ea!important;
   background:#fafafa!important;
 }
+
+
+/* Settings divider system v6 */
+@media (min-width:768px){
+  html body:not(.light) #settings-modal .set-tabs,
+  body.light #settings-modal .set-tabs{
+    border-right:0!important;
+  }
+  html body:not(.light) #settings-modal .set-tabs::after,
+  body.light #settings-modal .set-tabs::after{
+    content:""!important;
+    position:absolute!important;
+    top:8px!important;
+    right:0!important;
+    bottom:8px!important;
+    width:1px!important;
+    border-radius:999px!important;
+    pointer-events:none!important;
+  }
+  html body:not(.light) #settings-modal .set-tabs::after{
+    background:linear-gradient(180deg,transparent,rgba(255,255,255,.075) 8%,rgba(255,255,255,.075) 92%,transparent)!important;
+  }
+  body.light #settings-modal .set-tabs::after{
+    background:linear-gradient(180deg,transparent,rgba(0,0,0,.09) 8%,rgba(0,0,0,.09) 92%,transparent)!important;
+  }
+}
+
+/* One consistent inset separator treatment for every settings row. */
+#settings-modal .set-item{
+  position:relative!important;
+}
+#settings-modal .set-item + .set-item{
+  border-top:0!important;
+}
+#settings-modal .set-item + .set-item::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:13px!important;
+  right:13px!important;
+  height:1px!important;
+  background:rgba(255,255,255,.062)!important;
+  pointer-events:none!important;
+}
+#settings-modal .set-item + .set-item:has(.sk-ico)::before{
+  left:54px!important;
+}
+body.light #settings-modal .set-item + .set-item::before{
+  background:rgba(0,0,0,.075)!important;
+}
+
+/* Keep card outlines equally quiet so dividers do the organising, not heavy boxes. */
+html body:not(.light) #settings-modal .set-group,
+html body:not(.light) #settings-modal .set-collapsible,
+html body:not(.light) #settings-modal .profile-head{
+  border-color:rgba(255,255,255,.07)!important;
+}
+body.light #settings-modal .set-group,
+body.light #settings-modal .set-collapsible,
+body.light #settings-modal .profile-head{
+  border-color:rgba(0,0,0,.075)!important;
+}
+
+@media (max-width:767px){
+  #settings-modal .set-tabs::after{
+    display:none!important;
+  }
+  #settings-modal .set-item + .set-item::before{
+    left:11px!important;
+    right:11px!important;
+  }
+  #settings-modal .set-item + .set-item:has(.sk-ico)::before{
+    left:50px!important;
+  }
+}
