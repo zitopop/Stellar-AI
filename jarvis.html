@@ -428,9 +428,73 @@
     }
   }
 </style>
-</head><body><div class="shell" id="shell"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">Jarvis Vision workspace</div><h1>Control Stellar with your hands.</h1><p>Enable the camera, pinch a module to move it, or use mouse and touch normally.</p><div class="status"><b></b><span id="statusText">Ready · camera off</span></div></section><main class="deck" id="deck" aria-label="Jarvis gesture workspace"><article class="orb o1" data-name="AI Chat" tabindex="0" role="button" aria-label="AI Chat. Double-click or press Enter to open"><div><div class="ico">✦</div><strong>AI Chat</strong><small>Return to Stellar and continue your conversation</small><span class="orb-meta">Open chat</span></div></article><article class="orb o2" data-name="Voice" tabindex="0" role="button" aria-label="Voice. Double-click or press Enter to open"><div><div class="ico">◉</div><strong>Voice</strong><small>Live conversation and owner voice tools</small><span class="orb-meta">Start voice</span></div></article><article class="orb o3 orb-featured" data-name="Computer" tabindex="0" role="button" aria-label="Computer control status"><div><div class="ico">⌘</div><strong>Computer</strong><small>Secure desktop control when a paired companion is connected</small><span class="orb-meta orb-meta-warn">Companion required</span></div></article><article class="orb o4" data-name="Email" tabindex="0" role="button" aria-label="Email integration status"><div><div class="ico">✉</div><strong>Email</strong><small>Inbox context through authorised integrations</small><span class="orb-meta orb-meta-warn">Authorised connector</span></div></article><article class="orb o5" data-name="Projects" tabindex="0" role="button" aria-label="Projects. Double-click or press Enter to open"><div><div class="ico">▣</div><strong>Projects</strong><small>Open project files and generated work</small><span class="orb-meta">Open projects</span></div></article><article class="orb o6" data-name="Agents" tabindex="0" role="button" aria-label="AI Agents. Double-click or press Enter to open"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist roles for research, review, testing and security</small><span class="orb-meta">Choose an agent</span></div></article><article class="orb o7" data-name="Vision" tabindex="0" role="button" aria-label="Vision status"><div><div class="ico">◌</div><strong>Vision</strong><small>Camera stays in-browser; hand tracking runs locally after model download</small><span class="orb-meta">Start vision</span></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch + move · drag</span><span>✌ Peace · reset</span><span>🤏🤏 Two hands · zoom</span><span>J · narration</span><span>F · effects</span><span>Mouse + touch supported</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
+
+<style id="stellar-jarvis-owner-privacy-v3">
+  /* Private Jarvis controls are hidden until server-verified Owner access. */
+  .orb[data-owner-only="true"]{
+    display:none!important;
+  }
+
+  .shell.owner-verified .orb[data-owner-only="true"]{
+    display:flex!important;
+  }
+
+  .shell:not(.owner-verified) .deck{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:minmax(180px,1fr)!important;
+    inset:225px 8vw 110px!important;
+  }
+
+  .shell:not(.owner-verified) .o1{grid-column:1!important;grid-row:1!important}
+  .shell:not(.owner-verified) .o2{grid-column:2!important;grid-row:1!important}
+  .shell:not(.owner-verified) .o5{grid-column:3!important;grid-row:1!important}
+  .shell:not(.owner-verified) .o7{grid-column:4!important;grid-row:1!important}
+
+  @media(max-width:980px){
+    .shell:not(.owner-verified) .deck{
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      grid-template-rows:auto!important;
+      inset:205px 18px 72px!important;
+    }
+    .shell:not(.owner-verified) .o1,
+    .shell:not(.owner-verified) .o2,
+    .shell:not(.owner-verified) .o5,
+    .shell:not(.owner-verified) .o7{
+      grid-column:auto!important;
+      grid-row:auto!important;
+    }
+  }
+
+  @media(max-width:640px){
+    .shell:not(.owner-verified) .deck{
+      grid-template-columns:1fr!important;
+      inset:auto!important;
+    }
+  }
+</style>
+</head><body><div class="shell" id="shell"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">Jarvis Vision workspace</div><h1>Control Stellar with your hands.</h1><p>Enable the camera, pinch a module to move it, or use mouse and touch normally.</p><div class="status"><b></b><span id="statusText">Ready · camera off</span></div></section><main class="deck" id="deck" aria-label="Jarvis gesture workspace"><article class="orb o1" data-name="AI Chat" tabindex="0" role="button" aria-label="AI Chat. Double-click or press Enter to open"><div><div class="ico">✦</div><strong>AI Chat</strong><small>Return to Stellar and continue your conversation</small><span class="orb-meta">Open chat</span></div></article><article class="orb o2" data-name="Voice" tabindex="0" role="button" aria-label="Voice. Double-click or press Enter to open"><div><div class="ico">◉</div><strong>Voice</strong><small>Live conversation and owner voice tools</small><span class="orb-meta">Start voice</span></div></article><article class="orb o3 orb-featured" data-name="Computer" data-owner-only="true" aria-hidden="true" tabindex="0" role="button" aria-label="Computer control status"><div><div class="ico">⌘</div><strong>Computer</strong><small>Secure desktop control when a paired companion is connected</small><span class="orb-meta orb-meta-warn">Companion required</span></div></article><article class="orb o4" data-name="Email" data-owner-only="true" aria-hidden="true" tabindex="0" role="button" aria-label="Email integration status"><div><div class="ico">✉</div><strong>Email</strong><small>Inbox context through authorised integrations</small><span class="orb-meta orb-meta-warn">Authorised connector</span></div></article><article class="orb o5" data-name="Projects" tabindex="0" role="button" aria-label="Projects. Double-click or press Enter to open"><div><div class="ico">▣</div><strong>Projects</strong><small>Open project files and generated work</small><span class="orb-meta">Open projects</span></div></article><article class="orb o6" data-name="Agents" data-owner-only="true" aria-hidden="true" tabindex="0" role="button" aria-label="AI Agents. Double-click or press Enter to open"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist roles for research, review, testing and security</small><span class="orb-meta">Choose an agent</span></div></article><article class="orb o7" data-name="Vision" tabindex="0" role="button" aria-label="Vision status"><div><div class="ico">◌</div><strong>Vision</strong><small>Camera stays in-browser; hand tracking runs locally after model download</small><span class="orb-meta">Start vision</span></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch + move · drag</span><span>✌ Peace · reset</span><span>🤏🤏 Two hands · zoom</span><span>J · narration</span><span>F · effects</span><span>Mouse + touch supported</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
 <script type="module">
-const q=s=>document.querySelector(s), deck=q('#deck'), cursor=q('#cursor'), statusText=q('#statusText'), toast=q('#toast'), cam=q('#cam');let handLandmarker=null,stream=null,running=false,lastVideo=-1,drag=null,offset={x:0,y:0},pinched=false,lastPeace=0,jarvis=false,effects=false,deckScale=1,lastTwoHandDistance=0;const initial=[...document.querySelectorAll('.orb')].map(el=>({el,left:el.style.left,top:el.style.top,transform:el.style.transform}));
+const q=s=>document.querySelector(s), deck=q('#deck'), cursor=q('#cursor'), statusText=q('#statusText'), toast=q('#toast'), cam=q('#cam');
+async function syncJarvisOwnerAccess(){
+  const shell=q('#shell');
+  if(!shell)return;
+  shell.classList.remove('owner-verified');
+  document.querySelectorAll('[data-owner-only="true"]').forEach(el=>el.setAttribute('aria-hidden','true'));
+  let token='';
+  try{
+    const state=JSON.parse(localStorage.getItem('stellar-store')||'{}');
+    token=String(state?.session||'');
+  }catch{}
+  if(!token)return;
+  try{
+    const response=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+    const data=await response.json().catch(()=>({}));
+    if(response.ok&&data?.owner===true){
+      shell.classList.add('owner-verified');
+      document.querySelectorAll('[data-owner-only="true"]').forEach(el=>el.setAttribute('aria-hidden','false'));
+    }
+  }catch{}
+}let handLandmarker=null,stream=null,running=false,lastVideo=-1,drag=null,offset={x:0,y:0},pinched=false,lastPeace=0,jarvis=false,effects=false,deckScale=1,lastTwoHandDistance=0;const initial=[...document.querySelectorAll('.orb')].map(el=>({el,left:el.style.left,top:el.style.top,transform:el.style.transform}));
 function say(t){if(!jarvis||!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.95;u.pitch=.92;speechSynthesis.speak(u)}function note(t){toast.textContent=t;toast.classList.add('show');clearTimeout(note.t);note.t=setTimeout(()=>toast.classList.remove('show'),1700)}function resetDeck(){deckScale=1;deck.style.transform='scale(1)';document.querySelectorAll('.orb').forEach(el=>{el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('transform');el.classList.remove('drag')});drag=null;note('Workspace reset');say('Workspace reset.')}
 function hit(x,y){return document.elementsFromPoint(x,y).find(el=>el.classList?.contains('orb'))||null}function beginDrag(x,y){const el=hit(x,y);if(!el)return;const r=el.getBoundingClientRect();drag=el;offset.x=x-r.left;offset.y=y-r.top;el.classList.add('drag');say(`${el.dataset.name} selected`)}function moveDrag(x,y){if(!drag)return;const pr=deck.getBoundingClientRect();const r=drag.getBoundingClientRect();drag.style.left=`${Math.max(0,Math.min(pr.width-r.width,x-pr.left-offset.x))}px`;drag.style.top=`${Math.max(0,Math.min(pr.height-r.height,y-pr.top-offset.y))}px`;drag.style.right='auto';drag.style.bottom='auto'}function endDrag(){drag?.classList.remove('drag');drag=null}
 function pointer(x,y,isPinch){cursor.style.display='block';cursor.style.left=x+'px';cursor.style.top=y+'px';cursor.classList.toggle('pinch',isPinch);if(isPinch&&!pinched)beginDrag(x,y);if(isPinch)moveDrag(x,y);if(!isPinch&&pinched)endDrag();pinched=isPinch}function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}function extended(lm,tip,pip){return lm[tip].y<lm[pip].y}function peace(lm){return extended(lm,8,6)&&extended(lm,12,10)&&!extended(lm,16,14)&&!extended(lm,20,18)}
@@ -466,5 +530,7 @@ document.querySelectorAll('.orb').forEach(el=>{
   el.addEventListener('dblclick',()=>activateOrb(el));
   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activateOrb(el)}});
 });
+syncJarvisOwnerAccess();
+window.addEventListener('focus',syncJarvisOwnerAccess);
 window.addEventListener('beforeunload',()=>stream?.getTracks().forEach(t=>t.stop()));
 </script></body></html>
