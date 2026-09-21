@@ -12682,10 +12682,19 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       else hi = 'Up early';
       return name ? (hi + ', ' + name) : hi;
     }
-    function syncHomeGreeting() {
+    function homeFirstName() {
       const user = Store.get().user;
-      let firstName = user && user.name ? String(user.name).trim().split(/\s+/)[0] : '';
+      let raw = user && user.name ? String(user.name).trim() : '';
+      if (!raw && user && user.email) {
+        raw = String(user.email).split('@')[0].replace(/[._-]+/g, ' ').trim();
+      }
+      let firstName = raw ? raw.split(/\s+/)[0] : '';
+      if (firstName) firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
       if (firstName.length > 18) firstName = firstName.slice(0, 18) + '…';
+      return firstName;
+    }
+    function syncHomeGreeting() {
+      const firstName = homeFirstName();
 
       const label = document.querySelector('.landing-style-home .greet-eyebrow-label');
       if (label) label.textContent = firstName ? 'Welcome back · Stellar AI' : 'Stellar AI';
@@ -12699,14 +12708,18 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (sub) sub.textContent = 'Build something new, fix a problem, improve a project, or ask Stellar anything.';
     }
     function greetingMarkup() {
+      const firstName = homeFirstName();
+      const heading = firstName
+        ? escapeHtml(firstName) + ', what can I help you with?'
+        : 'What can I help you with?';
       return `
         <div class="greet-wrap landing-style-home">
-          <div class="greet-eyebrow"><span class="greet-eyebrow-dot" aria-hidden="true"></span><span class="greet-eyebrow-label">FiveM &amp; Roblox AI workspace</span></div>
+          <div class="greet-eyebrow"><span class="greet-eyebrow-dot" aria-hidden="true"></span><span class="greet-eyebrow-label">${firstName ? 'Welcome back · Stellar AI' : 'Stellar AI'}</span></div>
           <div class="greet-brand" aria-label="Stellar AI">
             <span class="greet-brand-mark" aria-hidden="true">✦</span>
             <strong>Stellar <span>AI</span></strong>
           </div>
-          <div class="greet-hi" id="greet-hi">What can I help you with?</div>
+          <div class="greet-hi" id="greet-hi">${heading}</div>
           <p class="welcome-sub">Build something new, fix a problem, improve a project, or ask Stellar anything.</p>
           <div class="home-disclaimer">Review generated code before using it in production.</div>
         </div>`;
@@ -12755,7 +12768,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       document.body.classList.toggle('stellar-empty-home', isEmptyHome);
       document.body.classList.toggle('stellar-start-state', isEmptyHome || isIntroResponse);
       
-      if (chat.messages.length === 0) {
+      if (isEmptyHome || isIntroResponse) {
         chatEl.innerHTML = greetingMarkup();
         syncHomeGreeting();
       } else {
@@ -14920,6 +14933,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       maybeShowWelcome();
       applyLandingStarterPrompt();
       applyLandingHomePrompt();
+      requestAnimationFrame(syncHomeGreeting);
+      setTimeout(syncHomeGreeting, 120);
     }
 
     // Keep the composer state, guide visibility and height in sync on every device.
