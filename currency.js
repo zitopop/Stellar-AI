@@ -231,10 +231,55 @@
     attach.addEventListener('click', () => document.getElementById('image-upload-input')?.click());
     tools.appendChild(attach);
 
-    if (modeTrigger) {
-      modeTrigger.classList.add('stellar-inline-model-trigger');
-      tools.appendChild(modeTrigger);
-    }
+    const mountModelControl = () => {
+      const real = document.getElementById('composer-model-trigger');
+      const proxy = tools.querySelector('.stellar-model-proxy');
+      if (real) {
+        real.classList.add('stellar-inline-model-trigger');
+        if (real.parentElement !== tools) tools.appendChild(real);
+        if (proxy) proxy.remove();
+        return;
+      }
+      if (proxy) return;
+
+      const fallback = document.createElement('button');
+      fallback.type = 'button';
+      fallback.className = 'ws-toggle composer-model-trigger stellar-inline-model-trigger stellar-model-proxy';
+      fallback.setAttribute('aria-controls', 'model-menu');
+      fallback.setAttribute('aria-haspopup', 'menu');
+      fallback.setAttribute('aria-expanded', 'false');
+      fallback.setAttribute('aria-label', 'Choose AI mode. Current: Star');
+      fallback.innerHTML = '<span aria-hidden="true">✦</span><span class="composer-mode-name">Star</span><span aria-hidden="true" class="composer-mode-caret">▾</span>';
+      fallback.addEventListener('click', (event) => {
+        if (typeof window.toggleModelMenu === 'function') {
+          window.toggleModelMenu(event);
+          window.setTimeout(() => {
+            const menu = document.getElementById('model-menu');
+            fallback.setAttribute('aria-expanded', menu && !menu.classList.contains('hidden') ? 'true' : 'false');
+          }, 0);
+        }
+      });
+      tools.appendChild(fallback);
+
+      const menu = document.getElementById('model-menu');
+      const syncSelected = () => {
+        const selected = menu?.querySelector('[data-model-choice][aria-checked="true"]');
+        const label = selected?.querySelector('.font-black')?.childNodes?.[0]?.textContent?.replace(/[✨⭐☄️🚀]/g, '').trim()
+          || selected?.textContent?.replace(/✓|PRO|·.*$/g, '').replace(/[✨⭐☄️🚀]/g, '').trim()
+          || 'Star';
+        const name = fallback.querySelector('.composer-mode-name');
+        if (name) name.textContent = label || 'Star';
+        fallback.setAttribute('aria-label', 'Choose AI mode. Current: ' + (label || 'Star'));
+      };
+      syncSelected();
+      if (menu && menu.dataset.stellarModelSync !== 'true') {
+        menu.dataset.stellarModelSync = 'true';
+        const menuObserver = new MutationObserver(syncSelected);
+        menuObserver.observe(menu, { subtree:true, attributes:true, attributeFilter:['aria-checked'], childList:true });
+      }
+    };
+
+    mountModelControl();
 
     const actions = document.createElement('div');
     actions.className = 'stellar-composer-actions';
@@ -248,6 +293,12 @@
     if (oldAttach) oldAttach.classList.add('stellar-legacy-attach');
     const modeDock = area?.querySelector('.composer-mode-dock');
     if (modeDock) modeDock.classList.add('stellar-empty-mode-dock');
+
+    if (document.body.dataset.stellarModelMountWatch !== 'true') {
+      document.body.dataset.stellarModelMountWatch = 'true';
+      const modelMountObserver = new MutationObserver(() => mountModelControl());
+      modelMountObserver.observe(document.body, { subtree:true, childList:true });
+    }
 
     if (area && !area.querySelector('.stellar-home-intro')) {
       const intro = document.createElement('div');
