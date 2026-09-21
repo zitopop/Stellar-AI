@@ -2,7 +2,433 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070816"><title>Jarvis Vision | Stellar AI</title><meta name="description" content="A camera-powered, gesture-controlled Jarvis workspace for Stellar AI.">
 <style>
 :root{color-scheme:dark;--bg:#050611;--panel:rgba(13,15,36,.72);--line:rgba(183,111,255,.3);--ink:#f8f5ff;--muted:#a79db9;--violet:#a13bff;--pink:#ef55f4;--mint:#8fe8cf}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,a{font:inherit}.shell{position:relative;width:100%;height:100dvh;isolation:isolate;background:radial-gradient(circle at 50% 10%,rgba(138,43,226,.2),transparent 34rem),linear-gradient(180deg,#090b22,#050611 72%)}#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:.24;filter:saturate(.8) contrast(1.05);z-index:-3}.veil{position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at center,transparent 0 30%,rgba(5,6,17,.45) 70%,rgba(5,6,17,.9) 100%),linear-gradient(rgba(91,45,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(91,45,255,.055) 1px,transparent 1px);background-size:auto,52px 52px,52px 52px}.top{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;padding:14px max(14px,env(safe-area-inset-right)) 14px max(14px,env(safe-area-inset-left));background:linear-gradient(180deg,rgba(5,6,17,.92),rgba(5,6,17,.2));backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:9px;margin-right:auto;color:#fff;text-decoration:none;font-weight:900}.brand i{display:grid;width:34px;height:34px;place-items:center;border:1px solid var(--line);border-radius:11px;background:rgba(161,59,255,.14);font-style:normal}.pill{min-height:42px;padding:0 13px;border:1px solid var(--line);border-radius:12px;color:#e9e0f7;background:rgba(19,18,44,.72);cursor:pointer}.pill[aria-pressed="true"]{border-color:#d58cff;background:rgba(161,59,255,.22);color:#fff}.pill.primary{background:linear-gradient(90deg,#a13bff,#7b2cf1);border-color:transparent;color:white;font-weight:850}.hud{position:absolute;top:76px;left:50%;z-index:12;transform:translateX(-50%);text-align:center;pointer-events:none}.hud h1{margin:0;font-size:clamp(32px,5vw,58px);letter-spacing:-.055em;background:linear-gradient(90deg,#a768ff,#ff7bf0);-webkit-background-clip:text;color:transparent}.hud p{margin:8px 0 0;color:#b8aec7;font-size:13px}.status{display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:7px 10px;border:1px solid rgba(143,232,207,.22);border-radius:999px;background:rgba(10,25,28,.35);color:#b9efe2;font-size:11px}.status b{width:7px;height:7px;border-radius:50%;background:#8fe8cf;box-shadow:0 0 16px #8fe8cf}.deck{position:absolute;inset:150px 18px 88px;z-index:10;transform-origin:center;transition:transform .12s linear}.orb{position:absolute;width:clamp(128px,14vw,190px);aspect-ratio:1;border:1px solid rgba(184,111,255,.35);border-radius:50%;display:grid;place-items:center;padding:18px;text-align:center;color:white;background:radial-gradient(circle at 45% 35%,rgba(226,179,255,.20),rgba(71,28,139,.16) 42%,rgba(8,10,28,.82) 72%);box-shadow:inset 0 0 40px rgba(160,70,255,.10),0 18px 60px rgba(0,0,0,.28);cursor:grab;user-select:none;touch-action:none}.orb.drag{cursor:grabbing;border-color:#ef9cff;box-shadow:0 0 0 2px rgba(220,116,255,.16),0 0 50px rgba(161,59,255,.32)}.orb strong{display:block;font-size:16px}.orb small{display:block;margin-top:5px;color:#afa5c2;font-size:10px;line-height:1.4}.orb .ico{font-size:28px;margin-bottom:7px}.o1{left:5%;top:8%}.o2{left:27%;top:40%}.o3{left:44%;top:10%}.o4{right:24%;top:44%}.o5{right:4%;top:9%}.o6{right:6%;bottom:2%}.o7{left:7%;bottom:0}.cursor{position:fixed;z-index:100;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 18px #d778ff;pointer-events:none;display:none}.cursor.pinch{width:14px;height:14px;margin:-7px 0 0 -7px;background:#fff}.legend{position:absolute;left:14px;right:14px;bottom:max(14px,env(safe-area-inset-bottom));z-index:25;display:flex;justify-content:center;flex-wrap:wrap;gap:7px;pointer-events:none}.legend span{padding:7px 9px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(10,10,24,.72);color:#a9a1b8;font-size:10px}.toast{position:fixed;left:50%;bottom:74px;z-index:120;transform:translate(-50%,20px);opacity:0;padding:10px 13px;border:1px solid var(--line);border-radius:11px;background:#141428;color:#fff;font-size:12px;transition:.18s}.toast.show{transform:translate(-50%,0);opacity:1}.effects .orb{box-shadow:0 0 48px rgba(161,59,255,.22),inset 0 0 40px rgba(239,85,244,.12)}@media(max-width:760px){.top{gap:6px;flex-wrap:wrap}.brand{width:100%}.pill{min-height:38px;padding:0 10px;font-size:11px}.hud{top:126px}.hud p{display:none}.deck{inset:205px 10px 82px}.orb{width:112px;padding:10px}.orb strong{font-size:13px}.orb small{display:none}.o1{left:1%;top:2%}.o2{left:34%;top:24%}.o3{right:1%;left:auto;top:3%}.o4{left:2%;top:52%;right:auto}.o5{left:35%;top:61%;right:auto}.o6{right:1%;top:50%;bottom:auto}.o7{left:36%;bottom:0}.legend{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}.legend span{white-space:nowrap}}
-</style></head><body><div class="shell" id="shell"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><h1>Control Stellar in the air</h1><p>Pinch to grab · move your hand to drag · use your mouse as a fallback</p><div class="status"><b></b><span id="statusText">Ready · camera off</span></div></section><main class="deck" id="deck" aria-label="Jarvis gesture workspace"><article class="orb o1" data-name="AI Chat"><div><div class="ico">✦</div><strong>AI Chat</strong><small>Return to Stellar and continue your conversation</small></div></article><article class="orb o2" data-name="Voice"><div><div class="ico">◉</div><strong>Voice</strong><small>Live conversation and owner voice tools</small></div></article><article class="orb o3" data-name="Computer"><div><div class="ico">⌘</div><strong>Computer</strong><small>Secure desktop-agent control when a paired companion is connected</small></div></article><article class="orb o4" data-name="Email"><div><div class="ico">✉</div><strong>Email</strong><small>Owner inbox context through authorised integrations</small></div></article><article class="orb o5" data-name="Projects"><div><div class="ico">▣</div><strong>Projects</strong><small>Open project files and generated work</small></div></article><article class="orb o6" data-name="Agents"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist roles, research, review, testing and security</small></div></article><article class="orb o7" data-name="Vision"><div><div class="ico">◌</div><strong>Vision</strong><small>Camera stays in-browser; hand tracking runs locally after model download</small></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch: grab / drag</span><span>✌ Peace: reset</span><span>Two pinches: zoom</span><span>J: Jarvis narration</span><span>F: effects</span><span>Mouse / touch fallback</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
+</style>
+<style id="stellar-jarvis-premium-v2">
+  :root{
+    --jarvis-card:rgba(17,18,27,.86);
+    --jarvis-card-hover:rgba(22,23,34,.96);
+    --jarvis-line:rgba(188,164,232,.15);
+    --jarvis-line-strong:rgba(188,164,232,.28);
+    --jarvis-purple:#a98adf;
+    --jarvis-text:#f2eff6;
+    --jarvis-muted:#8f8998;
+  }
+
+  .shell{
+    background:
+      radial-gradient(circle at 50% 22%,rgba(139,92,246,.12),transparent 29rem),
+      radial-gradient(circle at 50% 72%,rgba(91,65,170,.06),transparent 35rem),
+      #080910!important;
+  }
+
+  .veil{
+    background:
+      radial-gradient(circle at 50% 45%,transparent 0 25%,rgba(8,9,16,.18) 65%,rgba(8,9,16,.55) 100%),
+      linear-gradient(rgba(123,92,196,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(123,92,196,.035) 1px,transparent 1px)!important;
+    background-size:auto,64px 64px,64px 64px!important;
+  }
+
+  .top{
+    min-height:66px!important;
+    padding:12px 14px!important;
+    gap:8px!important;
+    border-bottom:1px solid rgba(255,255,255,.045)!important;
+    background:rgba(8,9,16,.78)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+
+  .brand{
+    gap:10px!important;
+    font-size:13px!important;
+    font-weight:760!important;
+    letter-spacing:-.015em!important;
+  }
+
+  .brand i{
+    width:34px!important;
+    height:34px!important;
+    border:1px solid rgba(167,139,250,.16)!important;
+    border-radius:10px!important;
+    background:rgba(139,92,246,.08)!important;
+    color:#ccbaf0!important;
+    box-shadow:none!important;
+  }
+
+  .pill{
+    min-height:38px!important;
+    height:38px!important;
+    padding:0 12px!important;
+    border:1px solid rgba(255,255,255,.075)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.025)!important;
+    color:#aaa4b3!important;
+    font-size:10.5px!important;
+    font-weight:680!important;
+    box-shadow:none!important;
+  }
+
+  .pill:hover,
+  .pill:focus-visible{
+    border-color:rgba(167,139,250,.20)!important;
+    background:rgba(139,92,246,.06)!important;
+    color:#eee9f4!important;
+    outline:none!important;
+  }
+
+  .pill.primary{
+    border-color:rgba(167,139,250,.24)!important;
+    background:rgba(139,92,246,.13)!important;
+    color:#e9e0fb!important;
+  }
+
+  .pill[aria-pressed="true"]{
+    border-color:rgba(167,139,250,.34)!important;
+    background:rgba(139,92,246,.14)!important;
+    color:#fff!important;
+  }
+
+  .hud{
+    top:92px!important;
+    width:min(760px,calc(100% - 32px))!important;
+  }
+
+  .hud-kicker{
+    margin-bottom:8px!important;
+    color:#777080!important;
+    font-size:9px!important;
+    font-weight:750!important;
+    letter-spacing:.12em!important;
+    text-transform:uppercase!important;
+  }
+
+  .hud h1{
+    margin:0!important;
+    color:#f2eff6!important;
+    background:none!important;
+    -webkit-text-fill-color:currentColor!important;
+    font-size:clamp(30px,3.7vw,48px)!important;
+    font-weight:730!important;
+    line-height:1.02!important;
+    letter-spacing:-.052em!important;
+  }
+
+  .hud p{
+    max-width:560px!important;
+    margin:10px auto 0!important;
+    color:#8f8998!important;
+    font-size:11.5px!important;
+    line-height:1.55!important;
+  }
+
+  .status{
+    min-height:30px!important;
+    margin-top:12px!important;
+    padding:0 10px!important;
+    border:1px solid rgba(112,220,195,.13)!important;
+    background:rgba(112,220,195,.035)!important;
+    color:#a8d8cc!important;
+    font-size:9px!important;
+    font-weight:600!important;
+  }
+
+  .status b{
+    width:6px!important;
+    height:6px!important;
+    background:#70dcc3!important;
+    box-shadow:0 0 10px rgba(112,220,195,.38)!important;
+  }
+
+  .deck{
+    inset:198px 7vw 76px!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+    align-items:stretch!important;
+    transform-origin:center!important;
+  }
+
+  .orb{
+    position:relative!important;
+    inset:auto!important;
+    width:auto!important;
+    min-width:0!important;
+    height:auto!important;
+    aspect-ratio:auto!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:20px 16px!important;
+    border:1px solid var(--jarvis-line)!important;
+    border-radius:18px!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.026),rgba(255,255,255,.012))!important;
+    color:var(--jarvis-text)!important;
+    box-shadow:0 16px 42px rgba(0,0,0,.18)!important;
+    cursor:grab!important;
+    user-select:none!important;
+    touch-action:none!important;
+    transform:none!important;
+    transition:border-color .15s ease,background .15s ease,transform .15s ease!important;
+  }
+
+  .orb::after{
+    content:'Drag or double-click'!important;
+    position:absolute!important;
+    top:10px!important;
+    right:10px!important;
+    color:#5f5968!important;
+    font-size:7px!important;
+    font-weight:680!important;
+    letter-spacing:.05em!important;
+    text-transform:uppercase!important;
+  }
+
+  .orb:hover,
+  .orb:focus-visible{
+    border-color:var(--jarvis-line-strong)!important;
+    background:var(--jarvis-card-hover)!important;
+    transform:translateY(-2px)!important;
+    outline:none!important;
+  }
+
+  .orb.drag{
+    z-index:40!important;
+    border-color:rgba(196,166,245,.42)!important;
+    background:rgba(30,26,43,.96)!important;
+    box-shadow:0 20px 54px rgba(0,0,0,.32)!important;
+    transform:scale(1.015)!important;
+  }
+
+  .orb>div{
+    width:100%!important;
+    max-width:190px!important;
+  }
+
+  .orb .ico{
+    width:38px!important;
+    height:38px!important;
+    margin:0 auto 12px!important;
+    display:grid!important;
+    place-items:center!important;
+    border:1px solid rgba(167,139,250,.13)!important;
+    border-radius:11px!important;
+    background:rgba(139,92,246,.07)!important;
+    color:#c4b2e9!important;
+    font-size:18px!important;
+  }
+
+  .orb strong{
+    color:#f1edf5!important;
+    font-size:13px!important;
+    font-weight:720!important;
+    letter-spacing:-.015em!important;
+  }
+
+  .orb small{
+    min-height:42px!important;
+    margin-top:6px!important;
+    color:#8e8797!important;
+    font-size:9.5px!important;
+    line-height:1.45!important;
+  }
+
+  .orb-meta{
+    display:inline-flex!important;
+    align-items:center!important;
+    min-height:24px!important;
+    margin-top:10px!important;
+    padding:0 8px!important;
+    border:1px solid rgba(112,220,195,.10)!important;
+    border-radius:999px!important;
+    background:rgba(112,220,195,.03)!important;
+    color:#8fcbbb!important;
+    font-size:7.5px!important;
+    font-weight:700!important;
+    letter-spacing:.03em!important;
+  }
+
+  .orb-meta-warn{
+    border-color:rgba(242,201,121,.10)!important;
+    background:rgba(242,201,121,.025)!important;
+    color:#b7a57e!important;
+  }
+
+  .orb-featured{
+    grid-column:2 / span 2!important;
+    grid-row:1!important;
+    border-color:rgba(167,139,250,.23)!important;
+    background:
+      radial-gradient(circle at 50% 25%,rgba(139,92,246,.10),transparent 50%),
+      linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.014))!important;
+  }
+
+  .o1{grid-column:1!important;grid-row:1!important}
+  .o3{grid-column:2 / span 2!important;grid-row:1!important}
+  .o5{grid-column:4!important;grid-row:1!important}
+  .o7{grid-column:1!important;grid-row:2!important}
+  .o2{grid-column:2!important;grid-row:2!important}
+  .o4{grid-column:3!important;grid-row:2!important}
+  .o6{grid-column:4!important;grid-row:2!important}
+
+  .legend{
+    bottom:max(12px,env(safe-area-inset-bottom))!important;
+    gap:5px!important;
+  }
+
+  .legend span{
+    min-height:28px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    padding:0 8px!important;
+    border:1px solid rgba(255,255,255,.055)!important;
+    background:rgba(13,14,21,.82)!important;
+    color:#77717f!important;
+    font-size:8px!important;
+  }
+
+  .toast{
+    bottom:58px!important;
+    padding:9px 12px!important;
+    border:1px solid rgba(167,139,250,.14)!important;
+    border-radius:9px!important;
+    background:#15151c!important;
+    color:#ded8e6!important;
+    font-size:10px!important;
+  }
+
+  #cam{
+    opacity:.16!important;
+    filter:saturate(.65) contrast(1.02) brightness(.72)!important;
+  }
+
+  .effects .orb{
+    box-shadow:0 18px 48px rgba(95,60,160,.18)!important;
+  }
+
+  @media(max-width:980px){
+    .deck{
+      inset:205px 18px 72px!important;
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      grid-template-rows:auto!important;
+      gap:9px!important;
+      overflow:auto!important;
+      padding-bottom:12px!important;
+    }
+
+    .orb,
+    .orb-featured,
+    .o1,.o2,.o3,.o4,.o5,.o6,.o7{
+      grid-column:auto!important;
+      grid-row:auto!important;
+      min-height:150px!important;
+    }
+
+    .orb-featured{
+      grid-column:1 / -1!important;
+    }
+
+    .legend{
+      display:none!important;
+    }
+  }
+
+  @media(max-width:640px){
+    html,body{
+      overflow:auto!important;
+    }
+
+    .shell{
+      min-height:100dvh!important;
+      height:auto!important;
+      overflow:auto!important;
+    }
+
+    .top{
+      position:sticky!important;
+      flex-wrap:wrap!important;
+      padding:10px!important;
+    }
+
+    .brand{
+      width:auto!important;
+      flex:1 1 auto!important;
+    }
+
+    .pill{
+      min-height:40px!important;
+      height:40px!important;
+      padding:0 10px!important;
+      font-size:10px!important;
+    }
+
+    #cameraBtn{
+      order:2!important;
+    }
+
+    .hud{
+      position:relative!important;
+      top:auto!important;
+      left:auto!important;
+      width:auto!important;
+      margin:26px 16px 18px!important;
+      transform:none!important;
+    }
+
+    .hud h1{
+      font-size:32px!important;
+    }
+
+    .hud p{
+      display:block!important;
+      font-size:10.5px!important;
+    }
+
+    .deck{
+      position:relative!important;
+      inset:auto!important;
+      display:grid!important;
+      grid-template-columns:1fr!important;
+      gap:8px!important;
+      margin:0 10px 24px!important;
+      padding:0!important;
+      overflow:visible!important;
+      transform:none!important;
+    }
+
+    .orb,
+    .orb-featured,
+    .o1,.o2,.o3,.o4,.o5,.o6,.o7{
+      grid-column:auto!important;
+      grid-row:auto!important;
+      min-height:126px!important;
+      padding:14px!important;
+      border-radius:15px!important;
+      touch-action:manipulation!important;
+      cursor:pointer!important;
+    }
+
+    .orb::after{
+      content:'Double-tap to open'!important;
+      top:9px!important;
+      right:9px!important;
+    }
+
+    .orb>div{
+      max-width:260px!important;
+    }
+
+    .orb small{
+      min-height:0!important;
+    }
+
+    .legend{
+      display:none!important;
+    }
+  }
+</style>
+</head><body><div class="shell" id="shell"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">Jarvis Vision workspace</div><h1>Control Stellar with your hands.</h1><p>Enable the camera, pinch a module to move it, or use mouse and touch normally.</p><div class="status"><b></b><span id="statusText">Ready · camera off</span></div></section><main class="deck" id="deck" aria-label="Jarvis gesture workspace"><article class="orb o1" data-name="AI Chat" tabindex="0" role="button" aria-label="AI Chat. Double-click or press Enter to open"><div><div class="ico">✦</div><strong>AI Chat</strong><small>Return to Stellar and continue your conversation</small><span class="orb-meta">Open workspace</span></div></article><article class="orb o2" data-name="Voice" tabindex="0" role="button" aria-label="Voice. Double-click or press Enter to open"><div><div class="ico">◉</div><strong>Voice</strong><small>Live conversation and owner voice tools</small><span class="orb-meta">Open voice tools</span></div></article><article class="orb o3 orb-featured" data-name="Computer" tabindex="0" role="button" aria-label="Computer control status"><div><div class="ico">⌘</div><strong>Computer</strong><small>Secure desktop control when a paired companion is connected</small><span class="orb-meta orb-meta-warn">Companion required</span></div></article><article class="orb o4" data-name="Email" tabindex="0" role="button" aria-label="Email integration status"><div><div class="ico">✉</div><strong>Email</strong><small>Inbox context through authorised integrations</small><span class="orb-meta orb-meta-warn">Authorised connector</span></div></article><article class="orb o5" data-name="Projects" tabindex="0" role="button" aria-label="Projects. Double-click or press Enter to open"><div><div class="ico">▣</div><strong>Projects</strong><small>Open project files and generated work</small><span class="orb-meta">Open workspace</span></div></article><article class="orb o6" data-name="Agents" tabindex="0" role="button" aria-label="AI Agents. Double-click or press Enter to open"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist roles for research, review, testing and security</small><span class="orb-meta">Open workspace</span></div></article><article class="orb o7" data-name="Vision" tabindex="0" role="button" aria-label="Vision status"><div><div class="ico">◌</div><strong>Vision</strong><small>Camera stays in-browser; hand tracking runs locally after model download</small><span class="orb-meta">Enable camera above</span></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch + move · drag</span><span>✌ Peace · reset</span><span>🤏🤏 Two hands · zoom</span><span>J · narration</span><span>F · effects</span><span>Mouse + touch supported</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
 <script type="module">
 const q=s=>document.querySelector(s), deck=q('#deck'), cursor=q('#cursor'), statusText=q('#statusText'), toast=q('#toast'), cam=q('#cam');let handLandmarker=null,stream=null,running=false,lastVideo=-1,drag=null,offset={x:0,y:0},pinched=false,lastPeace=0,jarvis=false,effects=false,deckScale=1,lastTwoHandDistance=0;const initial=[...document.querySelectorAll('.orb')].map(el=>({el,left:el.style.left,top:el.style.top,transform:el.style.transform}));
 function say(t){if(!jarvis||!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.95;u.pitch=.92;speechSynthesis.speak(u)}function note(t){toast.textContent=t;toast.classList.add('show');clearTimeout(note.t);note.t=setTimeout(()=>toast.classList.remove('show'),1700)}function resetDeck(){deckScale=1;deck.style.transform='scale(1)';document.querySelectorAll('.orb').forEach(el=>{el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('transform');el.classList.remove('drag')});drag=null;note('Workspace reset');say('Workspace reset.')}
@@ -11,6 +437,19 @@ function pointer(x,y,isPinch){cursor.style.display='block';cursor.style.left=x+'
 async function enableCamera(){try{statusText.textContent='Loading hand model…';const vision=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/+esm');const files=await vision.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm');handLandmarker=await vision.HandLandmarker.createFromOptions(files,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',delegate:'GPU'},runningMode:'VIDEO',numHands:2,minHandDetectionConfidence:.55,minTrackingConfidence:.55});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false});cam.srcObject=stream;await cam.play();running=true;q('#cameraBtn').textContent='Camera on';q('#cameraBtn').disabled=true;statusText.textContent='Vision online · hand tracking local';loop();note('Jarvis Vision online')}catch(e){console.error(e);statusText.textContent='Camera unavailable · mouse/touch fallback ready';note('Camera or hand model could not start')}}
 function loop(){if(!running)return;const now=performance.now();if(cam.currentTime!==lastVideo&&handLandmarker){lastVideo=cam.currentTime;const r=handLandmarker.detectForVideo(cam,now), hands=r.landmarks||[];if(hands.length){const lm=hands[0],p=lm[8],thumb=lm[4],x=(1-p.x)*innerWidth,y=p.y*innerHeight,isPinch=dist(p,thumb)<.055;pointer(x,y,isPinch);if(peace(lm)&&Date.now()-lastPeace>1200){lastPeace=Date.now();resetDeck()}if(hands.length>1){const a=hands[0][8],b=hands[1][8],pa=hands[0][4],pb=hands[1][4];if(dist(a,pa)<.06&&dist(b,pb)<.06){const d=dist(a,b);if(lastTwoHandDistance){deckScale=Math.max(.75,Math.min(1.35,deckScale+(d-lastTwoHandDistance)*1.4));deck.style.transform=`scale(${deckScale})`}lastTwoHandDistance=d}else lastTwoHandDistance=0}else lastTwoHandDistance=0}else{cursor.style.display='none';if(pinched){pinched=false;endDrag()}}}requestAnimationFrame(loop)}
 q('#cameraBtn').addEventListener('click',enableCamera);q('#jarvisBtn').addEventListener('click',e=>{jarvis=!jarvis;e.currentTarget.setAttribute('aria-pressed',jarvis);note(jarvis?'Jarvis narration on':'Jarvis narration off');say('Jarvis mode online.')});q('#effectsBtn').addEventListener('click',e=>{effects=!effects;e.currentTarget.setAttribute('aria-pressed',effects);q('#shell').classList.toggle('effects',effects);note(effects?'Effects on':'Effects off')});q('#resetBtn').addEventListener('click',resetDeck);document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='j')q('#jarvisBtn').click();if(e.key.toLowerCase()==='f')q('#effectsBtn').click();if(e.key==='Escape')resetDeck()});
-document.querySelectorAll('.orb').forEach(el=>{el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);drag=el;const r=el.getBoundingClientRect();offset={x:e.clientX-r.left,y:e.clientY-r.top};el.classList.add('drag')});el.addEventListener('pointermove',e=>{if(drag===el)moveDrag(e.clientX,e.clientY)});el.addEventListener('pointerup',()=>endDrag());el.addEventListener('dblclick',()=>{if(el.dataset.name==='AI Chat'||el.dataset.name==='Projects'||el.dataset.name==='Agents'||el.dataset.name==='Voice')location.href='/app';else note(`${el.dataset.name}: secure integration status only until its authorised connector is available`)})});
+function activateOrb(el){
+  const name=el?.dataset?.name||'';
+  if(name==='AI Chat'||name==='Projects'||name==='Agents'||name==='Voice'){location.href='/app';return}
+  if(name==='Vision'){note(running?'Vision is online':'Enable the camera to start local hand tracking');return}
+  if(name==='Computer'){note('Computer control needs a paired desktop companion');return}
+  if(name==='Email'){note('Email access needs an authorised connector');return}
+}
+document.querySelectorAll('.orb').forEach(el=>{
+  el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);drag=el;const r=el.getBoundingClientRect();offset={x:e.clientX-r.left,y:e.clientY-r.top};el.classList.add('drag')});
+  el.addEventListener('pointermove',e=>{if(drag===el)moveDrag(e.clientX,e.clientY)});
+  el.addEventListener('pointerup',()=>endDrag());
+  el.addEventListener('dblclick',()=>activateOrb(el));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activateOrb(el)}});
+});
 window.addEventListener('beforeunload',()=>stream?.getTracks().forEach(t=>t.stop()));
 </script></body></html>
