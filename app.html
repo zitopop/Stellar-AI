@@ -10831,6 +10831,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           <div class="set-key"><i class="sk-ico t-slate"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-box"/></svg></i>Includes</div>
           <div class="set-val dim" id="set-plan-desc">Spark, Star + Comet</div>
         </div>
+        <button type="button" class="set-item set-click" id="set-billing-row" onclick="openBillingPortal()" style="display:none;width:100%;text-align:left;">
+          <div class="set-key"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-card"/></svg></i>Manage billing</div>
+          <div class="set-val" id="set-billing-value">Card, invoices &amp; cancellation<span class="set-chev" aria-hidden="true">›</span></div>
+        </button>
         <div class="set-item set-click" onclick="closeSettings(); openPlans()">
           <div class="set-key"><i class="sk-ico t-green"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-up"/></svg></i>Upgrade</div>
           <div class="set-val">See all plans<span class="set-chev" aria-hidden="true">›</span></div>
@@ -14580,7 +14584,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       emailEl.textContent = email || 'Add your email';
       emailEl.classList.toggle('dim', !email);
       document.getElementById('set-avatar').textContent = (name.trim() || 'S').charAt(0).toUpperCase();
-      const plans = { free: ['Free', '£1 credit · 3 models · full scripts'], starter: ['Starter', '3× usage · priority queue · longer scripts'], plus: ['Plus', '10× usage · full game systems · priority access'], lite: ['Plus', '10× usage · full game systems · priority access'], pro: ['Pro', '40× usage · Nova · complete games'] };
+      const plans = { free: ['Free', '40 requests/hour · Spark, Star + Comet'], starter: ['Starter', '120 requests/hour · longer generations'], plus: ['Plus', '400 requests/hour · larger generations'], lite: ['Plus', '400 requests/hour · larger generations'], pro: ['Pro', '1,600 requests/hour · Nova · longest generations'] };
       // Show/hide Nova based on plan
       const novaBtn = document.getElementById('nova-model-btn');
       if (novaBtn) {
@@ -14627,6 +14631,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         if (authChev) authChev.style.visibility = signedIn ? 'hidden' : '';
       }
       document.getElementById('set-plan-desc').textContent = p[1];
+      const billingRow = document.getElementById('set-billing-row');
+      if (billingRow) billingRow.style.display = signedIn && ['starter','plus','lite','pro'].includes(s.plan) && !isOwner() ? '' : 'none';
       const referralSection = document.getElementById('set-referral-section');
       const referralUrl = s.referralUrl || '';
       if (referralSection) referralSection.style.display = signedIn && referralUrl ? '' : 'none';
@@ -14638,6 +14644,40 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       }
       document.body.classList.remove('light');
     }
+    async function openBillingPortal() {
+      const user = Store.get().user;
+      if (!user?.email) { closeSettings(); openWelcome(); return; }
+      const row = document.getElementById('set-billing-row');
+      const value = document.getElementById('set-billing-value');
+      const oldValue = value?.innerHTML || '';
+      if (row) row.disabled = true;
+      if (value) value.textContent = 'Opening secure billing…';
+      try {
+        const response = await fetch('/api/billing-portal', {
+          method: 'POST',
+          headers: apiHeaders(),
+          body: JSON.stringify({}),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (response.status === 401) {
+          recoverExpiredSession();
+          throw new Error('Your secure sign-in expired. Sign in again to manage billing.');
+        }
+        if (!response.ok || !data.url) throw new Error(data.error || 'Billing management could not open.');
+        let portalUrl;
+        try { portalUrl = new URL(data.url); } catch { portalUrl = null; }
+        if (!portalUrl || portalUrl.protocol !== 'https:' || portalUrl.hostname !== 'billing.stripe.com') {
+          throw new Error('Stripe returned an invalid billing link.');
+        }
+        window.location.assign(portalUrl.href);
+      } catch (error) {
+        showStellarNotice(error.message || 'Billing management could not open. Contact support@trystellarai.com.', 'error');
+      } finally {
+        if (row) row.disabled = false;
+        if (value && oldValue) value.innerHTML = oldValue;
+      }
+    }
+
     async function copyReferralLink() {
       const url = Store.get().referralUrl;
       if (!url) return;
