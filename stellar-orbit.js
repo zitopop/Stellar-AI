@@ -24,9 +24,26 @@
   };
 
   function selectedKey() {
+    const normalize = (value) => {
+      const raw = String(value || '').trim().toLowerCase();
+      const aliases = { spark:'fabie', star:'smart', nova:'ultra' };
+      const key = aliases[raw] || raw;
+      return TIERS[key] ? key : '';
+    };
+
+    // The app Store is the source of truth. The menu's aria state can briefly
+    // rerender to Star while a selection is closing, which previously caused
+    // Orbit to overwrite Spark/Comet back to Star.
+    try {
+      if (typeof Store !== 'undefined') {
+        const stored = normalize(Store?.get?.().model);
+        if (stored) return stored;
+      }
+    } catch {}
+
     const checked = document.querySelector('#model-menu [data-model-choice][aria-checked="true"]');
-    const key = checked?.getAttribute('data-model-choice');
-    return TIERS[key] ? key : state.selected;
+    const checkedKey = normalize(checked?.getAttribute('data-model-choice'));
+    return checkedKey || state.selected;
   }
 
   function tierMarkup(key) {
