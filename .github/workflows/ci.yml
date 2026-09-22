@@ -67,7 +67,8 @@ jobs:
             echo "::group::${test_file}"
             if ! output=$(node --test "$test_file" 2>&1); then
               echo "$output"
-              echo "::error file=${test_file}::Regression test failed in ${test_file}"
+              message=$(printf '%s' "$output" | tail -80 | tr '\n' ' ' | cut -c1-1800 | sed 's/%/%25/g; s/\r/%0D/g')
+              echo "::error file=${test_file}::${message}"
               echo "::endgroup::"
               exit 1
             fi
