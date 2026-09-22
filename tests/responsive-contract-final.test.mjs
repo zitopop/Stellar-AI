@@ -9,7 +9,7 @@ const terms = fs.readFileSync(new URL('../terms.html', import.meta.url), 'utf8')
 const blog = fs.readFileSync(new URL('../blog.html', import.meta.url), 'utf8');
 
 test('final responsive layer loads last and preserves dark-only app', () => {
-  assert.match(app, /stellar-final-responsive\.css\?v=1/);
+  assert.match(app, /stellar-final-responsive\.css\?v=2/);
   assert.match(appCss, /color-scheme:\s*dark/);
   assert.match(appCss, /overflow-x:hidden\s*!important/);
   assert.match(appCss, /min-height:100dvh/);
@@ -62,4 +62,12 @@ test('accessibility and modal safety remain wired', () => {
 
 test('approved prices stay exact', () => {
   for (const price of ['£0','£8','£20','£75']) assert.ok(app.includes(price));
+});
+
+
+test('mobile menu remains reachable while the drawer is closed and Settings tabs do not require swiping', () => {
+  assert.match(appCss, /#mobile-menu-toggle\[aria-expanded="false"\][\s\S]*?position:fixed!important;[\s\S]*?width:44px!important;[\s\S]*?visibility:visible!important;/);
+  assert.match(appCss, /#sidebar\.open \{ transform:translateX\(0\)!important; \}/);
+  assert.match(appCss, /#settings-modal \.set-tabs \{[\s\S]*?grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important;[\s\S]*?overflow:visible!important;/);
+  assert.match(appCss, /@media \(max-width:374px\)[\s\S]*?grid-template-columns:repeat\(3,minmax\(0,1fr\)\)!important;/);
 });
