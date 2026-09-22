@@ -45,3 +45,22 @@ html:root body.stellar-chat-workspace:is(.txt-sm,.txt-lg) #chat .message :is(.ms
     padding-top:calc(64px + env(safe-area-inset-top))!important;
   }
 }
+
+
+/* Model picker must remain scrollable at every viewport size. */
+html:root body.stellar-chat-workspace #model-menu{
+  max-height:min(72dvh,560px)!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y!important;
+  scrollbar-gutter:stable;
+  pointer-events:auto!important;
+}
+@media(max-width:767px){
+  html:root body.stellar-chat-workspace #model-menu{
+    max-height:calc(100dvh - 112px)!important;
+    width:min(calc(100vw - 20px),420px)!important;
+  }
+}
