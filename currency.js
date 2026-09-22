@@ -316,6 +316,7 @@
     const close = () => {
       const menu = document.getElementById('model-menu');
       if (!menu) return;
+      menu.hidden = true;
       menu.classList.add('hidden');
       syncExpanded(false);
     };
@@ -331,7 +332,16 @@
         if (!menu) return;
 
         enhanceModelPicker();
-        const willOpen = menu.classList.contains('hidden');
+
+        // The legacy picker can live inside a hidden/clipped header wrapper.
+        // Hoist it to <body> before opening so signed-in and compact layouts
+        // cannot suppress the menu with display/overflow/stacking context.
+        if (menu.parentElement !== document.body) {
+          document.body.appendChild(menu);
+        }
+
+        const willOpen = menu.classList.contains('hidden') || menu.hidden;
+        menu.hidden = !willOpen;
         menu.classList.toggle('hidden', !willOpen);
         syncExpanded(willOpen);
 
