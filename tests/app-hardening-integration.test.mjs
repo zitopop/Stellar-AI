@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const auth = await readFile(new URL('../api/auth.js', import.meta.url), 'utf8');
 const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
+const landing = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const checker = await readFile(new URL('../scripts/check-source.mjs', import.meta.url), 'utf8');
 
@@ -37,4 +38,19 @@ test('repository exposes one deterministic local quality command', () => {
   assert.equal(pkg.scripts?.check, 'npm run check:syntax && npm test');
   assert.match(String(pkg.engines?.node || ''), />=22/);
   assert.match(checker, /node.*--check|execFileSync/);
+});
+
+
+test('coding-agent shortcuts from the owner model menu open the paired workspaces', () => {
+  assert.match(app, /aria-label="Open PC coding agent"/);
+  assert.match(app, /location\.href='\/desktop'/);
+  assert.match(app, /aria-label="Open Roblox Studio coding agent"/);
+  assert.match(app, /location\.href='\/roblox-studio'/);
+});
+
+test('landing plan copy matches the stronger paid-plan quality behavior', () => {
+  assert.match(landing, /Paid plans add progressively deeper engineering review/);
+  assert.match(landing, /Stronger context \+ deliberate self-review/);
+  assert.match(landing, /Deeper architecture, debugging \+ validation/);
+  assert.match(landing, /Maximum multi-pass engineering review/);
 });
