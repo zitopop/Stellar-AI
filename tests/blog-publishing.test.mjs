@@ -1,17 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,lstatSync} from 'node:fs';
+import {readFileSync,lstatSync,existsSync} from 'node:fs';
 const root=new URL('../',import.meta.url);
 const xml=readFileSync(new URL('sitemap.xml',root),'utf8');
 const urls=[...xml.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/loc>/g)].map(m=>new URL(m[1]));
 const config=JSON.parse(readFileSync(new URL('vercel.json',root),'utf8'));
+const resolveArticleFile=(url)=>{
+  const route=config.rewrites.find(r=>r.source===url.pathname);
+  const destination=route?.destination || `${url.pathname}/index.html`;
+  assert.match(destination,/^\/blog\/(?:[^/]+\.html|[^/]+\/index\.html)$/,url.href);
+  const file=new URL(destination.slice(1),root);
+  assert.ok(existsSync(file), `missing rewrite or directory index for ${url.href}`);
+  return {route,destination,file};
+};
 test('every sitemap article resolves to a real complete HTML document with searchable content',()=>{
   assert.ok(urls.length >= 63);
   for(const url of urls){
-    const route=config.rewrites.find(r=>r.source===url.pathname);
-    assert.ok(route, `missing rewrite for ${url.href}`);
-    assert.match(route.destination,/^\/blog\/[^/]+\.html$/,url.href);
-    const file=new URL(route.destination.slice(1),root);
+    const {file}=resolveArticleFile(url);
     assert.equal(lstatSync(file).isSymbolicLink(),false,url.href);
     const page=readFileSync(file,'utf8');
     assert.match(page,/^<!doctype html>/i,url.href);
@@ -36,8 +41,8 @@ test('no wildcard blog rewrite intercepts valid sitemap articles',()=>{
 });
 test('Roblox-only guides exclude FiveM installation commands',()=>{
   for(const url of urls.filter(u=>u.pathname.startsWith('/blog/roblox-'))){
-    const route=config.rewrites.find(r=>r.source===url.pathname);
-    const page=readFileSync(new URL(route.destination.slice(1),root),'utf8');
+    const {file}=resolveArticleFile(url);
+    const page=readFileSync(file,'utf8');
     assert.doesNotMatch(page,/fxmanifest\.lua|ensure qb-core|RegisterNetEvent|server\.cfg/);
   }
 });
