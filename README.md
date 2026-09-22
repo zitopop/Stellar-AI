@@ -62,7 +62,7 @@ Use [`docs/PROJECT-INDEX.md`](docs/PROJECT-INDEX.md) to find active app files, s
 
 ## Revenue operations
 
-Use [`docs/REVENUE-OPERATIONS-CHECKLIST.md`](docs/REVENUE-OPERATIONS-CHECKLIST.md) after pricing, checkout, onboarding, SEO or billing changes. It covers paid-user billing portal testing, weekly funnel metrics, Stripe safety checks and SEO publishing steps.
+Use [`docs/REVENUE-OPERATIONS-CHECKLIST.md`](docs/REVENUE-OPERATIONS-CHECKLIST.md) after pricing, checkout, onboarding, SEO or billing changes. It covers paid-user billing portal testing, weekly funnel metrics, Stripe safety checks and SEO publishing steps. Use [`docs/SEO-PUBLISHING-QUEUE.md`](docs/SEO-PUBLISHING-QUEUE.md) to track safe blog batches, sitemap wiring and next Search Console targets.
 
 ---
 
