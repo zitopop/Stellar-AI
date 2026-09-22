@@ -14653,10 +14653,10 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (row) row.disabled = true;
       if (value) value.textContent = 'Opening secure billing…';
       try {
-        const response = await fetch('/api/billing-portal', {
+        const response = await fetch('/api/create-checkout', {
           method: 'POST',
           headers: apiHeaders(),
-          body: JSON.stringify({}),
+          body: JSON.stringify({ plan: 'manage-billing' }),
         });
         const data = await response.json().catch(() => ({}));
         if (response.status === 401) {
