@@ -61,7 +61,7 @@ async function deviceAuth(req,res){
 }
 async function touchDevice(id,d){const n={...d,lastSeen:Date.now()};await redis('set',`stellar:desktop:device:${id}`,JSON.stringify(n));await redis('expire',`stellar:desktop:device:${id}`,DEVICE_TTL_SECONDS);return n}
 const SYSTEM_PATH_RE=/(?:^|[\\/])(?:windows|program files|programdata|system32|syswow64)(?:[\\/]|$)/i;
-const SECRET_PATH_RE=/(?:^|[\\/])(?:\.ssh|\.gnupg|\.aws|\.azure|\.kube|credentials?|cookies?|login data|wallets?|keychains?|vault)(?:[\\/]|$)/i;
+const SECRET_PATH_RE=/(?:^|[\\/])(?:\.ssh|\.gnupg|\.aws|\.azure|\.kube|credentials?|cookies?|login data|wallets?|keychains?|vault|\.env(?:\.[^\\/]+)?|\.npmrc|\.git-credentials|id_rsa|id_ed25519)(?:[\\/]|$)/i;
 const BLOCKED_COMMAND_RE=/(?:\b(?:format|diskpart|bcdedit|shutdown|restart-computer|stop-computer|cipher\s+\/w|vssadmin\s+delete|wbadmin\s+delete|reg\s+delete|net\s+user|sc\s+(?:config|delete)|set-mppreference|add-mppreference|disable-realtimemonitoring|takeown|icacls)\b|remove-item[^\r\n]*(?:-recurse[^\r\n]*-force|-force[^\r\n]*-recurse)|(?:del|rd|rmdir)\s+\/(?:s|q)|rm\s+-rf|powershell[^\r\n]*-(?:enc|encodedcommand)\b)/i;
 function validateArgs(type,args){
   const p=String(args?.path||args?.cwd||'');
