@@ -9,6 +9,7 @@ const read = (name) => readFileSync(new URL(name.startsWith('blog-') ? `../blog/
 const indexHtml = read('index.html');
 const appHtml = read('app.html');
 const termsHtml = read('terms.html');
+const supportHtml = read('support.html');
 const launchKit = read('archive/docs/LAUNCH-KIT.md');
 const simulatorBlogHtml = read('blog-roblox-simulator-game.html');
 const comparisonBlogHtml = read('blog-stellar-ai-vs-swisserai-qbcore-roblox.html');
@@ -91,8 +92,13 @@ test('landing page keeps factual build benefits without exposing unsupported out
   assert.doesNotMatch(indexHtml, /scriptsGenerated|serversPowered|countriesReached/);
 });
 
-test('the public support address remains a one-line mail link in settings', () => {
-  assert.match(appHtml, /href="mailto:support@trystellarai\.com"[^>]*white-space:nowrap[^>]*>support@trystellarai\.com<\/a>/);
+test('the public support centre stays routed, indexed and keeps email fallback available', () => {
+  const routes = new Map(vercel.rewrites.map((route) => [route.source, route.destination]));
+  const sitemap = read('sitemap.xml');
+  assert.equal(routes.get('/support'), '/support.html');
+  assert.match(supportHtml, /href="mailto:support@trystellarai\.com/);
+  assert.match(supportHtml, />support@trystellarai\.com<\/span>/);
+  assert.match(sitemap, /https:\/\/trystellarai\.com\/support/);
 });
 
 test('Vercel routes every canonical blog slug to its published HTML file', () => {
