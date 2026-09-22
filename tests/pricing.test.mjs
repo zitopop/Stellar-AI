@@ -16,8 +16,9 @@ test('top-up limits are clamped to the checkout contract', () => {
 });
 
 test('top-up checkout accepts only the same 50p steps exposed by the UI', () => {
-  assert.equal(isValidTopupPence(50), true);
-  assert.equal(isValidTopupPence(500), true);
+  assert.equal(isValidTopupPence(500), false);
+  assert.equal(isValidTopupPence(950), false);
+  assert.equal(isValidTopupPence(1000), true);
   assert.equal(isValidTopupPence(20000), true);
   assert.equal(isValidTopupPence(49), false);
   assert.equal(isValidTopupPence(525), false);
