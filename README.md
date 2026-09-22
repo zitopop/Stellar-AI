@@ -58,9 +58,9 @@ Route-critical public files stay in their existing locations. Add new active cod
 | Plan | Monthly | Annual | Included |
 |------|---------|--------|----------|
 | Free | £0 | £0 | 40 requests/hour · £1 credit · Spark, Star and Comet |
-| Starter | £8/mo | £67/yr | 120 requests/hour · priority queue · longer scripts |
-| Plus | £20/mo | £168/yr (£14/mo) | 400 requests/hour · full game systems |
-| Pro | £75/mo | £630/yr (£52.50/mo) | 1,600 requests/hour · Nova · complete games |
+| Starter | £8/mo | £67/yr | 120 requests/hour · longer generations · Spark, Star and Comet |
+| Plus | £20/mo | £168/yr (£14/mo) | 400 requests/hour · larger generation allowance · Spark, Star and Comet |
+| Pro | £75/mo | £630/yr (£52.50/mo) | 1,600 requests/hour · longest generation allowance · Nova |
 
 ---
 
