@@ -248,6 +248,34 @@ const UNCERTAINTY_RECOVERY_GUIDANCE = `UNCERTAINTY RECOVERY
 - Do not invent an API or claim certainty after the second pass. If the issue remains blocked, explain exactly what is missing, give the most useful next diagnostic step, and ask for only the specific file, error, or framework detail needed.
 - For a transient provider or empty-response failure, the application may retry once, but never loop indefinitely or charge for a response that was not produced.`;
 
+const PLAN_QUALITY_GUIDANCE = Object.freeze({
+  free: `PLAN QUALITY: FREE
+- Give a correct, useful answer without padding.
+- Prefer the smallest complete implementation and explain only the important setup and verification steps.
+- Perform a basic consistency check before answering: required files, undefined names, obvious security mistakes, and missing setup.`,
+  starter: `PLAN QUALITY: STARTER
+- Preserve more conversation context and produce complete implementation-ready answers rather than snippets when scope is clear.
+- Do one deliberate self-review for requirement coverage, cross-file consistency, error paths, framework conventions, and installation steps before answering.
+- When debugging, identify the likely root cause and give a focused fix plus a concrete verification path.`,
+  plus: `PLAN QUALITY: PLUS
+- Use deeper engineering analysis for architecture, debugging, multi-file systems, persistence, concurrency, and integration boundaries.
+- Before answering, compare at least two plausible implementation or failure paths internally when the task is non-trivial, then choose the safer and more maintainable approach.
+- Check edge cases, lifecycle ordering, async/race behavior, rollback/retry behavior, data validation, and client/server trust boundaries.
+- Keep generated files mutually consistent and include targeted tests or validation checks for the highest-risk behavior.`,
+  pro: `PLAN QUALITY: PRO
+- Use maximum-quality engineering behavior for demanding project work.
+- Silently perform an internal multi-pass review: requirements -> architecture -> implementation consistency -> security -> failure modes -> verification.
+- For complex requests, decompose the work into coherent subsystems while still producing the smallest complete solution that satisfies the request.
+- Check difficult edge cases, backwards compatibility, performance-sensitive paths, persistence/concurrency, abuse resistance, observability, and recovery behavior where relevant.
+- Treat supplied code and earlier generated code as untrusted until checked against the current request and known project context.
+- Prefer production-grade, maintainable code with explicit acceptance checks and no placeholders for required behavior.`,
+  owner: `PLAN QUALITY: OWNER
+- Use the same maximum-quality engineering behavior as Pro.
+- Prefer verified project context, repository evidence, tool results, and current system state over assumptions.
+- For substantial code work, self-review requirements, architecture, implementation consistency, security, failure modes, and verification before answering.
+- Never trade away safety, evidence discipline, or existing working behavior merely to act faster.`,
+});
+
 const ROLE_OUTPUT_CONTRACTS = {
   planner: 'ROLE OUTPUT CONTRACT: Start with a concise plan, assumptions, exact file tree, dependencies, and acceptance checks. Do not present implementation as tested.',
   implementer: 'ROLE OUTPUT CONTRACT: Provide complete destination-labelled files, then exact numbered setup steps that tell the user where to put every file, what dependency/configuration is required, what command or Studio action to run next, and how to verify success. Keep the validation checklist concrete. Do not omit critical logic or claim execution.',
@@ -629,7 +657,7 @@ function normaliseMemoryContext(memoryContext) {
   return memoryContext.slice(0, 18_000).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
 }
 
-function buildSystemPrompt(searchContext, platform = 'general', workflowMode = 'general', framework = 'unknown', role = '', memoryContext = '') {
+function buildSystemPrompt(searchContext, platform = 'general', workflowMode = 'general', framework = 'unknown', role = '', memoryContext = '', plan = 'free') {
   const cleanContext = normaliseSearchContext(searchContext);
   const cleanMemory = normaliseMemoryContext(memoryContext);
   const qualityGate = PLATFORM_GUIDANCE[platform] || PLATFORM_GUIDANCE.general;
@@ -638,8 +666,10 @@ function buildSystemPrompt(searchContext, platform = 'general', workflowMode = '
     ? FRAMEWORK_GUIDANCE[framework] || FRAMEWORK_GUIDANCE.unknown
     : '';
   const roleGate = ROLE_OUTPUT_CONTRACTS[role] || '';
+  const planKey = String(plan || '').trim().toLowerCase() === 'owner' ? 'owner' : (normalisePlan(plan) || 'free');
+  const planGate = PLAN_QUALITY_GUIDANCE[planKey] || PLAN_QUALITY_GUIDANCE.free;
   const structuredFallbackGate = ROLE_RESPONSE_SCHEMAS[role] ? STRUCTURED_FALLBACK_NOTICE : '';
-  const base = `${STELLAR_SYSTEM_PROMPT}\n\n${SMART_CONVERSATION_GUIDANCE}\n\n${CODE_INTELLIGENCE_GUIDANCE}\n\n${qualityGate}\n\n${workflowGate}${frameworkGate ? `\n\n${frameworkGate}` : ''}${roleGate ? `\n\n${roleGate}` : ''}${structuredFallbackGate ? `\n\n${structuredFallbackGate}` : ''}`;
+  const base = `${STELLAR_SYSTEM_PROMPT}\n\n${SMART_CONVERSATION_GUIDANCE}\n\n${CODE_INTELLIGENCE_GUIDANCE}\n\n${planGate}\n\n${qualityGate}\n\n${workflowGate}${frameworkGate ? `\n\n${frameworkGate}` : ''}${roleGate ? `\n\n${roleGate}` : ''}${structuredFallbackGate ? `\n\n${structuredFallbackGate}` : ''}`;
   const memoryBlock = cleanMemory ? `\n\nCROSS-CHAT MEMORY\nThese are excerpts from this user's other saved Stellar chats. Use them as relevant background memory. Prefer newer explicit instructions if anything conflicts. Never turn an old plan or attempt into a claimed completion.\n\n${cleanMemory}` : '';
   if (!cleanContext) return base + memoryBlock;
 
@@ -879,7 +909,7 @@ export default async function handler(req, res) {
     const upstream = await createUpstreamStream({
       route,
       maxTokens: safeMaxTokens,
-      system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role, memoryContext) + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
+      system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role, memoryContext, plan) + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
       messages: addImageToLastUserMessage(cleanMessages, imageAttachment.image),
       responseFormat: ROLE_RESPONSE_SCHEMAS[route.role],
       signal: controller.signal,
@@ -963,4 +993,4 @@ export default async function handler(req, res) {
 }
 
 
-export { CODE_INTELLIGENCE_GUIDANCE, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
+export { CODE_INTELLIGENCE_GUIDANCE, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
