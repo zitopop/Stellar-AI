@@ -83,6 +83,33 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
 .sidebar,.sidebar *{pointer-events:auto!important;}
 button,.btn,.tab,.search{touch-action:manipulation!important;}
 
+
+
+/* OWNER-ONLY OAUTH MODAL POLISH */
+.plugin-modal{background:rgba(2,4,9,.76)!important;backdrop-filter:blur(18px) saturate(1.08)!important;-webkit-backdrop-filter:blur(18px) saturate(1.08)!important;}
+.plugin-dialog{width:min(640px,100%)!important;padding:28px 30px 26px!important;border-radius:22px!important;border:1px solid rgba(167,139,250,.24)!important;background:linear-gradient(165deg,rgba(22,29,45,.98),rgba(9,14,24,.98))!important;box-shadow:0 34px 110px rgba(0,0,0,.62), inset 0 1px rgba(255,255,255,.08)!important;}
+.plugin-dialog-head{align-items:flex-start!important;margin-bottom:22px!important;}
+
+
+.plugin-modal-top{display:grid;grid-template-columns:72px 1fr;gap:18px;align-items:center;min-width:0;}
+.plugin-modal-logo{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:#05070b;border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 32px rgba(0,0,0,.35);font-size:28px;color:#fff;}
+.plugin-kicker{margin-bottom:4px;color:#a58bff;font-size:10px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;}
+.plugin-dialog h2{font-size:26px!important;letter-spacing:-.04em!important;line-height:1.05!important;}
+.plugin-dialog p{max-width:440px!important;color:#c5ccda!important;font-size:14px!important;line-height:1.5!important;}
+.modal-close{flex:none!important;width:46px!important;height:46px!important;border-radius:13px!important;background:rgba(255,255,255,.055)!important;border-color:rgba(255,255,255,.13)!important;font-size:24px!important;}
+.oauth-hero{width:100%;min-height:72px;margin:0 0 12px;padding:0 24px;border:1px solid rgba(218,205,255,.25);border-radius:15px;background:linear-gradient(135deg,#8f7cff,#6f55ff)!important;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:15px;font-weight:950;box-shadow:0 18px 38px rgba(105,82,255,.28), inset 0 1px rgba(255,255,255,.28);}
+
+
+.oauth-hero:hover:not([disabled]){filter:brightness(1.06);transform:translateY(-1px);}
+.oauth-hero[disabled]{opacity:.58;cursor:not-allowed;filter:saturate(.75);}
+.oauth-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.14);font-size:19px;}.oauth-arrow{font-size:24px;opacity:.95;}
+.oauth-note{margin:0 0 22px;text-align:center;color:#8f97aa;font-size:11.5px;font-weight:650;}
+.modal-divider{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin:20px 0 18px;color:#8e96a9;font-size:11px;font-weight:900;letter-spacing:.08em;}.modal-divider:before,.modal-divider:after{content:'';height:1px;background:rgba(255,255,255,.12);}
+.token-section{padding:18px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.025);}.token-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;font-size:15px;font-weight:950;}.token-title span:first-child{color:#a78bfa;font-size:22px}.token-sub{margin:0 0 14px!important;font-size:12.5px!important;color:#aab2c2!important;}
+.token-input{min-height:52px!important;border-radius:12px!important;border-color:rgba(255,255,255,.13)!important;background:#080c13!important;font-size:14px!important;}
+.connect-help{margin-top:9px!important}.connect-help a{font-size:12px!important;color:#bdafff!important}.secure-line{margin-top:10px;color:#8f98aa;font-size:11px;line-height:1.45}.modal-actions{margin-top:24px!important}.modal-actions .btn{min-height:52px!important;min-width:118px!important;border-radius:13px!important;font-size:12px!important}.modal-actions .btn:last-child{background:linear-gradient(135deg,#8a74ff,#6d53ff)!important;border-color:rgba(218,205,255,.28)!important;color:white!important;}
+@media(max-width:620px){.plugin-dialog{padding:22px 18px!important}.plugin-modal-top{grid-template-columns:1fr}.plugin-modal-logo{width:54px;height:54px}.oauth-hero{min-height:64px;padding:0 16px}.modal-actions{justify-content:stretch}.modal-actions .btn{flex:1}}
+
 </style>
 </head>
 <body>
@@ -148,14 +175,22 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
 
 <div id="plugin-modal" class="plugin-modal" aria-hidden="true">
   <div class="plugin-dialog" role="dialog" aria-modal="true" aria-labelledby="plugin-modal-title">
-    <div class="plugin-dialog-head"><div><h2 id="plugin-modal-title">Connect plugin</h2><p id="plugin-modal-copy"></p></div><button id="plugin-modal-close" class="modal-close" type="button" aria-label="Close">×</button></div>
+    <div class="plugin-dialog-head">
+      <div class="plugin-modal-top"><div id="plugin-modal-logo" class="plugin-modal-logo">▲</div><div><div class="plugin-kicker">Integrations</div><h2 id="plugin-modal-title">Connect plugin</h2><p id="plugin-modal-copy"></p></div></div>
+      <button id="plugin-modal-close" class="modal-close" type="button" aria-label="Close">×</button>
+    </div>
     <div id="plugin-connect-form">
-      <button id="plugin-oauth-submit" class="btn" type="button" style="width:100%;margin-bottom:10px;background:#7567ff">Connect with OAuth</button>
-      <div class="secret-note" id="plugin-oauth-note">OAuth opens the provider permission screen. No password is shared with Stellar.</div>
-      <input id="plugin-token" class="token-input" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste token" style="margin-top:10px">
-      <div class="connect-help"><span class="mode-badge">Manual secure token fallback</span><a id="plugin-token-help" href="#" target="_blank" rel="noopener noreferrer">How to create a token ↗</a></div>
-      <div class="secret-note">The token is sent over HTTPS and encrypted before server-side storage. It is never saved in browser storage or shown back to you.</div>
-      <div class="modal-actions"><button id="plugin-connect-cancel" class="btn" type="button">Cancel</button><button id="plugin-connect-submit" class="btn" type="button">Connect read-only</button></div>
+      <button id="plugin-oauth-submit" class="oauth-hero" type="button"><span id="plugin-oauth-logo" class="oauth-icon">▲</span><span id="plugin-oauth-label">Connect with OAuth</span><span class="oauth-arrow">→</span></button>
+      <div class="oauth-note" id="plugin-oauth-note">Secure OAuth connection. No password is shared with Stellar.</div>
+      <div id="plugin-token-divider" class="modal-divider">OR</div>
+      <section id="plugin-token-section" class="token-section">
+        <div class="token-title"><span>⌘</span><strong id="plugin-token-title">Use an access token</strong></div>
+        <p id="plugin-token-sub" class="token-sub">Prefer to use a token? Enter your access token below.</p>
+        <input id="plugin-token" class="token-input" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste token">
+        <div class="connect-help"><span class="mode-badge">Manual secure token fallback</span><a id="plugin-token-help" href="#" target="_blank" rel="noopener noreferrer">How to create a token ↗</a></div>
+        <div class="secure-line">Your token is encrypted server-side and is never exposed in your browser.</div>
+      </section>
+      <div class="modal-actions"><button id="plugin-connect-cancel" class="btn" type="button">Cancel</button><button id="plugin-connect-submit" class="btn" type="button">Connect & Continue</button></div>
     </div>
     <div id="plugin-inspect-view" hidden><div id="plugin-resource-list" class="resource-list"></div><div class="modal-actions"><button id="plugin-disconnect" class="btn" type="button">Disconnect</button><button id="plugin-inspect-close" class="btn" type="button">Close</button></div></div>
   </div>
@@ -176,8 +211,8 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
   const fallbackPlugins=[
     {id:'pc-agent',name:'PC Agent',description:'Use your paired Windows workspace safely with approval controls.',category:'Coding',status:'beta',availableToUser:true,enabled:true,route:'/desktop',permissions:[{id:'files.read',label:'Read project files',risk:'read'},{id:'files.write',label:'Write approved files',risk:'write'}]},
     {id:'roblox-studio',name:'Roblox Studio',description:'Build approved scripts, folders and map packs inside Roblox Studio.',category:'Coding',status:'beta',availableToUser:true,enabled:true,route:'/roblox-studio',permissions:[{id:'studio.read',label:'Inspect open place',risk:'read'},{id:'studio.write',label:'Create approved Studio objects',risk:'write'}]},
-    {id:'github',name:'GitHub',description:'Inspect repositories and recent project activity.',category:'Developer tools',status:'available',availableToUser:true,enabled:false,connected:false,connection:'oauth_or_token',credentialStorageReady:true,permissions:[{id:'repos.read',label:'Read repositories',risk:'read'}]},
-    {id:'vercel',name:'Vercel',description:'Inspect projects and deployment status.',category:'Developer tools',status:'available',availableToUser:true,enabled:false,connected:false,connection:'token',credentialStorageReady:true,permissions:[{id:'deployments.read',label:'Read deployments',risk:'read'}]},
+    {id:'github',name:'GitHub',description:'Owner-only repository inspection for Stellar development.',category:'Developer tools',status:'available',availableToUser:true,enabled:false,connected:false,connection:'oauth_or_token',credentialStorageReady:true,permissions:[{id:'repos.read',label:'Read repositories',risk:'read'}]},
+    {id:'vercel',name:'Vercel',description:'Owner-only project and deployment inspection for Stellar.',category:'Developer tools',status:'available',availableToUser:true,enabled:false,connected:false,connection:'oauth_or_token',oauthProvider:'vercel',credentialStorageReady:true,permissions:[{id:'deployments.read',label:'Read deployments',risk:'read'}]},
     {id:'gmail',name:'Gmail',description:'Search mail and prepare replies after OAuth setup is complete.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'mail.read',label:'Read selected email',risk:'read'},{id:'mail.draft',label:'Create drafts',risk:'write'}]},
     {id:'google-drive',name:'Google Drive',description:'Read selected project files and documents after OAuth setup.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'drive.read',label:'Read selected Drive files',risk:'read'}]},
     {id:'google-calendar',name:'Google Calendar',description:'Check availability and manage approved events after OAuth setup.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'calendar.read',label:'Read calendar events',risk:'read'}]},
@@ -304,10 +339,10 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
       setNotice('Plugin permissions are account-scoped. High-impact actions still require approval.','good');
     }catch(error){
       plugins=fallbackPlugins.map(plugin=>({...plugin,permissions:(plugin.permissions||[]).map(permission=>({...permission}))}));
-      owner=true;
-      $('account-name').textContent='Stellar Owner';
-      $('account-role').textContent='Owner';
-      $('studio-nav').style.display='';
+      plugins=plugins.filter(p=>owner||!['roblox-studio','github','vercel'].includes(p.id)).map(p=>owner?p:{...p,setupStatus:null,setupEnv:[],oauthStatus:null,oauthAvailable:false,oauthSetupMissing:false,oauthSetupMissingEnv:[]});
+      $('account-name').textContent=owner?'Stellar Owner':'Stellar';
+      $('account-role').textContent=owner?'Owner':'Signed in';
+      $('studio-nav').style.display=owner?'':'none';
       await getConnectionStates().catch(()=>{});
       render();
       setNotice('Showing the plugin catalogue. Live connection status will refresh automatically when the plugin service is available.','good');
@@ -324,32 +359,43 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
   }
   function openConnect(id){
     const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+    if(!owner&&['github','vercel'].includes(id)){setNotice('This developer plugin is owner-only.','bad');return;}
     modalPluginId=id;
-    const setupOnly=plugin.setupStatus==='oauth_setup_needed'||(plugin.status==='coming_soon'&&plugin.oauthProvider);
+    const setupOnly=owner&&(plugin.setupStatus==='oauth_setup_needed'||(plugin.status==='coming_soon'&&plugin.oauthProvider));
+    const oauthPlugin=plugin.connection==='oauth_or_token'||plugin.connection==='oauth';
+    const oauthReady=owner&&(plugin.oauthAvailable||plugin.oauthStatus?.configured);
+    const isVercel=id==='vercel', isGithub=id==='github';
+    $('plugin-modal-logo').textContent=isGithub?'●':isVercel?'▲':'✦';
     $('plugin-modal-title').textContent=(setupOnly?'Set up ':'Connect ')+plugin.name;
     $('plugin-modal-copy').textContent=setupOnly
-      ? plugin.name+' needs provider OAuth/app setup before users can connect it. Add: '+setupText(plugin)+'.'
-      : id==='github'
-        ? 'Use OAuth when configured, or a fine-grained GitHub token with only the repository read access you want Stellar to inspect.'
-        : 'Use a Vercel access token. This release only reads project and deployment metadata.';
-    $('plugin-token').placeholder=id==='github'?'GitHub token':'Vercel access token';
-    $('plugin-token-help').href=id==='github'?'https://github.com/settings/personal-access-tokens':'https://vercel.com/account/settings/tokens';
-    $('plugin-token-help').textContent=id==='github'?'Create a GitHub token ↗':'Create a Vercel token ↗';
-    const oauthPlugin=plugin.connection==='oauth_or_token'||plugin.connection==='oauth';
-    const oauthReady=plugin.oauthAvailable||plugin.oauthStatus?.configured;
-    $('plugin-oauth-submit').hidden=setupOnly||!oauthPlugin;
-    $('plugin-oauth-note').hidden=false;
+      ? plugin.name+' provider setup is owner-only. Add missing credentials in Vercel before public OAuth goes live.'
+      : isGithub ? 'Link the owner GitHub workspace so Stellar can inspect repository metadata safely.'
+      : isVercel ? 'Link the owner Vercel workspace so Stellar can inspect project and deployment metadata.'
+      : 'Connect this plugin with scoped permissions.';
+    $('plugin-oauth-logo').textContent=isGithub?'●':isVercel?'▲':'✦';
+    $('plugin-oauth-label').textContent=oauthReady?'Connect with '+plugin.name:(oauthPlugin?'OAuth setup needed':'OAuth unavailable');
+    $('plugin-oauth-submit').hidden=!owner||setupOnly||!oauthPlugin;
     $('plugin-oauth-submit').disabled=oauthPlugin&&!oauthReady;
-    $('plugin-oauth-submit').textContent=oauthReady?'Connect '+plugin.name+' with OAuth':'OAuth setup needed';
-    $('plugin-oauth-note').textContent=setupOnly?'Setup needed before this plugin can connect. Missing: '+setupText(plugin)+'.':(oauthReady?'OAuth opens the provider permission screen. No password is shared with Stellar.':'OAuth is built, but live OAuth still needs '+(plugin.oauthStatus?.missing||plugin.oauthSetupMissingEnv||['provider credentials']).join(', ')+' added in Vercel. Use the manual secure token fallback below for now.');
-    $('plugin-token').hidden=setupOnly||!isTokenPlugin(plugin);
-    $('plugin-token-help').hidden=setupOnly||!isTokenPlugin(plugin);
-    $('plugin-connect-submit').hidden=setupOnly||!isTokenPlugin(plugin);
+    const missing=(plugin.oauthStatus?.missing||plugin.oauthSetupMissingEnv||[]).join(', ');
+    $('plugin-oauth-note').textContent=setupOnly
+      ? 'Owner setup needed. Missing: '+setupText(plugin)+'.'
+      : oauthReady ? 'Secure OAuth connection. We only request the read permissions shown on this plugin.'
+      : owner&&oauthPlugin ? 'OAuth is owner-only and not live yet'+(missing?': '+missing:'.')+'. Use the token fallback below for now.'
+      : 'Manual secure token connection is available below.';
+    $('plugin-token-title').textContent=isVercel?'Use a Vercel Access Token':isGithub?'Use a GitHub Access Token':'Use an Access Token';
+    $('plugin-token-sub').textContent=isVercel?'Prefer to use a token? Enter your Vercel access token below.':isGithub?'Prefer to use a token? Enter a fine-grained GitHub token below.':'Prefer to use a token? Enter it below.';
+    $('plugin-token').placeholder=isGithub?'github_pat_xxxxxxxxxxxxxxxxxxxxx':isVercel?'vercel_xxxxxxxxxxxxxxxxxxxxx':'Paste token';
+    $('plugin-token-help').href=isGithub?'https://github.com/settings/personal-access-tokens':'https://vercel.com/account/settings/tokens';
+    $('plugin-token-help').textContent=isGithub?'Create a GitHub access token ↗':isVercel?'Create a Vercel access token ↗':'How to create a token ↗';
+    const showToken=owner&&!setupOnly&&isTokenPlugin(plugin);
+    $('plugin-token-section').hidden=!showToken;
+    $('plugin-token-divider').hidden=!showToken||!oauthPlugin;
+    $('plugin-connect-submit').hidden=!showToken;
     $('plugin-connect-form').hidden=false;
     $('plugin-inspect-view').hidden=true;
     $('plugin-modal').classList.add('open');
     $('plugin-modal').setAttribute('aria-hidden','false');
-    setTimeout(()=>$('plugin-token').focus(),0);
+    if(showToken)setTimeout(()=>$('plugin-token').focus(),0);
   }
   async function installPlugin(id){
     const plugin=plugins.find(p=>p.id===id);if(!plugin)return;

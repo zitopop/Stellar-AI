@@ -21,10 +21,13 @@ test('plugin registry separates working, owner-only and future integrations', ()
   assert.equal(getPluginDefinition('pc-agent').status, 'beta');
   assert.equal(getPluginDefinition('roblox-studio').audience, 'owner');
   assert.equal(getPluginDefinition('github').status, 'available');
+  assert.equal(getPluginDefinition('github').audience, 'owner');
   assert.equal(getPluginDefinition('github').connection, 'oauth_or_token');
   assert.equal(getPluginDefinition('github').oauthProvider, 'github');
   assert.equal(getPluginDefinition('vercel').status, 'available');
-  assert.equal(getPluginDefinition('vercel').connection, 'token');
+  assert.equal(getPluginDefinition('vercel').audience, 'owner');
+  assert.equal(getPluginDefinition('vercel').connection, 'oauth_or_token');
+  assert.equal(getPluginDefinition('vercel').oauthProvider, 'vercel');
   assert.deepEqual(getPluginDefinition('github').permissions.map(p=>p.id), ['repos.read']);
   assert.deepEqual(getPluginDefinition('vercel').permissions.map(p=>p.id), ['deployments.read']);
   assert.equal(getPluginDefinition('gmail').status, 'coming_soon');
@@ -66,6 +69,8 @@ test('plugin manager is account-scoped and only enables token plugins after conn
   assert.match(manager, /action==='inspect'/);
   assert.match(manager, /Connect this plugin before enabling it/);
   assert.match(manager, /plugin\.status==='coming_soon'/);
+  assert.ok(manager.includes("visibleRegistry=PLUGIN_REGISTRY.filter(plugin=>isOwner||plugin.audience!=='owner')"));
+  assert.match(manager, /exposeSetup=isOwner===true/);
 });
 
 test('shared API keeps plugin management within the existing serverless function budget', () => {
@@ -102,11 +107,11 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   assert.match(page, /data-inspect=/);
   assert.match(page, /connectToken/);
   assert.match(page, /disconnectCurrentPlugin/);
-  assert.match(page, /Connect read-only/);
+  assert.match(page, /Connect & Continue/);
   assert.match(page, /Setup info/);
   assert.match(page, /setupText/);
   assert.match(page, /OAuth setup needed/);
-  assert.match(page, /encrypted before server-side storage/);
+  assert.match(page, /encrypted server-side/);
   assert.match(page, /More plugins coming soon/);
   assert.match(page, /Request a plugin/);
   assert.match(app, /data-tab="plugins"/);
@@ -120,4 +125,15 @@ test('plugins sidebar keeps tappable visible icon badges', () => {
   assert.match(page, /FINAL PLUGINS SIDEBAR TAP \+ ICON FIX/);
   assert.match(page, /\.nav a\{position:relative!important;z-index:2!important;min-height:46px!important;pointer-events:auto!important;touch-action:manipulation!important;\}/);
   assert.match(page, /\.nav-ico\{display:inline-flex!important/);
+});
+
+
+
+test('developer OAuth setup is owner-only and hidden from normal accounts', () => {
+  assert.equal(getPluginDefinition('github').audience, 'owner');
+  assert.equal(getPluginDefinition('vercel').audience, 'owner');
+  assert.match(manager, /oauthStatus:exposeSetup&&OAUTH_PLUGIN_IDS/);
+  assert.match(manager, /oauthSetupMissingEnv:exposeSetup&&Array.isArray/);
+  assert.ok(page.includes("if(!owner&&['github','vercel'].includes(id))"));
+  assert.match(page, /OWNER-ONLY OAUTH MODAL POLISH/);
 });
