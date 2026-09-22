@@ -163,6 +163,106 @@
     document.head.appendChild(script);
   }
 
+  function installVoicePickerPolish() {
+    if (!/^\/app(?:\.html)?\/?$/.test(location.pathname)) return;
+    if (window.__stellarVoicePickerPolishInstalled) return;
+    window.__stellarVoicePickerPolishInstalled = true;
+
+    let filterTimer = 0;
+
+    const isEnglishVoice = (option) => {
+      const text = String(option?.textContent || '').trim();
+      return /\bEnglish\b/i.test(text) || /\ben(?:-|_)?(?:GB|US|AU|CA|IE|NZ|IN)?\b/i.test(text);
+    };
+
+    const voiceRank = (option, selectedValue) => {
+      const text = String(option?.textContent || '').toLowerCase();
+      let score = 0;
+      if (option?.value === selectedValue) score += 1000;
+      if (/system default/.test(text)) score += 900;
+      if (/en[-_]?gb|english \(united kingdom\)|uk english/.test(text)) score += 300;
+      else if (/en[-_]?us|english \(united states\)|us english/.test(text)) score += 180;
+      else if (/\benglish\b|\ben[-_]/.test(text)) score += 120;
+      if (/natural|neural|premium|enhanced/.test(text)) score += 80;
+      if (/microsoft|google/.test(text)) score += 20;
+      return score;
+    };
+
+    const pruneVoiceOptions = () => {
+      const select = document.getElementById('voice-select');
+      if (!select || select.dataset.stellarFiltering === 'true') return;
+
+      const options = Array.from(select.options || []);
+      if (!options.length) return;
+
+      const selectedValue = select.value;
+      const system = options.find((option) => /system default/i.test(String(option.textContent || '')));
+      const selected = options.find((option) => option.value === selectedValue);
+      const english = options
+        .filter(isEnglishVoice)
+        .sort((a, b) => voiceRank(b, selectedValue) - voiceRank(a, selectedValue));
+
+      const keep = [];
+      const add = (option) => {
+        if (!option || keep.includes(option)) return;
+        if (keep.some((item) => item.value === option.value && item.textContent === option.textContent)) return;
+        keep.push(option);
+      };
+
+      add(system);
+      if (selected && (isEnglishVoice(selected) || selected === system)) add(selected);
+      english.forEach((option) => {
+        if (keep.length < 8) add(option);
+      });
+
+      // If the browser supplied no English metadata, leave the original list alone.
+      if (keep.length < 2 && options.length > 1) return;
+
+      select.dataset.stellarFiltering = 'true';
+      try {
+        options.forEach((option) => {
+          if (!keep.includes(option)) option.remove();
+        });
+
+        if (selectedValue && Array.from(select.options).some((option) => option.value === selectedValue)) {
+          select.value = selectedValue;
+        }
+
+        select.dataset.stellarVoiceCount = String(select.options.length);
+        select.setAttribute('aria-label', 'Stellar voice. English voices only; UK voices are listed first.');
+        select.title = 'English voices on this device · UK voices listed first';
+      } finally {
+        select.dataset.stellarFiltering = 'false';
+      }
+    };
+
+    const scheduleFilter = () => {
+      window.clearTimeout(filterTimer);
+      filterTimer = window.setTimeout(pruneVoiceOptions, 40);
+    };
+
+    scheduleFilter();
+
+    const bodyObserver = new MutationObserver((mutations) => {
+      if (mutations.some((mutation) =>
+        Array.from(mutation.addedNodes || []).some((node) =>
+          node?.id === 'voice-select' || node?.querySelector?.('#voice-select')
+        ) || mutation.target?.id === 'voice-select'
+      )) scheduleFilter();
+    });
+    bodyObserver.observe(document.body, { childList:true, subtree:true });
+
+    if ('speechSynthesis' in window) {
+      try { window.speechSynthesis.addEventListener('voiceschanged', scheduleFilter); } catch {}
+    }
+
+    document.addEventListener('click', (event) => {
+      if (event.target?.closest?.('[data-tab="voice"], [data-panel-target="voice"], [data-settings-tab="voice"]')) {
+        window.setTimeout(scheduleFilter, 60);
+      }
+    }, true);
+  }
+
   function installServiceWorkerUpdateRefresh() {
     if (!('serviceWorker' in navigator)) return;
     if (window.__stellarSwRefreshInstalled) return;
@@ -550,6 +650,7 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       applyCurrencyLabels();
+      installVoicePickerPolish();
       installServiceWorkerUpdateRefresh();
       watchSidebarRailLabels();
       enhanceModelPicker();
@@ -559,6 +660,7 @@
     }, { once: true });
   } else {
     applyCurrencyLabels();
+    installVoicePickerPolish();
     installServiceWorkerUpdateRefresh();
     watchSidebarRailLabels();
     enhanceModelPicker();
