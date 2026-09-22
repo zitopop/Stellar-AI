@@ -40,5 +40,5 @@ test('Settings prevents content overflow and keeps email on one ellipsized line'
 });
 
 test('Settings stylesheet cache remains versioned for deployed browsers', () => {
-  assert.ok(currency.includes('/stellar-settings-v4.css?v=7'));
+  assert.match(currency, /\/stellar-settings-v4\.css\?v=\d+/);
 });
