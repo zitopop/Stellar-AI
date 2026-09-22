@@ -208,6 +208,34 @@ async function run(){
 }
 async function stopLocal(){await fsp.writeFile(LOCAL_STOP_PATH,'stopped\\n','utf8');console.log('Local Emergency Stop enabled. The agent will not accept tasks until resumed.')}
 async function resumeLocal(){try{await fsp.unlink(LOCAL_STOP_PATH)}catch(error){if(error?.code!=='ENOENT')throw error}console.log('Local Emergency Stop cleared.')}
+async function selfTest(){
+  const config={workspaceRoot:DEFAULT_ROOT};
+  await ensureRoot(config);
+  const dir='StellarAgentSelfTest';
+  const file=dir+'/hello.txt';
+  const first='Stellar PC Agent self-test: write/read/list passed.\n';
+  const second='Stellar PC Agent self-test: backup + rewrite passed.\n';
+  const created=await execute(config,{type:'mkdir',args:{path:dir},approved:true});
+  const wrote1=await execute(config,{type:'write_file',args:{path:file,content:first},approved:true});
+  const read1=await execute(config,{type:'read_file',args:{path:file},approved:true});
+  const listed=await execute(config,{type:'list_directory',args:{path:dir},approved:true});
+  const wrote2=await execute(config,{type:'write_file',args:{path:file,content:second},approved:true});
+  const read2=await execute(config,{type:'read_file',args:{path:file},approved:true});
+  const backupDir=path.join(workspaceRoot(config),'.stellar-backups');
+  let backupCount=0;
+  try{backupCount=(await fsp.readdir(backupDir)).filter(name=>name.includes('StellarAgentSelfTest_hello.txt')).length}catch{}
+  const passed=read1.includes(first.trim())&&read2.includes(second.trim())&&backupCount>0;
+  await localAudit(config,'self_test',{passed,backupCount});
+  console.log(JSON.stringify({
+    passed,
+    workspaceRoot:workspaceRoot(config),
+    testFile:file,
+    backupCount,
+    checks:{create:created,write:wrote1,list:listed,rewrite:wrote2},
+    message:passed?'Stellar Desktop local self-test passed.':'Self-test did not complete every check.'
+  },null,2));
+  if(!passed)process.exitCode=1;
+}
 async function status(){
   const config=await loadConfig();
   console.log(JSON.stringify({
@@ -229,6 +257,7 @@ try{
   else if(command==='status') await status();
   else if(command==='stop') await stopLocal();
   else if(command==='resume') await resumeLocal();
+  else if(command==='selftest') await selfTest();
   else{
     console.log('Stellar Desktop Agent');
     console.log('  node agent.mjs pair PAIRING_CODE');
@@ -236,6 +265,7 @@ try{
     console.log('  node agent.mjs status');
     console.log('  node agent.mjs stop');
     console.log('  node agent.mjs resume');
+    console.log('  node agent.mjs selftest');
     console.log('');
     console.log('Optional: set STELLAR_DESKTOP_ROOT to choose the allowed workspace folder.');
     console.log('Optional: set STELLAR_DESKTOP_ALLOW_SHELL=1 to permit explicitly-approved terminal commands.');
