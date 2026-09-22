@@ -14,8 +14,8 @@ const handlers = fs.readdirSync(apiDir).filter(name => name.endsWith('.js')).sor
 
  test('all expected public endpoint handlers remain present', () => {
   assert.deepEqual(handlers, [
-    'auth.js', 'broadcast.js', 'chat.js', 'create-checkout.js', 'discord-oauth.js',
-    'get-chats.js', 'get-plan.js', 'grant.js', 'save-chats.js', 'search.js',
+    'auth.js', 'broadcast.js', 'chat.js', 'create-checkout.js', 'desktop-agent.js',
+    'discord-oauth.js', 'get-chats.js', 'get-plan.js', 'grant.js', 'search.js',
     'send-welcome.js', 'webhook.js',
   ]);
 });
