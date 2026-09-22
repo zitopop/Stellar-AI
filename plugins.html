@@ -297,9 +297,15 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     $('plugin-token').placeholder=id==='github'?'GitHub token':'Vercel access token';
     $('plugin-token-help').href=id==='github'?'https://github.com/settings/personal-access-tokens':'https://vercel.com/account/settings/tokens';
     $('plugin-token-help').textContent=id==='github'?'Create a GitHub token ↗':'Create a Vercel token ↗';
-    $('plugin-oauth-submit').hidden=!(plugin.connection==='oauth_or_token');
-    $('plugin-oauth-note').hidden=!(plugin.connection==='oauth_or_token');
-    $('plugin-oauth-submit').textContent='Connect '+plugin.name+' with OAuth';
+    const oauthPlugin=plugin.connection==='oauth_or_token';
+    const oauthReady=plugin.oauthAvailable||plugin.oauthStatus?.configured;
+    $('plugin-oauth-submit').hidden=!oauthPlugin;
+    $('plugin-oauth-note').hidden=!oauthPlugin;
+    $('plugin-oauth-submit').disabled=oauthPlugin&&!oauthReady;
+    $('plugin-oauth-submit').textContent=oauthReady?'Connect '+plugin.name+' with OAuth':'OAuth setup needed';
+    $('plugin-oauth-note').textContent=oauthReady
+      ? 'OAuth opens the provider permission screen. No password is shared with Stellar.'
+      : 'OAuth is built, but live OAuth still needs '+(plugin.oauthStatus?.missing||['provider credentials']).join(', ')+' added in Vercel. Use the manual secure token fallback below for now.';
     $('plugin-connect-form').hidden=false;
     $('plugin-inspect-view').hidden=true;
     $('plugin-modal').classList.add('open');
