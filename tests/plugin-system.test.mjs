@@ -46,12 +46,20 @@ test('disabling built-in plugins actually stops their task bridges', () => {
   assert.match(studio, /Roblox Studio plugin is disabled in Plugins/);
 });
 
-test('plugin UI exposes permissions without pretending future OAuth connections exist', () => {
-  assert.match(page, /PLUGIN DIRECTORY/);
-  assert.match(page, /Permission-first by design/);
-  assert.match(page, /OAuth not connected yet/);
+test('plugin UI matches the premium dashboard while keeping permissions truthful', () => {
+  assert.match(page, /<h1>Plugins<\/h1>/);
+  assert.match(page, /Connect your tools\. Give permissions\. Let Stellar do more\./);
+  assert.match(page, /More powerful/);
+  assert.match(page, /You stay in control/);
+  assert.match(page, /Built for safety/);
+  for (const filter of ['all','connected','coming_soon','developer','disabled']) {
+    assert.match(page, new RegExp(`data-filter="${filter}"`));
+  }
+  assert.match(page, /More plugins coming soon/);
+  assert.match(page, /Request a plugin/);
   assert.match(page, /data-toggle=/);
   assert.match(page, /\/api\/plugins/);
+  assert.doesNotMatch(page, /Notify me/);
   assert.match(app, /data-tab="plugins"/);
   assert.match(app, /href="\/plugins" class="set-item set-click"/);
   assert.match(app, /onclick="location\.href='\/plugins'"/);
