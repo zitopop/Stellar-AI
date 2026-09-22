@@ -153,6 +153,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, user: googleUser, session: createSession(googleUser.email), isNew, referralAwarded: Boolean(referral?.applied) });
     }
 
+    if (action === 'refreshSession') {
+      const session = readSession(req);
+      if (!session) return res.status(401).json({ error: 'Please sign in again to continue.' });
+      return res.status(200).json({ ok: true, email: session.email, session: createSession(session.email) });
+    }
+
     const normalizedEmail = String(email || '').toLowerCase().trim();
     if (!validEmail(normalizedEmail)) return res.status(400).json({ error: 'Enter a valid email address.' });
 
