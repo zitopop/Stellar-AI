@@ -1,0 +1,199 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+
+const BASE_URL=(process.env.STELLAR_DESKTOP_URL||'https://trystellarai.com').replace(/\/$/,'');
+const CONFIG_PATH=process.env.STELLAR_DESKTOP_CONFIG||path.join(os.homedir(),'.stellar-desktop.json');
+const DEFAULT_ROOT=path.join(os.homedir(),'StellarWorkspace');
+const ALLOW_SHELL=String(process.env.STELLAR_DESKTOP_ALLOW_SHELL||'').toLowerCase()==='1'
+  || String(process.env.STELLAR_DESKTOP_ALLOW_SHELL||'').toLowerCase()==='true';
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function request(route,body,headers={}){
+  const response=await fetch(`${BASE_URL}${route}`,{
+    method:'POST',
+    headers:{'content-type':'application/json',...headers},
+    body:JSON.stringify(body),
+    signal:AbortSignal.timeout(30000),
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data?.error||`Request failed (${response.status})`);
+  return data;
+}
+async function loadConfig(){
+  try{return JSON.parse(await fsp.readFile(CONFIG_PATH,'utf8'))}
+  catch{throw new Error(`Not paired. Run: node agent.mjs pair YOUR_CODE`)}
+}
+async function saveConfig(config){
+  await fsp.mkdir(path.dirname(CONFIG_PATH),{recursive:true});
+  await fsp.writeFile(CONFIG_PATH,JSON.stringify(config,null,2),{mode:0o600});
+}
+function headers(config){
+  return {'x-stellar-device-id':config.deviceId,'x-stellar-device-token':config.deviceToken};
+}
+function workspaceRoot(config){
+  return path.resolve(process.env.STELLAR_DESKTOP_ROOT||config.workspaceRoot||DEFAULT_ROOT);
+}
+function safePath(config,input=''){
+  const root=workspaceRoot(config);
+  const target=path.resolve(root,String(input||'.'));
+  const relative=path.relative(root,target);
+  if(relative.startsWith('..')||path.isAbsolute(relative)) throw new Error('Path is outside the paired workspace root.');
+  return {root,target,relative:relative||'.'};
+}
+async function ensureRoot(config){await fsp.mkdir(workspaceRoot(config),{recursive:true})}
+function cap(value,max=120000){
+  const text=String(value??'');
+  return text.length>max?text.slice(0,max)+'\n[output truncated]':text;
+}
+function runProcess(command,{cwd,timeoutMs=120000}={}){
+  return new Promise((resolve,reject)=>{
+    const child=spawn(command,{cwd,shell:true,windowsHide:true,env:process.env});
+    let stdout='',stderr='',settled=false;
+    const timer=setTimeout(()=>{if(!settled){settled=true;child.kill();reject(new Error('Command timed out.'))}},timeoutMs);
+    child.stdout?.on('data',d=>stdout=cap(stdout+d));
+    child.stderr?.on('data',d=>stderr=cap(stderr+d));
+    child.on('error',err=>{clearTimeout(timer);if(!settled){settled=true;reject(err)}});
+    child.on('close',code=>{clearTimeout(timer);if(!settled){settled=true;resolve({code,stdout:cap(stdout),stderr:cap(stderr)})}});
+  });
+}
+async function execute(config,task){
+  const args=task?.args||{};
+  switch(task?.type){
+    case 'read_file': {
+      const {target,relative}=safePath(config,args.path);
+      const stat=await fsp.stat(target);
+      if(!stat.isFile()) throw new Error('Target is not a file.');
+      if(stat.size>1_000_000) throw new Error('File is larger than the 1 MB desktop-agent read limit.');
+      return `FILE ${relative}\n${await fsp.readFile(target,'utf8')}`;
+    }
+    case 'list_directory': {
+      const {target,relative}=safePath(config,args.path);
+      const entries=(await fsp.readdir(target,{withFileTypes:true})).slice(0,250)
+        .map(e=>`${e.isDirectory()?'[dir] ':'[file]'}${e.name}`);
+      return `DIRECTORY ${relative}\n${entries.join('\n')}`;
+    }
+    case 'mkdir': {
+      if(task.approved!==true) throw new Error('mkdir was not approved.');
+      const {target,relative}=safePath(config,args.path);
+      await fsp.mkdir(target,{recursive:true});
+      return `Created directory: ${relative}`;
+    }
+    case 'write_file': {
+      if(task.approved!==true) throw new Error('write_file was not approved.');
+      const {root,target,relative}=safePath(config,args.path);
+      const content=String(args.content??'');
+      if(content.length>2_000_000) throw new Error('Write exceeds the 2 MB desktop-agent limit.');
+      await fsp.mkdir(path.dirname(target),{recursive:true});
+      try{
+        const old=await fsp.readFile(target);
+        const backupDir=path.join(root,'.stellar-backups');
+        await fsp.mkdir(backupDir,{recursive:true});
+        const safeName=relative.replace(/[\\/:*?"<>|]/g,'_');
+        await fsp.writeFile(path.join(backupDir,`${Date.now()}-${safeName}`),old);
+      }catch(error){if(error?.code!=='ENOENT') throw error}
+      const temp=`${target}.stellar-tmp-${process.pid}`;
+      await fsp.writeFile(temp,content,'utf8');
+      await fsp.rename(temp,target);
+      return `Wrote file: ${relative} (${Buffer.byteLength(content)} bytes)`;
+    }
+    case 'run_command': {
+      if(task.approved!==true) throw new Error('run_command was not approved.');
+      if(!ALLOW_SHELL) throw new Error('Shell execution is disabled. Start with STELLAR_DESKTOP_ALLOW_SHELL=1 after reviewing the command.');
+      const command=String(args.command||'').trim();
+      if(!command) throw new Error('Command is empty.');
+      if(command.length>4000) throw new Error('Command is too long.');
+      const cwd=safePath(config,args.cwd||'.').target;
+      const result=await runProcess(command,{cwd});
+      return `EXIT ${result.code}\nSTDOUT\n${result.stdout}\nSTDERR\n${result.stderr}`;
+    }
+    case 'open_url': {
+      if(task.approved!==true) throw new Error('open_url was not approved.');
+      const url=new URL(String(args.url||''));
+      if(!['https:','http:'].includes(url.protocol)) throw new Error('Only http/https URLs can be opened.');
+      const escaped=url.toString().replace(/'/g,"''");
+      const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-Command',`Start-Process '${escaped}'`],{windowsHide:true,detached:true,stdio:'ignore'});
+      child.unref();
+      return `Opened URL: ${url.toString()}`;
+    }
+    default: throw new Error('Unsupported desktop action.');
+  }
+}
+async function report(config,taskId,payload){
+  try{await request('/api/desktop-agent',{action:'report',taskId,...payload},headers(config))}
+  catch(error){console.error('Could not report task result:',error.message)}
+}
+async function pair(code){
+  const clean=String(code||'').replace(/[^A-Z0-9]/gi,'').toUpperCase();
+  if(!clean) throw new Error('Pairing code required.');
+  const data=await request('/api/desktop-agent',{action:'claimPair',code:clean,hostname:os.hostname(),platform:`${process.platform}/${process.arch}`});
+  const config={deviceId:data.deviceId,deviceToken:data.deviceToken,hostname:data.hostname||os.hostname(),workspaceRoot:DEFAULT_ROOT,pairedAt:new Date().toISOString()};
+  await saveConfig(config);
+  await ensureRoot(config);
+  console.log('Paired with Stellar AI.');
+  console.log('Workspace:',workspaceRoot(config));
+  console.log('Shell commands:',ALLOW_SHELL?'enabled':'disabled by default');
+}
+async function run(){
+  const config=await loadConfig();
+  await ensureRoot(config);
+  console.log(`Stellar Desktop Agent online on ${config.hostname||os.hostname()}`);
+  console.log(`Workspace: ${workspaceRoot(config)}`);
+  console.log(`Shell: ${ALLOW_SHELL?'ENABLED':'disabled (safer default)'}`);
+  let backoff=1500;
+  while(true){
+    try{
+      const data=await request('/api/desktop-agent',{action:'poll'},headers(config));
+      backoff=1500;
+      if(!data.task){await sleep(1800);continue}
+      const task=data.task;
+      console.log(`→ ${task.type} ${task.id}`);
+      try{
+        const output=await execute(config,task);
+        console.log(`✓ ${task.type}`);
+        await report(config,task.id,{ok:true,output});
+      }catch(error){
+        console.error(`✗ ${task.type}: ${error.message}`);
+        await report(config,task.id,{ok:false,error:error.message});
+      }
+    }catch(error){
+      console.error('Connection:',error.message);
+      await sleep(backoff);
+      backoff=Math.min(15000,Math.round(backoff*1.6));
+    }
+  }
+}
+async function status(){
+  const config=await loadConfig();
+  console.log(JSON.stringify({
+    paired:true,
+    deviceId:config.deviceId,
+    hostname:config.hostname,
+    baseUrl:BASE_URL,
+    workspaceRoot:workspaceRoot(config),
+    shellEnabled:ALLOW_SHELL,
+    configPath:CONFIG_PATH,
+  },null,2));
+}
+
+const [command,arg]=process.argv.slice(2);
+try{
+  if(command==='pair') await pair(arg);
+  else if(command==='run'||command==='start') await run();
+  else if(command==='status') await status();
+  else{
+    console.log('Stellar Desktop Agent');
+    console.log('  node agent.mjs pair PAIRING_CODE');
+    console.log('  node agent.mjs run');
+    console.log('  node agent.mjs status');
+    console.log('');
+    console.log('Optional: set STELLAR_DESKTOP_ROOT to choose the allowed workspace folder.');
+    console.log('Optional: set STELLAR_DESKTOP_ALLOW_SHELL=1 to permit explicitly-approved terminal commands.');
+  }
+}catch(error){
+  console.error(error.message);
+  process.exitCode=1;
+}
