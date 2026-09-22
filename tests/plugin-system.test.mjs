@@ -5,30 +5,56 @@ import { PLUGIN_REGISTRY, PLUGIN_SCHEMA_VERSION, getPluginDefinition } from '../
 
 const api = await readFile(new URL('../api/desktop-agent.js', import.meta.url), 'utf8');
 const manager = await readFile(new URL('../lib/plugin-manager-handler.js', import.meta.url), 'utf8');
+const credentials = await readFile(new URL('../lib/plugin-credentials.js', import.meta.url), 'utf8');
+const providers = await readFile(new URL('../lib/plugin-providers.js', import.meta.url), 'utf8');
 const desktop = await readFile(new URL('../lib/desktop-agent-handler.js', import.meta.url), 'utf8');
 const studio = await readFile(new URL('../lib/roblox-studio-agent-handler.js', import.meta.url), 'utf8');
 const page = await readFile(new URL('../plugins.html', import.meta.url), 'utf8');
 const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 const vercel = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
 
-test('plugin registry is manifest-driven and separates available from future integrations', () => {
+test('plugin registry separates working, owner-only and future integrations', () => {
   assert.equal(PLUGIN_SCHEMA_VERSION, '1');
   for (const id of ['pc-agent','roblox-studio','github','vercel','gmail','google-drive','google-calendar','discord','shopify','stripe']) {
     assert.ok(getPluginDefinition(id), id);
   }
   assert.equal(getPluginDefinition('pc-agent').status, 'beta');
   assert.equal(getPluginDefinition('roblox-studio').audience, 'owner');
-  assert.equal(getPluginDefinition('github').status, 'coming_soon');
-  assert.equal(getPluginDefinition('gmail').defaultEnabled, false);
+  assert.equal(getPluginDefinition('github').status, 'available');
+  assert.equal(getPluginDefinition('github').connection, 'token');
+  assert.equal(getPluginDefinition('vercel').status, 'available');
+  assert.equal(getPluginDefinition('vercel').connection, 'token');
+  assert.deepEqual(getPluginDefinition('github').permissions.map(p=>p.id), ['repos.read']);
+  assert.deepEqual(getPluginDefinition('vercel').permissions.map(p=>p.id), ['deployments.read']);
+  assert.equal(getPluginDefinition('gmail').status, 'coming_soon');
   assert.ok(PLUGIN_REGISTRY.every(plugin => Array.isArray(plugin.permissions) && plugin.permissions.length > 0));
 });
 
-test('plugin manager is account-scoped and blocks unavailable integrations from being enabled', () => {
+test('plugin credentials are encrypted at rest and never returned by the manager', () => {
+  assert.match(credentials, /aes-256-gcm/);
+  assert.match(credentials, /PLUGIN_TOKEN_ENCRYPTION_KEY\|\|process\.env\.AUTH_SESSION_SECRET/);
+  assert.match(credentials, /setAuthTag/);
+  assert.match(credentials, /credentialKey\(email,id\)/);
+  assert.doesNotMatch(manager, /token:\s*token/);
+  assert.doesNotMatch(page, /localStorage\.setItem\([^\n]*plugin-token/);
+});
+
+test('GitHub and Vercel provider readers verify a token before storing it', () => {
+  assert.match(providers, /https:\/\/api\.github\.com/);
+  assert.match(providers, /\/user\/repos\?per_page=12/);
+  assert.match(providers, /https:\/\/api\.vercel\.com/);
+  assert.match(providers, /\/v9\/projects\?limit=12/);
+  assert.match(manager, /verifyProviderToken\(id,token\)/);
+  assert.match(manager, /storePluginCredential\(session\.email,id,token\)/);
+});
+
+test('plugin manager is account-scoped and only enables token plugins after connection', () => {
   assert.match(manager, /requireSession\(req,res\)/);
-  assert.match(manager, /action==='setEnabled'/);
+  assert.match(manager, /action==='connectToken'/);
+  assert.match(manager, /action==='disconnect'/);
+  assert.match(manager, /action==='inspect'/);
+  assert.match(manager, /Connect this plugin before enabling it/);
   assert.match(manager, /plugin\.status==='coming_soon'/);
-  assert.match(manager, /That plugin is coming soon/);
-  assert.match(manager, /typeof req\.body\?\.enabled!=='boolean'/);
 });
 
 test('shared API keeps plugin management within the existing serverless function budget', () => {
@@ -46,7 +72,7 @@ test('disabling built-in plugins actually stops their task bridges', () => {
   assert.match(studio, /Roblox Studio plugin is disabled in Plugins/);
 });
 
-test('plugin UI matches the premium dashboard while keeping permissions truthful', () => {
+test('premium plugin dashboard exposes real connect manage and disconnect controls', () => {
   assert.match(page, /<h1>Plugins<\/h1>/);
   assert.match(page, /Connect your tools\. Give permissions\. Let Stellar do more\./);
   assert.match(page, /More powerful/);
@@ -55,11 +81,14 @@ test('plugin UI matches the premium dashboard while keeping permissions truthful
   for (const filter of ['all','connected','coming_soon','developer','disabled']) {
     assert.match(page, new RegExp(`data-filter="${filter}"`));
   }
+  assert.match(page, /data-connect=/);
+  assert.match(page, /data-inspect=/);
+  assert.match(page, /connectToken/);
+  assert.match(page, /disconnectCurrentPlugin/);
+  assert.match(page, /Connect read-only/);
+  assert.match(page, /encrypted before server-side storage/);
   assert.match(page, /More plugins coming soon/);
   assert.match(page, /Request a plugin/);
-  assert.match(page, /data-toggle=/);
-  assert.match(page, /\/api\/plugins/);
-  assert.doesNotMatch(page, /Notify me/);
   assert.match(app, /data-tab="plugins"/);
   assert.match(app, /href="\/plugins" class="set-item set-click"/);
   assert.match(app, /onclick="location\.href='\/plugins'"/);
