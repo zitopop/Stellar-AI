@@ -38,3 +38,16 @@ test('plans and pricing are explicitly hard-locked to the business palette', () 
   }
   assert.match(css, /Stellar Business Palette Lock v2 - Plans and pricing hard lock/);
 });
+
+test('sidebar controls use restrained business styling instead of vibe-coded glow', () => {
+  const css = readFileSync(join(root, 'stellar-business-palette.css'), 'utf8');
+  assert.match(css, /Stellar Business Palette Lock v3 - restrained sidebar/);
+  assert.match(css, /#sidebar button:not\(\.side-new\)/);
+  assert.match(css, /background:transparent!important/);
+  assert.match(css, /box-shadow:none!important/);
+  assert.match(css, /backdrop-filter:none!important/);
+  assert.match(css, /box-shadow:inset 3px 0 0 #D4AF37!important/);
+  assert.match(css, /background:#D4AF37!important/);
+  assert.match(css, /gradient-text/);
+});
+
