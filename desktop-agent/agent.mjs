@@ -8,6 +8,8 @@ import { spawn } from 'node:child_process';
 const BASE_URL=(process.env.STELLAR_DESKTOP_URL||'https://trystellarai.com').replace(/\/$/,'');
 const CONFIG_PATH=process.env.STELLAR_DESKTOP_CONFIG||path.join(os.homedir(),'.stellar-desktop.json');
 const DEFAULT_ROOT=path.join(os.homedir(),'StellarWorkspace');
+const LOCAL_STOP_PATH=path.join(os.homedir(),'.stellar-desktop-stop');
+const BLOCKED_COMMAND_RE=/(?:\\b(?:format|diskpart|bcdedit|shutdown|restart-computer|stop-computer|cipher\\s+\\/w|vssadmin\\s+delete|wbadmin\\s+delete|reg\\s+delete|net\\s+user|sc\\s+(?:config|delete)|set-mppreference|add-mppreference|disable-realtimemonitoring|takeown|icacls)\\b|remove-item[^\\r\\n]*(?:-recurse[^\\r\\n]*-force|-force[^\\r\\n]*-recurse)|(?:del|rd|rmdir)\\s+\\/(?:s|q)|rm\\s+-rf|powershell[^\\r\\n]*-(?:enc|encodedcommand)\\b)/i;
 const ALLOW_SHELL=String(process.env.STELLAR_DESKTOP_ALLOW_SHELL||'').toLowerCase()==='1'
   || String(process.env.STELLAR_DESKTOP_ALLOW_SHELL||'').toLowerCase()==='true';
 
@@ -45,6 +47,8 @@ function safePath(config,input=''){
   return {root,target,relative:relative||'.'};
 }
 async function ensureRoot(config){await fsp.mkdir(workspaceRoot(config),{recursive:true})}
+async function localStopped(){try{await fsp.access(LOCAL_STOP_PATH);return true}catch{return false}}
+async function localAudit(config,event,detail={}){try{const line=JSON.stringify({at:new Date().toISOString(),event,...detail})+'\\n';await fsp.appendFile(path.join(workspaceRoot(config),'.stellar-audit.jsonl'),line,'utf8')}catch{}}
 function cap(value,max=120000){
   const text=String(value??'');
   return text.length>max?text.slice(0,max)+'\n[output truncated]':text;
@@ -106,6 +110,7 @@ async function execute(config,task){
       const command=String(args.command||'').trim();
       if(!command) throw new Error('Command is empty.');
       if(command.length>4000) throw new Error('Command is too long.');
+      if(BLOCKED_COMMAND_RE.test(command)) throw new Error('Command blocked by local Stellar safeguards.');
       const cwd=safePath(config,args.cwd||'.').target;
       const result=await runProcess(command,{cwd});
       return `EXIT ${result.code}\nSTDOUT\n${result.stdout}\nSTDERR\n${result.stderr}`;
@@ -146,17 +151,21 @@ async function run(){
   let backoff=1500;
   while(true){
     try{
+      if(await localStopped()){await sleep(1800);continue}
       const data=await request('/api/desktop-agent',{action:'poll'},headers(config));
       backoff=1500;
+      if(data.stopped){await sleep(1800);continue}
       if(!data.task){await sleep(1800);continue}
       const task=data.task;
       console.log(`→ ${task.type} ${task.id}`);
       try{
         const output=await execute(config,task);
         console.log(`✓ ${task.type}`);
+        await localAudit(config,'task_completed',{taskId:task.id,type:task.type});
         await report(config,task.id,{ok:true,output});
       }catch(error){
         console.error(`✗ ${task.type}: ${error.message}`);
+        await localAudit(config,'task_failed',{taskId:task.id,type:task.type,error:String(error.message).slice(0,300)});
         await report(config,task.id,{ok:false,error:error.message});
       }
     }catch(error){
@@ -166,6 +175,8 @@ async function run(){
     }
   }
 }
+async function stopLocal(){await fsp.writeFile(LOCAL_STOP_PATH,'stopped\\n','utf8');console.log('Local Emergency Stop enabled. The agent will not accept tasks until resumed.')}
+async function resumeLocal(){try{await fsp.unlink(LOCAL_STOP_PATH)}catch(error){if(error?.code!=='ENOENT')throw error}console.log('Local Emergency Stop cleared.')}
 async function status(){
   const config=await loadConfig();
   console.log(JSON.stringify({
@@ -175,6 +186,7 @@ async function status(){
     baseUrl:BASE_URL,
     workspaceRoot:workspaceRoot(config),
     shellEnabled:ALLOW_SHELL,
+    localEmergencyStop:await localStopped(),
     configPath:CONFIG_PATH,
   },null,2));
 }
@@ -184,11 +196,15 @@ try{
   if(command==='pair') await pair(arg);
   else if(command==='run'||command==='start') await run();
   else if(command==='status') await status();
+  else if(command==='stop') await stopLocal();
+  else if(command==='resume') await resumeLocal();
   else{
     console.log('Stellar Desktop Agent');
     console.log('  node agent.mjs pair PAIRING_CODE');
     console.log('  node agent.mjs run');
     console.log('  node agent.mjs status');
+    console.log('  node agent.mjs stop');
+    console.log('  node agent.mjs resume');
     console.log('');
     console.log('Optional: set STELLAR_DESKTOP_ROOT to choose the allowed workspace folder.');
     console.log('Optional: set STELLAR_DESKTOP_ALLOW_SHELL=1 to permit explicitly-approved terminal commands.');
