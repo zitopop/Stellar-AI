@@ -78,9 +78,9 @@ Use Stripe’s published test card details only in test mode. Do not use a real 
 | Plan | Requests per hour | Core product promise |
 |---|---:|---|
 | Free | 40 | £1 credit, no card, Spark/Star/Comet, full scripts and downloads |
-| Starter | 120 | 3× usage, priority queue, longer scripts, cancel anytime |
-| Plus | 400 | 10× usage, full game systems, priority access, cancel anytime |
-| Pro | 1,600 | 40× usage, Nova, complete games, fastest access, cancel anytime |
+| Starter | 120 | 3× usage, longer generations, Spark/Star/Comet, cancel anytime |
+| Plus | 400 | 10× usage, larger generation allowance, Spark/Star/Comet, cancel anytime |
+| Pro | 1,600 | 40× usage, longest generation allowance, Nova, cancel anytime |
 
 All request limits are enforced by `api/chat.js` through Redis. The Settings usage display must show requests remaining and reset time from the server response; it is informational and must not be treated as the authority for access control.
 
