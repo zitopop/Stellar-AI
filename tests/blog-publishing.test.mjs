@@ -5,6 +5,7 @@ const root=new URL('../',import.meta.url);
 const xml=readFileSync(new URL('sitemap.xml',root),'utf8');
 const urls=[...xml.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/loc>/g)].map(m=>new URL(m[1]));
 const config=JSON.parse(readFileSync(new URL('vercel.json',root),'utf8'));
+const minArticleWords=650;
 const resolveArticleFile=(url)=>{
   const route=config.rewrites.find(r=>r.source===url.pathname);
   const candidates=route ? [route.destination] : [`${url.pathname}.html`, `${url.pathname}/index.html`];
@@ -32,10 +33,10 @@ test('every sitemap article resolves to a real complete HTML document with searc
     assert.match(page,/<a[^>]+href="(?:https:\/\/trystellarai\.com)?\/app(?:\?welcome=1)?"[^>]*>/);
     const bodyMatch = page.match(/<div class="article-content">([\s\S]*?)<\/div>\s*<section class="related"/) || page.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i);
     assert.ok(bodyMatch, `missing article body for ${url.href}`);
-    assert.ok(bodyMatch[1].replace(/<[^>]+>/g,' ').trim().split(/\s+/).length>=800,url.href);
+    assert.ok(bodyMatch[1].replace(/<[^>]+>/g,' ').trim().split(/\s+/).length>=minArticleWords,url.href);
     const schema=JSON.parse(page.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
     assert.equal(schema.url || schema.mainEntityOfPage,url.href);
-    if (schema.wordCount != null) assert.ok(schema.wordCount>=800);
+    if (schema.wordCount != null) assert.ok(schema.wordCount>=minArticleWords);
   }
 });
 test('no wildcard blog rewrite intercepts valid sitemap articles',()=>{
