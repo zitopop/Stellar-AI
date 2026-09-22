@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
+import { PLAN_DEFINITIONS } from '../lib/pricing.js';
 
 process.env.BUILT_IN_FORGE_API_URL = 'https://forge.test';
 process.env.BUILT_IN_FORGE_API_KEY = 'test-key';
@@ -1485,4 +1486,27 @@ test('Stellar coding guidance performs architecture, dependency, security, and s
   assert.match(prompt, /every referenced function, event, variable, import, export/);
   assert.match(prompt, /Self-review the proposed implementation before sending it/);
   assert.match(prompt, /Never claim a test, build, deployment, API call/);
+});
+
+
+test('plan quality profiles make paid tiers progressively more deliberate without changing model entitlements', () => {
+  const freePrompt = buildSystemPrompt('', 'general', 'general', 'unknown', '', '', 'free');
+  const starterPrompt = buildSystemPrompt('', 'general', 'general', 'unknown', '', '', 'starter');
+  const plusPrompt = buildSystemPrompt('', 'general', 'general', 'unknown', '', '', 'plus');
+  const proPrompt = buildSystemPrompt('', 'general', 'general', 'unknown', '', '', 'pro');
+  const ownerPrompt = buildSystemPrompt('', 'general', 'general', 'unknown', '', '', 'owner');
+
+  assert.match(freePrompt, /PLAN QUALITY: FREE/);
+  assert.match(starterPrompt, /PLAN QUALITY: STARTER/);
+  assert.match(starterPrompt, /deliberate self-review/);
+  assert.match(plusPrompt, /PLAN QUALITY: PLUS/);
+  assert.match(plusPrompt, /compare at least two plausible implementation or failure paths internally/);
+  assert.match(proPrompt, /PLAN QUALITY: PRO/);
+  assert.match(proPrompt, /internal multi-pass review/);
+  assert.match(ownerPrompt, /PLAN QUALITY: OWNER/);
+
+  assert.deepEqual(PLAN_DEFINITIONS.free.models, ['spark', 'star', 'comet']);
+  assert.deepEqual(PLAN_DEFINITIONS.starter.models, ['spark', 'star', 'comet']);
+  assert.deepEqual(PLAN_DEFINITIONS.plus.models, ['spark', 'star', 'comet']);
+  assert.deepEqual(PLAN_DEFINITIONS.pro.models, ['spark', 'star', 'comet', 'nova']);
 });
