@@ -7,7 +7,7 @@ const urls=[...xml.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/l
 const config=JSON.parse(readFileSync(new URL('vercel.json',root),'utf8'));
 const resolveArticleFile=(url)=>{
   const route=config.rewrites.find(r=>r.source===url.pathname);
-  const candidates=route ? [route.destination] : [`${url.pathname}/index.html`, `${url.pathname}.html`];
+  const candidates=route ? [route.destination] : [`${url.pathname}.html`, `${url.pathname}/index.html`];
   const destination=candidates.find(candidate=>{
     assert.match(candidate,/^\/blog\/(?:[^/]+\.html|[^/]+\/index\.html)$/,url.href);
     return existsSync(new URL(candidate.slice(1),root));
