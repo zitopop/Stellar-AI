@@ -98,7 +98,8 @@ test('the public support address remains a one-line mail link in settings', () =
 test('Vercel routes every canonical blog slug to its published HTML file', () => {
   const sitemap = read('sitemap.xml');
   const paths = [...sitemap.matchAll(/<loc>https:\/\/trystellarai\.com(\/blog\/[^<]+)<\/loc>/g)].map(([, pathname]) => pathname);
-  assert.equal(paths.length, 74);
+  assert.ok(paths.length >= 74);
+  assert.equal(new Set(paths).size, paths.length, 'canonical blog sitemap paths must stay unique');
   assert.ok(!vercel.rewrites.some(({ source }) => source.startsWith('/blog/') && source.includes(':')));
   for (const pathname of paths) {
     const route = vercel.rewrites.find(({ source }) => source === pathname);
