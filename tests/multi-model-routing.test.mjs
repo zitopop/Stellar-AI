@@ -554,7 +554,7 @@ test('Task 66 clears the request timeout and disconnect listener after a streame
     await chatHandler({
       method: 'POST',
       headers: { 'x-forwarded-for': '127.0.0.1' },
-      body: { model: 'gpt-5-mini', messages: [{ role: 'user', content: 'Build a FiveM resource.' }] },
+      body: { model: 'smart', messages: [{ role: 'user', content: 'Build a FiveM resource.' }] },
     }, response);
     assert.equal(response.statusCode, 200);
     assert.match(response.chunks, /data: \[DONE\]/);
@@ -597,7 +597,7 @@ test('Task 66 clears the request timeout and disconnect listener after an upstre
     await chatHandler({
       method: 'POST',
       headers: { 'x-forwarded-for': '127.0.0.1' },
-      body: { model: 'gpt-5-mini', messages: [{ role: 'user', content: 'Build a FiveM resource.' }] },
+      body: { model: 'smart', messages: [{ role: 'user', content: 'Build a FiveM resource.' }] },
     }, response);
     assert.equal(response.statusCode, 503);
     assert.match(response.body.error, /Provider unavailable/);
