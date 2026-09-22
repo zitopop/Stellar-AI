@@ -244,7 +244,12 @@
     };
 
     const availableLocales = () => {
-      const unique = [];
+      const commonLocales = [
+        'en-GB','en-US','es-ES','fr-FR','de-DE','it-IT','pt-BR',
+        'nl-NL','pl-PL','ja-JP','ko-KR','hi-IN','zh-CN','ar-SA'
+      ];
+
+      const unique = [...commonLocales];
       voiceCatalog.forEach((voice) => {
         const locale = normalizeLocale(voice.locale);
         if (!locale || unique.some((item) => item.toLowerCase() === locale.toLowerCase())) return;
@@ -258,7 +263,7 @@
         if (lower === browserLocale) value += 1000;
         if (lower === 'en-gb') value += 700;
         else if (lower.startsWith('en-')) value += 500;
-        if (['es-es','fr-fr','de-de','it-it','pt-br','nl-nl','pl-pl','ja-jp','ko-kr','hi-in','zh-cn'].includes(lower)) value += 200;
+        if (['es-es','fr-fr','de-de','it-it','pt-br','nl-nl','pl-pl','ja-jp','ko-kr','hi-in','zh-cn','ar-sa'].includes(lower)) value += 200;
         return value;
       };
 
@@ -355,7 +360,8 @@
         .sort((a,b) => voiceRank(b, previousValue, resolved) - voiceRank(a, previousValue, resolved));
 
       if (requested === 'auto' && system) candidates.unshift(system);
-      if (!candidates.length && system) candidates = [system];
+      const usedSystemFallback = !candidates.length && Boolean(system);
+      if (usedSystemFallback) candidates = [system];
 
       const keep = [];
       candidates.forEach((voice) => {
@@ -389,7 +395,22 @@
         select.dataset.stellarVoiceCount = String(select.options.length);
         const friendly = requested === 'auto' ? 'your device language' : friendlyLanguageName(resolved);
         select.setAttribute('aria-label', 'Stellar voice for ' + friendly);
-        select.title = 'Voices for ' + friendly;
+        select.title = usedSystemFallback
+          ? 'No installed ' + friendly + ' voice found · using system default'
+          : 'Voices for ' + friendly;
+
+        const row = select.closest('.set-item');
+        const hint = row?.querySelector('.stellar-voice-fallback-hint') || document.createElement('small');
+        if (row && !hint.classList.contains('stellar-voice-fallback-hint')) {
+          hint.className = 'stellar-voice-fallback-hint';
+          row.appendChild(hint);
+        }
+        if (row) {
+          hint.textContent = usedSystemFallback
+            ? 'Listening uses ' + friendly + '. Speaking uses your system default until a matching device voice is installed.'
+            : '';
+          hint.hidden = !usedSystemFallback;
+        }
       } finally {
         select.dataset.stellarFiltering = 'false';
       }
