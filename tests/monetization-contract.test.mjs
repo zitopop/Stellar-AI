@@ -36,7 +36,7 @@ test('checkout client handles non-2xx and non-JSON responses without leaving but
 });
 
 test('top-up UI uses the backend contract limits and corrected pack totals', () => {
-  assert.match(app, /id="topup-range" min="50" max="20000"/);
+  assert.match(app, /id="topup-range" min="1000" max="20000"/);
   assert.match(app, /£11\.00 credit/);
   assert.match(app, /£28\.75 credit/);
   assert.match(app, /£60\.00 credit/);
