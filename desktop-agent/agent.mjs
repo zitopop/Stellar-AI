@@ -75,6 +75,56 @@ function safePath(config,input=''){
   return {root,target,relative:relative||'.'};
 }
 async function ensureRoot(config){await fsp.mkdir(workspaceRoot(config),{recursive:true})}
+const SEARCH_SKIP_DIRS=new Set(['.git','node_modules','.stellar-backups','.next','dist','build','coverage','vendor']);
+const SEARCH_SKIP_EXTS=new Set(['.png','.jpg','.jpeg','.gif','.webp','.ico','.pdf','.zip','.gz','.7z','.rar','.exe','.dll','.bin','.woff','.woff2','.ttf','.mp3','.mp4','.mov','.avi','.db','.sqlite']);
+async function searchFiles(config,{query,path:inputPath='.',maxResults=80}={}){
+  const needle=String(query||'').trim();
+  if(!needle) throw new Error('Search query is required.');
+  if(needle.length>200) throw new Error('Search query is too long.');
+  const limit=Math.max(1,Math.min(120,Number(maxResults)||80));
+  const {target:root}=safePath(config,inputPath);
+  const results=[];
+  async function walk(dir){
+    if(results.length>=limit)return;
+    const entries=await fsp.readdir(dir,{withFileTypes:true});
+    for(const entry of entries){
+      if(results.length>=limit)break;
+      if(entry.isSymbolicLink())continue;
+      if(entry.isDirectory()&&SEARCH_SKIP_DIRS.has(entry.name))continue;
+      const full=path.join(dir,entry.name);
+      const rel=path.relative(workspaceRoot(config),full);
+      if(isBlockedPath(rel))continue;
+      if(entry.isDirectory()){await walk(full);continue}
+      if(!entry.isFile()||SEARCH_SKIP_EXTS.has(path.extname(entry.name).toLowerCase()))continue;
+      let stat;try{stat=await fsp.stat(full)}catch{continue}
+      if(stat.size>1_000_000)continue;
+      let body;try{body=await fsp.readFile(full,'utf8')}catch{continue}
+      const lower=body.toLowerCase(),q=needle.toLowerCase();
+      let from=0;
+      while(results.length<limit){
+        const idx=lower.indexOf(q,from);if(idx<0)break;
+        const line=body.slice(0,idx).split(/\r?\n/).length;
+        const lineStart=body.lastIndexOf('\n',idx-1)+1;
+        const lineEndRaw=body.indexOf('\n',idx);const lineEnd=lineEndRaw<0?body.length:lineEndRaw;
+        results.push(`${rel.replace(/\\/g,'/')}:${line}: ${body.slice(lineStart,lineEnd).trim().slice(0,260)}`);
+        from=idx+Math.max(1,q.length);
+      }
+    }
+  }
+  await walk(root);
+  return `SEARCH "${needle}"\n${results.length?results.join('\n'):'No matches found.'}`;
+}
+function runGit(args,{cwd,timeoutMs=30000}={}){
+  return new Promise((resolve,reject)=>{
+    const child=spawn('git',args,{cwd,shell:false,windowsHide:true,env:process.env});
+    let stdout='',stderr='',settled=false;
+    const timer=setTimeout(()=>{if(!settled){settled=true;child.kill();reject(new Error('Git command timed out.'))}},timeoutMs);
+    child.stdout?.on('data',d=>stdout=cap(stdout+d));
+    child.stderr?.on('data',d=>stderr=cap(stderr+d));
+    child.on('error',err=>{clearTimeout(timer);if(!settled){settled=true;reject(err)}});
+    child.on('close',code=>{clearTimeout(timer);if(!settled){settled=true;resolve({code,stdout:cap(stdout),stderr:cap(stderr)})}});
+  });
+}
 async function localStopped(){try{await fsp.access(LOCAL_STOP_PATH);return true}catch{return false}}
 async function localAudit(config,event,detail={}){try{const line=JSON.stringify({at:new Date().toISOString(),event,...detail})+'\\n';await fsp.appendFile(path.join(workspaceRoot(config),'.stellar-audit.jsonl'),line,'utf8')}catch{}}
 function cap(value,max=120000){
@@ -107,6 +157,24 @@ async function execute(config,task){
       const entries=(await fsp.readdir(target,{withFileTypes:true})).slice(0,250)
         .map(e=>`${e.isDirectory()?'[dir] ':'[file]'}${e.name}`);
       return `DIRECTORY ${relative}\n${entries.join('\n')}`;
+    }
+    case 'search_files': {
+      return searchFiles(config,args);
+    }
+    case 'git_status': {
+      const cwd=safePath(config,args.cwd||'.').target;
+      const result=await runGit(['status','--short','--branch'],{cwd});
+      if(result.code!==0)throw new Error(result.stderr||'git status failed.');
+      return `GIT STATUS\n${result.stdout||'(clean working tree)'}`;
+    }
+    case 'git_diff': {
+      const cwd=safePath(config,args.cwd||'.').target;
+      const gitArgs=['diff','--no-ext-diff'];
+      if(args.staged===true)gitArgs.push('--cached');
+      if(args.path){safePath(config,path.join(args.cwd||'.',String(args.path)));gitArgs.push('--',String(args.path));}
+      const result=await runGit(gitArgs,{cwd});
+      if(result.code!==0)throw new Error(result.stderr||'git diff failed.');
+      return `GIT DIFF\n${result.stdout||'(no diff)'}`;
     }
     case 'mkdir': {
       if(task.approved!==true) throw new Error('mkdir was not approved.');
