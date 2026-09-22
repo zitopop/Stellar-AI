@@ -7,10 +7,13 @@ const urls=[...xml.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/l
 const config=JSON.parse(readFileSync(new URL('vercel.json',root),'utf8'));
 const resolveArticleFile=(url)=>{
   const route=config.rewrites.find(r=>r.source===url.pathname);
-  const destination=route?.destination || `${url.pathname}/index.html`;
-  assert.match(destination,/^\/blog\/(?:[^/]+\.html|[^/]+\/index\.html)$/,url.href);
+  const candidates=route ? [route.destination] : [`${url.pathname}/index.html`, `${url.pathname}.html`];
+  const destination=candidates.find(candidate=>{
+    assert.match(candidate,/^\/blog\/(?:[^/]+\.html|[^/]+\/index\.html)$/,url.href);
+    return existsSync(new URL(candidate.slice(1),root));
+  });
+  assert.ok(destination, `missing article file for ${url.href}`);
   const file=new URL(destination.slice(1),root);
-  assert.ok(existsSync(file), `missing rewrite or directory index for ${url.href}`);
   return {route,destination,file};
 };
 test('every sitemap article resolves to a real complete HTML document with searchable content',()=>{
