@@ -12,6 +12,18 @@ const APPROVAL_TYPES=new Set(['write_file','mkdir','run_command','open_url']);
 const ALL_TYPES=new Set([...SAFE_TYPES,...APPROVAL_TYPES]);
 const DEFAULT_POLICY={read:true,write:true,shell:false,openUrl:true};
 
+function redactSensitive(value){
+  let s=String(value??'');
+  s=s.replace(/-----BEGIN [^-\r\n]*PRIVATE KEY-----[\s\S]*?-----END [^-\r\n]*PRIVATE KEY-----/gi,'[REDACTED PRIVATE KEY]');
+  s=s.replace(/\b(sk-(?:proj-)?[A-Za-z0-9_-]{16,}|sk_(?:live|test)_[A-Za-z0-9]{16,}|rk_(?:live|test)_[A-Za-z0-9]{16,}|whsec_[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{12,}|AKIA[A-Z0-9]{16})\b/g,'[REDACTED TOKEN]');
+  s=s.replace(/\bBearer\s+[A-Za-z0-9._~+\/-]{16,}/gi,'Bearer [REDACTED]');
+  s=s.replace(/\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g,'[REDACTED JWT]');
+  s=s.replace(/\b((?:api[_-]?key|token|secret|password|passwd|pwd|private[_-]?key|client[_-]?secret|auth[_-]?token)\s*[:=]\s*)([^\s,;\r\n"']{6,})/gi,'$1[REDACTED]');
+  s=s.replace(/(https?:\/\/[^\s:@/]+:)([^\s@/]+)(@)/gi,'$1[REDACTED]$3');
+  return s;
+}
+function containsSensitive(value){return redactSensitive(value)!==String(value??'')}
+
 function setCors(req,res){
   const origin=String(req.headers.origin||'');
   const allowed=/^https:\/\/(?:[a-z0-9-]+\.)?trystellarai\.com$/i.test(origin)
@@ -70,7 +82,10 @@ function validateArgs(type,args){
     const c=String(args?.command||'');
     if(!c||c.length>4000)throw new Error('Command is empty or too long.');
     if(BLOCKED_COMMAND_RE.test(c))throw new Error('This command is blocked by Stellar Desktop safeguards.');
+    if(/(?:\bprintenv\b|\bgh\s+auth\s+token\b|\bgit\s+credential\b|\bvercel\s+env\s+pull\b|\bget-childitem\s+env:|\bgci\s+env:|\bdir\s+env:|\bcmd(?:\.exe)?\s+\/c\s+set\b)/i.test(c))throw new Error('Credential or environment dumping commands are blocked.');
+    if(containsSensitive(c))throw new Error('Commands containing likely credentials or secrets are blocked.');
   }
+  if(type==='write_file'&&containsSensitive(args?.content))throw new Error('Writing likely credentials or secrets through the cloud PC Agent is blocked. Use a local secret manager or enter the secret directly on the PC instead.');
   if(type==='open_url'){
     const u=new URL(String(args?.url||''));if(!['https:','http:'].includes(u.protocol))throw new Error('Only http/https URLs can be opened.');
   }
