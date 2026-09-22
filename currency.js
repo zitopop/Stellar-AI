@@ -168,69 +168,228 @@
     if (window.__stellarVoicePickerPolishInstalled) return;
     window.__stellarVoicePickerPolishInstalled = true;
 
+    const LANGUAGE_KEY = 'stellar.voice.language';
     let filterTimer = 0;
+    let voiceCatalog = [];
 
-    const isEnglishVoice = (option) => {
-      const text = String(option?.textContent || '').trim();
-      return /\bEnglish\b/i.test(text) || /\ben(?:-|_)?(?:GB|US|AU|CA|IE|NZ|IN)?\b/i.test(text);
+    const normalizeLocale = (value) => String(value || '').trim().replace('_','-');
+
+    const localeFromVoiceText = (value) => {
+      const text = String(value || '');
+      const exact = text.match(/\b([a-z]{2,3}(?:[-_][A-Z]{2})?)\b(?=\s*(?:·|$))/i);
+      if (exact?.[1]) return normalizeLocale(exact[1]);
+      const fallback = text.match(/\b([a-z]{2,3}[-_][A-Z]{2})\b/i);
+      return fallback?.[1] ? normalizeLocale(fallback[1]) : '';
     };
 
-    const voiceRank = (option, selectedValue) => {
-      const text = String(option?.textContent || '').toLowerCase();
+    const voiceBase = (locale) => normalizeLocale(locale).split('-')[0].toLowerCase();
+
+    const selectedLanguage = () => {
+      const saved = window.safeStorageGet?.(LANGUAGE_KEY) || '';
+      return saved || 'auto';
+    };
+
+    const resolvedRecognitionLanguage = () => {
+      const selected = selectedLanguage();
+      if (selected !== 'auto') return normalizeLocale(selected);
+      return normalizeLocale(navigator.language || document.documentElement.lang || 'en-GB');
+    };
+
+    window.StellarVoiceLanguage = Object.freeze({
+      get: selectedLanguage,
+      resolved: resolvedRecognitionLanguage,
+    });
+
+    const patchRecognitionLanguage = () => {
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const proto = Recognition?.prototype;
+      if (!proto || typeof proto.start !== 'function' || proto.__stellarLanguagePatched) return;
+
+      const nativeStart = proto.start;
+      Object.defineProperty(proto, '__stellarLanguagePatched', {
+        value:true,
+        configurable:true,
+      });
+
+      proto.start = function(...args) {
+        try {
+          const locale = resolvedRecognitionLanguage();
+          if (locale) this.lang = locale;
+        } catch {}
+        return nativeStart.apply(this, args);
+      };
+    };
+
+    const friendlyLanguageName = (locale) => {
+      const normalized = normalizeLocale(locale);
+      try {
+        const display = new Intl.DisplayNames([navigator.language || 'en-GB'], { type:'language' });
+        return display.of(normalized) || normalized;
+      } catch {
+        return normalized;
+      }
+    };
+
+    const captureVoiceCatalog = (select) => {
+      Array.from(select?.options || []).forEach((option) => {
+        const item = {
+          value:String(option.value ?? ''),
+          text:String(option.textContent || '').trim(),
+          locale:localeFromVoiceText(option.textContent),
+          disabled:Boolean(option.disabled),
+        };
+        const exists = voiceCatalog.some((entry) => entry.value === item.value && entry.text === item.text);
+        if (!exists) voiceCatalog.push(item);
+      });
+    };
+
+    const availableLocales = () => {
+      const unique = [];
+      voiceCatalog.forEach((voice) => {
+        const locale = normalizeLocale(voice.locale);
+        if (!locale || unique.some((item) => item.toLowerCase() === locale.toLowerCase())) return;
+        unique.push(locale);
+      });
+
+      const browserLocale = normalizeLocale(navigator.language || 'en-GB').toLowerCase();
+      const score = (locale) => {
+        const lower = locale.toLowerCase();
+        let value = 0;
+        if (lower === browserLocale) value += 1000;
+        if (lower === 'en-gb') value += 700;
+        else if (lower.startsWith('en-')) value += 500;
+        if (['es-es','fr-fr','de-de','it-it','pt-br','nl-nl','pl-pl','ja-jp','ko-kr','hi-in','zh-cn'].includes(lower)) value += 200;
+        return value;
+      };
+
+      return unique.sort((a,b) => score(b) - score(a) || friendlyLanguageName(a).localeCompare(friendlyLanguageName(b)));
+    };
+
+    const ensureLanguageControl = (voiceSelect) => {
+      if (!voiceSelect) return null;
+      let languageSelect = document.getElementById('voice-language-select');
+      if (!languageSelect) {
+        const row = document.createElement('div');
+        row.className = 'set-item stellar-voice-language-row';
+        row.innerHTML = '<div class="set-key"><span>Voice language</span><small>Used for listening and spoken replies.</small></div><div class="set-val"><select id="voice-language-select" aria-label="Voice language"></select></div>';
+
+        const voiceRow = voiceSelect.closest('.set-item');
+        if (voiceRow?.parentElement) voiceRow.parentElement.insertBefore(row, voiceRow);
+        else voiceSelect.parentElement?.insertBefore(row, voiceSelect);
+
+        languageSelect = row.querySelector('#voice-language-select');
+        languageSelect?.addEventListener('change', () => {
+          const value = languageSelect.value || 'auto';
+          window.safeStorageSet?.(LANGUAGE_KEY, value);
+          renderVoiceChoices();
+        });
+      }
+
+      if (!languageSelect) return null;
+
+      const selected = selectedLanguage();
+      const locales = availableLocales();
+      const existingSignature = Array.from(languageSelect.options).map((option) => option.value).join('|');
+      const desiredSignature = ['auto', ...locales].join('|');
+
+      if (existingSignature !== desiredSignature) {
+        languageSelect.replaceChildren();
+        const auto = document.createElement('option');
+        auto.value = 'auto';
+        auto.textContent = 'Auto · device language';
+        languageSelect.appendChild(auto);
+
+        locales.forEach((locale) => {
+          const option = document.createElement('option');
+          option.value = locale;
+          option.textContent = friendlyLanguageName(locale);
+          languageSelect.appendChild(option);
+        });
+      }
+
+      const hasSaved = Array.from(languageSelect.options).some((option) => option.value === selected);
+      languageSelect.value = hasSaved ? selected : 'auto';
+      languageSelect.title = 'Choose the language Stellar listens and speaks in';
+      return languageSelect;
+    };
+
+    const voiceRank = (voice, selectedValue, requestedLocale) => {
+      const text = String(voice?.text || '').toLowerCase();
+      const locale = normalizeLocale(voice?.locale).toLowerCase();
+      const requested = normalizeLocale(requestedLocale).toLowerCase();
       let score = 0;
-      if (option?.value === selectedValue) score += 1000;
+
+      if (voice?.value === selectedValue) score += 1000;
       if (/system default/.test(text)) score += 900;
-      if (/en[-_]?gb|english \(united kingdom\)|uk english/.test(text)) score += 300;
-      else if (/en[-_]?us|english \(united states\)|us english/.test(text)) score += 180;
-      else if (/\benglish\b|\ben[-_]/.test(text)) score += 120;
-      if (/natural|neural|premium|enhanced/.test(text)) score += 80;
-      if (/microsoft|google/.test(text)) score += 20;
+      if (requested && locale === requested) score += 420;
+      else if (requested && voiceBase(locale) === voiceBase(requested)) score += 280;
+      if (/natural|neural|premium|enhanced/.test(text)) score += 100;
+      if (/microsoft|google/.test(text)) score += 25;
       return score;
     };
 
-    const pruneVoiceOptions = () => {
+    const renderVoiceChoices = () => {
       const select = document.getElementById('voice-select');
       if (!select || select.dataset.stellarFiltering === 'true') return;
 
-      const options = Array.from(select.options || []);
-      if (!options.length) return;
+      captureVoiceCatalog(select);
+      const languageSelect = ensureLanguageControl(select);
+      if (!voiceCatalog.length) return;
 
-      const selectedValue = select.value;
-      const system = options.find((option) => /system default/i.test(String(option.textContent || '')));
-      const selected = options.find((option) => option.value === selectedValue);
-      const english = options
-        .filter(isEnglishVoice)
-        .sort((a, b) => voiceRank(b, selectedValue) - voiceRank(a, selectedValue));
+      const requested = languageSelect?.value || selectedLanguage();
+      const resolved = requested === 'auto'
+        ? normalizeLocale(navigator.language || document.documentElement.lang || 'en-GB')
+        : normalizeLocale(requested);
+      const requestedBase = voiceBase(resolved);
+      const previousValue = select.value;
+
+      const system = voiceCatalog.find((voice) => /system default/i.test(voice.text));
+      const exact = voiceCatalog.filter((voice) => normalizeLocale(voice.locale).toLowerCase() === resolved.toLowerCase());
+      const sameLanguage = voiceCatalog.filter((voice) =>
+        voice.locale &&
+        voiceBase(voice.locale) === requestedBase &&
+        !exact.includes(voice)
+      );
+
+      let candidates = [...exact, ...sameLanguage]
+        .sort((a,b) => voiceRank(b, previousValue, resolved) - voiceRank(a, previousValue, resolved));
+
+      if (requested === 'auto' && system) candidates.unshift(system);
+      if (!candidates.length && system) candidates = [system];
 
       const keep = [];
-      const add = (option) => {
-        if (!option || keep.includes(option)) return;
-        if (keep.some((item) => item.value === option.value && item.textContent === option.textContent)) return;
-        keep.push(option);
-      };
-
-      add(system);
-      if (selected && (isEnglishVoice(selected) || selected === system)) add(selected);
-      english.forEach((option) => {
-        if (keep.length < 8) add(option);
+      candidates.forEach((voice) => {
+        if (keep.length >= 8) return;
+        if (keep.some((entry) => entry.value === voice.value && entry.text === voice.text)) return;
+        keep.push(voice);
       });
 
-      // If the browser supplied no English metadata, leave the original list alone.
-      if (keep.length < 2 && options.length > 1) return;
+      if (!keep.length) return;
 
       select.dataset.stellarFiltering = 'true';
       try {
-        options.forEach((option) => {
-          if (!keep.includes(option)) option.remove();
+        const previousStillAvailable = keep.some((voice) => voice.value === previousValue);
+        select.replaceChildren();
+
+        keep.forEach((voice) => {
+          const option = document.createElement('option');
+          option.value = voice.value;
+          option.textContent = voice.text;
+          option.disabled = voice.disabled;
+          select.appendChild(option);
         });
 
-        if (selectedValue && Array.from(select.options).some((option) => option.value === selectedValue)) {
-          select.value = selectedValue;
+        if (previousStillAvailable) {
+          select.value = previousValue;
+        } else {
+          select.value = keep[0].value;
+          select.dispatchEvent(new Event('change', { bubbles:true }));
         }
 
         select.dataset.stellarVoiceCount = String(select.options.length);
-        select.setAttribute('aria-label', 'Stellar voice. English voices only; UK voices are listed first.');
-        select.title = 'English voices on this device · UK voices listed first';
+        const friendly = requested === 'auto' ? 'your device language' : friendlyLanguageName(resolved);
+        select.setAttribute('aria-label', 'Stellar voice for ' + friendly);
+        select.title = 'Voices for ' + friendly;
       } finally {
         select.dataset.stellarFiltering = 'false';
       }
@@ -238,16 +397,20 @@
 
     const scheduleFilter = () => {
       window.clearTimeout(filterTimer);
-      filterTimer = window.setTimeout(pruneVoiceOptions, 40);
+      filterTimer = window.setTimeout(renderVoiceChoices, 50);
     };
 
+    patchRecognitionLanguage();
     scheduleFilter();
 
     const bodyObserver = new MutationObserver((mutations) => {
       if (mutations.some((mutation) =>
         Array.from(mutation.addedNodes || []).some((node) =>
-          node?.id === 'voice-select' || node?.querySelector?.('#voice-select')
-        ) || mutation.target?.id === 'voice-select'
+          node?.id === 'voice-select' ||
+          node?.querySelector?.('#voice-select') ||
+          node?.id === 'voice-language-select'
+        ) ||
+        mutation.target?.id === 'voice-select'
       )) scheduleFilter();
     });
     bodyObserver.observe(document.body, { childList:true, subtree:true });
