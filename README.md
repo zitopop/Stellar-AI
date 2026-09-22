@@ -51,6 +51,13 @@ affiliate.html      FiveM server-owner and sharing information
 ```
 
 Route-critical public files stay in their existing locations. Add new active code to the matching folder above; move retired material to `archive/` instead of leaving temporary files at repository root.
+
+---
+
+## Revenue operations
+
+Use [`docs/REVENUE-OPERATIONS-CHECKLIST.md`](docs/REVENUE-OPERATIONS-CHECKLIST.md) after pricing, checkout, onboarding, SEO or billing changes. It covers paid-user billing portal testing, weekly funnel metrics, Stripe safety checks and SEO publishing steps.
+
 ---
 
 ## Plans
