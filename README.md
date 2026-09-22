@@ -33,6 +33,7 @@ Static HTML/CSS/JS · Vercel serverless functions · AI API · Stripe payments �
 index.html          landing page, plan comparison and first-run entry points
 app.html            authenticated/guest AI workspace and in-app plan modal
 blog.html           Guides hub
+support.html        Support centre for contact, billing and common help routes
 blog/               published FiveM and Roblox guides at canonical clean routes
 models / models.html model directory/SEO route pair
 api/                serverless auth, chat, billing, search, email and account APIs
