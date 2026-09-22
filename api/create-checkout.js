@@ -1,7 +1,8 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
-import { isValidTopupPence, topupBonusPence } from '../lib/pricing.js';
+import { isPaidPlan, isValidTopupPence, topupBonusPence } from '../lib/pricing.js';
+import { kvGet } from '../lib/profile.js';
 import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
 
 function setCors(req, res) {
@@ -42,6 +43,42 @@ export function subscriptionPriceForPlan(plan, env = process.env, currency = 'GB
   return prices[plan] || '';
 }
 
+async function resolvePortalConfiguration(stripe) {
+  const configuredId = String(process.env.STRIPE_BILLING_PORTAL_CONFIG_ID || '').trim();
+  if (configuredId) return configuredId;
+
+  const existing = await stripe.billingPortal.configurations.list({ active: true, limit: 100 });
+  const stellar = existing.data.find((configuration) => configuration.metadata?.app === 'stellar-ai');
+  if (stellar) return stellar.id;
+
+  const created = await stripe.billingPortal.configurations.create({
+    business_profile: {
+      headline: 'Manage your Stellar AI subscription and payment method.',
+      privacy_policy_url: 'https://trystellarai.com/privacy.html',
+      terms_of_service_url: 'https://trystellarai.com/terms.html',
+    },
+    features: {
+      customer_update: { enabled: true, allowed_updates: ['email', 'name'] },
+      invoice_history: { enabled: true },
+      payment_method_update: { enabled: true },
+      subscription_cancel: {
+        enabled: true,
+        mode: 'at_period_end',
+        cancellation_reason: {
+          enabled: true,
+          options: ['too_expensive', 'missing_features', 'unused', 'too_complex', 'switched_service', 'low_quality', 'customer_service', 'other'],
+        },
+      },
+      // Plan changes remain in Stellar Checkout so historic Stripe prices can
+      // never be offered accidentally through the generic portal.
+      subscription_update: { enabled: false },
+    },
+    metadata: { app: 'stellar-ai', purpose: 'customer-billing' },
+  }, { idempotencyKey: 'stellar-ai-billing-portal-v1' });
+
+  return created.id;
+}
+
 function missingPlanMessage(plan) {
   const messages = {
     starter: 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.',
@@ -74,6 +111,34 @@ export default async function handler(req, res) {
   try {
     const Stripe = (await import('stripe')).default;
     const stripe = new Stripe(stripeSecret);
+
+    if (plan === 'manage-billing') {
+      const kvUrl = process.env.KV_REST_API_URL;
+      const kvToken = process.env.KV_REST_API_TOKEN;
+      if (!kvUrl || !kvToken) return res.status(500).json({ error: 'Account storage is not configured.' });
+
+      const user = await kvGet(kvUrl, kvToken, `stellar:user:${sessionUser.email}`);
+      if (!user || !isPaidPlan(user.plan)) {
+        return res.status(400).json({ error: 'A paid Stellar plan is required to manage subscription billing.' });
+      }
+
+      const customerId = String(user.stripeCustomerId || '').trim();
+      if (!/^cus_[A-Za-z0-9]+$/.test(customerId)) {
+        return res.status(409).json({ error: 'Your Stripe customer record is still syncing. Please try again shortly or contact support.' });
+      }
+
+      const configuration = await resolvePortalConfiguration(stripe);
+      const portal = await stripe.billingPortal.sessions.create({
+        customer: customerId,
+        configuration,
+        return_url: 'https://trystellarai.com/app',
+      });
+
+      if (!portal?.url || !/^https:\/\/billing\.stripe\.com\//i.test(portal.url)) {
+        throw new Error('Stripe returned an invalid billing portal URL.');
+      }
+      return res.status(200).json({ url: portal.url });
+    }
 
     if (plan === 'topup') {
       const rawPence = amount ?? qty;
