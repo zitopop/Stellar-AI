@@ -161,3 +161,10 @@ test('the unsent feature announcement broadcast draft preserves its review notic
   assert.match(email, /https:\/\/trystellarai\.com\/app/);
   assert.match(email, /Draft only — review the copy and your email compliance requirements before sending\./);
 });
+
+
+test('public root serves the conversion landing page instead of forcing sign-in', () => {
+  const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  assert.ok(!vercel.redirects.some((route) => route.source === '/' && /\/app\?signin=1/.test(route.destination || '')));
+  assert.ok(vercel.rewrites.some((route) => route.source === '/' && route.destination === '/index.html'));
+});
