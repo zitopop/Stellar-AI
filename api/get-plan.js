@@ -2,7 +2,7 @@
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { recordCheckoutCancellation } from '../lib/conversion-metrics.js';
 import { achievementDefinitions, ensureReferralProfile, kvGet, unlockedAchievements } from '../lib/profile.js';
-import { OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, isPaidPlan, normalisePlan } from '../lib/pricing.js';
+import { OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, getWeeklyRequestLimit, isPaidPlan, normalisePlan } from '../lib/pricing.js';
 import { getUsageSnapshot } from '../lib/usage.js';
 
 function setCors(req, res) {
@@ -77,6 +77,16 @@ export default async function handler(req, res) {
       ? ownerUsage()
       : await getUsageSnapshot({ url, token, identity: `email:${session.email}`, plan });
     const achievements = unlockedAchievements(user);
+    const weeklyLimit = owner ? null : getWeeklyRequestLimit(plan);
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+    const weekStart = Math.floor(Date.now() / weekMs) * weekMs;
+    const weeklyUsed = Math.max(0, Number(await kvGet(url, token, `stellar:usage:week:${weekStart}:email:${session.email}`)) || 0);
+    const weeklyUsage = weeklyLimit ? {
+      percent: Math.min(100, Math.round((weeklyUsed / weeklyLimit) * 100)),
+      resetAt: new Date(weekStart + weekMs).toISOString(),
+      low: weeklyUsed / weeklyLimit >= 0.8,
+      exhausted: weeklyUsed >= weeklyLimit,
+    } : null;
 
     return res.status(200).json({
       plan,
@@ -85,6 +95,7 @@ export default async function handler(req, res) {
       overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
       planBilling: isPaidPlan(plan) ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null,
       usage,
+      weeklyUsage,
       referralCode: user.referralCode || null,
       referralUrl: user.referralCode ? `https://trystellarai.com/app?ref=${encodeURIComponent(user.referralCode)}` : null,
       scriptCount: Math.max(0, Number(user.scriptCount) || 0),
