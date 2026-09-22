@@ -34,3 +34,17 @@ test('dark Settings terms link has no browser-blue underline', () => {
   assert.match(appHtml, /#settings-modal \.set-item\[href="\/terms\.html"\] \{[\s\S]*?color: #e7eaf0 !important;[\s\S]*?text-decoration: none !important;/);
   assert.match(appHtml, /#settings-modal \.set-item\[href="\/terms\.html"\] \.set-chev \{[\s\S]*?color: #f4d676 !important;/);
 });
+
+
+test('business palette lock uses the approved black gold white contract', async () => {
+  const css = await readFile(new URL('../stellar-business-palette.css', import.meta.url), 'utf8');
+  assert.match(css, /--stellar-bg:#050505/);
+  assert.match(css, /--stellar-panel:#101010/);
+  assert.match(css, /--stellar-text:#F7F3EA/);
+  assert.match(css, /--stellar-gold:#D4AF37/);
+  assert.match(css, /--stellar-muted:#B8B0A0/);
+  assert.match(css, /--stellar-success:#22C55E/);
+  assert.match(css, /--stellar-danger:#EF4444/);
+  assert.match(appHtml, /stellar-business-palette\.css\?v=1/);
+  assert.match(indexHtml, /stellar-business-palette\.css\?v=1/);
+});
