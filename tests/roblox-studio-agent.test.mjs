@@ -60,3 +60,17 @@ test('Roblox Studio UI explains pairing and map presets clearly', () => {
   assert.match(page, /Roleplay town/);
   assert.match(page, /Build Roblox games<br>for real/);
 });
+
+
+test('pairing errors use connector-style guidance', async () => {
+  const page = await readFile(new URL('../roblox-studio.html', import.meta.url), 'utf8');
+  const plugin = await readFile(new URL('../roblox-studio-plugin/StellarAIPlugin.server.lua', import.meta.url), 'utf8');
+  const handler = await readFile(new URL('../lib/roblox-studio-agent-handler.js', import.meta.url), 'utf8');
+  assert.match(page, /friendlyPairError/);
+  assert.match(page, /Waiting for Roblox Studio/);
+  assert.match(page, /Code expired/);
+  assert.match(plugin, /friendlyError/);
+  assert.match(plugin, /HTTP Requests are off/);
+  assert.match(handler, /pair_code_expired/);
+  assert.match(handler, /roblox_plugin_disabled/);
+});

@@ -95,6 +95,30 @@ connectButton.Parent = root
 local statusLabel = label("Not paired.", 44, false)
 local activityLabel = label("HTTP access must be enabled in Game Settings → Security.", 54, false)
 
+local function friendlyError(raw)
+	local text = tostring(raw or "")
+	local lower = string.lower(text)
+	if string.find(lower, "expired") or string.find(lower, "already used") then
+		return "Code expired. Create a new code in Stellar, paste it here, then press Pair Studio."
+	end
+	if string.find(lower, "full pairing code") or string.find(lower, "invalid") then
+		return "Pairing code invalid. Copy the newest code from Stellar and paste the whole code here."
+	end
+	if string.find(lower, "disabled") then
+		return "Roblox Studio is disabled in Stellar Plugins. Enable it there, then create a new code."
+	end
+	if string.find(lower, "emergency stop") then
+		return "Emergency Stop is on. Press Resume Studio Agent in Stellar, then pair again."
+	end
+	if string.find(lower, "http") and (string.find(lower, "enable") or string.find(lower, "not enabled")) then
+		return "HTTP Requests are off. In Roblox Studio go Game Settings → Security → enable HTTP Requests."
+	end
+	if string.find(lower, "failed") or string.find(lower, "timedout") or string.find(lower, "timed out") then
+		return "Could not reach Stellar. Check your internet and keep trystellarai.com open."
+	end
+	return text
+end
+
 local deviceId = plugin:GetSetting(SETTING_ID)
 local deviceToken = plugin:GetSetting(SETTING_TOKEN)
 local running = true
@@ -367,7 +391,8 @@ end
 local function pair()
 	local code = string.upper(string.gsub(codeBox.Text or "", "[^A-Za-z0-9]", ""))
 	if #code < 8 then
-		statusLabel.Text = "Enter the full pairing code."
+		statusLabel.Text = "Enter the full pairing code from Stellar."
+		activityLabel.Text = "Open trystellarai.com/roblox-studio, press Create pairing code, then paste it here."
 		return
 	end
 	connectButton.Active = false
@@ -381,7 +406,8 @@ local function pair()
 	end)
 	connectButton.Active = true
 	if not ok then
-		statusLabel.Text = tostring(result)
+		statusLabel.Text = "Pairing failed"
+		activityLabel.Text = friendlyError(result)
 		return
 	end
 	deviceId = result.deviceId
@@ -426,8 +452,8 @@ task.spawn(function()
 					activityLabel.Text = "Could not report result: " .. tostring(reportError)
 				end
 			elseif not ok then
-				statusLabel.Text = "Bridge offline"
-				activityLabel.Text = tostring(data)
+				statusLabel.Text = "Bridge needs attention"
+				activityLabel.Text = friendlyError(data)
 			else
 				statusLabel.Text = "Paired · " .. game.Name
 			end
