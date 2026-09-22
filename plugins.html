@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<title>Plugins · Stellar AI</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{color-scheme:dark;--bg:#0b0d12;--panel:#11141b;--panel2:#151922;--line:rgba(255,255,255,.09);--text:#eef0f5;--muted:#9299a6;--accent:#9b82ff;--good:#78e3b5;--warn:#f1cc77;--bad:#ff8c9a}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}body{background:radial-gradient(circle at 50% -12%,rgba(123,97,255,.14),transparent 34%),var(--bg)}a{color:inherit}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}.top{position:sticky;top:0;z-index:10;border-bottom:1px solid var(--line);background:rgba(11,13,18,.92);backdrop-filter:blur(16px)}.topin{min-height:60px;display:flex;align-items:center;gap:14px}.back{text-decoration:none;color:var(--muted);font-weight:750}.brand{font-weight:900;letter-spacing:-.02em}.acct{margin-left:auto;border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--muted);font-size:12px}
+main{padding:42px 0 72px}.eyebrow{color:#b8a8ff;font-size:11px;font-weight:900;letter-spacing:.13em}.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,420px);gap:24px;align-items:end;margin-bottom:26px}.hero h1{margin:8px 0 12px;font-size:clamp(38px,6vw,68px);line-height:.98;letter-spacing:-.055em}.hero p{margin:0;max-width:760px;color:var(--muted);font-size:16px}.security{border:1px solid rgba(155,130,255,.22);background:rgba(155,130,255,.07);border-radius:18px;padding:16px;color:#cbc5df}.security strong{display:block;color:#f3efff;margin-bottom:5px}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}.search{flex:1;min-width:220px;min-height:44px;border:1px solid var(--line);border-radius:12px;background:#0a0c11;color:var(--text);padding:0 13px;outline:none}.search:focus{border-color:rgba(155,130,255,.55)}.btn{min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:#181c25;color:var(--text);font:inherit;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:hover{border-color:rgba(155,130,255,.35)}.btn.primary{background:#ece9ff;color:#14121a;border-color:#ece9ff}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.group{margin-top:28px}.group-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:11px}.group h2{margin:0;font-size:17px}.count{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#131720,#0f1218);padding:17px;display:flex;flex-direction:column;min-height:250px}.card-head{display:flex;align-items:flex-start;gap:12px}.icon{width:42px;height:42px;border:1px solid rgba(155,130,255,.23);border-radius:12px;background:#171425;display:grid;place-items:center;font-size:17px;font-weight:900;color:#c6baff;flex:none}.meta{min-width:0;flex:1}.name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.name{font-size:16px;font-weight:900}.badge{border:1px solid var(--line);border-radius:999px;padding:3px 7px;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.badge.on{border-color:rgba(120,227,181,.27);color:var(--good);background:rgba(120,227,181,.06)}.badge.soon{color:var(--warn)}.desc{margin:8px 0 13px;color:var(--muted);font-size:12.5px}.permissions{display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 14px}.perm{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:8px;padding:5px 7px;color:#c9cdd5;background:#0c0f14;font-size:10px}.risk{width:6px;height:6px;border-radius:50%;background:#818795}.risk.write{background:var(--warn)}.risk.high{background:var(--bad)}.risk.read{background:var(--good)}.card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.toggle{margin-left:auto;position:relative;width:46px;height:26px;border:1px solid var(--line);border-radius:999px;background:#080a0e;cursor:pointer}.toggle::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#767d89;transition:transform .15s ease,background .15s ease}.toggle[aria-pressed="true"]{background:rgba(120,227,181,.10);border-color:rgba(120,227,181,.28)}.toggle[aria-pressed="true"]::after{transform:translateX(20px);background:var(--good)}.toggle[disabled]{opacity:.45;cursor:not-allowed}.empty{padding:30px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center}.notice{margin-top:18px;min-height:22px;color:var(--muted);font-size:12px}.notice.good{color:var(--good)}.notice.bad{color:var(--bad)}
+@media(max-width:780px){main{padding-top:28px}.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.card{min-height:0}.acct{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap topin"><a class="back" href="/app">← App</a><div class="brand">Stellar AI · Plugins</div><div id="acct" class="acct">Checking account…</div></div></header>
+<main class="wrap">
+<section class="hero">
+  <div><div class="eyebrow">PLUGIN DIRECTORY</div><h1>Give Stellar tools,<br>not your whole account.</h1><p>Each integration declares exactly what it can read or change. Available plugins can be enabled independently, and high-impact actions still require the plugin's own approval flow.</p></div>
+  <div class="security"><strong>Permission-first by design</strong>Turning on a plugin never grants unrelated access. Existing PC and Roblox agents keep their own safety controls, pairing and approval gates.</div>
+</section>
+<div class="toolbar"><input id="search" class="search" type="search" placeholder="Search plugins…" aria-label="Search plugins"><button id="refresh" class="btn" type="button">Refresh</button></div>
+<div id="directory"></div>
+<div id="notice" class="notice" role="status" aria-live="polite"></div>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);
+ let token='',plugins=[];
+ try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
+ const headers=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
+ const icons={Coding:'⌘','Developer tools':'<>',Productivity:'✓',Community:'#',Business:'£'};
+ function setNotice(message,kind=''){const el=$('notice');el.textContent=message||'';el.className='notice'+(kind?' '+kind:'')}
+ function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ async function api(action,body=null){
+   const isGet=body===null;
+   const r=await fetch('/api/plugins'+(isGet?'?action='+encodeURIComponent(action):''),isGet?{headers:{Authorization:'Bearer '+token},cache:'no-store'}:{method:'POST',headers:headers(),body:JSON.stringify({action,...body})});
+   const d=await r.json().catch(()=>({}));
+   if(!r.ok)throw new Error(d.error||'Plugin request failed.');
+   return d;
+ }
+ function statusLabel(p){
+   if(p.status==='coming_soon')return 'Coming soon';
+   if(!p.availableToUser)return 'Unavailable';
+   return p.enabled?'Enabled':'Off';
+ }
+ function card(p){
+   const badgeClass=p.status==='coming_soon'?'soon':p.enabled?'on':'';
+   const route=p.route&&p.availableToUser?p.route:'';
+   const open=route?'<a class="btn" href="'+escapeHtml(route)+'">Open</a>':'';
+   const toggle=p.status!=='coming_soon'&&p.availableToUser
+     ? '<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>'
+     : '<button type="button" class="toggle" disabled aria-pressed="false" aria-label="'+escapeHtml(statusLabel(p))+'"></button>';
+   const perms=(p.permissions||[]).map(x=>'<span class="perm"><span class="risk '+escapeHtml(x.risk)+'"></span>'+escapeHtml(x.label)+'</span>').join('');
+   return '<article class="card" data-search="'+escapeHtml((p.name+' '+p.description+' '+p.category).toLowerCase())+'"><div class="card-head"><div class="icon">'+escapeHtml(icons[p.category]||'✦')+'</div><div class="meta"><div class="name-row"><span class="name">'+escapeHtml(p.name)+'</span><span class="badge '+badgeClass+'">'+escapeHtml(statusLabel(p))+'</span></div><div class="desc">'+escapeHtml(p.description)+'</div></div></div><div class="permissions">'+perms+'</div><div class="card-actions">'+open+(p.status==='coming_soon'?'<button class="btn" type="button" disabled>OAuth not connected yet</button>':'')+toggle+'</div></article>';
+ }
+ function render(){
+   const q=$('search').value.trim().toLowerCase();
+   const visible=plugins.filter(p=>!q||((p.name+' '+p.description+' '+p.category).toLowerCase().includes(q)));
+   const groups=new Map();
+   for(const p of visible){if(!groups.has(p.category))groups.set(p.category,[]);groups.get(p.category).push(p)}
+   $('directory').innerHTML=groups.size?[...groups].map(([name,items])=>'<section class="group"><div class="group-head"><h2>'+escapeHtml(name)+'</h2><span class="count">'+items.length+' plugin'+(items.length===1?'':'s')+'</span></div><div class="grid">'+items.map(card).join('')+'</div></section>').join(''):'<div class="empty">No plugins match that search.</div>';
+   document.querySelectorAll('[data-toggle]').forEach(button=>button.addEventListener('click',()=>toggle(button.dataset.toggle)));
+ }
+ async function load(){
+   if(!token){$('acct').textContent='Sign in required';$('directory').innerHTML='<div class="empty">Sign in to Stellar AI to manage plugins.</div>';return}
+   try{
+     const plan=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+     if(!plan.ok)throw new Error('Sign in to Stellar AI to manage plugins.');
+     const pd=await plan.json().catch(()=>({}));
+     $('acct').textContent=(pd.owner?'Owner':'Signed in')+' · Plugins';
+     const d=await api('list');
+     plugins=d.plugins||[];
+     render();setNotice('Plugin permissions are account-scoped.','good');
+   }catch(e){$('directory').innerHTML='<div class="empty">'+escapeHtml(e.message)+'</div>';setNotice(e.message,'bad')}
+ }
+ async function toggle(id){
+   const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+   const next=!plugin.enabled;
+   setNotice((next?'Enabling ':'Disabling ')+plugin.name+'…');
+   try{
+     const d=await api('setEnabled',{id,enabled:next});
+     const index=plugins.findIndex(p=>p.id===id);if(index>=0)plugins[index]=d.plugin;
+     render();setNotice(plugin.name+(next?' enabled.':' disabled.'),'good');
+   }catch(e){setNotice(e.message,'bad')}
+ }
+ $('search').addEventListener('input',render);
+ $('refresh').addEventListener('click',load);
+ load();
+})();
+</script>
+</body>
+</html>
