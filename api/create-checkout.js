@@ -143,7 +143,7 @@ export default async function handler(req, res) {
     if (plan === 'topup') {
       const rawPence = amount ?? qty;
       if (!isValidTopupPence(rawPence)) {
-        return res.status(400).json({ error: 'Top-up amount must be between 50p and £200 in 50p steps.' });
+        return res.status(400).json({ error: 'Top-up amount must be between £10 and £200 in 50p steps.' });
       }
       const pence = Number(rawPence);
 
