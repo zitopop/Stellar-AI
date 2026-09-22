@@ -43,9 +43,16 @@ node agent.mjs run
 
 - read file
 - list directory
+- search repository text
+- inspect git status
+- inspect git diff
 - write file
 - create directory
 - run reviewed shell command
 - open an http/https URL
+
+## Coding-agent loop
+
+The owner UI uses an inspect-first workflow: understand the task, inspect the real repository with read-only tools, build a grounded implementation plan from those observations, require approval for writes/commands, then review the resulting git diff. This keeps the experience closer to a repository coding agent than a one-shot chatbot while preserving explicit control over risky local actions.
 
 GUI clicking/typing is intentionally not enabled in this first secure version. Add it later through a dedicated Windows UI-automation module with separate permissions and visible user controls.
