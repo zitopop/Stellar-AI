@@ -182,6 +182,26 @@ async function execute(config,task){
       await fsp.mkdir(target,{recursive:true});
       return `Created directory: ${relative}`;
     }
+    case 'apply_patch': {
+      if(task.approved!==true) throw new Error('apply_patch was not approved.');
+      const {root,target,relative}=safePath(config,args.path);
+      const find=String(args.find??'');
+      const replace=String(args.replace??'');
+      if(!find) throw new Error('Patch find text is required.');
+      const old=await fsp.readFile(target,'utf8');
+      const occurrences=old.split(find).length-1;
+      if(occurrences!==1) throw new Error(`Patch requires exactly one match; found ${occurrences}.`);
+      const next=old.replace(find,replace);
+      if(next.length>2_000_000) throw new Error('Patched file exceeds the 2 MB desktop-agent limit.');
+      const backupDir=path.join(root,'.stellar-backups');
+      await fsp.mkdir(backupDir,{recursive:true});
+      const safeName=relative.replace(/[\\/:*?"<>|]/g,'_');
+      await fsp.writeFile(path.join(backupDir,`${Date.now()}-${safeName}`),old,'utf8');
+      const temp=`${target}.stellar-tmp-${process.pid}`;
+      await fsp.writeFile(temp,next,'utf8');
+      await fsp.rename(temp,target);
+      return `Patched file: ${relative} (1 replacement)`;
+    }
     case 'write_file': {
       if(task.approved!==true) throw new Error('write_file was not approved.');
       const {root,target,relative}=safePath(config,args.path);
@@ -287,7 +307,8 @@ async function selfTest(){
   const wrote1=await execute(config,{type:'write_file',args:{path:file,content:first},approved:true});
   const read1=await execute(config,{type:'read_file',args:{path:file},approved:true});
   const listed=await execute(config,{type:'list_directory',args:{path:dir},approved:true});
-  const wrote2=await execute(config,{type:'write_file',args:{path:file,content:second},approved:true});
+  const patched=await execute(config,{type:'apply_patch',args:{path:file,find:first,replace:second},approved:true});
+  const wrote2=patched;
   const read2=await execute(config,{type:'read_file',args:{path:file},approved:true});
   const backupDir=path.join(workspaceRoot(config),'.stellar-backups');
   let backupCount=0;
