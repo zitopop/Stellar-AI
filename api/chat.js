@@ -429,6 +429,10 @@ function applyUsageHeaders(res, usage) {
   res.setHeader('X-Stellar-Credit-Cost-Pence', String(usage.creditCostPence ?? OVERAGE_REQUEST_COST_PENCE));
   res.setHeader('X-Stellar-Credit-Charged-Pence', String(usage.chargedCreditPence || 0));
   if (Number.isFinite(Number(usage.walletPence))) res.setHeader('X-Stellar-Wallet-Pence', String(usage.walletPence));
+  if (usage.weekly) {
+    res.setHeader('X-Stellar-Weekly-Percent', String(usage.weekly.percent));
+    res.setHeader('X-Stellar-Weekly-Reset', usage.weekly.resetAt);
+  }
 }
 
 function walletKeyForSession(session) {
@@ -878,10 +882,13 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'Usage checks are temporarily unavailable. Please try again shortly.' });
   }
   if (!usage.allowed) {
+    const weeklyBlocked = usage.reason === 'weekly';
     return res.status(429).json({
-      error: useCredit === true
-        ? `Your ${usage.limit} included requests are used and there is not enough account credit for another request.`
-        : `You have reached your ${usage.limit} included requests per hour. Turn on Usage credit to continue for ${OVERAGE_REQUEST_COST_PENCE}p per request, add credit, or wait for the reset.`,
+      error: weeklyBlocked
+        ? 'You have reached this week’s included usage. Turn on Usage credit to continue where eligible, add credit, or wait for the weekly reset.'
+        : (useCredit === true
+          ? 'Your included hourly usage is used and there is not enough account credit for another request.'
+          : `You have reached your included hourly usage. Turn on Usage credit to continue for ${OVERAGE_REQUEST_COST_PENCE}p per request, add credit, or wait for the reset.`),
       usage,
     });
   }
