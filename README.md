@@ -64,7 +64,7 @@ Route-critical public files stay in their existing locations. Add new active cod
 
 ---
 
-## Required environment variables
+## Required production environment variables
 
 The server routes validate billing and entitlements independently of the browser. Configure these values in the production environment before enabling paid checkout:
 
@@ -77,12 +77,22 @@ STRIPE_PRICE_ID_PLUS
 STRIPE_PRICE_ID_PLUS_ANNUAL
 STRIPE_PRICE_ID_PRO
 STRIPE_PRICE_ID_PRO_ANNUAL
-UPSTASH_REDIS_REST_URL
-UPSTASH_REDIS_REST_TOKEN
+KV_REST_API_URL
+KV_REST_API_TOKEN
 JWT_SECRET
 ```
 
-`STRIPE_PRICE_ID_STARTER` and `STRIPE_PRICE_ID_STARTER_ANNUAL` are required for the Starter checkout path. User plan, request allowance, Nova access, referral credit and achievement state are resolved server-side; do not treat browser storage as an entitlement source.
+Optional but recommended production values:
+
+```text
+STRIPE_BILLING_PORTAL_CONFIG_ID   # use a pre-created Stripe portal config when available
+CRON_SECRET                       # protects internal scheduled routes
+RESEND_API_KEY                    # required for transactional email routes that send mail
+GOOGLE_CLIENT_ID                  # public sign-in client ID is also embedded in the app shell
+DISCORD_CLIENT_ID / DISCORD_CLIENT_SECRET / DISCORD_REDIRECT_URI
+```
+
+`STRIPE_PRICE_ID_STARTER` and `STRIPE_PRICE_ID_STARTER_ANNUAL` are required for the Starter checkout path. User plan, request allowance, Nova access, referral credit, wallet credit and achievement state are resolved server-side; do not treat browser storage as an entitlement source.
 
 ---
 
