@@ -231,6 +231,21 @@ async function execute(config,task){
       const result=await runProcess(command,{cwd});
       return `EXIT ${result.code}\nSTDOUT\n${result.stdout}\nSTDERR\n${result.stderr}`;
     }
+    case 'keyboard_shortcut': {
+      if(task.approved!==true) throw new Error('keyboard_shortcut was not approved.');
+      const allowed=new Set(['CTRL+TAB','CTRL+SHIFT+TAB','ALT+TAB','CTRL+L','CTRL+W','CTRL+R']);
+      const shortcut=String(args.shortcut||'').toUpperCase().replace(/\s+/g,'');
+      if(!allowed.has(shortcut)) throw new Error('Shortcut is not in the Stellar safe allowlist.');
+      const ps={ 'CTRL+TAB':'^{TAB}','CTRL+SHIFT+TAB':'^+{TAB}','ALT+TAB':'%{TAB}','CTRL+L':'^l','CTRL+W':'^w','CTRL+R':'^r' }[shortcut];
+      const script=`Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait('${ps}')`;
+      const result=await new Promise((resolve,reject)=>{
+        const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-Command',script],{windowsHide:true});
+        let stderr=''; child.stderr?.on('data',d=>stderr=cap(stderr+d,4000));
+        child.on('error',reject); child.on('close',code=>resolve({code,stderr}));
+      });
+      if(result.code!==0) throw new Error(result.stderr||'Keyboard shortcut failed.');
+      return `Sent keyboard shortcut: ${shortcut}`;
+    }
     case 'open_url': {
       if(task.approved!==true) throw new Error('open_url was not approved.');
       const url=new URL(String(args.url||''));
