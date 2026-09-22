@@ -72,7 +72,7 @@ test('achievement progression remains server-side while the removed Skill Tree l
 });
 
 test('app Starter card preserves the approved early-builder offer and benefit order', () => {
-  assert.match(app, /id="plan-card-starter"[\s\S]*?When Free is useful but you keep hitting the ceiling on regular scripts.[\s\S]*?id="plan-btn-starter"[^>]*>Get Starter<\/button>[\s\S]*?£67\/year · Save 30%[\s\S]*?Everything in Free, plus[\s\S]*?3× usage · 120 requests\/hour[\s\S]*?Same Spark, Star &amp; Comet models[\s\S]*?Stronger context \\+ deliberate self-review[\s\S]*?Cancel anytime/);
+  assert.match(app, /id="plan-card-starter"[\s\S]*?When Free is useful but you keep hitting the ceiling on regular scripts.[\s\S]*?id="plan-btn-starter"[^>]*>Get Starter<\/button>[\s\S]*?£67\/year · Save 30%[\s\S]*?Everything in Free, plus[\s\S]*?3× usage · 120 requests\/hour[\s\S]*?Same Spark, Star &amp; Comet models[\s\S]*?Stronger context \+ deliberate self-review[\s\S]*?Cancel anytime/);
 });
 
 test('workspace defaults to Star and protects its mobile modal experience', () => {
