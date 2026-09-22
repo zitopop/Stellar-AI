@@ -532,7 +532,7 @@
     // app.html owns the core Orbit runtime. currency.js only adds isolated
     // presentation/preferences so future features stay modular.
     ensureStylesheet('data-stellar-settings-v4', '/stellar-settings-v4.css?v=14');
-    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=15');
+    ensureStylesheet('data-stellar-home-chat-only', '/stellar-home-chat-only.css?v=16');
     ensureStylesheet('data-stellar-settings-extensions-style', '/stellar-settings-extensions.css?v=1');
     ensureScript('data-stellar-settings-extensions', '/stellar-settings-extensions.js?v=1');
     // The clean /app UI is owned by app.html. Do not dynamically reload the
