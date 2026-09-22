@@ -40,7 +40,7 @@ test('public pricing copy and structured offers agree on current GBP pricing', (
   }
   assert.match(termsHtml, /The current plans are Free \(£0\), Starter \(£8 per month or £67 per year\), Plus \(£20 per month or £168 per year\), and Pro \(£75 per month or £630 per year\)/);
   assert.match(termsHtml, /The hourly request allowances are 40, 120, 400, and 1,600 respectively/);
-  assert.match(termsHtml, /Signed-in users can buy one-off credit top-ups from 50p to £200/);
+  assert.match(termsHtml, /Signed-in users can buy one-off credit top-ups from £10 to £200/);
   assert.match(termsHtml, /The current referral offer awards £1 promotional credit to an eligible new user and £1 to the referrer/);
   assert.match(termsHtml, /Signed-in chat history is stored in account storage/);
   assert.doesNotMatch(termsHtml, /Working draft — have a qualified lawyer review before relying on it/);
