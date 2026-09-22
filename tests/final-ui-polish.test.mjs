@@ -26,8 +26,8 @@ test('reasoning control remains semantic while presenting a galaxy power rail', 
 
 test('new-chat home stays focused inside the premium Orbit shell', () => {
   assert.match(orbit, /body\.stellar-orbit-v3:not\(\.light\) \.greet-wrap/);
-  assert.ok(app.includes('What can I help you with?'));
-  assert.ok(app.includes('Build something new, fix a problem, improve a project, or ask Stellar anything.'));
+  assert.ok(app.includes('What are we working on?'));
+  assert.ok(app.includes('Create project files, debug code, improve a system, or plan the next release.'));
   assert.equal((app.match(/class="sug-chip"/g) || []).length, 0);
 });
 

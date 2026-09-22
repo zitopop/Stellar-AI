@@ -24,8 +24,8 @@ test('Task 166 keeps the model-menu plan action an explicit non-submit menu butt
   assert.doesNotMatch(workspaceHtml, /<button onclick="closeModelMenu\(\); openPlans\(\)" role="menuitem"/);
 });
 
-test('Task 167 keeps the New build sidebar control an explicit non-submit button', () => {
-  assert.match(workspaceHtml, /<button type="button" onclick="newChat\(\)" class="side-new[^"]*">[\s\S]*New build[\s\S]*<\/button>/);
+test('Task 167 keeps the New project sidebar control an explicit non-submit button', () => {
+  assert.match(workspaceHtml, /<button type="button" onclick="newChat\(\)" class="side-new[^"]*">[\s\S]*New project[\s\S]*<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="newChat\(\)" class="side-new/);
 });
 
@@ -153,8 +153,8 @@ test('workspace keeps the starter UI calm and removes redundant home guidance', 
 });
 
 test('workspace welcome state stays minimal and keeps the composer accessible', () => {
-  assert.match(workspaceHtml, /What can I help you with\?/);
-  assert.match(workspaceHtml, /Build something new, fix a problem, improve a project, or ask Stellar anything\./);
+  assert.match(workspaceHtml, /What are we working on\?/);
+  assert.match(workspaceHtml, /Create project files, debug code, improve a system, or plan the next release\./);
   assert.match(workspaceHtml, /Review generated code before using it in production\./);
   assert.match(workspaceHtml, /placeholder="Ask Stellar anything…"/);
   assert.match(workspaceHtml, /role="form" aria-label="Message composer"/);

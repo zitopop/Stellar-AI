@@ -122,12 +122,12 @@ test('Task 136 announces the existing pasted-content summary politely', () => {
 test('Task 137 exposes the existing workspace sidebar as named navigation', () => {
   assert.match(appHtml, /<div id="sidebar"[^>]*role="navigation"[^>]*aria-label="Workspace navigation"/);
   assert.match(appHtml, /<button type="button" onclick="newChat\(\)"[^>]*class="side-new[^"]*"/);
-  assert.match(appHtml, /<input id="search"[^>]*aria-label="Search builds"/);
+  assert.match(appHtml, /<input id="search"[^>]*aria-label="Search projects"/);
   assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list" role="region" aria-labelledby="chats-heading"><\/div>/);
 });
 
 test('Task 138 gives workspace chat search an explicit accessible name', () => {
-  assert.match(appHtml, /<input id="search"[^>]*type="search"[^>]*inputmode="search"[^>]*placeholder="Search builds"[^>]*aria-label="Search builds"/);
+  assert.match(appHtml, /<input id="search"[^>]*type="search"[^>]*inputmode="search"[^>]*placeholder="Search projects"[^>]*aria-label="Search projects"/);
   assert.match(appHtml, /id="search"[^>]*autocomplete="off"[^>]*autocorrect="off"[^>]*autocapitalize="off"[^>]*spellcheck="false"/);
 });
 

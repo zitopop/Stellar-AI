@@ -6,10 +6,10 @@ const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 const staticAppMarkup = appHtml.split('function timeGreeting()')[0];
 
 test('workspace keeps the help question stable while signed-in greeting personalises safely', () => {
-  assert.match(appHtml, /<div class="greet-hi" id="greet-hi">What can I help you with\?<\/div>/);
+  assert.match(appHtml, /<div class="greet-hi" id="greet-hi">What are we working on\?<\/div>/);
   assert.match(appHtml, /function syncHomeGreeting\(\)/);
   assert.match(appHtml, /label\.textContent = firstName \? 'Welcome back · Stellar AI' : 'Stellar AI';/);
-  assert.match(appHtml, /heading\.textContent = firstName[\s\S]*?firstName \+ ', what can I help you with\?'[\s\S]*?: 'What can I help you with\?';/);
+  assert.match(appHtml, /heading\.textContent = firstName[\s\S]*?firstName \+ ', what are we working on\?'[\s\S]*?: 'What are we working on\?';/);
   assert.doesNotMatch(staticAppMarkup, /\$\{timeGreeting\(\)\}/);
 });
 

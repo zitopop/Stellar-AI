@@ -15,7 +15,7 @@ test('support page keeps text, chips and buttons readable on dark backgrounds', 
 });
 
 test('support quick actions are real clickable controls with icons and target sections', () => {
-  assert.ok(support.includes('type="button" class="chip" onclick="quick(\'billing\',\'plans-billing\')"'));
+  assert.ok(support.includes('class="chip" href="#plans-billing" onclick="quick(\'billing\',\'plans-billing\')"'));
   assert.ok(support.includes('💳 Billing'));
   assert.ok(support.includes('📚 Open Help Guides'));
   for (const id of ['plans-billing','account-help','script-help']) assert.match(support, new RegExp('id="' + id + '"'));

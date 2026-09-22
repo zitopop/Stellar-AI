@@ -140,7 +140,7 @@ test('a missing retry chat recovers without throwing or stranding Send', async (
   await h.context.sendMessage({text:'Retry old message'});
   assert.equal(h.context.sendLock, false);
   assert.equal(h.state().chats.length, 0);
-  assert.match(h.status.at(-1), /Start a new build/);
+  assert.match(h.status.at(-1), /Start a new project/);
   assert.equal(h.input.value, 'Build a checkpoint');
 });
 

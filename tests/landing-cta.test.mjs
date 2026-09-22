@@ -9,14 +9,14 @@ const graph = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<
 
 test('hero identifies supported platforms and offers first-run onboarding', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.match(html, /Your AI partner for FiveM and Roblox/);
+  assert.match(html, /AI coding workspace for FiveM and Roblox/);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /£1 starting credit/);
 });
 
 test('preview is an example and its bounded prompt opens the app without generating', () => {
-  assert.match(html, /Interactive preview/);
+  assert.match(html, /Product preview/);
   assert.match(html, /EXAMPLE RESPONSE/);
   assert.match(html, /<form[^>]*action="\/app" method="get"/);
   assert.match(html, /<label for="build-prompt">/);

@@ -47,7 +47,7 @@ test('final centered composer selector beats generic main-column positioning rul
 });
 
 
-test('app resumes the active conversation and keeps New build as the fresh-home action', () => {
+test('app resumes the active conversation and keeps New project as the fresh-home action', () => {
   assert.match(appHtml, /renderChatList\(\);\s*\/\/ Keep the active conversation across reloads\.[^\n]*\s*restoreCurrentChat\(\);/);
   assert.match(appHtml, /onclick="newChat\(\)"/);
 });
@@ -56,8 +56,8 @@ test('app resumes the active conversation and keeps New build as the fresh-home 
 test('premium home stays minimal and keeps the composer at the true viewport centre', () => {
   assert.match(appHtml, /<style id="stellar-home-premium-polish-v1">[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
   assert.match(appHtml, /<span class="greet-eyebrow-label">Stellar AI<\/span>/);
-  assert.ok(appHtml.includes('What can I help you with?'));
-  assert.ok(appHtml.includes('Build something new, fix a problem, improve a project, or ask Stellar anything.'));
+  assert.ok(appHtml.includes('What are we working on?'));
+  assert.ok(appHtml.includes('Create project files, debug code, improve a system, or plan the next release.'));
   assert.match(appHtml, /placeholder="Ask Stellar anything…"/);
 });
 

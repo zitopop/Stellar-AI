@@ -21,7 +21,7 @@ test('plans explain included allowance and separate wallet credit', () => {
 });
 
 test('landing uses clear build wording and plan-limit guidance', () => {
-  assert.match(landing, /Your AI partner for FiveM and Roblox/);
+  assert.match(landing, /AI coding workspace for FiveM and Roblox/);
   assert.match(landing, /Wallet credit is separate and can be used after the included allowance\./);
   assert.match(landing, /Prices and checkout are in GBP/);
 });
