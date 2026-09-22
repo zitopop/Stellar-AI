@@ -20,7 +20,7 @@ h1{font-size:clamp(36px,6vw,72px);line-height:.98;letter-spacing:-.055em;margin:
 textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--line);border-radius:14px;background:#090a0e;color:var(--text);padding:14px;outline:none}textarea:focus{border-color:#655d92;box-shadow:0 0 0 3px rgba(188,168,255,.08)}
 .plan{display:grid;gap:10px;margin-top:16px}.step{display:grid;grid-template-columns:auto 1fr;gap:12px;border:1px solid var(--line);background:#0d0f15;border-radius:14px;padding:13px}.step input{margin-top:4px}.type{font:800 12px ui-monospace,monospace;color:#d7cbff}.reason{color:var(--muted);font-size:12px;margin-top:4px}.args{font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;margin-top:8px;color:#cdd1dc}
 .log{min-height:160px;max-height:340px;overflow:auto;background:#090a0e;border:1px solid var(--line);border-radius:14px;padding:14px;font:12px/1.55 ui-monospace,monospace;color:#cfd3dd}.log .ok{color:var(--good)}.log .bad{color:var(--bad)}.log .warn{color:var(--warn)}
-.note{margin-top:18px;padding:13px 15px;border:1px solid rgba(255,212,121,.22);background:rgba(255,212,121,.06);border-radius:14px;color:#e7d9aa;font-size:12px}
+.note{margin-top:18px;padding:13px 15px;border:1px solid rgba(255,212,121,.22);background:rgba(255,212,121,.06);border-radius:14px;color:#e7d9aa;font-size:12px}.perm{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}.perm:last-child{border-bottom:0}.perm input{width:18px;height:18px}.dangerbox{border-color:rgba(255,138,154,.24);background:rgba(255,138,154,.04)}
 @media(max-width:800px){main{padding-top:28px}.hero,.grid{grid-template-columns:1fr}.wrap{width:min(100% - 20px,1120px)}h1{font-size:44px}.card{padding:17px;border-radius:18px}.topin{min-height:58px}}
 </style>
 </head>
@@ -43,6 +43,18 @@ node agent.mjs pair YOUR_CODE
 .\start-stellar-agent.cmd</div>
 <div class="note">Terminal commands are OFF by default. Enable them only when you want reviewed shell tasks: <code>$env:STELLAR_DESKTOP_ALLOW_SHELL="1"</code> before starting the agent.</div></div>
 </section>
+
+<section class="card dangerbox" style="margin-top:18px"><h2>Safeguards</h2><p>Two layers protect the PC: cloud permissions here, plus local Windows safeguards in the companion.</p>
+<div class="grid">
+<div><label class="perm"><input type="checkbox" id="permRead" checked><span><strong>Read workspace</strong><br><span class="small">Read/list files only inside the paired workspace.</span></span></label>
+<label class="perm"><input type="checkbox" id="permWrite" checked><span><strong>Write workspace</strong><br><span class="small">Still requires per-action approval and creates backups.</span></span></label>
+<label class="perm"><input type="checkbox" id="permUrl" checked><span><strong>Open web URLs</strong><br><span class="small">HTTP/HTTPS only and approval required.</span></span></label>
+<label class="perm"><input type="checkbox" id="permShell"><span><strong>Terminal commands</strong><br><span class="small">Off by default. Also requires the local shell opt-in.</span></span></label>
+<div class="actions" style="margin-top:14px"><button class="btn" id="savePolicyBtn">Save permissions</button></div></div>
+<div><div class="note"><strong>Hard blocks always stay on:</strong> destructive disk/system commands, security-tool disabling, credential/key stores, browser secret stores, Windows system directories, and access outside the workspace.</div>
+<div class="actions" style="margin-top:14px"><button class="btn danger" id="stopBtn">Emergency Stop</button><button class="btn" id="resumeBtn" hidden>Resume PC Agent</button><button class="btn" id="auditBtn">Refresh audit log</button></div>
+<div class="small" id="safetyState" style="margin-top:10px">Safeguards loading…</div></div>
+</div></section>
 
 <section class="card" style="margin-top:18px"><h2>3. Tell Stellar what to do</h2><p>Describe a task naturally. Stellar builds a local action plan first; risky steps must be checked before they can be queued.</p>
 <textarea id="prompt" placeholder="Example: Look through my Stellar project, find why the settings panel is overflowing on mobile, fix the relevant CSS, and run the tests."></textarea>
@@ -79,6 +91,9 @@ node agent.mjs pair YOUR_CODE
       $('statusText').textContent=!d.paired?'Not paired':d.online?'PC online':'PC paired · offline';
       $('statusMeta').textContent=!d.paired?'Create a pairing code to connect your Windows PC.':(d.hostname||'Windows PC')+' · last seen '+(d.lastSeen?new Date(d.lastSeen).toLocaleString():'never');
       $('disconnectBtn').hidden=!d.paired;
+      $('permRead').checked=d.policy?.read!==false;$('permWrite').checked=d.policy?.write!==false;$('permShell').checked=d.policy?.shell===true;$('permUrl').checked=d.policy?.openUrl!==false;
+      $('stopBtn').hidden=!!d.emergencyStopped;$('resumeBtn').hidden=!d.emergencyStopped;
+      $('safetyState').textContent=d.emergencyStopped?'EMERGENCY STOP ACTIVE — no PC tasks can run.':'Safeguards active · shell '+(d.policy?.shell?'allowed by cloud policy':'blocked by cloud policy')+'.';
       return d;
     }catch(error){log(error.message,'bad');throw error}
   }
@@ -90,6 +105,26 @@ node agent.mjs pair YOUR_CODE
     try{await api('disconnect');$('pairCode').hidden=true;log('PC disconnected.','warn');await status()}catch(e){log(e.message,'bad')}
   };
   $('refreshBtn').onclick=()=>status().catch(()=>{});
+  $('savePolicyBtn').onclick=async()=>{
+    try{
+      const policy={read:$('permRead').checked,write:$('permWrite').checked,shell:$('permShell').checked,openUrl:$('permUrl').checked};
+      await api('setPolicy',{policy});log('PC permissions updated.','ok');await status();
+    }catch(e){log(e.message,'bad')}
+  };
+  $('stopBtn').onclick=async()=>{
+    if(!confirm('Emergency Stop will clear queued PC tasks and block new ones. Continue?'))return;
+    try{await api('emergencyStop');log('EMERGENCY STOP enabled. No new PC tasks can run.','warn');await status()}catch(e){log(e.message,'bad')}
+  };
+  $('resumeBtn').onclick=async()=>{
+    if(!confirm('Resume PC Agent? Existing queued work was cleared and will not restart automatically.'))return;
+    try{await api('resume',{confirm:true});log('PC Agent resumed.','ok');await status()}catch(e){log(e.message,'bad')}
+  };
+  $('auditBtn').onclick=async()=>{
+    try{
+      const d=await api('audit',{},'GET');log('— Audit log —','');
+      (d.events||[]).slice(0,40).reverse().forEach(e=>log((e.event||'event')+(e.type?' · '+e.type:'')+(e.taskId?' · '+e.taskId:''),e.event==='emergency_stop'?'warn':''));
+    }catch(e){log(e.message,'bad')}
+  };
   $('planBtn').onclick=async()=>{
     const prompt=$('prompt').value.trim();if(!prompt)return;
     $('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Planning…';$('runActions').hidden=true;
