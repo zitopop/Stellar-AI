@@ -14,9 +14,10 @@ test('app exposes Jarvis Vision from the signed-in workspace navigation', () => 
 test('Jarvis Vision has local camera hand controls plus pointer fallback', () => {
   assert.match(jarvis, /navigator\.mediaDevices\.getUserMedia/);
   assert.match(jarvis, /HandLandmarker/);
-  assert.match(jarvis, /Pinch: grab \/ drag/);
+  assert.match(jarvis, /Pinch \+ move · drag/);
   assert.match(jarvis, /pointerdown/);
-  assert.match(jarvis, /Peace: reset/);
+  assert.match(jarvis, /Peace · reset/);
+  assert.match(jarvis, /Mouse \+ touch supported/);
   assert.doesNotMatch(jarvis, /OWNER_PHONE|TWILIO_AUTH_TOKEN|API_KEY/);
 });
 
