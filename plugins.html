@@ -187,8 +187,11 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     await Promise.all(tasks);
   }
   function isTokenPlugin(p){return p?.connection==='token'||p?.connection==='oauth_or_token'}
+  function setupText(p){return Array.isArray(p.setupEnv)&&p.setupEnv.length?p.setupEnv.join(', '):'provider OAuth credentials'}
   function state(p){
+    if(p.status==='coming_soon'&&p.setupStatus==='oauth_setup_needed')return {label:'OAuth setup needed',className:'soon'};
     if(p.status==='coming_soon')return {label:'Coming soon',className:'soon'};
+    if(!p.availableToUser&&p.setupStatus==='oauth_setup_needed')return {label:'OAuth setup needed',className:'soon'};
     if(!p.availableToUser)return {label:'Unavailable',className:''};
     if(isTokenPlugin(p)&&!p.credentialStorageReady)return {label:'Setup required',className:'soon'};
     if(isTokenPlugin(p)&&p.connected)return {label:p.enabled?'Connected':'Disabled',className:p.enabled?'connected':''};
@@ -217,9 +220,14 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     let actions='';
     let toggle='';
     if(p.status==='coming_soon'){
-      actions='<button class="btn" type="button" disabled>Coming soon</button>';
-      toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Coming soon"></button>';
-    }else if(isTokenPlugin(p)){
+      if(p.setupStatus==='oauth_setup_needed'){
+        actions='<button class="btn" type="button" data-connect="'+escapeHtml(p.id)+'">Setup info</button>';
+        toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="OAuth setup needed"></button>';
+      }else{
+        actions='<button class="btn" type="button" disabled>Coming soon</button>';
+        toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Coming soon"></button>';
+      }
+    }else if(isTokenPlugin(p)){    }else if(isTokenPlugin(p)){
       if(!p.credentialStorageReady){
         actions='<button class="btn" type="button" disabled>Server setup needed</button>';
         toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Setup required"></button>';
@@ -290,22 +298,26 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
   function openConnect(id){
     const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
     modalPluginId=id;
-    $('plugin-modal-title').textContent='Connect '+plugin.name;
-    $('plugin-modal-copy').textContent=id==='github'
-      ? 'Use a fine-grained GitHub token with only the repository read access you want Stellar to inspect.'
-      : 'Use a Vercel access token. This release only reads project and deployment metadata.';
+    const setupOnly=plugin.setupStatus==='oauth_setup_needed'||(plugin.status==='coming_soon'&&plugin.oauthProvider);
+    $('plugin-modal-title').textContent=(setupOnly?'Set up ':'Connect ')+plugin.name;
+    $('plugin-modal-copy').textContent=setupOnly
+      ? plugin.name+' needs provider OAuth/app setup before users can connect it. Add: '+setupText(plugin)+'.'
+      : id==='github'
+        ? 'Use OAuth when configured, or a fine-grained GitHub token with only the repository read access you want Stellar to inspect.'
+        : 'Use a Vercel access token. This release only reads project and deployment metadata.';
     $('plugin-token').placeholder=id==='github'?'GitHub token':'Vercel access token';
     $('plugin-token-help').href=id==='github'?'https://github.com/settings/personal-access-tokens':'https://vercel.com/account/settings/tokens';
     $('plugin-token-help').textContent=id==='github'?'Create a GitHub token ↗':'Create a Vercel token ↗';
-    const oauthPlugin=plugin.connection==='oauth_or_token';
+    const oauthPlugin=plugin.connection==='oauth_or_token'||plugin.connection==='oauth';
     const oauthReady=plugin.oauthAvailable||plugin.oauthStatus?.configured;
-    $('plugin-oauth-submit').hidden=!oauthPlugin;
-    $('plugin-oauth-note').hidden=!oauthPlugin;
+    $('plugin-oauth-submit').hidden=setupOnly||!oauthPlugin;
+    $('plugin-oauth-note').hidden=false;
     $('plugin-oauth-submit').disabled=oauthPlugin&&!oauthReady;
     $('plugin-oauth-submit').textContent=oauthReady?'Connect '+plugin.name+' with OAuth':'OAuth setup needed';
-    $('plugin-oauth-note').textContent=oauthReady
-      ? 'OAuth opens the provider permission screen. No password is shared with Stellar.'
-      : 'OAuth is built, but live OAuth still needs '+(plugin.oauthStatus?.missing||['provider credentials']).join(', ')+' added in Vercel. Use the manual secure token fallback below for now.';
+    $('plugin-oauth-note').textContent=setupOnly?'Setup needed before this plugin can connect. Missing: '+setupText(plugin)+'.':(oauthReady?'OAuth opens the provider permission screen. No password is shared with Stellar.':'OAuth is built, but live OAuth still needs '+(plugin.oauthStatus?.missing||plugin.oauthSetupMissingEnv||['provider credentials']).join(', ')+' added in Vercel. Use the manual secure token fallback below for now.');
+    $('plugin-token').hidden=setupOnly||!isTokenPlugin(plugin);
+    $('plugin-token-help').hidden=setupOnly||!isTokenPlugin(plugin);
+    $('plugin-connect-submit').hidden=setupOnly||!isTokenPlugin(plugin);
     $('plugin-connect-form').hidden=false;
     $('plugin-inspect-view').hidden=true;
     $('plugin-modal').classList.add('open');

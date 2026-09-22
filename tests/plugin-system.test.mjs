@@ -28,6 +28,11 @@ test('plugin registry separates working, owner-only and future integrations', ()
   assert.deepEqual(getPluginDefinition('github').permissions.map(p=>p.id), ['repos.read']);
   assert.deepEqual(getPluginDefinition('vercel').permissions.map(p=>p.id), ['deployments.read']);
   assert.equal(getPluginDefinition('gmail').status, 'coming_soon');
+  for (const id of ['gmail','google-drive','google-calendar','discord','shopify','stripe']) {
+    assert.ok(['oauth','oauth_or_token'].includes(getPluginDefinition(id).connection), id);
+    assert.equal(getPluginDefinition(id).setupStatus, 'oauth_setup_needed', id);
+    assert.ok(getPluginDefinition(id).setupEnv.length >= 1, id);
+  }
   assert.ok(PLUGIN_REGISTRY.every(plugin => Array.isArray(plugin.permissions) && plugin.permissions.length > 0));
 });
 
@@ -98,6 +103,9 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   assert.match(page, /connectToken/);
   assert.match(page, /disconnectCurrentPlugin/);
   assert.match(page, /Connect read-only/);
+  assert.match(page, /Setup info/);
+  assert.match(page, /setupText/);
+  assert.match(page, /OAuth setup needed/);
   assert.match(page, /encrypted before server-side storage/);
   assert.match(page, /More plugins coming soon/);
   assert.match(page, /Request a plugin/);
