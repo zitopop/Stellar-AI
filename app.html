@@ -10428,6 +10428,66 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
 @media(max-width:767px){body:not(.light) h1,body:not(.light) .greet-hi{font-size:clamp(1.85rem,9vw,2.55rem)!important;}body:not(.light) #txt{font-size:16px!important;}body:not(.light) .stellar-feature-grid button{min-height:92px!important;padding:11px!important;}body:not(.light) .stellar-feature-grid span{font-size:.66rem!important;}body:not(.light) .topbar,body:not(.light) .model-pill,body:not(.light) .ws-toggle,body:not(.light) .sug-chip,body:not(.light) button{font-size:.72rem!important;}}
 </style>
   <link rel="stylesheet" href="/stellar-business-palette.css?v=1">
+<style id="stellar-phone-plans-fix-v1">
+    /* Phone plans fix: stacked readable cards, no sideways overflow on small screens. */
+    @media (max-width: 767px) {
+      #plans-modal { align-items: flex-end !important; padding: 0 !important; overflow: hidden !important; }
+      #plans-modal > div {
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        max-height: min(90dvh, 760px) !important;
+        margin: 0 !important;
+        padding: 18px 14px calc(22px + env(safe-area-inset-bottom)) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 22px 22px 0 0 !important;
+        box-sizing: border-box !important;
+      }
+      #plans-modal #plans-grid-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+        gap: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 16px !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        scroll-snap-type: none !important;
+        scrollbar-width: auto !important;
+      }
+      #plans-modal #plans-grid-inner > .plan-card {
+        box-sizing: border-box !important;
+        flex: 0 0 auto !important;
+        flex-basis: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 18px 16px !important;
+        border-radius: 18px !important;
+        scroll-snap-align: none !important;
+      }
+      #plans-modal .plans-choice-guide { grid-template-columns: 1fr !important; gap: 8px !important; margin: 0 0 12px !important; }
+      #plans-modal .plans-choice-guide span { grid-template-columns: minmax(72px, 92px) minmax(0, 1fr) !important; min-width: 0 !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-head-name { font-size: 11px !important; line-height: 1.2 !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-head-price { font-size: clamp(30px, 10vw, 38px) !important; line-height: 1 !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-head-per { font-size: 12px !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-head-fit,
+      #plans-modal #plans-grid-inner > .plan-card .plan-fit-line { height: auto !important; min-height: 0 !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-fit-line { margin-bottom: 12px !important; font-size: 12px !important; line-height: 1.45 !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-usage-pill { height: auto !important; min-height: 42px !important; margin: 10px 0 !important; }
+      #plans-modal #plans-grid-inner > .plan-card > button { width: 100% !important; min-height: 44px !important; margin-top: 8px !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-annual-spacer { display: none !important; }
+      #plans-modal #plans-grid-inner > .plan-card .plan-features { min-height: 0 !important; padding-top: 12px !important; }
+    }
+  </style>
+
 </head>
 <body class="text-[#e2e8f0] stellar-chat-workspace stellar-empty-home stellar-start-state">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>

@@ -40,3 +40,12 @@ test('pricing modal uses comfortable iPad columns and contained phone cards', ()
   assert.match(appHtml, /@media \(max-width: 767px\) \{[\s\S]*?#plans-grid-inner \{\s+display: flex !important;\s+flex-direction: column !important;/);
   assert.match(appHtml, /#plans-grid-inner > \.plan-card \{\s+box-sizing: border-box !important;\s+width: 100% !important;/);
 });
+
+
+test('phone pricing modal stacks cards without sideways overflow', () => {
+  assert.match(appHtml, /<style id="stellar-phone-plans-fix-v1">/);
+  assert.match(appHtml, /Phone plans fix: stacked readable cards, no sideways overflow on small screens/);
+  assert.match(appHtml, /@media \(max-width: 767px\) \{[\s\S]*?#plans-modal #plans-grid-inner \{\s+display: flex !important;\s+flex-direction: column !important;[\s\S]*?overflow-x: hidden !important;[\s\S]*?scroll-snap-type: none !important;/);
+  assert.match(appHtml, /#plans-modal #plans-grid-inner > \.plan-card \{\s+box-sizing: border-box !important;\s+flex: 0 0 auto !important;[\s\S]*?width: 100% !important;[\s\S]*?max-width: 100% !important;[\s\S]*?min-width: 0 !important;/);
+  assert.match(appHtml, /#plans-modal #plans-grid-inner > \.plan-card > button \{ width: 100% !important; min-height: 44px !important; margin-top: 8px !important; \}/);
+});
