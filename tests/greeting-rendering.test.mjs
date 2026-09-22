@@ -5,16 +5,17 @@ import { readFile } from 'node:fs/promises';
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 const staticAppMarkup = appHtml.split('function timeGreeting()')[0];
 
-test('workspace keeps the build question stable while the small greeting updates by time', () => {
-  assert.ok(appHtml.includes('<div class="greet-hi" id="greet-hi">What will you <span class="greet-hi-accent">build next?</span></div>'));
+test('workspace keeps the help question stable while signed-in greeting personalises safely', () => {
+  assert.match(appHtml, /<div class="greet-hi" id="greet-hi">What can I help you with\?<\/div>/);
   assert.match(appHtml, /function syncHomeGreeting\(\)/);
-  assert.match(appHtml, /label\.textContent = timeGreeting\(\) \+ ' · FiveM & Roblox';/);
-  assert.doesNotMatch(staticAppMarkup, /<div class="greet-hi" id="greet-hi">\$\{timeGreeting\(\)\}<\/div>/);
+  assert.match(appHtml, /label\.textContent = firstName \? 'Welcome back · Stellar AI' : 'Stellar AI';/);
+  assert.match(appHtml, /heading\.textContent = firstName[\s\S]*?firstName \+ ', what can I help you with\?'[\s\S]*?: 'What can I help you with\?';/);
+  assert.doesNotMatch(staticAppMarkup, /\$\{timeGreeting\(\)\}/);
 });
 
-test('greeting function remains available for the current user and time', () => {
-  assert.match(appHtml, /function timeGreeting\(\) \{/);
-  assert.match(appHtml, /if \(h >= 5 && h < 12\) hi = 'Good morning';/);
-  assert.match(appHtml, /else if \(h >= 12 && h < 17\) hi = 'Good afternoon';/);
-  assert.match(appHtml, /else if \(h >= 17 && h < 21\) hi = 'Good evening';/);
+test('home greeting uses the signed-in first name without exposing the full email', () => {
+  assert.match(appHtml, /function homeFirstName\(\) \{/);
+  assert.match(appHtml, /String\(user\.email\)\.split\('@'\)\[0\]/);
+  assert.match(appHtml, /firstName\.length > 18/);
+  assert.doesNotMatch(appHtml, /function timeGreeting\(\)/);
 });
