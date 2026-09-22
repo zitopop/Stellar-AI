@@ -12716,20 +12716,6 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       }
     }
 
-    function timeGreeting() {
-      const h = new Date().getHours();
-      const u = Store.get().user;
-      let name = u && u.name ? String(u.name).trim().split(' ')[0] : '';
-      if (name.length > 16) name = name.slice(0, 16) + '…';
-      let hi;
-      if (h >= 5 && h < 12) hi = 'Good morning';
-      else if (h >= 12 && h < 17) hi = 'Good afternoon';
-      else if (h >= 17 && h < 21) hi = 'Good evening';
-      else if (h >= 21 && h < 24) hi = 'Evening';
-      else if (h >= 0 && h < 3) hi = 'Night owl';
-      else hi = 'Up early';
-      return name ? (hi + ', ' + name) : hi;
-    }
     function homeFirstName() {
       const user = Store.get().user;
       let raw = user && user.name ? String(user.name).trim() : '';
