@@ -9,6 +9,7 @@ const BASE_URL=(process.env.STELLAR_DESKTOP_URL||'https://trystellarai.com').rep
 const CONFIG_PATH=process.env.STELLAR_DESKTOP_CONFIG||path.join(os.homedir(),'.stellar-desktop.json');
 const DEFAULT_ROOT=path.join(os.homedir(),'StellarWorkspace');
 const LOCAL_STOP_PATH=path.join(os.homedir(),'.stellar-desktop-stop');
+const BLOCKED_PATH_RE=/(?:^|[\\\\/])(?:\\.ssh|\\.gnupg|\\.aws|\\.azure|\\.kube|credentials?|cookies?|login data|wallets?|keychains?|vault|\\.env(?:\\.[^\\\\/]+)?|\\.npmrc|\\.git-credentials|id_rsa|id_ed25519)(?:[\\\\/]|$)/i;
 const BLOCKED_COMMAND_RE=/(?:\\b(?:format|diskpart|bcdedit|shutdown|restart-computer|stop-computer|cipher\\s+\\/w|vssadmin\\s+delete|wbadmin\\s+delete|reg\\s+delete|net\\s+user|sc\\s+(?:config|delete)|set-mppreference|add-mppreference|disable-realtimemonitoring|takeown|icacls)\\b|remove-item[^\\r\\n]*(?:-recurse[^\\r\\n]*-force|-force[^\\r\\n]*-recurse)|(?:del|rd|rmdir)\\s+\\/(?:s|q)|rm\\s+-rf|powershell[^\\r\\n]*-(?:enc|encodedcommand)\\b)/i;
 const ALLOW_SHELL=String(process.env.STELLAR_DESKTOP_ALLOW_SHELL||'').toLowerCase()==='1'
   || String(process.env.STELLAR_DESKTOP_ALLOW_SHELL||'').toLowerCase()==='true';
@@ -44,6 +45,7 @@ function safePath(config,input=''){
   const target=path.resolve(root,String(input||'.'));
   const relative=path.relative(root,target);
   if(relative.startsWith('..')||path.isAbsolute(relative)) throw new Error('Path is outside the paired workspace root.');
+  if(BLOCKED_PATH_RE.test(relative)) throw new Error('Credential, key, browser-secret, and environment-secret files are blocked.');
   return {root,target,relative:relative||'.'};
 }
 async function ensureRoot(config){await fsp.mkdir(workspaceRoot(config),{recursive:true})}
