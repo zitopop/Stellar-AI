@@ -7,7 +7,7 @@ const workspaceHtml = readFileSync(new URL('../app.html', import.meta.url), 'utf
 test('Task 164 keeps chat-history options controls touch-safe and semantically connected', () => {
   assert.match(workspaceHtml, /\.chat-dots \{ flex: none; width: 44px; height: 44px; border-radius: 12px;/);
   assert.doesNotMatch(workspaceHtml, /\.chat-dots \{ flex: none; width: 24px; height: 24px;/);
-  assert.match(workspaceHtml, /aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots"/);
+  assert.match(workspaceHtml, /aria-label="Chat options for \$\{escapeHtml\(chatLabel\)\}"[^>]*aria-haspopup="menu"[^>]*aria-controls="chat-menu"[^>]*aria-expanded="false"[^>]*class="chat-dots"/);
   assert.match(workspaceHtml, /<div id="chat-menu" class="hidden" role="menu" aria-label="Chat options" aria-hidden="true"><\/div>/);
 });
 
@@ -40,26 +40,25 @@ test('Task 169 keeps the signed-in Sign out sidebar control an explicit non-subm
 });
 
 test('Task 170 keeps the Credit sidebar control an explicit non-submit button', () => {
-  assert.match(workspaceHtml, /<button type="button" onclick="openUsage\(\)" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-card"\/><\/svg><\/span>Credit<\/button>/);
+  assert.match(workspaceHtml, /<button type="button" onclick="openUsage\(\)" class="side-act side-act-key"[^>]*aria-label="Credit"[^>]*>[\s\S]*?Credit<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="openUsage\(\)" class="side-act side-act-key">/);
 });
 
 test('Task 171 keeps the Plans sidebar control an explicit non-submit button', () => {
-  assert.match(workspaceHtml, /<button type="button" onclick="openPlans\(\)" class="side-act side-act-key"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"\/><\/svg><\/span>Plans<\/button>/);
+  assert.match(workspaceHtml, /<button type="button" onclick="openPlans\(\)" class="side-act side-act-key"[^>]*aria-label="Plans"[^>]*>[\s\S]*?Plans<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="openPlans\(\)" class="side-act side-act-key">/);
 });
 
 test('Task 172 keeps the workspace dark-only with no theme toggle or automatic light scheduling', () => {
   assert.doesNotMatch(workspaceHtml, /top-theme-toggle|top-theme-label|seg-dark|seg-light/);
   assert.doesNotMatch(workspaceHtml, /function startAutomaticTheme\(/);
-  assert.match(workspaceHtml, /chats = s\.chats;\s+setMode\('dark', 'dark-only'\);/);
-  assert.match(workspaceHtml, /document\.body\.classList\.remove\('light'\)/);
+  assert.match(workspaceHtml, /function setMode\(mode = 'dark', source = 'dark-only'\) \{\s+document\.body\.classList\.remove\('light'\);\s+document\.body\.dataset\.themeSource = 'dark-only';\s+Store\.set\(\{ mode: 'dark' \}\);/);
   assert.doesNotMatch(workspaceHtml, /id="side-theme-toggle"/);
   assert.doesNotMatch(workspaceHtml, /LIGHT_THEME_START_HOUR/);
 });
 
 test('Task 173 keeps the Settings sidebar control an explicit non-submit button', () => {
-  assert.match(workspaceHtml, /<button type="button" onclick="openSettings\(\)" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cog"\/><\/svg><\/span>Settings<\/button>/);
+  assert.match(workspaceHtml, /<button type="button" onclick="openSettings\(\)" class="side-act"[^>]*aria-label="Settings"[^>]*>[\s\S]*?Settings<\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="openSettings\(\)" class="side-act">/);
 });
 
@@ -154,8 +153,8 @@ test('workspace keeps the starter UI calm and removes redundant home guidance', 
 });
 
 test('workspace welcome state stays minimal and keeps the composer accessible', () => {
-  assert.match(workspaceHtml, /What will you <span class="greet-hi-accent">build next\?<\/span>/);
-  assert.match(workspaceHtml, /Turn your next FiveM or Roblox idea into something real — build it, fix it, and keep improving it with Stellar\./);
+  assert.match(workspaceHtml, /What can I help you with\?/);
+  assert.match(workspaceHtml, /Build something new, fix a problem, improve a project, or ask Stellar anything\./);
   assert.match(workspaceHtml, /Review generated code before using it in production\./);
   assert.match(workspaceHtml, /placeholder="Ask Stellar anything…"/);
   assert.match(workspaceHtml, /role="form" aria-label="Message composer"/);
