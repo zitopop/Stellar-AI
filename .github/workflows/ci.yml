@@ -2,11 +2,9 @@ name: Stellar AI CI
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: read
@@ -20,78 +18,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Syntax-check JavaScript
-        shell: bash
-        run: |
-          set -euo pipefail
-          files=()
-          while IFS= read -r -d '' file; do
-            files+=("$file")
-          done < <(find api lib scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 2>/dev/null || true)
-
-          for file in currency.js sw.js stellar-growth-v1.js; do
-            if [[ -f "$file" ]]; then
-              files+=("$file")
-            fi
-          done
-
-          if [[ ${#files[@]} -eq 0 ]]; then
-            echo "No JavaScript files found to check."
-            exit 1
-          fi
-
-          printf 'Checking %s JavaScript files...\n' "${#files[@]}"
-          for file in "${files[@]}"; do
-            node --check "$file"
-          done
-
-      - name: Run regression test suite
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t tests < <(find tests -maxdepth 1 -type f -name '*.test.mjs' | sort)
-          if [[ ${#tests[@]} -eq 0 ]]; then
-            echo "No regression tests found."
-            exit 1
-          fi
-          printf 'Running %s regression tests...\n' "${#tests[@]}"
-          for test_file in "${tests[@]}"; do
-            echo "::group::${test_file}"
-            if ! output=$(node --test "$test_file" 2>&1); then
-              echo "$output"
-              echo "::error file=${test_file}::Regression test failed in ${test_file}"
-              echo "::endgroup::"
-              exit 1
-            fi
-            echo "$output" | tail -20
-            echo "::endgroup::"
-          done
-
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Source syntax and regression tests
+        run: npm run check
       - name: Validate critical public files
         shell: bash
         run: |
           set -euo pipefail
-          required=(
-            index.html
-            app.html
-            blog.html
-            manifest.json
-            sitemap.xml
-            vercel.json
-            README.md
-          )
+          required=(index.html app.html support.html blog.html manifest.json sitemap.xml vercel.json README.md)
           for file in "${required[@]}"; do
             test -s "$file" || { echo "Missing or empty critical file: $file"; exit 1; }
           done
-
       - name: Check for obvious committed secrets
         shell: bash
         run: |
