@@ -66,8 +66,8 @@ test('directory-facing metadata describes current Stellar features without claim
 
 test('Free users receive one dismissible post-generation Starter offer', () => {
   assert.match(appHtml, /id="free-upgrade-nudge" hidden role="status" aria-live="polite"/);
-  assert.match(appHtml, /You just built this\.<\/strong> Unlock 3× more usage and longer scripts with Starter for £8\/mo\./);
-  assert.match(appHtml, /Unlock Starter/);
+  assert.match(appHtml, /Your build is ready\.<\/strong> Starter gives you 120 requests\/hour and longer generations for £8\/mo\. Your current chat and files stay here\./);
+  assert.match(appHtml, /Compare plans/);
   assert.match(appHtml, /function maybeShowFreeUpgradeNudge\(\)/);
   assert.match(appHtml, /stellar_post_generation_upgrade_shown/);
   assert.match(appHtml, /setGenerationStatus\('Generation completed\.'\);\s+maybeShowFreeUpgradeNudge\(\);/);
