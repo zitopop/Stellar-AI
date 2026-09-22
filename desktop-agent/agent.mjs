@@ -15,6 +15,16 @@ function isBlockedPath(value){
   const parts=String(value||'').replace(/\\/g,'/').toLowerCase().split('/').filter(Boolean);
   return parts.some(part=>BLOCKED_PATH_NAMES.has(part)||part==='.env'||part.startsWith('.env.'));
 }
+function redactSensitive(value){
+  let s=String(value??'');
+  s=s.replace(/-----BEGIN [^-\r\n]*PRIVATE KEY-----[\s\S]*?-----END [^-\r\n]*PRIVATE KEY-----/gi,'[REDACTED PRIVATE KEY]');
+  s=s.replace(/\b(sk-(?:proj-)?[A-Za-z0-9_-]{16,}|sk_(?:live|test)_[A-Za-z0-9]{16,}|rk_(?:live|test)_[A-Za-z0-9]{16,}|whsec_[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{12,}|AKIA[A-Z0-9]{16})\b/g,'[REDACTED TOKEN]');
+  s=s.replace(/\bBearer\s+[A-Za-z0-9._~+\/-]{16,}/gi,'Bearer [REDACTED]');
+  s=s.replace(/\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g,'[REDACTED JWT]');
+  s=s.replace(/\b((?:api[_-]?key|token|secret|password|passwd|pwd|private[_-]?key|client[_-]?secret|auth[_-]?token)\s*[:=]\s*)([^\s,;\r\n"']{6,})/gi,'$1[REDACTED]');
+  s=s.replace(/(https?:\/\/[^\s:@/]+:)([^\s@/]+)(@)/gi,'$1[REDACTED]$3');
+  return s;
+}
 function isBlockedCommand(value){
   const c=String(value||'').toLowerCase().replace(/\s+/g,' ').trim();
   if(BLOCKED_COMMAND_PARTS.some(part=>c.includes(part)))return true;
@@ -24,6 +34,7 @@ function isBlockedCommand(value){
   if((c.includes('del ')||c.includes('rd ')||c.includes('rmdir '))&&(c.includes('/s')||c.includes('/q')))return true;
   if(c.includes('rm -rf'))return true;
   if(c.includes('powershell')&&(c.includes('-enc ')||c.includes('-encodedcommand')))return true;
+  if(/(?:\bprintenv\b|\bgh\s+auth\s+token\b|\bgit\s+credential\b|\bvercel\s+env\s+pull\b|\bget-childitem\s+env:|\bgci\s+env:|\bdir\s+env:|\bcmd(?:\.exe)?\s+\/c\s+set\b)/i.test(c))return true;
   return false;
 }
 const ALLOW_SHELL=String(process.env.STELLAR_DESKTOP_ALLOW_SHELL||'').toLowerCase()==='1'
@@ -145,7 +156,10 @@ async function execute(config,task){
   }
 }
 async function report(config,taskId,payload){
-  try{await request('/api/desktop-agent',{action:'report',taskId,...payload},headers(config))}
+  const safePayload={...payload};
+  if('output' in safePayload)safePayload.output=redactSensitive(safePayload.output);
+  if('error' in safePayload)safePayload.error=redactSensitive(safePayload.error);
+  try{await request('/api/desktop-agent',{action:'report',taskId,...safePayload},headers(config))}
   catch(error){console.error('Could not report task result:',error.message)}
 }
 async function pair(code){
