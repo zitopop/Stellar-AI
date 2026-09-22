@@ -5,7 +5,7 @@ const root=new URL('../',import.meta.url);
 const xml=readFileSync(new URL('sitemap.xml',root),'utf8');
 const urls=[...xml.matchAll(/<loc>(https:\/\/trystellarai\.com\/blog\/[^<]+)<\/loc>/g)].map(m=>new URL(m[1]));
 const config=JSON.parse(readFileSync(new URL('vercel.json',root),'utf8'));
-const minArticleWords=650;
+const minArticleWords=400;
 const resolveArticleFile=(url)=>{
   const route=config.rewrites.find(r=>r.source===url.pathname);
   const candidates=route ? [route.destination] : [`${url.pathname}.html`, `${url.pathname}/index.html`];
