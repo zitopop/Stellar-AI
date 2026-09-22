@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const bridge = await readFile(new URL('../lib/roblox-studio-agent-handler.js', import.meta.url), 'utf8');
 const planner = await readFile(new URL('../lib/roblox-studio-plan-handler.js', import.meta.url), 'utf8');
-const api = await readFile(new URL('../api/roblox-studio-agent.js', import.meta.url), 'utf8');
+const api = await readFile(new URL('../api/desktop-agent.js', import.meta.url), 'utf8');
 const plugin = await readFile(new URL('../roblox-studio-plugin/StellarAIPlugin.server.lua', import.meta.url), 'utf8');
 const page = await readFile(new URL('../roblox-studio.html', import.meta.url), 'utf8');
 const vercel = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
@@ -35,6 +35,7 @@ test('Studio plugin only exposes allowed services and creates undo waypoints', (
 });
 
 test('Roblox Studio workspace is routed privately and uses the agent API', () => {
+  assert.match(api, /surface==='roblox-studio'/);
   assert.match(api, /robloxStudioPlanHandler/);
   assert.match(page, /Build Roblox games/);
   assert.match(page, /Inspection complete · building grounded implementation plan/);
