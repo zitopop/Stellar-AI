@@ -11938,6 +11938,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
     let lastMadeCode = '';
     let ownerDialogTrigger = null;
+    let ownerDialogRestoreSettings = false;
     function closeOtherDialogs(next) {
       const dialogs = [
         ['plans', 'plans-modal', closePlans],
@@ -11953,6 +11954,8 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     }
     async function openOwner() {
       if (!isOwner()) return;
+      const active = document.activeElement;
+      const openedFromSettings = active?.id === 'set-owner-row' && !document.getElementById('settings-modal')?.classList.contains('hidden');
       try {
         const { response, data } = await ownerRequest('/api/broadcast', { action: 'verifyOwner' });
         if (!response.ok || data?.owner !== true) {
@@ -11965,9 +11968,9 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
         showStellarNotice('Owner access could not be verified.', 'error');
         return;
       }
-      closeOtherDialogs('owner');
-      const active = document.activeElement;
       ownerDialogTrigger = active instanceof HTMLElement && active !== document.body ? active : null;
+      ownerDialogRestoreSettings = openedFromSettings;
+      closeOtherDialogs('owner');
       document.getElementById('own-msg').textContent = '';
       document.getElementById('own-credit').value = '';
       document.getElementById('code-out').classList.add('hidden');
@@ -11980,7 +11983,14 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     function closeOwner() {
       document.getElementById('owner-modal').classList.add('hidden');
       const trigger = ownerDialogTrigger;
+      const restoreSettings = ownerDialogRestoreSettings;
       ownerDialogTrigger = null;
+      ownerDialogRestoreSettings = false;
+      if (restoreSettings) {
+        openSettings();
+        setTimeout(() => document.getElementById('set-owner-row')?.focus({ preventScroll: true }), 0);
+        return;
+      }
       if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
     }
     function trapOwnerDialogFocus(event) {
@@ -12666,19 +12676,32 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       else newChat();
     }
     function repairDuplicateChats() {
-      const saved = Store.get().chats || [];
+      const saved = Array.isArray(Store.get().chats) ? Store.get().chats : [];
       const byId = new Map();
       let changed = false;
       for (const chat of saved) {
+        if (!chat || !chat.id) continue;
+        const candidateMessages = Array.isArray(chat.messages) ? chat.messages : [];
         if (!byId.has(chat.id)) {
-          byId.set(chat.id, { ...chat, messages: [...chat.messages] });
+          byId.set(chat.id, { ...chat, messages: [...candidateMessages] });
           continue;
         }
+
         changed = true;
         const existing = byId.get(chat.id);
+        const existingMessages = Array.isArray(existing.messages) ? existing.messages : [];
+
+        // Prefer metadata from the richer record, while keeping user choices
+        // such as pinning if either duplicate had them.
+        if (candidateMessages.length > existingMessages.length) {
+          existing.name = chat.name || existing.name;
+        }
+        existing.pinned = Boolean(existing.pinned || chat.pinned);
+
         const seen = new Set();
-        existing.messages = [...existing.messages, ...chat.messages].filter(message => {
-          // Only remove exact copies with the same recorded time. Repeated user text is valid.
+        existing.messages = [...existingMessages, ...candidateMessages].filter(message => {
+          if (!message || typeof message !== 'object') return false;
+          // Only remove exact timestamped copies. Repeating the same words later is valid.
           if (!Number.isFinite(message.t)) return true;
           const key = JSON.stringify([message.role, message.content, message.t]);
           if (seen.has(key)) return false;
@@ -12686,6 +12709,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
           return true;
         }).sort((a, b) => Number.isFinite(a.t) && Number.isFinite(b.t) ? a.t - b.t : 0);
       }
+
       if (changed) {
         chats = [...byId.values()];
         Store.set({ chats });
