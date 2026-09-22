@@ -49,3 +49,14 @@ test('Roblox Studio workspace is routed privately and uses the agent API', () =>
   const privateHeader = vercel.headers.find(x => x.source === '/roblox-studio');
   assert.equal(privateHeader?.headers?.some(h => h.key === 'Cache-Control' && h.value === 'private, no-store'), true);
 });
+
+
+test('Roblox Studio UI explains pairing and map presets clearly', () => {
+  assert.match(page, /How pairing works/);
+  assert.match(page, /copyPairBtn/);
+  assert.match(page, /quickCard/);
+  assert.match(page, /Obby map/);
+  assert.match(page, /Simulator lobby/);
+  assert.match(page, /Roleplay town/);
+  assert.match(page, /Build Roblox games<br>for real/);
+});
