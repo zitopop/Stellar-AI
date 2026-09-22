@@ -68,6 +68,7 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
 .more-card{border-style:dashed;justify-content:center;align-items:center;text-align:center;background:rgba(12,16,24,.45)}.more-plus{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;margin-bottom:10px;background:#171e2d;border:1px solid var(--line);font-size:24px;color:#aeb5c5}.more-card strong{font-size:12px}.more-card p{margin:6px 0 14px;color:var(--muted);font-size:10.5px}
 .notice{min-height:20px;margin-top:14px;color:var(--muted);font-size:11px}.notice.good{color:var(--good)}.notice.bad{color:var(--bad)}
 .empty{grid-column:1/-1;padding:34px;border:1px dashed var(--line);border-radius:13px;color:var(--muted);text-align:center}
+.plugin-modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,8,.72);backdrop-filter:blur(10px)}.plugin-modal.open{display:flex}.plugin-dialog{width:min(520px,100%);max-height:min(82dvh,720px);overflow:auto;border:1px solid var(--line-strong);border-radius:16px;background:#111722;box-shadow:0 24px 80px rgba(0,0,0,.45);padding:18px}.plugin-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.plugin-dialog h2{margin:0;font-size:19px}.plugin-dialog p{margin:6px 0 14px;color:var(--muted);font-size:12px}.modal-close{width:40px;height:40px;border:1px solid var(--line);border-radius:10px;background:#171d29;color:#dfe3ea;font-size:20px;cursor:pointer}.token-input{width:100%;min-height:46px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#090d14;color:#fff;outline:none}.token-input:focus{border-color:rgba(118,104,255,.5)}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:13px;flex-wrap:wrap}.resource-list{display:grid;gap:8px}.resource{display:block;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#0d121a;text-decoration:none}.resource:hover{border-color:rgba(118,104,255,.35)}.resource strong{display:block;font-size:11.5px}.resource span{display:block;margin-top:3px;color:var(--muted);font-size:10px}.secret-note{margin-top:10px;padding:10px;border:1px solid rgba(99,230,176,.16);border-radius:10px;background:rgba(99,230,176,.05);color:#b7d9cb;font-size:10px}
 @media(max-width:1180px){.plugin-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:930px){.shell{grid-template-columns:210px minmax(0,1fr)}.main{padding-left:20px;padding-right:20px}.plugin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.benefits{grid-template-columns:1fr}.benefit{min-height:0}}
 @media(max-width:700px){
@@ -137,10 +138,22 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
 </main>
 </div>
 
+<div id="plugin-modal" class="plugin-modal" aria-hidden="true">
+  <div class="plugin-dialog" role="dialog" aria-modal="true" aria-labelledby="plugin-modal-title">
+    <div class="plugin-dialog-head"><div><h2 id="plugin-modal-title">Connect plugin</h2><p id="plugin-modal-copy"></p></div><button id="plugin-modal-close" class="modal-close" type="button" aria-label="Close">×</button></div>
+    <div id="plugin-connect-form">
+      <input id="plugin-token" class="token-input" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste token">
+      <div class="secret-note">The token is sent over HTTPS and encrypted before server-side storage. It is never saved in browser storage or shown back to you.</div>
+      <div class="modal-actions"><button id="plugin-connect-cancel" class="btn" type="button">Cancel</button><button id="plugin-connect-submit" class="btn" type="button">Connect read-only</button></div>
+    </div>
+    <div id="plugin-inspect-view" hidden><div id="plugin-resource-list" class="resource-list"></div><div class="modal-actions"><button id="plugin-disconnect" class="btn" type="button">Disconnect</button><button id="plugin-inspect-close" class="btn" type="button">Close</button></div></div>
+  </div>
+</div>
+
 <script>
 (()=>{
   const $=id=>document.getElementById(id);
-  let token='',plugins=[],filter='all',owner=false,connection={};
+  let token='',plugins=[],filter='all',owner=false,connection={},modalPluginId='';
   try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
   const headers=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
   const logos={
@@ -170,36 +183,57 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     }
     await Promise.all(tasks);
   }
+  function isTokenPlugin(p){return p?.connection==='token'}
   function state(p){
     if(p.status==='coming_soon')return {label:'Coming soon',className:'soon'};
     if(!p.availableToUser)return {label:'Unavailable',className:''};
+    if(isTokenPlugin(p)&&!p.credentialStorageReady)return {label:'Setup required',className:'soon'};
+    if(isTokenPlugin(p)&&p.connected)return {label:p.enabled?'Connected':'Disabled',className:p.enabled?'connected':''};
+    if(isTokenPlugin(p))return {label:'Ready to connect',className:''};
     if(connection[p.id]?.paired)return {label:connection[p.id]?.online?'Connected':'Paired',className:'connected'};
     return {label:p.enabled?'Enabled':'Disabled',className:p.enabled?'connected':''};
   }
   function passes(p){
     const q=$('search').value.trim().toLowerCase();
     if(q&&!((p.name+' '+p.description+' '+p.category).toLowerCase().includes(q)))return false;
-    if(filter==='connected')return p.status!=='coming_soon'&&p.availableToUser&&p.enabled;
+    if(filter==='connected')return p.status!=='coming_soon'&&p.availableToUser&&(isTokenPlugin(p)?p.connected&&p.enabled:p.enabled);
     if(filter==='coming_soon')return p.status==='coming_soon';
     if(filter==='developer')return developerIds.has(p.id);
-    if(filter==='disabled')return p.status!=='coming_soon'&&p.availableToUser&&!p.enabled;
+    if(filter==='disabled')return p.status!=='coming_soon'&&p.availableToUser&&(isTokenPlugin(p)?p.connected&&!p.enabled:!p.enabled);
     return true;
   }
   function permissionRows(p){
     return (p.permissions||[]).map(permission=>{
-      const allowed=p.status!=='coming_soon'&&p.enabled&&p.availableToUser;
+      const allowed=p.status!=='coming_soon'&&p.enabled&&p.availableToUser&&(!isTokenPlugin(p)||p.connected);
       return '<div class="perm '+(allowed?'allowed':'')+'"><span class="check"></span><span>'+escapeHtml(permission.label)+(permission.risk==='high'?' (requires approval)':'')+'</span></div>';
     }).join('');
   }
   function pluginCard(p){
     const [logo,logoClass]=logos[p.id]||['✦',''];
     const st=state(p);
-    const open=p.route&&p.availableToUser?'<a class="btn" href="'+escapeHtml(p.route)+'">Manage</a>':'';
-    const unavailable=p.status==='coming_soon'?'<button class="btn" type="button" disabled>Coming soon</button>':'';
-    const toggle=p.status!=='coming_soon'&&p.availableToUser
-      ? '<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>'
-      : '<button type="button" class="toggle" disabled aria-pressed="false" aria-label="'+escapeHtml(st.label)+'"></button>';
-    return '<article class="card"><div class="card-head"><div class="plugin-logo '+logoClass+'">'+escapeHtml(logo)+'</div><div class="card-title"><div class="name-row"><span class="name">'+escapeHtml(p.name)+'</span><span class="badge '+st.className+'">'+escapeHtml(st.label)+'</span></div></div></div><div class="desc">'+escapeHtml(p.description)+'</div><div class="permissions">'+permissionRows(p)+'</div><div class="card-actions">'+open+unavailable+toggle+'</div></article>';
+    let actions='';
+    let toggle='';
+    if(p.status==='coming_soon'){
+      actions='<button class="btn" type="button" disabled>Coming soon</button>';
+      toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Coming soon"></button>';
+    }else if(isTokenPlugin(p)){
+      if(!p.credentialStorageReady){
+        actions='<button class="btn" type="button" disabled>Server setup needed</button>';
+        toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Setup required"></button>';
+      }else if(p.connected){
+        actions='<button class="btn" type="button" data-inspect="'+escapeHtml(p.id)+'">Manage</button>';
+        toggle='<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>';
+      }else{
+        actions='<button class="btn" type="button" data-connect="'+escapeHtml(p.id)+'">Connect</button>';
+        toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Connect '+escapeHtml(p.name)+' first"></button>';
+      }
+    }else{
+      actions=p.route&&p.availableToUser?'<a class="btn" href="'+escapeHtml(p.route)+'">Manage</a>':'';
+      toggle=p.availableToUser
+        ? '<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>'
+        : '<button type="button" class="toggle" disabled aria-pressed="false" aria-label="'+escapeHtml(st.label)+'"></button>';
+    }
+    return '<article class="card"><div class="card-head"><div class="plugin-logo '+logoClass+'">'+escapeHtml(logo)+'</div><div class="card-title"><div class="name-row"><span class="name">'+escapeHtml(p.name)+'</span><span class="badge '+st.className+'">'+escapeHtml(st.label)+'</span></div></div></div><div class="desc">'+escapeHtml(p.description)+'</div><div class="permissions">'+permissionRows(p)+'</div><div class="card-actions">'+actions+toggle+'</div></article>';
   }
   function moreCard(){
     return '<article class="card more-card"><div class="more-plus">＋</div><strong>More plugins coming soon</strong><p>New integrations will appear here as they become genuinely available.</p><a class="btn" href="/support">Request a plugin</a></article>';
@@ -208,6 +242,8 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     const list=plugins.filter(p=>passes(p));
     $('plugin-grid').innerHTML=(list.length?list.map(pluginCard).join(''):'<div class="empty">No plugins match this filter.</div>')+(filter==='all'?moreCard():'');
     document.querySelectorAll('[data-toggle]').forEach(button=>button.addEventListener('click',()=>togglePlugin(button.dataset.toggle)));
+    document.querySelectorAll('[data-connect]').forEach(button=>button.addEventListener('click',()=>openConnect(button.dataset.connect)));
+    document.querySelectorAll('[data-inspect]').forEach(button=>button.addEventListener('click',()=>openInspect(button.dataset.inspect)));
   }
   async function load(){
     if(!token){$('plugin-grid').innerHTML='<div class="empty">Sign in to Stellar AI to manage plugins.</div>';setNotice('Sign in is required.','bad');return}
@@ -229,6 +265,72 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
       setNotice(error.message,'bad');
     }
   }
+  function closePluginModal(){
+    modalPluginId='';
+    $('plugin-token').value='';
+    $('plugin-modal').classList.remove('open');
+    $('plugin-modal').setAttribute('aria-hidden','true');
+    $('plugin-connect-form').hidden=false;
+    $('plugin-inspect-view').hidden=true;
+    $('plugin-resource-list').innerHTML='';
+  }
+  function openConnect(id){
+    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+    modalPluginId=id;
+    $('plugin-modal-title').textContent='Connect '+plugin.name;
+    $('plugin-modal-copy').textContent=id==='github'
+      ? 'Use a GitHub personal access token with only the repository read access you want Stellar to inspect.'
+      : 'Use a Vercel access token. This first release only reads project and deployment metadata.';
+    $('plugin-token').placeholder=id==='github'?'GitHub token':'Vercel access token';
+    $('plugin-connect-form').hidden=false;
+    $('plugin-inspect-view').hidden=true;
+    $('plugin-modal').classList.add('open');
+    $('plugin-modal').setAttribute('aria-hidden','false');
+    setTimeout(()=>$('plugin-token').focus(),0);
+  }
+  async function connectCurrentPlugin(){
+    const id=modalPluginId,plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+    const raw=$('plugin-token').value.trim();if(!raw){setNotice('Enter a token first.','bad');return}
+    $('plugin-connect-submit').disabled=true;
+    try{
+      const result=await api('connectToken',{id,token:raw});
+      const index=plugins.findIndex(p=>p.id===id);if(index>=0)plugins[index]=result.plugin;
+      $('plugin-token').value='';
+      closePluginModal();render();
+      setNotice(plugin.name+' connected in read-only mode.','good');
+    }catch(error){setNotice(error.message,'bad')}
+    finally{$('plugin-connect-submit').disabled=false}
+  }
+  async function openInspect(id){
+    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+    modalPluginId=id;
+    $('plugin-modal-title').textContent=plugin.name;
+    $('plugin-modal-copy').textContent='Connected in read-only mode. Stellar can inspect the resources below but cannot modify them from this plugin yet.';
+    $('plugin-connect-form').hidden=true;
+    $('plugin-inspect-view').hidden=false;
+    $('plugin-resource-list').innerHTML='<div class="empty">Loading…</div>';
+    $('plugin-modal').classList.add('open');
+    $('plugin-modal').setAttribute('aria-hidden','false');
+    try{
+      const result=await api('inspect',{id});
+      const items=Array.isArray(result.items)?result.items:[];
+      $('plugin-resource-list').innerHTML=items.length?items.map(item=>{
+        const body='<strong>'+escapeHtml(item.name)+'</strong><span>'+escapeHtml(item.detail||'')+'</span>';
+        return item.url?'<a class="resource" href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+body+'</a>':'<div class="resource">'+body+'</div>';
+      }).join(''):'<div class="empty">No resources were returned for this account.</div>';
+      $('plugin-modal-copy').textContent=result.title||$('plugin-modal-copy').textContent;
+    }catch(error){$('plugin-resource-list').innerHTML='<div class="empty">'+escapeHtml(error.message)+'</div>'}
+  }
+  async function disconnectCurrentPlugin(){
+    const id=modalPluginId,plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+    if(!confirm('Disconnect '+plugin.name+' from Stellar AI?'))return;
+    try{
+      const result=await api('disconnect',{id});
+      const index=plugins.findIndex(p=>p.id===id);if(index>=0)plugins[index]=result.plugin;
+      closePluginModal();render();setNotice(plugin.name+' disconnected.','good');
+    }catch(error){setNotice(error.message,'bad')}
+  }
+
   async function togglePlugin(id){
     const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
     const next=!plugin.enabled;
@@ -250,7 +352,14 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     render();
   }));
   $('search').addEventListener('input',render);
-  $('learn-btn').addEventListener('click',()=>{setNotice('Enable only the plugins you need. Read access stays separate from write, send, deploy and other high-impact actions.','good')});
+  $('learn-btn').addEventListener('click',()=>{setNotice('Enable only the plugins you need. GitHub and Vercel are read-only in this release; other high-impact actions stay unavailable until separately implemented and approved.','good')});
+  $('plugin-modal-close').addEventListener('click',closePluginModal);
+  $('plugin-connect-cancel').addEventListener('click',closePluginModal);
+  $('plugin-inspect-close').addEventListener('click',closePluginModal);
+  $('plugin-connect-submit').addEventListener('click',connectCurrentPlugin);
+  $('plugin-disconnect').addEventListener('click',disconnectCurrentPlugin);
+  $('plugin-modal').addEventListener('click',event=>{if(event.target===$('plugin-modal'))closePluginModal()});
+  addEventListener('keydown',event=>{if(event.key==='Escape'&&$('plugin-modal').classList.contains('open'))closePluginModal()});
   load();
 })();
 </script>
