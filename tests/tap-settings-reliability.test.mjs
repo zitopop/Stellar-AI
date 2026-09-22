@@ -24,15 +24,17 @@ test('all modal overlays share reliable outside-tap closing', () => {
 });
 test('Plans Settings Usage and Owner stay mutually exclusive', () => {
   assert.match(app, /function closeOtherDialogs\(next\)/);
-  for (const pair of [
+  for (const [name, expected] of [
     ['openPlans', "closeOtherDialogs('plans')"],
     ['openSettings', "closeOtherDialogs('settings')"],
     ['openUsage', "closeOtherDialogs('usage')"],
     ['openOwner', "closeOtherDialogs('owner')"],
   ]) {
-    const index = app.indexOf(`function ${pair[0]}`);
-    assert.ok(index >= 0);
-    assert.ok(app.slice(index, index + 500).includes(pair[1]));
+    const start = app.indexOf(`function ${name}`);
+    assert.ok(start >= 0);
+    const nextFunction = app.indexOf('\n    function ', start + 12);
+    const body = app.slice(start, nextFunction > start ? nextFunction : start + 4000);
+    assert.ok(body.includes(expected), `${name} must close competing dialogs`);
   }
 });
 
