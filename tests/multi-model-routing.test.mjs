@@ -1470,7 +1470,7 @@ test('system prompt keeps follow-up context and uses safe smart defaults', () =>
 });
 
 test('cross-chat memory is bounded and treated as background context', () => {
-  const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', '', 'Chat: Old project\nUser: keep the purple layout');
+  const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', '', 'Chat: Old project\nUser: keep the gold layout');
   assert.match(prompt, /CROSS-CHAT MEMORY/);
   assert.match(prompt, /Old project/);
   assert.match(prompt, /Prefer newer explicit instructions/);

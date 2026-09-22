@@ -13,9 +13,9 @@ test('app loads the landing-page visual system after the legacy layers', () => {
 
 test('landing app theme reuses the public homepage palette and hero treatment', () => {
   assert.match(css, /--landing-bg:#09090e/);
-  assert.match(css, /--landing-purple:#b5a0f7/);
+  assert.match(css, /--landing-gold:#d4af37/);
   assert.match(css, /\.landing-style-home \.greet-eyebrow\{/);
-  assert.match(css, /linear-gradient\(110deg,#e2d4ff 10%,#b6a0f0 53%,#9c7ae0\)/);
+  assert.match(css, /linear-gradient\(110deg,#fff3c4 10%,#d4af37 53%,#8f6b1e\)/);
   assert.match(css, /#welcome-starters-heading,[\s\S]*#suggestion-chips[\s\S]*display:none!important/);
 });
 
