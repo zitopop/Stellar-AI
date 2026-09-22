@@ -55,11 +55,11 @@ test('app resumes the active conversation and keeps New build as the fresh-home 
 
 test('premium home stays minimal and keeps the composer at the true viewport centre', () => {
   assert.match(appHtml, /<style id="stellar-home-premium-polish-v1">[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
-  assert.match(appHtml, /<span class="greet-eyebrow-label">Stellar AI workspace<\/span>/);
-  assert.ok(appHtml.includes('Turn your next FiveM or Roblox idea into something real — build it, fix it, and keep improving it with Stellar.'));
+  assert.match(appHtml, /<span class="greet-eyebrow-label">Stellar AI<\/span>/);
+  assert.ok(appHtml.includes('What can I help you with?'));
+  assert.ok(appHtml.includes('Build something new, fix a problem, improve a project, or ask Stellar anything.'));
   assert.match(appHtml, /placeholder="Ask Stellar anything…"/);
 });
-
 
 test('home layout v2 is the final cascade layer and preserves centered composition', () => {
   assert.match(appHtml, /<style id="stellar-home-layout-v2">[\s\S]*#main-col>\.input-area\.glass\{[\s\S]*top:50dvh!important;[\s\S]*left:50%!important;[\s\S]*transform:translate\(-50%,-50%\)!important;/);
