@@ -56,9 +56,9 @@ node agent.mjs pair YOUR_CODE
 <div class="small" id="safetyState" style="margin-top:10px">Safeguards loading…</div></div>
 </div></section>
 
-<section class="card" style="margin-top:18px"><h2>3. Tell Stellar what to do</h2><p>Describe a task naturally. Stellar builds a local action plan first; risky steps must be checked before they can be queued.</p>
+<section class="card" style="margin-top:18px"><h2>3. Tell Stellar what to build</h2><p>Describe a coding task naturally. Stellar inspects the repository first, then builds an implementation, test and diff-review plan. Write and terminal steps still require your approval.</p>
 <textarea id="prompt" placeholder="Example: Look through my Stellar project, find why the settings panel is overflowing on mobile, fix the relevant CSS, and run the tests."></textarea>
-<div class="actions" style="margin-top:12px"><button class="btn primary" id="planBtn">Build PC plan</button><button class="btn" id="refreshBtn">Refresh PC status</button></div>
+<div class="actions" style="margin-top:12px"><button class="btn primary" id="planBtn">Build coding plan</button><button class="btn" id="refreshBtn">Refresh PC status</button></div>
 <div id="planSummary" style="margin-top:16px;font-weight:750"></div><div class="plan" id="plan"></div>
 <div class="actions" id="runActions" style="margin-top:14px" hidden><button class="btn primary" id="runBtn">Run selected actions</button></div></section>
 
@@ -71,7 +71,7 @@ node agent.mjs pair YOUR_CODE
 <script>
 (()=>{
   const $=id=>document.getElementById(id);
-  let token='',currentPlan=null,statusTimer=null;
+  let token='',currentPlan=null,currentPrompt='',statusTimer=null;
   try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
   const auth=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
   function log(message,cls=''){const line=document.createElement('div');if(cls)line.className=cls;line.textContent='['+new Date().toLocaleTimeString()+'] '+message;$('log').appendChild(line);$('log').scrollTop=$('log').scrollHeight}
@@ -129,23 +129,28 @@ node agent.mjs pair YOUR_CODE
       (d.events||[]).slice(0,40).reverse().forEach(e=>log((e.event||'event')+(e.type?' · '+e.type:'')+(e.taskId?' · '+e.taskId:''),e.event==='emergency_stop'?'warn':''));
     }catch(e){log(e.message,'bad')}
   };
+  function renderPlan(plan){
+    currentPlan=plan;$('plan').innerHTML='';
+    const phase=plan?.phase==='implement'?'Implementation plan':'Inspection plan';
+    $('planSummary').textContent=phase+' · '+(plan?.summary||'Review these actions:');
+    (plan?.actions||[]).forEach((action,i)=>{
+      const row=document.createElement('label');row.className='step';
+      const check=document.createElement('input');check.type='checkbox';check.checked=!action.requiresApproval;check.dataset.index=i;
+      const body=document.createElement('div');body.innerHTML='<div class="type"></div><div class="reason"></div><div class="args"></div>';
+      body.querySelector('.type').textContent=(i+1)+'. '+action.type+(action.requiresApproval?' · APPROVAL REQUIRED':' · safe inspection');
+      body.querySelector('.reason').textContent=action.reason||'';
+      body.querySelector('.args').textContent=JSON.stringify(action.args,null,2);
+      row.append(check,body);$('plan').appendChild(row);
+    });
+    $('runActions').hidden=!(plan?.actions||[]).length;
+  }
   $('planBtn').onclick=async()=>{
     const prompt=$('prompt').value.trim();if(!prompt)return;
-    $('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Planning…';$('runActions').hidden=true;
+    currentPrompt=prompt;$('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Planning repository inspection…';$('runActions').hidden=true;
     try{
       const r=await fetch('/api/desktop-plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt})});
       const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build plan.');
-      currentPlan=d.plan;$('planSummary').textContent=currentPlan.summary||'Review these actions:';
-      currentPlan.actions.forEach((action,i)=>{
-        const row=document.createElement('label');row.className='step';
-        const check=document.createElement('input');check.type='checkbox';check.checked=!action.requiresApproval;check.dataset.index=i;
-        const body=document.createElement('div');body.innerHTML='<div class="type"></div><div class="reason"></div><div class="args"></div>';
-        body.querySelector('.type').textContent=(i+1)+'. '+action.type+(action.requiresApproval?' · APPROVAL REQUIRED':' · read-only');
-        body.querySelector('.reason').textContent=action.reason||'';
-        body.querySelector('.args').textContent=JSON.stringify(action.args,null,2);
-        row.append(check,body);$('plan').appendChild(row);
-      });
-      $('runActions').hidden=!currentPlan.actions.length;log('PC action plan created. Review approvals before running.','ok');
+      renderPlan(d.plan);log('Repository inspection plan created. Run the safe inspection steps to let Stellar ground the implementation in your actual code.','ok');
     }catch(e){$('planSummary').textContent='';log(e.message,'bad')}finally{$('planBtn').disabled=false}
   };
   async function waitTask(taskId,label){
@@ -155,23 +160,39 @@ node agent.mjs pair YOUR_CODE
       const d=await r.json().catch(()=>({}));
       if(!r.ok)continue;
       const state=d.task?.status;
-      if(state==='completed'){log(label+' completed: '+(d.task.result?.output||'done'),'ok');return true}
-      if(state==='failed'){log(label+' failed: '+(d.task.result?.error||'unknown error'),'bad');return false}
+      if(state==='completed'){
+        const output=d.task.result?.output||'done';log(label+' completed: '+output,'ok');return {ok:true,output};
+      }
+      if(state==='failed'){
+        const error=d.task.result?.error||'unknown error';log(label+' failed: '+error,'bad');return {ok:false,error};
+      }
     }
-    log(label+' is still running or the PC went offline.','warn');return false;
+    log(label+' is still running or the PC went offline.','warn');return {ok:false,error:'timeout'};
   }
   $('runBtn').onclick=async()=>{
     if(!currentPlan)return;
+    const planAtStart=currentPlan;
     const selected=[...$('plan').querySelectorAll('input[type=checkbox]:checked')].map(x=>Number(x.dataset.index));
     if(!selected.length){log('Select at least one action.','warn');return}
-    const s=await status().catch(()=>null);if(!s?.online){log('Start the Windows companion before running the plan.','warn');return}
-    $('runBtn').disabled=true;
+    const state=await status().catch(()=>null);if(!state?.online){log('Start the Windows companion before running the plan.','warn');return}
+    $('runBtn').disabled=true;const observations=[];let allOk=true;
     try{
       for(const i of selected){
-        const action=currentPlan.actions[i];const label=(i+1)+'. '+action.type;
+        const action=planAtStart.actions[i];const label=(i+1)+'. '+action.type;
         log('Queueing '+label+'…');
         const d=await api('enqueue',{task:{type:action.type,args:action.args,approved:true}});
-        const ok=await waitTask(d.taskId,label);if(!ok)break;
+        const result=await waitTask(d.taskId,label);
+        if(!result.ok){allOk=false;break}
+        observations.push(label+'\n'+String(result.output||'').slice(0,12000));
+      }
+      if(allOk&&planAtStart.phase==='inspect'&&observations.length){
+        $('planSummary').textContent='Inspection complete · building grounded implementation plan…';
+        log('Inspection complete. Stellar is now planning the implementation from the actual repository evidence.','ok');
+        const evidence=observations.join('\n\n').slice(0,45000);
+        const r=await fetch('/api/desktop-plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt:currentPrompt||$('prompt').value.trim(),observations:evidence})});
+        const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build implementation plan.');
+        renderPlan(d.plan);
+        log(d.plan?.phase==='implement'?'Grounded implementation plan ready. Review and approve write/test steps.':'More repository inspection is needed before Stellar will edit.','ok');
       }
     }catch(e){log(e.message,'bad')}finally{$('runBtn').disabled=false;status().catch(()=>{})}
   };
