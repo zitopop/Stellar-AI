@@ -219,3 +219,25 @@ pre { overflow:auto; -webkit-overflow-scrolling:touch; }
   #model-menu{position:fixed!important;left:12px!important;right:12px!important;bottom:calc(82px + env(safe-area-inset-bottom))!important;top:auto!important;width:auto!important;max-width:none!important;max-height:min(62dvh,520px)!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;z-index:1350!important;padding:8px!important;border-radius:18px!important;touch-action:pan-y!important}
   #model-menu [data-model-choice]{display:flex!important;visibility:visible!important;opacity:1!important;min-height:52px!important;width:100%!important;align-items:center!important;touch-action:manipulation!important}
 }
+
+
+/* Mobile credit checkout polish v7 — thumb-friendly, stable and safe-area aware. */
+@media (max-width:767px){
+  #topup-modal{align-items:flex-end!important;justify-content:stretch!important;padding:0!important;overscroll-behavior:contain!important}
+  #topup-modal>div,.topup-card{width:100%!important;max-width:100%!important;max-height:92dvh!important;margin:0!important;border-radius:24px 24px 0 0!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;padding-bottom:max(22px,calc(16px + env(safe-area-inset-bottom)))!important}
+  #topup-modal .topup-close{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;touch-action:manipulation!important}
+  #topup-modal .pack-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  #topup-modal .pack{min-width:0!important;min-height:92px!important;padding:13px 10px!important;touch-action:manipulation!important}
+  #topup-modal .pack-amt{font-size:18px!important}
+  #topup-modal .pack-get,#topup-modal .pack-tag{overflow-wrap:anywhere!important}
+  #topup-modal .topup-custom{padding-top:6px!important}
+  #topup-modal #topup-range{width:100%!important;min-height:44px!important;touch-action:pan-x!important}
+  #topup-modal #topup-buy,#topup-modal .topup-cancel{width:100%!important;min-height:50px!important;touch-action:manipulation!important}
+  #topup-modal #topup-buy:disabled{opacity:.66!important;cursor:wait!important}
+  #topup-modal .topup-summary{position:relative!important}
+  #topup-modal .topup-status{min-height:24px!important}
+}
+@media (max-width:374px){
+  #topup-modal .pack-grid{grid-template-columns:1fr!important}
+  #topup-modal .pack{min-height:76px!important}
+}
