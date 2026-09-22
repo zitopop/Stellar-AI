@@ -172,21 +172,35 @@
     let filterTimer = 0;
     let voiceCatalog = [];
 
-    const normalizeLocale = (value) => String(value || '').trim().replace('_','-');
+    const normalizeLocale = (value) => {
+      const raw = String(value || '').trim().replace('_','-');
+      if (!raw) return '';
+      const match = raw.match(/^([a-z]{2,3})(?:-([a-z]{2}))?$/i);
+      if (!match) return '';
+      return match[2] ? match[1].toLowerCase() + '-' + match[2].toUpperCase() : match[1].toLowerCase();
+    };
+
+    const isValidVoiceLocale = (value) => /^[a-z]{2,3}-[A-Z]{2}$/.test(normalizeLocale(value));
 
     const localeFromVoiceText = (value) => {
       const text = String(value || '');
-      const exact = text.match(/\b([a-z]{2,3}(?:[-_][A-Z]{2})?)\b(?=\s*(?:·|$))/i);
-      if (exact?.[1]) return normalizeLocale(exact[1]);
-      const fallback = text.match(/\b([a-z]{2,3}[-_][A-Z]{2})\b/i);
-      return fallback?.[1] ? normalizeLocale(fallback[1]) : '';
+      // Only accept a full BCP-47 language-region tag. Short fragments such as
+      // "ami" or "ol" are not locales and must never become language options.
+      const match = text.match(/\b([a-z]{2,3})[-_]([a-z]{2})\b/i);
+      return match ? normalizeLocale(match[1] + '-' + match[2]) : '';
     };
 
     const voiceBase = (locale) => normalizeLocale(locale).split('-')[0].toLowerCase();
 
     const selectedLanguage = () => {
-      const saved = window.safeStorageGet?.(LANGUAGE_KEY) || '';
-      return saved || 'auto';
+      const saved = String(window.safeStorageGet?.(LANGUAGE_KEY) || '').trim();
+      if (!saved || saved === 'auto') return 'auto';
+      const normalized = normalizeLocale(saved);
+      if (!isValidVoiceLocale(normalized)) {
+        window.safeStorageSet?.(LANGUAGE_KEY, 'auto');
+        return 'auto';
+      }
+      return normalized;
     };
 
     const resolvedRecognitionLanguage = () => {
@@ -222,6 +236,26 @@
 
     const friendlyLanguageName = (locale) => {
       const normalized = normalizeLocale(locale);
+      const labels = {
+        'en-GB':'English (UK)',
+        'en-US':'English (US)',
+        'es-ES':'Spanish',
+        'fr-FR':'French',
+        'de-DE':'German',
+        'it-IT':'Italian',
+        'pt-BR':'Portuguese (Brazil)',
+        'nl-NL':'Dutch',
+        'pl-PL':'Polish',
+        'ja-JP':'Japanese',
+        'ko-KR':'Korean',
+        'hi-IN':'Hindi',
+        'zh-CN':'Chinese (Mandarin)',
+        'zh-HK':'Chinese (Hong Kong)',
+        'zh-TW':'Chinese (Taiwan)',
+        'ar-SA':'Arabic',
+        'id-ID':'Indonesian',
+      };
+      if (labels[normalized]) return labels[normalized];
       try {
         const display = new Intl.DisplayNames([navigator.language || 'en-GB'], { type:'language' });
         return display.of(normalized) || normalized;
@@ -231,11 +265,24 @@
     };
 
     const captureVoiceCatalog = (select) => {
+      const synthVoices = (() => {
+        try { return Array.from(window.speechSynthesis?.getVoices?.() || []); }
+        catch { return []; }
+      })();
+
       Array.from(select?.options || []).forEach((option) => {
+        const text = String(option.textContent || '').trim();
+        const value = String(option.value ?? '');
+        const matchedVoice = synthVoices.find((voice) =>
+          voice.voiceURI === value ||
+          voice.name === value ||
+          text.toLowerCase().includes(String(voice.name || '').toLowerCase())
+        );
+        const locale = normalizeLocale(matchedVoice?.lang) || localeFromVoiceText(text);
         const item = {
-          value:String(option.value ?? ''),
-          text:String(option.textContent || '').trim(),
-          locale:localeFromVoiceText(option.textContent),
+          value,
+          text,
+          locale:isValidVoiceLocale(locale) ? locale : '',
           disabled:Boolean(option.disabled),
         };
         const exists = voiceCatalog.some((entry) => entry.value === item.value && entry.text === item.text);
@@ -252,7 +299,8 @@
       const unique = [...commonLocales];
       voiceCatalog.forEach((voice) => {
         const locale = normalizeLocale(voice.locale);
-        if (!locale || unique.some((item) => item.toLowerCase() === locale.toLowerCase())) return;
+        if (!isValidVoiceLocale(locale)) return;
+        if (unique.some((item) => item.toLowerCase() === locale.toLowerCase())) return;
         unique.push(locale);
       });
 
