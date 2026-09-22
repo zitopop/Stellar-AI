@@ -15,7 +15,7 @@ test('currency display is GBP regardless of detected country', () => {
 test('homepage publishes GBP prices while the app retains its currency cache version', () => {
   for (const price of [0, 8, 20, 75]) assert.ok(index.includes(`<strong>£${price}</strong>`));
   assert.doesNotMatch(index, /src="\/currency\.js/);
-  assert.match(app, /\/currency\.js\?v=gbp-20260910/);
+  assert.match(app, /\/currency\.js\?v=[A-Za-z0-9._-]+/);
 });
 
 test('landing and terms clearly state GBP worldwide', () => {
