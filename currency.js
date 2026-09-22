@@ -274,27 +274,39 @@
     );
     if (planButton) planButton.classList.add('stellar-model-plans-link');
 
-    const selectedConfig = () => {
-      const normalize = (value) => {
-        const raw = String(value || '').trim().toLowerCase();
-        const aliases = { spark:'fabie', star:'smart', nova:'ultra' };
-        const key = aliases[raw] || raw;
-        return configs[key] ? key : '';
-      };
+    const normalizeModelKey = (value) => {
+      const raw = String(value || '').trim().toLowerCase();
+      const aliases = { spark:'fabie', star:'smart', nova:'ultra' };
+      const key = aliases[raw] || raw;
+      return configs[key] ? key : '';
+    };
 
+    const selectedKey = () => {
       try {
         if (typeof Store !== 'undefined') {
-          const storedKey = normalize(Store?.get?.().model);
-          if (storedKey) return configs[storedKey];
+          const storedKey = normalizeModelKey(Store?.get?.().model);
+          if (storedKey) return storedKey;
         }
       } catch {}
 
       const selected = menu.querySelector('[data-model-choice][aria-checked="true"]');
-      const checkedKey = normalize(selected?.getAttribute('data-model-choice'));
-      return configs[checkedKey] || configs.smart;
+      return normalizeModelKey(selected?.getAttribute('data-model-choice')) || 'smart';
+    };
+
+    const selectedConfig = () => configs[selectedKey()] || configs.smart;
+
+    const syncMenuSelection = () => {
+      const key = selectedKey();
+      Object.keys(configs).forEach((modelKey) => {
+        const option = menu.querySelector('[data-model-choice="' + modelKey + '"]');
+        if (!option) return;
+        const checked = modelKey === key ? 'true' : 'false';
+        if (option.getAttribute('aria-checked') !== checked) option.setAttribute('aria-checked', checked);
+      });
     };
 
     const syncTrigger = () => {
+      syncMenuSelection();
       const config = selectedConfig();
       document.querySelectorAll('#composer-model-trigger, .stellar-model-proxy').forEach((trigger) => {
         trigger.dataset.modelTone = Object.keys(configs).find((key) => configs[key] === config) || 'smart';
@@ -308,12 +320,21 @@
       });
     };
 
+    syncMenuSelection();
     syncTrigger();
     if (menu.dataset.stellarPickerWatch !== 'true') {
       menu.dataset.stellarPickerWatch = 'true';
-      const observer = new MutationObserver(syncTrigger);
+      const observer = new MutationObserver(() => {
+        syncMenuSelection();
+        syncTrigger();
+      });
       observer.observe(menu, { subtree:true, attributes:true, attributeFilter:['aria-checked'] });
-      menu.addEventListener('click', () => window.setTimeout(syncTrigger, 0));
+      menu.addEventListener('click', () => {
+        window.setTimeout(() => {
+          syncMenuSelection();
+          syncTrigger();
+        }, 35);
+      });
     }
   }
 
@@ -361,6 +382,9 @@
         syncExpanded(willOpen);
 
         if (willOpen) {
+          // Re-run the picker enhancer after hoisting/opening so the visual
+          // checkmark is reconciled with Store.model before the user sees it.
+          enhanceModelPicker();
           const selected = menu.querySelector('[data-model-choice][aria-checked="true"]');
           window.requestAnimationFrame(() => selected?.scrollIntoView?.({ block:'nearest' }));
         }
