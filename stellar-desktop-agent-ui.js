@@ -3,12 +3,12 @@
   function sessionToken(){
     try{return String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{return ''}
   }
-  async function isOwner(){
+  async function isSignedIn(){
     const token=sessionToken(); if(!token)return false;
     try{
       const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
       const d=await r.json().catch(()=>({}));
-      return r.ok&&d?.owner===true;
+      return r.ok;
     }catch{return false}
   }
   function mount(){
@@ -17,7 +17,7 @@
     const a=document.createElement('a');
     a.id=BUTTON_ID;
     a.href='/desktop';
-    a.title='PC Agent — control your paired Windows workspace';
+    a.title='PC Agent Beta — work with your paired Windows workspace';
     a.setAttribute('aria-label','Open PC Agent');
     a.innerHTML='<span aria-hidden="true" style="font-size:16px">⌘</span><span class="stellar-pc-label">PC Agent</span>';
     a.style.cssText='display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 12px;margin:8px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.045);color:inherit;text-decoration:none;font:700 12px/1 system-ui,sans-serif;cursor:pointer;touch-action:manipulation';
@@ -28,6 +28,6 @@
     }
     host.appendChild(a);
   }
-  isOwner().then(owner=>{if(owner)mount()});
-  window.addEventListener('focus',()=>isOwner().then(owner=>{if(owner)mount()}));
+  isSignedIn().then(ok=>{if(ok)mount()});
+  window.addEventListener('focus',()=>isSignedIn().then(ok=>{if(ok)mount()}));
 })();

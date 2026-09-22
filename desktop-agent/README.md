@@ -1,11 +1,13 @@
 # Stellar Desktop Agent
 
-Owner-only Windows companion for Stellar AI.
+Account-scoped Windows companion for signed-in Stellar AI users.
 
 ## Security model
 
 - The web app never receives Windows credentials.
-- Pairing uses a short-lived one-time code.
+- Pairing uses a short-lived one-time code tied to the signed-in Stellar account.
+- Each account has its own paired device, permissions, task state and audit trail; cross-account task access is rejected.
+- Public-beta pairing, planning and task queues are rate-limited.
 - Device authentication uses a random local token.
 - File actions are restricted to one workspace root.
 - Shell execution is disabled unless the local user explicitly launches the agent with `STELLAR_DESKTOP_ALLOW_SHELL=1`.
@@ -15,7 +17,7 @@ Owner-only Windows companion for Stellar AI.
 
 ## Install on Windows
 
-Run `install-windows.ps1` from PowerShell, then pair using the code created in the Stellar AI owner UI.
+Run `install-windows.ps1` from PowerShell, then pair using the code created in the signed-in Stellar AI PC Agent page.
 
 ## Commands
 
@@ -23,6 +25,7 @@ Run `install-windows.ps1` from PowerShell, then pair using the code created in t
 node agent.mjs pair YOUR_PAIRING_CODE
 node agent.mjs run
 node agent.mjs status
+node agent.mjs selftest
 ```
 
 Choose the allowed working folder:

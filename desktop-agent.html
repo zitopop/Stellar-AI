@@ -25,9 +25,9 @@ textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--line
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap topin"><a class="back" href="https://trystellarai.com/app">← App</a><div class="brand">Stellar AI · PC Agent</div><div class="pill" id="ownerPill">Checking owner access…</div></div></header>
+<header class="top"><div class="wrap topin"><a class="back" href="https://trystellarai.com/app">← App</a><div class="brand">Stellar AI · PC Agent Beta</div><div class="pill" id="accountPill">Checking account access…</div></div></header>
 <main class="wrap">
-<section class="hero"><div><div class="eyebrow">Local computer control</div><h1>Your PC,<br>with guardrails.</h1><p class="lead">Pair one Windows PC with Stellar AI. The local companion can work inside an approved workspace, read and edit project files, run reviewed terminal commands and return results to your AI.</p></div>
+<section class="hero"><div><div class="eyebrow">Local computer control</div><h1>Your PC,<br>with guardrails.</h1><p class="lead">Each signed-in Stellar account can pair its own Windows PC. The local companion works only inside that user's approved workspace, can read and edit project files, run reviewed terminal commands and return results to that user's AI.</p></div>
 <div class="statusbox"><div class="statusrow"><span class="dot" id="statusDot"></span><strong id="statusText">Not paired</strong></div><div class="small" id="statusMeta">Create a pairing code to connect your Windows PC.</div></div></section>
 
 <section class="grid">
@@ -64,7 +64,7 @@ node agent.mjs pair YOUR_CODE
 
 <section class="card" style="margin-top:18px"><h2>Activity</h2><p>Tasks and results from the paired PC appear here.</p><div class="log" id="log">PC Agent ready.</div></section>
 
-<section class="card" style="margin-top:18px"><h2>Terms, plans & community</h2><p>PC Agent and connected-tool access follows the Stellar AI Terms of Service and is not automatically included in a paid plan unless the app or checkout page says so. Current public plans remain Free £0, Starter £8/month or £67/year, Plus £20/month or £168/year, and Pro £75/month or £630/year.</p>
+<section class="card" style="margin-top:18px"><h2>Terms, plans & community</h2><p>PC Agent Beta is available to signed-in accounts during the beta. Each account is isolated to its own paired device, permissions and task history. Availability and limits may change, and the feature is not a guaranteed paid-plan benefit unless the app or checkout page says so. Current public plans remain Free £0, Starter £8/month or £67/year, Plus £20/month or £168/year, and Pro £75/month or £630/year.</p>
 <div class="actions"><a class="btn" href="/terms.html">Terms of Service</a><a class="btn" href="/terms.html#privacy">Privacy</a><a class="btn" href="/#plans">Plans</a><a class="btn" href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer">Discord ↗</a></div>
 <div class="note">Do not share passwords, API keys, payment details, recovery codes or private customer information in Discord or with untrusted plugins. Use the official support route for account, billing, privacy, legal or security issues.</div></section>
 </main>
@@ -82,11 +82,11 @@ node agent.mjs pair YOUR_CODE
     if(!response.ok)throw new Error(data.error||'Request failed.');
     return data;
   }
-  async function verifyOwner(){
-    if(!token){$('ownerPill').textContent='Sign in required';throw new Error('Sign in to Stellar AI first.')}
-    const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});const d=await r.json().catch(()=>({}));
-    if(!r.ok||d.owner!==true){$('ownerPill').textContent='Owner only';throw new Error('PC Agent is owner-only in this release.')}
-    $('ownerPill').textContent='Owner access verified';
+  async function verifyUser(){
+    if(!token){$('accountPill').textContent='Sign in required';throw new Error('Sign in to Stellar AI first.')}
+    const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+    if(!r.ok){$('accountPill').textContent='Sign in required';throw new Error('Sign in to Stellar AI first.')}
+    $('accountPill').textContent='Signed in · Beta';
   }
   async function status(){
     try{
@@ -148,7 +148,7 @@ node agent.mjs pair YOUR_CODE
     const prompt=$('prompt').value.trim();if(!prompt)return;
     currentPrompt=prompt;$('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Planning repository inspection…';$('runActions').hidden=true;
     try{
-      const r=await fetch('/api/desktop-plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt})});
+      const r=await fetch('/api/desktop-agent?action=plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt})});
       const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build plan.');
       renderPlan(d.plan);log('Repository inspection plan created. Run the safe inspection steps to let Stellar ground the implementation in your actual code.','ok');
     }catch(e){$('planSummary').textContent='';log(e.message,'bad')}finally{$('planBtn').disabled=false}
@@ -196,7 +196,7 @@ node agent.mjs pair YOUR_CODE
       }
     }catch(e){log(e.message,'bad')}finally{$('runBtn').disabled=false;status().catch(()=>{})}
   };
-  verifyOwner().then(status).then(()=>{statusTimer=setInterval(()=>status().catch(()=>{}),15000)}).catch(e=>log(e.message,'bad'));
+  verifyUser().then(status).then(()=>{statusTimer=setInterval(()=>status().catch(()=>{}),15000)}).catch(e=>log(e.message,'bad'));
   addEventListener('beforeunload',()=>statusTimer&&clearInterval(statusTimer));
 })();
 </script>
