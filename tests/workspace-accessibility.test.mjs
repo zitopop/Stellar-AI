@@ -90,7 +90,7 @@ test('Task 177 keeps the model-menu trigger an explicit non-submit button', () =
 });
 
 test('Task 178 keeps every Settings tab an explicit non-submit button', () => {
-  for (const tab of ['account', 'plan', 'usage', 'look', 'voice', 'about']) {
+  for (const tab of ['account', 'plan', 'usage', 'look', 'voice', 'plugins', 'about']) {
     assert.match(workspaceHtml, new RegExp(`<button type="button" class="set-tab(?: active)?" data-tab="${tab}" onclick="setTab\\('${tab}'\\)">`));
   }
   assert.match(workspaceHtml, /document\.querySelectorAll\('#settings-modal \.set-tab'\)/);
