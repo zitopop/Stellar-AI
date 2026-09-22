@@ -5,7 +5,7 @@ import test from 'node:test';
 
 const html = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const send = html.slice(html.indexOf('    async function sendMessage('), html.indexOf('    function refreshModelMenu('));
-const commit = html.slice(html.indexOf('    function commitPendingChat('), html.indexOf('    function timeGreeting('));
+const commit = html.slice(html.indexOf('    function commitPendingChat('), html.indexOf('    function homeFirstName('));
 const load = html.slice(html.indexOf('    function loadChat('), html.indexOf('    function escapeHtml('));
 
 test('thinking updates work before and after the stream status is created', () => {
