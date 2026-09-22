@@ -5,8 +5,8 @@ import { readFile } from 'node:fs/promises';
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
 test('home copy stays focused without quick-start clutter', () => {
-  assert.ok(appHtml.includes('What will you <span class="greet-hi-accent">build next?</span>'));
-  assert.ok(appHtml.includes('Turn your next FiveM or Roblox idea into something real — build it, fix it, and keep improving it with Stellar.'));
+  assert.ok(appHtml.includes('What can I help you with?'));
+  assert.ok(appHtml.includes('Build something new, fix a problem, improve a project, or ask Stellar anything.'));
   assert.match(appHtml, /placeholder="Ask Stellar anything…"/);
   assert.equal((appHtml.match(/class="sug-chip"/g) || []).length, 0);
 });
