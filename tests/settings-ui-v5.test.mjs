@@ -9,7 +9,7 @@ const finalCss = appHtml.match(/<style id="tap-settings-reliability-final">([\s\
 test('Settings keeps the stable look route while presenting it as Display', () => {
   assert.ok(appHtml.includes('data-tab="look" onclick="setTab(\'look\')"'));
   assert.ok(appHtml.includes('</svg></i>Display</button>'));
-  assert.ok(appHtml.includes('Account, plan, usage and workspace preferences.'));
+  assert.ok(appHtml.includes('Account, plans, plugins, usage and workspace preferences.'));
 });
 
 test('phone Settings is a full-width 90dvh bottom sheet with horizontal tabs', () => {
