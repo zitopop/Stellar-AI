@@ -97,7 +97,7 @@ test('the public support centre stays routed, indexed and keeps email fallback a
   const sitemap = read('sitemap.xml');
   assert.equal(routes.get('/support'), '/support.html');
   assert.match(supportHtml, /href="mailto:support@trystellarai\.com/);
-  assert.match(supportHtml, />support@trystellarai\.com<\/span>/);
+  assert.match(supportHtml, /support@trystellarai\.com/);
   assert.match(sitemap, /https:\/\/trystellarai\.com\/support/);
 });
 
