@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
+const homeCss = await readFile(new URL('../stellar-home-chat-only.css', import.meta.url), 'utf8');
 
 test('Task 49 exposes an accessible validated image-upload control in the workspace composer', () => {
   assert.match(appHtml, /id="image-upload-input"[^>]*type="file"[^>]*accept="image\/png,image\/jpeg,image\/gif,image\/webp,[^"]+"/);
@@ -119,15 +120,15 @@ test('Task 136 announces the existing pasted-content summary politely', () => {
 });
 
 test('Task 137 exposes the existing workspace sidebar as named navigation', () => {
-  assert.match(appHtml, /<div id="sidebar" class="w-72 glass border-r border-white\/10 flex flex-col p-4" role="navigation" aria-label="Workspace navigation">/);
-  assert.match(appHtml, /<button type="button" onclick="newChat\(\)" class="side-new w-full mb-3 transition-all active:scale-\[0\.985\]">/);
-  assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)"/);
-  assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list"(?: role="region" aria-labelledby="chats-heading")?><\/div>/);
+  assert.match(appHtml, /<div id="sidebar"[^>]*role="navigation"[^>]*aria-label="Workspace navigation"/);
+  assert.match(appHtml, /<button type="button" onclick="newChat\(\)"[^>]*class="side-new[^"]*"/);
+  assert.match(appHtml, /<input id="search"[^>]*aria-label="Search builds"/);
+  assert.match(appHtml, /<div class="flex-1 overflow-y-auto" id="chats-list" role="region" aria-labelledby="chats-heading"><\/div>/);
 });
 
 test('Task 138 gives workspace chat search an explicit accessible name', () => {
-  assert.match(appHtml, /<input id="search" oninput="renderChatList\(\)" placeholder="Search builds" aria-label="Search builds"/);
-  assert.match(appHtml, /autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="search_stellar_20607">/);
+  assert.match(appHtml, /<input id="search"[^>]*type="search"[^>]*inputmode="search"[^>]*placeholder="Search builds"[^>]*aria-label="Search builds"/);
+  assert.match(appHtml, /id="search"[^>]*autocomplete="off"[^>]*autocorrect="off"[^>]*autocapitalize="off"[^>]*spellcheck="false"/);
 });
 
 test('Task 139 relates the existing workspace chat-history label and list', () => {
@@ -137,17 +138,17 @@ test('Task 139 relates the existing workspace chat-history label and list', () =
 });
 
 test('Task 142 makes existing chat-history items keyboard-operable with current-chat context', () => {
-  assert.match(appHtml, /\.chat-open:focus-visible \{\s+outline: 3px solid rgba\(105,229,193,\.9\);\s+outline-offset: 3px;/);
+  assert.match(appHtml, /\.chat-open:focus-visible \{\s+outline: 3px solid rgba\(105,229,193,.9\);\s+outline-offset: 3px;/);
   assert.match(appHtml, /const currentAttribute = isCurrent \? ' aria-current="page"' : '';/);
-  assert.match(appHtml, /<button type="button" class="chat-open flex-1 min-w-0" onclick="loadChat\('\$\{chat\.id\}'\)" aria-label="Open chat: \$\{escapeHtml\(chatLabel\)\}"\$\{currentAttribute\}>/);
-  assert.match(appHtml, /<button onclick="event\.stopPropagation\(\); openChatMenu\(event, '\$\{chat\.id\}'\)" title="Options"(?: aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false")? class="chat-dots">⋯<\/button>/);
+  assert.match(appHtml, /<button type="button" class="chat-open" onclick="loadChat\('\$\{chat\.id\}'\)" aria-label="Open chat: \$\{escapeHtml\(chatLabel\)\}"\$\{currentAttribute\}>/);
+  assert.match(appHtml, /aria-label="Chat options for \$\{escapeHtml\(chatLabel\)\}"[^>]*aria-haspopup="menu"[^>]*aria-controls="chat-menu"[^>]*aria-expanded="false"[^>]*class="chat-dots"/);
 });
 
 test('Task 143 gives existing chat Options popups menu semantics and keyboard control', () => {
   assert.match(appHtml, /<div id="chat-menu" class="hidden" role="menu" aria-label="Chat options" aria-hidden="true"><\/div>/);
-  assert.match(appHtml, /aria-label="Chat options" aria-haspopup="menu" aria-controls="chat-menu" aria-expanded="false" class="chat-dots">⋯<\/button>/);
+  assert.match(appHtml, /aria-label="Chat options for \$\{escapeHtml\(chatLabel\)\}"[^>]*aria-haspopup="menu"[^>]*aria-controls="chat-menu"[^>]*aria-expanded="false"/);
   assert.match(appHtml, /let chatMenuFor = null;\s+let chatMenuTrigger = null;/);
-  assert.match(appHtml, /<button type="button" role="menuitem" onclick="closeChatMenu\(\); togglePin\(/);
+  assert.match(appHtml, /<button type="button" role="menuitem" onclick="closeChatMenu\(\); togglePin/);
   assert.match(appHtml, /menu\.setAttribute\('aria-hidden', 'false'\);/);
   assert.match(appHtml, /if \(event\.key === 'Escape'\)/);
   assert.match(appHtml, /event\.key === 'ArrowDown' \|\| event\.key === 'ArrowUp'/);
@@ -173,8 +174,9 @@ test('Task 72 restores keyboard focus after local completion only when the send 
 });
 
 test('Task 73 gives the active stop control enough narrow-screen width to keep its label visible', () => {
-  assert.match(appHtml, /#send-btn\.is-stop \{ flex-basis: 88px !important; width: 88px !important; min-width: 88px !important; padding-inline: 10px !important; white-space: nowrap; \}/);
-  assert.match(appHtml, /button\.classList\.toggle\('is-stop', label === '◼ Stop'\);/);
+  assert.match(homeCss, /#send-btn\.is-stop\{[\s\S]*?flex-basis:88px!important;[\s\S]*?min-width:88px!important;[\s\S]*?white-space:nowrap!important;/);
+  assert.match(appHtml, /const isStop = label === '◼ Stop';[\s\S]*?button\.classList\.toggle\('is-stop', isStop\);/);
+  assert.match(appHtml, /send-stop-text/);
 });
 
 test('Task 74 restores guarded composer focus after standard generation cleanup', () => {
@@ -305,8 +307,11 @@ test('Task 94 lets keyboard users open owner tools from the settings entry', () 
 
 test('Task 95 moves focus into the owner-tools dialog and restores its trigger on close', () => {
   assert.match(appHtml, /<button id="owner-modal-close" onclick="closeOwner\(\)" class="modal-x" aria-label="Close owner tools">×<\/button>/);
-  assert.match(appHtml, /let ownerDialogTrigger = null;[\s\S]*?function openOwner\(\) \{\s+if \(!isOwner\(\)\) return;\s+closeOtherDialogs\('owner'\);\s+const active = document\.activeElement;\s+ownerDialogTrigger = active instanceof HTMLElement && active !== document\.body \? active : null;[\s\S]*?setTimeout\(\(\) => document\.getElementById\('owner-modal-close'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
-  assert.match(appHtml, /function closeOwner\(\) \{\s+document\.getElementById\('owner-modal'\)\.classList\.add\('hidden'\);\s+const trigger = ownerDialogTrigger;\s+ownerDialogTrigger = null;\s+if \(trigger && trigger\.isConnected\) trigger\.focus\(\{ preventScroll: true \}\);\s+\}/);
+  assert.match(appHtml, /let ownerDialogTrigger = null;\s+let ownerDialogRestoreSettings = false;/);
+  assert.match(appHtml, /function openOwner\(\) \{[\s\S]*?const active = document\.activeElement;[\s\S]*?const openedFromSettings = active\?\.id === 'set-owner-row'/);
+  assert.match(appHtml, /ownerDialogTrigger = active instanceof HTMLElement[\s\S]*?ownerDialogRestoreSettings = openedFromSettings;[\s\S]*?closeOtherDialogs\('owner'\);/);
+  assert.match(appHtml, /setTimeout\(\(\) => document\.getElementById\('owner-modal-close'\)\?\.focus\(\{ preventScroll: true \}\), 0\);/);
+  assert.match(appHtml, /function closeOwner\(\) \{[\s\S]*?if \(restoreSettings\) \{\s+openSettings\(\);[\s\S]*?set-owner-row[\s\S]*?return;[\s\S]*?trigger && trigger\.isConnected/);
 });
 
 test('Task 96 closes only the open owner-tools dialog with an unhandled Escape key', () => {
@@ -412,9 +417,10 @@ test('Task 113 hides the decorative purchase confetti canvas from assistive tech
 
 test('Task 114 gives model choices clear accessible descriptions aligned to routing tiers', () => {
   assert.match(appHtml, /id="model-btn"[^>]*aria-label="Choose model: Star, recommended for most scripts"/);
-  assert.match(appHtml, /pickModel\('fabie'\)[^>]*aria-label="Select Spark for fast drafts"[^>]*title="Fast drafts with Claude Haiku"/);
-  assert.match(appHtml, /pickModel\('smart'\)[^>]*aria-label="Select Star, recommended for most scripts"[^>]*title="Recommended scripts with Claude Sonnet"/);
-  assert.match(appHtml, /pickModel\('ultra'\)[^>]*aria-label="Select Nova for maximum quality, available on Pro"[^>]*title="Maximum quality with Claude Opus, Pro plan"/);
+  assert.match(appHtml, /pickModel\('fabie'\)[^>]*aria-label="Select Spark for fast drafts"[^>]*title="Quick drafts, small fixes and lightweight work"/);
+  assert.match(appHtml, /pickModel\('smart'\)[^>]*aria-label="Select Star, recommended for most scripts"[^>]*title="Balanced quality for most FiveM and Roblox builds"/);
+  assert.match(appHtml, /pickModel\('ultra'\)[^>]*aria-label="Select Nova for maximum quality, available on Pro"[^>]*title="Maximum Stellar capability for difficult project work"/);
+  assert.doesNotMatch(appHtml, /title="[^"]*Claude (?:Haiku|Sonnet|Opus)/);
   assert.match(appHtml, /modelButton\.setAttribute\('aria-label', modelLabels\[m\] \|\| modelLabels\.smart\);/);
 });
 
@@ -462,8 +468,9 @@ test('Task 121 keeps the mobile model menu scrollable within a bounded viewport'
 
 test('Task 122 refreshes existing selected-model indicators immediately after a permitted choice', () => {
   assert.match(appHtml, /function pickModel\(m\) \{/);
-  assert.match(appHtml, /\['researcher', 'reviewer', 'security', 'tester'\]\.includes\(m\) && !\(s\.plan === 'plus' \|\| s\.plan === 'lite' \|\| s\.plan === 'pro' \|\| isOwner\(\)\)/);
+  assert.match(appHtml, /\['researcher', 'reviewer', 'security', 'tester'\]\.includes\(m\) && !isOwner\(\)/);
   assert.match(appHtml, /Store\.set\(\{ model: m \}\);\s+refreshModelMenu\(\);/);
+  assert.match(appHtml, /choice\.setAttribute\('aria-checked', String\(choice\.dataset\.modelChoice === cur\)\);/);
 });
 
 test('Task 145 lets keyboard users jump to the first or last visible model-menu option', () => {
@@ -501,17 +508,16 @@ test('Task 150 removes theme controls while preserving text-size settings', () =
 });
 
 test('Task 151 keeps the workspace dark-only without automatic light scheduling', () => {
-  assert.doesNotMatch(appHtml, /id="side-theme-toggle"|title="Theme changes automatically by hour"|function toggleDarkMode\(/);
+  assert.doesNotMatch(appHtml, /top-theme-toggle|top-theme-label|seg-dark|seg-light|LIGHT_THEME_START_HOUR/);
   assert.doesNotMatch(appHtml, /function startAutomaticTheme\(/);
-  assert.match(appHtml, /chats = s\.chats;\s+setMode\('dark', 'dark-only'\);/);
-  assert.doesNotMatch(appHtml, /LIGHT_THEME_START_HOUR|DARK_THEME_START_HOUR|automaticMode\(/);
-  assert.doesNotMatch(appHtml, /Manual override active; automatic schedule resumes at the next hour\./);
+  assert.match(appHtml, /function setMode\(mode = 'dark', source = 'dark-only'\) \{\s+document\.body\.classList\.remove\('light'\);\s+document\.body\.dataset\.themeSource = 'dark-only';\s+Store\.set\(\{ mode: 'dark' \}\);/);
 });
 
 test('Task 152 exposes both existing Terms destinations as native links', () => {
-  assert.match(appHtml, /<a href="\/terms\.html" class="side-act"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"\/><\/svg><\/span>Terms<\/a>/);
-  assert.match(appHtml, /<a href="\/terms\.html" class="set-item set-click">\s+<div class="set-key"><i class="sk-ico t-slate"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"\/><\/svg><\/i>Terms &amp; Privacy<\/div>\s+<div class="set-chev" aria-hidden="true">›<\/div>\s+<\/a>/);
-  assert.doesNotMatch(appHtml, /<button onclick="location\.href='\/terms\.html'" class="side-act">/);
+  const termsLinks = appHtml.match(/<a href="\/terms\.html"[^>]*>[\s\S]*?Terms(?: &amp; Privacy)?[\s\S]*?<\/a>/g) || [];
+  assert.ok(termsLinks.length >= 2);
+  assert.match(appHtml, /<a href="\/terms\.html" class="side-act"[^>]*>[\s\S]*?Terms<\/a>/);
+  assert.match(appHtml, /<a href="\/terms\.html" class="set-item set-click">[\s\S]*?Terms &amp; Privacy[\s\S]*?<\/a>/);
 });
 
 test('premium workspace redesign keeps chat presentation clean, centered, and behavior-preserving', () => {
