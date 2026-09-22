@@ -11403,12 +11403,12 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
         <button type="button" class="topup-close" onclick="closeTopup()" aria-label="Cancel credit purchase">×</button>
       </div>
 
-      <div class="topup-section-label">Choose an amount</div><div class="topup-bonus-guide" aria-label="Credit bonus levels"><span>£5 <b>+5%</b></span><span>£10 <b>+10%</b></span><span>£20 <b>+15%</b></span><span>£50 <b>+20%</b></span></div>
+      <div class="topup-section-label">Choose an amount</div><div class="topup-bonus-guide" aria-label="Credit bonus levels"><span>£10 <b>+10%</b></span><span>£20 <b>+15%</b></span><span>£50 <b>+20%</b></span></div>
       <div class="pack-grid">
-        <button type="button" onclick="pickTopup(300)" data-amt="300" class="pack" aria-label="Choose £3 credit">
-          <span class="pack-amt">£3</span>
-          <span class="pack-get">£3.00 credit</span>
-          <span class="pack-tag">Quick top-up</span>
+        <button type="button" onclick="pickTopup(2000)" data-amt="2000" class="pack" aria-label="Choose £20 credit with bonus">
+          <span class="pack-amt">£20</span>
+          <span class="pack-get">£23.00 credit</span>
+          <span class="pack-tag bonus">+15% free</span>
         </button>
         <button type="button" onclick="pickTopup(1000)" data-amt="1000" class="pack" aria-label="Choose £10 credit with bonus">
           <span class="pack-amt">£10</span>
@@ -11429,18 +11429,18 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
 
       <div class="topup-custom">
         <div class="topup-section-label">Or choose your own</div>
-        <input type="range" id="topup-range" min="50" max="20000" step="50" value="500" oninput="setTopupQty(this.value)" aria-label="Choose a custom credit amount">
-        <div id="topup-live" class="topup-live">£5.00</div>
+        <input type="range" id="topup-range" min="1000" max="20000" step="50" value="1000" oninput="setTopupQty(this.value)" aria-label="Choose a custom credit amount">
+        <div id="topup-live" class="topup-live">£10.00</div>
         <div id="topup-bonus" class="topup-bonus"></div>
       </div>
 
       <div class="topup-summary" id="topup-summary">
-        <div class="topup-sum-row"><span>You pay</span><strong id="sum-pay">£5.00</strong></div>
-        <div class="topup-sum-row"><span>Bonus credit</span><strong id="sum-bonus" class="sum-free">£0.00</strong></div>
-        <div class="topup-sum-total"><span>Total credit you receive</span><strong id="sum-total">£5.00</strong></div>
+        <div class="topup-sum-row"><span>You pay</span><strong id="sum-pay">£10.00</strong></div>
+        <div class="topup-sum-row"><span>Bonus credit</span><strong id="sum-bonus" class="sum-free">+£1.00</strong></div>
+        <div class="topup-sum-total"><span>Total credit you receive</span><strong id="sum-total">£11.00</strong></div>
       </div>
 
-      <button type="button" id="topup-buy" onclick="buyTopup(document.getElementById('topup-range').value)" class="side-new w-full mt-4" aria-describedby="topup-status">Add £5.00</button>
+      <button type="button" id="topup-buy" onclick="buyTopup(document.getElementById('topup-range').value)" class="side-new w-full mt-4" aria-describedby="topup-status">Add £11.00 credit</button>
       <div id="topup-status" class="topup-status" role="status" aria-live="polite" aria-atomic="true"></div>
       <div class="topup-trust"><span aria-hidden="true">Stripe</span> secure one-time payment · Credit never expires</div>
       <button type="button" onclick="closeTopup()" class="plan-btn glass w-full mt-2 topup-cancel">Cancel</button>
@@ -12651,15 +12651,14 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
     }
     function toggleCreditsOn() { Store.set({ creditsOn: !creditsOn() }); renderUsagePage(); renderMeter(); refreshSettings(); }
     function topupPricePence(p) {
-      const amount = Math.round(Number(p) || 50);
-      const clamped = Math.max(50, Math.min(20000, amount));
+      const amount = Math.round(Number(p) || 1000);
+      const clamped = Math.max(1000, Math.min(20000, amount));
       return Math.round(clamped / 50) * 50;
     }
     function bonusFor(pence) {
       if (pence >= 5000) return Math.round(pence * 0.20);
       if (pence >= 2000) return Math.round(pence * 0.15);
       if (pence >= 1000) return Math.round(pence * 0.10);
-      if (pence >= 500) return Math.round(pence * 0.05);
       return 0;
     }
     function setTopupStatus(message = '', kind = '') {
@@ -12744,7 +12743,7 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
       document.getElementById('topup-live').textContent = money(pence);
       const bl = document.getElementById('topup-bonus');
       if (bl) {
-        bl.textContent = bon ? ('\u{1F381} ' + money(bon) + ' free credit included') : 'Spend £5 or more to earn bonus credit';
+        bl.textContent = bon ? ('\u{1F381} ' + money(bon) + ' free credit included') : 'Credit top-ups start at £10';
         bl.className = 'topup-bonus' + (bon ? ' active' : '');
       }
       const sp = document.getElementById('sum-pay'); if (sp) sp.textContent = money(pence);
