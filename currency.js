@@ -163,6 +163,30 @@
     document.head.appendChild(script);
   }
 
+  function installServiceWorkerUpdateRefresh() {
+    if (!('serviceWorker' in navigator)) return;
+    if (window.__stellarSwRefreshInstalled) return;
+    window.__stellarSwRefreshInstalled = true;
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event?.data?.type !== 'STELLAR_SW_UPDATED') return;
+      const version = String(event.data.version || 'updated');
+      const seenKey = 'stellar-sw-seen:' + version;
+      try {
+        if (sessionStorage.getItem(seenKey) === '1') return;
+        sessionStorage.setItem(seenKey, '1');
+      } catch {}
+
+      if (/^\/app(?:\.html)?\/?$/.test(location.pathname)) {
+        window.setTimeout(() => location.reload(), 120);
+      }
+    });
+
+    navigator.serviceWorker.getRegistration?.().then((registration) => {
+      registration?.update?.().catch?.(() => {});
+    }).catch(() => {});
+  }
+
   function loadHomePresentation() {
     if (!/^\/(?:index\.html)?$/.test(location.pathname)) return;
     ensureStylesheet('data-stellar-home-v5', '/stellar-home-v5.css?v=2');
@@ -477,6 +501,7 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       applyCurrencyLabels();
+      installServiceWorkerUpdateRefresh();
       watchSidebarRailLabels();
       enhanceModelPicker();
       installReliableModelPickerToggle();
@@ -485,6 +510,7 @@
     }, { once: true });
   } else {
     applyCurrencyLabels();
+    installServiceWorkerUpdateRefresh();
     watchSidebarRailLabels();
     enhanceModelPicker();
     installReliableModelPickerToggle();
