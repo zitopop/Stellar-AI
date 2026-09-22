@@ -11,7 +11,7 @@ const vercel = JSON.parse(await readFile(new URL('../vercel.json', import.meta.u
 
 test('Roblox Studio bridge keeps inspection read-only and edits approval-gated', () => {
   assert.match(bridge, /SAFE_TYPES=new Set\(\['inspect_tree','read_script'\]\)/);
-  assert.match(bridge, /WRITE_TYPES=new Set\(\['ensure_folder','ensure_remote_event','ensure_remote_function','upsert_script'\]\)/);
+  assert.match(bridge, /WRITE_TYPES=new Set\(\['ensure_folder','ensure_remote_event','ensure_remote_function','upsert_script','create_map_pack'\]\)/);
   assert.match(bridge, /WRITE_TYPES\.has\(type\)&&!approved/);
   assert.match(bridge, /Owner access is required/);
   assert.match(bridge, /X-Stellar-Studio-Id/);
@@ -22,6 +22,8 @@ test('Roblox planner uses an inspect then implement loop', () => {
   assert.match(planner, /In inspect phase use only inspect_tree\/read_script/);
   assert.match(planner, /use the supplied observations as ground truth/);
   assert.match(planner, /server-authoritative Roblox systems/);
+  assert.match(planner, /create_map_pack/);
+  assert.match(planner, /visible Workspace geometry/);
   assert.match(planner, /Do not claim the place was run, published, or play-tested/);
 });
 
@@ -31,6 +33,8 @@ test('Studio plugin only exposes allowed services and creates undo waypoints', (
   }
   assert.match(plugin, /ChangeHistoryService:SetWaypoint/);
   assert.match(plugin, /Unsupported Studio action/);
+  assert.match(plugin, /Map pack built/);
+  assert.match(plugin, /SpawnLocation/);
   assert.match(plugin, /plugin:SetSetting\(SETTING_TOKEN, deviceToken\)/);
 });
 
@@ -38,6 +42,8 @@ test('Roblox Studio workspace is routed privately and uses the agent API', () =>
   assert.match(api, /surface==='roblox-studio'/);
   assert.match(api, /robloxStudioPlanHandler/);
   assert.match(page, /Build Roblox games/);
+  assert.match(page, /Obby map/);
+  assert.match(page, /create_map_pack/);
   assert.match(page, /Inspection complete · building grounded implementation plan/);
   assert.ok(vercel.rewrites.some(x => x.source === '/roblox-studio' && x.destination === '/roblox-studio.html'));
   const privateHeader = vercel.headers.find(x => x.source === '/roblox-studio');

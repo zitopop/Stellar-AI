@@ -172,6 +172,54 @@ local function resolveParent(pathValue)
 	return resolve(table.concat(parts, "/"), true), name
 end
 
+
+local function safeName(value, fallback)
+	local cleaned = string.gsub(tostring(value or fallback or "StellarPart"), "[^%w _%-%.]", "")
+	if cleaned == "" then return fallback or "StellarPart" end
+	return string.sub(cleaned, 1, 64)
+end
+local function clampNumber(value, fallback, minimum, maximum)
+	local numberValue = tonumber(value)
+	if not numberValue then return fallback end
+	return math.max(minimum, math.min(maximum, numberValue))
+end
+local function valueFromTable(source, key, index, fallback)
+	if type(source) ~= "table" then return fallback end
+	local direct = source[key] or source[string.upper(key)] or source[index]
+	if direct == nil then return fallback end
+	return direct
+end
+local function vector3From(source, fallback, minimum, maximum)
+	fallback = fallback or Vector3.new(0, 0, 0)
+	return Vector3.new(clampNumber(valueFromTable(source, "x", 1, fallback.X), fallback.X, minimum or -10000, maximum or 10000), clampNumber(valueFromTable(source, "y", 2, fallback.Y), fallback.Y, minimum or -10000, maximum or 10000), clampNumber(valueFromTable(source, "z", 3, fallback.Z), fallback.Z, minimum or -10000, maximum or 10000))
+end
+
+
+local function colorFrom(source, fallback)
+	fallback = fallback or Color3.fromRGB(45, 135, 255)
+	return Color3.fromRGB(math.floor(clampNumber(valueFromTable(source, "r", 1, math.floor(fallback.R * 255)), math.floor(fallback.R * 255), 0, 255)), math.floor(clampNumber(valueFromTable(source, "g", 2, math.floor(fallback.G * 255)), math.floor(fallback.G * 255), 0, 255)), math.floor(clampNumber(valueFromTable(source, "b", 3, math.floor(fallback.B * 255)), math.floor(fallback.B * 255), 0, 255)))
+end
+local function materialFrom(value)
+	local ok, material = pcall(function() return Enum.Material[tostring(value or "SmoothPlastic")] end)
+	return ok and material or Enum.Material.SmoothPlastic
+end
+local function shapeFrom(value)
+	local ok, shape = pcall(function() return Enum.PartType[tostring(value or "Block")] end)
+	return ok and shape or Enum.PartType.Block
+end
+local function ensureMapRoot(pathValue, clearExisting)
+	local parts = splitPath(pathValue or "Workspace/StellarGeneratedMap")
+	if #parts < 2 or parts[1] ~= "Workspace" then error("Map packs must be created under Workspace.") end
+	local current = game:GetService("Workspace")
+	for i = 2, #parts do
+		local nextObject = current:FindFirstChild(parts[i])
+		if not nextObject then nextObject = Instance.new("Folder"); nextObject.Name = parts[i]; nextObject.Parent = current elseif not nextObject:IsA("Folder") then error("Map root path already contains a non-folder object: " .. nextObject:GetFullName()) end
+		current = nextObject
+	end
+	if clearExisting then for _, child in ipairs(current:GetChildren()) do child:Destroy() end end
+	return current
+end
+
 local function inspectNode(instance, depth, currentDepth)
 	local item = {
 		name = instance.Name,
@@ -240,6 +288,47 @@ local function execute(task)
 		end
 		ChangeHistoryService:SetWaypoint("Stellar AI · remote ready")
 		return expected .. " ready: " .. args.path
+	end
+
+	if task.type == "create_map_pack" then
+		local rootFolder = ensureMapRoot(args.rootPath or "Workspace/StellarGeneratedMap", args.clearExisting == true)
+		local count = 0
+		for index, spec in ipairs(args.parts or {}) do
+			local part = Instance.new("Part")
+			part.Name = safeName(spec.name, "Part" .. tostring(index))
+			part.Anchored = spec.anchored ~= false
+			part.CanCollide = spec.canCollide ~= false
+			part.Size = vector3From(spec.size, Vector3.new(8, 2, 8), 1, 1200)
+			part.Position = vector3From(spec.position, Vector3.new(index * 8, 4, 0), -10000, 10000)
+			part.Color = colorFrom(spec.color, Color3.fromRGB(45, 135, 255))
+			part.Material = materialFrom(spec.material)
+			part.Transparency = clampNumber(spec.transparency, 0, 0, 0.95)
+			pcall(function() part.Shape = shapeFrom(spec.shape) end)
+			part.Parent = rootFolder
+			count += 1
+		end
+
+		for index, spec in ipairs(args.spawnPoints or {}) do
+			local spawn = Instance.new("SpawnLocation")
+			spawn.Name = safeName(spec.name, "Spawn" .. tostring(index))
+			spawn.Anchored = true
+			spawn.CanCollide = true
+			spawn.Neutral = true
+			spawn.Size = vector3From(spec.size, Vector3.new(8, 1, 8), 1, 1200)
+			spawn.Position = vector3From(spec.position, Vector3.new(0, 4, 0), -10000, 10000)
+			spawn.Color = colorFrom(spec.color, Color3.fromRGB(60, 210, 140))
+			spawn.Material = materialFrom(spec.material)
+			spawn.Parent = rootFolder
+			count += 1
+		end
+		if type(args.lighting) == "table" then
+			local Lighting = game:GetService("Lighting")
+			Lighting.ClockTime = clampNumber(args.lighting.clockTime, Lighting.ClockTime, 0, 24)
+			Lighting.Brightness = clampNumber(args.lighting.brightness, Lighting.Brightness, 0, 10)
+			Lighting.FogEnd = clampNumber(args.lighting.fogEnd, Lighting.FogEnd, 50, 100000)
+		end
+		ChangeHistoryService:SetWaypoint("Stellar AI · map pack built")
+		return "Map pack built in " .. rootFolder:GetFullName() .. " with " .. tostring(count) .. " objects."
 	end
 
 	if task.type == "upsert_script" then
