@@ -214,6 +214,41 @@
       resolved: resolvedRecognitionLanguage,
     });
 
+    // Shared voice intelligence helpers: keep spoken status concise, truthful and interruptible.
+    window.StellarVoiceAssistant = Object.freeze({
+      speak(text, options = {}) {
+        if (!window.speechSynthesis || options.muted) return false;
+        const clean = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 420);
+        if (!clean) return false;
+        if (options.interrupt !== false) window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(clean);
+        utterance.lang = resolvedRecognitionLanguage() || 'en-GB';
+        utterance.rate = Math.min(1.35, Math.max(.85, Number(options.rate) || 1.06));
+        utterance.pitch = Math.min(1.2, Math.max(.8, Number(options.pitch) || .98));
+        window.speechSynthesis.speak(utterance);
+        return true;
+      },
+      status(stage, detail = '') {
+        const labels = {
+          understanding:'I understand. I am working out the safest way to do that.',
+          inspecting:'I am inspecting the relevant files and current state.',
+          editing:'I found the area to change. I am applying the fix now.',
+          testing:'The change is in. I am testing it before I call it finished.',
+          reviewing:'I am reviewing the result and checking for anything I missed.',
+          complete:'Done. I have finished the task and verified the result.',
+          blocked:'I need your approval before I can continue with that action.',
+          failed:'That did not pass verification, so I am checking what failed.'
+        };
+        const message = String(detail || labels[String(stage || '').toLowerCase()] || '').trim();
+        if (!message) return false;
+        window.dispatchEvent(new CustomEvent('stellar:voice-status', { detail:{ stage, message } }));
+        return this.speak(message, { interrupt:true });
+      },
+      stop() {
+        try { window.speechSynthesis?.cancel?.(); } catch {}
+      }
+    });
+
     const patchRecognitionLanguage = () => {
       const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const proto = Recognition?.prototype;
