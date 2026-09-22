@@ -17,8 +17,9 @@ New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 New-Item -ItemType Directory -Force -Path $Workspace | Out-Null
 
 $repoRaw = "https://raw.githubusercontent.com/zitopop/Stellar-AI/main/desktop-agent"
-Invoke-WebRequest "$repoRaw/agent.mjs" -OutFile (Join-Path $InstallDir "agent.mjs")
-Invoke-WebRequest "$repoRaw/package.json" -OutFile (Join-Path $InstallDir "package.json")
+$cacheBust = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+Invoke-WebRequest "$repoRaw/agent.mjs?ts=$cacheBust" -OutFile (Join-Path $InstallDir "agent.mjs")
+Invoke-WebRequest "$repoRaw/package.json?ts=$cacheBust" -OutFile (Join-Path $InstallDir "package.json")
 
 $launcher = @"
 @echo off
