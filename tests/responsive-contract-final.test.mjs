@@ -71,3 +71,17 @@ test('mobile menu remains reachable while the drawer is closed and Settings tabs
   assert.match(appCss, /#settings-modal \.set-tabs \{[\s\S]*?grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important;[\s\S]*?overflow:visible!important;/);
   assert.match(appCss, /@media \(max-width:374px\)[\s\S]*?grid-template-columns:repeat\(3,minmax\(0,1fr\)\)!important;/);
 });
+
+
+
+test('sidebar and settings controls keep visible icons and tappable hit areas', () => {
+  assert.match(app, /FINAL TAP \+ ICON SAFETY OVERRIDE/);
+  assert.match(app, /#overlay:not\(\.open\)\{display:none!important;pointer-events:none!important;\}/);
+  assert.match(app, /\.side-act \.ico/);
+  assert.match(app, /FINAL SETTINGS BUTTON VISIBILITY FIX/);
+  assert.match(app, /FINAL SETTINGS ROW TAP TARGET FIX/);
+  assert.match(app, /#settings-modal \.set-click \.set-key[\s\S]*?pointer-events:none!important/);
+});
+
+
+

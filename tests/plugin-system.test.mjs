@@ -113,3 +113,11 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   assert.match(app, /href="\/plugins" class="set-item set-click"/);
   assert.match(app, /onclick="location\.href='\/plugins'"/);
 });
+
+
+
+test('plugins sidebar keeps tappable visible icon badges', () => {
+  assert.match(page, /FINAL PLUGINS SIDEBAR TAP \+ ICON FIX/);
+  assert.match(page, /\.nav a\{position:relative!important;z-index:2!important;min-height:46px!important;pointer-events:auto!important;touch-action:manipulation!important;\}/);
+  assert.match(page, /\.nav-ico\{display:inline-flex!important/);
+});

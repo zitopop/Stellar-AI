@@ -26149,6 +26149,43 @@ body:not(.light) button:focus-visible,body:not(.light) a:focus-visible,body:not(
       min-height:36px!important;
     }
   }
+
+
+    /* FINAL TAP + ICON SAFETY OVERRIDE */
+    #overlay:not(.open){display:none!important;pointer-events:none!important;}
+    #overlay.open{pointer-events:auto!important;}
+    body:not(.nav-open)::after{content:none!important;display:none!important;pointer-events:none!important;}
+    body.modal-active.nav-open::after{content:none!important;display:none!important;pointer-events:none!important;}
+    #sidebar,#sidebar *{pointer-events:auto!important;}
+    .side-new,.side-act,.side-quick,.sidebar-item,#mobile-menu-toggle,
+    #settings-modal .set-tab,#settings-modal .set-click,#settings-modal button,#settings-modal a{
+      pointer-events:auto!important;touch-action:manipulation;cursor:pointer;position:relative;z-index:2;
+    }
+
+
+    /* FINAL SETTINGS BUTTON VISIBILITY FIX */
+    .side-act{min-height:52px!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+    .side-act .ico,.side-quick .side-ico,#settings-modal .sk-ico,#settings-modal .set-tab i{
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      color:#f5f0ff!important;opacity:1!important;background:rgba(167,139,250,.18)!important;
+      box-shadow:inset 0 0 0 1px rgba(215,198,255,.24),0 4px 12px rgba(0,0,0,.18)!important;
+    }
+    .side-act .ico .ic,.side-quick .side-ico .ic,#settings-modal .sk-ico .ic,#settings-modal .set-tab i .ic{
+      color:currentColor!important;fill:currentColor!important;stroke:currentColor!important;opacity:1!important;
+    }
+
+
+    /* FINAL SETTINGS ROW TAP TARGET FIX */
+    #settings-modal .set-item{position:relative!important;min-height:60px!important;}
+    #settings-modal .set-click{min-height:60px!important;}
+    #settings-modal .set-click .set-key,#settings-modal .set-click .set-val,#settings-modal .set-click .set-chev{
+      pointer-events:none!important;
+    }
+    #settings-modal .set-click:hover,#settings-modal .set-click:focus-visible{
+      background:rgba(167,139,250,.13)!important;
+    }
+    @media(max-width:767px){.side-act{min-height:56px!important}.side-act .ico{min-width:30px!important;min-height:30px!important}#settings-modal .set-tab{min-height:56px!important;font-size:9px!important}}
+
 </style>
 </body>
 </html>
