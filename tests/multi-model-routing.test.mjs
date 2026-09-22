@@ -38,7 +38,7 @@ test('uncertain coding requests use a bounded recovery contract instead of givin
 });
 
 test('Task 1 exposes the approved specialist role contract', () => {
-  assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'planner', 'researcher', 'reviewer', 'security', 'tester']);
+  assert.deepEqual(Object.keys(ROUTING_ROLES).sort(), ['implementer', 'money', 'planner', 'researcher', 'reviewer', 'security', 'tester']);
   assert.equal(FORGE_MODELS.has('gpt-5-mini'), true);
   assert.equal(FORGE_MODELS.has('gemini-3-flash-preview'), true);
 });
@@ -940,7 +940,7 @@ test('Task 10 exposes a strict security JSON Schema contract', () => {
 test('Task 8 injects explicit contracts for every workspace role', () => {
   for (const role of Object.keys(ROLE_OUTPUT_CONTRACTS)) {
     const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', role);
-    const expected = { planner: 'concise plan', implementer: 'complete destination', researcher: 'documented facts', reviewer: 'Audit the supplied', security: 'severity', tester: 'test matrix' }[role];
+    const expected = { planner: 'concise plan', implementer: 'complete destination', researcher: 'documented facts', money: 'safest realistic offer', reviewer: 'Audit the supplied', security: 'severity', tester: 'test matrix' }[role];
     assert.match(prompt, new RegExp(`ROLE OUTPUT CONTRACT:.*${expected}`));
   }
 });
@@ -1509,4 +1509,17 @@ test('plan quality profiles make paid tiers progressively more deliberate withou
   assert.deepEqual(PLAN_DEFINITIONS.starter.models, ['spark', 'star', 'comet']);
   assert.deepEqual(PLAN_DEFINITIONS.plus.models, ['spark', 'star', 'comet']);
   assert.deepEqual(PLAN_DEFINITIONS.pro.models, ['spark', 'star', 'comet', 'nova']);
+});
+
+
+test('Money Builder mode detects side-hustle and revenue requests safely', () => {
+  const messages=[{role:'user',content:'I want my AI to do what Codex does to help me make money with side hustles'}];
+  assert.equal(detectWorkflowMode(messages,'general'),'money_builder');
+  const prompt=buildSystemPrompt('', 'general', 'money_builder', 'unknown', 'money');
+  assert.match(prompt,/MONEY BUILDER/);
+  assert.match(prompt,/website mini-audits/);
+  assert.match(prompt,/AI receptionist setup packs/);
+  assert.match(prompt,/do not promise guaranteed income/i);
+  assert.equal(resolveRoute('smart','money','free').role,'money');
+  assert.equal(ROLE_OUTPUT_CONTRACTS.money.includes('outreach draft'),true);
 });
