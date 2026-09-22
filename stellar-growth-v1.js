@@ -20,9 +20,23 @@
   };
 
   function currentLevelKey() {
+    const normalize = (value) => {
+      const raw = String(value || '').trim().toLowerCase();
+      const aliases = { spark:'fabie', star:'smart', nova:'ultra' };
+      const key = aliases[raw] || raw;
+      return LEVELS.some(x => x.key === key) ? key : '';
+    };
+
+    try {
+      if (typeof Store !== 'undefined') {
+        const stored = normalize(Store?.get?.().model);
+        if (stored) return stored;
+      }
+    } catch {}
+
     const checked = document.querySelector('#model-menu [data-model-choice][aria-checked="true"]');
-    const key = checked?.getAttribute('data-model-choice');
-    return LEVELS.some(x => x.key === key) ? key : 'smart';
+    const checkedKey = normalize(checked?.getAttribute('data-model-choice'));
+    return checkedKey || 'smart';
   }
 
   function levelFor(key=currentLevelKey()) {
