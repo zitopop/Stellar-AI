@@ -54,6 +54,12 @@ Route-critical public files stay in their existing locations. Add new active cod
 
 ---
 
+## Repository map
+
+Use [`docs/PROJECT-INDEX.md`](docs/PROJECT-INDEX.md) to find active app files, server routes, docs, tests, SEO surfaces and archive rules.
+
+---
+
 ## Revenue operations
 
 Use [`docs/REVENUE-OPERATIONS-CHECKLIST.md`](docs/REVENUE-OPERATIONS-CHECKLIST.md) after pricing, checkout, onboarding, SEO or billing changes. It covers paid-user billing portal testing, weekly funnel metrics, Stripe safety checks and SEO publishing steps.
