@@ -6,6 +6,8 @@ const support = readFileSync(new URL('../support.html', import.meta.url), 'utf8'
 
 test('support page keeps text, chips and buttons readable on dark backgrounds', () => {
   assert.match(support, /Final support readability pass/);
+  assert.match(support, /support-white-text-final/);
+  assert.match(support, /body, main, \.hero, \.grid, \.card[\s\S]*?color:#fff!important/);
   assert.match(support, /\.btn\{[\s\S]*?color:#fff!important/);
   assert.match(support, /\.chip\{[\s\S]*?color:#f5f7ff!important[\s\S]*?background:#151c35!important/);
   assert.match(support, /\.card h2,\.item b,\.btn,\.chip,\.search button\{color:#fff!important/);
