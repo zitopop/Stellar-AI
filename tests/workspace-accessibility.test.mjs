@@ -142,7 +142,7 @@ test('Appearance exposes a movable app-wide accent colour bar', () => {
   assert.equal((workspaceHtml.match(/class="accent-swatch" data-accent-theme=/g) ?? []).length, 8);
   assert.match(workspaceHtml, /function applyAccentTheme\(name, persist=true\)/);
   assert.match(workspaceHtml, /track\.addEventListener\('pointermove'/);
-  assert.match(workspaceHtml, /--accent:#d4af37/);
+  assert.match(workspaceHtml, /--accent:#F2D675/);
 });
 
 test('workspace keeps the starter UI calm and removes redundant home guidance', () => {
@@ -174,3 +174,4 @@ test('Settings remains simplified after removing the Skill Tree surface', () => 
   assert.match(workspaceHtml, /id="set-plan-desc"/);
   assert.match(workspaceHtml, /id="set-usage-pct"/);
 });
+

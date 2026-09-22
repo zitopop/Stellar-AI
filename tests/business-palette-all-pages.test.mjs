@@ -26,7 +26,7 @@ test('every public html page links the business palette lock', () => {
 
 test('business palette defines the approved black gold white contract', () => {
   const css = readFileSync(join(root, 'stellar-business-palette.css'), 'utf8');
-  for (const token of ['#050505','#101010','#F7F3EA','#D4AF37','#B8B0A0','#22C55E','#EF4444']) {
+  for (const token of ['#050505','#101010','#F7F3EA','#F2D675','#FFE89A','#D8CFBE','#22C55E','#EF4444']) {
     assert.match(css, new RegExp(token.replace('#', '#'), 'i'));
   }
 });
@@ -46,8 +46,8 @@ test('sidebar controls use restrained business styling instead of vibe-coded glo
   assert.match(css, /background:transparent!important/);
   assert.match(css, /box-shadow:none!important/);
   assert.match(css, /backdrop-filter:none!important/);
-  assert.match(css, /box-shadow:inset 3px 0 0 #D4AF37!important/);
-  assert.match(css, /background:#D4AF37!important/);
+  assert.match(css, /box-shadow:inset 3px 0 0 #F2D675!important/);
+  assert.match(css, /background:#F2D675!important/);
   assert.match(css, /gradient-text/);
 });
 
@@ -67,6 +67,17 @@ test('settings landing terms guides and support are page-locked to the business 
   }
   assert.match(css, /#101010!important/);
   assert.match(css, /#F7F3EA!important/);
-  assert.match(css, /#D4AF37!important/);
-  assert.match(css, /#B8B0A0!important/);
+  assert.match(css, /#F2D675!important/);
+  assert.match(css, /#D8CFBE!important/);
 });
+
+test('readable champagne gold pass keeps yellow visible and body copy readable', () => {
+  const css = readFileSync(join(root, 'stellar-business-palette.css'), 'utf8');
+  assert.match(css, /Stellar Business Palette Lock v6 - readable champagne gold pass/);
+  assert.match(css, /--stellar-readable-gold:#F2D675/);
+  assert.match(css, /--stellar-readable-gold-2:#FFE89A/);
+  assert.match(css, /--stellar-muted:#D8CFBE/);
+  assert.match(css, /-webkit-text-fill-color:#050505!important/);
+  assert.match(css, /a:hover[\s\S]*#FFE89A/);
+});
+

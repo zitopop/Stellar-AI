@@ -7,12 +7,12 @@ const indexHtml = await readFile(new URL('../index.html', import.meta.url), 'utf
 
 test('dark app shell removes the legacy old accent edge accent', () => {
   assert.match(appHtml, /body:not\(\.light\) #main-col \{[\s\S]*?background: #0b0d11 !important;[\s\S]*?border-left: 0 !important;[\s\S]*?outline: 0 !important;/);
-  assert.match(appHtml, /body:not\(\.light\) \.sidebar-item\.active \{[\s\S]*?border-left-color: #d4af37 !important;/);
+  assert.match(appHtml, /body:not\(\.light\) \.sidebar-item\.active \{[\s\S]*?border-left-color: #F2D675 !important;/);
 });
 
 test('active dark workspace accents use black and gold styling', () => {
   assert.match(appHtml, /Final black-gold palette: no blue or gold active accents/);
-  assert.match(appHtml, /body:not\(\.light\) #u-fill \{ background: linear-gradient\(90deg, #8f6b1e, #d4af37\) !important; \}/);
+  assert.match(appHtml, /body:not\(\.light\) #u-fill \{ background: linear-gradient\(90deg, #8f6b1e, #F2D675\) !important; \}/);
   assert.match(appHtml, /body:not\(\.light\) ::-webkit-scrollbar-thumb \{ background: rgba\(255,255,255,\.22\) !important; \}/);
 });
 
@@ -41,10 +41,11 @@ test('business palette lock uses the approved black gold white contract', async 
   assert.match(css, /--stellar-bg:#050505/);
   assert.match(css, /--stellar-panel:#101010/);
   assert.match(css, /--stellar-text:#F7F3EA/);
-  assert.match(css, /--stellar-gold:#D4AF37/);
-  assert.match(css, /--stellar-muted:#B8B0A0/);
+  assert.match(css, /--stellar-gold:#F2D675/);
+  assert.match(css, /--stellar-muted:#D8CFBE/);
   assert.match(css, /--stellar-success:#22C55E/);
   assert.match(css, /--stellar-danger:#EF4444/);
   assert.match(appHtml, /stellar-business-palette\.css\?v=1/);
   assert.match(indexHtml, /stellar-business-palette\.css\?v=1/);
 });
+
