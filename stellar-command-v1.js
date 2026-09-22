@@ -198,3 +198,7 @@
     render();
   });
 })();
+
+
+// Owner-only Stellar Desktop Agent entry point.
+(()=>{try{if(!document.querySelector('script[data-stellar-desktop-agent]')){const s=document.createElement('script');s.src='/stellar-desktop-agent-ui.js';s.defer=true;s.dataset.stellarDesktopAgent='1';document.head.appendChild(s)}}catch{}})();
