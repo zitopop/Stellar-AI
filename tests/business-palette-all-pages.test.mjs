@@ -51,3 +51,22 @@ test('sidebar controls use restrained business styling instead of vibe-coded glo
   assert.match(css, /gradient-text/);
 });
 
+
+
+test('settings landing terms guides and support are page-locked to the business palette', () => {
+  const css = readFileSync(join(root, 'stellar-business-palette.css'), 'utf8');
+  assert.match(css, /Stellar Business Palette Lock v4 - page-by-page business finish/);
+  for (const selector of [
+    '#settings-modal', '.settings-row', '.settings-tab',
+    '.hero', '.landing-card', '.feature-card',
+    '.terms-page', '.terms-shell', '.legal-page',
+    '.guide-card', '.guide-page', '.blog-card', 'article',
+    '.support-page', '.support-card', '.help-card', '.contact-card'
+  ]) {
+    assert.ok(css.includes(selector), selector + ' should be page-locked to business palette');
+  }
+  assert.match(css, /#101010!important/);
+  assert.match(css, /#F7F3EA!important/);
+  assert.match(css, /#D4AF37!important/);
+  assert.match(css, /#B8B0A0!important/);
+});
