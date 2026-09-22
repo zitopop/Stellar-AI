@@ -7,7 +7,7 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('billing portal is authenticated and resolves the Stripe customer only from server profile state', () => {
   assert.match(endpoint, /requireSession\(req, res\)/);
-  assert.match(endpoint, /stellar:user:\$\{session\.email\}/);
+  assert.match(endpoint, /stellar:user:\$\{sessionUser\.email\}/);
   assert.match(endpoint, /isPaidPlan\(user\.plan\)/);
   assert.match(endpoint, /user\.stripeCustomerId/);
   assert.match(endpoint, /\^cus_/);
