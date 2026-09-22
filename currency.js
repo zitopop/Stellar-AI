@@ -275,8 +275,23 @@
     if (planButton) planButton.classList.add('stellar-model-plans-link');
 
     const selectedConfig = () => {
+      const normalize = (value) => {
+        const raw = String(value || '').trim().toLowerCase();
+        const aliases = { spark:'fabie', star:'smart', nova:'ultra' };
+        const key = aliases[raw] || raw;
+        return configs[key] ? key : '';
+      };
+
+      try {
+        if (typeof Store !== 'undefined') {
+          const storedKey = normalize(Store?.get?.().model);
+          if (storedKey) return configs[storedKey];
+        }
+      } catch {}
+
       const selected = menu.querySelector('[data-model-choice][aria-checked="true"]');
-      return configs[selected?.getAttribute('data-model-choice')] || configs.smart;
+      const checkedKey = normalize(selected?.getAttribute('data-model-choice'));
+      return configs[checkedKey] || configs.smart;
     };
 
     const syncTrigger = () => {
