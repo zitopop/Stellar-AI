@@ -71,10 +71,10 @@ Use [`docs/REVENUE-OPERATIONS-CHECKLIST.md`](docs/REVENUE-OPERATIONS-CHECKLIST.m
 
 | Plan | Monthly | Annual | Included |
 |------|---------|--------|----------|
-| Free | £0 | £0 | 40 requests/hour · £1 credit · Spark, Star and Comet |
-| Starter | £8/mo | £67/yr | 120 requests/hour · longer generations · Spark, Star and Comet |
-| Plus | £20/mo | £168/yr (£14/mo) | 400 requests/hour · larger generation allowance · Spark, Star and Comet |
-| Pro | £75/mo | £630/yr (£52.50/mo) | 1,600 requests/hour · longest generation allowance · Nova |
+| Free | £0 | £0 | 40 requests/hour · up to 2,000 output tokens · £1 starting credit · Spark, Star and Comet |
+| Starter | £8/mo | £67/yr · save £29 (30%) | 120 requests/hour · up to 3,500 output tokens · stronger context and deliberate self-review · Spark, Star and Comet |
+| Plus | £20/mo | £168/yr · save £72 (30%) | 400 requests/hour · up to 5,000 output tokens · deeper architecture/debugging and multi-file validation · Spark, Star and Comet |
+| Pro | £75/mo | £630/yr · save £270 (30%) | 1,600 requests/hour · up to 8,000 output tokens · Nova · maximum multi-pass engineering review |
 
 ---
 
