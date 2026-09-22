@@ -21,7 +21,8 @@ test('plugin registry separates working, owner-only and future integrations', ()
   assert.equal(getPluginDefinition('pc-agent').status, 'beta');
   assert.equal(getPluginDefinition('roblox-studio').audience, 'owner');
   assert.equal(getPluginDefinition('github').status, 'available');
-  assert.equal(getPluginDefinition('github').connection, 'token');
+  assert.equal(getPluginDefinition('github').connection, 'oauth_or_token');
+  assert.equal(getPluginDefinition('github').oauthProvider, 'github');
   assert.equal(getPluginDefinition('vercel').status, 'available');
   assert.equal(getPluginDefinition('vercel').connection, 'token');
   assert.deepEqual(getPluginDefinition('github').permissions.map(p=>p.id), ['repos.read']);
@@ -50,6 +51,11 @@ test('GitHub and Vercel provider readers verify a token before storing it', () =
 
 test('plugin manager is account-scoped and only enables token plugins after connection', () => {
   assert.match(manager, /requireSession\(req,res\)/);
+  assert.match(manager, /action==='install'/);
+  assert.match(manager, /action==='startOAuth'/);
+  assert.match(manager, /action==='oauthCallback'/);
+  assert.match(manager, /github\.com\/login\/oauth\/authorize/);
+  assert.match(manager, /github\.com\/login\/oauth\/access_token/);
   assert.match(manager, /action==='connectToken'/);
   assert.match(manager, /action==='disconnect'/);
   assert.match(manager, /action==='inspect'/);
@@ -61,6 +67,7 @@ test('shared API keeps plugin management within the existing serverless function
   assert.match(api, /surface==='plugins'/);
   assert.match(api, /pluginManagerHandler/);
   assert.ok(vercel.rewrites.some(route => route.source === '/api/plugins' && route.destination === '/api/desktop-agent?surface=plugins'));
+  assert.ok(vercel.rewrites.some(route => route.source === '/api/plugin-oauth-callback' && route.destination === '/api/desktop-agent?surface=plugins&action=oauthCallback'));
   assert.ok(vercel.rewrites.some(route => route.source === '/plugins' && route.destination === '/plugins.html'));
   assert.ok(vercel.headers.some(route => route.source === '/plugins' && route.headers?.some(h => h.key === 'Cache-Control' && h.value === 'private, no-store')));
 });
@@ -81,7 +88,12 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   for (const filter of ['all','connected','coming_soon','developer','disabled']) {
     assert.match(page, new RegExp(`data-filter="${filter}"`));
   }
+  assert.match(page, /data-install=/);
   assert.match(page, /data-connect=/);
+  assert.match(page, /plugin-oauth-submit/);
+  assert.match(page, /Connect with OAuth/);
+  assert.match(page, /startOAuth/);
+  assert.match(page, /installPlugin/);
   assert.match(page, /data-inspect=/);
   assert.match(page, /connectToken/);
   assert.match(page, /disconnectCurrentPlugin/);

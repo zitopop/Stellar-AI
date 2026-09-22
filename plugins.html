@@ -142,8 +142,10 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
   <div class="plugin-dialog" role="dialog" aria-modal="true" aria-labelledby="plugin-modal-title">
     <div class="plugin-dialog-head"><div><h2 id="plugin-modal-title">Connect plugin</h2><p id="plugin-modal-copy"></p></div><button id="plugin-modal-close" class="modal-close" type="button" aria-label="Close">×</button></div>
     <div id="plugin-connect-form">
-      <input id="plugin-token" class="token-input" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste token">
-      <div class="connect-help"><span class="mode-badge">Read-only connection</span><a id="plugin-token-help" href="#" target="_blank" rel="noopener noreferrer">How to create a token ↗</a></div>
+      <button id="plugin-oauth-submit" class="btn" type="button" style="width:100%;margin-bottom:10px;background:#7567ff">Connect with OAuth</button>
+      <div class="secret-note" id="plugin-oauth-note">OAuth opens the provider permission screen. No password is shared with Stellar.</div>
+      <input id="plugin-token" class="token-input" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste token" style="margin-top:10px">
+      <div class="connect-help"><span class="mode-badge">Manual secure token fallback</span><a id="plugin-token-help" href="#" target="_blank" rel="noopener noreferrer">How to create a token ↗</a></div>
       <div class="secret-note">The token is sent over HTTPS and encrypted before server-side storage. It is never saved in browser storage or shown back to you.</div>
       <div class="modal-actions"><button id="plugin-connect-cancel" class="btn" type="button">Cancel</button><button id="plugin-connect-submit" class="btn" type="button">Connect read-only</button></div>
     </div>
@@ -184,7 +186,7 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     }
     await Promise.all(tasks);
   }
-  function isTokenPlugin(p){return p?.connection==='token'}
+  function isTokenPlugin(p){return p?.connection==='token'||p?.connection==='oauth_or_token'}
   function state(p){
     if(p.status==='coming_soon')return {label:'Coming soon',className:'soon'};
     if(!p.availableToUser)return {label:'Unavailable',className:''};
@@ -225,11 +227,11 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
         actions='<button class="btn" type="button" data-inspect="'+escapeHtml(p.id)+'">Manage</button>';
         toggle='<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>';
       }else{
-        actions='<button class="btn" type="button" data-connect="'+escapeHtml(p.id)+'">Connect</button>';
+        actions='<button class="btn" type="button" data-install="'+escapeHtml(p.id)+'">Install</button><button class="btn" type="button" data-connect="'+escapeHtml(p.id)+'">Connect</button>';
         toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Connect '+escapeHtml(p.name)+' first"></button>';
       }
     }else{
-      actions=p.route&&p.availableToUser?'<a class="btn" href="'+escapeHtml(p.route)+'">Manage</a>':'';
+      actions=p.route&&p.availableToUser?'<button class="btn" type="button" data-install="'+escapeHtml(p.id)+'">Install</button><a class="btn" href="'+escapeHtml(p.route)+'">Manage</a>':'';
       toggle=p.availableToUser
         ? '<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>'
         : '<button type="button" class="toggle" disabled aria-pressed="false" aria-label="'+escapeHtml(st.label)+'"></button>';
@@ -251,6 +253,7 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     const list=plugins.filter(p=>passes(p));
     $('plugin-grid').innerHTML=(list.length?list.map(pluginCard).join(''):'<div class="empty">No plugins match this filter.</div>')+(filter==='all'?moreCard():'');
     document.querySelectorAll('[data-toggle]').forEach(button=>button.addEventListener('click',()=>togglePlugin(button.dataset.toggle)));
+    document.querySelectorAll('[data-install]').forEach(button=>button.addEventListener('click',()=>installPlugin(button.dataset.install)));
     document.querySelectorAll('[data-connect]').forEach(button=>button.addEventListener('click',()=>openConnect(button.dataset.connect)));
     document.querySelectorAll('[data-inspect]').forEach(button=>button.addEventListener('click',()=>openInspect(button.dataset.inspect)));
   }
@@ -294,12 +297,34 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     $('plugin-token').placeholder=id==='github'?'GitHub token':'Vercel access token';
     $('plugin-token-help').href=id==='github'?'https://github.com/settings/personal-access-tokens':'https://vercel.com/account/settings/tokens';
     $('plugin-token-help').textContent=id==='github'?'Create a GitHub token ↗':'Create a Vercel token ↗';
+    $('plugin-oauth-submit').hidden=!(plugin.connection==='oauth_or_token');
+    $('plugin-oauth-note').hidden=!(plugin.connection==='oauth_or_token');
+    $('plugin-oauth-submit').textContent='Connect '+plugin.name+' with OAuth';
     $('plugin-connect-form').hidden=false;
     $('plugin-inspect-view').hidden=true;
     $('plugin-modal').classList.add('open');
     $('plugin-modal').setAttribute('aria-hidden','false');
     setTimeout(()=>$('plugin-token').focus(),0);
   }
+  async function installPlugin(id){
+    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+    try{
+      const result=await api('install',{id});
+      if(result.needsConnection){openConnect(id);setNotice(plugin.name+' needs a secure connection before Stellar can use it.','good');return}
+      const index=plugins.findIndex(p=>p.id===id);if(index>=0)plugins[index]=result.plugin;
+      await getConnectionStates();render();setNotice(plugin.name+' installed and enabled.','good');
+    }catch(error){setNotice(error.message,'bad')}
+  }
+  async function startOAuthCurrentPlugin(){
+    const id=modalPluginId,plugin=plugins.find(p=>p.id===id);if(!plugin)return;
+    $('plugin-oauth-submit').disabled=true;
+    try{
+      const result=await api('startOAuth',{id});
+      if(result.url){location.href=result.url;return}
+    }catch(error){setNotice(error.message+' Manual token connection is still available below.','bad')}
+    finally{$('plugin-oauth-submit').disabled=false}
+  }
+
   async function connectCurrentPlugin(){
     const id=modalPluginId,plugin=plugins.find(p=>p.id===id);if(!plugin)return;
     const raw=$('plugin-token').value.trim();if(!raw){setNotice('Enter a token first.','bad');return}
@@ -365,11 +390,12 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
     render();
   }));
   $('search').addEventListener('input',render);
-  $('learn-btn').addEventListener('click',()=>{setNotice('Enable only the plugins you need. GitHub and Vercel are read-only in this release; other high-impact actions stay unavailable until separately implemented and approved.','good')});
+  $('learn-btn').addEventListener('click',()=>{setNotice('Install only what you need. OAuth opens the provider permission screen; manual tokens remain a secure fallback until every provider app is approved.','good')});
   $('plugin-modal-close').addEventListener('click',closePluginModal);
   $('plugin-connect-cancel').addEventListener('click',closePluginModal);
   $('plugin-inspect-close').addEventListener('click',closePluginModal);
   $('plugin-connect-submit').addEventListener('click',connectCurrentPlugin);
+  $('plugin-oauth-submit').addEventListener('click',startOAuthCurrentPlugin);
   $('plugin-disconnect').addEventListener('click',disconnectCurrentPlugin);
   $('plugin-modal').addEventListener('click',event=>{if(event.target===$('plugin-modal'))closePluginModal()});
   addEventListener('keydown',event=>{if(event.key==='Escape'&&$('plugin-modal').classList.contains('open'))closePluginModal()});
