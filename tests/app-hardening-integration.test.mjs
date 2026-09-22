@@ -29,7 +29,7 @@ test('paid-plan cards communicate the stronger plan-specific AI behavior', () =>
   assert.match(app, /Stronger context \+ deliberate self-review/);
   assert.match(app, /Deeper architecture, debugging \+ edge-case checks/);
   assert.match(app, /Stronger multi-file consistency \+ validation/);
-  assert.match(app, /Maximum multi-pass engineering review/);
+  assert.match(app, /Maximum multi-pass engineering review/);\n  assert.match(app, /Up to 3,500 output tokens · 75% more than Free/);\n  assert.match(app, /Up to 5,000 output tokens · 2.5× Free/);\n  assert.match(app, /Up to 8,000 output tokens · 4× Free/);
 });
 
 test('repository exposes one deterministic local quality command', () => {
@@ -51,6 +51,6 @@ test('coding-agent shortcuts from the owner model menu open the paired workspace
 test('landing plan copy matches the stronger paid-plan quality behavior', () => {
   assert.match(landing, /Paid plans add progressively deeper engineering review/);
   assert.match(landing, /Stronger context \+ deliberate self-review/);
-  assert.match(landing, /Deeper architecture, debugging \+ validation/);
-  assert.match(landing, /Maximum multi-pass engineering review/);
+  assert.match(landing, /Deeper architecture, debugging \\+ multi-file validation/);
+  assert.match(landing, /Nova \\+ maximum multi-pass engineering review/);\n  assert.match(landing, /Save £29 \\(30%\\)/);\n  assert.match(landing, /Save £72 \\(30%\\)/);\n  assert.match(landing, /Save £270 \\(30%\\)/);
 });
