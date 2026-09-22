@@ -1474,3 +1474,15 @@ test('cross-chat memory is bounded and treated as background context', () => {
   assert.match(prompt, /Old project/);
   assert.match(prompt, /Prefer newer explicit instructions/);
 });
+
+
+test('Stellar coding guidance performs architecture, dependency, security, and self-review checks', () => {
+  const prompt = buildSystemPrompt('', 'general', 'general', 'unknown', '');
+  assert.match(prompt, /CODE INTELLIGENCE/);
+  assert.match(prompt, /production engineering work, not autocomplete/);
+  assert.match(prompt, /silently build a requirement checklist/);
+  assert.match(prompt, /trace execution paths across files/);
+  assert.match(prompt, /every referenced function, event, variable, import, export/);
+  assert.match(prompt, /Self-review the proposed implementation before sending it/);
+  assert.match(prompt, /Never claim a test, build, deployment, API call/);
+});
