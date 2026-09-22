@@ -71,8 +71,13 @@ test('achievement progression remains server-side while the removed Skill Tree l
   assert.doesNotMatch(app, /class="achievement-badge/);
 });
 
-test('app Starter card preserves the approved early-builder offer and benefit order', () => {
-  assert.match(app, /id="plan-card-starter"[\s\S]*?When Free is useful but you keep hitting the ceiling on regular scripts.[\s\S]*?id="plan-btn-starter"[^>]*>Get Starter<\/button>[\s\S]*?£67\/year · Save 30%[\s\S]*?Everything in Free, plus[\s\S]*?3× usage · 120 requests\/hour[\s\S]*?Same Spark, Star &amp; Comet models[\s\S]*?Stronger context \+ deliberate self-review[\s\S]*?Cancel anytime/);
+test('app Starter card shows concrete paid value without changing the approved price', () => {
+  assert.match(app, /id="plan-card-starter"[\s\S]*?When Free is useful but you keep hitting the ceiling on regular scripts.[\s\S]*?id="plan-btn-starter"[^>]*>Get Starter<\/button>/);
+  assert.match(app, /£67\/year · Save £29 \(30%\)/);
+  assert.match(app, /3× usage · 120 requests\/hour/);
+  assert.match(app, /Up to 3,500 output tokens · 75% more than Free/);
+  assert.match(app, /Stronger context \+ deliberate self-review/);
+  assert.match(app, /Spark, Star &amp; Comet models/);
 });
 
 test('workspace defaults to Star and protects its mobile modal experience', () => {
