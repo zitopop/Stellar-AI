@@ -13082,13 +13082,30 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       if (!navigator.mediaDevices?.getUserMedia) { voicePermissionState='browser-managed'; voiceRecognitionBlocked=false; return true; }
       if (voicePermissionState === 'granted') { voiceRecognitionBlocked=false; return true; }
       if (voicePermissionPromise) return voicePermissionPromise;
-      voicePermissionPromise = navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:true, noiseSuppression:true, autoGainControl:true } }).then((stream) => {
+      const requestPreferredMic = () => navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:true, noiseSuppression:true, autoGainControl:true } });
+      const requestBasicMic = () => navigator.mediaDevices.getUserMedia({ audio:true });
+      voicePermissionPromise = requestPreferredMic().catch((error) => {
+        if (['OverconstrainedError','NotReadableError','AbortError'].includes(String(error?.name || ''))) return requestBasicMic();
+        throw error;
+      }).then((stream) => {
         stream.getTracks().forEach((track) => track.stop()); voicePermissionState='granted'; voiceRecognitionBlocked=false; return true;
-      }).catch((error) => { voicePermissionState = error?.name === 'NotFoundError' ? 'unavailable' : 'denied'; voiceRecognitionBlocked=true; return false; }).finally(() => { voicePermissionPromise=null; });
+      }).catch((error) => {
+        const name=String(error?.name || '');
+        voicePermissionState = name === 'NotFoundError' ? 'unavailable' : 'denied';
+        voiceRecognitionBlocked=true;
+        return false;
+      }).finally(() => { voicePermissionPromise=null; });
       return voicePermissionPromise;
     }
     function stopMic() { recogOn = false; const btn=document.getElementById('mic-btn'); if(btn){ btn.classList.remove('mic-live'); btn.setAttribute('aria-pressed','false'); btn.setAttribute('aria-label','Start voice call'); } refreshVoiceSettings(); }
-    function toggleMic() { if(!recog){ showStellarNotice('Voice input is not available in this browser.','error'); return; } if(recogOn){ try{recog.stop();}catch{} return; } stopSpeaking(); try{ recog.lang = navigator.language || 'en-GB'; recog.start(); }catch{} }
+    function voiceRecognitionLocale() {
+      try {
+        const configured = window.StellarVoiceLanguage?.resolved?.();
+        if (/^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(String(configured || ''))) return configured;
+      } catch {}
+      return navigator.language || 'en-GB';
+    }
+    function toggleMic() { if(!recog){ showStellarNotice('Voice input is not available in this browser.','error'); return; } if(recogOn){ try{recog.stop();}catch{} return; } stopSpeaking(); try{ recog.lang = voiceRecognitionLocale(); recog.start(); }catch{} }
 
     function syncVoiceCallUi(state='ready', caption='') {
       const modal=document.getElementById('voice-call-modal'), status=document.getElementById('voice-call-status'), cap=document.getElementById('voice-call-caption'), mic=document.getElementById('voice-call-mic'), label=document.getElementById('voice-call-mic-label');
@@ -13098,7 +13115,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
     function startVoiceCallListening() {
       if (!voiceCallActive || voiceRecognitionBlocked || voiceCallMuted || currentAbort || !recog || window.speechSynthesis?.speaking || recogOn) return;
       const txt=document.getElementById('txt'); if(txt && !txt.value.trim()) txt.value='';
-      try { recog.lang=navigator.language||'en-GB'; recog.start(); } catch (error) { if(voiceCallActive)syncVoiceCallUi('ready','Tap the orb to start listening.'); }
+      try { recog.lang=voiceRecognitionLocale(); recog.start(); } catch (error) { if(voiceCallActive)syncVoiceCallUi('ready','Tap the orb to start listening.'); }
     }
     async function openVoiceCall() {
       if (!recog) { showStellarNotice('Voice input is not supported by this browser. Try Chrome or Edge on a secure HTTPS connection.','error'); return; }
@@ -13107,7 +13124,7 @@ body:not(.light) .stellar-feature-grid button:hover{border-color:rgba(190,137,25
       modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('voice-call-active'); syncVoiceCallUi('ready','Connecting to your microphone…');
       const allowed=await ensureVoiceMicrophonePermission();
       if(!voiceCallActive)return;
-      if(!allowed){ syncVoiceCallUi('ready',voicePermissionState==='unavailable'?'No microphone was found.':'Microphone access is blocked. Allow it in browser settings, then tap the orb.'); return; }
+      if(!allowed){ syncVoiceCallUi('ready',voicePermissionState==='unavailable'?'No microphone was found. Check Windows input devices and reconnect your mic.':'Microphone access is blocked. In Chrome, open Site settings → Microphone → Allow, then tap the orb.'); return; }
       syncVoiceCallUi('ready','Start speaking.'); setTimeout(startVoiceCallListening,60);
     }
 
