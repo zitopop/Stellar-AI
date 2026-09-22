@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>PC Agent · Stellar AI</title>
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#101218;--panel2:#151821;--line:#252936;--text:#f7f8fb;--muted:#9da5b5;--accent:#bca8ff;--good:#73e2b7;--warn:#ffd479;--bad:#ff8a9a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#201b35 0,transparent 35%),var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}.wrap{width:min(1120px,calc(100% - 32px));margin:0 auto}.top{position:sticky;top:0;z-index:5;background:rgba(8,9,13,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}
+.topin{min-height:64px;display:flex;align-items:center;gap:14px}.back{color:var(--muted);text-decoration:none}.brand{font-weight:850;letter-spacing:-.03em}.pill{margin-left:auto;padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+main{padding:48px 0 72px}.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:24px;align-items:end;margin-bottom:28px}.eyebrow{color:var(--accent);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+h1{font-size:clamp(36px,6vw,72px);line-height:.98;letter-spacing:-.055em;margin:8px 0 16px}.lead{max-width:720px;color:var(--muted);font-size:16px}.statusbox{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:20px;padding:18px}
+.statusrow{display:flex;align-items:center;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:#666}.dot.online{background:var(--good);box-shadow:0 0 20px rgba(115,226,183,.45)}.small{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(21,24,33,.94),rgba(14,16,22,.94));border-radius:22px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.18)}
+.card h2{margin:0 0 8px;font-size:20px;letter-spacing:-.025em}.card p{margin:0 0 16px;color:var(--muted)}.btn{min-height:44px;border:1px solid var(--line);background:#171a23;color:var(--text);border-radius:12px;padding:0 15px;cursor:pointer;font-weight:750}
+.btn.primary{background:linear-gradient(100deg,#d8d0ff,#b3eff0);color:#11131a;border:0}.btn.danger{color:#ffbec6}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;flex-wrap:wrap;gap:10px}
+.code{font:800 24px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;padding:14px 16px;background:#090a0e;border:1px solid var(--line);border-radius:14px;word-break:break-all}.install{font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;background:#090a0e;border:1px solid var(--line);border-radius:14px;padding:14px;overflow:auto;color:#d7d9e0;white-space:pre-wrap}
+textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--line);border-radius:14px;background:#090a0e;color:var(--text);padding:14px;outline:none}textarea:focus{border-color:#655d92;box-shadow:0 0 0 3px rgba(188,168,255,.08)}
+.plan{display:grid;gap:10px;margin-top:16px}.step{display:grid;grid-template-columns:auto 1fr;gap:12px;border:1px solid var(--line);background:#0d0f15;border-radius:14px;padding:13px}.step input{margin-top:4px}.type{font:800 12px ui-monospace,monospace;color:#d7cbff}.reason{color:var(--muted);font-size:12px;margin-top:4px}.args{font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;margin-top:8px;color:#cdd1dc}
+.log{min-height:160px;max-height:340px;overflow:auto;background:#090a0e;border:1px solid var(--line);border-radius:14px;padding:14px;font:12px/1.55 ui-monospace,monospace;color:#cfd3dd}.log .ok{color:var(--good)}.log .bad{color:var(--bad)}.log .warn{color:var(--warn)}
+.note{margin-top:18px;padding:13px 15px;border:1px solid rgba(255,212,121,.22);background:rgba(255,212,121,.06);border-radius:14px;color:#e7d9aa;font-size:12px}
+@media(max-width:800px){main{padding-top:28px}.hero,.grid{grid-template-columns:1fr}.wrap{width:min(100% - 20px,1120px)}h1{font-size:44px}.card{padding:17px;border-radius:18px}.topin{min-height:58px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap topin"><a class="back" href="/app">← App</a><div class="brand">Stellar AI · PC Agent</div><div class="pill" id="ownerPill">Checking owner access…</div></div></header>
+<main class="wrap">
+<section class="hero"><div><div class="eyebrow">Local computer control</div><h1>Your PC,<br>with guardrails.</h1><p class="lead">Pair one Windows PC with Stellar AI. The local companion can work inside an approved workspace, read and edit project files, run reviewed terminal commands and return results to your AI.</p></div>
+<div class="statusbox"><div class="statusrow"><span class="dot" id="statusDot"></span><strong id="statusText">Not paired</strong></div><div class="small" id="statusMeta">Create a pairing code to connect your Windows PC.</div></div></section>
+
+<section class="grid">
+<div class="card"><h2>1. Pair this PC</h2><p>Create a short-lived code, then enter it in the Windows companion. Pairing codes expire after 10 minutes and can only be used once.</p>
+<div id="pairCode" class="code" hidden></div><div class="actions" style="margin-top:14px"><button class="btn primary" id="pairBtn">Create pairing code</button><button class="btn danger" id="disconnectBtn" hidden>Disconnect PC</button></div></div>
+<div class="card"><h2>2. Install Windows companion</h2><p>The companion runs locally; the website never receives your Windows password.</p>
+<div class="install">PowerShell:
+irm https://raw.githubusercontent.com/zitopop/Stellar-AI/main/desktop-agent/install-windows.ps1 | iex
+
+Then:
+cd "$env:LOCALAPPDATA\StellarAI\DesktopAgent"
+node agent.mjs pair YOUR_CODE
+.\start-stellar-agent.cmd</div>
+<div class="note">Terminal commands are OFF by default. Enable them only when you want reviewed shell tasks: <code>$env:STELLAR_DESKTOP_ALLOW_SHELL="1"</code> before starting the agent.</div></div>
+</section>
+
+<section class="card" style="margin-top:18px"><h2>3. Tell Stellar what to do</h2><p>Describe a task naturally. Stellar builds a local action plan first; risky steps must be checked before they can be queued.</p>
+<textarea id="prompt" placeholder="Example: Look through my Stellar project, find why the settings panel is overflowing on mobile, fix the relevant CSS, and run the tests."></textarea>
+<div class="actions" style="margin-top:12px"><button class="btn primary" id="planBtn">Build PC plan</button><button class="btn" id="refreshBtn">Refresh PC status</button></div>
+<div id="planSummary" style="margin-top:16px;font-weight:750"></div><div class="plan" id="plan"></div>
+<div class="actions" id="runActions" style="margin-top:14px" hidden><button class="btn primary" id="runBtn">Run selected actions</button></div></section>
+
+<section class="card" style="margin-top:18px"><h2>Activity</h2><p>Tasks and results from the paired PC appear here.</p><div class="log" id="log">PC Agent ready.</div></section>
+</main>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id);
+  let token='',currentPlan=null,statusTimer=null;
+  try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
+  const auth=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
+  function log(message,cls=''){const line=document.createElement('div');if(cls)line.className=cls;line.textContent='['+new Date().toLocaleTimeString()+'] '+message;$('log').appendChild(line);$('log').scrollTop=$('log').scrollHeight}
+  async function api(action,body={},method='POST'){
+    const response=await fetch('/api/desktop-agent'+(method==='GET'?('?action='+encodeURIComponent(action)):''),
+      method==='GET'?{headers:{Authorization:'Bearer '+token},cache:'no-store'}:{method:'POST',headers:auth(),body:JSON.stringify({action,...body})});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||'Request failed.');
+    return data;
+  }
+  async function verifyOwner(){
+    if(!token){$('ownerPill').textContent='Sign in required';throw new Error('Sign in to Stellar AI first.')}
+    const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});const d=await r.json().catch(()=>({}));
+    if(!r.ok||d.owner!==true){$('ownerPill').textContent='Owner only';throw new Error('PC Agent is owner-only in this release.')}
+    $('ownerPill').textContent='Owner access verified';
+  }
+  async function status(){
+    try{
+      const d=await api('status',{},'GET');
+      $('statusDot').classList.toggle('online',!!d.online);
+      $('statusText').textContent=!d.paired?'Not paired':d.online?'PC online':'PC paired · offline';
+      $('statusMeta').textContent=!d.paired?'Create a pairing code to connect your Windows PC.':(d.hostname||'Windows PC')+' · last seen '+(d.lastSeen?new Date(d.lastSeen).toLocaleString():'never');
+      $('disconnectBtn').hidden=!d.paired;
+      return d;
+    }catch(error){log(error.message,'bad');throw error}
+  }
+  $('pairBtn').onclick=async()=>{
+    try{const d=await api('createPair');$('pairCode').hidden=false;$('pairCode').textContent=d.code;log('Pairing code created. It expires in 10 minutes.','ok')}catch(e){log(e.message,'bad')}
+  };
+  $('disconnectBtn').onclick=async()=>{
+    if(!confirm('Disconnect the paired PC? The local device token will stop working.'))return;
+    try{await api('disconnect');$('pairCode').hidden=true;log('PC disconnected.','warn');await status()}catch(e){log(e.message,'bad')}
+  };
+  $('refreshBtn').onclick=()=>status().catch(()=>{});
+  $('planBtn').onclick=async()=>{
+    const prompt=$('prompt').value.trim();if(!prompt)return;
+    $('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Planning…';$('runActions').hidden=true;
+    try{
+      const r=await fetch('/api/desktop-plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt})});
+      const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build plan.');
+      currentPlan=d.plan;$('planSummary').textContent=currentPlan.summary||'Review these actions:';
+      currentPlan.actions.forEach((action,i)=>{
+        const row=document.createElement('label');row.className='step';
+        const check=document.createElement('input');check.type='checkbox';check.checked=!action.requiresApproval;check.dataset.index=i;
+        const body=document.createElement('div');body.innerHTML='<div class="type"></div><div class="reason"></div><div class="args"></div>';
+        body.querySelector('.type').textContent=(i+1)+'. '+action.type+(action.requiresApproval?' · APPROVAL REQUIRED':' · read-only');
+        body.querySelector('.reason').textContent=action.reason||'';
+        body.querySelector('.args').textContent=JSON.stringify(action.args,null,2);
+        row.append(check,body);$('plan').appendChild(row);
+      });
+      $('runActions').hidden=!currentPlan.actions.length;log('PC action plan created. Review approvals before running.','ok');
+    }catch(e){$('planSummary').textContent='';log(e.message,'bad')}finally{$('planBtn').disabled=false}
+  };
+  async function waitTask(taskId,label){
+    for(let i=0;i<90;i++){
+      await new Promise(r=>setTimeout(r,1500));
+      const r=await fetch('/api/desktop-agent?action=taskStatus&taskId='+encodeURIComponent(taskId),{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)continue;
+      const state=d.task?.status;
+      if(state==='completed'){log(label+' completed: '+(d.task.result?.output||'done'),'ok');return true}
+      if(state==='failed'){log(label+' failed: '+(d.task.result?.error||'unknown error'),'bad');return false}
+    }
+    log(label+' is still running or the PC went offline.','warn');return false;
+  }
+  $('runBtn').onclick=async()=>{
+    if(!currentPlan)return;
+    const selected=[...$('plan').querySelectorAll('input[type=checkbox]:checked')].map(x=>Number(x.dataset.index));
+    if(!selected.length){log('Select at least one action.','warn');return}
+    const s=await status().catch(()=>null);if(!s?.online){log('Start the Windows companion before running the plan.','warn');return}
+    $('runBtn').disabled=true;
+    try{
+      for(const i of selected){
+        const action=currentPlan.actions[i];const label=(i+1)+'. '+action.type;
+        log('Queueing '+label+'…');
+        const d=await api('enqueue',{task:{type:action.type,args:action.args,approved:true}});
+        const ok=await waitTask(d.taskId,label);if(!ok)break;
+      }
+    }catch(e){log(e.message,'bad')}finally{$('runBtn').disabled=false;status().catch(()=>{})}
+  };
+  verifyOwner().then(status).then(()=>{statusTimer=setInterval(()=>status().catch(()=>{}),15000)}).catch(e=>log(e.message,'bad'));
+  addEventListener('beforeunload',()=>statusTimer&&clearInterval(statusTimer));
+})();
+</script>
+</body>
+</html>
