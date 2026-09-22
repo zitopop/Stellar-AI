@@ -72,14 +72,14 @@ body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transpar
 @media(max-width:1180px){.plugin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:930px){.shell{grid-template-columns:210px minmax(0,1fr)}.main{padding-left:18px;padding-right:18px}.plugin-grid{grid-template-columns:1fr}.benefit{min-height:0}}
 @media(max-width:700px){
-  .shell{display:block}.sidebar{display:none}.mobile-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;min-height:56px;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(9,12,19,.94);backdrop-filter:blur(14px)}.mobile-top a{text-decoration:none;color:var(--muted);font-weight:800}.mobile-top strong{font-size:13px}.main{padding:22px 14px 44px}.page-head{align-items:center}.page-head h1{font-size:27px}.page-head p{font-size:12.5px}.learn{display:none}.controls{align-items:stretch;flex-direction:column;padding:8px}.search{width:100%}.plugin-grid{grid-template-columns:1fr}.card{min-height:0}.owner-card{display:none}
+  .shell{display:block}.sidebar{display:flex;position:fixed;left:0;top:0;width:min(86vw,300px);height:100dvh;transform:translateX(-105%);transition:transform .22s ease;box-shadow:18px 0 60px rgba(0,0,0,.45);z-index:80}.sidebar.mobile-open{transform:translateX(0)}.sidebar-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:70}.sidebar-scrim.open{display:block}.mobile-menu-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:11px;background:#15101f;color:#fff;font-size:20px;cursor:pointer;touch-action:manipulation}.mobile-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;min-height:56px;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(9,12,19,.94);backdrop-filter:blur(14px)}.mobile-top a{text-decoration:none;color:var(--muted);font-weight:800}.mobile-top strong{font-size:13px}.main{padding:22px 14px 44px}.page-head{align-items:center}.page-head h1{font-size:27px}.page-head p{font-size:12.5px}.learn{display:none}.controls{align-items:stretch;flex-direction:column;padding:8px}.search{width:100%}.plugin-grid{grid-template-columns:1fr}.card{min-height:0}.owner-card{display:none}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
 
 /* FINAL PLUGINS SIDEBAR TAP + ICON FIX */
 .nav a{position:relative!important;z-index:2!important;min-height:46px!important;pointer-events:auto!important;touch-action:manipulation!important;}
-.nav-ico{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:24px!important;height:24px!important;border-radius:8px!important;color:#f5f0ff!important;background:rgba(212,175,55,.20)!important;box-shadow:inset 0 0 0 1px rgba(215,198,255,.22)!important;font-size:13px!important;opacity:1!important;}
+.nav-ico{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:24px!important;height:24px!important;border-radius:8px!important;color:#f5f0ff!important;background:rgba(139,92,246,.20)!important;box-shadow:inset 0 0 0 1px rgba(215,198,255,.22)!important;font-size:13px!important;opacity:1!important;}
 .sidebar,.sidebar *{pointer-events:auto!important;}
 button,.btn,.tab,.search{touch-action:manipulation!important;}
 
@@ -87,7 +87,7 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
 
 /* OWNER-ONLY OAUTH MODAL POLISH */
 .plugin-modal{background:rgba(2,4,9,.76)!important;backdrop-filter:blur(18px) saturate(1.08)!important;-webkit-backdrop-filter:blur(18px) saturate(1.08)!important;}
-.plugin-dialog{width:min(640px,100%)!important;padding:28px 30px 26px!important;border-radius:22px!important;border:1px solid rgba(212,175,55,.24)!important;background:linear-gradient(165deg,rgba(22,29,45,.98),rgba(9,14,24,.98))!important;box-shadow:0 34px 110px rgba(0,0,0,.62), inset 0 1px rgba(255,255,255,.08)!important;}
+.plugin-dialog{width:min(640px,100%)!important;padding:28px 30px 26px!important;border-radius:22px!important;border:1px solid rgba(139,92,246,.28)!important;background:linear-gradient(165deg,rgba(22,29,45,.98),rgba(9,14,24,.98))!important;box-shadow:0 34px 110px rgba(0,0,0,.62), inset 0 1px rgba(255,255,255,.08)!important;}
 .plugin-dialog-head{align-items:flex-start!important;margin-bottom:22px!important;}
 
 
@@ -105,7 +105,7 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
 .oauth-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.14);font-size:19px;}.oauth-arrow{font-size:24px;opacity:.95;}
 .oauth-note{margin:0 0 22px;text-align:center;color:#8f97aa;font-size:11.5px;font-weight:650;}
 .modal-divider{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin:20px 0 18px;color:#8e96a9;font-size:11px;font-weight:900;letter-spacing:.08em;}.modal-divider:before,.modal-divider:after{content:'';height:1px;background:rgba(255,255,255,.12);}
-.token-section{padding:18px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.025);}.token-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;font-size:15px;font-weight:950;}.token-title span:first-child{color:#f4d676;font-size:22px}.token-sub{margin:0 0 14px!important;font-size:12.5px!important;color:#aab2c2!important;}
+.token-section{padding:18px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.025);}.token-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;font-size:15px;font-weight:950;}.token-title span:first-child{color:#a78bfa;font-size:22px}.token-sub{margin:0 0 14px!important;font-size:12.5px!important;color:#aab2c2!important;}
 .token-input{min-height:52px!important;border-radius:12px!important;border-color:rgba(255,255,255,.13)!important;background:#080c13!important;font-size:14px!important;}
 .connect-help{margin-top:9px!important}.connect-help a{font-size:12px!important;color:#bdafff!important}.secure-line{margin-top:10px;color:#8f98aa;font-size:11px;line-height:1.45}.modal-actions{margin-top:24px!important}.modal-actions .btn{min-height:52px!important;min-width:118px!important;border-radius:13px!important;font-size:12px!important}.modal-actions .btn:last-child{background:linear-gradient(135deg,#8a74ff,#6d53ff)!important;border-color:rgba(218,205,255,.28)!important;color:white!important;}
 @media(max-width:620px){.plugin-dialog{padding:22px 18px!important}.plugin-modal-top{grid-template-columns:1fr}.plugin-modal-logo{width:54px;height:54px}.oauth-hero{min-height:64px;padding:0 16px}.modal-actions{justify-content:stretch}.modal-actions .btn{flex:1}}
@@ -114,7 +114,7 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
   <link rel="stylesheet" href="/stellar-business-palette.css?v=1">
 </head>
 <body>
-<div class="mobile-top"><a href="/app">← App</a><strong>Plugins</strong></div>
+<div class="mobile-top"><button id="mobile-menu-btn" class="mobile-menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><a href="/app">Stellar AI</a><strong>Plugins</strong></div><div id="sidebar-scrim" class="sidebar-scrim" aria-hidden="true"></div>
 <div class="shell">
 <aside class="sidebar" aria-label="Stellar navigation">
   <a class="brand" href="/app"><span class="brand-mark">✦</span><span><span class="brand-name">Stellar AI</span><span class="brand-sub">Your intelligent assistant</span></span></a>
@@ -481,6 +481,13 @@ button,.btn,.tab,.search{touch-action:manipulation!important;}
     document.querySelectorAll('[data-filter]').forEach(tab=>tab.classList.toggle('active',tab===button));
     render();
   }));
+  const sidebar=document.querySelector('.sidebar'), menuBtn=$('mobile-menu-btn'), scrim=$('sidebar-scrim');
+  function closeMobileSidebar(){if(!sidebar||!menuBtn||!scrim)return;sidebar.classList.remove('mobile-open');scrim.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');scrim.setAttribute('aria-hidden','true')}
+  function toggleMobileSidebar(){if(!sidebar||!menuBtn||!scrim)return;const opening=!sidebar.classList.contains('mobile-open');sidebar.classList.toggle('mobile-open',opening);scrim.classList.toggle('open',opening);menuBtn.setAttribute('aria-expanded',String(opening));scrim.setAttribute('aria-hidden',String(!opening))}
+  menuBtn?.addEventListener('click',toggleMobileSidebar);
+  scrim?.addEventListener('click',closeMobileSidebar);
+  sidebar?.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMobileSidebar));
+  addEventListener('resize',()=>{if(innerWidth>700)closeMobileSidebar()});
   $('search').addEventListener('input',render);
   $('learn-btn').addEventListener('click',()=>{setNotice('Install only what you need. OAuth opens the provider permission screen; manual tokens remain a secure fallback until every provider app is approved.','good')});
   $('plugin-modal-close').addEventListener('click',closePluginModal);
