@@ -81,6 +81,13 @@ test('sidebar and settings controls keep visible icons and tappable hit areas', 
   assert.match(app, /FINAL SETTINGS BUTTON VISIBILITY FIX/);
   assert.match(app, /FINAL SETTINGS ROW TAP TARGET FIX/);
   assert.match(app, /#settings-modal \.set-click \.set-key[\s\S]*?pointer-events:none!important/);
+  assert.match(app, /stellar-sidebar-icon-visibility-final/);
+  assert.match(app, /id="i-monitor"/);
+  assert.match(app, /id="i-blocks"/);
+  assert.match(app, /id="i-puzzle"/);
+  assert.match(app, /desktop-agent-nav[\s\S]*?#i-monitor/);
+  assert.match(app, /roblox-studio-nav[\s\S]*?#i-blocks/);
+  assert.match(app, /aria-label="Plugins"[\s\S]*?#i-puzzle/);
 });
 
 
