@@ -6,7 +6,7 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('app page is not empty and exposes the core chat workspace', () => {
   assert.ok(app.length > 15000, 'app.html should contain the real app shell, not an empty file');
-  assert.match(app, /<title>Stellar AI App<\/title>/);
+  assert.match(app, /<title>Stellar AI Workspace<\/title>|<title>Stellar AI App<\/title>/);
   assert.match(app, /id="chatForm"/);
   assert.match(app, /id="prompt"/);
   assert.match(app, /id="sendBtn"/);
@@ -15,11 +15,12 @@ test('app page is not empty and exposes the core chat workspace', () => {
   assert.match(app, /Send failed/);
 });
 
-test('app exposes expected user controls without showing owner tools by default', () => {
-  for (const text of ['New chat', 'Pin chat', 'Delete chat', 'Rename', 'Models', 'Plans', 'Settings', 'Account']) {
+test('app exposes deliberate user controls without fake owner tooling', () => {
+  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plans and credit are separate', 'Plan before output', 'No fake tested claims']) {
     assert.match(app, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
-  assert.match(app, /owner tools hidden/i);
+  assert.match(app, /No fake saved chats/);
+  assert.doesNotMatch(app, /owner tools/i);
 });
 
 test('app includes mobile-safe layout rules and tap targets', () => {
@@ -31,9 +32,10 @@ test('app includes mobile-safe layout rules and tap targets', () => {
   assert.match(app, /safe-area-inset-bottom/);
 });
 
-test('app keeps local history and selected model state', () => {
+test('app keeps useful local state without pretending work is already saved', () => {
   assert.match(app, /localStorage/);
-  assert.match(app, /stellarChats/);
-  assert.match(app, /selectedModel/);
-  assert.match(app, /model:/);
+  assert.match(app, /stellar-first-signin-onboarding-v1-/);
+  assert.match(app, /model-menu/);
+  assert.match(app, /data-model-choice/);
+  assert.match(app, /setModel/);
 });
