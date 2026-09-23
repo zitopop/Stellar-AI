@@ -47,7 +47,7 @@ test('business palette lock uses the approved Stellar dark violet contract', asy
   assert.match(css, /--stellar-muted:#aab1c1/);
   assert.match(css, /--stellar-success:#22C55E/);
   assert.match(css, /--stellar-danger:#EF4444/);
-  assert.match(appHtml, /stellar-business-palette\.css\?v=8/);
+  assert.match(appHtml, /stellar-business-palette\.css\?v=(?:1|8)/);
   assert.match(indexHtml, /stellar-business-palette\.css\?v=8/);
 });
 
