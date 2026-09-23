@@ -22,3 +22,10 @@ test('workspace keeps mobile-safe controls and a visible bottom composer', () =>
   assert.match(app, /\.composer-tool\{min-height:36px/);
   assert.match(app, /@media\(max-width:640px\)[\s\S]*?\.composer-tool\{min-height:44px\}/);
 });
+
+test('workspace uses the executive premium shell without reintroducing legacy styles', () => {
+  assert.match(app, /Executive workspace layer v12/);
+  assert.match(app, /What can Stellar help you get done\?/);
+  assert.match(app, /\.settings-card\{/);
+  assert.match(app, /\.composer\{/);
+});
