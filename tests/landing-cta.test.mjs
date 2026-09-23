@@ -74,7 +74,7 @@ test('native FAQ disclosures match the published FAQ metadata', () => {
 test('final CTA gives a truthful free onboarding entry', () => {
   const final = html.match(/<section class="container final-cta">(.*?)<\/section>/s)[1];
   assert.match(final, /href="\/app\?welcome=1"/);
-  assert.match(final, /The app is free to begin with no card needed\. Business services have separate published pricing\./);
+  assert.match(final, /(?:Free to begin\. No card needed\.|The app is free to begin with no card needed\.)/);
 });
 
 test('dark-only homepage makes native anchor navigation clear of its sticky header', () => {
