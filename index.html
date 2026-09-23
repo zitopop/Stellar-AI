@@ -62,44 +62,61 @@
   <header class="site-header">
     <nav class="container nav" aria-label="Primary navigation">
       <a class="brand" href="/" aria-label="Stellar AI home"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg><span>Stellar<span class="brand-ai">AI</span></span></a>
-      <div class="nav-links"><a href="#capabilities">Product</a><a href="#how-it-works">How it works</a><a href="#plans">Pricing</a><a href="/business">Business</a><a href="/blog">Guides <span aria-hidden="true">↗</span></a></div>
+      <div class="nav-links"><a href="#latest">Latest</a><a href="#capabilities">Product</a><a href="/models">Models</a><a href="/business">Business</a><a href="/blog">Engineering</a><a href="#plans">Pricing</a></div>
       <div class="nav-actions"><a class="nav-login" href="/app?signin=1">Sign in</a><a href="/app?welcome=1" class="button button-small">Get started <span aria-hidden="true">↗</span></a><button id="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button></div>
     </nav>
-    <nav id="mobile-nav" class="mobile-nav container" aria-label="Mobile navigation" hidden><a href="#capabilities">Product</a><a href="#how-it-works">How it works</a><a href="#plans">Pricing</a><a href="/business">Business</a><a href="/blog">Guides</a><a href="/app?signin=1">Sign in</a></nav>
+    <nav id="mobile-nav" class="mobile-nav container" aria-label="Mobile navigation" hidden><a href="#latest">Latest</a><a href="#capabilities">Product</a><a href="/models">Models</a><a href="/business">Business</a><a href="/blog">Engineering</a><a href="#plans">Pricing</a><a href="/app?signin=1">Sign in</a></nav>
   </header>
   <main id="main-content" tabindex="-1">
-    <section class="hero container" aria-labelledby="hero-title">
-      <div class="eyebrow hero-eyebrow"><span class="tiny-star">✦</span> FiveM + Roblox AI workspace</div>
-      <h1 id="hero-title">Build, fix and ship<br><span>game systems with AI.</span></h1>
-      <p class="hero-lead">Describe what you want to build or paste the error you are stuck on. Stellar gives you organised files, clear setup notes and a practical next step.</p>
-      <div class="hero-actions"><a href="/app?welcome=1" class="button button-primary">Start building free <span aria-hidden="true">↗</span></a><a href="#workspace-preview" class="button button-quiet">See how it works</a></div>
-      <div class="hero-trust" aria-label="Key product points"><span>No card required</span><span>£1 starting credit</span><span>Review before publishing</span></div>
+    <section class="hero openai-hero container" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow hero-eyebrow"><span class="tiny-star">✦</span> Stellar AI</div>
+        <h1 id="hero-title">What do you want<br>to build?</h1>
+        <p class="hero-lead">Turn a plain-English idea or error into organised FiveM and Roblox project files, setup notes and a clearer next step.</p>
+
+        <form id="build-form" class="hero-composer" action="/app" method="get">
+          <label class="sr-only" for="build-prompt">Describe what you want to build or fix</label>
+          <textarea id="build-prompt" name="prompt" rows="2" maxlength="2000" required placeholder="Message Stellar AI"></textarea>
+          <div class="hero-composer-bottom">
+            <span>FiveM · Roblox · debugging</span>
+            <button type="submit" aria-label="Open your prompt in Stellar AI"><span aria-hidden="true">↑</span></button>
+          </div>
+        </form>
+
+        <div class="hero-starters" aria-label="Starter ideas">
+          <a href="/app?starter=police">Build a FiveM resource <span aria-hidden="true">↗</span></a>
+          <a href="/app?starter=roblox">Build a Roblox system <span aria-hidden="true">↗</span></a>
+          <a href="/app?starter=fix">Fix an error <span aria-hidden="true">↗</span></a>
+        </div>
+
+        <div class="hero-actions"><a href="/app?welcome=1" class="button button-primary">Start building free <span aria-hidden="true">↗</span></a></div>
+        <div class="hero-trust" aria-label="Key product points"><span>No card required</span><span>£1 starting credit</span><span>Review before publishing</span></div>
+      </div>
     </section>
 
-    <section class="container preview-section" id="workspace-preview" aria-label="Interactive Stellar AI workspace example">
-      <div class="preview-heading"><span><i class="status-dot" aria-hidden="true"></i> SEE STELLAR WORK</span><span class="preview-label">Interactive preview</span></div>
-      <div class="workspace">
-        <div class="workspace-top"><div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div><span>Stellar workspace</span><span class="workspace-project">Demo workflow <span aria-hidden="true">↗</span></span></div>
-        <div class="workspace-body">
-          <aside class="workspace-sidebar"><div class="preview-brand"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg> Stellar AI</div><a class="new-project" href="/app?welcome=1"><span aria-hidden="true">＋</span> New project</a><span class="sidebar-label">PROJECT EXAMPLES</span><div class="example-tabs" aria-label="Choose a workspace example"><button type="button" data-example="fivem" aria-pressed="true"><span aria-hidden="true">⌘</span> FiveM resource</button><button type="button" data-example="roblox" aria-pressed="false"><span class="roblox-mark" aria-hidden="true">◇</span> Roblox system</button><button type="button" data-example="fix" aria-pressed="false"><span aria-hidden="true">⌁</span> Fix a script</button></div><div class="sidebar-bottom"><span class="avatar">S</span><div>Your workspace<small>Plan, build, review</small></div></div></aside>
-          <div class="workspace-chat"><div class="chat-top"><span id="example-title">A better roleplay server</span><span class="model-tag">✦ Star</span></div><div class="conversation"><div class="user-prompt" id="example-prompt">Create a QBCore police job with duty controls, cuffing and a configurable jail timer.</div><div class="assistant-message"><div class="assistant-mark"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg></div><div><p class="assistant-name">Stellar <span>EXAMPLE RESPONSE</span></p><p id="example-response">Let’s give your city a proper police system. Here’s how I’d organise the resource.</p><div class="build-checklist"><span><i aria-hidden="true">✓</i> Client and server responsibilities</span><span><i aria-hidden="true">✓</i> Settings in one config file</span><span><i aria-hidden="true">✓</i> Setup and testing notes</span></div><a class="example-open" id="example-open" href="/app?starter=police">Build this with Stellar <span aria-hidden="true">↗</span></a></div></div></div><form id="build-form" class="build-form" action="/app" method="get"><label for="build-prompt">Describe the job, system or error</label><textarea id="build-prompt" name="prompt" rows="2" maxlength="2000" required placeholder="Describe your idea…"></textarea><div class="composer-bottom"><span>Opens in your workspace</span><button type="submit" aria-label="Open your prompt in Stellar AI"><span aria-hidden="true">↗</span></button></div></form></div>
-          <aside class="workspace-files" aria-label="Example project files"><div class="files-heading"><span>Project files</span><span id="file-count">5 files</span></div><div id="file-list" class="file-list"><span class="file active"><i aria-hidden="true">◇</i> config.lua</span><span class="file"><i aria-hidden="true">◇</i> client/main.lua</span><span class="file"><i aria-hidden="true">◇</i> server/main.lua</span><span class="file"><i aria-hidden="true">◇</i> fxmanifest.lua</span><span class="file"><i aria-hidden="true">≡</i> README.md</span></div><div class="code-heading"><span id="code-filename">config.lua</span><span>Example</span></div><pre aria-label="Illustrative code"><code id="example-code"><span class="code-comment">-- Make it your own.</span>
-<span class="code-gold">Config</span> = {}
+    <section class="editorial-section container" id="latest" aria-labelledby="latest-title">
+      <div class="editorial-head">
+        <h2 id="latest-title">Latest from Stellar</h2>
+        <a href="/blog">View all <span aria-hidden="true">↗</span></a>
+      </div>
 
-Config.Job = <span class="code-green">'police'</span>
-Config.UseTarget = <span class="code-gold">true</span>
-
-Config.Duty = {
-  label = <span class="code-green">'Los Santos Police'</span>,
-  requireOnDuty = <span class="code-gold">true</span>
-}</code></pre><div class="file-note"><span aria-hidden="true">↳</span> Complete files. Clear placement.<br>Ready for your review.</div></aside>
+      <div class="feature-story">
+        <a class="feature-story-main" href="/roblox-studio">
+          <span class="story-kicker">PRODUCT</span>
+          <h3>Build inside Roblox Studio with approval controls.</h3>
+          <p>Pair Studio, inspect the open place, review a plan and approve the edits you want Stellar to make.</p>
+          <span class="story-link">Explore Roblox Studio Agent <b aria-hidden="true">↗</b></span>
+        </a>
+        <div class="feature-story-side">
+          <a class="story-row" href="/desktop"><span><small>PRODUCT</small><strong>PC Agent</strong><em>Work with an approved Windows workspace.</em></span><b aria-hidden="true">↗</b></a>
+          <a class="story-row" href="/models"><span><small>MODELS</small><strong>Choose how much depth you need.</strong><em>Compare Stellar model tiers and plan access.</em></span><b aria-hidden="true">↗</b></a>
+          <a class="story-row" href="/business"><span><small>BUSINESS</small><strong>AI Receptionist and Website Audit.</strong><em>Fixed-scope business services with clear pricing.</em></span><b aria-hidden="true">↗</b></a>
         </div>
       </div>
-      <div class="frameworks"><span>SUPPORTED WORKFLOWS</span><div><b>FiveM</b><b>QBCore</b><b>ESX</b><b>ox_lib</b><b><span class="roblox-mark" aria-hidden="true">◇</span> Roblox</b></div></div>
     </section>
 
     <section class="section container" id="capabilities">
-      <div class="section-heading"><div><p class="eyebrow">ONE WORKSPACE. THREE JOBS.</p><h2>Build new. Fix broken.<br>Keep moving.</h2></div><p>Use Stellar for new FiveM resources, Roblox systems, or debugging work without jumping between separate tools.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">FOCUS AREAS</p><h2>Built around the work<br>game creators actually do.</h2></div><p>Stellar focuses on structured generation, debugging and safer iteration across FiveM and Roblox workflows.</p></div>
       <div class="capability-grid">
         <article class="capability-card"><div class="card-art resource-art" aria-hidden="true"><div class="resource-line"><span>client</span><i>main.lua</i></div><div class="resource-line"><span>server</span><i>main.lua</i></div><div class="resource-line"><span>shared</span><i>config.lua</i></div><b class="art-badge">FIVEM RESOURCE</b></div><span class="card-kicker">01 / FIVEM</span><h3>FiveM resources with structure.</h3><p>Jobs, economy, heists and custom interfaces. Generate organised resources for QBCore, ESX, ox_lib or standalone servers.</p><a href="/app?starter=police">Build a FiveM resource <span aria-hidden="true">↗</span></a></article>
         <article class="capability-card"><div class="card-art world-art" aria-hidden="true"><div class="voxel v1"></div><div class="voxel v2"></div><div class="voxel v3"></div><div class="voxel v4"></div><div class="world-orbit"></div><b class="art-badge">ROBLOX LUAU</b></div><span class="card-kicker">02 / ROBLOX</span><h3>Roblox systems with clear services.</h3><p>Progression, GUIs, DataStores and game systems, with scripts mapped to the right Roblox Studio services.</p><a href="/app?starter=roblox">Build a Roblox system <span aria-hidden="true">↗</span></a></article>
@@ -123,17 +140,32 @@ Config.Duty = {
       </div>
     </section>
 
-    <section class="section container proof-section" id="examples">
-      <div class="section-heading"><div><p class="eyebrow">SEE THE BUILD THINKING</p><h2>Look at the workflow<br>before you pay.</h2></div><p>Open practical FiveM and Roblox examples showing the structure, server-side checks and test thinking Stellar is built around.</p></div>
-      <div class="proof-grid">
-        <a class="proof-card" href="/blog/qbcore-police-job-script-free"><span class="proof-tag">FIVEM · QBCORE</span><h3>Police resource structure</h3><p>See how duties, permissions, dependencies, server authority and private test cases fit into a real resource plan.</p><span class="proof-link">Read the FiveM example <b aria-hidden="true">↗</b></span></a>
-        <a class="proof-card" href="/blog/roblox-tapping-simulator-script"><span class="proof-tag">ROBLOX · LUAU</span><h3>Progression that survives testing</h3><p>See a small Roblox system broken into remotes, server-owned rewards, saving, upgrades and rejected-path tests.</p><span class="proof-link">Read the Roblox example <b aria-hidden="true">↗</b></span></a>
-        <a class="proof-card proof-card-action" href="/app?starter=fix"><span class="proof-tag">YOUR OWN CODE</span><h3>Bring back the error</h3><p>Paste a script and the error you are seeing. Keep the diagnosis, revision and next test in the same conversation.</p><span class="proof-link">Try a fix free <b aria-hidden="true">↗</b></span></a>
+    <section class="editorial-section container engineering-section" id="examples">
+      <div class="editorial-head">
+        <h2>Engineering notes</h2>
+        <a href="/blog">Explore all guides <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="editorial-list">
+        <a href="/blog/qbcore-police-job-script-free" class="editorial-item">
+          <span class="editorial-meta">FIVEM · QBCORE</span>
+          <strong>How to structure a police resource before you ship it.</strong>
+          <span class="editorial-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a href="/blog/roblox-tapping-simulator-script" class="editorial-item">
+          <span class="editorial-meta">ROBLOX · LUAU</span>
+          <strong>Designing progression, remotes and saving with server authority.</strong>
+          <span class="editorial-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a href="/app?starter=fix" class="editorial-item">
+          <span class="editorial-meta">DEBUGGING</span>
+          <strong>Bring the error back to the same conversation and refine from evidence.</strong>
+          <span class="editorial-arrow" aria-hidden="true">↗</span>
+        </a>
       </div>
     </section>
 
     <section class="section container" id="business-services">
-      <div class="section-heading"><div><p class="eyebrow">STELLAR AI FOR BUSINESS</p><h2>Two ways to turn<br>interest into action.</h2></div><p>Need a clearer website or a better way to handle routine enquiries? These are separate, fixed-scope business services with live GBP checkout.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">STELLAR FOR BUSINESS</p><h2>Practical AI services<br>with a clear scope.</h2></div><p>Use Stellar for routine enquiry handling or a focused website review, with the price and limitations visible before checkout.</p></div>
       <div class="capability-grid">
         <article class="capability-card"><div class="card-art fix-art" aria-hidden="true"><div class="error-code"><i>£</i> Visitors arrive</div><span class="fix-line"></span><div class="fixed-code"><i>✓</i> Make the next step obvious</div><b class="art-badge">£99 ONE-TIME</b></div><span class="card-kicker">WEBSITE MINI AUDIT</span><h3>Fix the leaks on your website.</h3><p>Get a focused review of contact and booking clarity, usability, content, and practical priority fixes. No guaranteed rankings or revenue claims.</p><a href="/website-audit">See the £99 website audit <span aria-hidden="true">↗</span></a></article>
         <article class="capability-card"><div class="card-art resource-art" aria-hidden="true"><div class="resource-line"><span>01</span><i>business facts</i></div><div class="resource-line"><span>02</span><i>routine enquiries</i></div><div class="resource-line"><span>03</span><i>capture follow-up</i></div><b class="art-badge">£150 + £49/MO</b></div><span class="card-kicker">AI RECEPTIONIST</span><h3>Give routine enquiries somewhere useful to go.</h3><p>Set up a receptionist flow around verified services, hours, prices and booking information, with ongoing hosting and maintenance.</p><a href="/ai-receptionist">See the AI receptionist <span aria-hidden="true">↗</span></a></article>
@@ -145,7 +177,7 @@ Config.Duty = {
 
     <section class="section container faq-section"><div><p class="eyebrow">A FEW GOOD QUESTIONS</p><h2>Before you <br>make your move.</h2><p>Still curious about something?<br><a href="https://discord.gg/e6uRAV9HGA" class="text-link">Join our Discord <span aria-hidden="true">↗</span></a></p></div><div class="faqs"><details><summary>Can I try Stellar before paying?<span aria-hidden="true">+</span></summary><p>Yes. Start free with £1 starting credit and 40 requests per hour. You do not need a card to begin. Wallet credit is separate from the included hourly allowance.</p></details><details><summary>What can I build with it?<span aria-hidden="true">+</span></summary><p>Build or improve FiveM QBCore, ESX, ox_lib and standalone resources, or Roblox Luau systems. Describe your framework, dependencies and the result you want.</p></details><details><summary>What do I get after a generation?<span aria-hidden="true">+</span></summary><p>A structured set of files with placement and setup guidance. Review the code, download the files and test them in your own server or Roblox place.</p></details><details><summary>Can it fix my existing scripts?<span aria-hidden="true">+</span></summary><p>Yes. Paste the script and its error, describe what should happen, and ask Stellar for a diagnosis and revised files. Keep refining the project in the same conversation.</p></details><details><summary>Do I still need to test the code?<span aria-hidden="true">+</span></summary><p>Yes. Review generated files and dependencies, then test them in a private environment before going live. Check server-side permissions, player state and rejected actions as well as the happy path.</p></details><details><summary>Can I cancel my subscription?<span aria-hidden="true">+</span></summary><p>Yes. Paid users can use Manage billing in Settings to update payment details, view invoices or cancel. If billing management is unavailable, contact support@trystellarai.com. Cancellation stops the next renewal; paid access normally continues until the end of the current billing period.</p></details></div></section>
 
-    <section class="container final-cta"><div class="cta-star" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg></div><p class="eyebrow">YOUR NEXT CHAPTER</p><h2>You bring the idea.<br><span>We’ll bring the Stellar.</span></h2><a href="/app?welcome=1" class="button button-primary">Let’s build something <span aria-hidden="true">↗</span></a><p class="hero-footnote">Free to begin. No card needed.</p></section>
+    <section class="container final-cta"><p class="eyebrow">GET STARTED</p><h2>Bring the idea.<br><span>Build the next version.</span></h2><a href="/app?welcome=1" class="button button-primary">Start building free <span aria-hidden="true">↗</span></a><p class="hero-footnote">Free to begin. No card needed.</p></section>
   </main>
   <footer class="container footer"><div class="footer-top"><div><a class="brand" href="/"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg><span>Stellar<span class="brand-ai">AI</span></span></a><p>A little imagination.<br>A whole new world.</p></div><div class="footer-links"><div><span>CREATE</span><a href="/app">Open app</a><a href="#plans">Pricing</a><a href="/blog">Guides</a><a href="/install">Install app</a></div><div><span>CONNECT</span><a href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer">Discord <span aria-hidden="true">↗</span></a><a href="/support">Support</a><a href="/affiliate.html">For server owners</a></div><div><span>THE DETAILS</span><a href="/terms.html">Terms</a><a href="/terms.html#privacy">Privacy</a></div></div></div><div class="footer-bottom"><span>© 2026 Stellar AI</span><span>Made for people who make things. <i aria-hidden="true">✦</i></span></div></footer>
 </body>
