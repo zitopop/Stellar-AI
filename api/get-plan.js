@@ -1,4 +1,4 @@
-// api/get-plan.js — retrieves the signed-in user's plan, wallet, usage, referrals, and achievements
+// api/get-plan.js — retrieves the signed-in user's plan, wallet, usage, referrals, achievements, and plan capabilities
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { recordCheckoutCancellation } from '../lib/conversion-metrics.js';
 import { achievementDefinitions, ensureReferralProfile, kvGet, unlockedAchievements } from '../lib/profile.js';
@@ -14,6 +14,7 @@ function setCors(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Authorization');
   res.setHeader('Vary', 'Origin');
+  res.setHeader('Cache-Control', 'no-store');
 }
 
 function ownerUsage() {
@@ -39,6 +40,33 @@ async function publicStats(url, token) {
     request(`scard/${encodeURIComponent('stellar:stats:countries')}`),
   ]);
   return { scriptsGenerated, serversPowered, countriesReached, verified: true };
+}
+
+function billingState({ plan, user, owner }) {
+  if (owner) return { paid: false, manageable: false, reason: 'owner' };
+  if (!isPaidPlan(plan)) return { paid: false, manageable: false, reason: 'free' };
+  const customerId = String(user?.stripeCustomerId || '').trim();
+  const subscriptionId = String(user?.stripeSubscriptionId || '').trim();
+  return {
+    paid: true,
+    manageable: /^cus_[A-Za-z0-9]+$/.test(customerId),
+    customerSynced: /^cus_[A-Za-z0-9]+$/.test(customerId),
+    subscriptionSynced: /^sub_[A-Za-z0-9]+$/.test(subscriptionId),
+    reason: /^cus_[A-Za-z0-9]+$/.test(customerId) ? 'ready' : 'stripe_syncing',
+  };
+}
+
+function planCapabilities(plan) {
+  const definition = getPlanDefinition(plan);
+  return {
+    id: definition.id,
+    name: definition.name,
+    requestsPerHour: definition.requestsPerHour,
+    maxTokens: definition.maxTokens,
+    models: [...definition.models],
+    canUseCredit: definition.id !== 'owner',
+    overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
+  };
 }
 
 export default async function handler(req, res) {
@@ -87,10 +115,14 @@ export default async function handler(req, res) {
       low: weeklyUsed / weeklyLimit >= 0.8,
       exhausted: weeklyUsed >= weeklyLimit,
     } : null;
+    const capabilities = planCapabilities(plan);
 
     return res.status(200).json({
       plan,
       owner,
+      capabilities,
+      availableModels: capabilities.models,
+      billing: billingState({ plan, user, owner }),
       walletPence: Math.max(0, Number(user.walletPence) || 0),
       overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
       planBilling: isPaidPlan(plan) ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null,
