@@ -259,8 +259,13 @@
         </button>
         <a class="stellar-orbit-primary-link" href="/terms">
           <span class="stellar-orbit-primary-icon" aria-hidden="true">§</span>
-          <span class="stellar-orbit-primary-copy"><strong>Terms & privacy</strong><span>Policies, privacy and data use</span></span>
+          <span class="stellar-orbit-primary-copy"><strong>Terms</strong><span>Service, billing and acceptable use</span></span>
           <span class="stellar-orbit-primary-meta">Legal</span>
+        </a>
+        <a class="stellar-orbit-primary-link" href="/privacy">
+          <span class="stellar-orbit-primary-icon" aria-hidden="true">◇</span>
+          <span class="stellar-orbit-primary-copy"><strong>Privacy</strong><span>Data use, providers and your rights</span></span>
+          <span class="stellar-orbit-primary-meta">Policy</span>
         </a>
         <button type="button" class="stellar-orbit-primary-btn" data-orbit-open-settings>
           <span class="stellar-orbit-primary-icon" aria-hidden="true">⚙</span>
@@ -291,7 +296,7 @@
       <a class="stellar-top-link" href="/models">Models</a>
       <button type="button" class="stellar-top-link" data-stellar-top-plans>Plans</button>
       <a class="stellar-top-link" href="/blog">Guides</a>
-      <a class="stellar-top-link" href="/terms">Terms & privacy</a>`;
+      <a class="stellar-top-link" href="/terms">Terms</a><a class="stellar-top-link" href="/privacy">Privacy</a>`;
 
     const actions = document.createElement('div');
     actions.className = 'stellar-top-actions';
@@ -372,7 +377,8 @@
         <button type="button" data-orbit-usage>Usage</button>
         <button type="button" data-orbit-plans>Plans</button>
         <a href="/models">Model guide</a>
-        <a href="/terms">Terms & privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
         <a href="/blog">Guides</a>
       </div>`;
 
