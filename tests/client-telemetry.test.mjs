@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const endpoint = readFileSync(new URL('../api/client-metric.js', import.meta.url), 'utf8');
+const endpoint = readFileSync(new URL('../api/track-event.js', import.meta.url), 'utf8');
 const helper = readFileSync(new URL('../lib/assets/telemetry.js', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
@@ -15,7 +15,7 @@ test('client telemetry accepts only fixed coarse event names', () => {
     assert.ok(endpoint.includes("'" + name + "'"), name);
     assert.ok(helper.includes("'" + name + "'"), name);
   }
-  assert.match(endpoint, /if \(!ALLOWED\.has\(event\)\) return res\.status\(400\)/);
+  assert.match(endpoint, /if \(!CLIENT_METRIC_EVENTS\.has\(event\)\) return res\.status\(400\)/);
 });
 
 test('telemetry endpoint does not persist arbitrary client payload fields', () => {

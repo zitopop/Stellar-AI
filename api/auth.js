@@ -85,14 +85,14 @@ async function verifyGoogleCredential(token) {
   };
 }
 
-async function sendWelcomeEmail(email) {
+async function sendWelcomeEmail(email, requestedName = '') {
   const apiKey = process.env.RESEND_API_KEY;
   const from = resendSender();
   if (!apiKey || !from) {
     console.warn('Welcome email skipped: RESEND_API_KEY or RESEND_FROM_EMAIL is not configured.');
     return false;
   }
-  const displayName = email.split('@')[0].replace(/[._-]+/g, ' ');
+  const displayName = String(requestedName || email.split('@')[0].replace(/[._-]+/g, ' ')).slice(0, 100);
   const safeName = escapeEmailHtml(displayName);
   try {
     await fetch('https://api.resend.com/emails', {
@@ -159,6 +159,30 @@ async function awardReferralIfEligible(url, token, email, referralCode, isNew) {
   }
 }
 
+async function handleWelcomeResend(req, res, url, token) {
+  const session = readSession(req);
+  if (!session) return res.status(401).json({ error: 'Please sign in again to continue.' });
+
+  const { email, name } = req.body || {};
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  if (!normalizedEmail || normalizedEmail !== session.email) {
+    return res.status(403).json({ error: 'You can only send a welcome email to your signed-in account.' });
+  }
+
+  const bucket = Math.floor(Date.now() / (10 * 60 * 1000));
+  const rateKey = `stellar:welcome-email-rate:${bucket}:${normalizedEmail}`;
+  const rateResult = await kvPipeline(url, token, [['INCR', rateKey], ['EXPIRE', rateKey, 1200, 'NX']]);
+  const rateCount = Math.max(0, Number(Array.isArray(rateResult) ? rateResult[0]?.result : 0) || 0);
+  if (rateCount > 1) {
+    res.setHeader('Retry-After', '600');
+    return res.status(429).json({ error: 'A welcome email was already requested recently. Try again later.' });
+  }
+
+  const sent = await sendWelcomeEmail(normalizedEmail, name);
+  if (!sent) return res.status(503).json({ error: 'Email delivery is not configured or temporarily unavailable.' });
+  return res.status(200).json({ success: true });
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -167,6 +191,8 @@ export default async function handler(req, res) {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return res.status(500).json({ error: 'Account storage is not configured.' });
+
+  if (String(req.query?.mode || '') === 'send-welcome') return handleWelcomeResend(req, res, url, token);
 
   const { action, email, password, credential, code, referralCode } = req.body || {};
   const actionName = String(action || '').trim();

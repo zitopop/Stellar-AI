@@ -6,7 +6,6 @@ import { summarizeTodayActivation } from '../lib/funnel-metrics.js';
 const landingHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const appHtml = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const authJs = readFileSync(new URL('../api/auth.js', import.meta.url), 'utf8');
-const welcomeJs = readFileSync(new URL('../api/send-welcome.js', import.meta.url), 'utf8');
 
 test('landing CTA can open first-run welcome', () => {
   assert.match(landingHtml, /\/app\?welcome=1/);
@@ -28,7 +27,7 @@ test('first signed-in users get one simple composer instruction per account', ()
 
 test('password and Google signups send onboarding email', () => {
   assert.equal((authJs.match(/void sendWelcomeEmail\(/g) || []).length, 2);
-  assert.match(welcomeJs, /trystellarai\.com\/app\?welcome=1/);
+  assert.match(authJs, /trystellarai\.com\/app\?welcome=1/);
 });
 
 test('same-day activation counts only today cohort and first generations', () => {
