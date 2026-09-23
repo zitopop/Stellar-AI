@@ -16,9 +16,10 @@ test('app page is not empty and exposes the core chat workspace', () => {
 });
 
 test('app exposes deliberate user controls and owner-gated coding agents', () => {
-  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plans and credit are separate', 'Plan before output', 'No fake tested claims']) {
+  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plans and credit do different jobs', 'Plan before output', 'No fake tested claims']) {
     assert.match(app, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
+  assert.match(app, /Wallet credit is separate/);
   assert.match(app, /No fake saved chats/);
   assert.match(app, /id="desktop-agent-nav"/);
   assert.match(app, /id="roblox-studio-nav"/);
