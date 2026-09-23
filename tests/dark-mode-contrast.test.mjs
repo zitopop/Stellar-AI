@@ -2,18 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
+const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
-test('dark-only Look controls use readable neutral and emerald states', () => {
-  assert.match(appHtml, /body:not\(\.light\) #settings-modal \.seg,\s+body:not\(\.light\) #settings-modal \.seg\.on,\s+body:not\(\.light\) #settings-modal \.seg\.active/);
-  assert.match(appHtml, /background: #1a1c22 !important;\s+color: #d7dae2 !important;/);
-  assert.match(appHtml, /body:not\(\.light\) #settings-modal \.seg\.on,[\s\S]*?background: linear-gradient\(180deg, #1f6e5b, #145342\) !important;/);
-  assert.match(appHtml, /body:not\(\.light\) #settings-modal \.set-note[\s\S]*?color: #b7bac4 !important;/);
+test('workspace is dark-first with readable text and muted contrast tokens', () => {
+  assert.match(app, /:root\{color-scheme:dark;--bg:#080a11/);
+  assert.match(app, /--text:#f7f8fb/);
+  assert.match(app, /--muted:#a8afbd/);
+  assert.match(app, /--panel:#11141d/);
 });
 
-test('dark-only workspace keeps its body background and never needs a light theme state', () => {
-  assert.match(appHtml, /html, body \{ background: #07070a !important; color: #f4f4f5 !important; \}/);
-  assert.match(appHtml, /function setMode\(mode = 'dark', source = 'dark-only'\)/);
-  assert.match(appHtml, /document\.body\.classList\.remove\('light'\);/);
-  assert.match(appHtml, /Store\.set\(\{ mode: 'dark' \}\);/);
+test('interactive states remain visible without a light-mode dependency', () => {
+  assert.match(app, /\.nav-link:hover,\.set-item:hover\{[^}]*color:#fff/);
+  assert.match(app, /\.status\.error\{color:var\(--danger\)\}/);
+  assert.match(app, /\.status\.good\{color:var\(--good\)\}/);
+  assert.doesNotMatch(app, /document\.body\.classList\.add\('light'\)/);
 });
