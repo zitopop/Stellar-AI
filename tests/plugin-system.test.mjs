@@ -91,11 +91,11 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 
 test('premium plugin dashboard exposes real connect manage and disconnect controls', () => {
   assert.match(page, /<h1>Plugins<\/h1>/);
-  assert.match(page, /Connect your tools\. Give permissions\. Let Stellar do more\./);
-  assert.match(page, /More powerful/);
-  assert.match(page, /You stay in control/);
-  assert.match(page, /Built for safety/);
-  for (const filter of ['all','connected','coming_soon','developer','disabled']) {
+  assert.match(page, /Extend Stellar with apps, tools and workflows/);
+  assert.match(page, /Plugin directory/);
+  assert.match(page, /Review what each plugin can access before you connect it/);
+  assert.match(page, /Your access stays scoped/);
+  for (const filter of ['all','connected','productivity','developer','business','community','coming_soon','disabled']) {
     assert.match(page, new RegExp(`data-filter="${filter}"`));
   }
   assert.match(page, /data-install=/);
@@ -105,6 +105,9 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   assert.match(page, /startOAuth/);
   assert.match(page, /installPlugin/);
   assert.match(page, /data-inspect=/);
+  assert.match(page, /data-details=/);
+  assert.match(page, /plugin-detail-view/);
+  assert.match(page, /Stellar verified/);
   assert.match(page, /connectToken/);
   assert.match(page, /disconnectCurrentPlugin/);
   assert.match(page, /Connect & Continue/);
