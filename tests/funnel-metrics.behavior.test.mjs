@@ -90,7 +90,7 @@ test('recent usage summary reports requests and observed session spans without i
   assert.equal(summary.longestObservedSessionSpanMinutes, 105);
   assert.equal(summary.totalObservedSessions, 1);
   assert.equal(summary.walletCredits.tracked, false);
-  assert.match(summary.walletCredits.note, /hourly request meter/);
+  assert.match(summary.walletCredits.note, /included hourly requests|hourly request meter/);
   assert.doesNotMatch(JSON.stringify(summary), /private@example\.com/);
 });
 
@@ -128,3 +128,4 @@ test('owner-only funnel metrics return aggregate cohorts and reject ordinary acc
   await handler({ method: 'POST', headers: { authorization: `Bearer ${createSession('user@example.com')}` }, body: { action: 'funnelMetrics' } }, nonOwner);
   assert.equal(nonOwner.code, 403);
 });
+

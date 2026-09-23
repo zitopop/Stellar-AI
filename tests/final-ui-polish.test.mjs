@@ -17,8 +17,8 @@ test('model account settings and billing infrastructure remain visible', () => {
   assert.match(app, /id="set-billing-row"/);
 });
 
-test('owner coding tools remain hidden by default', () => {
-  assert.match(app, /\.owner-only\{display:none\}/);
-  assert.match(app, /id="desktop-agent-nav"[^>]*owner-only/);
+test('agent tools remain hidden until the right access level', () => {
+  assert.match(app, /\.owner-only(?:,\.signed-in-only)?\{display:none\}/);
+  assert.match(app, /id="desktop-agent-nav"[^>]*signed-in-only/);
   assert.match(app, /id="roblox-studio-nav"[^>]*owner-only/);
 });
