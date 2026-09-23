@@ -21,7 +21,7 @@ test('plans explain included allowance and separate wallet credit', () => {
 });
 
 test('landing uses a clear conversational build entry and plan-limit guidance', () => {
-  assert.match(landing, /What do you want/);
+  assert.match(landing, /What can Stellar/);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /FiveM · Roblox · debugging/);
   assert.match(landing, /Wallet credit is separate and can be used after the included allowance\./);
