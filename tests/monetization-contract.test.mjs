@@ -39,3 +39,12 @@ test('usage UI separates included allowance from optional spendable credit', () 
   assert.match(app, /Credit does not raise your hourly limit/);
   assert.match(app, /use_credit:creditsOn\(\)/);
 });
+
+test('owner accounts can open plan and wallet checkout for production testing', () => {
+  assert.doesNotMatch(app, /Owner access already includes the full workspace\./);
+  assert.doesNotMatch(app, /topup\.hidden=isOwner\(\)/);
+  assert.match(app, /onclick="startPlanCheckout\('starter'\)"/);
+  assert.match(app, /onclick="startPlanCheckout\('plus'\)"/);
+  assert.match(app, /onclick="startPlanCheckout\('pro'\)"/);
+  assert.match(app, /onclick="startCreditCheckout\(\)"/);
+});
