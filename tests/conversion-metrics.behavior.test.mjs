@@ -27,7 +27,7 @@ test('conversion metric writes and reads use aggregate KV records', async (t) =>
   globalThis.fetch = async (url, options = {}) => {
     calls.push({ url, options });
     if (String(options.body).includes('GET')) {
-      return { ok: true, json: async () => [{ result: '7' }, { result: '3' }, { result: '1' }, { result: '2' }, { result: '1' }, { result: '4500' }] };
+      return { ok: true, json: async () => [{ result: '7' }, { result: '3' }, { result: '1' }, { result: '2' }, { result: '1' }, { result: '4500' }, { result: '100' }, { result: '60' }, { result: '42' }, { result: '8' }, { result: '5' }, { result: '12' }, { result: '25' }, { result: '2' }, { result: '6' }, { result: '1' }, { result: '3' }, { result: '4' }] };
     }
     return response();
   };
@@ -39,6 +39,9 @@ test('conversion metric writes and reads use aggregate KV records', async (t) =>
   assert.deepEqual(summary.metrics, {
     date: '2026-08-18', checkoutStarted: 7, checkoutCompleted: 3, checkoutCancelledOrExpired: 1,
     subscriptionCompleted: 2, topupCompleted: 1, revenuePence: 4500,
+    landingViews: 100, appViews: 60, appOpenCtas: 42, upgradeIntents: 8,
+    signupSuccess: 5, loginSuccess: 12, firstMessages: 25, chatSendErrors: 2,
+    checkoutOpens: 6, checkoutErrors: 1, billingOpens: 3, clientErrors: 4,
   });
   assert.match(String(calls[0].options.body), /checkout-started/);
 });
