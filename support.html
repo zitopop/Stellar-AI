@@ -68,8 +68,10 @@ function openSupportEmail(kind){
   };
   const t=templates[kind]||templates.general;
   const gmail='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(SUPPORT_EMAIL)+'&su='+encodeURIComponent(t.subject)+'&body='+encodeURIComponent(t.body);
-  const opened=window.open(gmail,'_blank','noopener,noreferrer');
-  if(!opened){
+  const opened=window.open(gmail,'_blank');
+  if(opened){
+    try{opened.opener=null}catch(_){}
+  }else{
     window.location.href='mailto:'+SUPPORT_EMAIL+'?subject='+encodeURIComponent(t.subject)+'&body='+encodeURIComponent(t.body);
   }
 }
