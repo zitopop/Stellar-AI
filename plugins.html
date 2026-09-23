@@ -9,232 +9,97 @@
 <style>
 :root{
   color-scheme:dark;
-  --bg:#090c13;--sidebar:#0d1119;--panel:#111722;--panel-2:#151b27;
-  --line:rgba(255,255,255,.08);--line-strong:rgba(255,255,255,.13);
-  --text:#f1f3f8;--muted:#9ca5b5;--muted-2:#737c8e;--accent:#7668ff;
-  --accent-2:#9b82ff;--good:#63e6b1;--warn:#f2c96d;--bad:#ff8d9c;
+  --bg:#090b10;
+  --bg-2:#0e1118;
+  --panel:#121722;
+  --panel-2:#171d2a;
+  --card:#111722;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.16);
+  --text:#f4f6fb;
+  --muted:#9fa8b8;
+  --muted-2:#717b8c;
+  --accent:#8b7cf6;
+  --accent-2:#b5abff;
+  --blue:#66a6ff;
+  --good:#5ee1aa;
+  --warn:#e9c86a;
+  --bad:#ff7d90;
+  --shadow:0 22px 70px rgba(0,0,0,.32);
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input{font:inherit}
-a{color:inherit}
-body{background:radial-gradient(circle at 58% -12%,rgba(100,81,255,.13),transparent 34%),var(--bg)}
-.shell{min-height:100dvh;display:grid;grid-template-columns:248px minmax(0,1fr)}
-.sidebar{
-  position:sticky;top:0;height:100dvh;padding:20px 16px 18px;
-  border-right:1px solid var(--line);background:linear-gradient(180deg,#0e131d,#0b0f17);
-  display:flex;flex-direction:column;z-index:20;
-}
-.brand{display:flex;align-items:center;gap:11px;padding:3px 8px 20px;text-decoration:none}
-.brand-mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#28215f,#151735);border:1px solid rgba(132,110,255,.3);color:#b8acff;font-size:20px}
-.brand-name{font-size:18px;font-weight:900;letter-spacing:-.03em}.brand-sub{margin-top:1px;color:var(--muted-2);font-size:9px}
-.nav{display:grid;gap:3px}.nav.sep{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
-.nav a{display:flex;align-items:center;gap:11px;min-height:42px;padding:0 11px;border:1px solid transparent;border-radius:11px;text-decoration:none;color:#c9cfda;font-size:12px;font-weight:700}
-.nav a:hover{background:rgba(255,255,255,.035);color:#fff}
-.nav a.active{border-color:rgba(121,103,255,.18);background:linear-gradient(90deg,rgba(106,89,255,.24),rgba(90,70,212,.16));color:#fff}
-.nav-ico{width:19px;text-align:center;color:#c2bcff;font-size:15px}
-.sidebar-bottom{margin-top:auto}
-.owner-card{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 10px;border-top:1px solid var(--line)}
-.owner-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#24204c;color:#c7baff;font-weight:900}
-.owner-meta{min-width:0}.owner-title{font-size:11px;font-weight:850}.owner-sub{font-size:9px;color:var(--muted-2)}
-.mobile-top{display:none}
-.main{min-width:0;padding:26px 30px 64px}
-.main-inner{max-width:1120px;margin:auto}
-.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
-.page-head h1{margin:0 0 4px;font-size:32px;letter-spacing:-.04em}.page-head p{margin:0;color:#c2c7d2;font-size:14px}.summary{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.summary-chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 9px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);color:var(--muted);font-size:10px;font-weight:800}.summary-dot{width:7px;height:7px;border-radius:50%;background:#6f7888}.summary-dot.good{background:var(--good)}.summary-dot.ready{background:#8a7bff}.summary-dot.soon{background:#4c8fe8}
-.learn{min-height:38px;padding:0 13px;border:1px solid var(--line-strong);border-radius:10px;background:#141a28;color:#e3e6ee;font-weight:800;cursor:pointer}
-.learn:hover{border-color:rgba(118,104,255,.38)}
-.benefits{display:none}
-.benefit{min-height:100px;padding:16px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(135deg,#131927,#101621);display:grid;grid-template-columns:38px 1fr;gap:12px}
-.benefit-ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#251c66;color:#c9c0ff;font-size:17px}
-.benefit:nth-child(2) .benefit-ico{background:#0b4450;color:#79e4e6}.benefit:nth-child(3) .benefit-ico{background:#152d76;color:#aab7ff}
-.benefit strong{display:block;margin-bottom:3px;font-size:12px}.benefit span{color:var(--muted);font-size:11.5px;line-height:1.45}
-.controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 14px;padding:10px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.018)}
-.tabs{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
-.tab{min-height:38px;padding:0 15px;border:1px solid transparent;border-radius:9px;background:transparent;color:#c5cad6;font-weight:750;font-size:11.5px;white-space:nowrap;cursor:pointer}
-.tab:hover{background:rgba(255,255,255,.035)}.tab.active{color:#fff;background:linear-gradient(90deg,#6658ff,#806dff);box-shadow:0 8px 26px rgba(99,82,255,.22)}
-.search{width:min(270px,34vw);min-height:38px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#0b1018;color:#fff;outline:none}.search:focus{border-color:rgba(118,104,255,.5)}
-.plugin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.card{min-width:0;min-height:214px;padding:14px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#111722,#0d131c);display:flex;flex-direction:column}
-.card:hover{border-color:rgba(255,255,255,.12)}
-.card-head{display:flex;align-items:flex-start;gap:10px}.plugin-logo{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;background:#161b26;border:1px solid rgba(255,255,255,.07);font-size:18px;font-weight:900;flex:none}
-.plugin-logo.pc{background:#123959}.plugin-logo.roblox{background:#2a2468}.plugin-logo.github{background:#17191e}.plugin-logo.drive{background:#173b2c}.plugin-logo.gmail{background:#3c1c20}.plugin-logo.calendar{background:#18345f}.plugin-logo.discord{background:#202766}.plugin-logo.shopify{background:#24441d}.plugin-logo.stripe{background:#332060}.plugin-logo.vercel{background:#050608}
-.card-title{min-width:0;flex:1}.name-row{display:flex;align-items:center;gap:6px;justify-content:space-between}.name{font-size:13px;font-weight:900}.badge{flex:none;border:1px solid var(--line);border-radius:999px;padding:3px 7px;color:var(--muted);font-size:8.5px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
-.badge.connected{color:#64e7b0;border-color:rgba(99,230,176,.26);background:rgba(99,230,176,.08)}.badge.soon{color:#9fc4ff;border-color:rgba(83,147,255,.32);background:#15488d}
-.desc{margin:8px 0 10px;color:#abb3c2;font-size:11px;line-height:1.42;min-height:38px}
-.permissions{display:grid;gap:5px;margin-bottom:12px}.perm{display:flex;align-items:flex-start;gap:8px;color:#d0d5df;font-size:10.5px}.check{width:13px;height:13px;border:1px solid #5f6878;border-radius:3px;display:grid;place-items:center;flex:none;margin-top:1px;color:#fff;font-size:9px;background:#0d1219}.perm.allowed .check{border-color:#7364ff;background:#6658ff}.perm.allowed .check::after{content:"✓"}
-.card-actions{margin-top:auto;display:flex;align-items:center;gap:8px}.btn{min-height:40px;padding:0 12px;border:1px solid var(--line-strong);border-radius:9px;background:#171e2b;color:#eef0f4;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:10.5px}.btn:hover{border-color:rgba(118,104,255,.4)}.btn[disabled]{opacity:.55;cursor:not-allowed}
-.toggle{margin-left:auto;position:relative;width:46px;height:28px;border:1px solid #3c4658;border-radius:999px;background:#1a2230;cursor:pointer}.toggle::after{content:"";position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:#75819a;transition:transform .14s ease,background .14s ease}.toggle[aria-pressed="true"]{border-color:rgba(116,101,255,.5);background:#4638a8}.toggle[aria-pressed="true"]::after{transform:translateX(18px);background:#fff}.toggle[disabled]{opacity:.55;cursor:not-allowed}
-.more-card{border-style:dashed;justify-content:center;align-items:center;text-align:center;background:rgba(12,16,24,.45)}.more-plus{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;margin-bottom:10px;background:#171e2d;border:1px solid var(--line);font-size:24px;color:#aeb5c5}.more-card strong{font-size:12px}.more-card p{margin:6px 0 14px;color:var(--muted);font-size:10.5px}
-.notice{min-height:20px;margin-top:14px;color:var(--muted);font-size:11px}.notice.good{color:var(--good)}.notice.bad{color:var(--bad)}
-.empty{grid-column:1/-1;padding:22px;border:1px dashed var(--line);border-radius:13px;color:var(--muted);text-align:center;background:rgba(255,255,255,.012)}
-.plugin-modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,8,.72);backdrop-filter:blur(10px)}.plugin-modal.open{display:flex}.plugin-dialog{width:min(520px,100%);max-height:min(82dvh,720px);overflow:auto;border:1px solid var(--line-strong);border-radius:16px;background:#111722;box-shadow:0 24px 80px rgba(0,0,0,.45);padding:18px}.plugin-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.plugin-dialog h2{margin:0;font-size:19px}.plugin-dialog p{margin:6px 0 14px;color:var(--muted);font-size:12px}.modal-close{width:40px;height:40px;border:1px solid var(--line);border-radius:10px;background:#171d29;color:#dfe3ea;font-size:20px;cursor:pointer}.token-input{width:100%;min-height:46px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#090d14;color:#fff;outline:none}.token-input:focus{border-color:rgba(118,104,255,.5)}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:13px;flex-wrap:wrap}.resource-list{display:grid;gap:8px}.resource{display:block;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#0d121a;text-decoration:none}.resource:hover{border-color:rgba(118,104,255,.35)}.resource strong{display:block;font-size:11.5px}.resource span{display:block;margin-top:3px;color:var(--muted);font-size:10px}.secret-note{margin-top:10px;padding:10px;border:1px solid rgba(99,230,176,.16);border-radius:10px;background:rgba(99,230,176,.05);color:#b7d9cb;font-size:10px}.connect-help{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}.connect-help a{color:#b8adff;font-size:10px;font-weight:850;text-decoration:none}.connect-help a:hover{text-decoration:underline}.mode-badge{display:inline-flex;align-items:center;gap:5px;min-height:23px;padding:0 7px;border:1px solid rgba(99,230,176,.2);border-radius:999px;background:rgba(99,230,176,.05);color:#83eabf;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}.loading-card{min-height:260px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(100deg,#111722 20%,#171e2a 36%,#111722 52%);background-size:220% 100%;animation:pluginShimmer 1.2s linear infinite}@keyframes pluginShimmer{to{background-position:-220% 0}}
-@media(max-width:1180px){.plugin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:930px){.shell{grid-template-columns:210px minmax(0,1fr)}.main{padding-left:18px;padding-right:18px}.plugin-grid{grid-template-columns:1fr}.benefit{min-height:0}}
-@media(max-width:700px){
-  .shell{display:block}.sidebar{display:flex;position:fixed;left:0;top:0;width:min(86vw,300px);height:100dvh;transform:translateX(-105%);transition:transform .22s ease;box-shadow:18px 0 60px rgba(0,0,0,.45);z-index:80}.sidebar.mobile-open{transform:translateX(0)}.sidebar-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:70}.sidebar-scrim.open{display:block}.mobile-menu-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:11px;background:#15101f;color:#fff;font-size:20px;cursor:pointer;touch-action:manipulation}.mobile-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;min-height:56px;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(9,12,19,.94);backdrop-filter:blur(14px)}.mobile-top a{text-decoration:none;color:var(--muted);font-weight:800}.mobile-top strong{font-size:13px}.main{padding:22px 14px 44px}.page-head{align-items:center}.page-head h1{font-size:27px}.page-head p{font-size:12.5px}.learn{display:none}.controls{align-items:stretch;flex-direction:column;padding:8px}.search{width:100%}.plugin-grid{grid-template-columns:1fr}.card{min-height:0}.owner-card{display:none}
-}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
-
-
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+body{background:radial-gradient(circle at 72% -10%,rgba(139,124,246,.16),transparent 33rem),radial-gradient(circle at 0% 42%,rgba(102,166,255,.07),transparent 28rem),var(--bg)}
+a{color:inherit}.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;z-index:1000;background:#fff;color:#0b0d12;padding:10px 12px;border-radius:10px}
+button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.shell{min-height:100dvh;display:grid;grid-template-columns:252px minmax(0,1fr)}
+.sidebar{position:sticky;top:0;height:100dvh;padding:20px 16px 18px;border-right:1px solid var(--line);background:linear-gradient(180deg,#0e131d,#0a0d14);display:flex;flex-direction:column;z-index:20}.brand{display:flex;align-items:center;gap:11px;padding:3px 8px 20px;text-decoration:none}.brand-mark{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#302870,#151735);border:1px solid rgba(139,124,246,.33);color:#c7bdff;font-size:20px}.brand-name{font-size:18px;font-weight:900;letter-spacing:-.03em}.brand-sub{margin-top:1px;color:var(--muted-2);font-size:9px;text-transform:uppercase;letter-spacing:.08em}.nav{display:grid;gap:4px}.nav.sep{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 /* FINAL PLUGINS SIDEBAR TAP + ICON FIX */
 .nav a{position:relative!important;z-index:2!important;min-height:46px!important;pointer-events:auto!important;touch-action:manipulation!important;}
-.nav-ico{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:24px!important;height:24px!important;border-radius:8px!important;color:#f5f0ff!important;background:rgba(139,92,246,.20)!important;box-shadow:inset 0 0 0 1px rgba(215,198,255,.22)!important;font-size:13px!important;opacity:1!important;}
-.sidebar,.sidebar *{pointer-events:auto!important;}
-button,.btn,.tab,.search{touch-action:manipulation!important;}
-
-
-
-/* OWNER-ONLY OAUTH MODAL POLISH */
-.plugin-modal{background:rgba(2,4,9,.76)!important;backdrop-filter:blur(18px) saturate(1.08)!important;-webkit-backdrop-filter:blur(18px) saturate(1.08)!important;}
-.plugin-dialog{width:min(640px,100%)!important;padding:28px 30px 26px!important;border-radius:22px!important;border:1px solid rgba(139,92,246,.28)!important;background:linear-gradient(165deg,rgba(22,29,45,.98),rgba(9,14,24,.98))!important;box-shadow:0 34px 110px rgba(0,0,0,.62), inset 0 1px rgba(255,255,255,.08)!important;}
-.plugin-dialog-head{align-items:flex-start!important;margin-bottom:22px!important;}
-
-
-.plugin-modal-top{display:grid;grid-template-columns:72px 1fr;gap:18px;align-items:center;min-width:0;}
-.plugin-modal-logo{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:#05070b;border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 32px rgba(0,0,0,.35);font-size:28px;color:#fff;}
-.plugin-kicker{margin-bottom:4px;color:#a58bff;font-size:10px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;}
-.plugin-dialog h2{font-size:26px!important;letter-spacing:-.04em!important;line-height:1.05!important;}
-.plugin-dialog p{max-width:440px!important;color:#c5ccda!important;font-size:14px!important;line-height:1.5!important;}
-.modal-close{flex:none!important;width:46px!important;height:46px!important;border-radius:13px!important;background:rgba(255,255,255,.055)!important;border-color:rgba(255,255,255,.13)!important;font-size:24px!important;}
-.oauth-hero{width:100%;min-height:72px;margin:0 0 12px;padding:0 24px;border:1px solid rgba(218,205,255,.25);border-radius:15px;background:linear-gradient(135deg,#8f7cff,#6f55ff)!important;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:15px;font-weight:950;box-shadow:0 18px 38px rgba(105,82,255,.28), inset 0 1px rgba(255,255,255,.28);}
-
-
-.oauth-hero:hover:not([disabled]){filter:brightness(1.06);transform:translateY(-1px);}
-.oauth-hero[disabled]{opacity:.58;cursor:not-allowed;filter:saturate(.75);}
-.oauth-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.14);font-size:19px;}.oauth-arrow{font-size:24px;opacity:.95;}
-.oauth-note{margin:0 0 22px;text-align:center;color:#8f97aa;font-size:11.5px;font-weight:650;}
-.modal-divider{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin:20px 0 18px;color:#8e96a9;font-size:11px;font-weight:900;letter-spacing:.08em;}.modal-divider:before,.modal-divider:after{content:'';height:1px;background:rgba(255,255,255,.12);}
-.token-section{padding:18px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.025);}.token-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;font-size:15px;font-weight:950;}.token-title span:first-child{color:#a78bfa;font-size:22px}.token-sub{margin:0 0 14px!important;font-size:12.5px!important;color:#aab2c2!important;}
-.token-input{min-height:52px!important;border-radius:12px!important;border-color:rgba(255,255,255,.13)!important;background:#080c13!important;font-size:14px!important;}
-.connect-help{margin-top:9px!important}.connect-help a{font-size:12px!important;color:#bdafff!important}.secure-line{margin-top:10px;color:#8f98aa;font-size:11px;line-height:1.45}.modal-actions{margin-top:24px!important}.modal-actions .btn{min-height:52px!important;min-width:118px!important;border-radius:13px!important;font-size:12px!important}.modal-actions .btn:last-child{background:linear-gradient(135deg,#8a74ff,#6d53ff)!important;border-color:rgba(218,205,255,.28)!important;color:white!important;}
-@media(max-width:620px){.plugin-dialog{padding:22px 18px!important}.plugin-modal-top{grid-template-columns:1fr}.plugin-modal-logo{width:54px;height:54px}.oauth-hero{min-height:64px;padding:0 16px}.modal-actions{justify-content:stretch}.modal-actions .btn{flex:1}}
-
-
-/* Plugins modal v3 — compact, ChatGPT-like and state-aware. */
-[hidden]{display:none!important}
-.plugin-modal{background:rgba(5,7,10,.66)!important;backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important}
-.plugin-dialog{width:min(500px,100%)!important;max-height:min(86dvh,720px)!important;padding:22px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:18px!important;background:#11141b!important;background-image:none!important;box-shadow:0 24px 70px rgba(0,0,0,.45)!important}
-.plugin-dialog-head{margin-bottom:18px!important;gap:12px!important}
-.plugin-modal-top{display:flex!important;align-items:flex-start!important;gap:12px!important}
-.plugin-modal-logo{width:42px!important;height:42px!important;flex:0 0 42px!important;border-radius:12px!important;background:#0b0d12!important;border:1px solid rgba(255,255,255,.09)!important;box-shadow:none!important;font-size:18px!important}
-.plugin-kicker{margin:1px 0 4px!important;color:#8f7bff!important;font-size:9px!important;letter-spacing:.13em!important}
-.plugin-dialog h2{font-size:21px!important;line-height:1.15!important;letter-spacing:-.03em!important;color:#f5f7fb!important;-webkit-text-fill-color:#f5f7fb!important}
-.plugin-dialog p{margin:5px 0 0!important;max-width:380px!important;color:#9fa6b4!important;font-size:12.5px!important;line-height:1.5!important}
-.modal-close{width:38px!important;height:38px!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:10px!important;background:#171a22!important;background-image:none!important;color:#d8dde7!important;font-size:20px!important;box-shadow:none!important}
-.oauth-hero{min-height:50px!important;margin:0 0 9px!important;padding:0 14px!important;border:1px solid rgba(139,92,246,.28)!important;border-radius:11px!important;background:#7c69f6!important;background-image:none!important;box-shadow:none!important;font-size:12.5px!important}
-.oauth-icon{width:28px!important;height:28px!important;border-radius:8px!important;font-size:14px!important}
-.oauth-arrow{font-size:17px!important}
-.oauth-note{margin:0 0 14px!important;padding:10px 12px!important;border:1px solid rgba(255,255,255,.07)!important;border-radius:10px!important;background:#0d1016!important;color:#8e96a6!important;text-align:left!important;font-size:11px!important;font-weight:550!important;line-height:1.5!important}
-.modal-divider{margin:14px 0!important;gap:10px!important;color:#747c8b!important;font-size:9px!important}
-.token-section{padding:14px!important;border-color:rgba(255,255,255,.08)!important;border-radius:12px!important;background:#0d1016!important}
-.token-title{font-size:13px!important}.token-title span:first-child{font-size:16px!important}
-.token-sub{margin:3px 0 10px!important;font-size:11.5px!important}
-.token-input{min-height:44px!important;border-radius:10px!important;background:#090b10!important;font-size:13px!important}
-.connect-help{margin-top:8px!important}.mode-badge{display:none!important}.connect-help a{margin-left:auto;font-size:11px!important}
-.secure-line{margin-top:8px!important;font-size:10.5px!important;color:#727b8b!important}
-.modal-actions{margin-top:16px!important;gap:8px!important}
-.modal-actions .btn{min-width:0!important;min-height:42px!important;padding:0 14px!important;border-radius:10px!important;font-size:11.5px!important;background:#171a22!important;background-image:none!important;border-color:rgba(255,255,255,.09)!important;box-shadow:none!important}
-.modal-actions .btn:last-child:not([hidden]){background:#7c69f6!important;background-image:none!important;border-color:#7c69f6!important;color:#fff!important}
-.plugin-dialog.setup-only{width:min(440px,100%)!important}
-.plugin-dialog.setup-only .plugin-modal-logo{color:#a995ff!important}
-.plugin-dialog.setup-only .oauth-note{margin-top:4px!important;border-color:rgba(139,92,246,.16)!important;background:rgba(139,92,246,.06)!important;color:#aeb5c2!important}
-.plugin-dialog.setup-only .modal-actions{justify-content:flex-end!important}
-.plugin-dialog.setup-only #plugin-connect-cancel{background:#f1f3f7!important;color:#11141b!important;-webkit-text-fill-color:#11141b!important;border-color:#f1f3f7!important}
-@media(max-width:620px){
-  .plugin-dialog{padding:18px!important;border-radius:16px!important}
-  .plugin-modal-top{gap:10px!important}
-  .plugin-modal-logo{width:38px!important;height:38px!important;flex-basis:38px!important}
-  .modal-actions .btn{width:auto!important;flex:0 0 auto!important}
-}
+.nav a{display:flex;align-items:center;gap:11px;padding:0 11px;border:1px solid transparent;border-radius:12px;text-decoration:none;color:#c8ceda;font-size:12px;font-weight:760}.nav a:hover{background:rgba(255,255,255,.045);color:#fff}.nav a.active{border-color:rgba(139,124,246,.25);background:linear-gradient(90deg,rgba(139,124,246,.24),rgba(102,166,255,.09));color:#fff}.nav-ico{display:inline-flex!important;align-items:center;justify-content:center;min-width:22px;width:22px;height:22px;border-radius:8px;background:rgba(139,124,246,.1);color:#c6bcff;font-size:14px;flex:none}.sidebar-bottom{margin-top:auto}.owner-card{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 10px;border-top:1px solid var(--line)}.owner-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#24204c;color:#c7baff;font-weight:900}.owner-title{font-size:11px;font-weight:850}.owner-sub{font-size:9px;color:var(--muted-2)}
+.mobile-top{display:none}.main{min-width:0;padding:28px 30px 64px}.main-inner{max-width:1180px;margin:auto}.page-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start;margin-bottom:16px}.eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0 0 9px;color:var(--accent-2);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.12em}.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent)}h1{margin:0 0 6px;font-size:clamp(30px,4.2vw,48px);line-height:.98;letter-spacing:-.055em}p{margin:0}.lead{max-width:760px;color:#c7ceda;font-size:15px}.head-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.btn,.learn{min-height:42px;padding:0 14px;border:1px solid var(--line-strong);border-radius:12px;background:#171d29;color:#f1f3f8;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-weight:850;font-size:11px}.btn:hover,.learn:hover{border-color:rgba(139,124,246,.46)}.btn.primary{background:#f4f5f8;color:#11141b;border-color:#f4f5f8}.btn.danger{color:#ffd1d8;border-color:rgba(255,125,144,.28);background:rgba(255,125,144,.06)}
+.opinion-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin:18px 0}.opinion-card{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018));padding:16px;box-shadow:0 16px 50px rgba(0,0,0,.14)}.opinion-card h2{margin:0 0 8px;font-size:16px;letter-spacing:-.025em}.opinion-card p{color:var(--muted);font-size:12px}.verdict-list{display:grid;gap:8px;margin-top:12px}.verdict{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}.verdict span{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:rgba(139,124,246,.13);color:var(--accent-2);font-weight:900}.verdict strong{display:block;font-size:12px}.verdict small{display:block;color:var(--muted);font-size:11px}.health-row{display:grid;gap:10px}.health-item{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;border:1px solid var(--line);border-radius:13px;background:#0d121b;padding:0 12px}.health-item strong{font-size:12px}.health-pill{border:1px solid rgba(94,225,170,.28);background:rgba(94,225,170,.07);color:#8eeac2;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900}.health-pill.warn{border-color:rgba(233,200,106,.28);background:rgba(233,200,106,.07);color:#efd58a}.health-pill.fix{border-color:rgba(139,124,246,.3);background:rgba(139,124,246,.09);color:#c4bbff}
+.summary{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.summary-chip{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.026);color:var(--muted);font-size:10px;font-weight:850}.summary-dot{width:7px;height:7px;border-radius:50%;background:#6f7888}.summary-dot.good{background:var(--good)}.summary-dot.ready{background:var(--accent)}.summary-dot.soon{background:var(--blue)}
+.directory-banner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}.directory-step{min-height:86px;padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,#131927,#101621);display:flex;gap:12px;align-items:flex-start}.directory-step>span{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;background:rgba(139,124,246,.16);color:#c9c0ff;font-weight:950}.directory-step strong{display:block;font-size:12px}.directory-step small{display:block;margin-top:3px;color:var(--muted);font-size:11px;line-height:1.35}.controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02)}.search-wrap{display:flex;align-items:center;gap:8px;min-width:min(330px,36vw);min-height:42px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:#0b1018;color:var(--muted)}.search{width:100%;border:0;background:transparent;color:#fff;outline:0}.search::placeholder{color:#707a8b}.tabs{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{min-height:40px;padding:0 14px;border:1px solid transparent;border-radius:10px;background:transparent;color:#c5cad6;font-weight:800;font-size:11.5px;white-space:nowrap}.tab:hover{background:rgba(255,255,255,.04)}.tab.active{color:#fff;background:linear-gradient(90deg,#6f60ff,#8775ff);box-shadow:0 8px 26px rgba(99,82,255,.22)}
+.plugin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{min-width:0;min-height:268px;padding:14px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(180deg,#121823,#0e141d);display:flex;flex-direction:column}.card:hover{border-color:rgba(255,255,255,.14)}.card-head{display:flex;align-items:flex-start;gap:11px}.plugin-logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#161b26;border:1px solid rgba(255,255,255,.08);font-size:18px;font-weight:950;flex:none}.pc{background:#123959}.roblox{background:#2a2468}.github{background:#17191e}.drive{background:#173b2c}.gmail{background:#3c1c20}.calendar{background:#18345f}.discord{background:#202766}.shopify{background:#24441d}.stripe{background:#332060}.vercel{background:#050608}.card-title{min-width:0;flex:1}.name-row{display:flex;align-items:center;gap:7px;justify-content:space-between}.name{font-size:14px;font-weight:950;letter-spacing:-.02em}.verified{width:18px;height:18px;border-radius:50%;display:inline-grid;place-items:center;background:rgba(94,225,170,.12);border:1px solid rgba(94,225,170,.25);color:#7ee9bf;font-size:11px;flex:none}.badge{flex:none;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted);font-size:8.5px;font-weight:950;text-transform:uppercase;letter-spacing:.045em}.badge.connected{color:#64e7b0;border-color:rgba(99,230,176,.26);background:rgba(99,230,176,.08)}.badge.soon{color:#9fc4ff;border-color:rgba(83,147,255,.32);background:rgba(83,147,255,.08)}.badge.warn{color:#efd58a;border-color:rgba(233,200,106,.28);background:rgba(233,200,106,.07)}.publisher{margin-top:3px;color:var(--muted-2);font-size:10px;font-weight:750}.desc{margin:10px 0;color:#adb6c5;font-size:11.5px;line-height:1.45;min-height:48px}.skill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px}.skill-chip{display:inline-flex;align-items:center;min-height:23px;border:1px solid var(--line);border-radius:999px;background:#0d121a;color:#c4cbd6;padding:0 8px;font-size:9px;font-weight:780}.skill-more{color:var(--accent-2)}.permission-summary{margin:0 0 9px;color:var(--muted);font-size:10px}.approval{color:#efd58a}.permissions{display:grid;gap:6px;margin-bottom:12px}.perm{display:flex;align-items:flex-start;gap:8px;color:#d2d8e2;font-size:10.5px}.check{width:14px;height:14px;border:1px solid #5f6878;border-radius:4px;display:grid;place-items:center;flex:none;margin-top:1px;color:#fff;font-size:9px;background:#0d1219}.perm.allowed .check{border-color:#7364ff;background:#6658ff}.perm.allowed .check::after{content:"✓"}.setup-info{margin:0 0 10px;padding:9px 10px;border:1px solid rgba(233,200,106,.18);border-radius:11px;background:rgba(233,200,106,.05);color:#dbc989;font-size:10px}.card-actions{margin-top:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.toggle{margin-left:auto;position:relative;width:48px;height:30px;border:1px solid #3c4658;border-radius:999px;background:#1a2230}.toggle::after{content:"";position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:#75819a;transition:transform .14s ease,background .14s ease}.toggle[aria-pressed="true"]{border-color:rgba(116,101,255,.5);background:#4638a8}.toggle[aria-pressed="true"]::after{transform:translateX(18px);background:#fff}.toggle[disabled]{opacity:.55;cursor:not-allowed}.more-card{border-style:dashed;justify-content:center;align-items:center;text-align:center;background:rgba(12,16,24,.45)}.more-plus{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;margin-bottom:10px;background:#171e2d;border:1px solid var(--line);font-size:24px;color:#aeb5c5}.more-card strong{font-size:13px}.more-card p{margin:6px 0 14px;color:var(--muted);font-size:11px}.notice{min-height:20px;margin-top:14px;color:var(--muted);font-size:11px}.notice.good{color:var(--good)}.notice.bad{color:var(--bad)}.empty{grid-column:1/-1;padding:22px;border:1px dashed var(--line);border-radius:15px;color:var(--muted);text-align:center;background:rgba(255,255,255,.012)}
+.plugin-modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,8,.74);backdrop-filter:blur(10px)}.plugin-modal.open{display:flex}.plugin-dialog{width:min(590px,100%);max-height:min(86dvh,760px);overflow:auto;border:1px solid var(--line-strong);border-radius:20px;background:#111722;box-shadow:var(--shadow);padding:18px}.plugin-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.plugin-modal-top{display:flex;gap:12px;align-items:flex-start}.plugin-modal-logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#191f2e;border:1px solid var(--line);font-weight:950}.plugin-kicker{color:var(--accent-2);font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:950}.plugin-dialog h2{margin:1px 0 3px;font-size:20px;letter-spacing:-.025em}.plugin-dialog p{margin:5px 0 14px;color:var(--muted);font-size:12px}.modal-close{width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:#171d29;color:#dfe3ea;font-size:20px}.oauth-hero{width:100%;min-height:54px;border:1px solid rgba(139,124,246,.34);border-radius:15px;background:linear-gradient(90deg,#f4f5f8,#d9d5ff);color:#11141b;display:flex;align-items:center;gap:12px;padding:0 15px;font-weight:950}.oauth-icon{width:28px;height:28px;border-radius:9px;background:#11141b;color:#fff;display:grid;place-items:center}.oauth-arrow{margin-left:auto}.oauth-note,.secure-line{margin-top:9px;color:var(--muted);font-size:11px}.modal-divider{display:flex;align-items:center;gap:12px;margin:15px 0;color:var(--muted-2);font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.1em}.modal-divider::before,.modal-divider::after{content:"";height:1px;background:var(--line);flex:1}.token-section{padding:13px;border:1px solid var(--line);border-radius:15px;background:#0c111a}.token-title{display:flex;gap:8px;align-items:center}.token-title strong{font-size:12px}.token-sub{margin:6px 0 9px!important}.token-input{width:100%;min-height:46px;padding:0 12px;border:1px solid var(--line);border-radius:11px;background:#090d14;color:#fff;outline:none}.token-input:focus{border-color:rgba(118,104,255,.5)}.connect-help{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}.connect-help a{color:#b8adff;font-size:10px;font-weight:850;text-decoration:none}.connect-help a:hover{text-decoration:underline}.mode-badge{display:inline-flex;align-items:center;min-height:23px;padding:0 7px;border:1px solid rgba(99,230,176,.2);border-radius:999px;background:rgba(99,230,176,.05);color:#83eabf;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}.detail-meta-row{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}.detail-state{border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted);font-size:10px;font-weight:900}.detail-section{border-top:1px solid var(--line);padding-top:13px;margin-top:13px}.detail-section h3{margin:0 0 9px;font-size:13px}.detail-section-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.detail-section-head span{font-size:10px;color:var(--muted)}.detail-skills,.detail-permissions{display:grid;gap:8px}.detail-skill,.detail-perm{padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:#0d121a;color:#cfd5df;font-size:11px}.detail-security{display:grid;grid-template-columns:30px 1fr;gap:10px;margin-top:14px;padding:12px;border:1px solid rgba(94,225,170,.16);border-radius:13px;background:rgba(94,225,170,.05)}.detail-security span{width:30px;height:30px;border-radius:10px;background:rgba(94,225,170,.12);display:grid;place-items:center;color:#8eeac2}.detail-security strong{font-size:12px}.detail-security small{display:block;color:var(--muted);font-size:11px}.resource-list{display:grid;gap:8px}.resource{display:block;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#0d121a;text-decoration:none}.resource strong{display:block;font-size:12px}.resource span{display:block;margin-top:3px;color:var(--muted);font-size:10px}.resource:hover{border-color:rgba(139,124,246,.35)}
+@media(max-width:1180px){.plugin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.opinion-grid{grid-template-columns:1fr}}
+@media(max-width:930px){.shell{grid-template-columns:218px minmax(0,1fr)}.main{padding-left:18px;padding-right:18px}.plugin-grid{grid-template-columns:1fr}.directory-banner{grid-template-columns:1fr}}
+@media(max-width:700px){.shell{display:block}.sidebar{position:fixed;left:0;top:0;width:min(86vw,310px);height:100dvh;transform:translateX(-105%);transition:transform .22s ease;box-shadow:18px 0 60px rgba(0,0,0,.45);z-index:90}.sidebar.mobile-open{transform:translateX(0)}.sidebar-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:80}.sidebar-scrim.open{display:block}.mobile-menu-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:#151b27;color:#fff;font-size:20px}.mobile-top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;min-height:58px;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(9,12,19,.94);backdrop-filter:blur(14px)}.mobile-top a{text-decoration:none;color:var(--muted);font-weight:850}.mobile-top strong{font-size:13px}.main{padding:20px 14px 44px}.page-head{display:block}.head-actions{justify-content:flex-start;margin-top:14px}.learn{display:none}.controls{align-items:stretch;flex-direction:column}.search-wrap{min-width:0;width:100%}.card{min-height:0}.card-actions .btn{flex:1}.plugin-dialog{border-radius:18px;padding:15px}.connect-help{display:grid}.opinion-card{padding:14px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
-
-<style id="plugins-directory-v4">
-:root{--dir-bg:#0e0e10;--dir-panel:#151517;--dir-panel-2:#19191c;--dir-line:#2a2a2e;--dir-text:#f7f7f8;--dir-muted:#a7a7ad;--dir-purple:#7c6df2;--dir-green:#55c99a}
-html,body{background:var(--dir-bg)!important;color:var(--dir-text)!important}
-body{background-image:none!important}
-.shell{grid-template-columns:232px minmax(0,1fr)!important}
-.sidebar{background:#101012!important;border-right-color:#232326!important;padding:16px 12px!important}
-.brand{padding:4px 8px 18px!important}.brand-mark{background:#1b1927!important;border-color:#39344e!important;box-shadow:none!important}
-.nav a{min-height:42px!important;border-radius:9px!important;color:#c8c8ce!important}.nav a:hover{background:#19191c!important}.nav a.active{background:#202025!important;border-color:#323238!important;color:#fff!important}
-.nav-ico{background:transparent!important;box-shadow:none!important;color:#b9b9c0!important;width:22px!important;height:22px!important}
-.main{padding:34px 34px 72px!important}.main-inner{max-width:1160px!important}
-.directory-head{align-items:flex-end!important;margin-bottom:24px!important}.page-title-wrap{max-width:720px}.directory-eyebrow{margin-bottom:8px;color:#8e83ff;font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
-.page-head h1{font-size:42px!important;line-height:1!important;letter-spacing:-.055em!important}.page-head p{max-width:680px;margin-top:9px!important;color:#aaaab1!important;font-size:15px!important;line-height:1.55!important}
-.learn{background:#19191c!important;border-color:#303036!important;border-radius:10px!important;color:#f0f0f2!important;min-height:42px!important;padding:0 15px!important}
-.summary{margin-top:16px!important}.summary-chip{min-height:29px!important;background:#151517!important;border-color:#2a2a2e!important;color:#a9a9b0!important;padding:0 10px!important}
-.directory-banner{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin:0 0 24px;border:1px solid #29292d;border-radius:14px;overflow:hidden;background:#29292d}
-.directory-step{display:flex;gap:12px;align-items:flex-start;padding:16px;background:#141416}.directory-step>span{width:26px;height:26px;flex:0 0 26px;border-radius:8px;display:grid;place-items:center;background:#24202f;color:#b8adff;font-size:11px;font-weight:900}
-.directory-step strong{display:block;margin-bottom:3px;font-size:12.5px}.directory-step small{display:block;color:#929299;font-size:11px;line-height:1.45}
-.directory-controls{display:grid!important;grid-template-columns:minmax(260px,340px) 1fr!important;gap:12px!important;align-items:center!important;margin:0 0 18px!important;padding:0!important;border:0!important;background:transparent!important}
-.search-wrap{height:44px;display:flex;align-items:center;gap:9px;padding:0 12px;border:1px solid #303036;border-radius:11px;background:#151517;color:#777780}
-.search{width:100%!important;min-height:0!important;height:auto!important;padding:0!important;border:0!important;background:transparent!important;font-size:13px!important}
-.tabs{justify-content:flex-end!important}.tab{min-height:36px!important;padding:0 12px!important;border:1px solid transparent!important;border-radius:9px!important;color:#a9a9b0!important;background:transparent!important}.tab:hover{background:#19191c!important}.tab.active{background:#232327!important;border-color:#34343a!important;color:#fff!important;box-shadow:none!important}
-.plugin-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
-.card{min-height:206px!important;padding:16px!important;border-color:#29292e!important;border-radius:14px!important;background:#151517!important;background-image:none!important;box-shadow:none!important;transition:border-color .14s ease,background .14s ease,transform .14s ease!important}
-.card:hover{border-color:#3a3a41!important;background:#171719!important;transform:translateY(-1px)}
-.card-head{gap:12px!important}.plugin-logo{width:42px!important;height:42px!important;border-radius:11px!important;border-color:#303035!important;background:#1b1b1e!important;box-shadow:none!important}.card-title{padding-top:1px}.name-row{align-items:flex-start!important}.name-stack{min-width:0}.name{font-size:14px!important;letter-spacing:-.01em}.publisher{display:flex;align-items:center;gap:5px;margin-top:3px;color:#8f8f97;font-size:10.5px}.verified{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#6f64e7;color:white;font-size:9px;font-weight:900}
-.badge{padding:4px 7px!important;border-color:#333338!important;background:#1d1d20!important;color:#a8a8af!important;font-size:8px!important}.badge.connected{background:#14241d!important;border-color:#28543e!important;color:#77ddb2!important}.badge.soon{background:#1d1d23!important;border-color:#383842!important;color:#a7a7b1!important}
-.desc{min-height:42px!important;margin:12px 0 11px!important;color:#b6b6bd!important;font-size:11.5px!important;line-height:1.5!important}
-.skill-preview{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px}.skill-chip{max-width:100%;padding:5px 8px;border:1px solid #2d2d32;border-radius:999px;background:#101012;color:#a7a7af;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.skill-more{color:#777780}
-.permission-summary{display:flex;align-items:center;gap:7px;margin:-2px 0 12px;color:#85858d;font-size:9.5px}.permission-summary .approval{color:#c7a66b}
-.permissions{display:none!important}.card-actions{gap:7px!important}.btn{min-height:38px!important;border-radius:9px!important;border-color:#303036!important;background:#1b1b1e!important;color:#efeff1!important;font-size:10.5px!important}.btn:hover{background:#232327!important;border-color:#404047!important}.btn.primary-action{background:#f1f1f2!important;border-color:#f1f1f2!important;color:#111113!important}.toggle{width:42px!important;height:24px!important;background:#222227!important;border-color:#3a3a40!important}.toggle::after{top:3px!important;left:3px!important;width:16px!important;height:16px!important}.toggle[aria-pressed="true"]{background:#6f63e8!important;border-color:#8177ec!important}.toggle[aria-pressed="true"]::after{transform:translateX(18px)!important}
-.more-card{min-height:206px!important;background:#121214!important;border-style:dashed!important}.more-card .btn{background:#1a1a1d!important}
-.plugin-modal{background:rgba(0,0,0,.68)!important;backdrop-filter:blur(8px)!important}.plugin-dialog{width:min(560px,calc(100% - 24px))!important;padding:22px!important;border-radius:18px!important;border-color:#34343a!important;background:#151517!important;box-shadow:0 30px 90px rgba(0,0,0,.55)!important}
-.plugin-modal-logo{background:#1c1c1f!important;border-color:#303036!important}.plugin-kicker{color:#8c81f3!important}.plugin-dialog p{color:#a7a7ae!important}
-.detail-meta-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0 15px;border-bottom:1px solid #29292d;color:#9d9da5;font-size:11px}.detail-state{padding:4px 8px;border:1px solid #323238;border-radius:999px;background:#1c1c1f;color:#c6c6cc;font-weight:800}
-.detail-section{padding:16px 0;border-bottom:1px solid #29292d}.detail-section h3{margin:0 0 10px;font-size:13px}.detail-section-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.detail-section-head>span{color:#7f7f87;font-size:9.5px}
-.detail-skills{display:flex;flex-wrap:wrap;gap:7px}.detail-skill{padding:7px 9px;border:1px solid #303036;border-radius:9px;background:#111113;color:#c5c5ca;font-size:10.5px}
-.detail-permissions{display:grid;gap:8px}.detail-permission{display:flex;gap:10px;align-items:flex-start;padding:10px 11px;border:1px solid #2c2c31;border-radius:10px;background:#111113}.detail-permission-icon{width:22px;height:22px;flex:0 0 22px;border-radius:7px;display:grid;place-items:center;background:#202024;color:#bfbfc6;font-size:10px}.detail-permission strong{display:block;font-size:10.5px}.detail-permission small{display:block;margin-top:2px;color:#7f7f87;font-size:9.5px}
-.detail-security{display:flex;gap:10px;margin-top:16px;padding:12px;border:1px solid #2d2d32;border-radius:11px;background:#111113}.detail-security>span{color:#8d82f2}.detail-security strong{display:block;font-size:10.5px}.detail-security small{display:block;margin-top:2px;color:#85858d;font-size:9.5px;line-height:1.45}.detail-primary{background:#f1f1f2!important;color:#111113!important;border-color:#f1f1f2!important}
-@media(max-width:980px){.directory-controls{grid-template-columns:1fr!important}.tabs{justify-content:flex-start!important}.plugin-grid{grid-template-columns:1fr!important}.directory-banner{grid-template-columns:1fr!important}}
-@media(max-width:700px){.main{padding:22px 14px 48px!important}.directory-head{align-items:flex-start!important}.page-head h1{font-size:34px!important}.directory-banner{margin-bottom:18px!important}.directory-step{padding:13px!important}.plugin-grid{grid-template-columns:1fr!important}.card{min-height:0!important}.tabs{overflow-x:auto!important;flex-wrap:nowrap!important}.directory-controls{position:static!important}.learn{display:none!important}}
-</style>
-  <link rel="stylesheet" href="/stellar-business-palette.css?v=8">
-  <link rel="stylesheet" href="/stellar-public-v2.css?v=20260923">
 </head>
-<body class="stellar-public public-plugins">
-<div class="mobile-top"><button id="mobile-menu-btn" class="mobile-menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><a href="/app">Stellar AI</a><strong>Plugins</strong></div><div id="sidebar-scrim" class="sidebar-scrim" aria-hidden="true"></div>
+<body>
+<a class="skip" href="#main">Skip to plugins</a>
+<div class="sidebar-scrim" id="sidebar-scrim"></div>
+<div class="mobile-top"><button id="mobile-menu" class="mobile-menu-btn" type="button" aria-label="Open menu">☰</button><strong>Plugins</strong><a href="/app">Back to app</a></div>
 <div class="shell">
-<aside class="sidebar" aria-label="Stellar navigation">
-  <a class="brand" href="/app"><span class="brand-mark">✦</span><span><span class="brand-name">Stellar AI</span><span class="brand-sub">Your intelligent assistant</span></span></a>
-  <nav class="nav">
-    <a href="/app"><span class="nav-ico">□</span>New Chat</a>
-    <a href="/models"><span class="nav-ico">✧</span>Models</a>
-    <a href="/app"><span class="nav-ico">▣</span>Projects</a>
-    <a class="active" href="/plugins"><span class="nav-ico">✚</span>Plugins</a>
-    <a id="studio-nav" href="/roblox-studio"><span class="nav-ico">◫</span>Roblox Studio</a>
-    <a href="/desktop"><span class="nav-ico">▤</span>PC Agent</a>
+<aside id="sidebar" class="sidebar" aria-label="Stellar navigation">
+  <a class="brand" href="/app" aria-label="Open Stellar AI app"><div class="brand-mark">✦</div><div><div class="brand-name">Stellar AI</div><div class="brand-sub">Workspace</div></div></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/app"><span class="nav-ico">✦</span>Chat</a>
+    <a href="/models"><span class="nav-ico">◇</span>Models</a>
+    <a class="active" href="/plugins" aria-current="page"><span class="nav-ico">▣</span>Plugins</a>
+    <a href="/support"><span class="nav-ico">◉</span>Support</a>
   </nav>
-  <nav class="nav sep">
-    <a href="/blog"><span class="nav-ico">◌</span>Library</a>
-    <a href="/app"><span class="nav-ico">◷</span>History</a>
-    <a href="/app"><span class="nav-ico">★</span>Pinned</a>
-    <a href="/app"><span class="nav-ico">⌕</span>Search</a>
+  <nav class="nav sep" aria-label="Tools">
+    <a href="/desktop"><span class="nav-ico">⌘</span>PC Agent</a>
+    <a href="/roblox-studio"><span class="nav-ico">◆</span>Roblox Studio</a>
+    <a href="/business"><span class="nav-ico">↗</span>Business</a>
   </nav>
-  <div class="sidebar-bottom">
-    <nav class="nav sep">
-      <a href="/app"><span class="nav-ico">●</span>Account</a>
-      <a href="/#plans"><span class="nav-ico">▰</span>Billing</a>
-      <a href="/app"><span class="nav-ico">⚙</span>Settings</a>
-      <a href="/blog"><span class="nav-ico">?</span>Help</a>
-      <a href="/support"><span class="nav-ico">◉</span>Support</a>
-    </nav>
-    <div class="owner-card"><div class="owner-avatar">✦</div><div class="owner-meta"><div id="account-name" class="owner-title">Stellar</div><div id="account-role" class="owner-sub">Signed in</div></div></div>
-  </div>
+  <div class="sidebar-bottom"><div class="owner-card"><div class="owner-avatar">✦</div><div><div id="account-name" class="owner-title">Stellar</div><div id="account-role" class="owner-sub">Signed in</div></div></div></div>
 </aside>
-
-<main class="main">
+<main id="main" class="main">
 <div class="main-inner">
-  <header class="page-head directory-head">
-    <div class="page-title-wrap">
-      <div class="directory-eyebrow">Plugin directory</div>
+  <header class="page-head">
+    <div>
+      <div class="eyebrow">Plugin directory</div>
       <h1>Plugins</h1>
-      <p>Extend Stellar with apps, tools and workflows. Review what each plugin can access before you connect it.</p>
+      <p class="lead">Extend Stellar with apps, tools and workflows. Review what each plugin can access before you connect it.</p>
       <div id="plugin-summary" class="summary" aria-live="polite"></div>
     </div>
-    <button id="learn-btn" class="learn" type="button">How plugins work</button>
+    <div class="head-actions"><button id="learn-btn" class="learn" type="button">How plugins work</button><a class="btn" href="/support?topic=plugin-request">Request a plugin</a></div>
   </header>
+
+  <section class="opinion-grid" aria-label="Product review">
+    <article class="opinion-card">
+      <h2>What I think of everything</h2>
+      <p>The app is strongest when it feels like a clean AI workspace, not a flashy template. The next trust upgrade is making every power tool obvious, scoped and safe before a user connects it.</p>
+      <div class="verdict-list">
+        <div class="verdict"><span>1</span><div><strong>Good direction</strong><small>The app page, support page and shared theme are now moving toward a cleaner product feel.</small></div></div>
+        <div class="verdict"><span>2</span><div><strong>Biggest risk</strong><small>People will not connect plugins unless permissions, owner-only tools and setup status are completely clear.</small></div></div>
+        <div class="verdict"><span>3</span><div><strong>Best next move</strong><small>Make plugins feel like an app store: trusted cards, simple filters, details first, connect second.</small></div></div>
+      </div>
+    </article>
+    <aside class="opinion-card">
+      <h2>Launch health</h2>
+      <div class="health-row">
+        <div class="health-item"><strong>Core app UI</strong><span class="health-pill">Improving</span></div>
+        <div class="health-item"><strong>Support & contact</strong><span class="health-pill">Clearer</span></div>
+        <div class="health-item"><strong>Plugins trust</strong><span class="health-pill fix">Fixed here</span></div>
+        <div class="health-item"><strong>Live deploy</strong><span class="health-pill warn">Needs Vercel</span></div>
+      </div>
+    </aside>
+  </section>
 
   <section class="directory-banner" aria-label="How plugins work">
     <div class="directory-step"><span>1</span><div><strong>Install</strong><small>Add the plugin to your Stellar account.</small></div></div>
@@ -242,7 +107,7 @@ body{background-image:none!important}
     <div class="directory-step"><span>3</span><div><strong>Use</strong><small>Let Stellar use the plugin only within approved access.</small></div></div>
   </section>
 
-  <div class="controls directory-controls">
+  <div class="controls">
     <label class="search-wrap" aria-label="Search plugin directory"><span>⌕</span><input id="search" class="search" type="search" placeholder="Search plugins and apps…" aria-label="Search plugins"></label>
     <div class="tabs" role="tablist" aria-label="Plugin filters">
       <button class="tab active" type="button" data-filter="all">All</button>
@@ -279,23 +144,23 @@ body{background-image:none!important}
         <div class="connect-help"><span class="mode-badge">Manual secure token fallback</span><a id="plugin-token-help" href="#" target="_blank" rel="noopener noreferrer">How to create a token ↗</a></div>
         <div class="secure-line">Your token is encrypted server-side and is never exposed in your browser.</div>
       </section>
-      <div class="modal-actions"><button id="plugin-connect-cancel" class="btn" type="button">Cancel</button><button id="plugin-connect-submit" class="btn" type="button">Connect & Continue</button></div>
+      <div class="modal-actions"><button id="plugin-connect-cancel" class="btn" type="button">Cancel</button><button id="plugin-connect-submit" class="btn primary" type="button">Connect & Continue</button></div>
     </div>
     <div id="plugin-detail-view" hidden>
-      <div class="detail-meta-row"><span id="plugin-detail-developer"></span><span id="plugin-detail-state" class="detail-state"></span></div>
+      <div class="detail-meta-row"><span id="plugin-detail-developer" class="detail-state"></span><span id="plugin-detail-state" class="detail-state"></span></div>
       <section class="detail-section"><h3>What it can do</h3><div id="plugin-detail-skills" class="detail-skills"></div></section>
       <section class="detail-section"><div class="detail-section-head"><h3>Permissions</h3><span>Review before connecting</span></div><div id="plugin-detail-permissions" class="detail-permissions"></div></section>
       <div class="detail-security"><span>◇</span><div><strong>Your access stays scoped</strong><small>Stellar only uses permissions exposed by this plugin. High-impact actions still require approval where supported.</small></div></div>
-      <div class="modal-actions detail-actions"><button id="plugin-detail-close" class="btn" type="button">Close</button><button id="plugin-detail-primary" class="btn detail-primary" type="button">Install plugin</button></div>
+      <div class="modal-actions detail-actions"><button id="plugin-detail-close" class="btn" type="button">Close</button><button id="plugin-detail-primary" class="btn primary" type="button">Install plugin</button></div>
     </div>
-    <div id="plugin-inspect-view" hidden><div id="plugin-resource-list" class="resource-list"></div><div class="modal-actions"><button id="plugin-disconnect" class="btn" type="button">Disconnect</button><button id="plugin-inspect-close" class="btn" type="button">Close</button></div></div>
+    <div id="plugin-inspect-view" hidden><div id="plugin-resource-list" class="resource-list"></div><div class="modal-actions"><button id="plugin-disconnect" class="btn danger" type="button">Disconnect</button><button id="plugin-inspect-close" class="btn" type="button">Close</button></div></div>
   </div>
 </div>
 
 <script>
 (()=>{
   const $=id=>document.getElementById(id);
-  let token='',plugins=[],filter='all',owner=false,connection={},modalPluginId='';
+  let token='',plugins=[],filter='all',owner=false,modalPluginId='',connection={};
   try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
   const headers=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
   const logos={
@@ -303,20 +168,18 @@ body{background-image:none!important}
     gmail:['M','gmail'],'google-calendar':['23','calendar'],discord:['●','discord'],shopify:['S','shopify'],stripe:['S','stripe'],vercel:['▲','vercel']
   };
   const developerIds=new Set(['pc-agent','roblox-studio','github','vercel']);
-
   const fallbackPlugins=[
-    {id:'pc-agent',name:'PC Agent',description:'Use your paired Windows workspace safely with approval controls.',category:'Coding',status:'beta',availableToUser:true,enabled:true,route:'/desktop',permissions:[{id:'files.read',label:'Read project files',risk:'read'},{id:'files.write',label:'Write approved files',risk:'write'}]},
-    {id:'roblox-studio',name:'Roblox Studio',description:'Build approved scripts, folders and map packs inside Roblox Studio.',category:'Coding',status:'beta',availableToUser:true,enabled:true,route:'/roblox-studio',permissions:[{id:'studio.read',label:'Inspect open place',risk:'read'},{id:'studio.write',label:'Create approved Studio objects',risk:'write'}]},
-    {id:'github',name:'GitHub',description:'Owner-only repository inspection for Stellar development.',category:'Developer tools',status:'available',availableToUser:true,enabled:false,connected:false,connection:'oauth_or_token',credentialStorageReady:true,permissions:[{id:'repos.read',label:'Read repositories',risk:'read'}]},
-    {id:'vercel',name:'Vercel',description:'Owner-only project and deployment inspection for Stellar.',category:'Developer tools',status:'available',availableToUser:true,enabled:false,connected:false,connection:'oauth_or_token',oauthProvider:'vercel',credentialStorageReady:true,permissions:[{id:'deployments.read',label:'Read deployments',risk:'read'}]},
-    {id:'gmail',name:'Gmail',description:'Search mail and prepare replies after OAuth setup is complete.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'mail.read',label:'Read selected email',risk:'read'},{id:'mail.draft',label:'Create drafts',risk:'write'}]},
-    {id:'google-drive',name:'Google Drive',description:'Read selected project files and documents after OAuth setup.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'drive.read',label:'Read selected Drive files',risk:'read'}]},
-    {id:'google-calendar',name:'Google Calendar',description:'Check availability and manage approved events after OAuth setup.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'calendar.read',label:'Read calendar events',risk:'read'}]},
-    {id:'discord',name:'Discord',description:'Work with approved servers, channels and bot workflows after setup.',category:'Community',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['DISCORD_OAUTH_CLIENT_ID','DISCORD_OAUTH_CLIENT_SECRET'],permissions:[{id:'discord.read',label:'Read approved server content',risk:'read'}]},
-    {id:'shopify',name:'Shopify',description:'Inspect store content and approved catalogue workflows after setup.',category:'Business',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['SHOPIFY_API_KEY','SHOPIFY_API_SECRET'],permissions:[{id:'shopify.read',label:'Read store data',risk:'read'}]},
-    {id:'stripe',name:'Stripe',description:'Inspect payment data and approved billing workflows after setup.',category:'Business',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,setupEnv:['STRIPE_CONNECT_CLIENT_ID'],permissions:[{id:'stripe.read',label:'Read billing data',risk:'read'}]}
+    {id:'pc-agent',name:'PC Agent',description:'Use a paired Windows workspace safely with approval controls.',category:'Coding',status:'beta',availableToUser:true,enabled:true,route:'/desktop',developer:'Stellar AI',verified:true,skills:['Inspect workspace files','Edit approved files','Run approved terminal commands'],permissions:[{id:'files.read',label:'Read project files',risk:'read'},{id:'files.write',label:'Write approved files',risk:'write'},{id:'shell.run',label:'Run approved terminal commands',risk:'high'}]},
+    {id:'roblox-studio',name:'Roblox Studio',description:'Build approved scripts, folders and map packs inside Roblox Studio.',category:'Coding',status:'beta',availableToUser:true,enabled:true,route:'/roblox-studio',developer:'Stellar AI',verified:true,skills:['Inspect an open Roblox place','Create scripts and folders','Apply RemoteEvents and RemoteFunctions'],permissions:[{id:'studio.read',label:'Inspect open place',risk:'read'},{id:'studio.write',label:'Create approved Studio objects',risk:'write'}]},
+    {id:'github',name:'GitHub',description:'Owner-only repository inspection for Stellar development.',category:'Developer tools',status:'available',audience:'owner',availableToUser:true,enabled:false,connected:false,connection:'oauth_or_token',credentialStorageReady:true,developer:'GitHub + Stellar AI',verified:true,skills:['Inspect repositories','Review project activity','Use repository context'],permissions:[{id:'repos.read',label:'Read repositories',risk:'read'}]},
+    {id:'vercel',name:'Vercel',description:'Owner-only deployment status and project inspection.',category:'Developer tools',status:'available',audience:'owner',availableToUser:true,enabled:false,connected:false,connection:'oauth_or_token',credentialStorageReady:true,developer:'Vercel + Stellar AI',verified:true,skills:['Inspect projects','Review deployment status','Use deployment context'],permissions:[{id:'deployments.read',label:'Read deployments',risk:'read'}]},
+    {id:'gmail',name:'Gmail',description:'Search mail and prepare replies after OAuth setup is complete.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,connection:'oauth',developer:'Google',skills:['Search selected mail','Prepare replies','Send only with approval'],setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'mail.read',label:'Read selected email',risk:'read'},{id:'mail.draft',label:'Create drafts',risk:'write'},{id:'mail.send',label:'Send approved email',risk:'high'}]},
+    {id:'google-drive',name:'Google Drive',description:'Read selected project files and documents after OAuth setup.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,connection:'oauth',developer:'Google',skills:['Read selected Drive files','Create approved Drive files','Use documents as context'],setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'drive.read',label:'Read selected Drive files',risk:'read'},{id:'drive.write',label:'Create approved Drive files',risk:'write'}]},
+    {id:'google-calendar',name:'Google Calendar',description:'Check availability and manage approved events after OAuth setup.',category:'Productivity',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,connection:'oauth',developer:'Google',skills:['Read calendar events','Check availability','Create approved events'],setupEnv:['GOOGLE_OAUTH_CLIENT_ID','GOOGLE_OAUTH_CLIENT_SECRET'],permissions:[{id:'calendar.read',label:'Read calendar events',risk:'read'},{id:'calendar.write',label:'Create approved events',risk:'write'}]},
+    {id:'discord',name:'Discord',description:'Work with approved servers, channels and bot workflows after setup.',category:'Community',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,connection:'oauth',developer:'Discord',skills:['Read approved channels','Work with selected servers','Send approved content'],setupEnv:['DISCORD_OAUTH_CLIENT_ID','DISCORD_OAUTH_CLIENT_SECRET'],permissions:[{id:'discord.read',label:'Read approved server content',risk:'read'},{id:'discord.write',label:'Send approved content',risk:'write'}]},
+    {id:'shopify',name:'Shopify',description:'Inspect store content and approved catalogue workflows after setup.',category:'Business',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,connection:'oauth',developer:'Shopify',skills:['Read store data','Review catalogue content','Apply approved store changes'],setupEnv:['SHOPIFY_API_KEY','SHOPIFY_API_SECRET'],permissions:[{id:'shopify.read',label:'Read store data',risk:'read'},{id:'shopify.write',label:'Apply approved store changes',risk:'write'}]},
+    {id:'stripe',name:'Stripe',description:'Inspect payment data and approved billing workflows after setup.',category:'Business',status:'coming_soon',setupStatus:'oauth_setup_needed',availableToUser:false,enabled:false,connection:'oauth_or_token',developer:'Stripe',skills:['Read billing data','Review payment context','Create approved billing objects'],setupEnv:['STRIPE_CONNECT_CLIENT_ID'],permissions:[{id:'stripe.read',label:'Read business billing data',risk:'read'},{id:'stripe.write',label:'Create approved billing objects',risk:'high'}]}
   ];
-
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
   function setNotice(message,kind=''){const el=$('notice');el.textContent=message||'';el.className='notice'+(kind?' '+kind:'')}
   async function api(action,body=null){
@@ -326,18 +189,6 @@ body{background-image:none!important}
     if(!response.ok)throw new Error(data.error||'Plugin request failed.');
     return data;
   }
-  async function getConnectionStates(){
-    const tasks=[];
-    const pc=plugins.find(p=>p.id==='pc-agent');
-    if(pc?.availableToUser){
-      tasks.push(fetch('/api/desktop-agent?action=status',{headers:{Authorization:'Bearer '+token},cache:'no-store'}).then(r=>r.json()).then(d=>{connection['pc-agent']={paired:!!d.paired,online:!!d.online}}).catch(()=>{}));
-    }
-    const studio=plugins.find(p=>p.id==='roblox-studio');
-    if(studio?.availableToUser){
-      tasks.push(fetch('/api/roblox-studio-agent?action=status',{headers:{Authorization:'Bearer '+token},cache:'no-store'}).then(r=>r.json()).then(d=>{connection['roblox-studio']={paired:!!d.paired,online:!!d.online}}).catch(()=>{}));
-    }
-    await Promise.all(tasks);
-  }
   function isTokenPlugin(p){return p?.connection==='token'||p?.connection==='oauth_or_token'}
   function setupText(p){return Array.isArray(p.setupEnv)&&p.setupEnv.length?p.setupEnv.join(', '):'provider OAuth credentials'}
   function state(p){
@@ -345,16 +196,16 @@ body{background-image:none!important}
     if(p.status==='coming_soon')return {label:'Coming soon',className:'soon'};
     if(!p.availableToUser&&p.setupStatus==='oauth_setup_needed')return {label:'OAuth setup needed',className:'soon'};
     if(!p.availableToUser)return {label:'Unavailable',className:''};
-    if(isTokenPlugin(p)&&!p.credentialStorageReady)return {label:'Setup required',className:'soon'};
+    if(isTokenPlugin(p)&&!p.credentialStorageReady)return {label:'Setup required',className:'warn'};
     if(isTokenPlugin(p)&&p.connected)return {label:p.enabled?'Connected':'Disabled',className:p.enabled?'connected':''};
     if(isTokenPlugin(p))return {label:'Ready to connect',className:''};
     if(connection[p.id]?.paired)return {label:connection[p.id]?.online?'Connected':'Paired',className:'connected'};
-    return {label:p.enabled?'Ready to pair':'Disabled',className:''};
+    return {label:p.enabled?'Ready':'Disabled',className:p.enabled?'connected':''};
   }
   function passes(p){
     const q=$('search').value.trim().toLowerCase();
-    if(q&&!((p.name+' '+p.description+' '+p.category+' '+state(p).label).toLowerCase().includes(q)))return false;
-    if(filter==='connected')return p.status!=='coming_soon'&&p.availableToUser&&(isTokenPlugin(p)?p.connected&&p.enabled:Boolean(connection[p.id]?.paired));
+    if(q&&!((p.name+' '+p.description+' '+p.category+' '+state(p).label+' '+(p.skills||[]).join(' ')).toLowerCase().includes(q)))return false;
+    if(filter==='connected')return p.status!=='coming_soon'&&p.availableToUser&&(isTokenPlugin(p)?p.connected&&p.enabled:Boolean(p.enabled||connection[p.id]?.paired));
     if(filter==='coming_soon')return p.status==='coming_soon'||p.setupStatus==='oauth_setup_needed';
     if(filter==='productivity')return String(p.category||'').toLowerCase()==='productivity';
     if(filter==='developer')return developerIds.has(p.id)||String(p.category||'').toLowerCase().includes('developer');
@@ -364,7 +215,7 @@ body{background-image:none!important}
     return true;
   }
   function permissionRows(p){
-    return (p.permissions||[]).map(permission=>{
+    return (p.permissions||[]).slice(0,3).map(permission=>{
       const allowed=p.status!=='coming_soon'&&p.enabled&&p.availableToUser&&(!isTokenPlugin(p)||p.connected);
       return '<div class="perm '+(allowed?'allowed':'')+'"><span class="check"></span><span>'+escapeHtml(permission.label)+(permission.risk==='high'?' (requires approval)':'')+'</span></div>';
     }).join('');
@@ -373,302 +224,152 @@ body{background-image:none!important}
     const [logo,logoClass]=logos[p.id]||['✦',''];
     const st=state(p);
     const skills=Array.isArray(p.skills)?p.skills:[];
-    const skillPreview=skills.slice(0,2).map(skill=>'<span class="skill-chip">'+escapeHtml(skill)+'</span>').join('')
-      +(skills.length>2?'<span class="skill-chip skill-more">+'+(skills.length-2)+' more</span>':'');
+    const skillPreview=skills.slice(0,2).map(skill=>'<span class="skill-chip">'+escapeHtml(skill)+'</span>').join('')+(skills.length>2?'<span class="skill-chip skill-more">+'+(skills.length-2)+' more</span>':'');
     const highRisk=(p.permissions||[]).some(permission=>permission.risk==='high');
-    const permissionSummary='<div class="permission-summary"><span>'+(p.permissions||[]).length+' permission'+((p.permissions||[]).length===1?'':'s')+'</span>'+(highRisk?'<span class="approval">• approval required for sensitive actions</span>':'')+'</div>';
+    const permissionSummary='<div class="permission-summary"><span>'+(p.permissions||[]).length+' permission'+((p.permissions||[]).length===1?'':'s')+'</span>'+(highRisk?'<span class="approval"> • approval required for sensitive actions</span>':'')+'</div>';
     const publisher=escapeHtml(p.developer||'Stellar AI');
     const verified=p.verified===true?'<span class="verified" title="Stellar verified" aria-label="Stellar verified">✓</span>':'';
+    const setup=p.setupStatus==='oauth_setup_needed'?'<div class="setup-info"><strong>Setup info:</strong> '+escapeHtml(setupText(p))+'</div>':'';
     let actions='<button class="btn" type="button" data-details="'+escapeHtml(p.id)+'">Details</button>';
-    let toggle='';
-    if(p.status==='coming_soon'){
-      if(p.setupStatus==='oauth_setup_needed'){
-        actions+='<button class="btn primary-action" type="button" data-connect="'+escapeHtml(p.id)+'">Setup info</button>';
-      }else{
-        actions+='<button class="btn" type="button" disabled>Coming soon</button>';
-      }
-      toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="'+escapeHtml(st.label)+'"></button>';
-    }else if(isTokenPlugin(p)){
-      if(!p.credentialStorageReady){
-        actions+='<button class="btn" type="button" disabled>Server setup needed</button>';
-        toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Setup required"></button>';
-      }else if(p.connected){
-        actions+='<button class="btn primary-action" type="button" data-inspect="'+escapeHtml(p.id)+'">Manage</button>';
-        toggle='<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>';
-      }else{
-        actions+='<button class="btn primary-action" type="button" data-install="'+escapeHtml(p.id)+'">Install</button>';
-        toggle='<button type="button" class="toggle" disabled aria-pressed="false" aria-label="Connect '+escapeHtml(p.name)+' first"></button>';
-      }
-    }else{
-      if(p.route&&p.availableToUser){
-        actions+='<a class="btn primary-action" href="'+escapeHtml(p.route)+'">Open</a>';
-      }else if(p.availableToUser){
-        actions+='<button class="btn primary-action" type="button" data-install="'+escapeHtml(p.id)+'">Install</button>';
-      }
-      toggle=p.availableToUser
-        ? '<button type="button" class="toggle" data-toggle="'+escapeHtml(p.id)+'" aria-label="'+(p.enabled?'Disable ':'Enable ')+escapeHtml(p.name)+'" aria-pressed="'+String(!!p.enabled)+'"></button>'
-        : '<button type="button" class="toggle" disabled aria-pressed="false" aria-label="'+escapeHtml(st.label)+'"></button>';
-    }
-    return '<article class="card"><div class="card-head"><div class="plugin-logo '+logoClass+'">'+escapeHtml(logo)+'</div><div class="card-title"><div class="name-row"><div class="name-stack"><div class="name">'+escapeHtml(p.name)+'</div><div class="publisher">'+publisher+verified+'</div></div><span class="badge '+st.className+'">'+escapeHtml(st.label)+'</span></div></div></div><div class="desc">'+escapeHtml(p.description)+'</div><div class="skill-preview">'+skillPreview+'</div>'+permissionSummary+'<div class="card-actions">'+actions+toggle+'</div></article>';
-  }
-  function moreCard(){
-    return '<article class="card more-card"><div class="more-plus">＋</div><strong>More plugins coming soon</strong><p>New integrations will appear here as they become genuinely available.</p><a class="btn" href="/support">Request a plugin</a></article>';
+    if(p.route)actions+='<a class="btn" href="'+escapeHtml(p.route)+'">Open</a>';
+    if(p.inspectable)actions+='<button class="btn" type="button" data-inspect="'+escapeHtml(p.id)+'">Manage</button>';
+    else if(isTokenPlugin(p)&&p.availableToUser&&p.status!=='coming_soon')actions+='<button class="btn primary" type="button" data-connect="'+escapeHtml(p.id)+'">Connect</button>';
+    else if(p.availableToUser&&p.status!=='coming_soon')actions+='<button class="btn primary" type="button" data-install="'+escapeHtml(p.id)+'">Install</button>';
+    else actions+='<button class="btn" type="button" disabled>Coming soon</button>';
+    const toggleDisabled=(!p.availableToUser||p.status==='coming_soon'||(isTokenPlugin(p)&&!p.connected))?' disabled':'';
+    actions+='<button class="toggle" type="button" aria-label="Toggle '+escapeHtml(p.name)+'" aria-pressed="'+(p.enabled?'true':'false')+'" data-toggle="'+escapeHtml(p.id)+'"'+toggleDisabled+'></button>';
+    return '<article class="card" data-plugin-card="'+escapeHtml(p.id)+'"><div class="card-head"><div class="plugin-logo '+logoClass+'">'+escapeHtml(logo)+'</div><div class="card-title"><div class="name-row"><div class="name">'+escapeHtml(p.name)+'</div><span class="badge '+st.className+'">'+escapeHtml(st.label)+'</span></div><div class="publisher">'+publisher+' '+verified+'</div></div></div><p class="desc">'+escapeHtml(p.description)+'</p><div class="skill-row">'+skillPreview+'</div>'+permissionSummary+'<div class="permissions">'+permissionRows(p)+'</div>'+setup+'<div class="card-actions">'+actions+'</div></article>';
   }
   function renderSummary(){
-    const connected=plugins.filter(p=>p.availableToUser&&p.status!=='coming_soon'&&(isTokenPlugin(p)?p.connected&&p.enabled:Boolean(connection[p.id]?.paired))).length;
-    const ready=plugins.filter(p=>p.availableToUser&&p.status!=='coming_soon'&&!isTokenPlugin(p)&&!connection[p.id]?.paired&&p.enabled).length
-      + plugins.filter(p=>p.availableToUser&&isTokenPlugin(p)&&!p.connected&&p.credentialStorageReady).length;
-    const soon=plugins.filter(p=>p.status==='coming_soon').length;
-    $('plugin-summary').innerHTML='<span class="summary-chip"><span class="summary-dot good"></span>'+connected+' connected</span><span class="summary-chip"><span class="summary-dot ready"></span>'+ready+' ready</span><span class="summary-chip"><span class="summary-dot soon"></span>'+soon+' coming soon</span>';
+    const total=plugins.length;
+    const connected=plugins.filter(p=>p.status!=='coming_soon'&&p.availableToUser&&(p.connected||p.enabled)).length;
+    const ready=plugins.filter(p=>p.availableToUser&&p.status!=='coming_soon').length;
+    const soon=plugins.filter(p=>p.status==='coming_soon'||p.setupStatus==='oauth_setup_needed').length;
+    $('plugin-summary').innerHTML='<span class="summary-chip"><span class="summary-dot ready"></span>'+total+' listed</span><span class="summary-chip"><span class="summary-dot good"></span>'+connected+' active/connected</span><span class="summary-chip"><span class="summary-dot ready"></span>'+ready+' ready</span><span class="summary-chip"><span class="summary-dot soon"></span>'+soon+' setup/coming soon</span>';
   }
   function render(){
     renderSummary();
-    const list=plugins.filter(p=>passes(p));
-    $('plugin-grid').innerHTML=(list.length?list.map(pluginCard).join(''):'<div class="empty">No plugins match this filter.</div>')+(filter==='all'?moreCard():'');
-    document.querySelectorAll('[data-toggle]').forEach(button=>button.addEventListener('click',()=>togglePlugin(button.dataset.toggle)));
-    document.querySelectorAll('[data-details]').forEach(button=>button.addEventListener('click',()=>openDetails(button.dataset.details)));
-    document.querySelectorAll('[data-install]').forEach(button=>button.addEventListener('click',()=>installPlugin(button.dataset.install)));
-    document.querySelectorAll('[data-connect]').forEach(button=>button.addEventListener('click',()=>openConnect(button.dataset.connect)));
-    document.querySelectorAll('[data-inspect]').forEach(button=>button.addEventListener('click',()=>openInspect(button.dataset.inspect)));
+    const visible=plugins.filter(passes);
+    $('plugin-grid').innerHTML=visible.map(pluginCard).join('')+'<article class="card more-card"><div class="more-plus">+</div><strong>More plugins coming soon</strong><p>Want another app connected to Stellar?</p><a class="btn" href="/support?topic=plugin-request">Request a plugin</a></article>';
+    if(!visible.length)$('plugin-grid').innerHTML='<div class="empty">No plugins match that filter yet.</div>';
   }
-  async function load(){
-    $('plugin-grid').innerHTML='<div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div>';
-    if(!token){$('plugin-grid').innerHTML='<div class="empty">Sign in to Stellar AI to manage plugins.</div>';setNotice('Sign in is required.','bad');return}
-    try{
-      const planResponse=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
-      const plan=await planResponse.json().catch(()=>({}));
-      if(!planResponse.ok)throw new Error('Sign in to Stellar AI to manage plugins.');
-      owner=plan.owner===true;
-      $('account-name').textContent=owner?'Stellar Owner':'Stellar';
-      $('account-role').textContent=owner?'Owner':'Signed in';
-      $('studio-nav').style.display=owner?'':'none';
-      const data=await api('list');
-      plugins=data.plugins||[];
-      await getConnectionStates();
-      render();
-      setNotice('Plugin permissions are account-scoped. High-impact actions still require approval.','good');
-    }catch(error){
-      plugins=fallbackPlugins.map(plugin=>({...plugin,permissions:(plugin.permissions||[]).map(permission=>({...permission}))}));
-      plugins=plugins.filter(p=>owner||!['roblox-studio','github','vercel'].includes(p.id)).map(p=>owner?p:{...p,setupStatus:null,setupEnv:[],oauthStatus:null,oauthAvailable:false,oauthSetupMissing:false,oauthSetupMissingEnv:[]});
-      $('account-name').textContent=owner?'Stellar Owner':'Stellar';
-      $('account-role').textContent=owner?'Owner':'Signed in';
-      $('studio-nav').style.display=owner?'':'none';
-      await getConnectionStates().catch(()=>{});
-      render();
-      setNotice('Showing the plugin catalogue. Live connection status will refresh automatically when the plugin service is available.','good');
-}
+  function refreshPlugin(updated){
+    if(!updated?.id)return;
+    plugins=plugins.map(p=>p.id===updated.id?{...p,...updated}:p);
+    render();
   }
-  function closePluginModal(){
-    modalPluginId='';
-    $('plugin-token').value='';
-    $('plugin-dialog').classList.remove('setup-only');
-    $('plugin-connect-cancel').textContent='Cancel';
-    $('plugin-modal').classList.remove('open');
-    $('plugin-modal').setAttribute('aria-hidden','true');
-    $('plugin-connect-form').hidden=false;
-    $('plugin-detail-view').hidden=true;
-    $('plugin-inspect-view').hidden=true;
-    $('plugin-resource-list').innerHTML='';
-  }
-  function openConnect(id){
-    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    if(!owner&&['github','vercel'].includes(id)){setNotice('This developer plugin is owner-only.','bad');return;}
+  function showModal(mode,id){
     modalPluginId=id;
-    const setupOnly=owner&&(plugin.setupStatus==='oauth_setup_needed'||(plugin.status==='coming_soon'&&plugin.oauthProvider));
-    const oauthPlugin=plugin.connection==='oauth_or_token'||plugin.connection==='oauth';
-    const oauthReady=owner&&(plugin.oauthAvailable||plugin.oauthStatus?.configured);
-    const isVercel=id==='vercel', isGithub=id==='github';
-    $('plugin-dialog').classList.toggle('setup-only',setupOnly);
-    $('plugin-modal-logo').textContent=isGithub?'●':isVercel?'▲':'✦';
-    $('plugin-modal-title').textContent=setupOnly ? plugin.name+' isn’t ready yet' : 'Connect '+plugin.name;
-    $('plugin-modal-copy').textContent=setupOnly
-      ? 'This integration still needs owner setup before it can be connected.'
-      : isGithub ? 'Connect GitHub so Stellar can inspect repository metadata safely.'
-      : isVercel ? 'Connect Vercel so Stellar can inspect project and deployment metadata.'
-      : 'Connect this plugin with the permissions shown on its card.';
-    $('plugin-oauth-logo').textContent=isGithub?'●':isVercel?'▲':'✦';
-    $('plugin-oauth-label').textContent=oauthReady?'Connect with '+plugin.name:'Connect with OAuth';
-    $('plugin-oauth-submit').hidden=setupOnly||!owner||!oauthPlugin||!oauthReady;
-    $('plugin-oauth-submit').disabled=false;
-    const missing=(plugin.oauthStatus?.missing||plugin.oauthSetupMissingEnv||plugin.setupEnv||[]).join(', ');
-    $('plugin-oauth-note').textContent=setupOnly
-      ? 'Owner setup required'+(missing?': '+missing:'.':'.')+' Add these credentials in Vercel, then the normal Connect button will appear.'
-      : oauthReady ? 'Secure OAuth connection. Stellar only requests the permissions shown for this plugin.'
-      : owner&&oauthPlugin ? 'OAuth is not configured yet.'+(missing?' Missing: '+missing+'.':'')
-      : 'Manual token connection is available below.';
-    $('plugin-token-title').textContent=isVercel?'Use a Vercel Access Token':isGithub?'Use a GitHub Access Token':'Use an Access Token';
-    $('plugin-token-sub').textContent=isVercel?'Enter a Vercel access token instead.':isGithub?'Enter a fine-grained GitHub token instead.':'Enter an access token instead.';
-    $('plugin-token').placeholder=isGithub?'github_pat_xxxxxxxxxxxxxxxxxxxxx':isVercel?'vercel_xxxxxxxxxxxxxxxxxxxxx':'Paste token';
-    $('plugin-token-help').href=isGithub?'https://github.com/settings/personal-access-tokens':'https://vercel.com/account/settings/tokens';
-    $('plugin-token-help').textContent=isGithub?'Create GitHub token ↗':isVercel?'Create Vercel token ↗':'Token help ↗';
-    const showToken=owner&&!setupOnly&&isTokenPlugin(plugin);
-    $('plugin-token-section').hidden=!showToken;
-    $('plugin-token-divider').hidden=!showToken||!oauthPlugin||!oauthReady;
-    $('plugin-connect-submit').hidden=!showToken;
-    $('plugin-connect-cancel').textContent=setupOnly?'Close':'Cancel';
-    $('plugin-connect-form').hidden=false;
-    $('plugin-detail-view').hidden=true;
-    $('plugin-inspect-view').hidden=true;
-    $('plugin-modal').classList.add('open');
-    $('plugin-modal').setAttribute('aria-hidden','false');
-    if(showToken)setTimeout(()=>$('plugin-token').focus(),0);
-  }
-  function openDetails(id){
-    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    modalPluginId=id;
-    const [logo]=logos[plugin.id]||['✦'];
-    const st=state(plugin);
+    const p=plugins.find(plugin=>plugin.id===id);if(!p)return;
+    const [logo]=logos[p.id]||['✦'];
     $('plugin-modal-logo').textContent=logo;
-    $('plugin-modal-title').textContent=plugin.name;
-    $('plugin-modal-copy').textContent=plugin.description||'';
-    $('plugin-detail-developer').innerHTML='By '+escapeHtml(plugin.developer||'Stellar AI')+(plugin.verified===true?' · <strong>Stellar verified</strong>':'');
-    $('plugin-detail-state').textContent=st.label;
-    const skills=Array.isArray(plugin.skills)?plugin.skills:[];
-    $('plugin-detail-skills').innerHTML=skills.length?skills.map(skill=>'<span class="detail-skill">'+escapeHtml(skill)+'</span>').join(''):'<span class="detail-skill">No additional skills listed</span>';
-    $('plugin-detail-permissions').innerHTML=(plugin.permissions||[]).map(permission=>{
-      const risk=permission.risk==='high'?'Sensitive · approval required':permission.risk==='write'?'Can make approved changes':'Read access';
-      const icon=permission.risk==='high'?'!':permission.risk==='write'?'↗':'⌕';
-      return '<div class="detail-permission"><span class="detail-permission-icon">'+icon+'</span><div><strong>'+escapeHtml(permission.label)+'</strong><small>'+escapeHtml(risk)+'</small></div></div>';
-    }).join('')||'<div class="empty">No permissions listed.</div>';
-    const primary=$('plugin-detail-primary');
-    primary.disabled=false;
-    if(plugin.status==='coming_soon'){
-      primary.textContent=plugin.setupStatus==='oauth_setup_needed'?'Setup info':'Coming soon';
-      primary.disabled=plugin.setupStatus!=='oauth_setup_needed';
-    }else if(isTokenPlugin(plugin)&&plugin.connected){
-      primary.textContent='Manage connection';
-    }else if(isTokenPlugin(plugin)){
-      primary.textContent='Install plugin';
-    }else if(plugin.route&&plugin.availableToUser){
-      primary.textContent='Open '+plugin.name;
-    }else if(plugin.availableToUser){
-      primary.textContent=plugin.enabled?'Enabled':'Install plugin';
-      primary.disabled=plugin.enabled===true;
-    }else{
-      primary.textContent='Unavailable';
-      primary.disabled=true;
-    }
-    $('plugin-connect-form').hidden=true;
-    $('plugin-inspect-view').hidden=true;
-    $('plugin-detail-view').hidden=false;
-    $('plugin-modal').classList.add('open');
-    $('plugin-modal').setAttribute('aria-hidden','false');
-  }
-
-  async function runDetailPrimary(){
-    const plugin=plugins.find(p=>p.id===modalPluginId);if(!plugin)return;
-    if(plugin.status==='coming_soon'&&plugin.setupStatus==='oauth_setup_needed'){closePluginModal();openConnect(plugin.id);return}
-    if(isTokenPlugin(plugin)&&plugin.connected){closePluginModal();openInspect(plugin.id);return}
-    if(isTokenPlugin(plugin)){closePluginModal();await installPlugin(plugin.id);return}
-    if(plugin.route&&plugin.availableToUser){location.href=plugin.route;return}
-    if(plugin.availableToUser&&!plugin.enabled){closePluginModal();await installPlugin(plugin.id);}
-  }
-
-  async function installPlugin(id){
-    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    try{
-      const result=await api('install',{id});
-      if(result.needsConnection){openConnect(id);setNotice(plugin.name+' needs a secure connection before Stellar can use it.','good');return}
-      const index=plugins.findIndex(p=>p.id===id);if(index>=0)plugins[index]=result.plugin;
-      await getConnectionStates();render();setNotice(plugin.name+' installed and enabled.','good');
-    }catch(error){setNotice(error.message,'bad')}
-  }
-  async function startOAuthCurrentPlugin(){
-    const id=modalPluginId,plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    $('plugin-oauth-submit').disabled=true;
-    try{
-      const result=await api('startOAuth',{id});
-      if(result.url){location.href=result.url;return}
-    }catch(error){setNotice(error.message+' Manual token connection is still available below.','bad')}
-    finally{$('plugin-oauth-submit').disabled=false}
-  }
-
-  async function connectCurrentPlugin(){
-    const id=modalPluginId,plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    const raw=$('plugin-token').value.trim();if(!raw){setNotice('Enter a token first.','bad');return}
-    $('plugin-connect-submit').disabled=true;
-    try{
-      const result=await api('connectToken',{id,token:raw});
-      const index=plugins.findIndex(p=>p.id===id);if(index>=0)plugins[index]=result.plugin;
+    $('plugin-modal-title').textContent=(mode==='details'?'Plugin details: ':'Connect ')+p.name;
+    $('plugin-modal-copy').textContent=p.description||'';
+    $('plugin-connect-form').hidden=mode!=='connect';
+    $('plugin-detail-view').hidden=mode!=='details';
+    $('plugin-inspect-view').hidden=mode!=='inspect';
+    $('plugin-modal').classList.add('open');$('plugin-modal').setAttribute('aria-hidden','false');
+    if(mode==='connect'){
       $('plugin-token').value='';
-      closePluginModal();render();
-      const account=result.account?.label?' as '+result.account.label:'';
-      setNotice(plugin.name+' connected'+account+' in read-only mode.','good');
-    }catch(error){setNotice(error.message,'bad')}
-    finally{$('plugin-connect-submit').disabled=false}
+      const oauthAvailable=p.oauthAvailable===true;
+      $('plugin-oauth-submit').style.display=oauthAvailable?'flex':'none';
+      $('plugin-token-divider').style.display=oauthAvailable?'flex':'none';
+      $('plugin-oauth-note').textContent=oauthAvailable?'Secure OAuth connection. No password is shared with Stellar.':'OAuth setup needed. Use secure token connect for now if you are the owner.';
+      $('plugin-oauth-label').textContent='Connect '+p.name+' with OAuth';
+      $('plugin-token-title').textContent='Connect '+p.name+' with access token';
+      $('plugin-token-help').href=p.id==='github'?'https://github.com/settings/tokens':p.id==='vercel'?'https://vercel.com/account/tokens':'/support?topic=plugin-token';
+    }
+    if(mode==='details')renderDetails(p);
+    if(mode==='inspect')inspectPlugin(p);
   }
-  async function openInspect(id){
-    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    modalPluginId=id;
-    $('plugin-modal-title').textContent=plugin.name;
-    $('plugin-modal-copy').textContent='Connected in read-only mode. Stellar can inspect the resources below but cannot modify them from this plugin yet.';
-    $('plugin-connect-form').hidden=true;
-    $('plugin-detail-view').hidden=true;
-    $('plugin-inspect-view').hidden=false;
-    $('plugin-resource-list').innerHTML='<div class="empty">Loading…</div>';
-    $('plugin-modal').classList.add('open');
-    $('plugin-modal').setAttribute('aria-hidden','false');
+  function closeModal(){modalPluginId='';$('plugin-modal').classList.remove('open');$('plugin-modal').setAttribute('aria-hidden','true')}
+  function renderDetails(p){
+    $('plugin-detail-developer').textContent=(p.developer||'Stellar AI')+(p.verified?' · Stellar verified':'');
+    $('plugin-detail-state').textContent=state(p).label;
+    $('plugin-detail-skills').innerHTML=(p.skills||['Use this plugin inside Stellar workflows']).map(skill=>'<div class="detail-skill">'+escapeHtml(skill)+'</div>').join('');
+    $('plugin-detail-permissions').innerHTML=(p.permissions||[]).map(permission=>'<div class="detail-perm"><strong>'+escapeHtml(permission.label)+'</strong><br><span>'+escapeHtml(permission.risk==='high'?'Sensitive action — approval required where supported.':permission.risk==='write'?'Can make approved changes.':'Read-only access.')+'</span></div>').join('');
+    const primary=$('plugin-detail-primary');
+    primary.textContent=p.status==='coming_soon'?'Coming soon':isTokenPlugin(p)&&!p.connected?'Connect plugin':p.enabled?'Manage plugin':'Install plugin';
+    primary.disabled=p.status==='coming_soon'||!p.availableToUser;
+  }
+  async function inspectPlugin(p){
+    $('plugin-resource-list').innerHTML='<div class="resource"><strong>Loading connected resources…</strong><span>Checking provider safely.</span></div>';
     try{
-      const result=await api('inspect',{id});
-      const items=Array.isArray(result.items)?result.items:[];
-      $('plugin-resource-list').innerHTML=items.length?items.map(item=>{
-        const body='<strong>'+escapeHtml(item.name)+'</strong><span>'+escapeHtml(item.detail||'')+'</span>';
-        return item.url?'<a class="resource" href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+body+'</a>':'<div class="resource">'+body+'</div>';
-      }).join(''):'<div class="empty">No resources were returned for this account.</div>';
-      $('plugin-modal-copy').textContent=result.title||$('plugin-modal-copy').textContent;
-    }catch(error){$('plugin-resource-list').innerHTML='<div class="empty">'+escapeHtml(error.message)+'</div>'}
+      const data=await api('inspect',{id:p.id});
+      const items=[...(data.repositories||[]),(data.projects||[]),(data.items||[])];
+      $('plugin-resource-list').innerHTML=items.length?items.slice(0,8).map(item=>'<a class="resource" href="'+escapeHtml(item.url||'#')+'" target="_blank" rel="noopener noreferrer"><strong>'+escapeHtml(item.name||item.full_name||item.id||'Connected resource')+'</strong><span>'+escapeHtml(item.description||item.visibility||item.updated_at||'Available through connected plugin')+'</span></a>').join(''):'<div class="resource"><strong>Connected</strong><span>No preview resources were returned.</span></div>';
+    }catch(error){$('plugin-resource-list').innerHTML='<div class="resource"><strong>Could not inspect</strong><span>'+escapeHtml(error.message)+'</span></div>'}
+  }
+  async function installPlugin(id){
+    try{
+      const data=await api('install',{id});
+      if(data.needsConnection)return showModal('connect',id);
+      refreshPlugin(data.plugin);setNotice('Plugin installed.', 'good');
+    }catch(error){setNotice(error.message,'bad')}
+  }
+  async function connectToken(){
+    const p=plugins.find(plugin=>plugin.id===modalPluginId);if(!p)return;
+    const value=$('plugin-token').value.trim();
+    if(!value){setNotice('Paste a token first.','bad');return}
+    try{
+      const data=await api('connectToken',{id:p.id,token:value});
+      refreshPlugin(data.plugin);closeModal();setNotice(p.name+' connected.', 'good');
+    }catch(error){setNotice(error.message,'bad')}
+  }
+  async function startOAuth(){
+    const p=plugins.find(plugin=>plugin.id===modalPluginId);if(!p)return;
+    try{
+      const data=await api('startOAuth',{id:p.id});
+      if(data.url)location.href=data.url;
+    }catch(error){setNotice(error.message,'bad')}
   }
   async function disconnectCurrentPlugin(){
-    const id=modalPluginId,plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    if(!confirm('Disconnect '+plugin.name+' from Stellar AI?'))return;
+    const p=plugins.find(plugin=>plugin.id===modalPluginId);if(!p)return;
     try{
-      const result=await api('disconnect',{id});
-      const index=plugins.findIndex(p=>p.id===id);if(index>=0)plugins[index]=result.plugin;
-      closePluginModal();render();setNotice(plugin.name+' disconnected.','good');
+      const data=await api('disconnect',{id:p.id});
+      refreshPlugin(data.plugin);closeModal();setNotice(p.name+' disconnected.', 'good');
     }catch(error){setNotice(error.message,'bad')}
   }
-
-  async function togglePlugin(id){
-    const plugin=plugins.find(p=>p.id===id);if(!plugin)return;
-    const next=!plugin.enabled;
-    setNotice((next?'Enabling ':'Disabling ')+plugin.name+'…');
+  async function togglePlugin(id,pressed){
+    const p=plugins.find(plugin=>plugin.id===id);if(!p)return;
+    if(isTokenPlugin(p)&&!p.connected){showModal('connect',id);return}
     try{
-      const result=await api('setEnabled',{id,enabled:next});
-      const index=plugins.findIndex(p=>p.id===id);
-      if(index>=0)plugins[index]=result.plugin;
-      if(!next)connection[id]={paired:false,online:false};
-      else await getConnectionStates();
-      render();
-      setNotice(plugin.name+(next?' enabled.':' disabled.'),'good');
+      const data=await api('setEnabled',{id,enabled:!pressed});
+      refreshPlugin(data.plugin);setNotice((data.plugin.enabled?'Enabled ':'Disabled ')+data.plugin.name+'.','good');
     }catch(error){setNotice(error.message,'bad')}
   }
-
-  document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
-    filter=button.dataset.filter;
-    document.querySelectorAll('[data-filter]').forEach(tab=>tab.classList.toggle('active',tab===button));
+  async function load(){
+    try{
+      const data=await api('list');
+      plugins=Array.isArray(data.plugins)?data.plugins:fallbackPlugins;
+      owner=plugins.some(p=>['github','vercel','roblox-studio'].includes(p.id));
+    }catch{
+      plugins=fallbackPlugins;
+      owner=false;
+    }
+    plugins=plugins.filter(plugin=>{const id=plugin.id;if(!owner&&['github','vercel'].includes(id))return false;return true;});
+    $('account-role').textContent=owner?'Owner workspace':'Signed in';
     render();
-  }));
-  const sidebar=document.querySelector('.sidebar'), menuBtn=$('mobile-menu-btn'), scrim=$('sidebar-scrim');
-  function closeMobileSidebar(){if(!sidebar||!menuBtn||!scrim)return;sidebar.classList.remove('mobile-open');scrim.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');scrim.setAttribute('aria-hidden','true')}
-  function toggleMobileSidebar(){if(!sidebar||!menuBtn||!scrim)return;const opening=!sidebar.classList.contains('mobile-open');sidebar.classList.toggle('mobile-open',opening);scrim.classList.toggle('open',opening);menuBtn.setAttribute('aria-expanded',String(opening));scrim.setAttribute('aria-hidden',String(!opening))}
-  menuBtn?.addEventListener('click',toggleMobileSidebar);
-  scrim?.addEventListener('click',closeMobileSidebar);
-  sidebar?.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMobileSidebar));
-  addEventListener('resize',()=>{if(innerWidth>700)closeMobileSidebar()});
+  }
+  document.addEventListener('click',event=>{
+    const details=event.target.closest('[data-details]');if(details){showModal('details',details.getAttribute('data-details'));return}
+    const install=event.target.closest('[data-install]');if(install){installPlugin(install.getAttribute('data-install'));return}
+    const connect=event.target.closest('[data-connect]');if(connect){showModal('connect',connect.getAttribute('data-connect'));return}
+    const inspect=event.target.closest('[data-inspect]');if(inspect){showModal('inspect',inspect.getAttribute('data-inspect'));return}
+    const toggle=event.target.closest('[data-toggle]');if(toggle){togglePlugin(toggle.getAttribute('data-toggle'),toggle.getAttribute('aria-pressed')==='true');return}
+  });
+  document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');filter=tab.dataset.filter;render()}));
   $('search').addEventListener('input',render);
-  $('learn-btn').addEventListener('click',()=>{setNotice('Plugins add skills and connected tools to Stellar. Review permissions before installing, connect the provider account you intend to use, and disconnect anything you no longer need.','good')});
-  $('plugin-modal-close').addEventListener('click',closePluginModal);
-  $('plugin-connect-cancel').addEventListener('click',closePluginModal);
-  $('plugin-inspect-close').addEventListener('click',closePluginModal);
-  $('plugin-detail-close').addEventListener('click',closePluginModal);
-  $('plugin-detail-primary').addEventListener('click',runDetailPrimary);
-  $('plugin-connect-submit').addEventListener('click',connectCurrentPlugin);
-  $('plugin-oauth-submit').addEventListener('click',startOAuthCurrentPlugin);
-  $('plugin-disconnect').addEventListener('click',disconnectCurrentPlugin);
-  $('plugin-modal').addEventListener('click',event=>{if(event.target===$('plugin-modal'))closePluginModal()});
-  addEventListener('keydown',event=>{if(event.key==='Escape'&&$('plugin-modal').classList.contains('open'))closePluginModal()});
+  $('plugin-modal-close').addEventListener('click',closeModal);$('plugin-connect-cancel').addEventListener('click',closeModal);$('plugin-detail-close').addEventListener('click',closeModal);$('plugin-inspect-close').addEventListener('click',closeModal);
+  $('plugin-connect-submit').addEventListener('click',connectToken);$('plugin-oauth-submit').addEventListener('click',startOAuth);$('plugin-disconnect').addEventListener('click',disconnectCurrentPlugin);
+  $('plugin-detail-primary').addEventListener('click',()=>{const p=plugins.find(plugin=>plugin.id===modalPluginId);if(!p)return;if(isTokenPlugin(p)&&!p.connected)showModal('connect',p.id);else if(p.inspectable)showModal('inspect',p.id);else installPlugin(p.id)});
+  $('learn-btn').addEventListener('click',()=>{document.querySelector('.directory-banner')?.scrollIntoView({behavior:'smooth',block:'center'});setNotice('Plugins follow Install → Connect → Use. Review permissions before connecting.', 'good')});
+  $('mobile-menu')?.addEventListener('click',()=>{$('sidebar').classList.add('mobile-open');$('sidebar-scrim').classList.add('open')});
+  $('sidebar-scrim')?.addEventListener('click',()=>{$('sidebar').classList.remove('mobile-open');$('sidebar-scrim').classList.remove('open')});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeModal();$('sidebar').classList.remove('mobile-open');$('sidebar-scrim').classList.remove('open')}});
   load();
 })();
 </script>
+<!-- OWNER-ONLY OAUTH MODAL POLISH -->
 </body>
 </html>
