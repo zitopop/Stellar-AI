@@ -10524,7 +10524,7 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
     <div class="relative topbar-model-picker">
             <button type="button" id="model-btn" onclick="toggleModelMenu(event)" class="model-pill" aria-label="Choose model: Star, recommended for most scripts" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span class="model-icon" aria-hidden="true">⭐</span><span class="model-name">Star</span><span class="model-mode">Smart</span><span class="model-caret" aria-hidden="true">▾</span></button>
             <div id="model-menu" role="menu" aria-label="Choose an AI model" class="hidden menu-up absolute right-0 w-64 glass rounded-2xl px-2 py-2 z-50">
-              <div class="model-menu-heading" aria-hidden="true"><span>AI models</span><span>Select a focus</span></div>
+              <div class="model-menu-heading" aria-hidden="true"><span>Models</span><span>Choose for this chat</span></div>
               <button type="button" onclick="pickModel('fabie')" data-model-choice="fabie" role="menuitemradio" aria-checked="false" aria-label="Select Spark for fast drafts" title="Quick drafts, small fixes and lightweight work" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center justify-between gap-2">
                 <div>
                   <div class="font-black text-sm">✨ Spark <span style="color:#8b8b9e;font-size:10px;">· fast drafts</span></div>
@@ -10578,7 +10578,7 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
                 </button>
               </div>
               <div class="border-t border-white/10 mt-2"></div>
-              <button type="button" onclick="closeModelMenu(); openPlans()" role="menuitem" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 font-black text-sm">⭐ See all plans</button>
+              <button type="button" onclick="closeModelMenu(); openPlans()" role="menuitem" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 font-black text-sm">Compare plans <span aria-hidden="true">↗</span></button>
             </div>
           </div>
     <nav class="stellar-top-actions" aria-label="Help and plan">
@@ -14019,9 +14019,14 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
         composerModelButton.innerHTML = '<span aria-hidden="true">✦</span><span class="composer-mode-name">' + currentName + '</span><span class="composer-mode-caret" aria-hidden="true">▾</span>';
         composerModelButton.setAttribute('aria-label', 'Choose AI mode. Current: ' + currentName);
       }
-      // Hide Nova button for non-Pro users
+      // Keep Nova visible so the model-to-plan relationship is clear. Non-Pro users can select it to open Plans.
       const novaBtn2 = document.getElementById('nova-model-btn');
-      if (novaBtn2) novaBtn2.style.display = pro ? '' : 'none';
+      if (novaBtn2) {
+        novaBtn2.style.display = '';
+        novaBtn2.dataset.locked = String(!pro);
+        novaBtn2.setAttribute('aria-label', pro ? 'Select Nova for maximum quality' : 'Nova requires Pro. Select to compare plans.');
+        novaBtn2.title = pro ? 'Maximum Stellar capability for difficult project work' : 'Nova requires Pro — select to compare plans';
+      }
       document.getElementById('fabie-check').style.visibility = cur === 'fabie' ? 'visible' : 'hidden';
       document.getElementById('comet-check').style.visibility = cur === 'comet' ? 'visible' : 'hidden';
       document.getElementById('smart-check').style.visibility = cur === 'smart' ? 'visible' : 'hidden';
@@ -14046,11 +14051,11 @@ body:not(.light) *{scrollbar-color:rgba(242,214,117,.38) rgba(255,255,255,.05)!i
       const menu = document.getElementById('model-menu');
       if (!menu || menu.classList.contains('hidden') || !modelMenuTrigger) return;
       const rect = modelMenuTrigger.getBoundingClientRect();
-      const width = Math.min(320, window.innerWidth - 24);
+      const width = Math.min(360, window.innerWidth - 24);
       const below = window.innerHeight - rect.bottom - 20;
       const above = rect.top - 20;
       const opensBelow = below >= 300 || below >= above;
-      const maxHeight = Math.max(100, Math.min(460, opensBelow ? below : above));
+      const maxHeight = Math.max(180, Math.min(560, opensBelow ? below : above));
       menu.style.setProperty('position', 'fixed', 'important');
       menu.style.setProperty('width', width + 'px', 'important');
       menu.style.setProperty('max-height', maxHeight + 'px', 'important');
