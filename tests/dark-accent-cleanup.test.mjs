@@ -36,16 +36,18 @@ test('dark Settings terms link has no browser-blue underline', () => {
 });
 
 
-test('business palette lock uses the approved black gold white contract', async () => {
+test('business palette lock uses the approved Stellar dark violet contract', async () => {
   const css = await readFile(new URL('../stellar-business-palette.css', import.meta.url), 'utf8');
-  assert.match(css, /--stellar-bg:#050505/);
-  assert.match(css, /--stellar-panel:#101010/);
-  assert.match(css, /--stellar-text:#F7F3EA/);
-  assert.match(css, /--stellar-gold:#F2D675/);
-  assert.match(css, /--stellar-muted:#D8CFBE/);
+  assert.match(css, /Stellar Brand System v8/);
+  assert.match(css, /--stellar-bg:#090b12/);
+  assert.match(css, /--stellar-panel:#10131c/);
+  assert.match(css, /--stellar-text:#f7f8fc/);
+  assert.match(css, /--stellar-primary:#8b5cf6/);
+  assert.match(css, /--stellar-cyan:#22d3ee/);
+  assert.match(css, /--stellar-muted:#aab1c1/);
   assert.match(css, /--stellar-success:#22C55E/);
   assert.match(css, /--stellar-danger:#EF4444/);
-  assert.match(appHtml, /stellar-business-palette\.css\?v=1/);
-  assert.match(indexHtml, /stellar-business-palette\.css\?v=1/);
+  assert.match(appHtml, /stellar-business-palette\.css\?v=8/);
+  assert.match(indexHtml, /stellar-business-palette\.css\?v=8/);
 });
 
