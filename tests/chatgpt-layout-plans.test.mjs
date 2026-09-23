@@ -20,11 +20,11 @@ test('plans explain included allowance and separate wallet credit', () => {
   assert.equal((app.match(/class="plan-usage-pill"/g) || []).length, 4);
 });
 
-test('landing uses a cinematic Stellar entry and plan-limit guidance', () => {
-  assert.match(landing, /BUILD WHAT/);
-  assert.match(landing, /Start building free/);
-  assert.match(landing, /ROBLOX STUDIO AGENT/);
-  assert.match(landing, /PC AGENT/);
+test('landing uses a conversational Stellar entry and plan-limit guidance', () => {
+  assert.match(landing, /What can Stellar help you build\?/);
+  assert.match(landing, /Message Stellar AI/);
+  assert.match(landing, /Roblox Studio Agent/);
+  assert.match(landing, /PC Agent/);
   assert.match(landing, /Wallet credit is separate and can be used after the included allowance\./);
   assert.match(landing, /Prices and checkout are in GBP/);
 });
