@@ -57,3 +57,11 @@ test('business palette loads last and contains no legacy gold brand values', () 
   assert.doesNotMatch(palette, /#(?:d4af37|f2d675|f4d676|8f6b1e|b8860b)/i);
   assert.match(palette, /Business homepage final neutral override v9/);
 });
+
+test('business homepage keeps the executive premium presentation layer', () => {
+  assert.match(palette, /Executive premium layer v11/);
+  assert.match(palette, /\.public-home \.site-header \.nav/);
+  assert.match(palette, /\.public-home \.final-cta/);
+  assert.match(landing, /Clear answers before you choose\./);
+  assert.match(landing, /Bring the work\./);
+});
