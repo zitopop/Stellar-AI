@@ -1568,3 +1568,336 @@ body.light:not(.stellar-empty-home):not(.stellar-start-state) .input-area.glass{
     animation:none!important;
   }
 }
+/* ChatGPT-style plans modal v7 — compact, readable, less busy. */
+#plans-modal{
+  align-items:center!important;
+  justify-content:center!important;
+  padding:18px!important;
+  background:rgba(0,0,0,.58)!important;
+  backdrop-filter:blur(8px)!important;
+  -webkit-backdrop-filter:blur(8px)!important;
+}
+#plans-modal>div{
+  width:min(980px,calc(100vw - 36px))!important;
+  max-width:980px!important;
+  max-height:min(88dvh,820px)!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:18px!important;
+  background:#171717!important;
+  color:#f4f4f4!important;
+  box-shadow:0 24px 80px rgba(0,0,0,.42)!important;
+}
+
+/* Header */
+#plans-modal>div>div:first-child{
+  min-height:76px!important;
+  margin:0!important;
+  padding:18px 20px!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+  background:#171717!important;
+}
+#plans-modal h2,
+#plans-modal .plans-title{
+  margin:0!important;
+  color:#f3f3f3!important;
+  -webkit-text-fill-color:#f3f3f3!important;
+  font-size:21px!important;
+  line-height:1.2!important;
+  letter-spacing:-.025em!important;
+  font-weight:650!important;
+}
+#plans-modal .plans-modal-subtitle{
+  margin-top:5px!important;
+  color:#8f8f8f!important;
+  font-size:11px!important;
+  line-height:1.4!important;
+}
+
+/* Remove the extra "trying it / building weekly" guide cards — the plans already explain themselves. */
+#plans-modal .plans-choice-guide{
+  display:none!important;
+}
+
+/* Keep the credit explanation, but make it one quiet line. */
+#plans-modal .plans-clarity-note{
+  margin:14px 18px 12px!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:10px!important;
+  background:#1e1e1e!important;
+  color:#a4a4a4!important;
+  font-size:10.5px!important;
+  line-height:1.45!important;
+}
+#plans-modal .plans-clarity-note strong{
+  color:#d7d7d7!important;
+}
+
+/* Close button: normal neutral control, no gold focus ring unless keyboard-focused. */
+#plans-modal button[aria-label*="Close"],
+#plans-modal .modal-close,
+#plans-modal .close-btn{
+  width:38px!important;
+  min-width:38px!important;
+  height:38px!important;
+  min-height:38px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:#232323!important;
+  background-image:none!important;
+  color:#bdbdbd!important;
+  -webkit-text-fill-color:#bdbdbd!important;
+  box-shadow:none!important;
+  outline:none!important;
+}
+#plans-modal button[aria-label*="Close"]:hover,
+#plans-modal .modal-close:hover,
+#plans-modal .close-btn:hover{
+  background:#2b2b2b!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+#plans-modal button[aria-label*="Close"]:focus-visible,
+#plans-modal .modal-close:focus-visible,
+#plans-modal .close-btn:focus-visible{
+  outline:2px solid rgba(255,255,255,.55)!important;
+  outline-offset:2px!important;
+}
+
+/* Main plan grid */
+#plans-grid-inner{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0!important;
+  padding:6px 18px 18px!important;
+  overflow:auto!important;
+  align-items:stretch!important;
+}
+#plans-modal .plan-card{
+  min-width:0!important;
+  min-height:0!important;
+  padding:16px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:14px!important;
+  background:#202020!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  transform:none!important;
+  text-align:left!important;
+}
+#plans-modal .plan-card:hover{
+  background:#232323!important;
+  border-color:rgba(255,255,255,.14)!important;
+  transform:none!important;
+}
+#plans-modal #plan-card-free,
+#plans-modal #plan-card-starter,
+#plans-modal #plan-card-plus,
+#plans-modal #plan-card-pro{
+  background:#202020!important;
+  border-color:rgba(255,255,255,.08)!important;
+}
+#plans-modal #plan-card-plus{
+  border-color:rgba(255,255,255,.18)!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.55)!important;
+}
+
+/* Plan labels and pricing */
+#plans-modal .plan-head-name{
+  margin:0 0 9px!important;
+  color:#d9d9d9!important;
+  -webkit-text-fill-color:#d9d9d9!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+}
+#plans-modal .plan-head-price{
+  margin:0!important;
+  color:#f4f4f4!important;
+  -webkit-text-fill-color:#f4f4f4!important;
+  font-size:32px!important;
+  line-height:1!important;
+  letter-spacing:-.04em!important;
+}
+#plans-modal .plan-head-per{
+  margin:4px 0 12px!important;
+  color:#858585!important;
+  font-size:10px!important;
+}
+#plans-modal .plan-fit-line{
+  min-height:0!important;
+  margin:0 0 12px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#a1a1a1!important;
+  font-size:10.5px!important;
+  line-height:1.45!important;
+}
+#plans-modal .plan-fit-line b{
+  display:none!important;
+}
+
+/* Allowance row */
+#plans-modal .plan-usage-pill{
+  margin:0 0 12px!important;
+  padding:9px 10px!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:10px!important;
+  background:#191919!important;
+}
+#plans-modal .plan-usage-pill small{
+  max-width:90px!important;
+  color:#777!important;
+  font-size:8.5px!important;
+  line-height:1.2!important;
+  text-transform:none!important;
+}
+#plans-modal .plan-usage-pill strong{
+  color:#ededed!important;
+  font-size:10.5px!important;
+  white-space:nowrap!important;
+}
+
+/* CTAs — fix the white-on-white issue visible in the screenshot. */
+#plans-modal button[id^="plan-btn-"],
+#plans-modal .checkout-btn{
+  min-height:42px!important;
+  width:100%!important;
+  margin:0 0 9px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:#f4f4f4!important;
+  background-image:none!important;
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  font-size:10.5px!important;
+  font-weight:700!important;
+  box-shadow:none!important;
+}
+#plans-modal button[id^="plan-btn-"]:hover,
+#plans-modal .checkout-btn:hover{
+  background:#fff!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  transform:none!important;
+}
+#plans-modal #plan-btn-free{
+  border:1px solid rgba(255,255,255,.10)!important;
+  background:#252525!important;
+  color:#e7e7e7!important;
+  -webkit-text-fill-color:#e7e7e7!important;
+}
+#plans-modal #plan-btn-free:hover{
+  background:#2b2b2b!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+/* Annual choice is secondary, not another giant button. */
+#plans-modal .plan-annual,
+#plans-modal button[id*="annual"]{
+  min-height:38px!important;
+  margin:0 0 12px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  background-image:none!important;
+  color:#a9a9a9!important;
+  -webkit-text-fill-color:#a9a9a9!important;
+  box-shadow:none!important;
+  font-size:9.5px!important;
+}
+
+/* Feature list: preserve the core comparison, hide excess clutter. */
+#plans-modal .plan-features{
+  display:grid!important;
+  gap:6px!important;
+  margin-top:8px!important;
+}
+#plans-modal .plan-features>div{
+  color:#a9a9a9!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+}
+#plans-modal .plan-features>div:first-child{
+  display:none!important;
+}
+#plans-modal .plan-features>div:nth-child(n+6){
+  display:none!important;
+}
+#plans-modal .plan-features>div span,
+#plans-modal .plan-features>div i{
+  color:#bdbdbd!important;
+}
+
+/* Badges should be quiet and consistent. */
+#plans-modal .popular,
+#plans-modal .badge,
+#plans-modal .plan-badge{
+  padding:4px 7px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:999px!important;
+  background:#2a2a2a!important;
+  color:#d5d5d5!important;
+  -webkit-text-fill-color:#d5d5d5!important;
+  font-size:7.5px!important;
+  font-weight:750!important;
+  box-shadow:none!important;
+}
+
+/* Keep footer/payment note understated. */
+#plans-modal .plans-payment-note,
+#plans-modal .plans-topup{
+  color:#777!important;
+  font-size:9.5px!important;
+}
+
+/* Tablet: two clean columns. */
+@media(max-width:980px){
+  #plans-modal>div{
+    width:min(720px,calc(100vw - 24px))!important;
+    max-height:90dvh!important;
+  }
+  #plans-grid-inner{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    padding-inline:14px!important;
+  }
+}
+
+/* Phone: bottom sheet, one plan at a time, no horizontal overflow. */
+@media(max-width:640px){
+  #plans-modal{
+    align-items:flex-end!important;
+    padding:0!important;
+  }
+  #plans-modal>div{
+    width:100%!important;
+    max-width:none!important;
+    max-height:92dvh!important;
+    border-radius:20px 20px 0 0!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+  }
+  #plans-modal>div>div:first-child{
+    min-height:68px!important;
+    padding:15px 16px!important;
+  }
+  #plans-modal .plans-clarity-note{
+    margin:12px 12px 10px!important;
+  }
+  #plans-grid-inner{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    padding:4px 12px calc(18px + env(safe-area-inset-bottom))!important;
+  }
+  #plans-modal .plan-card{
+    padding:15px!important;
+    border-radius:13px!important;
+  }
+}
