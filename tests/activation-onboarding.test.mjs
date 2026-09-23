@@ -16,18 +16,18 @@ test('hero free-generation CTA opens the app with the first-run welcome signal',
 });
 
 test('welcome entry gives new visitors an actionable first-build message and removes its query flag', () => {
-  assert.match(appHtml, /function applyWelcomeEntry\(\) \{/);
-  assert.match(appHtml, /params\.get\('welcome'\) !== '1'/);
-  assert.match(appHtml, /greeting\.textContent = 'Welcome to Stellar AI'/);
+  assert.match(appHtml, /function applyWelcomeEntry\(\)\s*\{/);
+  assert.match(appHtml, /params\.get\('welcome'\)!==?'1'|params\.get\('welcome'\) !== '1'/);
+  assert.match(appHtml, /greeting\)\s*greeting\.textContent='Welcome to Stellar AI'|greeting\.textContent = 'Welcome to Stellar AI'/);
   assert.match(appHtml, /Tell Stellar what you want to build or fix in plain English\./);
   assert.match(appHtml, /setGenerationStatus\('Welcome to Stellar AI\. Tell me what you want to build\.'\)/);
-  assert.match(appHtml, /applyWelcomeEntry\(\);\s+maybeShowWelcome\(\);/);
+  assert.match(appHtml, /applyWelcomeEntry\(\);\s*maybeShowWelcome\(\);/);
 });
 
 test('first signed-in users see an unmistakable first-build instruction once per account', () => {
-  assert.match(appHtml, /let firstSignIn = false;/);
-  assert.match(appHtml, /firstSignIn = true;/);
-  assert.match(appHtml, /function showFirstSignInOnboarding\(user\) \{/);
+  assert.match(appHtml, /let firstSignIn\s*=\s*false;/);
+  assert.match(appHtml, /firstSignIn\s*=\s*true;/);
+  assert.match(appHtml, /function showFirstSignInOnboarding\(user\)\s*\{/);
   assert.match(appHtml, /stellar-first-signin-onboarding-v1-/);
   assert.match(appHtml, /Tell Stellar what you want to build or fix in plain English\./);
   assert.match(appHtml, /Type a request<\/strong> or tap a starter below\./);
