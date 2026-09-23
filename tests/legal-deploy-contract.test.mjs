@@ -6,6 +6,7 @@ const privacy = readFileSync(new URL('../privacy.html', import.meta.url), 'utf8'
 const sitemap = readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8');
 const checkout = readFileSync(new URL('../api/create-checkout.js', import.meta.url), 'utf8');
 const ignoreScript = readFileSync(new URL('../scripts/vercel-ignore-build.sh', import.meta.url), 'utf8');
+const vercelIgnore = readFileSync(new URL('../.vercelignore', import.meta.url), 'utf8');
 const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
 
 test('privacy has one clean canonical public route', () => {
@@ -31,6 +32,11 @@ test('Stripe and sitemap use canonical legal URLs', () => {
   assert.match(sitemap, /<loc>https:\/\/trystellarai\.com\/privacy<\/loc>/);
   assert.match(sitemap, /<loc>https:\/\/trystellarai\.com\/terms<\/loc>/);
   assert.doesNotMatch(sitemap, /trystellarai\.com\/terms\.html/);
+});
+
+test('Vercel ignored-build helper itself is shipped to the build environment', () => {
+  assert.doesNotMatch(vercelIgnore, /^scripts\/?$/m);
+  assert.match(ignoreScript, /^#!\/usr\/bin\/env bash/m);
 });
 
 test('Vercel skips only known non-deployable change classes', () => {
