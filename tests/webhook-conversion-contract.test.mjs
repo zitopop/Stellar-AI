@@ -23,3 +23,9 @@ test('owner conversion metrics and privacy-safe tracking endpoints remain availa
   assert.match(tracker, /window\.StellarTrack = track/);
   assert.match(trackEvent, /ALLOWED_EVENTS/);
 });
+
+test('subscription access is granted only after Stripe reports a paid checkout status', () => {
+  assert.match(webhook, /const subscriptionPaid = session\.payment_status === 'paid' \|\| session\.payment_status === 'no_payment_required'/);
+  assert.match(webhook, /if \(plan && subscriptionPaid\)/);
+  assert.match(webhook, /Subscription checkout was not paid\./);
+});
