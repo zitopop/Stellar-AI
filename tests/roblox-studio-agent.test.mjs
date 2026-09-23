@@ -41,7 +41,7 @@ test('Studio plugin only exposes allowed services and creates undo waypoints', (
 test('Roblox Studio workspace is routed privately and uses the agent API', () => {
   assert.match(api, /surface==='roblox-studio'/);
   assert.match(api, /robloxStudioPlanHandler/);
-  assert.match(page, /Build Roblox games/);
+  assert.match(page, /Build in Studio/);
   assert.match(page, /Obby map/);
   assert.match(page, /create_map_pack/);
   assert.match(page, /Inspection complete · building grounded implementation plan/);
@@ -52,13 +52,13 @@ test('Roblox Studio workspace is routed privately and uses the agent API', () =>
 
 
 test('Roblox Studio UI explains pairing and map presets clearly', () => {
-  assert.match(page, /How pairing works/);
+  assert.match(page, /Connect Roblox Studio/);
   assert.match(page, /copyPairBtn/);
   assert.match(page, /quickCard/);
   assert.match(page, /Obby map/);
   assert.match(page, /Simulator lobby/);
   assert.match(page, /Roleplay town/);
-  assert.match(page, /Build Roblox games<br>for real/);
+  assert.match(page, /Build in Studio<br>with Stellar/);
 });
 
 
