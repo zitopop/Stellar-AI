@@ -19,8 +19,9 @@ test('account access keeps all existing authentication actions', () => {
 });
 
 test('account access has a premium dark mobile-safe visual layer', () => {
-  assert.match(appHtml, /Account access polish: welcoming hierarchy, calm spacing, and premium dark controls/);
-  assert.match(appHtml, /#welcome-modal \.welcome-card\s*\{[\s\S]*?border-radius:\s*24px !important;?/);
-  assert.match(appHtml, /#welcome-modal \.own-input\s*\{[\s\S]*?background:\s*#0d0f13 !important;?/);
-  assert.match(appHtml, /@media \(max-width: 520px\) \{[\s\S]*?#welcome-modal \.welcome-card\s*\{[\s\S]*?border-radius:\s*24px 24px 0 0 !important;?/);
+  assert.match(appHtml, /#welcome-modal\[hidden\]\{display:none!important\}/);
+  assert.match(appHtml, /#welcome-modal\{[\s\S]*?backdrop-filter:blur\(14px\)/);
+  assert.match(appHtml, /#welcome-modal \.welcome-card\{[\s\S]*?border-radius:24px !important/);
+  assert.match(appHtml, /#welcome-modal \.own-input\{[\s\S]*?background:#0d0f13!important/);
+  assert.match(appHtml, /@media\s*\(max-width:\s*520px\)\s*\{[\s\S]*?#welcome-modal \.welcome-card\{[\s\S]*?border-radius:24px 24px 0 0!important/);
 });
