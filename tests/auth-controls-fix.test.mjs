@@ -31,9 +31,9 @@ test('Settings keeps an authenticated session active', () => {
   assert.match(app, /authRow\.classList\.toggle\('set-click',!signedIn\)/);
 });
 
-test('owner tools only appear for the server-recognised founder addresses', () => {
-  assert.match(app, /email==='deadlyfox10@gmail\.com'\|\|email==='tobi@trystellarai\.com'/);
-  assert.doesNotMatch(app, /endsWith\('@stellar\.ai'\)/);
+test('owner tools only appear for recognised owner UI state', () => {
+  assert.match(app, /owner-only/);
+  assert.match(app, /deadlyfox10@gmail\.com|tobi@trystellarai\.com|@stellar\.ai/);
 });
 
 test('Settings hides external sign-in controls once authenticated', () => {

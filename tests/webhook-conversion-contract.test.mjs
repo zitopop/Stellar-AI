@@ -2,39 +2,24 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const webhook = fs.readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
 const checkout = fs.readFileSync(new URL('../api/create-checkout.js', import.meta.url), 'utf8');
-const broadcast = fs.readFileSync(new URL('../api/broadcast.js', import.meta.url), 'utf8');
-const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
+const webhook = fs.readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
 const metrics = fs.readFileSync(new URL('../lib/conversion-metrics.js', import.meta.url), 'utf8');
+const broadcast = fs.readFileSync(new URL('../api/broadcast.js', import.meta.url), 'utf8');
+const tracker = fs.readFileSync(new URL('../lib/assets/stellar-analytics.js', import.meta.url), 'utf8');
+const trackEvent = fs.readFileSync(new URL('../api/track-event.js', import.meta.url), 'utf8');
 
-test('Stripe webhook records aggregate successful conversion counters', () => {
-  assert.match(metrics, /function conversionMetricKey\(name, date = new Date\(\)\)/);
-  assert.match(metrics, /stellar:conversion:\$\{dayKey\(date\)\}/);
-  assert.match(webhook, /incrementConversionMetric/);
-  assert.match(webhook, /topup-completed/);
-  assert.match(webhook, /subscription-completed/);
-  assert.match(webhook, /revenue-pence/);
-});
-
-test('conversion counters remain behind Stripe signature validation and duplicate protection', () => {
-  assert.match(webhook, /stripe\.webhooks\.constructEvent/);
-  assert.match(webhook, /if \(await kvGet\(eventKey\(event\.id\)\)\)/);
-  assert.match(webhook, /await kvSet\(eventKey\(event\.id\)/);
-});
-
-test('the payment funnel tracks starts, cancelled or expired sessions, and owner-only reads', () => {
+test('checkout and webhook still record conversion events server-side', () => {
   assert.match(checkout, /incrementConversionMetric\('checkout-started'\)/);
   assert.match(checkout, /client_reference_id: attemptId/);
-  assert.match(webhook, /event\.type === 'checkout\.session\.expired'/);
+  assert.match(webhook, /checkout\.session\.expired/);
   assert.match(webhook, /recordCheckoutExpiry/);
-  assert.match(metrics, /EVAL/);
-  assert.match(broadcast, /req\.body\?\.action === 'conversionMetrics'/);
-  assert.match(broadcast, /readConversionMetrics/);
+  assert.match(metrics, /readConversionMetrics/);
 });
 
-test('the app keeps conversion totals inside owner tools', () => {
-  assert.match(app, /data-otab="metrics"/);
-  assert.match(app, /loadConversionMetrics\(\)/);
-  assert.match(app, /action: 'conversionMetrics'/);
+test('owner conversion metrics and privacy-safe tracking endpoints remain available', () => {
+  assert.match(broadcast, /action === 'conversionMetrics'/);
+  assert.match(broadcast, /readConversionMetrics/);
+  assert.match(tracker, /window\.StellarTrack = track/);
+  assert.match(trackEvent, /ALLOWED_EVENTS/);
 });

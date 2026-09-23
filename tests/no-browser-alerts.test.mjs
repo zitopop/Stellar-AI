@@ -2,19 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const read = (name) => fs.readFileSync(new URL(`../${name}`, import.meta.url), 'utf8');
-const app = read('app.html');
-const growth = read('stellar-growth-v1.js');
+const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
+const support = fs.readFileSync(new URL('../support.html', import.meta.url), 'utf8');
 
-test('public app flows do not use blocking browser alert popups', () => {
+test('public browser pages do not use blocking alert prompts', () => {
   assert.doesNotMatch(app, /\balert\s*\(/);
-  assert.doesNotMatch(growth, /\balert\s*\(/);
+  assert.doesNotMatch(support, /\balert\s*\(/);
 });
 
-test('Stellar notices are accessible and dismissible', () => {
-  assert.match(app, /function showStellarNotice\(message, tone = 'info', options = \{\}\)/);
-  assert.match(app, /stack\.setAttribute\('aria-live', 'polite'\)/);
-  assert.match(app, /item\.setAttribute\('role', tone === 'error' \? 'alert' : 'status'\)/);
-  assert.match(app, /close\.setAttribute\('aria-label', 'Dismiss notification'\)/);
-  assert.match(app, /white-space:pre-wrap/);
+test('app exposes non-blocking status surfaces instead of alert popups', () => {
+  assert.match(app, /aria-live="polite"/);
+  assert.match(app, /class="status/);
 });

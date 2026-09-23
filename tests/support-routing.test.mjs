@@ -15,9 +15,9 @@ test('landing-page Support link is not a Discord redirect', async () => {
   assert.doesNotMatch(html, /href=["'][^"']*discord[^"']*["'][^>]*>Support<\/a>/i);
 });
 
-test('support page keeps Discord optional and separate', async () => {
+test('support page keeps email-first support inside the site', async () => {
   const html = await readFile('support.html', 'utf8');
-  assert.match(html, /href=["']\/support["']/i);
-  assert.match(html, />Discord<\/a>/i);
+  assert.match(html, /deadlyfox10@gmail\.com/);
+  assert.match(html, /mailto:deadlyfox10@gmail\.com/);
   assert.doesNotMatch(html, /location(?:\.href)?\s*=\s*["'][^"']*discord/i);
 });

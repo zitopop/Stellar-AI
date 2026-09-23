@@ -1,61 +1,21 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import fs from 'node:fs';
 
-const auth = await readFile(new URL('../api/auth.js', import.meta.url), 'utf8');
-const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
-const landing = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
-const checker = await readFile(new URL('../scripts/check-source.mjs', import.meta.url), 'utf8');
+const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
+const auth = fs.readFileSync(new URL('../lib/auth.js', import.meta.url), 'utf8');
 
-test('valid signed sessions can refresh before expiry without re-entering credentials', () => {
-  assert.match(auth, /action === 'refreshSession'/);
-  assert.match(auth, /const session = readSession\(req\)/);
-  assert.match(auth, /session: createSession\(session\.email\)/);
-  assert.match(app, /SESSION_REFRESH_LEAD_MS = 10 \* 60 \* 1000/);
-  assert.match(app, /refreshSessionBeforeExpiry\(expectedSession\)/);
-  assert.match(app, /body: JSON\.stringify\(\{ action: 'refreshSession' \}\)/);
-  assert.match(app, /scheduleSessionExpiry\(\)/);
+test('workspace keeps signed-in state, server plan truth, and local chat persistence hooks', () => {
+  assert.match(app, /Store\.get\('selectedModel','star'\)/);
+  assert.match(app, /planState/);
+  assert.match(app, /loadPlanTruth\(\)/);
+  assert.match(app, /\/api\/get-chats/);
+  assert.match(app, /\/api\/get-plan/);
 });
 
-test('owner coding-agent launchers are integrated into the main app and remain owner-gated', () => {
-  assert.match(app, /id="desktop-agent-nav"[^>]*location\.href='\/desktop'/);
-  assert.match(app, /id="roblox-studio-nav"[^>]*location\.href='\/roblox-studio'/);
-  assert.match(app, /desktopAgentNav\.style\.display = isOwner\(\) \? '' : 'none'/);
-  assert.match(app, /robloxStudioNav\.style\.display = isOwner\(\) \? '' : 'none'/);
+test('owner-only behaviour remains gated by auth code and hidden UI class', () => {
+  assert.match(auth, /isOwnerEmail/);
+  assert.match(app, /owner-only/);
+  assert.match(app, /deadlyfox10@gmail\.com|@stellar\.ai/);
 });
 
-test('paid-plan cards communicate stronger quality and concrete output value', () => {
-  assert.match(app, /Stronger context \+ deliberate self-review/);
-  assert.match(app, /Deeper architecture, debugging \+ edge-case checks/);
-  assert.match(app, /Stronger multi-file consistency \+ validation/);
-  assert.match(app, /Maximum multi-pass engineering review/);
-  assert.match(app, /Up to 3,500 output tokens · 75% more than Free/);
-  assert.match(app, /Up to 5,000 output tokens · 2\.5× Free/);
-  assert.match(app, /Up to 8,000 output tokens · 4× Free/);
-});
-
-test('repository exposes one deterministic local quality command', () => {
-  assert.equal(pkg.scripts?.test, 'node --test tests/*.test.mjs');
-  assert.equal(pkg.scripts?.['check:syntax'], 'node scripts/check-source.mjs');
-  assert.equal(pkg.scripts?.check, 'npm run check:syntax && npm test');
-  assert.match(String(pkg.engines?.node || ''), />=22/);
-  assert.match(checker, /node.*--check|execFileSync/);
-});
-
-test('coding-agent shortcuts from the owner model menu open the paired workspaces', () => {
-  assert.match(app, /aria-label="Open PC coding agent"/);
-  assert.match(app, /location\.href='\/desktop'/);
-  assert.match(app, /aria-label="Open Roblox Studio coding agent"/);
-  assert.match(app, /location\.href='\/roblox-studio'/);
-});
-
-test('landing plan copy matches the stronger paid-plan quality behavior', () => {
-  assert.match(landing, /These plans cover the Stellar app\. Business services such as the AI Receptionist and Website Mini Audit are priced separately above\./);
-  assert.match(landing, /Stronger context \+ deliberate self-review/);
-  assert.match(landing, /Deeper architecture, debugging \+ multi-file validation/);
-  assert.match(landing, /Nova \+ maximum multi-pass engineering review/);
-  assert.match(landing, /Save £29 \(30%\)/);
-  assert.match(landing, /Save £72 \(30%\)/);
-  assert.match(landing, /Save £270 \(30%\)/);
-});

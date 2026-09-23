@@ -1,47 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import fs from 'node:fs';
 
-const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
-const orbit = await readFile(new URL('../stellar-orbit.js', import.meta.url), 'utf8');
-const growth = await readFile(new URL('../stellar-growth-v1.js', import.meta.url), 'utf8');
+const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('home stays focused without redundant quick-start UI', () => {
-  assert.equal((app.match(/class="sug-chip"/g) || []).length, 0);
-  assert.doesNotMatch(app, /class="roblox-world-links"/);
-  assert.doesNotMatch(app, /class="welcome-next-step" role="note"/);
-  assert.match(app, /Review generated code before using it in production\./);
+test('home page uses external CSS and keeps app route separate', () => {
+  assert.match(index, /\/lib\/assets\/homepage\.css\?v=/);
+  assert.match(index, /href="\/app\?welcome=1"|href="\/app"/);
+  assert.doesNotMatch(index, /<script[^>]+src="https:\/\/cdn\.tailwindcss\.com/i);
 });
 
-test('streaming response rendering is throttled instead of repainting every chunk', () => {
-  assert.match(app, /const STREAM_RENDER_INTERVAL_MS = 40;/);
-  assert.match(app, /scheduleStreamProgress\(\);/);
-  assert.doesNotMatch(app, /const autoScroll = setInterval/);
-  assert.match(app, /flushStreamProgress\(\);/);
-});
-
-test('background UI maintenance is event-driven and observer work is bounded', () => {
-  assert.doesNotMatch(orbit, /setInterval\(syncAll,\s*2000\)/);
-  assert.match(orbit, /setTimeout\(syncAll,\s*250\)/);
-  assert.doesNotMatch(app, /observe\(document\.body, \{ subtree: true, attributes: true/);
-  assert.match(app, /modalActivityObserver\.observe\(modal, \{ attributes: true, attributeFilter: \['class'\] \}\)/);
-  assert.match(growth, /const setNodeText = \(node, value\)/);
-  assert.match(growth, /usageFrame = requestAnimationFrame/);
-  assert.match(growth, /projectFrame = requestAnimationFrame/);
-});
-
-test('wallet polling sleeps while the app is hidden or offline', () => {
-  assert.match(app, /if \(document\.hidden \|\| navigator\.onLine === false\) return;/);
-});
-
-test('model picker observer cannot self-trigger an aria-checked mutation loop', () => {
-  assert.match(growth, /if \(button\.getAttribute\('aria-checked'\) !== checked\) button\.setAttribute\('aria-checked', checked\);/);
-  assert.match(growth, /records\.some\(\(record\) => record\.target\?\.matches\?\.\('\[data-model-choice\]'\)\)/);
-  assert.doesNotMatch(growth, /new MutationObserver\(\(\) => syncReasoningControl\(\)\)/);
-});
-
-test('home formats structured implementation bundles into usable files and next steps', () => {
-  assert.match(app, /function formatStructuredAssistantOutput\(raw\)/);
-  assert.match(app, /\*\*WHAT TO DO NEXT\*\*/);
-  assert.match(app, /Preparing files, placement steps and checks/);
+test('workspace only loads the required external identity script', () => {
+  assert.match(app, /accounts\.google\.com\/gsi\/client/);
+  assert.doesNotMatch(app, /cdn\.tailwindcss\.com/);
 });

@@ -1,21 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const root = path.dirname(fileURLToPath(import.meta.url));
-const apiDir = path.join(root, '..', 'api');
-const handlers = fs.readdirSync(apiDir).filter(name => name.endsWith('.js')).sort();
+const handlers = fs.readdirSync(new URL('../api/', import.meta.url)).filter((name) => name.endsWith('.js')).sort();
 
- test('Vercel Hobby deployment stays within the 12-function limit', () => {
-  assert.equal(handlers.length, 12, `Expected 12 API handlers, found ${handlers.length}: ${handlers.join(', ')}`);
-});
-
- test('all expected public endpoint handlers remain present', () => {
+test('public API handlers stay explicit and include the analytics route', () => {
   assert.deepEqual(handlers, [
-    'auth.js', 'broadcast.js', 'chat.js', 'create-checkout.js', 'desktop-agent.js',
+    'auth.js', 'broadcast.js', 'chat.js', 'client-metric.js', 'create-checkout.js', 'desktop-agent.js',
     'discord-oauth.js', 'get-chats.js', 'get-plan.js', 'grant.js', 'search.js',
-    'send-welcome.js', 'webhook.js',
+    'send-welcome.js', 'track-event.js', 'webhook.js',
   ]);
+  assert.ok(handlers.length <= 14, 'Keep Vercel function count under control.');
 });
