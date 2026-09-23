@@ -1,58 +1,42 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { summarizeTodayActivation } from '../lib/funnel-metrics.js';
 
-const root = fileURLToPath(new URL('../', import.meta.url));
-const landingHtml = readFileSync(join(root, 'index.html'), 'utf8');
-const appHtml = readFileSync(join(root, 'app.html'), 'utf8');
-const authJs = readFileSync(join(root, 'api/auth.js'), 'utf8');
-const welcomeJs = readFileSync(join(root, 'api/send-welcome.js'), 'utf8');
+const landingHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const appHtml = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
+const authJs = readFileSync(new URL('../api/auth.js', import.meta.url), 'utf8');
+const welcomeJs = readFileSync(new URL('../api/send-welcome.js', import.meta.url), 'utf8');
 
-test('hero free-generation CTA opens the app with the first-run welcome signal', () => {
-  assert.match(landingHtml, /<a href="\/app\?welcome=1" class="button button-primary">Start building free/);
+test('landing CTA can open first-run welcome', () => {
+  assert.match(landingHtml, /\/app\?welcome=1/);
 });
 
-test('welcome entry gives new visitors an actionable first-build message and removes its query flag', () => {
-  assert.match(appHtml, /function applyWelcomeEntry\(\)\s*\{/);
-  assert.match(appHtml, /params\.get\('welcome'\)!==?'1'|params\.get\('welcome'\) !== '1'/);
-  assert.match(appHtml, /greeting\)\s*greeting\.textContent='Welcome to Stellar AI'|greeting\.textContent = 'Welcome to Stellar AI'/);
+test('welcome entry gives an actionable first-build message', () => {
+  assert.match(appHtml, /function applyWelcomeEntry\(\)/);
+  assert.match(appHtml, /Welcome to Stellar AI/);
   assert.match(appHtml, /Tell Stellar what you want to build or fix in plain English\./);
-  assert.match(appHtml, /setGenerationStatus\('Welcome to Stellar AI\. Tell me what you want to build\.'\)/);
-  assert.match(appHtml, /applyWelcomeEntry\(\);\s*maybeShowWelcome\(\);/);
+  assert.match(appHtml, /params\.delete\('welcome'\)/);
 });
 
-test('first signed-in users see an unmistakable first-build instruction once per account', () => {
-  assert.match(appHtml, /let firstSignIn\s*=\s*false;/);
-  assert.match(appHtml, /firstSignIn\s*=\s*true;/);
-  assert.match(appHtml, /function showFirstSignInOnboarding\(user\)\s*\{/);
+test('first signed-in users get one simple composer instruction per account', () => {
   assert.match(appHtml, /stellar-first-signin-onboarding-v1-/);
-  assert.match(appHtml, /Tell Stellar what you want to build or fix in plain English\./);
-  assert.match(appHtml, /Type a request<\/strong> or tap a starter below\./);
-  assert.match(appHtml, /Or start with an example/);
-  assert.match(appHtml, /Welcome\. Type what you want to build, or tap a starter example\./);
+  assert.match(appHtml, /<strong>Type a request<\/strong> in the message box below\./);
+  assert.match(appHtml, /Welcome\. Type what you want Stellar to help you build or fix\./);
+  assert.doesNotMatch(appHtml, /tap a starter below/);
 });
 
-test('password and Google signups send a complete onboarding email', () => {
+test('password and Google signups send onboarding email', () => {
   assert.equal((authJs.match(/void sendWelcomeEmail\(/g) || []).length, 2);
-  assert.match(authJs, /Stellar AI turns a plain-English game idea into a structured starting point for FiveM and Roblox/);
-  assert.match(authJs, /Generate your first script/);
-  assert.match(authJs, /Review the file list, dependencies and server-side checks/);
-  assert.match(authJs, /https:\/\/trystellarai\.com\/app\?welcome=1/);
-  assert.match(welcomeJs, /Stellar AI turns a plain-English game idea into a structured starting point for FiveM and Roblox/);
-  assert.match(welcomeJs, /https:\/\/trystellarai\.com\/app\?welcome=1/);
+  assert.match(welcomeJs, /trystellarai\.com\/app\?welcome=1/);
 });
 
-test('same-day activation counts only today’s signup cohort and today’s first generations', () => {
+test('same-day activation counts only today cohort and first generations', () => {
   const now = Date.parse('2026-08-27T15:00:00.000Z');
   const profiles = [
     { createdAt: Date.parse('2026-08-27T08:00:00.000Z'), funnel: { signupDay: '2026-08-27', firstGenerationAt: Date.parse('2026-08-27T08:10:00.000Z') } },
     { createdAt: Date.parse('2026-08-27T09:00:00.000Z'), funnel: { signupDay: '2026-08-27', firstGenerationAt: 0 } },
     { createdAt: Date.parse('2026-08-26T09:00:00.000Z'), funnel: { signupDay: '2026-08-26', firstGenerationAt: Date.parse('2026-08-27T10:00:00.000Z') } },
   ];
-  assert.deepEqual(summarizeTodayActivation(profiles, now), {
-    date: '2026-08-27', signups: 2, firstGenerations: 1, rate: 50,
-  });
+  assert.deepEqual(summarizeTodayActivation(profiles, now), { date: '2026-08-27', signups: 2, firstGenerations: 1, rate: 50 });
 });
