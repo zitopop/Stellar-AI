@@ -37,7 +37,7 @@ async function sendOwnerFallbackEmail({ category, severity, summary }) {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + resendKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Stellar AI <support@trystellarai.com>',
+        from: 'Stellar AI <deadlyfox10@gmail.com>',
         to: recipients,
         subject: '[Stellar ' + severity.toUpperCase() + '] ' + category + ' alert — phone call unavailable',
         text: 'Stellar AI could not place the urgent owner phone call.\n\nCategory: ' + category + '\nSeverity: ' + severity + '\n\n' + summary + '\n\nThe phone provider blocked the call, so this email was sent as the fallback alert.',
@@ -183,8 +183,8 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'Stellar AI <support@trystellarai.com>',
-          reply_to: 'support@trystellarai.com',
+          from: 'Stellar AI <deadlyfox10@gmail.com>',
+          reply_to: 'deadlyfox10@gmail.com',
           to: [email],
           subject,
           html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#050505;color:#fff;">
