@@ -1,4 +1,4 @@
-/* Stellar AI palette v4 — calm product UI, not black/gold template.
+/* Stellar AI palette v5 — calm product UI, not black/gold template.
    Gold is kept only as a tiny warm accent for warnings/highlights. */
 :root{
   --stellar-bg:#0d0f14;
@@ -25,6 +25,9 @@
   color-scheme:dark;
 }
 html,body{
+  min-width:320px;
+  max-width:100%;
+  overflow-x:hidden;
   background:
     radial-gradient(circle at 72% -8%,rgba(139,124,246,.13),transparent 28rem),
     radial-gradient(circle at 8% 38%,rgba(101,165,255,.06),transparent 24rem),
@@ -38,6 +41,14 @@ body{
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
+*,*::before,*::after{box-sizing:border-box}
+a,button,input,textarea,select{font:inherit;-webkit-tap-highlight-color:transparent}
+button,a{touch-action:manipulation}
+a{color:var(--stellar-accent-2)!important;text-decoration:none}
+a:hover{color:#d7d1ff!important}
+:focus-visible{outline:2px solid var(--stellar-accent-2)!important;outline-offset:3px!important}
+::selection{background:rgba(139,124,246,.34);color:#fff}
+*{scrollbar-color:rgba(139,124,246,.38) #0d0f14}
 h1,h2,h3,.brand span,.logo span,.hero h1 span,.greet-hi,.greet-hi-accent{
   color:var(--stellar-text)!important;
   -webkit-text-fill-color:var(--stellar-text)!important;
@@ -45,25 +56,29 @@ h1,h2,h3,.brand span,.logo span,.hero h1 span,.greet-hi,.greet-hi-accent{
   text-shadow:none!important;
   letter-spacing:-.045em!important;
 }
-.gold-text,.warm-text{color:var(--stellar-warm)!important;-webkit-text-fill-color:var(--stellar-warm)!important}
 p,li,small,.muted,.helper,.subtle,.support-copy,.card p,.set-sub,.welcome-sub,.hero-lead{
   color:var(--stellar-muted)!important;
 }
-a{color:var(--stellar-accent-2)!important}a:hover{color:#d7d1ff!important}
-button,.btn,.cta-btn,.nav-cta,.side-new,.primary,.primary-btn,.acct-signin-btn,.plans-btn,.checkout-btn{
-  min-height:44px;
-  border-color:var(--stellar-line-strong)!important;
+.gold-text,.warm-text{color:var(--stellar-warm)!important;-webkit-text-fill-color:var(--stellar-warm)!important}
+
+/* Global controls */
+button,.btn,.button,.cta-btn,.nav-cta,.side-new,.primary,.primary-btn,.acct-signin-btn,.plans-btn,.checkout-btn,.oa2-primary-action,.button-primary{
+  min-height:44px!important;
+  border-color:#f3f4f7!important;
   background:#f3f4f7!important;
+  background-image:none!important;
   color:#111319!important;
   -webkit-text-fill-color:#111319!important;
-  font-weight:760!important;
+  font-weight:780!important;
   box-shadow:none!important;
 }
-button.secondary,.btn.secondary,.ghost,.cancel-btn,.secondary-btn{
+button.secondary,.btn.secondary,.button-outline,.ghost,.cancel-btn,.secondary-btn,.oa2-secondary-action{
+  min-height:44px!important;
   background:#191e29!important;
   color:var(--stellar-text)!important;
   -webkit-text-fill-color:var(--stellar-text)!important;
   border-color:var(--stellar-line-strong)!important;
+  box-shadow:none!important;
 }
 .card,.panel,.glass,.modal,.plan-card,.plugin-card,.support-card,.guide-card,.set-card,.modal-card,.pricing-card,#sidebar,.sidebar,.topbar,.input-area>.flex,textarea,input,select{
   background:var(--stellar-panel)!important;
@@ -81,27 +96,106 @@ input::placeholder,textarea::placeholder{color:#737c8b!important;opacity:1!impor
 .success,.online,[data-state="online"]{color:var(--stellar-success)!important;border-color:rgba(82,214,159,.34)!important}
 .error,.danger,.failed,[data-state="error"]{color:var(--stellar-danger)!important;border-color:rgba(255,116,116,.34)!important}
 .hero::before,.hero-orbit,.stars,.starfield,.glow,.orbital-glow{box-shadow:none!important;filter:none!important}
-*{scrollbar-color:rgba(139,124,246,.38) #0d0f14}
-::selection{background:rgba(139,124,246,.34);color:#fff}
 
-/* Plans and pricing: clean SaaS cards, not gold lock. */
-#plans-modal,#plans-modal>div,#plans-modal .plans-card,#plans-modal .plans-head,#plans-modal .plan-card,#plans-modal #plans-grid-inner>div,.plan-card,.pricing-card,.price-card,.tier-card,.plans-card,.plans-head,.plans-shell,.plan-panel,.plan-row,.plan-box,[data-plan],[id^="plan-card"]{
-  background:var(--stellar-panel)!important;
-  color:var(--stellar-text)!important;
-  border-color:var(--stellar-line)!important;
+/* Public website: sharper homepage, clearer buying path. */
+.stellar-public .container,.stellar-public .wrap,.stellar-public .public-shell{width:min(1160px,calc(100% - 48px))!important;margin-inline:auto!important}
+.public-home .site-header,.public-business .nav,.public-models nav,.public-support header,.public-blog header{
+  background:rgba(13,15,20,.88)!important;
+  border-bottom:1px solid var(--stellar-line)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+.public-home .nav-links a,.public-home .nav-login,.public-business .links a,.public-models .links a,.public-support .navlinks a,.public-blog .navlinks a{
+  color:#a7aebb!important;
+  font-weight:680!important;
+}
+.public-home .nav-links a:hover,.public-home .nav-login:hover,.public-business .links a:hover,.public-models .links a:hover,.public-support .navlinks a:hover,.public-blog .navlinks a:hover{color:#fff!important}
+.public-home .brand>svg,.public-business .brand i,.public-models .brand i,.public-support .brand i,.public-blog .brand i{color:var(--stellar-accent)!important}
+.public-home .brand-ai{color:var(--stellar-accent-2)!important;-webkit-text-fill-color:var(--stellar-accent-2)!important}
+.public-home .oa2-hero{padding:96px 0 74px!important;text-align:center!important}
+.public-home .oa2-wordmark{
+  display:inline-flex!important;align-items:center!important;min-height:30px!important;padding:0 12px!important;margin-bottom:20px!important;
+  border:1px solid rgba(139,124,246,.24)!important;border-radius:999px!important;background:#171723!important;
+  color:#b9b0ff!important;-webkit-text-fill-color:#b9b0ff!important;font-size:9.5px!important;font-weight:850!important;letter-spacing:.06em!important;text-transform:uppercase!important
+}
+.public-home .oa2-hero h1{
+  max-width:1040px!important;margin:0 auto!important;font-size:clamp(54px,8vw,104px)!important;line-height:.94!important;
+  letter-spacing:-.078em!important;font-weight:590!important;text-wrap:balance!important
+}
+.public-home .oa2-lead{max-width:780px!important;margin:24px auto 0!important;font-size:16px!important;color:#b8c0ce!important;-webkit-text-fill-color:#b8c0ce!important;text-wrap:balance!important}
+.public-home .oa2-composer{
+  width:min(820px,100%)!important;margin:34px auto 0!important;border:1px solid var(--stellar-line-strong)!important;
+  border-radius:22px!important;background:#171b23!important;box-shadow:0 24px 70px rgba(0,0,0,.18)!important
+}
+.public-home .oa2-composer:focus-within{border-color:rgba(139,124,246,.42)!important}
+.public-home .oa2-composer textarea{min-height:64px!important;color:#f5f7fb!important;background:transparent!important}
+.public-home .oa2-start-note{margin-top:13px!important;color:#858e9c!important;font-size:10.5px!important;line-height:1.6!important}
+.public-home .oa2-start-note span{margin:0 6px;color:#535b67!important}
+.public-home .oa2-hero-actions{gap:10px!important;justify-content:center!important;flex-wrap:wrap!important}
+.public-home .oa2-primary-action,.public-home .oa2-secondary-action{min-width:190px!important;border-radius:12px!important}
+.public-home .oa2-starters,.public-home .oa2-quicklinks{width:min(820px,100%)!important;margin-inline:auto!important}
+.public-home .oa2-starters{margin-top:18px!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+.public-home .oa2-starters a{
+  min-height:60px!important;padding:10px 12px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;
+  border:1px solid var(--stellar-line)!important;border-radius:12px!important;background:#12151b!important;color:#d9dde4!important;-webkit-text-fill-color:#d9dde4!important;
+  font-size:11px!important;font-weight:720!important;text-align:left!important
+}
+.public-home .oa2-starters a span{margin-bottom:2px!important;color:#9d91ff!important;-webkit-text-fill-color:#9d91ff!important;font-size:8px!important;font-weight:900!important;letter-spacing:.10em!important;text-transform:uppercase!important}
+.public-home .oa2-starters a:hover{border-color:rgba(139,124,246,.35)!important;background:#151922!important}
+.public-home .oa2-quicklinks a{min-height:36px!important;border-color:var(--stellar-line)!important;background:#10141b!important;color:#cdd3de!important;-webkit-text-fill-color:#cdd3de!important}
+
+/* Trust, product and plugin clarity. */
+.public-home .oa2-business-trust,.public-home .oa2-support-strip,.public-home .oa2-preview-shell,.public-home .oa2-how-grid article,.public-home .oa2-audience-grid article,.public-home .oa2-business-offer,.public-home .oa2-feature-lead,.public-home .oa2-guide-grid>a,.public-home .oa2-business-grid>a{
+  background:#12151b!important;
+  border:1px solid var(--stellar-line)!important;
+  border-radius:16px!important;
   box-shadow:none!important;
   background-image:none!important;
 }
-#plans-modal *,.plan-card *,.pricing-card *,.price-card *,.tier-card *,[data-plan] *{text-shadow:none!important}
-#plans-modal .plan-name,#plans-modal .plan-price,#plans-modal .plans-title,#plans-modal h1,#plans-modal h2,#plans-modal h3,.plan-card .plan-name,.plan-card .plan-price,.pricing-card h2,.pricing-card h3,.price-card h2,.price-card h3,.tier-card h2,.tier-card h3,[data-plan] h2,[data-plan] h3{
+.public-home .oa2-business-trust{display:flex!important;gap:8px!important;flex-wrap:wrap!important;justify-content:center!important;padding:10px!important;margin-top:16px!important}
+.public-home .oa2-business-trust span{
+  min-height:34px!important;display:inline-flex!important;align-items:center!important;padding:0 12px!important;border:1px solid var(--stellar-line)!important;border-radius:999px!important;background:#0f131a!important;color:#d9def0!important;-webkit-text-fill-color:#d9def0!important;font-size:11px!important;font-weight:820!important
+}
+.public-home .oa2-audience-grid,.public-home .oa2-business-first-grid,.public-home .oa2-how-grid{gap:12px!important}
+.public-home .oa2-audience-grid article,.public-home .oa2-business-offer,.public-home .oa2-how-grid article{padding:22px!important}
+.public-home .oa2-audience-grid span,.public-home .oa2-offer-top span,.public-home .oa2-tag,.public-home .oa2-preview-label,.public-home .oa2-preview-response-head{color:#9d91ff!important;-webkit-text-fill-color:#9d91ff!important;font-weight:900!important;letter-spacing:.10em!important;text-transform:uppercase!important}
+.public-home .oa2-audience-grid h3,.public-home .oa2-business-offer h3,.public-home .oa2-how-grid h3{color:#f0f3f8!important;-webkit-text-fill-color:#f0f3f8!important}
+.public-home .oa2-audience-grid p,.public-home .oa2-business-offer p,.public-home .oa2-how-grid p{color:#929baa!important;-webkit-text-fill-color:#929baa!important}
+.public-home .oa2-preview-prompt,.public-home .oa2-preview-response{background:#12151b!important}
+.public-home .oa2-preview-response{background:#151922!important}
+.public-home .oa2-file-row{border-color:var(--stellar-line)!important}
+.public-home .oa2-file-row strong{color:#e7eaf0!important}
+.public-home .oa2-file-row span{color:#858e9c!important}
+.public-home .oa2-safety-note{
+  border:1px solid rgba(139,124,246,.20)!important;border-radius:12px!important;background:#11141b!important;color:#aeb6c4!important;-webkit-text-fill-color:#aeb6c4!important
+}
+
+/* Plans and pricing: clean SaaS cards, not gold lock. */
+#plans,.pricing-section,.plans,.plan,.plan-card,.pricing-card,.price-card,.tier-card,.plans-card,.plans-head,.plans-shell,.plan-panel,.plan-row,.plan-box,[data-plan],[id^="plan-card"]{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.public-home .pricing-section{padding-block:84px!important;border-top:1px solid var(--stellar-line)!important;border-bottom:1px solid var(--stellar-line)!important}
+.public-home .plans{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important}
+.public-home .plan,.plan-card,.pricing-card,.price-card,.tier-card,[data-plan]{
+  background:#12151b!important;
+  color:var(--stellar-text)!important;
+  border:1px solid var(--stellar-line)!important;
+  border-radius:18px!important;
+  box-shadow:none!important;
+  background-image:none!important;
+}
+.public-home .plan.featured,.plan-card.featured,.pricing-card.featured,[data-plan].featured{border-color:rgba(139,124,246,.38)!important;background:#171a24!important}
+.public-home .plan *,.plan-card *,.pricing-card *,.price-card *,.tier-card *,[data-plan] *{text-shadow:none!important}
+.public-home .plan h3,.public-home .price strong,.plan-card .plan-name,.plan-card .plan-price,.pricing-card h2,.pricing-card h3,.price-card h2,.price-card h3,.tier-card h2,.tier-card h3,[data-plan] h2,[data-plan] h3{
   color:var(--stellar-text)!important;
   -webkit-text-fill-color:var(--stellar-text)!important;
   background:none!important;
   background-image:none!important;
-  font-weight:760!important;
+  font-weight:800!important;
 }
-#plans-modal p,#plans-modal li,#plans-modal small,#plans-modal .plan-feats,#plans-modal .plan-feats-label,#plans-modal .plan-note,#plans-modal .plan-description,.plan-card p,.plan-card li,.plan-card small,.pricing-card p,.pricing-card li,.price-card p,.tier-card p{color:var(--stellar-muted)!important}
-#plans-modal .popular,#plans-modal .badge,#plans-modal .pill,#plans-modal .chip,.plan-card .popular,.plan-card .badge,.pricing-card .popular,.pricing-card .badge,.pack.popular::after,.topup-chip.popular::after{
+.public-home .plan-desc,.public-home .plan li,.public-home .plan small,.pricing-card p,.pricing-card li,.price-card p,.tier-card p{color:var(--stellar-muted)!important;-webkit-text-fill-color:var(--stellar-muted)!important}
+.public-home .plan .popular,.popular,.plan-card .popular,.pricing-card .popular,.pricing-card .badge,.pack.popular::after,.topup-chip.popular::after{
   background:#1d1b2b!important;
   color:var(--stellar-accent-2)!important;
   -webkit-text-fill-color:var(--stellar-accent-2)!important;
@@ -109,21 +203,39 @@ input::placeholder,textarea::placeholder{color:#737c8b!important;opacity:1!impor
   box-shadow:none!important;
   background-image:none!important;
 }
-#plans-modal button,#plans-modal .btn,#plans-modal .checkout-btn,#plans-modal [id^="plan-btn"],.plan-card button,.pricing-card button,.price-card button,.tier-card button,[data-plan] button{
+.public-home .plan .button,.public-home .plan button,.plan-card button,.pricing-card button,.price-card button,.tier-card button,[data-plan] button{
   background:#f3f4f7!important;
   background-image:none!important;
   color:#111319!important;
   -webkit-text-fill-color:#111319!important;
   border-color:#f3f4f7!important;
   box-shadow:none!important;
-  font-weight:760!important;
+  font-weight:780!important;
 }
-#plans-modal button.secondary,#plans-modal .secondary,.plan-card button.secondary,.pricing-card button.secondary,.price-card button.secondary,.tier-card button.secondary{
+.public-home .plan .button-outline,.plan-card button.secondary,.pricing-card button.secondary,.price-card button.secondary,.tier-card button.secondary{
   background:#191e29!important;
   color:var(--stellar-text)!important;
   -webkit-text-fill-color:var(--stellar-text)!important;
   border-color:var(--stellar-line-strong)!important;
 }
+.public-home .pricing-section::after{
+  content:"Plans and wallet credit do different jobs. Stripe handles checkout, paid users can manage billing, and support is visible before purchase.";
+  display:block;max-width:780px;margin:18px auto 0;padding:13px 16px;border:1px solid rgba(139,124,246,.22);border-radius:14px;background:#11141b;color:#aeb6c4;text-align:center;font-size:12px;line-height:1.55
+}
+
+/* Support, plugins, models, blog and legal pages stay consistent. */
+.public-business .card,.public-business .band,.public-models .card,.public-models .notice,.public-models .final,.public-support .card,.public-support .item,.public-plugins .directory-banner,.public-plugins .card,.public-plugins .plugin-dialog,.public-blog .guide,.public-service .hero-card,.public-service .card,.public-service .notice,.public-terms .sheet{
+  background:var(--stellar-panel)!important;
+  background-image:none!important;
+  border-color:var(--stellar-line)!important;
+  box-shadow:none!important;
+}
+.public-plugins .primary-action,.public-plugins .detail-primary,.public-service .btn.primary,.public-support .btn.primary,.public-models .cta,.public-blog .cta{background:#f3f4f7!important;color:#111319!important;-webkit-text-fill-color:#111319!important;border-color:#f3f4f7!important}
+.public-support .support-email-row{background:#101319!important;border-color:var(--stellar-line)!important}
+.public-support .support-email-address{color:#d9dcff!important;-webkit-text-fill-color:#d9dcff!important}
+.public-terms .updated,.public-models .pill,.public-plugins .directory-step>span{background:#211e31!important;border-color:rgba(139,124,246,.24)!important;color:#c0b9ff!important;-webkit-text-fill-color:#c0b9ff!important}
+.public-blog .guide:nth-child(-n+9){border-color:rgba(139,124,246,.18)!important;background:#151725!important}
+.footer,.site-footer,footer{border-color:var(--stellar-line)!important}
 
 /* Sidebar and workspace controls. */
 #sidebar,.sidebar,.side-panel,.workspace-sidebar,.app-sidebar{
@@ -131,18 +243,35 @@ input::placeholder,textarea::placeholder{color:#737c8b!important;opacity:1!impor
   border-color:var(--stellar-line)!important;
   box-shadow:none!important;
 }
-.side-new,.new-chat,.new-chat-btn{
-  border-radius:12px!important;
-}
-.nav-item,.side-link,.sidebar a,.sidebar button:not(.primary),#sidebar a,#sidebar button:not(.primary){
-  color:var(--stellar-muted)!important;
-}
-.nav-item:hover,.side-link:hover,.sidebar a:hover,.sidebar button:not(.primary):hover,#sidebar a:hover,#sidebar button:not(.primary):hover{
-  color:var(--stellar-text)!important;
-  background:#151922!important;
-}
+.side-new,.new-chat,.new-chat-btn{border-radius:12px!important}
+.nav-item,.side-link,.sidebar a,.sidebar button:not(.primary),#sidebar a,#sidebar button:not(.primary){color:var(--stellar-muted)!important}
+.nav-item:hover,.side-link:hover,.sidebar a:hover,.sidebar button:not(.primary):hover,#sidebar a:hover,#sidebar button:not(.primary):hover{color:var(--stellar-text)!important;background:#151922!important}
 
+@media(max-width:1000px){
+  .public-home .plans{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:900px){
+  .public-home .oa2-starters{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .public-home .oa2-preview-shell{grid-template-columns:1fr!important}
+  .public-home .oa2-how-grid{grid-template-columns:1fr!important}
+  .public-home .oa2-support-strip{grid-template-columns:1fr!important}
+}
 @media(max-width:700px){
   body{font-size:14px!important}
-  .card,.panel,.modal-card,.pricing-card,.plan-card{border-radius:16px!important}
+  .stellar-public .container,.stellar-public .wrap,.stellar-public .public-shell{width:min(100% - 28px,1160px)!important}
+  .public-home .oa2-hero{padding:68px 0 52px!important;text-align:left!important}
+  .public-home .oa2-hero h1{font-size:clamp(44px,14vw,68px)!important;margin-left:0!important}
+  .public-home .oa2-lead{font-size:14px!important;margin-left:0!important}
+  .public-home .oa2-hero-actions{justify-content:flex-start!important}
+  .public-home .oa2-primary-action,.public-home .oa2-secondary-action{width:100%!important;min-width:0!important}
+  .public-home .oa2-starters{grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .public-home .oa2-starters a{min-height:54px!important}
+  .public-home .plans{grid-template-columns:1fr!important}
+  .card,.panel,.modal-card,.pricing-card,.plan-card,.public-home .plan{border-radius:16px!important}
+}
+@media(max-width:420px){
+  .public-home .oa2-starters{grid-template-columns:1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
