@@ -20,7 +20,7 @@ test('app exposes deliberate user controls and owner-gated coding agents', () =>
     assert.match(app, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(app, /Wallet credit is separate/);
-  assert.match(app, /No fake saved chats/);
+  assert.match(app, /No saved chats yet/);
   assert.match(app, /id="desktop-agent-nav"/);
   assert.match(app, /id="roblox-studio-nav"/);
   assert.match(app, /owner-only/);
