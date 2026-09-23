@@ -23,8 +23,8 @@ test('plan and wallet detail is kept in Settings instead of cluttering the sideb
 });
 
 test('landing uses a conversational Stellar entry and plan-limit guidance', () => {
-  assert.match(landing, /Build\. Automate\. Get real work done\./);
-  assert.match(landing, /AI coding workspace for FiveM and Roblox/);
+  assert.match(landing, /AI systems for real business work\./);
+  assert.match(landing, /BUSINESS AI · AUTOMATION · AGENTS · SOFTWARE WORKSPACE/);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Roblox Studio Agent/);
   assert.match(landing, /PC Agent/);
