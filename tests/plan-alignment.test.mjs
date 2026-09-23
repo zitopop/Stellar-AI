@@ -25,13 +25,12 @@ test('paid plan CTAs preserve upgrade intent into the app', () => {
 });
 
 test('plan copy separates hourly allowance from wallet credit', () => {
-  assert.match(index, /Included requests reset hourly\. Wallet credit is separate/);
+  assert.match(index, /Wallet credit is separate from the included hourly allowance/);
 });
 
-test('public model access matches server-owned plan entitlements', () => {
-  assert.match(index, /£1 starting credit · Spark &amp; Star/);
-  assert.match(index, /Stronger context \+ deliberate self-review · Spark &amp; Star/);
-  assert.match(index, /multi-file validation · adds Comet/);
-  assert.match(index, /Nova \+ maximum multi-pass engineering review · includes Comet/);
-  assert.doesNotMatch(index, /£1 starting credit · Spark, Star &amp; Comet/);
+test('public model access keeps model guidance visible without mis-selling plan access', () => {
+  for (const model of ['Spark','Star','Comet','Nova']) assert.match(index, new RegExp(model));
+  assert.match(index, /Compare Spark, Star, Comet and Nova access across Stellar plans/);
+  assert.match(index, /Start free with .*starting credit and 40 requests per hour/);
+  assert.doesNotMatch(index, /Spark, Star &amp; Comet/);
 });

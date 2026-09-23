@@ -28,7 +28,7 @@ test('landing uses a conversational Stellar entry and plan-limit guidance', () =
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Roblox Studio Agent/);
   assert.match(landing, /PC Agent/);
-  assert.match(landing, /Wallet credit is separate and can be used after the included allowance\./);
+  assert.match(landing, /Wallet credit is separate from the included hourly allowance/);
   assert.match(landing, /Prices and checkout are in GBP/);
 });
 

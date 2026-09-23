@@ -141,9 +141,27 @@ test('developer OAuth setup is owner-only and hidden from normal accounts', () =
   assert.equal(getPluginDefinition('github').audience, 'owner');
   assert.equal(getPluginDefinition('vercel').audience, 'owner');
   assert.match(manager, /oauthStatus:exposeSetup&&OAUTH_PLUGIN_IDS/);
-  assert.match(manager, /oauthSetupMissingEnv:exposeSetup&&Array.isArray/);
+  assert.match(manager, /oauthSetupMissingEnv:exposeSetup&&OAUTH_PLUGIN_IDS/);
   assert.ok(page.includes("if(!owner&&['github','vercel'].includes(id))"));
   assert.match(page, /OWNER-ONLY OAUTH MODAL POLISH/);
 });
 
 
+
+
+test('OAuth status covers every planned provider without pretending all exchanges are live', () => {
+  assert.match(manager, /const OAUTH_PLUGIN_IDS=new Set\(PLUGIN_REGISTRY\.filter/);
+  assert.match(manager, /const LIVE_OAUTH_PLUGIN_IDS=new Set\(\['github'\]\)/);
+  assert.match(manager, /function oauthSetupEnv\(id\)/);
+  assert.match(manager, /exchangeImplemented/);
+  assert.match(manager, /liveReady:supported&&exchangeImplemented/);
+  assert.match(manager, /OAuth needs provider credentials added in Vercel/);
+  assert.match(manager, /secure token exchange is not implemented yet/);
+  assert.match(manager, /OAuth is planned but not live yet/);
+  for (const id of ['gmail','google-drive','google-calendar','discord','shopify','stripe']) {
+    const plugin=getPluginDefinition(id);
+    assert.ok(plugin.oauthProvider, id);
+    assert.equal(plugin.setupStatus, 'oauth_setup_needed', id);
+    assert.ok(plugin.setupEnv.length >= 1, id);
+  }
+});
