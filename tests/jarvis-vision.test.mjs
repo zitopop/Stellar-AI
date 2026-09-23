@@ -7,8 +7,7 @@ const jarvis = fs.readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8
 const vercel = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
 
 test('app exposes routed Stellar Voice and Vision workspace', () => {
-  assert.match(app, /id="jarvis-nav"[^>]*href="\/jarvis"[^>]*aria-label="Open Stellar Voice and Vision"/);
-  assert.match(app, />Voice \/ Vision<\/a>/);
+  assert.match(app, /<a class="settings-row" href="\/jarvis"><strong>Voice &amp; Vision<\/strong>/);
 });
 
 test('Jarvis Vision has local camera hand controls plus pointer fallback', () => {
