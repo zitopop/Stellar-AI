@@ -1,16 +1,20 @@
 // api/send-welcome.js
 // Sends a welcome email when a new user signs up via Resend
 import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
+import { requireSession } from '../lib/auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, name } = req.body;
+  const session = requireSession(req, res);
+  if (!session) return;
 
-  if (!email) {
-    return res.status(400).json({ error: 'Email required' });
+  const { email, name } = req.body || {};
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  if (!normalizedEmail || normalizedEmail !== session.email) {
+    return res.status(403).json({ error: 'You can only send a welcome email to your signed-in account.' });
   }
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -19,7 +23,7 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'Email delivery is not configured.' });
   }
 
-  const displayName = escapeEmailHtml(name || email.split('@')[0]);
+  const displayName = escapeEmailHtml(name || normalizedEmail.split('@')[0]);
 
   try {
     const response = await fetch('https://api.resend.com/emails', {
@@ -30,7 +34,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from,
-        to: [email],
+        to: [normalizedEmail],
         subject: 'Welcome to Stellar AI',
         html: `
 <!DOCTYPE html>
