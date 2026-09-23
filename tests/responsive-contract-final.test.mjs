@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
@@ -27,5 +27,5 @@ test('model menu remains usable on phone and tablet', () => {
 
 test('desktop keeps a dedicated sidebar and centered content width', () => {
   assert.match(app, /grid-template-columns:var\(--side\) minmax\(0,1fr\)/);
-  assert.match(app, /--max-width:900px/);
+  assert.match(app, /--max:860px/);
 });

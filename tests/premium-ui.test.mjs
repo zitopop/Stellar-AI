@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -11,6 +11,7 @@ test('homepage keeps public visual layers while workspace stays self-contained',
   assert.doesNotMatch(app, /stellar-app-landing-ui\.css/);
   assert.doesNotMatch(app, /stellar-cosmic-openai\.css/);
   assert.match(app, /--accent:#8b7cf6/);
+  assert.match(app, /radial-gradient/);
 });
 
 test('workspace keeps mobile-safe controls and a visible bottom composer', () => {

@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const agent = readFileSync(new URL('../lib/desktop-agent-handler.js', import.meta.url), 'utf8');
@@ -27,6 +27,7 @@ assert.match(entry, /isSignedIn/);
 console.log('desktop-agent public beta safeguards: ok');
 
 assert.match(app, /id="desktop-agent-nav" class="nav-link signed-in-only"/);
-assert.match(app, /PC Agent appears after sign-in\. Roblox Studio Agent remains owner-only\./);
+assert.match(app, /Sign in to use PC Agent\. Roblox Studio Agent is owner-only\./);
 assert.match(app, /document\.querySelectorAll\('\.signed-in-only'\)/);
 assert.match(app, /id="roblox-studio-nav" class="nav-link owner-only"/);
+

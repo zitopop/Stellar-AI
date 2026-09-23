@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -9,9 +9,11 @@ const business = fs.readFileSync(new URL('../stellar-business-palette.css', impo
 
 test('public pages load the current first-party visual assets', () => {
   assert.match(index, /\/lib\/assets\/homepage\.css\?v=/);
-  assert.match(app, /stellar-chatgpt-layout\.css\?v=4/);
-  assert.match(app, /stellar-app-landing-ui\.css\?v=1/);
-  assert.match(app, /stellar-cosmic-openai\.css\?v=20260923-openai-space/);
+  assert.doesNotMatch(app, /stellar-chatgpt-layout\.css\?v=4/);
+  assert.doesNotMatch(app, /stellar-app-landing-ui\.css\?v=1/);
+  assert.doesNotMatch(app, /stellar-cosmic-openai\.css\?v=20260923-openai-space/);
+  assert.match(app, /--accent:#8b7cf6/);
+  assert.match(app, /background:radial-gradient/);
   assert.match(support, /Support centre/i);
 });
 

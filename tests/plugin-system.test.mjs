@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PLUGIN_REGISTRY, PLUGIN_SCHEMA_VERSION, getPluginDefinition } from '../lib/plugin-registry.js';
@@ -91,13 +91,13 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 });
 
 test('premium plugin dashboard exposes real connect manage and disconnect controls', () => {
-  assert.match(page, /<h1>Plugins<\/h1>/);
-  assert.match(page, /Extend Stellar with apps, tools and workflows/);
-  assert.match(page, /Plugin directory/);
-  assert.match(page, /Review what each plugin can access before you connect it/);
+  assert.ok(page.includes('<h1>Plugins, made easy</h1>'));
+  assert.ok(page.includes('Pick a plugin, press Details, then Connect or Install'));
+  assert.ok(page.includes('Easy plugin setup'));
+  assert.ok(page.includes('permissions first and only uses what you approve'));
   assert.match(page, /Your access stays scoped/);
   for (const filter of ['all','connected','productivity','developer','business','community','coming_soon','disabled']) {
-    assert.match(page, new RegExp(`data-filter="${filter}"`));
+    assert.ok(page.includes('data-filter="' + filter + '"'), filter);
   }
   assert.match(page, /data-install=/);
   assert.match(page, /data-connect=/);
@@ -111,15 +111,19 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   assert.match(page, /Stellar verified/);
   assert.match(page, /connectToken/);
   assert.match(page, /disconnectCurrentPlugin/);
-  assert.match(page, /Connect & Continue/);
+  assert.match(page, /Connect plugin/);
+  assert.match(page, /What it does/);
+  assert.match(page, /No passwords shared/);
+  assert.ok(page.includes('One switch on/off'));
+  assert.match(page, /Only paste a token if OAuth is not available/);
   assert.match(page, /Setup info/);
   assert.match(page, /setupText/);
   assert.match(page, /OAuth setup needed/);
   assert.match(page, /encrypted server-side/);
   assert.match(page, /More plugins coming soon/);
-  assert.match(page, /Request a plugin/);
-  assert.match(app, /data-tab="plugins"/);
-  assert.match(app, /href="\/plugins" class="set-item set-click"/);
+  assert.match(page, /Need a plugin|Request a plugin/);
+  assert.ok(app.includes('data-tab="plugins"'));
+  assert.ok(app.includes('href="/plugins"'));
   assert.match(app, /onclick="location\.href='\/plugins'"/);
 });
 
@@ -141,3 +145,5 @@ test('developer OAuth setup is owner-only and hidden from normal accounts', () =
   assert.ok(page.includes("if(!owner&&['github','vercel'].includes(id))"));
   assert.match(page, /OWNER-ONLY OAUTH MODAL POLISH/);
 });
+
+

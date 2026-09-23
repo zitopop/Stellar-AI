@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+﻿import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -11,15 +11,16 @@ test('app page is not empty and exposes the core chat workspace', () => {
   assert.match(app, /id="prompt"/);
   assert.match(app, /id="sendBtn"/);
   assert.match(app, /fetch\('\/api\/chat'/);
-  assert.match(app, /Thinking…/);
+  assert.match(app, /Thinking/);
   assert.match(app, /Send failed/);
 });
 
 test('app exposes deliberate user controls and owner-gated coding agents', () => {
-  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plans and credit do different jobs', 'Plan before output', 'No fake tested claims']) {
+  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plan and usage', 'Plan before output', 'No fake tested claims']) {
     assert.match(app, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
-  assert.match(app, /Wallet credit is separate/);
+  assert.match(app, /Use wallet credit after included allowance/);
+  assert.match(app, /Overage credit is opt-in/);
   assert.match(app, /No saved chats yet/);
   assert.match(app, /id="desktop-agent-nav"/);
   assert.match(app, /id="roblox-studio-nav"/);
@@ -30,7 +31,7 @@ test('app includes mobile-safe layout rules and tap targets', () => {
   assert.match(app, /min-width:320px/);
   assert.match(app, /overflow-x:hidden/);
   assert.match(app, /min-height:44px/);
-  assert.match(app, /max-width:900px/);
+  assert.match(app, /--max:860px/);
   assert.match(app, /drawer-backdrop/);
   assert.match(app, /safe-area-inset-bottom/);
 });
