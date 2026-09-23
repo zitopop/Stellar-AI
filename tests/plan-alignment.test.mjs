@@ -19,6 +19,9 @@ test('paid plan CTAs preserve upgrade intent into the app', () => {
   assert.match(index, /href="\/app\?upgrade=starter"/);
   assert.match(index, /href="\/app\?upgrade=plus"/);
   assert.match(index, /href="\/app\?upgrade=pro"/);
+  assert.match(index, /href="\/app\?upgrade=starter-annual"/);
+  assert.match(index, /href="\/app\?upgrade=plus-annual"/);
+  assert.match(index, /href="\/app\?upgrade=pro-annual"/);
 });
 
 test('plan copy separates hourly allowance from wallet credit', () => {
