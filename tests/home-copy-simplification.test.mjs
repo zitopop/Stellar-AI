@@ -6,7 +6,7 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('home copy stays focused on one clear prompt', () => {
   assert.match(app, /What can Stellar help you get done\?/);
-  assert.ok(app.includes('Tell Stellar what you need done.'));
+  assert.ok(app.includes('Ask a question, plan a workflow, review a page or get technical help.'));
   assert.match(app, /placeholder="Message Stellar AI…"/);
 });
 
