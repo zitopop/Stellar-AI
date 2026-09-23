@@ -54,8 +54,8 @@ async function resolvePortalConfiguration(stripe) {
   const created = await stripe.billingPortal.configurations.create({
     business_profile: {
       headline: 'Manage your Stellar AI subscription and payment method.',
-      privacy_policy_url: 'https://trystellarai.com/privacy.html',
-      terms_of_service_url: 'https://trystellarai.com/terms.html',
+      privacy_policy_url: 'https://trystellarai.com/privacy',
+      terms_of_service_url: 'https://trystellarai.com/terms',
     },
     features: {
       customer_update: { enabled: true, allowed_updates: ['email', 'name'] },
