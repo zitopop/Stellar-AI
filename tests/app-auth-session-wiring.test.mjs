@@ -13,6 +13,13 @@ test('email authentication uses the real signed-session API', () => {
   assert.doesNotMatch(app, /\/api\/auth\?action=session/);
 });
 
+test('Google sign-in is rendered and exchanges the verified credential for a Stellar session', () => {
+  assert.match(app, /https:\/\/accounts\.google\.com\/gsi\/client/);
+  assert.match(app, /google\.accounts\.id\.initialize/);
+  assert.match(app, /google\.accounts\.id\.renderButton/);
+  assert.match(app, /action:'googleLogin'/);
+});
+
 test('session-protected APIs receive the bearer token', () => {
   assert.match(app, /fetch\('\/api\/get-plan',\{cache:'no-store',headers:authHeaders\(false\)\}/);
   assert.match(app, /fetch\('\/api\/chat',\{method:'POST',headers:authHeaders\(\)/);
@@ -25,6 +32,14 @@ test('plan truth follows the server response shape and model capabilities', () =
   assert.match(app, /const capabilities=data\.capabilities\|\|\{\}/);
   assert.match(app, /Array\.isArray\(data\.availableModels\)/);
   assert.match(app, /usage\.limit\?\?capabilities\.requestsPerHour/);
+});
+
+test('chat reads the server SSE stream instead of treating it as one JSON object', () => {
+  assert.match(app, /async function readChatStream\(res,assistantBubble\)/);
+  assert.match(app, /res\.body\.getReader\(\)/);
+  assert.match(app, /content_block_delta/);
+  assert.match(app, /payload==='\[DONE\]'/);
+  assert.match(app, /const reply=await readChatStream\(res,assistantBubble\)/);
 });
 
 test('chat state keeps pins and deletion cannot immediately restore the deleted chat', () => {
