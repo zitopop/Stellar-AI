@@ -4,17 +4,20 @@ import fs from 'node:fs';
 
 const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-const chatCss = fs.readFileSync(new URL('../stellar-chatgpt-layout.css', import.meta.url), 'utf8');
 
-test('homepage and app use their current stylesheet layers', () => {
+test('homepage keeps public visual layers while workspace stays self-contained', () => {
   assert.match(index, /href="\/lib\/assets\/homepage\.css\?v=/);
-  assert.match(app, /href="\/stellar-chatgpt-layout\.css\?v=4"/);
-  assert.match(app, /href="\/stellar-app-landing-ui\.css\?v=1"/);
-  assert.match(app, /href="\/lib\/assets\/stellar-cosmic-openai\.css\?v=20260923-openai-space"/);
+  assert.doesNotMatch(app, /stellar-chatgpt-layout\.css/);
+  assert.doesNotMatch(app, /stellar-app-landing-ui\.css/);
+  assert.doesNotMatch(app, /stellar-cosmic-openai\.css/);
+  assert.match(app, /--accent:#8b7cf6/);
 });
 
-test('chat layout keeps mobile-safe controls', () => {
-  assert.match(chatCss, /44px/);
-  assert.match(chatCss, /max-width:640px|max-width:700px|max-width:760px/);
+test('workspace keeps mobile-safe controls and a visible bottom composer', () => {
   assert.match(app, /touch-action:manipulation/);
+  assert.match(app, /@media\(max-width:640px\)/);
+  assert.match(app, /@media\(max-width:420px\)/);
+  assert.match(app, /\.composer-wrap\{position:sticky;bottom:0;z-index:9/);
+  assert.match(app, /\.composer-tool\{min-height:36px/);
+  assert.match(app, /@media\(max-width:640px\)[\s\S]*?\.composer-tool\{min-height:44px\}/);
 });
