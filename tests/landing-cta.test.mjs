@@ -42,8 +42,8 @@ test('business starters and core sections remain reachable without JavaScript', 
 });
 
 test('generation guidance includes review, private testing and dependencies', () => {
-  assert.match(html, /test them in a private environment before going live/);
-  assert.match(html, /Always review dependencies and test your build/);
+  assert.match(html, /review dependencies/i);
+  assert.match(html, /test your build in a private environment before going live/i);
   assert.match(html, /customer enquiries|internal workflows|approved agents/);
   assert.match(html, /software when your team needs it|technical work/);
 });
