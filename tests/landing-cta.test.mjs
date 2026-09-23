@@ -7,9 +7,10 @@ const js = read('lib/assets/homepage.js');
 const css = read('lib/assets/homepage.css');
 const graph = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])['@graph'];
 
-test('hero identifies supported platforms and offers first-run onboarding', () => {
+test('hero presents Stellar as a business AI platform and offers first-run onboarding', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.match(html, /AI coding workspace for FiveM and Roblox/);
+  assert.match(html, /BUSINESS AI · AUTOMATION · AGENTS · SOFTWARE WORKSPACE/);
+  assert.match(html, /AI systems for real business work\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /£1 starting credit/);
@@ -35,8 +36,8 @@ test('keyboard users can skip to main content and dismiss the mobile menu', () =
   assert.match(css, /:focus-visible/);
 });
 
-test('all advertised build starters remain reachable without JavaScript', () => {
-  for (const starter of ['police','roblox','fix','heist']) assert.ok(html.includes('href="/app?starter=' + starter + '"'));
+test('business starters and core sections remain reachable without JavaScript', () => {
+  for (const path of ['/ai-receptionist','/website-audit','/app?starter=business-workflow','/app?starter=fix']) assert.ok(html.includes('href="' + path + '"'));
   for (const id of ['how-it-works','capabilities','plans']) assert.ok(html.includes('id="' + id + '"'));
 });
 
@@ -96,7 +97,7 @@ test('support uses the dedicated support route while Discord remains a separate 
 
 test('public metadata describes a free developer workspace without unverified endorsements', () => {
   const app = graph.find(x => x['@type'] === 'SoftwareApplication');
-  assert.equal(app.applicationCategory, 'DeveloperApplication');
+  assert.equal(app.applicationCategory, 'BusinessApplication');
   assert.equal(app.isAccessibleForFree, true);
   assert.match(html, /rel="canonical" href="https:\/\/trystellarai\.com"/);
   assert.doesNotMatch(html, /Used by FiveM and Roblox builders worldwide|guaranteed profit|guaranteed approval/i);
