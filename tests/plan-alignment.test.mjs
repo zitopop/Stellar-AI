@@ -24,3 +24,11 @@ test('paid plan CTAs preserve upgrade intent into the app', () => {
 test('plan copy separates hourly allowance from wallet credit', () => {
   assert.match(index, /Included requests reset hourly\. Wallet credit is separate/);
 });
+
+test('public model access matches server-owned plan entitlements', () => {
+  assert.match(index, /£1 starting credit · Spark &amp; Star/);
+  assert.match(index, /Stronger context \+ deliberate self-review · Spark &amp; Star/);
+  assert.match(index, /multi-file validation · adds Comet/);
+  assert.match(index, /Nova \+ maximum multi-pass engineering review · includes Comet/);
+  assert.doesNotMatch(index, /£1 starting credit · Spark, Star &amp; Comet/);
+});
