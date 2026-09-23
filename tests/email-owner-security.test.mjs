@@ -17,6 +17,7 @@ test('privileged UI uses server-verified owner state rather than browser email m
   assert.match(app, /let serverOwner=false/);
   assert.match(app, /serverOwner=data\.owner===true/);
   assert.match(app, /function isOwner\(\)\{return serverOwner===true\}/);
+  assert.match(app, /finally\{updateOwnerToolsVisibility\(\);renderPlanTruth\(\);updateModelLocks\(\);\}/);
   assert.doesNotMatch(app, /email==='deadlyfox10@gmail\.com'\|\|email==='tobi@trystellarai\.com'/);
 });
 
