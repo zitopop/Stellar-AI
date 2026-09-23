@@ -27,8 +27,13 @@ test('account controls remain explicit touch-safe buttons', () => {
 test('Settings keeps an authenticated session active', () => {
   assert.match(app, /function\s+settingsAuthAction\(\)\s*\{[\s\S]*?if\s*\(signedInUser&&signedInUser\.email\)[\s\S]*?Opening Settings will not sign you out\.[\s\S]*?return[\s\S]*?closeSettings\(\);openWelcome\(\)/);
   assert.doesNotMatch(app, /function\s+settingsAuthAction\(\)\s*\{[\s\S]*?signOut\(\)/);
-  assert.match(app, /authKey\.textContent=signedIn\?'Signed in':'Sign in with Google'/);
+  assert.match(app, /authKey\.textContent=signedIn\?'Signed in':'Sign in'/);
   assert.match(app, /authRow\.classList\.toggle\('set-click',!signedIn\)/);
+});
+
+test('owner tools only appear for the server-recognised founder addresses', () => {
+  assert.match(app, /email==='deadlyfox10@gmail\.com'\|\|email==='tobi@trystellarai\.com'/);
+  assert.doesNotMatch(app, /endsWith\('@stellar\.ai'\)/);
 });
 
 test('Settings hides external sign-in controls once authenticated', () => {
