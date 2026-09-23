@@ -1,40 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
+import { readFileSync } from 'node:fs';
 
-const read = (name) => fs.readFileSync(new URL('../' + name, import.meta.url), 'utf8');
-const publicPolish = read('site-polish.css');
-const orbit = read('stellar-orbit.css');
-const growthCss = read('stellar-growth-v1.css');
-const growthJs = read('stellar-growth-v1.js');
-const app = read('app.html');
+const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('landing hero restores scoped 3D depth after the global flat presentation guard', () => {
-  assert.match(publicPolish, /\.page-shell \.hero-visual\s*\{[\s\S]*?perspective:\s*1700px\s*!important/);
-  assert.match(publicPolish, /\.page-shell \.hero-depth-orbit[\s\S]*?display:\s*block\s*!important/);
-  assert.match(publicPolish, /\.page-shell \.hero-visual \.product-frame\s*\{[\s\S]*?rotateX\(var\(--tilt-x\)\)/);
-  assert.match(publicPolish, /prefers-reduced-motion:\s*reduce[\s\S]*?\.page-shell \.hero-visual \.product-frame/);
+test('workspace keeps the cosmic visual layer without starter clutter', () => {
+  assert.match(app, /stellar-cosmic-openai\.css/);
+  assert.match(app, /radial-gradient/);
+  assert.doesNotMatch(app, /<div class="quick">/);
 });
 
-test('reasoning control remains semantic while presenting a galaxy power rail', () => {
-  assert.match(growthJs, /role="radiogroup" aria-label="Reasoning power"/);
-  for (const key of ['fabie', 'smart', 'comet', 'ultra']) assert.match(growthJs, new RegExp(`data-growth-level="\\$\\{level\\.key\\}"`));
-  assert.match(growthCss, /\.stellar-reasoning-track::before/);
-  assert.match(growthCss, /linear-gradient\(90deg, #72ead0 0%, #9f89ff 34%, #76a7ff 67%, #f1cc77 100%\)/);
-  assert.match(growthCss, /data-growth-level="ultra"/);
+test('model account settings and billing infrastructure remain visible', () => {
+  assert.match(app, /id="model-pill"/);
+  assert.match(app, /id="account-box"/);
+  assert.match(app, /id="settings-panel"/);
+  assert.match(app, /id="set-billing-row"/);
 });
 
-test('new-chat home stays focused inside the premium Orbit shell', () => {
-  assert.match(orbit, /body\.stellar-orbit-v3:not\(\.light\) \.greet-wrap/);
-  assert.ok(app.includes('What are we working on?'));
-  assert.ok(app.includes('Create project files, debug code, improve a system, or plan the next release.'));
-  assert.equal((app.match(/class="sug-chip"/g) || []).length, 0);
-});
-
-test('final polish leaves voice, settings and plan infrastructure in place', () => {
-  assert.match(app, /id="voice-call-modal"/);
-  assert.match(app, /data-tab="voice"/);
-  assert.match(app, /id="accent-theme-track"/);
-  assert.match(app, /id="plans-grid-inner"/);
-  assert.match(app, /id="model-menu"/);
+test('owner coding tools remain hidden by default', () => {
+  assert.match(app, /\.owner-only\{display:none\}/);
+  assert.match(app, /id="desktop-agent-nav"[^>]*owner-only/);
+  assert.match(app, /id="roblox-studio-nav"[^>]*owner-only/);
 });
