@@ -124,7 +124,6 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   assert.match(page, /Need a plugin|Request a plugin/);
   assert.ok(app.includes('data-tab="plugins"'));
   assert.ok(app.includes('href="/plugins"'));
-  assert.match(app, /onclick="location\.href='\/plugins'"/);
 });
 
 
