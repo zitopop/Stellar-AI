@@ -5,6 +5,7 @@ const agent = readFileSync(new URL('../lib/desktop-agent-handler.js', import.met
 const planner = readFileSync(new URL('../lib/desktop-plan-handler.js', import.meta.url), 'utf8');
 const page = readFileSync(new URL('../desktop-agent.html', import.meta.url), 'utf8');
 const entry = readFileSync(new URL('../stellar-desktop-agent-ui.js', import.meta.url), 'utf8');
+const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 assert.match(agent, /function account\(req,res\)/);
 assert.doesNotMatch(agent, /Owner access is required|isOwnerEmail/);
@@ -24,3 +25,8 @@ assert.match(page, /PC Agent Beta/);
 assert.match(entry, /isSignedIn/);
 
 console.log('desktop-agent public beta safeguards: ok');
+
+assert.match(app, /id="desktop-agent-nav" class="nav-link signed-in-only"/);
+assert.match(app, /PC Agent appears after sign-in\. Roblox Studio Agent remains owner-only\./);
+assert.match(app, /document\.querySelectorAll\('\.signed-in-only'\)/);
+assert.match(app, /id="roblox-studio-nav" class="nav-link owner-only"/);
