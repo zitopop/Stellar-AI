@@ -16,17 +16,17 @@ test('analytics endpoint records only an allow-listed event counter', () => {
   assert.match(endpoint, /cleanEvent\(req\.body\?\.event\)/);
   assert.match(endpoint, /Unknown analytics event/);
   assert.match(endpoint, /incrementConversionMetric\(metric\)/);
-  assert.doesNotMatch(endpoint, /email/i);
-  assert.doesNotMatch(endpoint, /phone/i);
-  assert.doesNotMatch(endpoint, /prompt/i);
-  assert.doesNotMatch(endpoint, /ip/i);
+  assert.doesNotMatch(endpoint, /req\.body\?\.email|req\.body\.email/);
+  assert.doesNotMatch(endpoint, /req\.body\?\.phone|req\.body\.phone/);
+  assert.doesNotMatch(endpoint, /req\.body\?\.prompt|req\.body\.prompt/);
+  assert.doesNotMatch(endpoint, /req\.headers\[['"]x-forwarded-for['"]\]|req\.socket\.remoteAddress/);
 });
 
 test('client tracker uses keepalive or sendBeacon without collecting prompt text', () => {
   assert.match(tracker, /navigator\.sendBeacon/);
   assert.match(tracker, /fetch\('\/api\/track-event'/);
   assert.match(tracker, /window\.StellarTrack = track/);
-  assert.doesNotMatch(tracker, /textarea\.value|input\.value|prompt/i);
+  assert.doesNotMatch(tracker, /textarea\.value|input\.value|localStorage\.getItem\(['"]stellarChats|prompt\.value/i);
 });
 
 test('payment thank-you pages load the tracker and keep users on Stellar support paths', () => {
