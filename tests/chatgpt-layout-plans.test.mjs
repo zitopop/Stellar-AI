@@ -4,20 +4,22 @@ import fs from 'node:fs';
 
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const landing = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const css = fs.readFileSync(new URL('../stellar-chatgpt-layout.css', import.meta.url), 'utf8');
 
-test('workspace uses the focused ChatGPT-inspired Stellar shell', () => {
-  assert.match(app, /stellar-chatgpt-layout\.css\?v=4/);
-  assert.match(css, /\.stellar-global-header\{display:none!important\}/);
-  assert.match(css, /#chats-list\{display:block!important/);
-  assert.match(css, /\.stellar-v2-badge,\.stellar-feature-grid/);
-  assert.match(css, /width:min\(100%,768px\)!important/);
+test('workspace uses the self-contained modern Stellar shell without legacy gold overrides', () => {
+  assert.doesNotMatch(app, /stellar-chatgpt-layout\.css/);
+  assert.doesNotMatch(app, /stellar-app-landing-ui\.css/);
+  assert.doesNotMatch(app, /stellar-cosmic-openai\.css/);
+  assert.match(app, /--accent:#8b7cf6/);
+  assert.match(app, /--accent2:#b9b0ff/);
+  assert.match(app, /\.composer-wrap\{position:sticky;bottom:0;z-index:9/);
+  assert.match(app, /\.chat\{min-width:0;min-height:0;overflow:auto/);
 });
 
-test('plans explain included allowance and separate wallet credit', () => {
-  assert.match(app, /Plans and credit do different jobs\./);
-  for (const allowance of ['40 requests/hour', '120 requests/hour', '400 requests/hour', '1,600 requests/hour']) assert.match(app, new RegExp(allowance.replace(',', ',')));
-  assert.equal((app.match(/class="plan-usage-pill"/g) || []).length, 4);
+test('plan and wallet detail is kept in Settings instead of cluttering the sidebar', () => {
+  assert.match(app, /id="plan-truth">Plan and usage/);
+  assert.match(app, /id="usage-copy">Plan data loads after sign-in/);
+  assert.equal((app.match(/class="plan-usage-pill"/g) || []).length, 0);
+  assert.match(app, /View plans/);
 });
 
 test('landing uses a conversational Stellar entry and plan-limit guidance', () => {
