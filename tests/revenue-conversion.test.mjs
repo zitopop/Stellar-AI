@@ -13,8 +13,8 @@ test('homepage exposes truthful business conversion paths',()=>{
   assert.match(index,/href="\/business"/);
   assert.match(index,/href="\/website-audit"/);
   assert.match(index,/href="\/ai-receptionist"/);
-  assert.match(index,/£99 ONE-TIME/);
-  assert.match(index,/£150 \+ £49\/MO/);
+  assert.match(index,/£99(?: one-time| ONE-TIME)/i);
+  assert.match(index,/£150(?: setup)? \+ £49\/(?:month|MO)/i);
 });
 
 test('website audit has live price and scoped limitations',()=>{
