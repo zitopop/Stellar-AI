@@ -3,26 +3,23 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
+const jarvis = readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
 
-test('owner tools expose a Jarvis command centre', () => {
-  assert.match(app, /data-otab="jarvis"/);
-  assert.match(app, /data-opanel="jarvis"/);
-  assert.match(app, /Jarvis command centre/);
-  assert.match(app, /Safety mode/);
+test('workspace exposes a focused Jarvis Voice and Vision route', () => {
+  assert.match(app, /href="\/jarvis"/);
+  assert.match(jarvis, /Jarvis Vision workspace/);
+  for (const label of ['AI Chat','Voice','Computer','Email','Projects','Agents','Vision']) assert.ok(jarvis.includes(label));
 });
 
-test('Jarvis command centre provides focused business missions', () => {
-  for (const label of ['Revenue day', 'Sales sprint', 'Fix systems', 'Social growth', 'Inbox sweep', 'Full brief']) {
-    assert.ok(app.includes(label), `missing mission: ${label}`);
-  }
-  assert.match(app, /function runJarvisMission\(prompt\)/);
-  assert.match(app, /sendMessage\(\)/);
+test('sensitive Jarvis modules stay owner-gated', () => {
+  assert.match(jarvis, /data-owner-only="true"/);
+  assert.match(jarvis, /fetch\('\/api\/get-plan'/);
+  assert.match(jarvis, /data\?\.owner===true/);
 });
 
-test('Jarvis command centre reports voice and owner-call health without exposing secrets', () => {
-  assert.match(app, /function refreshJarvisCenter\(\)/);
-  assert.match(app, /checkOwnerCallHealth\(\)/);
-  assert.match(app, /Configured — provider test pending/);
+test('app reports protected owner-call health without client secrets', () => {
+  assert.match(app, /function checkOwnerCallHealth\(\)/);
+  assert.match(app, /ownerRequest\('\/api\/broadcast',\{action:'callHealth'\}\)/);
   assert.doesNotMatch(app, /RETELL_API_KEY\s*=/);
   assert.doesNotMatch(app, /CALL_BRIDGE_TOKEN\s*=/);
 });
