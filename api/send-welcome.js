@@ -2,6 +2,7 @@
 // Sends a welcome email when a new user signs up via Resend
 import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 import { requireSession } from '../lib/auth.js';
+import { kvPipeline } from '../lib/profile.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -15,6 +16,18 @@ export default async function handler(req, res) {
   const normalizedEmail = String(email || '').trim().toLowerCase();
   if (!normalizedEmail || normalizedEmail !== session.email) {
     return res.status(403).json({ error: 'You can only send a welcome email to your signed-in account.' });
+  }
+
+  const kvUrl = process.env.KV_REST_API_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN;
+  if (!kvUrl || !kvToken) return res.status(503).json({ error: 'Account storage is not configured.' });
+  const bucket = Math.floor(Date.now() / (10 * 60 * 1000));
+  const rateKey = `stellar:welcome-email-rate:${bucket}:${normalizedEmail}`;
+  const rateResult = await kvPipeline(kvUrl, kvToken, [['INCR', rateKey], ['EXPIRE', rateKey, 1200, 'NX']]);
+  const rateCount = Math.max(0, Number(Array.isArray(rateResult) ? rateResult[0]?.result : 0) || 0);
+  if (rateCount > 1) {
+    res.setHeader('Retry-After', '600');
+    return res.status(429).json({ error: 'A welcome email was already requested recently. Try again later.' });
   }
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
