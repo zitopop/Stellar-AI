@@ -4,6 +4,7 @@ import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
+import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -27,17 +28,18 @@ function escapeHtml(value) {
 
 async function sendOwnerFallbackEmail({ category, severity, summary }) {
   const resendKey = process.env.RESEND_API_KEY;
+  const from = resendSender();
   const recipients = String(process.env.OWNER_EMAILS || process.env.OWNER_EMAIL || '')
     .split(/[\s,;]+/)
     .map((value) => value.trim())
     .filter((value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value));
-  if (!resendKey || !recipients.length) return false;
+  if (!resendKey || !from || !recipients.length) return false;
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + resendKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Stellar AI <deadlyfox10@gmail.com>',
+        from,
         to: recipients,
         subject: '[Stellar ' + severity.toUpperCase() + '] ' + category + ' alert — phone call unavailable',
         text: 'Stellar AI could not place the urgent owner phone call.\n\nCategory: ' + category + '\nSeverity: ' + severity + '\n\n' + summary + '\n\nThe phone provider blocked the call, so this email was sent as the fallback alert.',
@@ -160,7 +162,8 @@ export default async function handler(req, res) {
   const kvUrl = process.env.KV_REST_API_URL;
   const kvToken = process.env.KV_REST_API_TOKEN;
   const resendKey = process.env.RESEND_API_KEY;
-  if (!kvUrl || !kvToken || !resendKey) return res.status(500).json({ error: 'Email delivery is not configured.' });
+  const from = resendSender();
+  if (!kvUrl || !kvToken || !resendKey || !from) return res.status(500).json({ error: 'Email delivery is not configured.' });
 
   try {
     const [authResponse, userResponse] = await Promise.all([
@@ -183,8 +186,8 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'Stellar AI <deadlyfox10@gmail.com>',
-          reply_to: 'deadlyfox10@gmail.com',
+          from,
+          reply_to: SUPPORT_EMAIL,
           to: [email],
           subject,
           html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#050505;color:#fff;">
