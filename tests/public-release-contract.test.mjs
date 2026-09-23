@@ -96,8 +96,8 @@ test('the public support centre stays routed, indexed and keeps email fallback a
   const routes = new Map(vercel.rewrites.map((route) => [route.source, route.destination]));
   const sitemap = read('sitemap.xml');
   assert.equal(routes.get('/support'), '/support.html');
-  assert.match(supportHtml, /href="mailto:support@trystellarai\.com/);
-  assert.match(supportHtml, /support@trystellarai\.com/);
+  assert.match(supportHtml, /href="mailto:deadlyfox10@gmail\.com/);
+  assert.match(supportHtml, /deadlyfox10@gmail\.com/);
   assert.match(sitemap, /https:\/\/trystellarai\.com\/support/);
 });
 
