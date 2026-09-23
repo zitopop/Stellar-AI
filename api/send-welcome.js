@@ -1,5 +1,6 @@
 // api/send-welcome.js
 // Sends a welcome email when a new user signs up via Resend
+import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -13,11 +14,12 @@ export default async function handler(req, res) {
   }
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  if (!RESEND_API_KEY) {
-    return res.status(500).json({ error: 'Resend not configured' });
+  const from = resendSender();
+  if (!RESEND_API_KEY || !from) {
+    return res.status(503).json({ error: 'Email delivery is not configured.' });
   }
 
-  const displayName = name || email.split('@')[0];
+  const displayName = escapeEmailHtml(name || email.split('@')[0]);
 
   try {
     const response = await fetch('https://api.resend.com/emails', {
@@ -27,7 +29,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Stellar AI <deadlyfox10@gmail.com>',
+        from,
         to: [email],
         subject: 'Welcome to Stellar AI',
         html: `
@@ -71,7 +73,7 @@ export default async function handler(req, res) {
     <div style="text-align:center;margin-top:24px;">
       <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0 0 8px;">— The Stellar AI Team</p>
       <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0;">
-        Stellar AI · <a href="https://trystellarai.com/terms.html" style="color:rgba(255,255,255,0.25);">Terms</a> · <a href="mailto:deadlyfox10@gmail.com" style="color:rgba(255,255,255,0.25);">deadlyfox10@gmail.com</a>
+        Stellar AI · <a href="https://trystellarai.com/terms" style="color:rgba(255,255,255,0.25);">Terms</a> · <a href="mailto:${SUPPORT_EMAIL}" style="color:rgba(255,255,255,0.25);">${SUPPORT_EMAIL}</a>
       </p>
     </div>
 
