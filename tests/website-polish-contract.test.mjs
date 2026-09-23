@@ -9,10 +9,13 @@ test('homepage explains Stellar fast with product, pricing and trust anchors', (
   assert.match(landing, /AI coding workspace for FiveM and Roblox/);
   assert.match(landing, /Build\. Automate\. Get real work done\./);
   assert.match(landing, /Message Stellar AI/);
-  assert.match(landing, /Start with Stellar/);
+  assert.match(landing, /Start building free/);
   assert.match(landing, /Business services such as the AI Receptionist and Website Mini Audit are priced separately above\./);
   assert.match(landing, /Wallet credit is separate and can be used after the included allowance\./);
   assert.match(landing, /No fake tested claims|No fabricated results/);
+  assert.match(landing, /Stripe checkout/);
+  assert.match(landing, /Cancel anytime/);
+  assert.match(landing, /Email support/);
   assert.match(landing, /href="\/support"[^>]*>Support<\/a>/i);
 });
 
@@ -43,4 +46,6 @@ test('homepage final polish layer beats old decorative styling', () => {
   assert.match(cosmic, /body\.public-home \.pricing-section \.plans/);
   assert.match(cosmic, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/);
   assert.match(cosmic, /@media\(max-width:700px\)/);
+  assert.match(cosmic, /home conversion proof row v20260923/);
+  assert.match(cosmic, /body\.public-home \.oa2-proof-row/);
 });
