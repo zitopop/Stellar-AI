@@ -23,14 +23,19 @@ const modelAliases = {
   nova: ['nova', 'ultra', 'fable', 'claude-fable-5', 'claude-opus-4-8'],
 };
 const plans = ['free', 'starter', 'plus', 'pro', 'owner', 'lite'];
+function expectedTier(tier, plan) {
+  if (tier === 'nova' && !['pro', 'owner'].includes(plan)) return 'star';
+  if (tier === 'comet' && ['free', 'starter'].includes(plan)) return 'star';
+  return tier;
+}
 for (const [tier, aliases] of Object.entries(modelAliases)) {
   for (const alias of aliases) {
     for (const variant of textVariants(alias)) {
       for (const plan of plans) {
         test(`model matrix: ${JSON.stringify(variant)} on ${plan} resolves safely`, () => {
-          const expected = tier === 'nova' && !['pro', 'owner'].includes(plan) ? 'star' : tier;
-          assert.equal(resolveModelTier(variant, plan), expected);
+          assert.equal(resolveModelTier(variant, plan), expectedTier(tier, plan));
           if (!['pro', 'owner'].includes(plan)) assert.notEqual(resolveModelTier(variant, plan), 'nova');
+          if (['free', 'starter'].includes(plan)) assert.notEqual(resolveModelTier(variant, plan), 'comet');
         });
       }
     }
