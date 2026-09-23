@@ -71,19 +71,17 @@ test('achievement progression remains server-side while the removed Skill Tree l
   assert.doesNotMatch(app, /class="achievement-badge/);
 });
 
-test('app Starter card shows concrete paid value without changing the approved price', () => {
-  assert.match(app, /id="plan-card-starter"[\s\S]*?When Free is useful but you keep hitting the ceiling on regular scripts.[\s\S]*?id="plan-btn-starter"[^>]*>Get Starter<\/button>/);
-  assert.match(app, /£67\/year · Save £29 \(30%\)/);
-  assert.match(app, /3× usage · 120 requests\/hour/);
-  assert.match(app, /Up to 3,500 output tokens · 75% more than Free/);
-  assert.match(app, /Stronger context \+ deliberate self-review/);
-  assert.match(app, /Spark, Star &amp; Comet models/);
+test('Starter checkout is routed through the current authenticated upgrade handoff', () => {
+  assert.match(app, /const UPGRADE_PLANS=new Set\(\['starter','plus','pro','starter-annual','plus-annual','pro-annual'\]\)/);
+  assert.match(app, /async function startPlanCheckout\(plan\)/);
+  assert.match(app, /JSON\.stringify\(\{plan:normalized\}\)/);
+  assert.match(app, /checkoutUrl\.hostname!=='checkout\.stripe\.com'/);
 });
 
-test('workspace defaults to Star and protects its mobile modal experience', () => {
-  assert.match(app, /s\.model \|\| 'smart'/);
-  assert.match(app, /#plans-modal > div,[\s\S]*?max-height: 92dvh !important;[\s\S]*?-webkit-overflow-scrolling: touch !important;/);
-  assert.match(app, /\.modal-x \{[\s\S]*?width: 44px !important;[\s\S]*?height: 44px !important;/);
-  assert.match(app, /body\.modal-active #rec-btn \{ display: none !important; \}/);
-  assert.match(app, /body:has\(\[id\$="-modal"\]:not\(\.hidden\)\) #rec-btn \{ display: none !important; \}/);
+test('workspace defaults to Star and protects current mobile surfaces', () => {
+  assert.match(app, /const selectedModel=Store\.get\('selectedModel','star'\)/);
+  assert.match(app, /id="current-model-label">Star · balanced/);
+  assert.match(app, /@media \(max-width: 520px\)[\s\S]*?max-height:90dvh/);
+  assert.match(app, /@media\(max-width:640px\)[\s\S]*?\.composer-tool\{min-height:44px\}/);
+  assert.match(app, /#model-menu\{[\s\S]*?overflow:auto/);
 });
