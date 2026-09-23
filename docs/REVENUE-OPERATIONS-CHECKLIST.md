@@ -14,7 +14,7 @@ Run this with a real paid Stellar account only. Do not impersonate another custo
 6. Confirm cancellation is at period end, not immediate cancellation.
 7. Return to Stellar and confirm the app still shows the same plan.
 
-Expected result: paid users can update card details, view invoices and cancel safely. If the portal fails, keep the support fallback visible: `support@trystellarai.com`.
+Expected result: paid users can update card details, view invoices and cancel safely. If the portal fails, keep the support fallback visible: `deadlyfox10@gmail.com`.
 
 ## 2. Funnel numbers to check weekly
 
