@@ -1,21 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 
-const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
-const staticAppMarkup = appHtml.split('function timeGreeting()')[0];
+const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('workspace keeps the help question stable while signed-in greeting personalises safely', () => {
-  assert.match(appHtml, /<div class="greet-hi" id="greet-hi">What are we working on\?<\/div>/);
-  assert.match(appHtml, /function syncHomeGreeting\(\)/);
-  assert.match(appHtml, /label\.textContent = firstName \? 'Welcome back · Stellar AI' : 'Stellar AI';/);
-  assert.match(appHtml, /heading\.textContent = firstName[\s\S]*?firstName \+ ', what are we working on\?'[\s\S]*?: 'What are we working on\?';/);
-  assert.doesNotMatch(staticAppMarkup, /\$\{timeGreeting\(\)\}/);
+test('workspace keeps the help question for signed-out users', () => {
+  assert.match(app, /What can Stellar help you build\?/);
 });
 
-test('home greeting uses the signed-in first name without exposing the full email', () => {
-  assert.match(appHtml, /function homeFirstName\(\) \{/);
-  assert.match(appHtml, /String\(user\.email\)\.split\('@'\)\[0\]/);
-  assert.match(appHtml, /firstName\.length > 18/);
-  assert.doesNotMatch(appHtml, /function timeGreeting\(\)/);
+test('signed-in greeting uses only a sanitized first name', () => {
+  assert.match(app, /function safeFirstName\(user\)/);
+  assert.match(app, /slice\(0,30\)/);
+  assert.match(app, /name\?name\+', what can Stellar help you build\?'/);
+  assert.doesNotMatch(app, /greeting\.textContent=signedInUser\.email/);
 });
