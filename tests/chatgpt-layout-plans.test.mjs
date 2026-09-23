@@ -21,7 +21,7 @@ test('plans explain included allowance and separate wallet credit', () => {
 });
 
 test('landing uses a conversational Stellar entry and plan-limit guidance', () => {
-  assert.match(landing, /Build it\. Debug it\. Keep moving\./);
+  assert.match(landing, /Build\. Automate\. Get real work done\./);
   assert.match(landing, /AI coding workspace for FiveM and Roblox/);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Roblox Studio Agent/);
