@@ -71,8 +71,8 @@ Use [`docs/REVENUE-OPERATIONS-CHECKLIST.md`](docs/REVENUE-OPERATIONS-CHECKLIST.m
 
 | Plan | Monthly | Annual | Included |
 |------|---------|--------|----------|
-| Free | £0 | £0 | 40 requests/hour · up to 2,000 output tokens · £1 starting credit · Spark, Star and Comet |
-| Starter | £8/mo | £67/yr · save £29 (30%) | 120 requests/hour · up to 3,500 output tokens · stronger context and deliberate self-review · Spark, Star and Comet |
+| Free | £0 | £0 | 40 requests/hour · up to 2,000 output tokens · £1 starting credit · Spark and Star |
+| Starter | £8/mo | £67/yr · save £29 (30%) | 120 requests/hour · up to 3,500 output tokens · stronger context and deliberate self-review · Spark and Star |
 | Plus | £20/mo | £168/yr · save £72 (30%) | 400 requests/hour · up to 5,000 output tokens · deeper architecture/debugging and multi-file validation · Spark, Star and Comet |
 | Pro | £75/mo | £630/yr · save £270 (30%) | 1,600 requests/hour · up to 8,000 output tokens · Nova · maximum multi-pass engineering review |
 
@@ -102,6 +102,7 @@ Optional but recommended production values:
 STRIPE_BILLING_PORTAL_CONFIG_ID   # use a pre-created Stripe portal config when available
 CRON_SECRET                       # protects internal scheduled routes
 RESEND_API_KEY                    # required for transactional email routes that send mail
+RESEND_FROM_EMAIL                 # required verified Resend sender, e.g. Stellar AI <hello@your-verified-domain>
 GOOGLE_CLIENT_ID                  # public sign-in client ID is also embedded in the app shell
 DISCORD_CLIENT_ID / DISCORD_CLIENT_SECRET / DISCORD_REDIRECT_URI
 ```
