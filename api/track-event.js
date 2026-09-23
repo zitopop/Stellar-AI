@@ -29,12 +29,7 @@ const clientWindows = new Map();
 const CLIENT_WINDOW_MS = 60_000;
 const CLIENT_MAX_PER_WINDOW = 40;
 
-function clientKey(req) {
-  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
-  return forwarded || String(req.headers['x-real-ip'] || 'unknown');
-}
-
-function allowClientMetric(key) {
+function allowClientMetric(event) {
   const now = Date.now();
   const current = clientWindows.get(key);
   if (!current || now - current.startedAt >= CLIENT_WINDOW_MS) {
@@ -52,10 +47,9 @@ function allowClientMetric(key) {
 
 async function handleClientMetric(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
-  if (!allowClientMetric(clientKey(req))) return res.status(204).end();
-
   const event = String(req.body?.event || '').trim().toLowerCase();
   if (!CLIENT_METRIC_EVENTS.has(event)) return res.status(400).json({ error: 'Unknown metric.' });
+  if (!allowClientMetric(event)) return res.status(204).end();
 
   await incrementConversionMetric('client-' + event);
   if (event === 'client-error' || event === 'chat-send-error' || event === 'checkout-error') {
