@@ -59,8 +59,10 @@ test('visible pricing and structured offers agree on current monthly and yearly 
   assert.match(html, /Wallet credit is separate and can be used after the included allowance/);
 });
 
-test('paid actions preserve plan intent and Free remains a direct entry', () => {
-  for (const plan of ['starter','plus','pro']) assert.ok(html.includes('href="/app?upgrade=' + plan + '"'));
+test('paid actions preserve monthly and annual plan intent while Free remains a direct entry', () => {
+  for (const plan of ['starter','plus','pro','starter-annual','plus-annual','pro-annual']) {
+    assert.ok(html.includes('href="/app?upgrade=' + plan + '"'), plan);
+  }
   assert.match(html, /href="\/app"[^>]*aria-label="Start with the Free plan"/);
 });
 
@@ -98,4 +100,14 @@ test('public metadata describes a free developer workspace without unverified en
   assert.equal(app.isAccessibleForFree, true);
   assert.match(html, /rel="canonical" href="https:\/\/trystellarai\.com"/);
   assert.doesNotMatch(html, /Used by FiveM and Roblox builders worldwide|guaranteed profit|guaranteed approval/i);
+});
+
+test('starter links are converted into editable app prompts rather than auto-submitted generations', () => {
+  const app = read('app.html');
+  assert.match(app, /const STARTER_PROMPTS=Object\.freeze/);
+  assert.match(app, /function starterPrompt\(value\)/);
+  assert.match(app, /function consumeInboundPrompt\(\)/);
+  assert.match(app, /params\.delete\(key\)/);
+  assert.match(app, /history\.replaceState/);
+  assert.doesNotMatch(app, /consumeInboundPrompt\(\);[\s\S]{0,400}requestSubmit\(\)/);
 });
