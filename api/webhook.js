@@ -181,7 +181,8 @@ export default async function handler(req, res) {
           }
         } else {
           const plan = normalisePlan(checkoutPlan);
-          if (plan) {
+          const subscriptionPaid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
+          if (plan && subscriptionPaid) {
             await kvSet(userKey, {
               ...existing,
               plan,
@@ -196,8 +197,11 @@ export default async function handler(req, res) {
               incrementConversionMetric('revenue-pence', Number(session.amount_total || 0)),
               recordFirstUpgrade(KV_URL, KV_TOKEN, email),
             ]);
-          } else {
+          } else if (!plan) {
             console.error('Stripe checkout completed with an unknown plan', checkoutPlan, session.id);
+          } else {
+            console.error('Stripe subscription checkout completed without a paid status', session.payment_status, session.id);
+            throw new Error('Subscription checkout was not paid.');
           }
         }
       }
