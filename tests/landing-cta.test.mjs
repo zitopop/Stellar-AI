@@ -88,7 +88,7 @@ test('dark-only homepage makes native anchor navigation clear of its sticky head
 test('support uses the dedicated support route while Discord remains a separate community link', () => {
   assert.match(html, /href="\/support">Support<\/a>/);
   assert.match(html, /href="https:\/\/discord\.gg\/e6uRAV9HGA"[^>]*>Discord/);
-  for (const path of ['/terms.html','/terms.html#privacy','/blog']) assert.ok(html.includes('href="' + path + '"'));
+  for (const path of ['/terms','/privacy','/blog']) assert.ok(html.includes('href="' + path + '"'));
   assert.doesNotMatch(html, /mailto:/);
 });
 
