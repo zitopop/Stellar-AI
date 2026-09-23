@@ -20,8 +20,10 @@ test('plans explain included allowance and separate wallet credit', () => {
   assert.equal((app.match(/class="plan-usage-pill"/g) || []).length, 4);
 });
 
-test('landing uses clear build wording and plan-limit guidance', () => {
-  assert.match(landing, /AI coding workspace for FiveM and Roblox/);
+test('landing uses a clear conversational build entry and plan-limit guidance', () => {
+  assert.match(landing, /What do you want/);
+  assert.match(landing, /Message Stellar AI/);
+  assert.match(landing, /FiveM · Roblox · debugging/);
   assert.match(landing, /Wallet credit is separate and can be used after the included allowance\./);
   assert.match(landing, /Prices and checkout are in GBP/);
 });
