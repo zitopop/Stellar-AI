@@ -51,7 +51,7 @@ test('coding-agent shortcuts from the owner model menu open the paired workspace
 });
 
 test('landing plan copy matches the stronger paid-plan quality behavior', () => {
-  assert.match(landing, /Paid plans add progressively deeper engineering review/);
+  assert.match(landing, /Start free, then add more hourly capacity, longer outputs and deeper engineering review/);
   assert.match(landing, /Stronger context \+ deliberate self-review/);
   assert.match(landing, /Deeper architecture, debugging \+ multi-file validation/);
   assert.match(landing, /Nova \+ maximum multi-pass engineering review/);
