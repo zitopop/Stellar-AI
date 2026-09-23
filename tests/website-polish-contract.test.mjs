@@ -33,3 +33,14 @@ test('website polish does not reintroduce heavy gold lock styling', () => {
   assert.doesNotMatch(palette, /box-shadow:[^;]*(?:gold|#d4af37|#b8860b)/i);
   assert.match(palette, /Gold is kept only as a tiny warm accent/);
 });
+
+
+test('homepage final polish layer beats old decorative styling', () => {
+  const cosmic = readFileSync(new URL('../lib/assets/stellar-cosmic-openai.css', import.meta.url), 'utf8');
+  assert.match(cosmic, /Stellar public homepage final polish v20260923-clean-home/);
+  assert.match(cosmic, /body\.public-home \.oa2-hero/);
+  assert.match(cosmic, /html:has\(body\.public-home\)::after/);
+  assert.match(cosmic, /body\.public-home \.pricing-section \.plans/);
+  assert.match(cosmic, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/);
+  assert.match(cosmic, /@media\(max-width:700px\)/);
+});

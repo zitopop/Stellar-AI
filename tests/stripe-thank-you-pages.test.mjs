@@ -1,14 +1,14 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
 const pages = {
-  'thank-you.html': ['Payment received', '/app?payment=success', 'Billing support'],
-  'business-thank-you.html': ['Business payment received', 'Send details', '/business'],
-  'ai-receptionist-thank-you.html': ['AI Receptionist paid', 'Send setup details', '/ai-receptionist'],
-  'website-audit-thank-you.html': ['Audit payment received', 'Send audit details', '/website-audit'],
+  'thank-you.html': ['Payment received', 'Stripe receipt', '/app?payment=success', 'Billing support'],
+  'business-thank-you.html': ['Stripe receipt', 'Send details', '/business'],
+  'ai-receptionist-thank-you.html': ['Stripe receipt', 'Send setup details', '/ai-receptionist'],
+  'website-audit-thank-you.html': ['Stripe receipt', 'Send audit details', '/website-audit'],
 };
 
 for (const [page, requiredText] of Object.entries(pages)) {

@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
@@ -17,7 +17,7 @@ test('desktop top bar exposes clean product and legal navigation', () => {
   assert.match(orbit, /href="\/models"/);
   assert.match(orbit, /data-stellar-top-plans/);
   assert.match(orbit, />Plans<\/button>/);
-  assert.match(orbit, /href="\/terms\.html"/);
+    assert.match(orbit, /href="\/terms"/);
   assert.match(orbit, /data-stellar-top-picker/);
 });
 
