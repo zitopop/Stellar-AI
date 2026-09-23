@@ -28,12 +28,14 @@ test('public feature files use safe storage wrappers instead of raw localStorage
 });
 
 test('UK cancellation wording preserves statutory rights and early-performance rules', () => {
-  assert.match(terms, /usually have a 14-day cancellation period where the law provides one/);
+  assert.match(terms, /cancellation period is 14 days/);
   assert.match(terms, /making a payment does not by itself waive a statutory cancellation right/);
   assert.match(terms, /service is fully performed during the cancellation period/);
-  assert.match(terms, /expressly requested early performance and acknowledged beforehand/);
-  assert.match(terms, /digital content supplied before the end of the cancellation period/);
-  assert.match(terms, /expressly consented to immediate supply/);
-  assert.match(terms, /we will not treat the cancellation right as waived/);
-  assert.match(terms, /Nothing here removes or reduces statutory consumer rights/);
+  assert.match(terms, /required request and acknowledgement were obtained/);
+  assert.match(terms, /digital content supplied immediately/);
+  assert.match(terms, /expressly consent to immediate supply/);
+  assert.match(terms, /we will not treat that right as waived/);
+  assert.match(terms, /Nothing in these terms excludes rights that cannot legally be excluded/);
+  assert.match(terms, /Website Mini Audit \/ Quick Fix/);
+  assert.match(terms, /AI Receptionist/);
 });
