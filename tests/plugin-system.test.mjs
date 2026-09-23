@@ -19,6 +19,7 @@ test('plugin registry separates working, owner-only and future integrations', ()
     assert.ok(getPluginDefinition(id), id);
   }
   assert.equal(getPluginDefinition('pc-agent').status, 'beta');
+  assert.equal(getPluginDefinition('pc-agent').audience, 'signed_in');
   assert.equal(getPluginDefinition('roblox-studio').audience, 'owner');
   assert.equal(getPluginDefinition('github').status, 'available');
   assert.equal(getPluginDefinition('github').audience, 'owner');
