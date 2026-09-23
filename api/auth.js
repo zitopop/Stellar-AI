@@ -1,7 +1,7 @@
 // api/auth.js — email/password and verified Google sign-in for Stellar AI
 import crypto from 'crypto';
 import { createSession, readSession } from '../lib/auth.js';
-import { applyReferralReward, ensureReferralProfile, kvGet, kvSet } from '../lib/profile.js';
+import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, kvSet } from '../lib/profile.js';
 import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js';
 import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
@@ -25,6 +25,24 @@ function validEmail(value) {
 function hashPassword(password, salt) {
   return crypto.pbkdf2Sync(String(password), salt, 150000, 32, 'sha256').toString('hex');
 }
+
+function authClientKey(req, email = '') {
+  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  const ip = forwarded || String(req.headers['x-real-ip'] || 'unknown');
+  return crypto.createHash('sha256').update(ip + '|' + String(email || '').toLowerCase().trim()).digest('hex').slice(0, 24);
+}
+
+async function allowAuthAttempt(url, token, req, action, email = '') {
+  const limits = { login: 10, signup: 6, googleLogin: 20, redeemCode: 10 };
+  const limit = limits[action];
+  if (!limit) return true;
+  const bucket = Math.floor(Date.now() / 60_000);
+  const key = `stellar:auth-rate:${action}:${bucket}:${authClientKey(req, email)}`;
+  const result = await kvPipeline(url, token, [['INCR', key], ['EXPIRE', key, 120, 'NX']]);
+  const count = Math.max(0, Number(Array.isArray(result) ? result[0]?.result : 0) || 0);
+  return count <= limit;
+}
+
 
 function decodeBase64Url(value) {
   return JSON.parse(Buffer.from(value, 'base64url').toString('utf8'));
@@ -151,8 +169,13 @@ export default async function handler(req, res) {
   if (!url || !token) return res.status(500).json({ error: 'Account storage is not configured.' });
 
   const { action, email, password, credential, code, referralCode } = req.body || {};
-
+  const actionName = String(action || '').trim();
+  const rateEmail = String(email || '').toLowerCase().trim();
   try {
+    if (!(await allowAuthAttempt(url, token, req, actionName, rateEmail))) {
+      res.setHeader('Retry-After', '60');
+      return res.status(429).json({ error: 'Too many account attempts. Wait a minute and try again.' });
+    }
     if (action === 'googleLogin') {
       const googleUser = await verifyGoogleCredential(credential);
       const { isNew } = await ensureUser(url, token, googleUser.email, 'google');
