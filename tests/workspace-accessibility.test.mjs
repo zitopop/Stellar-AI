@@ -20,7 +20,7 @@ test('Task 165 keeps generated chat-menu actions explicit non-submit buttons', (
 });
 
 test('Task 166 keeps the model-menu plan action an explicit non-submit menu button', () => {
-  assert.match(workspaceHtml, /<button type="button" onclick="closeModelMenu\(\); openPlans\(\)" role="menuitem" class="w-full text-left px-3 py-2\.5 rounded-xl hover:bg-white\/10 font-black text-sm">⭐ See all plans<\/button>/);
+  assert.match(workspaceHtml, /<button type="button" onclick="closeModelMenu\(\); openPlans\(\)" role="menuitem" class="w-full text-left px-3 py-2\.5 rounded-xl hover:bg-white\/10 font-black text-sm">Compare plans <span aria-hidden="true">↗<\/span><\/button>/);
   assert.doesNotMatch(workspaceHtml, /<button onclick="closeModelMenu\(\); openPlans\(\)" role="menuitem"/);
 });
 
@@ -131,7 +131,7 @@ test('Task 185 keeps top-up credit controls explicit non-submit buttons', () => 
 test('chat workspace refinement keeps the model picker descriptive, flat, and behavior-preserving', () => {
   assert.match(workspaceHtml, /\/\* Workspace refinement: clearer chat rhythm and model hierarchy, with no routing or interaction changes\. \*\//);
   assert.match(workspaceHtml, /#model-menu \{ width: min\(348px, calc\(100vw - 24px\)\) !important;[\s\S]*?background: #181818 !important;/);
-  assert.match(workspaceHtml, /<div class="model-menu-heading" aria-hidden="true"><span>AI models<\/span><span>Select a focus<\/span><\/div>/);
+  assert.match(workspaceHtml, /<div class="model-menu-heading" aria-hidden="true"><span>Models<\/span><span>Choose for this chat<\/span><\/div>/);
   assert.match(workspaceHtml, /#model-menu \[data-model-choice\]\[aria-checked="true"\] \{ border-color: #d4d4d8; color: #101010 !important; background: #f4f4f5 !important; \}/);
   assert.match(workspaceHtml, /\.message\.msg-user \.msg-content \{ padding: 12px 15px !important;[\s\S]*?background: #27272a !important;/);
   assert.match(workspaceHtml, /\*, \*::before, \*::after \{ animation: none !important; transition: none !important; box-shadow: none !important;/);
