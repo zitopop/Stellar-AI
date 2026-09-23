@@ -41,3 +41,16 @@ test('welcome display names are HTML escaped before entering email markup', () =
   assert.match(emailConfig, /replace\(\/&\/g, '&amp;'\)/);
   assert.match(emailConfig, /replace\(\/<\/g, '&lt;'\)/);
 });
+
+test('auth endpoints throttle repeated login and signup attempts in shared KV', () => {
+  assert.match(auth, /stellar:auth-rate:/);
+  assert.match(auth, /\{ login: 10, signup: 6, googleLogin: 20, redeemCode: 10 \}/);
+  assert.match(auth, /res\.status\(429\)/);
+  assert.match(auth, /Retry-After/);
+});
+
+test('authenticated welcome email resends are rate-limited', () => {
+  assert.match(welcome, /stellar:welcome-email-rate:/);
+  assert.match(welcome, /rateCount > 1/);
+  assert.match(welcome, /res\.status\(429\)/);
+});
