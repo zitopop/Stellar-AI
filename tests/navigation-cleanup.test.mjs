@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
@@ -8,7 +8,8 @@ test('clean sidebar replaces footer utilities with a dedicated tools section', (
   assert.match(orbit, /\.side-foot\{display:none!important\}/);
   assert.match(orbit, /Tools & account/);
   assert.match(orbit, /Usage & credit/);
-  assert.match(orbit, /Terms & privacy/);
+  assert.match(orbit, /Terms/);
+  assert.match(orbit, /Privacy/);
   assert.match(orbit, /data-orbit-open-settings/);
 });
 
@@ -17,7 +18,8 @@ test('desktop top bar exposes clean product and legal navigation', () => {
   assert.match(orbit, /href="\/models"/);
   assert.match(orbit, /data-stellar-top-plans/);
   assert.match(orbit, />Plans<\/button>/);
-    assert.match(orbit, /href="\/terms"/);
+  assert.match(orbit, /href="\/terms"/);
+  assert.match(orbit, /href="\/privacy"/);
   assert.match(orbit, /data-stellar-top-picker/);
 });
 
