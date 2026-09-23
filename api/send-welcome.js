@@ -69,7 +69,7 @@ export default async function handler(req, res) {
     </div>
 
     <div style="text-align:center;margin-top:24px;">
-      <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0 0 8px;">— The Stellar AI Team 🚀</p>
+      <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0 0 8px;">— The Stellar AI Team</p>
       <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0;">
         Stellar AI · <a href="https://trystellarai.com/terms.html" style="color:rgba(255,255,255,0.25);">Terms</a> · <a href="mailto:deadlyfox10@gmail.com" style="color:rgba(255,255,255,0.25);">deadlyfox10@gmail.com</a>
       </p>
