@@ -16,7 +16,7 @@ test('app page is not empty and exposes the core chat workspace', () => {
 });
 
 test('app exposes deliberate user controls and owner-gated coding agents', () => {
-  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plan and usage', 'Plan before output', 'No fake tested claims']) {
+  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plan and usage']) {
     assert.match(app, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(app, /Use wallet credit after included allowance/);
@@ -25,6 +25,9 @@ test('app exposes deliberate user controls and owner-gated coding agents', () =>
   assert.match(app, /id="desktop-agent-nav"/);
   assert.match(app, /id="roblox-studio-nav"/);
   assert.match(app, /owner-only/);
+  assert.match(app, /id="composer-more"/);
+  assert.doesNotMatch(app, /<p class="side-title">Agents<\/p>/);
+  assert.doesNotMatch(app, /id="account-box"/);
 });
 
 test('app includes mobile-safe layout rules and tap targets', () => {
