@@ -12,7 +12,7 @@ test('homepage explains Stellar fast with product, pricing and trust anchors', (
   assert.match(landing, /Open Stellar AI/);
   assert.match(landing, /href="\/ai-receptionist"/);
   assert.match(landing, /href="\/website-audit"/);
-  assert.match(landing, /Wallet credit is separate from the included hourly allowance/);
+  assert.match(landing, /Wallet separate from allowance/);
   assert.match(landing, /No fake tested claims|No fabricated results/);
   assert.match(landing, /Stripe checkout/);
   assert.match(landing, /Cancel anytime/);

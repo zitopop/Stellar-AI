@@ -25,7 +25,7 @@ test('paid plan CTAs preserve upgrade intent into the app', () => {
 });
 
 test('plan copy separates hourly allowance from wallet credit', () => {
-  assert.match(index, /Wallet credit is separate from the included hourly allowance/);
+  assert.match(index, /Wallet separate from allowance/);
 });
 
 test('public model access keeps model guidance visible without mis-selling plan access', () => {
