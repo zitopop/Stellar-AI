@@ -257,7 +257,7 @@
           <span class="stellar-orbit-primary-copy"><strong>Plans</strong><span>Compare Stellar tiers</span></span>
           <span class="stellar-orbit-primary-meta">Upgrade</span>
         </button>
-        <a class="stellar-orbit-primary-link" href="/terms.html">
+        <a class="stellar-orbit-primary-link" href="/terms">
           <span class="stellar-orbit-primary-icon" aria-hidden="true">§</span>
           <span class="stellar-orbit-primary-copy"><strong>Terms & privacy</strong><span>Policies, privacy and data use</span></span>
           <span class="stellar-orbit-primary-meta">Legal</span>
@@ -291,7 +291,7 @@
       <a class="stellar-top-link" href="/models">Models</a>
       <button type="button" class="stellar-top-link" data-stellar-top-plans>Plans</button>
       <a class="stellar-top-link" href="/blog">Guides</a>
-      <a class="stellar-top-link" href="/terms.html">Terms & privacy</a>`;
+      <a class="stellar-top-link" href="/terms">Terms & privacy</a>`;
 
     const actions = document.createElement('div');
     actions.className = 'stellar-top-actions';
@@ -372,7 +372,7 @@
         <button type="button" data-orbit-usage>Usage</button>
         <button type="button" data-orbit-plans>Plans</button>
         <a href="/models">Model guide</a>
-        <a href="/terms.html">Terms & privacy</a>
+        <a href="/terms">Terms & privacy</a>
         <a href="/blog">Guides</a>
       </div>`;
 
