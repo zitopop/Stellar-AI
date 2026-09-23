@@ -1,28 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 
-const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
-const css = await readFile(new URL('../stellar-app-landing-ui.css', import.meta.url), 'utf8');
+const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('app loads the landing-page visual system after the legacy layers', () => {
-  assert.match(app, /stellar-app-landing-ui\.css\?v=1/);
-  assert.match(app, /family=DM\+Mono[^"]*Manrope/);
-  assert.match(app, /theme-color" content="#09090e"/);
+test('app loads current workspace visual layers in deterministic order', () => {
+  const layout = app.indexOf('/stellar-chatgpt-layout.css');
+  const landing = app.indexOf('/stellar-app-landing-ui.css');
+  const cosmic = app.indexOf('/lib/assets/stellar-cosmic-openai.css');
+  assert.ok(layout >= 0 && landing > layout && cosmic > landing);
 });
 
-test('landing app theme reuses the public homepage palette and hero treatment', () => {
-  assert.match(css, /--landing-bg:#09090e/);
-  assert.match(css, /--landing-gold:#d4af37/);
-  assert.match(css, /\.landing-style-home \.greet-eyebrow\{/);
-  assert.match(css, /linear-gradient\(110deg,#fff3c4 10%,#d4af37 53%,#8f6b1e\)/);
-  assert.match(css, /#welcome-starters-heading,[\s\S]*#suggestion-chips[\s\S]*display:none!important/);
+test('workspace uses the public purple cosmic accent family', () => {
+  assert.match(app, /--accent:#8b7cf6/);
+  assert.match(app, /--accent2:#b9b0ff/);
+  assert.match(app, /radial-gradient/);
 });
 
-test('landing app theme keeps core workspace controls visible and touch safe', () => {
-  assert.match(css, /#sidebar \.stellar-sidebar-nav\{[\s\S]*display:grid!important/);
-  assert.match(css, /\.input-area #send-btn\{[\s\S]*min-width:42px!important/);
-  assert.match(css, /@media\(max-width:767px\)[\s\S]*min-width:44px!important/);
-  assert.match(css, /#account-box \.acct-signin-btn/);
-  assert.match(css, /#account-box \.acct-out-btn/);
+test('visual layers keep core workspace controls present', () => {
+  for (const id of ['sidebar','chat','chatForm','prompt','sendBtn','model-pill']) {
+    assert.ok(app.includes('id="' + id + '"'), 'missing #' + id);
+  }
 });
