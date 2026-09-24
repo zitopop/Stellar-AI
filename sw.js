@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-24-home-calm-v5';
+const SW_VERSION = 'stellar-sw-2026-09-24-stellar-call-v1';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -83,5 +83,41 @@ self.addEventListener('fetch', (event) => {
     } catch {
       return cached || Response.error();
     }
+  })());
+});
+
+
+self.addEventListener('push', (event) => {
+  let payload = {};
+  try { payload = event.data?.json?.() || {}; } catch {
+    payload = { body: event.data?.text?.() || '' };
+  }
+  const title = String(payload.title || 'Jarvis is calling');
+  const body = String(payload.body || payload.summary || 'Stellar AI needs your attention.');
+  const callId = String(payload.callId || payload.id || '');
+  event.waitUntil(self.registration.showNotification(title, {
+    body,
+    icon: '/lib/assets/pwa/icon-192.png',
+    badge: '/lib/assets/pwa/icon-192.png',
+    tag: callId ? 'stellar-call-' + callId : 'stellar-call',
+    renotify: true,
+    data: { url: '/app?stellarCall=1', callId },
+  }));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = String(event.notification?.data?.url || '/app?stellarCall=1');
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const existing = windows.find((client) => {
+      try { return new URL(client.url).origin === self.location.origin; } catch { return false; }
+    });
+    if (existing) {
+      await existing.focus();
+      existing.postMessage({ type: 'STELLAR_CALL_OPEN', callId: event.notification?.data?.callId || '' });
+      return;
+    }
+    await self.clients.openWindow(target);
   })());
 });
