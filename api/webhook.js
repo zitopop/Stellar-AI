@@ -36,11 +36,33 @@ function secureEqual(left, right) {
   return a.length === b.length && a.length > 0 && timingSafeEqual(a, b);
 }
 
-function gmailPushAuthorized(req) {
+async function gmailPushAuthorized(req) {
   const expected = String(process.env.GMAIL_PUSH_TOKEN || '').trim();
-  if (!expected) return false;
   const supplied = String(req.headers['x-gmail-push-token'] || req.query?.token || '').trim();
-  return secureEqual(expected, supplied);
+  if (expected && secureEqual(expected, supplied)) return true;
+
+  const authorization = String(req.headers.authorization || '');
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  if (!match) return false;
+  const idToken = match[1].trim();
+  if (!idToken) return false;
+
+  try {
+    const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`, { signal: AbortSignal.timeout(5000) });
+    if (!response.ok) return false;
+    const claims = await response.json();
+    const expectedAudience = String(process.env.GMAIL_PUSH_AUDIENCE || 'https://trystellarai.com/api/webhook?source=gmail-push').trim();
+    const expectedEmail = String(process.env.GMAIL_PUSH_SERVICE_ACCOUNT || 'stellar-gmail-push@stellar-ai-484320.iam.gserviceaccount.com').trim().toLowerCase();
+    const verified = claims.email_verified === true || String(claims.email_verified || '').toLowerCase() === 'true';
+    const issuer = String(claims.iss || '').trim();
+    const issuerOk = !issuer || issuer === 'https://accounts.google.com' || issuer === 'accounts.google.com';
+    return String(claims.aud || '').trim() === expectedAudience
+      && String(claims.email || '').trim().toLowerCase() === expectedEmail
+      && verified
+      && issuerOk;
+  } catch {
+    return false;
+  }
 }
 
 function internalAuthorized(req) {
@@ -64,7 +86,7 @@ function ownerAuthorized(req, res) {
 
 async function handleGmailPush(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
-  if (!gmailPushAuthorized(req)) return res.status(403).json({ error: 'Invalid Gmail push token.' });
+  if (!(await gmailPushAuthorized(req))) return res.status(403).json({ error: 'Invalid Gmail push authorization.' });
   try {
     const result = await processGmailPush(await readJsonBody(req));
     return res.status(200).json(result);
