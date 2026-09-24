@@ -63,7 +63,8 @@ export default async function handler(req, res) {
   const action = String(req.body?.action || '');
   const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
   const suppliedBridgeToken = String(req.headers['x-call-bridge-token'] || '');
-  const internalEscalation = action === 'escalateOwner' && bridgeToken && suppliedBridgeToken === bridgeToken;
+  const internalOwnerCall = ['escalateOwner','callOwner','callHealth'].includes(action) && bridgeToken && suppliedBridgeToken === bridgeToken;
+  const internalEscalation = internalOwnerCall;
 
   if (!internalEscalation) {
     const session = requireSession(req, res);
@@ -208,3 +209,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Could not send the broadcast.' });
   }
 }
+
