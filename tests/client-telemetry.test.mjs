@@ -10,7 +10,8 @@ const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 test('client telemetry accepts only fixed coarse event names', () => {
   for (const name of [
     'landing-view','app-view','app-open-cta','upgrade-intent','signup-success','login-success',
-    'first-message-sent','chat-send-error','checkout-open','checkout-error','billing-open','client-error'
+    'first-message-sent','chat-send-error','checkout-open','checkout-success','checkout-cancelled','checkout-error',
+    'settings-opened','model-selected','billing-open','client-error'
   ]) {
     assert.ok(endpoint.includes("'" + name + "'"), name);
     assert.ok(helper.includes("'" + name + "'"), name);
@@ -41,4 +42,17 @@ test('app tracks conversion milestones without sending user content', () => {
   assert.match(app, /metric\('checkout-error'\)/);
   assert.match(app, /metric\('chat-send-error'\)/);
   assert.doesNotMatch(app, /metric\([^)]*text/);
+});
+
+
+test('client metric limiter has a defined privacy-safe key and a practical global ceiling', () => {
+  assert.match(endpoint, /const key = String\(event \|\| 'unknown'\)/);
+  assert.match(endpoint, /const CLIENT_MAX_PER_WINDOW = 600/);
+  assert.doesNotMatch(endpoint, /clientWindows\.get\(key\)[\s\S]{0,80}const key/);
+});
+
+test('app records payment return, settings and model funnel milestones', () => {
+  for (const name of ['checkout-success','checkout-cancelled','settings-opened','model-selected']) {
+    assert.ok(app.includes("metric('" + name + "')"), name);
+  }
 });

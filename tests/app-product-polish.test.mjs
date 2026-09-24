@@ -39,6 +39,6 @@ test('owner-only controls are hidden by default and revealed only by server owne
 });
 
 test('landing support action uses a real directional affordance', () => {
-  assert.match(landing, /Ask support ↗/);
+  assert.match(landing, /Visit support <span aria-hidden="true">↗<\/span>/);
   assert.doesNotMatch(landing, /Ask support \?/);
 });

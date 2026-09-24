@@ -41,7 +41,7 @@ test('app includes mobile-safe layout rules and tap targets', () => {
 
 test('app keeps useful local state without pretending work is already saved', () => {
   assert.match(app, /localStorage/);
-  assert.match(app, /stellar-first-signin-onboarding-v1-/);
+  assert.match(app, /stellar-first-signin-onboarding-v2-/);
   assert.match(app, /model-menu/);
   assert.match(app, /data-model-choice/);
   assert.match(app, /setModel/);

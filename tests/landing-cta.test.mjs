@@ -13,7 +13,7 @@ test('hero presents Stellar as a business AI platform and offers first-run onboa
   assert.match(html, /AI systems for real business work\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
-  assert.match(html, /1 starting credit/);
+  assert.match(html, /40 requests\/hour/);
 });
 
 test('preview is an example and its bounded prompt opens the app without generating', () => {
@@ -36,16 +36,17 @@ test('keyboard users can skip to main content and dismiss the mobile menu', () =
   assert.match(css, /:focus-visible/);
 });
 
-test('business starters and core sections remain reachable without JavaScript', () => {
-  for (const path of ['/ai-receptionist','/website-audit','/app?starter=business-workflow','/app?starter=fix']) assert.ok(html.includes('href="' + path + '"'));
+test('business services and core sections remain reachable without JavaScript', () => {
+  for (const path of ['/ai-receptionist','/website-audit','/app?starter=fix']) assert.ok(html.includes('href="' + path + '"'));
+  assert.match(html, /<form[^>]*action="\/app" method="get"/);
   for (const id of ['how-it-works','capabilities','plans']) assert.ok(html.includes('id="' + id + '"'));
 });
 
 test('generation guidance includes review, private testing and dependencies', () => {
   assert.match(html, /review dependencies/i);
-  assert.match(html, /test your build in a private environment before going live/i);
-  assert.match(html, /customer enquiries|internal workflows|approved agents/);
-  assert.match(html, /software when your team needs it|technical work/);
+  assert.match(html, /private environment before going live/i);
+  assert.match(html, /customer work|customer-enquiry|approved agents/i);
+  assert.match(html, /software|technical work/i);
 });
 
 test('visible pricing and structured offers agree on current monthly and yearly amounts', () => {

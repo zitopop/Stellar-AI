@@ -25,12 +25,13 @@ test('paid plan CTAs preserve upgrade intent into the app', () => {
 });
 
 test('plan copy separates hourly allowance from wallet credit', () => {
-  assert.match(index, /Wallet separate from allowance/);
+  assert.match(index, /Wallet credit stays separate/);
+  assert.match(index, /Wallet credit is separate from the included hourly allowance/);
 });
 
 test('public model access keeps model guidance visible without mis-selling plan access', () => {
   for (const model of ['Spark','Star','Comet','Nova']) assert.match(index, new RegExp(model));
-  assert.match(index, /Compare Spark, Star, Comet and Nova access across Stellar plans/);
+  assert.match(index, /href="\/models">Models<\/a>/);
   assert.match(index, /Start free with .*starting wallet credit and 40 included requests per hour/);
   assert.doesNotMatch(index, /Spark, Star &amp; Comet/);
 });

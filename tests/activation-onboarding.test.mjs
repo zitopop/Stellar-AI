@@ -18,10 +18,11 @@ test('welcome entry gives an actionable first-build message', () => {
   assert.match(appHtml, /params\.delete\('welcome'\)/);
 });
 
-test('first signed-in users get one simple composer instruction per account', () => {
-  assert.match(appHtml, /stellar-first-signin-onboarding-v1-/);
-  assert.match(appHtml, /<strong>Type a request<\/strong> in the message box below\./);
-  assert.match(appHtml, /Welcome\. Type the task, workflow, question or technical job you want Stellar to help with\./);
+test('first signed-in users get one compact composer instruction per account', () => {
+  assert.match(appHtml, /stellar-first-signin-onboarding-v2-/);
+  assert.match(appHtml, /Ask about a task, workflow or build…/);
+  assert.match(appHtml, /Welcome\. Describe one real task and Stellar will help you work through it\./);
+  assert.doesNotMatch(appHtml, /insertAdjacentHTML[\s\S]{0,180}<strong>Type a request<\/strong>/);
   assert.doesNotMatch(appHtml, /tap a starter below/);
 });
 

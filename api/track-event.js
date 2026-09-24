@@ -22,15 +22,17 @@ const ALLOWED_EVENTS = new Set([
 
 const CLIENT_METRIC_EVENTS = new Set([
   'landing-view','app-view','app-open-cta','upgrade-intent','signup-success','login-success',
-  'first-message-sent','chat-send-error','checkout-open','checkout-error','billing-open','client-error',
+  'first-message-sent','chat-send-error','checkout-open','checkout-success','checkout-cancelled','checkout-error',
+  'settings-opened','model-selected','billing-open','client-error',
 ]);
 
 const clientWindows = new Map();
 const CLIENT_WINDOW_MS = 60_000;
-const CLIENT_MAX_PER_WINDOW = 40;
+const CLIENT_MAX_PER_WINDOW = 600;
 
 function allowClientMetric(event) {
   const now = Date.now();
+  const key = String(event || 'unknown');
   const current = clientWindows.get(key);
   if (!current || now - current.startedAt >= CLIENT_WINDOW_MS) {
     clientWindows.set(key, { startedAt: now, count: 1 });
