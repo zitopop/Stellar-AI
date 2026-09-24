@@ -8,14 +8,16 @@ const watchApi = pushApi;
 const ownerCall = readFileSync(new URL('../lib/owner-call.js', import.meta.url), 'utf8');
 const voice = readFileSync(new URL('../lib/jarvis-voice.js', import.meta.url), 'utf8');
 
-test('Gmail push watches only inbox additions and calls the owner once per message', () => {
+test('Gmail push watches inbox additions but only auto-calls for urgent rules', () => {
   assert.match(push, /GMAIL_PUBSUB_TOPIC/);
   assert.match(push, /labelIds: \['INBOX'\]/);
   assert.match(push, /labelFilterBehavior: 'INCLUDE'/);
   assert.match(push, /historyTypes: 'messageAdded'/);
   assert.match(push, /stellar:gmail:called:/);
   assert.match(push, /'NX'/);
-  assert.match(push, /startOwnerCall/);
+  assert.match(push, /classifyOwnerAutoCall/);
+  assert.match(push, /escalateOwner/);
+  assert.match(push, /not-urgent/);
   assert.match(push, /trigger: 'gmail'/);
   assert.match(push, /GMAIL_CALL_ON_EMAIL/);
 });

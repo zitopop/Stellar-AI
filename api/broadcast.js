@@ -1,8 +1,9 @@
-// api/broadcast.js — owner-authorized email broadcast
+// api/broadcast.js - owner-authorized email broadcast
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
+import { DEFAULT_OWNER_CALL_POLICY, OWNER_AUTO_CALL_CATEGORIES, normalizeOwnerCallPolicy } from '../lib/auto-call-rules.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
 import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
@@ -41,7 +42,7 @@ async function sendOwnerFallbackEmail({ category, severity, summary }) {
       body: JSON.stringify({
         from,
         to: recipients,
-        subject: '[Stellar ' + severity.toUpperCase() + '] ' + category + ' alert — phone call unavailable',
+        subject: '[Stellar ' + severity.toUpperCase() + '] ' + category + ' alert - phone call unavailable',
         text: 'Stellar AI could not place the urgent owner phone call.\n\nCategory: ' + category + '\nSeverity: ' + severity + '\n\n' + summary + '\n\nThe phone provider blocked the call, so this email was sent as the fallback alert.',
       }),
       signal: AbortSignal.timeout(10000),
@@ -76,16 +77,16 @@ export default async function handler(req, res) {
 
   if (req.body?.action === 'getCallPolicy') {
     const kvUrl = process.env.KV_REST_API_URL, kvToken = process.env.KV_REST_API_TOKEN;
-    if (!kvUrl || !kvToken) return res.status(200).json({ ok:true, enabled:true, cooldownMinutes:15, categories:['security','fraud','payment','customer','service','approval'] });
+    if (!kvUrl || !kvToken) return res.status(200).json({ ok:true, ...DEFAULT_OWNER_CALL_POLICY });
     const r=await fetch(`${kvUrl}/get/stellar:owner-call:policy`,{headers:{Authorization:`Bearer ${kvToken}`}}); const d=await r.json().catch(()=>({}));
-    let policy={enabled:true,cooldownMinutes:15,categories:['security','fraud','payment','customer','service','approval']}; try{if(d?.result)policy={...policy,...JSON.parse(d.result)}}catch{}
+    let policy=normalizeOwnerCallPolicy(); try{if(d?.result)policy=normalizeOwnerCallPolicy(JSON.parse(d.result))}catch{}
     return res.status(200).json({ok:true,...policy});
   }
 
   if (req.body?.action === 'setCallPolicy') {
     const kvUrl = process.env.KV_REST_API_URL, kvToken = process.env.KV_REST_API_TOKEN;
     if (!kvUrl || !kvToken) return res.status(503).json({error:'Owner call policy storage is unavailable.'});
-    const policy={enabled:req.body?.enabled!==false,cooldownMinutes:Math.min(60,Math.max(5,Number(req.body?.cooldownMinutes)||15)),categories:['security','fraud','payment','customer','service','approval']};
+    const policy=normalizeOwnerCallPolicy({enabled:req.body?.enabled!==false,cooldownMinutes:req.body?.cooldownMinutes,categories:req.body?.categories});
     const r=await fetch(`${kvUrl}/set/stellar:owner-call:policy/${encodeURIComponent(JSON.stringify(policy))}`,{headers:{Authorization:`Bearer ${kvToken}`}});
     if(!r.ok)return res.status(502).json({error:'Could not save call policy.'}); return res.status(200).json({ok:true,...policy});
   }
@@ -109,29 +110,30 @@ export default async function handler(req, res) {
   }
   if (req.body?.action === 'escalateOwner') {
     const category=String(req.body?.category||'').toLowerCase(), severity=String(req.body?.severity||'').toLowerCase(), summary=String(req.body?.summary||'').trim().slice(0,300);
-    const allowed=['security','fraud','payment','customer','service','approval'];
+    const allowed=OWNER_AUTO_CALL_CATEGORIES;
     if(!allowed.includes(category)||!['urgent','critical'].includes(severity)||!summary)return res.status(400).json({error:'A valid urgent escalation is required.'});
-    const kvUrl=process.env.KV_REST_API_URL, kvToken=process.env.KV_REST_API_TOKEN; let policy={enabled:true,cooldownMinutes:15,categories:allowed}, last=0;
+    const kvUrl=process.env.KV_REST_API_URL, kvToken=process.env.KV_REST_API_TOKEN; let policy=normalizeOwnerCallPolicy(), last=0;
     if(!kvUrl||!kvToken)return res.status(200).json({ok:true,called:false,reason:'storage'});
     try {
       const [pr,lr]=await Promise.all([fetch(`${kvUrl}/get/stellar:owner-call:policy`,{headers:{Authorization:`Bearer ${kvToken}`}}),fetch(`${kvUrl}/get/stellar:owner-call:last`,{headers:{Authorization:`Bearer ${kvToken}`}})]);
       const pd=await pr.json().catch(()=>({})),ld=await lr.json().catch(()=>({}));
-      if(pd?.result)policy={...policy,...JSON.parse(pd.result)}; last=Number(ld?.result||0)||0;
+      if(pd?.result)policy=normalizeOwnerCallPolicy(JSON.parse(pd.result)); last=Number(ld?.result||0)||0;
     } catch(error) { console.error('Owner call policy lookup failed',error?.message||error); return res.status(200).json({ok:true,called:false,reason:'storage'}); }
     if(policy.enabled===false||!policy.categories?.includes(category))return res.status(200).json({ok:true,called:false,reason:'policy'});
     if(last&&Date.now()-last<policy.cooldownMinutes*60000)return res.status(200).json({ok:true,called:false,reason:'cooldown'});
     const authorization = String(req.headers.authorization || '');
+    const metadata = req.body?.metadata && typeof req.body.metadata === 'object' ? req.body.metadata : {};
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
     try {
-      const data = await startOwnerCall({ purpose, authorization, bridgeToken, metadata: { escalation: { category, severity, summary } } });
-      if (data?.provider === 'twilio') {
-        return res.status(200).json({ ok: true, called: false, pending: true, provider: 'twilio', call_id: data?.call_id || null, status: data?.status || 'queued' });
-      }
+      const data = await startOwnerCall({ purpose, authorization, bridgeToken, metadata: { ...metadata, escalation: { category, severity, summary } } });
       const stamp = Date.now();
       await Promise.all([
         fetch(`${kvUrl}/set/stellar:owner-call:last/${stamp}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
         fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, call_id: data?.call_id || null, provider: data?.provider || null, channel: 'phone' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
       ]).catch(() => {});
+      if (data?.provider === 'twilio') {
+        return res.status(200).json({ ok: true, called: false, pending: true, provider: 'twilio', call_id: data?.call_id || null, status: data?.status || 'queued' });
+      }
       return res.status(200).json({ ok: true, called: true, provider: data?.provider || null, call_id: data?.call_id || null, status: data?.status || 'started' });
     } catch (error) {
       console.error('Urgent owner escalation failed', error?.provider || '', error?.message || error);
@@ -192,10 +194,10 @@ export default async function handler(req, res) {
           to: [email],
           subject,
           html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#050505;color:#fff;">
-            <div style="font-size:18px;font-weight:900;margin-bottom:24px;">✦ Stellar AI</div>
+            <div style="font-size:18px;font-weight:900;margin-bottom:24px;">Stellar AI</div>
             <div style="font-size:15px;color:rgba(255,255,255,0.84);line-height:1.7;white-space:pre-wrap;">${escapeHtml(body)}</div>
             <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:24px 0;">
-            <a href="https://trystellarai.com/app" style="display:inline-block;background:#10a37f;color:#000;font-weight:800;padding:12px 24px;border-radius:8px;text-decoration:none;">Open Stellar AI →</a>
+            <a href="https://trystellarai.com/app" style="display:inline-block;background:#10a37f;color:#000;font-weight:800;padding:12px 24px;border-radius:8px;text-decoration:none;">Open Stellar AI</a>
           </div>`,
         }),
       });
