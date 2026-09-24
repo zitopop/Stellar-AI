@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createMissionService, createRedisMissionStore } from '../lib/jarvis-missions.js';
 import { memoryStore } from './helpers/jarvis-memory-store.mjs';
 
-const owner = 'owner@example.com';
+const owner = 'tobi@trystellarai.com';
 const input = { requestId: 'a-request-1234567', objective: 'Research and draft a useful small FiveM product.', kind: 'everything', notify: { email: true, call: true } };
 function setup(overrides = {}) {
   const store = memoryStore(), runs = [], notices = [];
@@ -107,4 +107,11 @@ test('Redis storage fails closed on HTTP-200 command errors and stale worker lea
   await assert.rejects(broken.load('id'), { status: 503 });
   const expired = createRedisMissionStore({ env, fetcher: async () => Response.json({ result: 0 }) });
   await assert.rejects(expired.save({ id: 'a', createdAt: 1 }, 'old-token', true), { status: 409 });
+});
+
+test('scheduled work cannot run after an account loses owner access', async () => {
+  const { service, runs, store } = setup();
+  await service.create('former-owner@example.com', input);
+  assert.deepEqual(await service.tick(), { processed: 0 });
+  assert.equal(runs.length, 0); assert.equal(store.pending.size, 0);
 });
