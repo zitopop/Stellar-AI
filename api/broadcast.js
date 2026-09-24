@@ -67,7 +67,40 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: 'Scheduler access is required.' });
     }
     const result = await processDueStellarCalls();
-    return res.status(result.ok ? 200 : 503).json(result);
+    if (!result.ok) return res.status(503).json(result);
+    if (!result.fired || !result.call) return res.status(200).json(result);
+
+    const purpose = `SCHEDULED ${String(result.call.category || 'reminder').toUpperCase()}: ${String(result.call.summary || 'Jarvis reminder.').slice(0, 260)}`;
+    try {
+      const phone = await startOwnerCall({
+        purpose,
+        bridgeToken: String(process.env.CALL_BRIDGE_TOKEN || ''),
+        metadata: {
+          trigger: 'scheduled-stellar-call',
+          stellarCallId: result.call.id || null,
+          category: result.call.category || 'reminder',
+        },
+      });
+      return res.status(200).json({
+        ...result,
+        phone: {
+          started: true,
+          provider: phone?.provider || null,
+          call_id: phone?.call_id || null,
+          status: phone?.status || 'started',
+        },
+      });
+    } catch (error) {
+      console.error('Scheduled Jarvis phone call failed', error?.provider || '', error?.message || error);
+      return res.status(200).json({
+        ...result,
+        phone: {
+          started: false,
+          provider: error?.provider || null,
+          status: 'failed',
+        },
+      });
+    }
   }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
