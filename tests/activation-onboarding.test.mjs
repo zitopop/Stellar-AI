@@ -13,8 +13,8 @@ test('landing CTA can open first-run welcome', () => {
 
 test('welcome entry gives an actionable first-build message', () => {
   assert.match(appHtml, /function applyWelcomeEntry\(\)/);
-  assert.match(appHtml, /Welcome to Stellar AI/);
-  assert.match(appHtml, /Tell Stellar what you want to get done in plain English\./);
+  assert.match(appHtml, /What can Stellar help you get done\?/);
+  assert.match(appHtml, /Message Stellar AI below to start\./);
   assert.match(appHtml, /params\.delete\('welcome'\)/);
 });
 
