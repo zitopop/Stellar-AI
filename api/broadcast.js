@@ -61,8 +61,11 @@ export default async function handler(req, res) {
 
   const action = String(req.body?.action || req.query?.action || '');
   if (req.method === 'GET' && action === 'stellarCallWorker') {
-    const schedule = String(req.headers['x-vercel-cron-schedule'] || '');
-    if (!schedule) return res.status(403).json({ error: 'Cron access is required.' });
+    const vercelCron = String(req.headers['x-vercel-cron-schedule'] || '');
+    const scheduler = String(req.headers['x-stellar-scheduler'] || '');
+    if (!vercelCron && scheduler !== 'github-actions') {
+      return res.status(403).json({ error: 'Scheduler access is required.' });
+    }
     const result = await processDueStellarCalls();
     return res.status(result.ok ? 200 : 503).json(result);
   }
