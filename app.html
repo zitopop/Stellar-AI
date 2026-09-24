@@ -335,7 +335,7 @@ html,body{height:100%!important;overflow:hidden!important;background:#0b0c10!imp
 
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-polish-v17.css?v=20260924">
-</head>
+<link rel="stylesheet" href="/lib/assets/stellar-call.css?v=20260924-1">\n</head>
 <body>
 <div class="drawer-backdrop" id="backdrop" onclick="closeResponsiveSidebar()" aria-hidden="true"></div>
 <div class="app">
@@ -411,5 +411,5 @@ function handleLockedModel(name){setStatus(String(name||'This model')+' needs a 
 
 $('chatForm').addEventListener('submit',e=>{e.preventDefault();const text=$('prompt').value.trim();if(!text){setStatus('Type a message first','error');$('prompt').focus();return}sendMessage(text)});$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('chatForm').requestSubmit()}});document.addEventListener('click',e=>{const menu=$('model-menu');if(!menu||menu.hidden)return;if(e.target.closest?.('#model-menu')||e.target.closest?.('#model-pill'))return;toggleModelMenu(false)});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeResponsiveSidebar();dismissWelcome();closeSettings();toggleModelMenu(false)}});window.addEventListener('resize',()=>{if(innerWidth>900)closeResponsiveSidebar()});applyWelcomeEntry();maybeShowWelcome();applyJarvisEntry();updateAuthUi();setWorkspaceNavState(false);updateCurrentWorkVisibility();renderSavedChats();renderImageState();initImageInput();updateCreditUi();initGoogleSignIn();applyModelSelection('star',{persist:false,announce:false});loadSession().then(async()=>{await handlePaymentReturn();await handleUpgradeIntent()});
 </script>
-</body>
+<script src="/lib/assets/stellar-call.js?v=20260924-1"></script>\n</body>
 </html>
