@@ -18,7 +18,7 @@ test('mobile drawer has a real backdrop and close path', () => {
 
 test('Escape closes transient workspace surfaces', () => {
   assert.match(app, /document\.addEventListener\('keydown',e=>\{if\(e\.key==='Escape'\)/);
-  assert.match(app, /closeResponsiveSidebar\(\);dismissWelcome\(\);closeSettings\(\)/);
+  assert.match(app, /closeResponsiveSidebar\(\);dismissWelcome\(\);closeRenameChat\(\);closeSettings\(\)/);
 });
 
 test('Settings has authoritative phone and desktop sizing', () => {
