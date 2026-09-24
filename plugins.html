@@ -51,6 +51,35 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
 .easy-plugin-strip span{min-height:40px;display:flex;align-items:center;justify-content:center;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(139,124,246,.07);color:#d7ddf0;font-size:11px;font-weight:850;text-align:center}
 @media(max-width:700px){.easy-plugin-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.easy-plugin-strip span{justify-content:flex-start;border-radius:13px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Calm plugin directory v2 */
+body{background:#0b0c10!important}
+.shell{grid-template-columns:220px minmax(0,1fr)!important}
+.sidebar{padding:12px 10px!important;background:#0e0f14!important;border-right:1px solid rgba(255,255,255,.06)!important}
+.brand{padding:4px 8px 16px!important}.brand-mark{width:30px!important;height:30px!important;border-radius:9px!important;background:#171822!important;box-shadow:none!important}
+.brand-name{font-size:14px!important}.brand-sub{display:none!important}
+.nav.sep{margin-top:8px!important;padding-top:8px!important}.nav a{min-height:42px!important;border-radius:9px!important;color:#9da4b1!important}.nav a.active{background:rgba(255,255,255,.065)!important;border-color:transparent!important;box-shadow:none!important}.nav-ico{background:transparent!important}
+.owner-card{padding:10px 8px!important}.owner-avatar{width:30px!important;height:30px!important}
+.main{padding:34px 26px 64px!important}.main-inner{max-width:1080px!important}
+.page-head{margin-bottom:20px!important}.eyebrow{margin-bottom:7px!important;color:#9299a8!important}.eyebrow::before{display:none!important}
+h1{font-size:clamp(34px,4.5vw,54px)!important;line-height:1.02!important}.lead{max-width:620px!important;color:#aeb5c2!important;font-size:14px!important}
+.head-actions .btn{background:transparent!important}
+.summary{margin-top:14px!important}.summary-chip{background:transparent!important;border-color:rgba(255,255,255,.07)!important}
+.plugin-trust{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 20px;padding:0 2px;color:#8f96a3;font-size:11px}.plugin-trust span{display:inline-flex;align-items:center;gap:7px}.plugin-trust span::before{content:"✓";color:#7fdaae}
+.controls{padding:0!important;border:0!important;background:transparent!important;margin-bottom:18px!important;align-items:center!important}
+.search-wrap{min-width:min(360px,42vw)!important;background:#12141a!important;border-color:rgba(255,255,255,.08)!important}
+.tab{min-height:38px!important;padding-inline:12px!important;border-radius:999px!important;color:#8f96a3!important}.tab.active{background:#202128!important;color:#fff!important;box-shadow:none!important}
+.plugin-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.card{min-height:220px!important;padding:15px!important;border-radius:16px!important;background:#121319!important;border-color:rgba(255,255,255,.065)!important;box-shadow:none!important}
+.card:hover{border-color:rgba(185,176,255,.20)!important;background:#15161c!important}.plugin-logo{width:38px!important;height:38px!important;border-radius:11px!important}.name{font-size:14px!important}
+.badge{font-size:8px!important;padding:4px 7px!important}.publisher{font-size:9.5px!important}.desc{min-height:44px!important;margin:10px 0 9px!important;color:#a9b0bd!important}
+.skill-row{margin-bottom:8px!important}.skill-chip{background:transparent!important;border-color:rgba(255,255,255,.07)!important;color:#b6bdc8!important}
+.permission-summary{margin:0 0 12px!important;color:#7f8795!important;font-size:9.5px!important}.permissions,.setup-info{display:none!important}
+.card-actions{gap:6px!important}.card-actions .btn{min-height:38px!important;padding-inline:11px!important;background:#191a20!important;border-color:rgba(255,255,255,.08)!important}.card-actions .btn.primary{background:#eeeaff!important;color:#15151b!important;border-color:transparent!important}
+.toggle{width:44px!important;height:28px!important;margin-left:auto!important}.toggle::after{width:18px!important;height:18px!important}.toggle[aria-pressed="true"]::after{transform:translateX(16px)!important}
+.more-card{min-height:220px!important}.detail-setup{display:grid;gap:3px;margin-top:13px;padding:10px 11px;border:1px solid rgba(233,200,106,.16);border-radius:11px;background:rgba(233,200,106,.045);font-size:10px;color:#d8c989}.detail-setup[hidden]{display:none!important}.detail-setup span{color:#a9a17f}
+@media(max-width:1050px){.plugin-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){.main{padding:18px 12px 44px!important}.page-head{margin-bottom:16px!important}.plugin-trust{gap:10px 16px!important}.controls{align-items:stretch!important}.search-wrap{min-width:0!important;width:100%!important}.plugin-grid{grid-template-columns:1fr!important}.card{min-height:0!important}.tabs{padding-bottom:2px!important}.sidebar{width:min(84vw,292px)!important}}
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-refinements.css?v=20260924">
 </head>
@@ -78,43 +107,16 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
 <div class="main-inner">
   <header class="page-head">
     <div>
-      <div class="eyebrow">Easy plugin setup</div>
-      <h1>Plugins, made easy</h1>
-      <p class="lead">Pick a plugin, press Details, then Connect or Install. Stellar shows permissions first and only uses what you approve.</p>
+      <div class="eyebrow">PLUGINS</div>
+      <h1>Connect your tools.</h1>
+      <p class="lead">Search the directory, review permissions, then connect only what you choose.</p>
       <div id="plugin-summary" class="summary" aria-live="polite"></div>
     </div>
-    <div class="head-actions"><button id="learn-btn" class="learn" type="button">Easy setup guide</button><a class="btn" href="/support?topic=plugin-request">Need a plugin?</a></div>
+    <div class="head-actions"><a class="btn" href="/support?topic=plugin-request">Request a plugin</a></div>
   </header>
 
-  <section class="opinion-grid" aria-label="Product review">
-    <article class="opinion-card">
-      <h2>Install without stress</h2>
-      <p>Plugins should feel like an app store: pick the tool, read what it can access, connect safely, then turn it off any time.</p>
-      <div class="verdict-list">
-        <div class="verdict"><span>1</span><div><strong>Choose</strong><small>Search or filter for the plugin you want, then open Details.</small></div></div>
-        <div class="verdict"><span>2</span><div><strong>Review</strong><small>Read permissions before anything connects to your account.</small></div></div>
-        <div class="verdict"><span>3</span><div><strong>Connect</strong><small>Use OAuth when available, or a secure token only when needed.</small></div></div>
-      </div>
-    </article>
-    <aside class="opinion-card">
-      <h2>Launch health</h2>
-      <div class="health-row">
-        <div class="health-item"><strong>Core app UI</strong><span class="health-pill">Improving</span></div>
-        <div class="health-item"><strong>Support & contact</strong><span class="health-pill">Clearer</span></div>
-        <div class="health-item"><strong>Plugins trust</strong><span class="health-pill fix">Fixed here</span></div>
-        <div class="health-item"><strong>Live deploy</strong><span class="health-pill warn">Needs Vercel</span></div>
-      </div>
-    </aside>
-  </section>
-
-  <section class="directory-banner" aria-label="How plugins work">
-    <div class="directory-step"><span>1</span><div><strong>Choose</strong><small>Pick a plugin and press Details to see what it does.</small></div></div>
-    <div class="directory-step"><span>2</span><div><strong>Connect</strong><small>Use OAuth when available. No password is shared with Stellar.</small></div></div>
-    <div class="directory-step"><span>3</span><div><strong>Use safely</strong><small>Turn plugins on or off any time. Sensitive actions still need approval.</small></div></div>
-  </section>
-
-  <section class="easy-plugin-strip" aria-label="Easy plugin promises">
-    <span>No passwords shared</span><span>Permissions first</span><span>One switch on/off</span><span>Owner-only tools hidden</span>
+  <section class="plugin-trust" aria-label="Plugin safety">
+    <span>Permissions first</span><span>No passwords shared</span><span>Disconnect anytime</span>
   </section>
 
   <div class="controls">
@@ -122,10 +124,8 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
     <div class="tabs" role="tablist" aria-label="Plugin filters">
       <button class="tab active" type="button" data-filter="all">All</button>
       <button class="tab" type="button" data-filter="connected">Connected</button>
-      <button class="tab" type="button" data-filter="productivity">Productivity</button>
       <button class="tab" type="button" data-filter="developer">Developer</button>
       <button class="tab" type="button" data-filter="business">Business</button>
-      <button class="tab" type="button" data-filter="community">Community</button>
       <button class="tab" type="button" data-filter="coming_soon">Coming soon</button>
       <button class="tab" type="button" data-filter="disabled">Disabled</button>
     </div>
@@ -159,7 +159,7 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
     <div id="plugin-detail-view" hidden>
       <div class="detail-meta-row"><span id="plugin-detail-developer" class="detail-state"></span><span id="plugin-detail-state" class="detail-state"></span></div>
       <section class="detail-section"><h3>What it can do</h3><div id="plugin-detail-skills" class="detail-skills"></div></section>
-      <section class="detail-section"><div class="detail-section-head"><h3>Permissions</h3><span>Review before connecting</span></div><div id="plugin-detail-permissions" class="detail-permissions"></div></section>
+      <section class="detail-section"><div class="detail-section-head"><h3>Permissions</h3><span>Review before connecting</span></div><div id="plugin-detail-permissions" class="detail-permissions"></div></section><div id="plugin-detail-setup" class="detail-setup" hidden></div>
       <div class="detail-security"><span>◇</span><div><strong>Your access stays scoped</strong><small>Stellar only uses permissions exposed by this plugin. High-impact actions still require approval where supported.</small></div></div>
       <div class="modal-actions detail-actions"><button id="plugin-detail-close" class="btn" type="button">Close</button><button id="plugin-detail-primary" class="btn primary" type="button">Install plugin</button></div>
     </div>
@@ -202,9 +202,9 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
   function isTokenPlugin(p){return p?.connection==='token'||p?.connection==='oauth_or_token'}
   function setupText(p){return Array.isArray(p.setupEnv)&&p.setupEnv.length?p.setupEnv.join(', '):'provider OAuth credentials'}
   function state(p){
-    if(p.status==='coming_soon'&&p.setupStatus==='oauth_setup_needed')return {label:'OAuth setup needed',className:'soon'};
+    if(p.status==='coming_soon'&&p.setupStatus==='oauth_setup_needed')return {label:owner?'Setup needed':'Coming soon',className:owner?'warn':'soon'};
     if(p.status==='coming_soon')return {label:'Coming soon',className:'soon'};
-    if(!p.availableToUser&&p.setupStatus==='oauth_setup_needed')return {label:'OAuth setup needed',className:'soon'};
+    if(!p.availableToUser&&p.setupStatus==='oauth_setup_needed')return {label:owner?'Setup needed':'Coming soon',className:owner?'warn':'soon'};
     if(!p.availableToUser)return {label:'Unavailable',className:''};
     if(isTokenPlugin(p)&&!p.credentialStorageReady)return {label:'Setup required',className:'warn'};
     if(isTokenPlugin(p)&&p.connected)return {label:p.enabled?'Connected':'Disabled',className:p.enabled?'connected':''};
@@ -234,28 +234,30 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
     const [logo,logoClass]=logos[p.id]||['✦',''];
     const st=state(p);
     const skills=Array.isArray(p.skills)?p.skills:[];
-    const skillPreview=skills.slice(0,2).map(skill=>'<span class="skill-chip">'+escapeHtml(skill)+'</span>').join('')+(skills.length>2?'<span class="skill-chip skill-more">+'+(skills.length-2)+' more</span>':'');
+    const skillPreview=skills.slice(0,2).map(skill=>'<span class="skill-chip">'+escapeHtml(skill)+'</span>').join('');
     const highRisk=(p.permissions||[]).some(permission=>permission.risk==='high');
-    const permissionSummary='<div class="permission-summary"><span>'+(p.permissions||[]).length+' permission'+((p.permissions||[]).length===1?'':'s')+'</span>'+(highRisk?'<span class="approval"> • approval required for sensitive actions</span>':'')+'</div>';
+    const permissionSummary='<div class="permission-summary">'+(p.permissions||[]).length+' permission'+((p.permissions||[]).length===1?'':'s')+(highRisk?' · approval for sensitive actions':'')+'</div>';
     const publisher=escapeHtml(p.developer||'Stellar AI');
     const verified=p.verified===true?'<span class="verified" title="Stellar verified" aria-label="Stellar verified">✓</span>':'';
-    const setup=p.setupStatus==='oauth_setup_needed'?'<div class="setup-info"><strong>Setup info:</strong> '+escapeHtml(setupText(p))+'</div>':'';
-    let actions='<button class="btn" type="button" data-details="'+escapeHtml(p.id)+'">What it does</button>';
-    if(p.route)actions+='<a class="btn" href="'+escapeHtml(p.route)+'">Open</a>';
-    if(p.inspectable)actions+='<button class="btn" type="button" data-inspect="'+escapeHtml(p.id)+'">Manage</button>';
-    else if(isTokenPlugin(p)&&p.availableToUser&&p.status!=='coming_soon')actions+='<button class="btn primary" type="button" data-connect="'+escapeHtml(p.id)+'">Connect</button>';
-    else if(p.availableToUser&&p.status!=='coming_soon')actions+='<button class="btn primary" type="button" data-install="'+escapeHtml(p.id)+'">Install</button>';
-    else actions+='<button class="btn" type="button" disabled>Coming soon</button>';
-    const toggleDisabled=(!p.availableToUser||p.status==='coming_soon'||(isTokenPlugin(p)&&!p.connected))?' disabled':'';
-    actions+='<button class="toggle" type="button" aria-label="Toggle '+escapeHtml(p.name)+'" aria-pressed="'+(p.enabled?'true':'false')+'" data-toggle="'+escapeHtml(p.id)+'"'+toggleDisabled+'></button>';
-    return '<article class="card" data-plugin-card="'+escapeHtml(p.id)+'"><div class="card-head"><div class="plugin-logo '+logoClass+'">'+escapeHtml(logo)+'</div><div class="card-title"><div class="name-row"><div class="name">'+escapeHtml(p.name)+'</div><span class="badge '+st.className+'">'+escapeHtml(st.label)+'</span></div><div class="publisher">'+publisher+' '+verified+'</div></div></div><p class="desc">'+escapeHtml(p.description)+'</p><div class="skill-row">'+skillPreview+'</div>'+permissionSummary+'<div class="permissions">'+permissionRows(p)+'</div>'+setup+'<div class="card-actions">'+actions+'</div></article>';
+    let actions='<button class="btn" type="button" data-details="'+escapeHtml(p.id)+'">Details</button>';
+    if(!token&&p.availableToUser&&p.status!=='coming_soon'){
+      actions+='<a class="btn primary" href="/app?signin=1">Sign in to use</a>';
+    }else{
+      if(p.route)actions+='<a class="btn" href="'+escapeHtml(p.route)+'">Open</a>';
+      if(p.inspectable)actions+='<button class="btn" type="button" data-inspect="'+escapeHtml(p.id)+'">Manage</button>';
+      else if(isTokenPlugin(p)&&p.availableToUser&&p.status!=='coming_soon')actions+='<button class="btn primary" type="button" data-connect="'+escapeHtml(p.id)+'">Connect</button>';
+      else if(p.availableToUser&&p.status!=='coming_soon')actions+='<button class="btn primary" type="button" data-install="'+escapeHtml(p.id)+'">Install</button>';
+      else actions+='<button class="btn" type="button" disabled>Coming soon</button>';
+      const canToggle=p.availableToUser&&p.status!=='coming_soon'&&(!isTokenPlugin(p)||p.connected);
+      if(canToggle)actions+='<button class="toggle" type="button" aria-label="Toggle '+escapeHtml(p.name)+'" aria-pressed="'+(p.enabled?'true':'false')+'" data-toggle="'+escapeHtml(p.id)+'"></button>';
+    }
+    return '<article class="card" data-plugin-card="'+escapeHtml(p.id)+'"><div class="card-head"><div class="plugin-logo '+logoClass+'">'+escapeHtml(logo)+'</div><div class="card-title"><div class="name-row"><div class="name">'+escapeHtml(p.name)+'</div><span class="badge '+st.className+'">'+escapeHtml(st.label)+'</span></div><div class="publisher">'+publisher+' '+verified+'</div></div></div><p class="desc">'+escapeHtml(p.description)+'</p><div class="skill-row">'+skillPreview+'</div>'+permissionSummary+'<div class="card-actions">'+actions+'</div></article>';
   }
   function renderSummary(){
-    const total=plugins.length;
-    const connected=plugins.filter(p=>p.status!=='coming_soon'&&p.availableToUser&&(p.connected||p.enabled)).length;
+    const connected=token?plugins.filter(p=>p.status!=='coming_soon'&&p.availableToUser&&(p.connected||p.enabled)).length:0;
     const ready=plugins.filter(p=>p.availableToUser&&p.status!=='coming_soon').length;
     const soon=plugins.filter(p=>p.status==='coming_soon'||p.setupStatus==='oauth_setup_needed').length;
-    $('plugin-summary').innerHTML='<span class="summary-chip"><span class="summary-dot ready"></span>'+total+' listed</span><span class="summary-chip"><span class="summary-dot good"></span>'+connected+' active/connected</span><span class="summary-chip"><span class="summary-dot ready"></span>'+ready+' ready</span><span class="summary-chip"><span class="summary-dot soon"></span>'+soon+' setup/coming soon</span>';
+    $('plugin-summary').innerHTML='<span class="summary-chip"><span class="summary-dot good"></span>'+connected+' connected</span><span class="summary-chip"><span class="summary-dot ready"></span>'+ready+' ready</span><span class="summary-chip"><span class="summary-dot soon"></span>'+soon+' coming soon</span>';
   }
   function render(){
     renderSummary();
@@ -298,6 +300,10 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
     $('plugin-detail-state').textContent=state(p).label;
     $('plugin-detail-skills').innerHTML=(p.skills||['Use this plugin inside Stellar workflows']).map(skill=>'<div class="detail-skill">'+escapeHtml(skill)+'</div>').join('');
     $('plugin-detail-permissions').innerHTML=(p.permissions||[]).map(permission=>'<div class="detail-perm"><strong>'+escapeHtml(permission.label)+'</strong><br><span>'+escapeHtml(permission.risk==='high'?'Sensitive action — approval required where supported.':permission.risk==='write'?'Can make approved changes.':'Read-only access.')+'</span></div>').join('');
+    const setup=$('plugin-detail-setup');
+    const showSetup=owner&&p.setupStatus==='oauth_setup_needed'&&Array.isArray(p.setupEnv)&&p.setupEnv.length;
+    setup.hidden=!showSetup;
+    setup.innerHTML=showSetup?'<strong>Owner setup</strong><span>'+escapeHtml(setupText(p))+'</span>':'';
     const primary=$('plugin-detail-primary');
     primary.textContent=p.status==='coming_soon'?'Coming soon':isTokenPlugin(p)&&!p.connected?'Connect plugin':p.enabled?'Manage plugin':'Install plugin';
     primary.disabled=p.status==='coming_soon'||!p.availableToUser;
@@ -358,7 +364,7 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
       owner=false;
     }
     plugins=plugins.filter(plugin=>{const id=plugin.id;if(!owner&&['github','vercel'].includes(id))return false;return true;});
-    $('account-role').textContent=owner?'Owner workspace':'Signed in';
+    $('account-role').textContent=owner?'Owner workspace':token?'Signed in':'Guest';
     render();
   }
   document.addEventListener('click',event=>{
@@ -373,7 +379,6 @@ button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webki
   $('plugin-modal-close').addEventListener('click',closeModal);$('plugin-connect-cancel').addEventListener('click',closeModal);$('plugin-detail-close').addEventListener('click',closeModal);$('plugin-inspect-close').addEventListener('click',closeModal);
   $('plugin-connect-submit').addEventListener('click',connectToken);$('plugin-oauth-submit').addEventListener('click',startOAuth);$('plugin-disconnect').addEventListener('click',disconnectCurrentPlugin);
   $('plugin-detail-primary').addEventListener('click',()=>{const p=plugins.find(plugin=>plugin.id===modalPluginId);if(!p)return;if(isTokenPlugin(p)&&!p.connected)showModal('connect',p.id);else if(p.inspectable)showModal('inspect',p.id);else installPlugin(p.id)});
-  $('learn-btn').addEventListener('click',()=>{document.querySelector('.directory-banner')?.scrollIntoView({behavior:'smooth',block:'center'});setNotice('Plugins follow Install → Connect → Use. Review permissions before connecting.', 'good')});
   $('mobile-menu')?.addEventListener('click',()=>{$('sidebar').classList.add('mobile-open');$('sidebar-scrim').classList.add('open')});
   $('sidebar-scrim')?.addEventListener('click',()=>{$('sidebar').classList.remove('mobile-open');$('sidebar-scrim').classList.remove('open')});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeModal();$('sidebar').classList.remove('mobile-open');$('sidebar-scrim').classList.remove('open')}});

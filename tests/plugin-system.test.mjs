@@ -90,15 +90,17 @@ test('disabling built-in plugins actually stops their task bridges', () => {
   assert.match(studio, /Roblox Studio plugin is disabled in Plugins/);
 });
 
-test('premium plugin dashboard exposes real connect manage and disconnect controls', () => {
-  assert.ok(page.includes('<h1>Plugins, made easy</h1>'));
-  assert.ok(page.includes('Pick a plugin, press Details, then Connect or Install'));
-  assert.ok(page.includes('Easy plugin setup'));
-  assert.ok(page.includes('permissions first and only uses what you approve'));
+test('plugin directory stays calm while preserving real connect manage and disconnect controls', () => {
+  assert.ok(page.includes('<h1>Connect your tools.</h1>'));
+  assert.ok(page.includes('Search the directory, review permissions, then connect only what you choose.'));
+  assert.match(page, /Permissions first/);
+  assert.match(page, /No passwords shared/);
+  assert.match(page, /Disconnect anytime/);
   assert.match(page, /Your access stays scoped/);
-  for (const filter of ['all','connected','productivity','developer','business','community','coming_soon','disabled']) {
+  for (const filter of ['all','connected','developer','business','coming_soon','disabled']) {
     assert.ok(page.includes('data-filter="' + filter + '"'), filter);
   }
+  assert.doesNotMatch(page, /Launch health|Needs Vercel/);
   assert.match(page, /data-install=/);
   assert.match(page, /data-connect=/);
   assert.match(page, /plugin-oauth-submit/);
@@ -108,20 +110,18 @@ test('premium plugin dashboard exposes real connect manage and disconnect contro
   assert.match(page, /data-inspect=/);
   assert.match(page, /data-details=/);
   assert.match(page, /plugin-detail-view/);
+  assert.match(page, /plugin-detail-setup/);
   assert.match(page, /Stellar verified/);
   assert.match(page, /connectToken/);
   assert.match(page, /disconnectCurrentPlugin/);
   assert.match(page, /Connect plugin/);
-  assert.match(page, /What it does/);
-  assert.match(page, /No passwords shared/);
-  assert.ok(page.includes('One switch on/off'));
+  assert.match(page, />Details<\/button>/);
   assert.match(page, /Only paste a token if OAuth is not available/);
-  assert.match(page, /Setup info/);
   assert.match(page, /setupText/);
-  assert.match(page, /OAuth setup needed/);
   assert.match(page, /encrypted server-side/);
   assert.match(page, /More plugins coming soon/);
-  assert.match(page, /Need a plugin|Request a plugin/);
+  assert.match(page, /Request a plugin/);
+  assert.match(page, /Sign in to use/);
   assert.ok(app.includes('data-tab="plugins"'));
   assert.ok(app.includes('href="/plugins"'));
 });
