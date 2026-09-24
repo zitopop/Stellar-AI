@@ -90,3 +90,52 @@
 @media(prefers-reduced-motion:reduce){
   .stellar-call-connected .stellar-call-avatar{animation:none!important}
 }
+
+/* Phone-first scheduling */
+.stellar-call-schedule-shell[hidden]{display:none!important}
+.stellar-call-schedule-shell{
+  position:fixed;inset:0;z-index:5250;display:grid;place-items:center;padding:18px;
+  background:rgba(4,5,8,.80);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)
+}
+.stellar-call-schedule-card{
+  width:min(560px,100%);max-height:min(760px,92dvh);overflow:auto;
+  padding:22px;border:1px solid rgba(255,255,255,.09);border-radius:24px;
+  background:#12141a;color:#f5f6fa;box-shadow:0 28px 90px rgba(0,0,0,.45)
+}
+.stellar-call-schedule-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}
+.stellar-call-schedule-head>div{display:grid;gap:5px}
+.stellar-call-schedule-head strong{font-size:20px;letter-spacing:-.025em}
+.stellar-call-schedule-head small,.stellar-call-schedule-status,.stellar-call-schedule-item small{color:#9fa7b5;line-height:1.45}
+.stellar-call-schedule-head button,.stellar-call-schedule-item button{
+  min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;background:#1b1d25;color:#e7e9ef;cursor:pointer
+}
+.stellar-call-schedule-card label{display:grid;gap:7px;margin-top:12px;color:#cbd0da;font-size:12px;font-weight:700}
+.stellar-call-schedule-card input,.stellar-call-schedule-card select{
+  width:100%;min-height:46px;padding:10px 12px;border:1px solid rgba(255,255,255,.09);
+  border-radius:12px;background:#0c0d12;color:#f2f3f6;font:inherit;font-size:14px;outline:none
+}
+.stellar-call-schedule-card input:focus,.stellar-call-schedule-card select:focus{border-color:rgba(158,150,248,.42)}
+.stellar-call-schedule-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:12px}
+.stellar-call-schedule-submit{
+  width:100%;min-height:48px;margin-top:18px;border:0;border-radius:13px;
+  background:#e9e7ff;color:#111218;font:inherit;font-size:13px;font-weight:850;cursor:pointer
+}
+.stellar-call-schedule-status{min-height:20px;margin:10px 2px 0;font-size:12px}
+.stellar-call-schedule-list{display:grid;gap:8px;margin-top:14px}
+.stellar-call-schedule-item{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 12px;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:#0d0f14
+}
+.stellar-call-schedule-item>div{min-width:0;display:grid;gap:3px}
+.stellar-call-schedule-item strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.stellar-call-schedule-item button{min-width:auto;padding:0 12px;color:#ffb6b6}
+@media(max-width:640px){
+  .stellar-call-schedule-shell{padding:0;align-items:end}
+  .stellar-call-schedule-card{
+    width:100%;max-height:92dvh;padding:20px 16px calc(18px + env(safe-area-inset-bottom));
+    border-radius:24px 24px 0 0
+  }
+  .stellar-call-schedule-grid{grid-template-columns:1fr}
+}
