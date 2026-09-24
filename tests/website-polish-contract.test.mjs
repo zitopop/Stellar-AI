@@ -51,9 +51,10 @@ test('homepage final polish layer beats old decorative styling', () => {
   assert.match(cosmic, /body\.public-home \.oa2-proof-row/);
 });
 
-test('business palette loads last and contains no legacy gold brand values', () => {
+test('business palette follows older themes and the finishing layer retains the neutral palette', () => {
   const styles = [...landing.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map((match) => match[1]);
-  assert.equal(styles.at(-1), '/stellar-business-palette.css?v=9');
+  assert.equal(styles.at(-2), '/stellar-business-palette.css?v=9');
+  assert.equal(styles.at(-1), '/lib/assets/stellar-refinements.css?v=20260924');
   assert.doesNotMatch(palette, /#(?:d4af37|f2d675|f4d676|8f6b1e|b8860b)/i);
   assert.match(palette, /Business homepage final neutral override v9/);
 });

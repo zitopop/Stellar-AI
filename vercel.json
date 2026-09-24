@@ -779,6 +779,10 @@
     },
     {
       "source": "/jarvis",
+      "destination": "/jarvis-workspace.html"
+    },
+    {
+      "source": "/jarvis/vision",
       "destination": "/jarvis.html"
     },
     {
@@ -1242,11 +1246,20 @@
   ],
   "crons": [
     {
+      "path": "/api/desktop-agent?surface=jarvis&action=worker",
+      "schedule": "25 8 * * *"
+    },
+    {
       "path": "/api/webhook?source=gmail-watch",
       "schedule": "17 8 * * *"
     }
   ],
   "ignoreCommand": "bash scripts/vercel-ignore-build.sh",
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "functions": {
+    "api/desktop-agent.js": {
+      "maxDuration": 300
+    }
+  }
 }
