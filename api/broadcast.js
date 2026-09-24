@@ -3,6 +3,7 @@ import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
+import { createStellarCallSession, getActiveStellarCall, stellarCallConfigured, updateStellarCall } from '../lib/stellar-call.js';
 import { DEFAULT_OWNER_CALL_POLICY, OWNER_AUTO_CALL_CATEGORIES, normalizeOwnerCallPolicy } from '../lib/auto-call-rules.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
 import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
@@ -75,6 +76,27 @@ export default async function handler(req, res) {
 
   if (req.body?.action === 'verifyOwner') return res.status(200).json({ ok: true, owner: true });
 
+  if (action === 'stellarCallStatus') {
+    return res.status(200).json({ ok: true, configured: stellarCallConfigured(), active: await getActiveStellarCall() });
+  }
+  if (action === 'stellarCallPending') {
+    return res.status(200).json({ ok: true, call: await getActiveStellarCall() });
+  }
+  if (['stellarCallAnswer','stellarCallDecline','stellarCallComplete'].includes(action)) {
+    const status = action === 'stellarCallAnswer' ? 'answered' : (action === 'stellarCallDecline' ? 'declined' : 'completed');
+    const updated = await updateStellarCall(req.body?.callId, status);
+    return res.status(updated.ok ? 200 : 404).json(updated);
+  }
+  if (action === 'stellarCallTest') {
+    const created = await createStellarCallSession({
+      category: 'test',
+      severity: 'info',
+      summary: 'Stellar Call test. Jarvis is checking that your in-app calling screen works.',
+      metadata: { trigger: 'owner-test' },
+    });
+    return res.status(created.ok ? 200 : 503).json(created);
+  }
+
   if (req.body?.action === 'getCallPolicy') {
     const kvUrl = process.env.KV_REST_API_URL, kvToken = process.env.KV_REST_API_TOKEN;
     if (!kvUrl || !kvToken) return res.status(200).json({ ok:true, ...DEFAULT_OWNER_CALL_POLICY });
@@ -124,6 +146,18 @@ export default async function handler(req, res) {
     const authorization = String(req.headers.authorization || '');
     const metadata = req.body?.metadata && typeof req.body.metadata === 'object' ? req.body.metadata : {};
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
+    let stellarCall = null;
+    try {
+      const created = await createStellarCallSession({
+        category,
+        severity,
+        summary,
+        metadata: { ...metadata, escalation: { category, severity, summary }, trigger: metadata?.trigger || 'owner-escalation' },
+      });
+      if (created?.ok) stellarCall = created.call || null;
+    } catch (error) {
+      console.error('Stellar Call session creation failed', error?.message || error);
+    }
     try {
       const data = await startOwnerCall({ purpose, authorization, bridgeToken, metadata: { ...metadata, escalation: { category, severity, summary } } });
       const stamp = Date.now();
@@ -132,16 +166,19 @@ export default async function handler(req, res) {
         fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, call_id: data?.call_id || null, provider: data?.provider || null, channel: 'phone' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }),
       ]).catch(() => {});
       if (data?.provider === 'twilio') {
-        return res.status(200).json({ ok: true, called: false, pending: true, provider: 'twilio', call_id: data?.call_id || null, status: data?.status || 'queued' });
+        return res.status(200).json({ ok: true, called: false, pending: true, provider: 'twilio', call_id: data?.call_id || null, status: data?.status || 'queued', stellar_call: stellarCall });
       }
-      return res.status(200).json({ ok: true, called: true, provider: data?.provider || null, call_id: data?.call_id || null, status: data?.status || 'started' });
+      return res.status(200).json({ ok: true, called: true, provider: data?.provider || null, call_id: data?.call_id || null, status: data?.status || 'started', stellar_call: stellarCall });
     } catch (error) {
       console.error('Urgent owner escalation failed', error?.provider || '', error?.message || error);
       const emailed = await sendOwnerFallbackEmail({ category, severity, summary });
       if (emailed) {
         const stamp = Date.now();
         await fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, channel: 'email' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }).catch(() => {});
-        return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable' });
+        return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable', stellar_call: stellarCall });
+      }
+      if (stellarCall) {
+        return res.status(200).json({ ok: true, called: false, in_app: true, reason: 'phone-unavailable', stellar_call: stellarCall });
       }
       return res.status(502).json({ error: 'Urgent owner call failed.' });
     }
