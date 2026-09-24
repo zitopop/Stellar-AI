@@ -334,7 +334,7 @@ html,body{height:100%!important;overflow:hidden!important;background:#0b0c10!imp
 .app .side>.btn.primary:hover{background:#22232b!important}
 
 </style>
-<link rel="stylesheet" href="/lib/assets/stellar-polish-v17.css?v=20260924-2">
+<link rel="stylesheet" href="/lib/assets/stellar-polish-v17.css?v=20260924-3">
 <link rel="stylesheet" href="/lib/assets/stellar-call.css?v=20260924-1">\n</head>
 <body>
 <div class="drawer-backdrop" id="backdrop" onclick="closeResponsiveSidebar()" aria-hidden="true"></div>
@@ -352,7 +352,145 @@ html,body{height:100%!important;overflow:hidden!important;background:#0b0c10!imp
 </main>
 </div>
 <div id="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="welcome-title" hidden><div class="welcome-card"><button class="welcome-close" type="button" onclick="dismissWelcome()" aria-label="Close account access">×</button><h2 id="welcome-title">Pick up where you left off — your chats and plan stay synced.</h2><p>Start free with £1 credit, then keep your chats and plan everywhere.</p><div id="g-signin-main" class="auth-grid" aria-label="Google sign in area"></div><div class="auth-grid"><a id="discord-signin-btn" class="auth-link" href="/api/discord-oauth" onclick="pendingUpgradeIntent()">Continue with Discord</a><input id="auth-email" class="own-input" type="email" autocomplete="email" placeholder="Email address"><input id="auth-password" class="own-input" type="password" autocomplete="current-password" minlength="8" maxlength="100" placeholder="Password (8+ characters)"><div class="auth-row"><button type="button" onclick="emailAuth('login')" class="auth-link">Sign in</button><button type="button" onclick="emailAuth('signup')" class="auth-link">Create account</button></div><a href="/support#account-help" class="auth-link auth-muted">Forgot password or lost account access?</a><button type="button" onclick="dismissWelcome()" class="auth-link auth-muted">Continue without signing in</button><p class="auth-note">Sign in when you want synced chats and plan access across devices. Lost-access help is handled through Support.</p></div></div></div>
-<section id="settings-panel" class="settings-panel" aria-hidden="true"><div class="settings-card"><h2>Settings</h2><p>Real controls for account, plan, plugins and safety. Opening settings will not sign you out.</p><div class="settings-grid"><div class="settings-row settings-credit"><div class="settings-credit-copy"><strong id="plan-truth">Plan and usage</strong><small id="usage-copy">Plan data loads after sign-in.</small></div><a class="btn" href="/#plans">Compare plans</a></div><div id="settings-plan-actions" class="settings-row settings-credit"><span class="settings-credit-copy"><strong>Choose a plan</strong><small>Secure Stripe checkout. Upgrade without leaving your workspace.</small></span><span class="credit-buy-controls"><button class="btn" type="button" onclick="startPlanCheckout('starter')">Starter £8</button><button class="btn" type="button" onclick="startPlanCheckout('plus')">Plus £20</button><button class="btn" type="button" onclick="startPlanCheckout('pro')">Pro £75</button></span></div><button id="auth-settings-row" class="settings-row set-click" type="button" onclick="settingsAuthAction()"><strong id="auth-key">Sign in</strong><small>Account</small></button><button id="settings-signout-row" class="settings-row signed-in-only" type="button" onclick="signOut();closeSettings()"><strong>Sign out</strong><small>End this session</small></button><a href="/plugins" class="settings-row"><strong>Plugins</strong><small>Connections &amp; permissions</small></a><a class="settings-row" href="/jarvis"><strong>Jarvis assistant</strong><small>Research, products and saved business tasks</small></a><button id="desktop-agent-nav" class="settings-row signed-in-only" type="button" onclick="location.href='/desktop'"><strong>PC Agent</strong><small>Signed-in workspace</small></button><button id="roblox-studio-nav" class="settings-row owner-only" hidden type="button" onclick="location.href='/roblox-studio'"><strong>Roblox Studio Agent</strong><small>Owner only</small></button><button id="owner-call-now" class="settings-row owner-only" hidden type="button" onclick="triggerOwnerCall('Owner requested a call from Jarvis in Stellar AI.')"><strong>Call me now</strong><small>Owner only · start a Jarvis phone call</small></button><button id="owner-call-health-btn" class="settings-row owner-only" hidden type="button" onclick="checkOwnerCallHealth()"><strong>Check call system</strong><small id="owner-call-health">Owner only · verify phone readiness</small></button><div id="owner-call-setup" class="settings-row settings-credit owner-only call-setup-panel" hidden><span class="settings-credit-copy"><strong>Jarvis call setup</strong><small id="owner-call-setup-status">Press Check call system to see what is missing.</small><small id="owner-call-setup-list" class="call-setup-list">Needs production env: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, OWNER_PHONE, OWNER_CALL_END_TO_END_VERIFIED=true.</small></span></div><button id="set-billing-row" class="settings-row" type="button" onclick="openBillingPortal()" hidden><strong>Manage subscription</strong><small>Card, invoices &amp; cancellation</small></button><div id="topup-row" class="settings-row settings-credit"><span class="settings-credit-copy"><strong>Add wallet credit</strong><small>One-time Stripe payment with bonus credit. Wallet credit is used only when you enable overage.</small></span><span class="credit-buy-controls"><label class="sr-only" for="topup-amount">Credit amount</label><select id="topup-amount" aria-label="Credit amount"><option value="1000">Pay £10 · get £11 credit</option><option value="2500">Pay £25 · get £28.75 credit</option><option value="5000">Pay £50 · get £60 credit</option><option value="10000">Pay £100 · get £120 credit</option><option value="20000">Pay £200 · get £240 credit</option></select><button id="topup-buy" class="btn" type="button" onclick="startCreditCheckout()">Add credit</button></span><span id="topup-status" class="topup-status" role="status" aria-live="polite"></span></div><a class="settings-row" href="/support"><strong>Support</strong><small>Help, billing, account access and broken buttons · deadlyfox10@gmail.com</small></a><a class="settings-row" href="/terms"><strong>Terms of Service</strong><small>Subscription, usage and service terms</small></a><a class="settings-row" href="/privacy"><strong>Privacy Policy</strong><small>Data use, providers and your rights</small></a><button class="btn" type="button" onclick="closeSettings()">Close</button></div></div></section>
+<section id="settings-panel" class="settings-panel" aria-hidden="true">
+  <div class="settings-card">
+    <div class="settings-header">
+      <div class="settings-header-copy">
+        <span class="settings-kicker">STELLAR SETTINGS</span>
+        <h2>Settings</h2>
+        <p>Manage your account, plan, connected tools and owner controls.</p>
+      </div>
+      <button class="settings-close-x" type="button" onclick="closeSettings()" aria-label="Close settings">×</button>
+    </div>
+
+    <div class="settings-grid">
+      <div class="settings-row settings-credit settings-wide settings-plan-hero">
+        <span class="settings-icon" aria-hidden="true">♛</span>
+        <div class="settings-credit-copy">
+          <strong id="plan-truth">Plan and usage</strong>
+          <small id="usage-copy">Plan data loads after sign-in.</small>
+        </div>
+        <a class="btn settings-row-action" href="/#plans">Compare plans <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div id="settings-plan-actions" class="settings-row settings-credit settings-wide settings-plan-actions">
+        <span class="settings-icon" aria-hidden="true">▱</span>
+        <span class="settings-credit-copy">
+          <strong>Choose a plan</strong>
+          <small>Secure Stripe checkout. Upgrade without leaving your workspace.</small>
+        </span>
+        <span class="credit-buy-controls">
+          <button class="btn" type="button" onclick="startPlanCheckout('starter')">Starter £8</button>
+          <button class="btn" type="button" onclick="startPlanCheckout('plus')">Plus £20</button>
+          <button class="btn" type="button" onclick="startPlanCheckout('pro')">Pro £75</button>
+        </span>
+      </div>
+
+      <button id="auth-settings-row" class="settings-row set-click" type="button" onclick="settingsAuthAction()">
+        <span class="settings-icon" aria-hidden="true">◎</span>
+        <span class="settings-row-copy"><strong id="auth-key">Sign in</strong><small>Manage your account and profile</small></span>
+        <span class="settings-row-meta">Account <span aria-hidden="true">›</span></span>
+      </button>
+
+      <button id="settings-signout-row" class="settings-row signed-in-only" type="button" onclick="signOut();closeSettings()">
+        <span class="settings-icon settings-icon-danger" aria-hidden="true">↪</span>
+        <span class="settings-row-copy"><strong>Sign out</strong><small>End this session on this device</small></span>
+        <span class="settings-row-meta">End session <span aria-hidden="true">›</span></span>
+      </button>
+
+      <a href="/plugins" class="settings-row">
+        <span class="settings-icon" aria-hidden="true">◇</span>
+        <span class="settings-row-copy"><strong>Plugins</strong><small>Connections &amp; permissions</small></span>
+        <span class="settings-row-meta">Manage <span aria-hidden="true">›</span></span>
+      </a>
+
+      <a class="settings-row" href="/jarvis"><strong>Jarvis assistant</strong>
+        <span class="settings-icon" aria-hidden="true">✦</span>
+        <span class="settings-row-copy"><strong>Jarvis assistant</strong><small>Research, products and saved business tasks</small></span>
+        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
+      </a>
+
+      <button id="desktop-agent-nav" class="settings-row signed-in-only" type="button" onclick="location.href='/desktop'">
+        <span class="settings-icon" aria-hidden="true">▰</span>
+        <span class="settings-row-copy"><strong>PC Agent</strong><small>Manage your signed-in workspace</small></span>
+        <span class="settings-row-meta">Signed in <span aria-hidden="true">›</span></span>
+      </button>
+
+      <button id="roblox-studio-nav" class="settings-row owner-only" hidden type="button" onclick="location.href='/roblox-studio'">
+        <span class="settings-icon" aria-hidden="true">◈</span>
+        <span class="settings-row-copy"><strong>Roblox Studio Agent</strong><small>Owner-only Studio workspace</small></span>
+        <span class="settings-row-meta">Owner only <span aria-hidden="true">›</span></span>
+      </button>
+
+      <button id="owner-call-now" class="settings-row owner-only" hidden type="button" onclick="triggerOwnerCall('Owner requested a call from Jarvis in Stellar AI.')">
+        <span class="settings-icon" aria-hidden="true">☎</span>
+        <span class="settings-row-copy"><strong>Call me now</strong><small>Owner only · start a Jarvis phone call</small></span>
+        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
+      </button>
+
+      <button id="owner-call-health-btn" class="settings-row owner-only" hidden type="button" onclick="checkOwnerCallHealth()">
+        <span class="settings-icon" aria-hidden="true">◉</span>
+        <span class="settings-row-copy"><strong>Check call system</strong><small id="owner-call-health">Owner only · verify phone readiness</small></span>
+        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
+      </button>
+
+      <div id="owner-call-setup" class="settings-row settings-credit settings-wide owner-only call-setup-panel" hidden>
+        <span class="settings-icon" aria-hidden="true">&lt;/&gt;</span>
+        <span class="settings-credit-copy">
+          <strong>Jarvis call setup</strong>
+          <small id="owner-call-setup-status">Press Check call system to see what is missing.</small>
+          <small id="owner-call-setup-list" class="call-setup-list">Needs production env: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, OWNER_PHONE, OWNER_CALL_END_TO_END_VERIFIED=true.</small>
+        </span>
+      </div>
+
+      <button id="set-billing-row" class="settings-row settings-wide" type="button" onclick="openBillingPortal()" hidden>
+        <span class="settings-icon" aria-hidden="true">▣</span>
+        <span class="settings-row-copy"><strong>Manage subscription</strong><small>Card, invoices &amp; cancellation</small></span>
+        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
+      </button>
+
+      <div id="topup-row" class="settings-row settings-credit settings-wide settings-wallet-row">
+        <span class="settings-icon" aria-hidden="true">▤</span>
+        <span class="settings-credit-copy">
+          <strong>Add wallet credit</strong>
+          <small>One-time Stripe payment with bonus credit. Wallet credit is used only when you enable overage.</small>
+        </span>
+        <span class="credit-buy-controls">
+          <label class="sr-only" for="topup-amount">Credit amount</label>
+          <select id="topup-amount" aria-label="Credit amount">
+            <option value="1000">Pay £10 · get £11 credit</option>
+            <option value="2500">Pay £25 · get £28.75 credit</option>
+            <option value="5000">Pay £50 · get £60 credit</option>
+            <option value="10000">Pay £100 · get £120 credit</option>
+            <option value="20000">Pay £200 · get £240 credit</option>
+          </select>
+          <button id="topup-buy" class="btn settings-credit-primary" type="button" onclick="startCreditCheckout()">＋ Add credit</button>
+        </span>
+        <span id="topup-status" class="topup-status" role="status" aria-live="polite"></span>
+      </div>
+
+      <a class="settings-row" href="/support">
+        <span class="settings-icon" aria-hidden="true">?</span>
+        <span class="settings-row-copy"><strong>Support</strong><small>Help, billing, account access and broken buttons · deadlyfox10@gmail.com</small></span>
+        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
+      </a>
+
+      <a class="settings-row" href="/terms">
+        <span class="settings-icon" aria-hidden="true">≡</span>
+        <span class="settings-row-copy"><strong>Terms of Service</strong><small>Subscription, usage and service terms</small></span>
+        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
+      </a>
+
+      <a class="settings-row" href="/privacy">
+        <span class="settings-icon" aria-hidden="true">◌</span>
+        <span class="settings-row-copy"><strong>Privacy Policy</strong><small>Data use, providers and your rights</small></span>
+        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
+      </a>
+
+      <button class="btn settings-close-footer" type="button" onclick="closeSettings()">Close settings</button>
+    </div>
+  </div>
+</section>
 <div id="model-menu" role="menu" aria-label="Choose AI model" hidden>
   <div class="model-menu-heading">
     <span class="model-menu-title"><strong>Choose a model</strong><small>Pick the right balance of speed and depth for this chat.</small></span>
