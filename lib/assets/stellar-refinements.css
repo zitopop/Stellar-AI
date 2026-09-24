@@ -49,3 +49,351 @@ body.public-home .plan.featured{box-shadow:0 0 0 1px #9b81c82b,0 16px 55px #2016
   .settings-panel .settings-row,.settings-panel .set-item{align-items:flex-start;overflow-wrap:anywhere}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Stellar landing + workspace authority layer v17 — 2026-09-24
+   Fixes public-page scroll leakage from app-only rules and creates one calm,
+   responsive visual rhythm across the landing page and chat workspace. */
+html{overflow-x:hidden!important;overflow-y:auto!important}
+body.public-home{
+  height:auto!important;
+  min-height:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  background:#090a0f!important;
+  color:#f4f5f8!important
+}
+body.public-home main{overflow:visible!important}
+body.public-home .container{width:min(1160px,calc(100% - 40px))!important;margin-inline:auto!important}
+body.public-home .site-header{
+  position:sticky!important;
+  top:0!important;
+  z-index:80!important;
+  min-height:64px!important;
+  background:rgba(9,10,15,.82)!important;
+  border-bottom:1px solid rgba(255,255,255,.06)!important;
+  backdrop-filter:blur(18px) saturate(120%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(120%)!important
+}
+body.public-home .nav{min-height:64px!important;gap:24px!important}
+body.public-home .brand{font-weight:800!important;letter-spacing:-.035em!important}
+body.public-home .nav-links a,
+body.public-home .nav-login{color:#aeb5c2!important}
+body.public-home .nav-links a:hover,
+body.public-home .nav-login:hover{color:#fff!important}
+body.public-home .button,
+body.public-home .oa2-primary-action,
+body.public-home .oa2-secondary-action{
+  min-height:44px!important;
+  border-radius:12px!important;
+  touch-action:manipulation!important
+}
+body.public-home .oa2-hero{
+  display:grid!important;
+  justify-items:center!important;
+  text-align:center!important;
+  min-height:min(760px,82svh)!important;
+  align-content:center!important;
+  padding-top:clamp(72px,10vw,128px)!important;
+  padding-bottom:clamp(68px,9vw,110px)!important
+}
+body.public-home .oa2-wordmark{
+  margin-bottom:14px!important;
+  font-size:10px!important;
+  letter-spacing:.18em!important;
+  color:#8d94a2!important
+}
+body.public-home .oa2-hero h1{
+  max-width:820px!important;
+  margin:0 auto!important;
+  font-size:clamp(52px,8vw,92px)!important;
+  line-height:.98!important;
+  letter-spacing:-.065em!important;
+  font-weight:680!important
+}
+body.public-home .oa2-lead{
+  max-width:610px!important;
+  margin:22px auto 0!important;
+  font-size:clamp(17px,2vw,20px)!important;
+  line-height:1.6!important;
+  color:#aeb6c4!important
+}
+body.public-home .oa2-composer{
+  width:min(760px,100%)!important;
+  margin:34px auto 0!important;
+  padding:10px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:24px!important;
+  background:#15171d!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.26)!important
+}
+body.public-home .oa2-composer:focus-within{
+  border-color:rgba(185,176,255,.30)!important;
+  box-shadow:0 0 0 4px rgba(139,124,246,.06),0 24px 70px rgba(0,0,0,.28)!important
+}
+body.public-home .oa2-composer textarea{
+  min-height:68px!important;
+  padding:10px 12px 4px!important;
+  font-size:16px!important;
+  line-height:1.55!important;
+  resize:none!important
+}
+body.public-home .oa2-composer-bar{padding:2px 2px 0!important}
+body.public-home .oa2-composer button{
+  width:44px!important;
+  min-width:44px!important;
+  height:44px!important;
+  min-height:44px!important;
+  border-radius:50%!important;
+  background:#eeeaff!important;
+  color:#111218!important;
+  box-shadow:none!important
+}
+body.public-home .oa2-start-note{margin-top:14px!important;color:#838b99!important}
+body.public-home .oa2-hero-actions{
+  display:flex!important;
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+  gap:10px!important;
+  margin-top:22px!important
+}
+body.public-home .oa2-primary-action{
+  background:#f0edff!important;
+  color:#111218!important;
+  border:1px solid transparent!important;
+  font-weight:750!important
+}
+body.public-home .oa2-secondary-action{
+  background:transparent!important;
+  color:#d8dce5!important;
+  border:1px solid rgba(255,255,255,.11)!important
+}
+body.public-home .oa2-jarvis,
+body.public-home .oa2-audience,
+body.public-home .oa2-preview,
+body.public-home .pricing-section,
+body.public-home .faq-section{
+  padding-top:clamp(64px,8vw,104px)!important;
+  padding-bottom:clamp(64px,8vw,104px)!important
+}
+body.public-home .oa2-jarvis-panel,
+body.public-home .oa2-audience-grid article,
+body.public-home .oa2-preview-shell,
+body.public-home .plan,
+body.public-home .faq-item{
+  border:1px solid rgba(255,255,255,.075)!important;
+  background:#111319!important;
+  box-shadow:none!important
+}
+body.public-home .oa2-jarvis-panel{border-radius:24px!important}
+body.public-home .oa2-audience-grid article,
+body.public-home .plan,
+body.public-home .faq-item{border-radius:18px!important}
+body.public-home .oa2-jarvis-grid,
+body.public-home .oa2-audience-grid{gap:12px!important}
+body.public-home .oa2-section-head{max-width:760px!important}
+body.public-home .oa2-section-head h2,
+body.public-home .pricing-section h2,
+body.public-home .faq-section h2{
+  letter-spacing:-.045em!important;
+  line-height:1.05!important
+}
+body.public-home .oa2-section-head p,
+body.public-home .oa2-jarvis-panel p,
+body.public-home .oa2-audience-grid p,
+body.public-home .plan p,
+body.public-home .faq-item p{color:#a8b0be!important;line-height:1.7!important}
+body.public-home .plan.featured{
+  border-color:rgba(170,157,255,.24)!important;
+  background:linear-gradient(180deg,#15161e,#111319)!important;
+  box-shadow:0 0 0 1px rgba(139,124,246,.06)!important
+}
+body.public-home footer{border-top:1px solid rgba(255,255,255,.06)!important}
+
+/* ChatGPT-like app home: quiet sidebar, centred empty state, stable bottom composer. */
+body .app{background:#0b0c10!important}
+body .app .side{
+  width:var(--side)!important;
+  padding:10px!important;
+  background:#0e0f14!important;
+  border-right:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:none!important
+}
+body .app .brand-row{min-height:44px!important}
+body .app .nav-link,
+body .app .set-item{
+  min-height:40px!important;
+  border-radius:9px!important;
+  gap:9px!important
+}
+body .app .saved-chat-list{max-height:min(44vh,420px)!important;overflow:auto!important;scrollbar-width:thin}
+body .app .main{min-width:0!important;background:#0b0c10!important}
+body .app .top{
+  min-height:56px!important;
+  height:56px!important;
+  padding-inline:14px!important;
+  background:#0b0c10!important;
+  border-bottom:0!important
+}
+body .app .top-left,
+body .app .top-actions{min-width:0!important;gap:6px!important}
+body .app .model-pill{
+  max-width:min(330px,44vw)!important;
+  min-height:40px!important;
+  border-radius:10px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important
+}
+body .app .chat{
+  min-height:0!important;
+  padding:18px 18px 12px!important;
+  scroll-padding-bottom:160px!important;
+  scrollbar-gutter:stable both-edges!important
+}
+body .app .chat-inner{
+  width:min(780px,100%)!important;
+  min-height:100%!important;
+  margin-inline:auto!important
+}
+body .app #chat:not(:has(.msg)) .chat-inner{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  align-items:stretch!important
+}
+body .app #chat:not(:has(.msg)) .home-welcome{
+  width:100%!important;
+  padding:clamp(72px,15vh,150px) 12px 16px!important;
+  text-align:center!important
+}
+body .app .home-welcome h1{
+  max-width:680px!important;
+  margin-inline:auto!important;
+  font-size:clamp(32px,5vw,48px)!important;
+  line-height:1.08!important;
+  letter-spacing:-.045em!important;
+  font-weight:650!important
+}
+body .app .msg{width:100%!important}
+body .app .assistant .bubble{
+  padding:10px 2px!important;
+  background:transparent!important;
+  line-height:1.72!important
+}
+body .app .user .bubble{
+  width:fit-content!important;
+  max-width:min(80%,680px)!important;
+  margin-left:auto!important;
+  padding:10px 14px!important;
+  border-radius:18px!important;
+  background:#24252c!important
+}
+body .app .composer-wrap{
+  padding:8px 16px max(14px,calc(10px + env(safe-area-inset-bottom)))!important;
+  background:linear-gradient(180deg,rgba(11,12,16,0),#0b0c10 24%)!important;
+  border-top:0!important
+}
+body .app .composer{
+  width:min(760px,100%)!important;
+  margin-inline:auto!important;
+  padding:8px 8px 7px 12px!important;
+  border:1px solid rgba(255,255,255,.105)!important;
+  border-radius:24px!important;
+  background:#17181e!important;
+  box-shadow:0 12px 36px rgba(0,0,0,.22)!important
+}
+body .app .composer textarea{
+  min-height:48px!important;
+  max-height:26dvh!important;
+  padding:8px 6px 4px!important;
+  font-size:15px!important;
+  line-height:1.5!important
+}
+body .app .composer-bottom{min-height:44px!important}
+body .app .composer-tool{
+  min-height:38px!important;
+  border-radius:10px!important
+}
+body .app #sendBtn{
+  width:42px!important;
+  min-width:42px!important;
+  height:42px!important;
+  min-height:42px!important
+}
+body .app .settings-panel{z-index:120!important}
+body .app .settings-card{
+  width:min(720px,calc(100vw - 32px))!important;
+  max-height:86dvh!important;
+  overflow:auto!important;
+  overscroll-behavior:contain!important
+}
+body .app #model-menu{z-index:130!important;max-height:min(70dvh,560px)!important;overflow:auto!important}
+
+@media(max-width:900px){
+  body.public-home .container{width:min(100% - 28px,1160px)!important}
+  body.public-home .nav-links{display:none!important}
+  body.public-home .oa2-jarvis-grid{grid-template-columns:1fr!important}
+  body .app .side{width:min(300px,86vw)!important}
+  body .app .chat{padding-inline:12px!important}
+  body .app .composer-wrap{padding-inline:10px!important}
+}
+@media(max-width:640px){
+  body.public-home .container{width:min(100% - 24px,1160px)!important}
+  body.public-home .site-header,
+  body.public-home .nav{min-height:58px!important}
+  body.public-home .nav-actions .nav-login{display:none!important}
+  body.public-home .oa2-hero{
+    min-height:auto!important;
+    padding-top:64px!important;
+    padding-bottom:68px!important
+  }
+  body.public-home .oa2-hero h1{
+    font-size:clamp(42px,13vw,64px)!important;
+    letter-spacing:-.055em!important
+  }
+  body.public-home .oa2-lead{font-size:16px!important}
+  body.public-home .oa2-composer{margin-top:28px!important;border-radius:21px!important}
+  body.public-home .oa2-composer textarea{min-height:62px!important}
+  body.public-home .oa2-hero-actions{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    width:100%!important;
+    max-width:520px!important
+  }
+  body.public-home .oa2-hero-actions a{width:100%!important}
+  body.public-home .oa2-audience-grid{grid-template-columns:1fr!important}
+  body .app .top{padding-inline:9px!important}
+  body .app .model-pill{max-width:42vw!important;min-height:44px!important}
+  body .app .top-actions .btn,
+  body .app .mobile-menu,
+  body .app .nav-link,
+  body .app .set-item,
+  body .app .composer-tool{min-height:44px!important}
+  body .app #chat:not(:has(.msg)) .home-welcome{
+    padding:clamp(54px,12vh,100px) 8px 12px!important
+  }
+  body .app .home-welcome h1{font-size:clamp(30px,9.5vw,40px)!important}
+  body .app .composer{border-radius:22px!important}
+  body .app .composer textarea{font-size:16px!important}
+  body .app #sendBtn{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important
+  }
+  body .app .settings-card{
+    width:100%!important;
+    max-width:none!important;
+    max-height:90dvh!important;
+    margin:10dvh 0 0!important;
+    border-radius:22px 22px 0 0!important;
+    padding-bottom:calc(14px + env(safe-area-inset-bottom))!important
+  }
+}
+@media(max-width:380px){
+  body.public-home .container{width:min(100% - 18px,1160px)!important}
+  body.public-home .button-small{padding-inline:11px!important}
+  body .app .top{padding-inline:7px!important}
+  body .app .model-pill{max-width:36vw!important}
+  body .app .composer-wrap{padding-inline:7px!important}
+}
