@@ -7,6 +7,7 @@ const support = fs.readFileSync(new URL('../support.html', import.meta.url), 'ut
 
 test('public browser pages do not use blocking alert prompts', () => {
   assert.doesNotMatch(app, /\balert\s*\(/);
+  assert.doesNotMatch(app, /\bprompt\s*\(/);
   assert.doesNotMatch(support, /\balert\s*\(/);
 });
 
