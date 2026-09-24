@@ -3,7 +3,7 @@ import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
-import { createStellarCallSession } from '../lib/stellar-call.js';
+import { createStellarCallSession, getActiveStellarCall, stellarCallConfigured, updateStellarCall } from '../lib/stellar-call.js';
 import { DEFAULT_OWNER_CALL_POLICY, OWNER_AUTO_CALL_CATEGORIES, normalizeOwnerCallPolicy } from '../lib/auto-call-rules.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
 import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
@@ -75,6 +75,27 @@ export default async function handler(req, res) {
   }
 
   if (req.body?.action === 'verifyOwner') return res.status(200).json({ ok: true, owner: true });
+
+  if (action === 'stellarCallStatus') {
+    return res.status(200).json({ ok: true, configured: stellarCallConfigured(), active: await getActiveStellarCall() });
+  }
+  if (action === 'stellarCallPending') {
+    return res.status(200).json({ ok: true, call: await getActiveStellarCall() });
+  }
+  if (['stellarCallAnswer','stellarCallDecline','stellarCallComplete'].includes(action)) {
+    const status = action === 'stellarCallAnswer' ? 'answered' : (action === 'stellarCallDecline' ? 'declined' : 'completed');
+    const updated = await updateStellarCall(req.body?.callId, status);
+    return res.status(updated.ok ? 200 : 404).json(updated);
+  }
+  if (action === 'stellarCallTest') {
+    const created = await createStellarCallSession({
+      category: 'test',
+      severity: 'info',
+      summary: 'Stellar Call test. Jarvis is checking that your in-app calling screen works.',
+      metadata: { trigger: 'owner-test' },
+    });
+    return res.status(created.ok ? 200 : 503).json(created);
+  }
 
   if (req.body?.action === 'getCallPolicy') {
     const kvUrl = process.env.KV_REST_API_URL, kvToken = process.env.KV_REST_API_TOKEN;
