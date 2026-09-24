@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-24-stellar-call-v1';
+const SW_VERSION = 'stellar-sw-2026-09-24-phone-call-v2';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -101,6 +101,10 @@ self.addEventListener('push', (event) => {
     badge: '/lib/assets/pwa/icon-192.png',
     tag: callId ? 'stellar-call-' + callId : 'stellar-call',
     renotify: true,
+    requireInteraction: true,
+    vibrate: [280, 160, 280, 160, 420],
+    timestamp: Date.now(),
+    actions: [{ action: 'open', title: 'Answer in Stellar' }],
     data: { url: '/app?stellarCall=1', callId },
   }));
 });

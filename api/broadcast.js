@@ -3,7 +3,7 @@ import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
-import { createStellarCallSession, getActiveStellarCall, stellarCallConfigured, updateStellarCall } from '../lib/stellar-call.js';
+import { cancelStellarCallSchedule, createStellarCallSession, getActiveStellarCall, listStellarCallSchedules, processDueStellarCalls, saveStellarPushSubscription, scheduleStellarCall, stellarCallConfigured, stellarPushConfigured, stellarPushPublicKey, updateStellarCall } from '../lib/stellar-call.js';
 import { DEFAULT_OWNER_CALL_POLICY, OWNER_AUTO_CALL_CATEGORIES, normalizeOwnerCallPolicy } from '../lib/auto-call-rules.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
 import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
@@ -58,11 +58,54 @@ async function sendOwnerFallbackEmail({ category, severity, summary }) {
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
+
+  const action = String(req.body?.action || req.query?.action || '');
+  if (req.method === 'GET' && action === 'stellarCallWorker') {
+    const vercelCron = String(req.headers['x-vercel-cron-schedule'] || '');
+    const scheduler = String(req.headers['x-stellar-scheduler'] || '');
+    if (!vercelCron && scheduler !== 'github-actions') {
+      return res.status(403).json({ error: 'Scheduler access is required.' });
+    }
+    const result = await processDueStellarCalls();
+    if (!result.ok) return res.status(503).json(result);
+    if (!result.fired || !result.call) return res.status(200).json(result);
+
+    const purpose = `SCHEDULED ${String(result.call.category || 'reminder').toUpperCase()}: ${String(result.call.summary || 'Jarvis reminder.').slice(0, 260)}`;
+    try {
+      const phone = await startOwnerCall({
+        purpose,
+        bridgeToken: String(process.env.CALL_BRIDGE_TOKEN || ''),
+        metadata: {
+          trigger: 'scheduled-stellar-call',
+          stellarCallId: result.call.id || null,
+          category: result.call.category || 'reminder',
+        },
+      });
+      return res.status(200).json({
+        ...result,
+        phone: {
+          started: true,
+          provider: phone?.provider || null,
+          call_id: phone?.call_id || null,
+          status: phone?.status || 'started',
+        },
+      });
+    } catch (error) {
+      console.error('Scheduled Jarvis phone call failed', error?.provider || '', error?.message || error);
+      return res.status(200).json({
+        ...result,
+        phone: {
+          started: false,
+          provider: error?.provider || null,
+          status: 'failed',
+        },
+      });
+    }
+  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
   if (String(req.query?.jarvisVoice || '') === '1') return handleJarvisVoiceWebhook(req, res);
 
-  const action = String(req.body?.action || '');
   const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
   const suppliedBridgeToken = String(req.headers['x-call-bridge-token'] || '');
   const internalOwnerCall = ['escalateOwner','callOwner','callHealth'].includes(action) && bridgeToken && suppliedBridgeToken === bridgeToken;
@@ -81,6 +124,32 @@ export default async function handler(req, res) {
   }
   if (action === 'stellarCallPending') {
     return res.status(200).json({ ok: true, call: await getActiveStellarCall() });
+  }
+  if (action === 'stellarPushConfig') {
+    return res.status(200).json({
+      ok: true,
+      configured: stellarPushConfigured(),
+      publicKey: stellarPushPublicKey(),
+    });
+  }
+  if (action === 'stellarPushSubscribe') {
+    const saved = await saveStellarPushSubscription(req.body?.subscription);
+    return res.status(saved.ok ? 200 : 503).json(saved);
+  }
+  if (action === 'stellarCallSchedule') {
+    const scheduled = await scheduleStellarCall({
+      category: req.body?.category,
+      summary: req.body?.summary,
+      scheduledAt: req.body?.scheduledAt,
+    });
+    return res.status(scheduled.ok ? 200 : 400).json(scheduled);
+  }
+  if (action === 'stellarCallScheduleList') {
+    return res.status(200).json({ ok: true, schedules: await listStellarCallSchedules() });
+  }
+  if (action === 'stellarCallScheduleCancel') {
+    const cancelled = await cancelStellarCallSchedule(req.body?.scheduleId);
+    return res.status(cancelled.ok ? 200 : 404).json(cancelled);
   }
   if (['stellarCallAnswer','stellarCallDecline','stellarCallComplete'].includes(action)) {
     const status = action === 'stellarCallAnswer' ? 'answered' : (action === 'stellarCallDecline' ? 'declined' : 'completed');
