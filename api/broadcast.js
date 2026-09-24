@@ -6,6 +6,7 @@ import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
 import { createStellarCallSession, getActiveStellarCall, stellarCallConfigured, updateStellarCall } from '../lib/stellar-call.js';
 import { DEFAULT_OWNER_CALL_POLICY, OWNER_AUTO_CALL_CATEGORIES, normalizeOwnerCallPolicy } from '../lib/auto-call-rules.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
+import { getOwnerPushPublicKey, ownerPushConfigured, saveOwnerPushSubscription, sendOwnerPushAlert } from '../lib/owner-push.js';
 import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
 function setCors(req, res) {
@@ -68,13 +69,41 @@ export default async function handler(req, res) {
   const internalOwnerCall = ['escalateOwner','callOwner','callHealth'].includes(action) && bridgeToken && suppliedBridgeToken === bridgeToken;
   const internalEscalation = internalOwnerCall;
 
+  let ownerSession = null;
   if (!internalEscalation) {
     const session = requireSession(req, res);
     if (!session) return;
     if (!isOwnerEmail(session.email)) return res.status(403).json({ error: 'Owner access is required.' });
+    ownerSession = session;
   }
 
   if (req.body?.action === 'verifyOwner') return res.status(200).json({ ok: true, owner: true });
+  if (action === 'ownerPushPublicKey') {
+    return res.status(200).json({ ok: true, configured: ownerPushConfigured(), publicKey: getOwnerPushPublicKey() });
+  }
+  if (action === 'ownerPushSubscribe') {
+    const result = await saveOwnerPushSubscription({
+      email: ownerSession?.email || 'owner',
+      subscription: req.body?.subscription,
+      userAgent: req.headers['user-agent'] || '',
+    });
+    return res.status(result.ok ? 200 : 400).json(result);
+  }
+  if (action === 'ownerPushTest') {
+    const created = await createStellarCallSession({
+      category: 'test',
+      severity: 'info',
+      summary: 'Jarvis push-call test. Tap the notification to open the Stellar in-app call.',
+      metadata: { trigger: 'owner-push-test' },
+    });
+    const pushed = await sendOwnerPushAlert({
+      category: 'test',
+      severity: 'urgent',
+      summary: 'Jarvis push-call test. Tap to open Stellar.',
+      call: created?.call || null,
+    });
+    return res.status(200).json({ ok: true, call: created?.call || null, push: pushed });
+  }
 
   if (action === 'stellarCallStatus') {
     return res.status(200).json({ ok: true, configured: stellarCallConfigured(), active: await getActiveStellarCall() });
@@ -140,15 +169,17 @@ export default async function handler(req, res) {
           },
         });
         if (created?.ok) {
+          const pushed = await sendOwnerPushAlert({ category: 'owner-call', severity: 'urgent', summary: purpose, reason: error?.message || 'phone-unavailable', call: created.call || null });
           return res.status(200).json({
             ok: true,
             provider: 'stellar-inapp',
             phone_blocked: true,
-            fallback: 'in_app_call',
+            fallback: pushed?.sent > 0 ? 'push_in_app_call' : 'in_app_call',
             call_id: null,
             status: 'ringing',
             stellar_call: created.call || null,
-            message: 'The phone provider blocked the outbound call, so Stellar opened the in-app Jarvis call instead.',
+            push: pushed,
+            message: pushed?.sent > 0 ? 'The phone provider blocked the outbound call, so Stellar sent a Jarvis push alert and opened the in-app call.' : 'The phone provider blocked the outbound call, so Stellar opened the in-app Jarvis call instead.',
           });
         }
       } catch (fallbackError) {
@@ -198,11 +229,17 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, called: true, provider: data?.provider || null, call_id: data?.call_id || null, status: data?.status || 'started', stellar_call: stellarCall });
     } catch (error) {
       console.error('Urgent owner escalation failed', error?.provider || '', error?.message || error);
+      const pushed = await sendOwnerPushAlert({ category, severity, summary, reason: error?.message || 'phone-unavailable', call: stellarCall });
+      if (pushed?.sent > 0) {
+        const stamp = Date.now();
+        await fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, channel: 'push' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }).catch(() => {});
+        return res.status(200).json({ ok: true, called: false, fallback: 'push', reason: 'phone-unavailable', push: pushed, stellar_call: stellarCall });
+      }
       const emailed = await sendOwnerFallbackEmail({ category, severity, summary });
       if (emailed) {
         const stamp = Date.now();
         await fetch(`${kvUrl}/set/stellar:owner-call:audit/${encodeURIComponent(JSON.stringify({ t: stamp, category, severity, summary, channel: 'email' }))}`, { headers: { Authorization: `Bearer ${kvToken}` } }).catch(() => {});
-        return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable', stellar_call: stellarCall });
+        return res.status(200).json({ ok: true, called: false, fallback: 'email', reason: 'phone-unavailable', push: pushed, stellar_call: stellarCall });
       }
       if (stellarCall) {
         return res.status(200).json({ ok: true, called: false, in_app: true, reason: 'phone-unavailable', stellar_call: stellarCall });
@@ -275,4 +312,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Could not send the broadcast.' });
   }
 }
+
 
