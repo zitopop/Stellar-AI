@@ -13,7 +13,8 @@ test('workspace keeps the current inline visual layer without starter clutter', 
 
 test('model account settings and billing infrastructure remain visible', () => {
   assert.match(app, /id="model-pill"/);
-  assert.match(app, /id="account-box"/);
+  assert.match(app, /id="account-button"/);
+  assert.match(app, /id="settings-signout-row"/);
   assert.match(app, /id="settings-panel"/);
   assert.match(app, /id="set-billing-row"/);
 });

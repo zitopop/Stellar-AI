@@ -5,7 +5,6 @@ import { readFileSync } from 'node:fs';
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const getPlan = readFileSync(new URL('../api/get-plan.js', import.meta.url), 'utf8');
 const auth = readFileSync(new URL('../api/auth.js', import.meta.url), 'utf8');
-const welcome = readFileSync(new URL('../api/send-welcome.js', import.meta.url), 'utf8');
 const broadcast = readFileSync(new URL('../api/broadcast.js', import.meta.url), 'utf8');
 const jarvis = readFileSync(new URL('../lib/jarvis-voice.js', import.meta.url), 'utf8');
 const emailConfig = readFileSync(new URL('../lib/email-config.js', import.meta.url), 'utf8');
@@ -22,7 +21,7 @@ test('privileged UI uses server-verified owner state rather than browser email m
 });
 
 test('all Resend mail paths require configured verified sender instead of Gmail From', () => {
-  for (const source of [auth, welcome, broadcast, jarvis]) {
+  for (const source of [auth, broadcast, jarvis]) {
     assert.doesNotMatch(source, /from:\s*['"]Stellar AI <deadlyfox10@gmail\.com>/);
     assert.match(source, /resendSender/);
   }
@@ -30,14 +29,15 @@ test('all Resend mail paths require configured verified sender instead of Gmail 
   assert.match(readme, /RESEND_FROM_EMAIL/);
 });
 
-test('standalone welcome email is restricted to the authenticated account', () => {
-  assert.match(welcome, /requireSession\(req, res\)/);
-  assert.match(welcome, /normalizedEmail !== session\.email/);
-  assert.match(welcome, /You can only send a welcome email to your signed-in account/);
+test('welcome email resend is restricted to the authenticated account', () => {
+  assert.match(auth, /mode \|\| ''\) === 'send-welcome'/);
+  assert.match(auth, /const session = readSession\(req\)/);
+  assert.match(auth, /normalizedEmail !== session\.email/);
+  assert.match(auth, /You can only send a welcome email to your signed-in account/);
 });
 
 test('welcome display names are HTML escaped before entering email markup', () => {
-  assert.match(welcome, /escapeEmailHtml\(name \|\| normalizedEmail\.split\('@'\)\[0\]\)/);
+  assert.match(auth, /requestedName/);
   assert.match(auth, /const safeName = escapeEmailHtml\(displayName\)/);
   assert.match(emailConfig, /replace\(\/&\/g, '&amp;'\)/);
   assert.match(emailConfig, /replace\(\/<\/g, '&lt;'\)/);
@@ -51,7 +51,7 @@ test('auth endpoints throttle repeated login and signup attempts in shared KV', 
 });
 
 test('authenticated welcome email resends are rate-limited', () => {
-  assert.match(welcome, /stellar:welcome-email-rate:/);
-  assert.match(welcome, /rateCount > 1/);
-  assert.match(welcome, /res\.status\(429\)/);
+  assert.match(auth, /stellar:welcome-email-rate:/);
+  assert.match(auth, /rateCount > 1/);
+  assert.match(auth, /res\.status\(429\)/);
 });

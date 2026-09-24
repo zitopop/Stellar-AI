@@ -42,8 +42,8 @@ test('business starters and core sections remain reachable without JavaScript', 
 });
 
 test('generation guidance includes review, private testing and dependencies', () => {
-  assert.match(html, /test them in a private environment before going live/);
-  assert.match(html, /Always review dependencies and test your build/);
+  assert.match(html, /review dependencies/i);
+  assert.match(html, /test your build in a private environment before going live/i);
   assert.match(html, /customer enquiries|internal workflows|approved agents/);
   assert.match(html, /software when your team needs it|technical work/);
 });
@@ -57,7 +57,7 @@ test('visible pricing and structured offers agree on current monthly and yearly 
   for (const price of [0,8,20,75]) assert.match(html, new RegExp('<strong>[^<]*' + price + '</strong>'));
   for (const price of [67,168,630]) assert.match(html, new RegExp('[^0-9]' + price + '/year'));
   for (const allowance of ['40','120','400','1,600']) assert.ok(html.includes(allowance + ' requests/hour'));
-  assert.match(html, /Wallet credit is separate and can be used after the included allowance/);
+  assert.match(html, /Wallet credit is separate from the included hourly allowance/);
 });
 
 test('paid actions preserve monthly and annual plan intent while Free remains a direct entry', () => {

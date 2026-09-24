@@ -10,8 +10,9 @@ test('homepage explains Stellar fast with product, pricing and trust anchors', (
   assert.match(landing, /BUSINESS AI · AUTOMATION · AGENTS · SOFTWARE WORKSPACE/);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Open Stellar AI/);
-  assert.match(landing, /Business services such as the AI Receptionist and Website Mini Audit are priced separately above\./);
-  assert.match(landing, /Wallet credit is separate and can be used after the included allowance\./);
+  assert.match(landing, /href="\/ai-receptionist"/);
+  assert.match(landing, /href="\/website-audit"/);
+  assert.match(landing, /Wallet separate from allowance/);
   assert.match(landing, /No fake tested claims|No fabricated results/);
   assert.match(landing, /Stripe checkout/);
   assert.match(landing, /Cancel anytime/);
@@ -56,4 +57,12 @@ test('business palette follows older themes and the finishing layer retains the 
   assert.equal(styles.at(-1), '/lib/assets/stellar-refinements.css?v=20260924');
   assert.doesNotMatch(palette, /#(?:d4af37|f2d675|f4d676|8f6b1e|b8860b)/i);
   assert.match(palette, /Business homepage final neutral override v9/);
+});
+
+test('business homepage keeps the executive premium presentation layer', () => {
+  assert.match(palette, /Executive premium layer v11/);
+  assert.match(palette, /\.public-home \.site-header \.nav/);
+  assert.match(palette, /\.public-home \.final-cta/);
+  assert.match(landing, /Clear answers before you choose\./);
+  assert.match(landing, /Bring the work\./);
 });

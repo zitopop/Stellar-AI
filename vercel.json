@@ -410,6 +410,14 @@
   ],
   "rewrites": [
     {
+      "source": "/api/client-metric",
+      "destination": "/api/track-event?mode=client-metric"
+    },
+    {
+      "source": "/api/send-welcome",
+      "destination": "/api/auth?mode=send-welcome"
+    },
+    {
       "source": "/api/save-chats",
       "destination": "/api/get-chats"
     },
@@ -1177,7 +1185,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=600, stale-while-revalidate=86400"
+          "value": "private, no-store, max-age=0, must-revalidate"
         }
       ]
     },
@@ -1247,8 +1255,11 @@
     }
   ],
   "ignoreCommand": "bash scripts/vercel-ignore-build.sh",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": ".",
   "functions": {
-    "api/desktop-agent.js": { "maxDuration": 300 }
-  },
-  "$schema": "https://openapi.vercel.sh/vercel.json"
+    "api/desktop-agent.js": {
+      "maxDuration": 300
+    }
+  }
 }

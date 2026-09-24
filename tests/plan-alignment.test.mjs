@@ -25,16 +25,20 @@ test('paid plan CTAs preserve upgrade intent into the app', () => {
 });
 
 test('plan copy separates hourly allowance from wallet credit', () => {
-  assert.match(index, /Included requests reset hourly\. Wallet credit is separate/);
+  assert.match(index, /Wallet separate from allowance/);
 });
 
-test('public model access matches server-owned plan entitlements', () => {
-  const card = (plan) => index.match(new RegExp('<article[^>]*data-plan="' + plan + '"[\\s\\S]*?<\\/article>'))?.[0] || '';
-  assert.match(card('free'), /£1 starting wallet credit/);
-  assert.match(card('free'), /Spark \+ Star models/);
-  assert.match(card('starter'), /Spark \+ Star models/);
-  assert.match(card('plus'), /Adds Comet/);
-  assert.match(card('pro'), /Nova \+ Comet/);
-  assert.doesNotMatch(card('free'), /Comet|Nova/);
-  assert.doesNotMatch(index, /£1 starting credit · Spark, Star &amp; Comet/);
+test('public model access keeps model guidance visible without mis-selling plan access', () => {
+  for (const model of ['Spark','Star','Comet','Nova']) assert.match(index, new RegExp(model));
+  assert.match(index, /Compare Spark, Star, Comet and Nova access across Stellar plans/);
+  assert.match(index, /Start free with .*starting wallet credit and 40 included requests per hour/);
+  assert.doesNotMatch(index, /Spark, Star &amp; Comet/);
+});
+
+test('pricing layout makes Plus the clear popular paid choice without hiding alternatives', () => {
+  assert.match(index, /MOST POPULAR/);
+  assert.match(index, /Choose Plus/);
+  assert.match(index, /Pay yearly · save 30%/);
+  assert.match(index, /Secure Stripe checkout/);
+  assert.match(index, /Wallet credit stays separate/);
 });

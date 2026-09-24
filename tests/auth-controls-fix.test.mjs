@@ -20,12 +20,12 @@ test('account controls remain explicit touch-safe buttons', () => {
   assert.match(app, /<button type="button" onclick="emailAuth\('login'\)"[^>]*>Sign in<\/button>/);
   assert.match(app, /<button type="button" onclick="emailAuth\('signup'\)"[^>]*>Create account<\/button>/);
   assert.match(app, /id="auth-password"/);
-  assert.match(app, /#account-box \.acct-out-btn\{[\s\S]*?min-width:86px!important;[\s\S]*?text-indent:0!important/);
-  assert.match(app, /#account-box \.acct-out-btn::after\{[\s\S]*?content:none!important/);
+  assert.match(app, /id="account-button"[^>]*onclick="accountAction\(\)"/);
+  assert.match(app, /id="settings-signout-row"[^>]*signed-in-only/);
 });
 
 test('Settings keeps an authenticated session active', () => {
-  assert.match(app, /function\s+settingsAuthAction\(\)\s*\{[\s\S]*?if\s*\(signedInUser&&signedInUser\.email\)[\s\S]*?Opening Settings will not sign you out\.[\s\S]*?return[\s\S]*?closeSettings\(\);openWelcome\(\)/);
+  assert.match(app, /function\s+settingsAuthAction\(\)\s*\{[\s\S]*?if\s*\(signedInUser&&signedInUser\.email\)[\s\S]*?You are signed in\.[\s\S]*?return[\s\S]*?closeSettings\(\);openWelcome\(\)/);
   assert.doesNotMatch(app, /function\s+settingsAuthAction\(\)\s*\{[\s\S]*?signOut\(\)/);
   assert.match(app, /authKey\.textContent=signedIn\?'Signed in':'Sign in'/);
   assert.match(app, /authRow\.classList\.toggle\('set-click',!signedIn\)/);
@@ -33,7 +33,7 @@ test('Settings keeps an authenticated session active', () => {
 
 test('owner tools only appear for recognised owner UI state', () => {
   assert.match(app, /owner-only/);
-  assert.match(app, /deadlyfox10@gmail\.com|tobi@trystellarai\.com|@stellar\.ai/);
+  assert.match(app, /function isOwner\(\)\{return serverOwner===true\}/);
 });
 
 test('Settings hides external sign-in controls once authenticated', () => {

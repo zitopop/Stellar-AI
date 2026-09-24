@@ -20,6 +20,44 @@ const ALLOWED_EVENTS = new Set([
   'website-audit-thank-you-opened',
 ]);
 
+const CLIENT_METRIC_EVENTS = new Set([
+  'landing-view','app-view','app-open-cta','upgrade-intent','signup-success','login-success',
+  'first-message-sent','chat-send-error','checkout-open','checkout-error','billing-open','client-error',
+]);
+
+const clientWindows = new Map();
+const CLIENT_WINDOW_MS = 60_000;
+const CLIENT_MAX_PER_WINDOW = 40;
+
+function allowClientMetric(event) {
+  const now = Date.now();
+  const current = clientWindows.get(key);
+  if (!current || now - current.startedAt >= CLIENT_WINDOW_MS) {
+    clientWindows.set(key, { startedAt: now, count: 1 });
+    if (clientWindows.size > 5000) {
+      for (const [storedKey, value] of clientWindows) {
+        if (now - value.startedAt >= CLIENT_WINDOW_MS) clientWindows.delete(storedKey);
+      }
+    }
+    return true;
+  }
+  current.count += 1;
+  return current.count <= CLIENT_MAX_PER_WINDOW;
+}
+
+async function handleClientMetric(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
+  const event = String(req.body?.event || '').trim().toLowerCase();
+  if (!CLIENT_METRIC_EVENTS.has(event)) return res.status(400).json({ error: 'Unknown metric.' });
+  if (!allowClientMetric(event)) return res.status(204).end();
+
+  await incrementConversionMetric('client-' + event);
+  if (event === 'client-error' || event === 'chat-send-error' || event === 'checkout-error') {
+    console.warn('stellar_client_signal', { event });
+  }
+  return res.status(204).end();
+}
+
 function setCors(req, res) {
   const origin = req.headers.origin || '';
   const allowed = /^https:\/\/(?:[a-z0-9-]+\.)?trystellarai\.com$/i.test(origin)
@@ -45,6 +83,7 @@ function cleanContext(value) {
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
+  if (String(req.query?.mode || '') === 'client-metric') return handleClientMetric(req, res);
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
   const event = cleanEvent(req.body?.event);

@@ -48,3 +48,10 @@ test('owner accounts can open plan and wallet checkout for production testing', 
   assert.match(app, /onclick="startPlanCheckout\('pro'\)"/);
   assert.match(app, /onclick="startCreditCheckout\(\)"/);
 });
+
+
+test('guest plan clicks save the selected upgrade before sign-in', () => {
+  assert.match(app, /function savePendingUpgrade\(plan\)/);
+  assert.match(app, /pendingUpgradeIntent\(normalized\)/);
+  assert.match(app, /then Stripe checkout will open for/);
+});
