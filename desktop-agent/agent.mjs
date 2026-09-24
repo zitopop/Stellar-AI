@@ -231,6 +231,21 @@ async function execute(config,task){
       const result=await runProcess(command,{cwd});
       return `EXIT ${result.code}\nSTDOUT\n${result.stdout}\nSTDERR\n${result.stderr}`;
     }
+    case 'type_text': {
+      if(task.approved!==true) throw new Error('type_text was not approved.');
+      const text=String(args.text||'');
+      if(!text||text.length>4000) throw new Error('Text to type is empty or too long.');
+      if(redactSensitive(text)!==text) throw new Error('Typing likely credentials or secrets is blocked.');
+      const encoded=Buffer.from(text,'utf8').toString('base64');
+      const script=`$bytes=[Convert]::FromBase64String('${encoded}'); $text=[Text.Encoding]::UTF8.GetString($bytes); Set-Clipboard -Value $text; Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait('^v')`;
+      const result=await new Promise((resolve,reject)=>{
+        const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-Command',script],{windowsHide:true});
+        let stderr=''; child.stderr?.on('data',d=>stderr=cap(stderr+d,4000));
+        child.on('error',reject); child.on('close',code=>resolve({code,stderr}));
+      });
+      if(result.code!==0) throw new Error(result.stderr||'Text typing failed.');
+      return `Typed ${text.length} characters into the active field. Nothing was sent.`;
+    }
     case 'keyboard_shortcut': {
       if(task.approved!==true) throw new Error('keyboard_shortcut was not approved.');
       const allowed=new Set(['CTRL+TAB','CTRL+SHIFT+TAB','ALT+TAB','CTRL+L','CTRL+W','CTRL+R']);
