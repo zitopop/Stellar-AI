@@ -127,6 +127,33 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, provider: data.provider, call_id: data.call_id || null, status: data.status || 'started' });
     } catch (error) {
       console.error('Owner call provider error', error?.provider || '', error?.message || error);
+      try {
+        const created = await createStellarCallSession({
+          category: 'owner-call',
+          severity: 'info',
+          summary: purpose || 'Jarvis tried to phone you, but the phone provider blocked the call.',
+          metadata: {
+            trigger: 'owner-call-phone-fallback',
+            phoneProvider: error?.provider || 'phone',
+            phoneStatus: error?.status || null,
+            phoneMessage: String(error?.message || 'phone-unavailable').slice(0, 240),
+          },
+        });
+        if (created?.ok) {
+          return res.status(200).json({
+            ok: true,
+            provider: 'stellar-inapp',
+            phone_blocked: true,
+            fallback: 'in_app_call',
+            call_id: null,
+            status: 'ringing',
+            stellar_call: created.call || null,
+            message: 'The phone provider blocked the outbound call, so Stellar opened the in-app Jarvis call instead.',
+          });
+        }
+      } catch (fallbackError) {
+        console.error('Owner in-app call fallback failed', fallbackError?.message || fallbackError);
+      }
       return res.status(error?.status >= 400 && error?.status < 500 ? error.status : 502).json({ error: 'The phone service could not start the call.' });
     }
   }
