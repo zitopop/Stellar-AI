@@ -8,7 +8,7 @@ test('Google identity is loaded only when sign-in is opened', () => {
   assert.doesNotMatch(app, /<script src="https:\/\/accounts\.google\.com\/gsi\/client"/);
   assert.match(app, /function loadGoogleIdentityScript\(\)/);
   assert.match(app, /script\.src='https:\/\/accounts\.google\.com\/gsi\/client'/);
-  assert.match(app, /if\\\(!signedInUser\\\)void initGoogleSignIn\\\(\\\)/);
+  assert.match(app, /if\(!signedInUser\)void initGoogleSignIn\(\)/);
   assert.doesNotMatch(app, /updateCreditUi\(\);initGoogleSignIn\(\);/);
 });
 
