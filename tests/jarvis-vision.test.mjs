@@ -6,9 +6,10 @@ const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const jarvis = fs.readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
 const vercel = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
 
-test('app exposes routed Stellar Voice and Vision workspace', () => {
-  assert.match(app, /id="jarvis-nav"[^>]*href="\/jarvis"[^>]*aria-label="Open Stellar Voice and Vision"/);
-  assert.match(app, />Voice \/ Vision<\/a>/);
+test('app exposes Jarvis while retaining a separate Voice and Vision workspace', () => {
+  assert.match(app, /id="jarvis-nav"[^>]*href="\/jarvis"[^>]*aria-label="Open Jarvis assistant"/);
+  const workspace = fs.readFileSync(new URL('../jarvis-workspace.html', import.meta.url), 'utf8');
+  assert.match(workspace, /href="\/jarvis\/vision"/);
 });
 
 test('Jarvis Vision has local camera hand controls plus pointer fallback', () => {
@@ -22,7 +23,8 @@ test('Jarvis Vision has local camera hand controls plus pointer fallback', () =>
 });
 
 test('deployment routes Jarvis and limits camera permission to same origin', () => {
-  assert.ok(vercel.rewrites.some((route) => route.source === '/jarvis' && route.destination === '/jarvis.html'));
+  assert.ok(vercel.rewrites.some((route) => route.source === '/jarvis' && route.destination === '/jarvis-workspace.html'));
+  assert.ok(vercel.rewrites.some((route) => route.source === '/jarvis/vision' && route.destination === '/jarvis.html'));
   const permission = vercel.headers.flatMap((entry) => entry.headers || []).find((entry) => entry.key === 'Permissions-Policy');
   assert.equal(permission?.value, 'camera=(self), geolocation=(), payment=()');
 });

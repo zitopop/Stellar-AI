@@ -1,0 +1,51 @@
+/* Shared finishing layer: legibility, calmer surfaces and consistent controls. */
+html{scroll-padding-top:90px;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:#75609a;color:#fff}
+:where(a,button,input,select,textarea,summary):focus-visible{outline:2px solid #c4b5f0;outline-offset:4px}
+:where(button,a.button,a.btn){touch-action:manipulation}
+:where(h1,h2,h3){text-wrap:balance}
+:where(p,li){text-wrap:pretty}
+:where(.brand-mark,.brand-icon,.brand .mark){background:linear-gradient(145deg,#362a50,#201c30)!important;color:#cab6f6!important;border:1px solid #5a4473;border-radius:10px!important;box-shadow:none!important}
+:where(.card,.plan,.plugin-card){box-shadow:0 12px 35px #0000000d}
+:where(.card,.plan,.plugin-card):focus-within{border-color:#8c78ae}
+body.public-home .oa2-hero h1{letter-spacing:-.055em!important;line-height:1.04!important}
+body.public-home .oa2-hero{padding-top:clamp(54px,7vw,90px)!important}
+body.public-home .pricing-foot{max-width:780px;margin-inline:auto;text-align:center}
+body.public-home .pricing-foot p{font-size:12px!important;line-height:1.8!important;color:#b2b8c8!important}
+body.public-home .plan .plan-desc{line-height:1.7!important}
+body.public-home .plan.featured{box-shadow:0 0 0 1px #9b81c82b,0 16px 55px #20162f38!important}
+/* Workspace components keep their existing layout and state transitions. */
+.app{height:100dvh;min-height:0;overflow:hidden}
+.app .main{height:100dvh;min-height:0;overflow:hidden}
+.app .side-title{color:#a5adbd;letter-spacing:.12em}
+.app .empty-work,.app .meta{color:#a0a9bb}
+.app .welcome h1{font-weight:700;letter-spacing:-.045em;line-height:1.12}
+.app .welcome p{color:#b7bed0;max-width:560px;line-height:1.8}
+.app .quality-strip span{font-weight:600;font-size:11px;color:#b9bdd0;background:transparent;border-color:#303342}
+.app .btn.primary{background:#c6b5ef;color:#231b31;box-shadow:none}
+.app .btn.primary:hover{background:#ddcdfb}
+.app .composer{background:#161924;border-color:#383343;box-shadow:0 10px 40px #00000026}
+.app .composer textarea::placeholder{color:#a4aabd}
+.app .composer .credit-note,.app .composer .professional-note{color:#a0a8ba;line-height:1.7}
+.app .composer .status{color:#b0b8c9}
+.app .composer .status.error{color:var(--danger)}
+.app .composer .status.good{color:var(--good)}
+.app .composer .status.warn{color:var(--warn)}
+.app .user .bubble{background:#292337;color:#eee7fa;border-color:#493956;border-radius:17px 17px 5px 17px}
+.app .assistant .bubble{background:#141822;border-radius:5px 17px 17px 17px;color:#e1e5ef;line-height:1.8}
+.settings-panel .settings-card{padding:24px;background:#141722;border-color:#3c344b;box-shadow:0 30px 100px #0007}
+.settings-panel .settings-row,.settings-panel .set-item{padding:12px;gap:14px;min-height:56px;flex-wrap:wrap;background:#1a1d29;border:1px solid #303443;border-radius:12px}
+.settings-panel .settings-row small,.settings-panel .set-item small{font-size:11px;line-height:1.6;color:#aeb6c7}
+.settings-panel .settings-grid{gap:10px}
+@media(max-width:640px){
+  :where(.button,.btn,summary,.plan-yearly-link){min-height:44px}
+  :where(input:not([type=checkbox]):not([type=radio]),textarea,select){font-size:16px}
+  body.public-home .oa2-hero h1{font-size:clamp(36px,10vw,56px)!important;letter-spacing:-.045em!important}
+  body.public-home .oa2-hero{padding-top:44px!important}
+  .app .welcome h1{font-size:clamp(32px,9vw,46px)}
+  .app .composer textarea{font-size:16px}
+  .settings-panel .settings-card{padding:22px 16px calc(22px + env(safe-area-inset-bottom))}
+  .settings-panel .settings-row,.settings-panel .set-item{align-items:flex-start;overflow-wrap:anywhere}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

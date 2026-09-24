@@ -29,9 +29,12 @@ test('plan copy separates hourly allowance from wallet credit', () => {
 });
 
 test('public model access matches server-owned plan entitlements', () => {
-  assert.match(index, /£1 starting credit · Spark &amp; Star/);
-  assert.match(index, /Stronger context \+ deliberate self-review · Spark &amp; Star/);
-  assert.match(index, /multi-file validation · adds Comet/);
-  assert.match(index, /Nova \+ maximum multi-pass engineering review · includes Comet/);
+  const card = (plan) => index.match(new RegExp('<article[^>]*data-plan="' + plan + '"[\\s\\S]*?<\\/article>'))?.[0] || '';
+  assert.match(card('free'), /£1 starting wallet credit/);
+  assert.match(card('free'), /Spark \+ Star models/);
+  assert.match(card('starter'), /Spark \+ Star models/);
+  assert.match(card('plus'), /Adds Comet/);
+  assert.match(card('pro'), /Nova \+ Comet/);
+  assert.doesNotMatch(card('free'), /Comet|Nova/);
   assert.doesNotMatch(index, /£1 starting credit · Spark, Star &amp; Comet/);
 });
