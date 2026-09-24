@@ -30,6 +30,7 @@ const CLIENT_WINDOW_MS = 60_000;
 const CLIENT_MAX_PER_WINDOW = 40;
 
 function allowClientMetric(event) {
+  const key = String(event || 'client-metric').slice(0, 80);
   const now = Date.now();
   const current = clientWindows.get(key);
   if (!current || now - current.startedAt >= CLIENT_WINDOW_MS) {
