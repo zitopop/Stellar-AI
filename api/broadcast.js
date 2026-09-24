@@ -2,7 +2,7 @@
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
-import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
+import { handleTelnyxVoiceWebhook, readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
 import { createStellarCallSession, getActiveStellarCall, stellarCallConfigured, updateStellarCall } from '../lib/stellar-call.js';
 import { DEFAULT_OWNER_CALL_POLICY, OWNER_AUTO_CALL_CATEGORIES, normalizeOwnerCallPolicy } from '../lib/auto-call-rules.js';
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
@@ -62,6 +62,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
   if (String(req.query?.jarvisVoice || '') === '1') return handleJarvisVoiceWebhook(req, res);
+  if (String(req.query?.telnyxVoice || '') === '1') return handleTelnyxVoiceWebhook(req, res);
 
   const action = String(req.body?.action || '');
   const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');

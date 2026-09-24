@@ -451,7 +451,7 @@ html,body{height:100%!important;overflow:hidden!important;background:#0b0c10!imp
         <span class="settings-credit-copy">
           <strong>Jarvis call setup</strong>
           <small id="owner-call-setup-status">Press Check call system to see what is missing.</small>
-          <small id="owner-call-setup-list" class="call-setup-list">Needs production env: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, OWNER_PHONE, OWNER_CALL_END_TO_END_VERIFIED=true.</small>
+          <small id="owner-call-setup-list" class="call-setup-list">Real phone options: Twilio env TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER; or Telnyx env TELNYX_API_KEY, TELNYX_CONNECTION_ID, TELNYX_FROM_NUMBER. Both need OWNER_PHONE and OWNER_CALL_END_TO_END_VERIFIED=true after a successful test.</small>
         </span>
       </div>
 
@@ -557,7 +557,7 @@ function voiceRecognitionConstructor(){return window.SpeechRecognition||window.w
   const verified=data.endToEndVerified===true;
   const bridge=data.retell===true||data.bridgeConfigured===true||data.provider==='retell';
   const missing=[];
-  if(!twilio&&!bridge)missing.push('Connect Twilio or the Retell bridge');
+  if(!twilio&&!telnyx&&!bridge)missing.push('Connect Twilio, Telnyx, or the Retell bridge');
   if(!owner)missing.push('Add OWNER_PHONE');
   if(!storage)missing.push('Check KV_REST_API_URL and KV_REST_API_TOKEN');
   if(!verified)missing.push('Set OWNER_CALL_END_TO_END_VERIFIED=true after one successful test');
