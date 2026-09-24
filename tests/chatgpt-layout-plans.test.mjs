@@ -22,13 +22,13 @@ test('plan and wallet detail is kept in Settings instead of cluttering the sideb
   assert.match(app, /Compare plans/);
 });
 
-test('landing uses a conversational Stellar entry and plan-limit guidance', () => {
-  assert.match(landing, /AI systems for real business work\./);
-  assert.match(landing, /BUSINESS AI[\s\S]*AUTOMATION[\s\S]*AGENTS[\s\S]*SOFTWARE WORKSPACE/);
+test('landing uses a concise conversational entry with clear pricing access', () => {
+  assert.match(landing, /AI for real work\./);
+  assert.match(landing, /Ask, build, automate and solve problems from one focused workspace\./);
   assert.match(landing, /Message Stellar AI/);
-  assert.match(landing, /Roblox Studio Agent/);
-  assert.match(landing, /PC Agent/);
-  assert.match(landing, /Wallet separate from allowance/);
+  assert.match(landing, /href="#plans" class="oa2-secondary-action">See pricing<\/a>/);
+  assert.match(landing, /id="stellar-home-calm-v16"/);
+  assert.match(landing, /\.oa2-proof-row,.public-home \.oa2-starters,.public-home \.oa2-quicklinks\{display:none!important\}/);
   assert.match(landing, /Prices and checkout are in GBP/);
 });
 

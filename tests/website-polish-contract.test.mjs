@@ -5,18 +5,15 @@ import { readFileSync } from 'node:fs';
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const palette = readFileSync(new URL('../stellar-business-palette.css', import.meta.url), 'utf8');
 
-test('homepage explains Stellar fast with product, pricing and trust anchors', () => {
-  assert.match(landing, /AI systems for real business work\./);
-  assert.match(landing, /BUSINESS AI · AUTOMATION · AGENTS · SOFTWARE WORKSPACE/);
+test('homepage explains Stellar fast without repeating conversion clutter', () => {
+  assert.match(landing, /AI for real work\./);
+  assert.match(landing, /Ask, build, automate and solve problems from one focused workspace\./);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Open Stellar AI/);
-  assert.match(landing, /href="\/ai-receptionist"/);
-  assert.match(landing, /href="\/website-audit"/);
-  assert.match(landing, /Wallet separate from allowance/);
-  assert.match(landing, /No fake tested claims|No fabricated results/);
-  assert.match(landing, /Stripe checkout/);
-  assert.match(landing, /Cancel anytime/);
-  assert.match(landing, /Email support/);
+  assert.match(landing, /See pricing/);
+  assert.match(landing, /id="stellar-home-calm-v16"/);
+  assert.match(landing, /\.oa2-business-first,[\s\S]*\.oa2-delivery,[\s\S]*\.oa2-guides,[\s\S]*\.oa2-business,[\s\S]*updates-title[^}]*\{display:none!important\}/);
+  assert.match(landing, /What Stellar helps you do\./);
   assert.match(landing, /href="\/support"[^>]*>Support<\/a>/i);
 });
 

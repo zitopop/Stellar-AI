@@ -7,13 +7,15 @@ const js = read('lib/assets/homepage.js');
 const css = read('lib/assets/homepage.css');
 const graph = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])['@graph'];
 
-test('hero presents Stellar as a business AI platform and offers first-run onboarding', () => {
+test('hero stays concise and offers first-run onboarding', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.match(html, /BUSINESS AI[\s\S]*AUTOMATION[\s\S]*AGENTS[\s\S]*SOFTWARE WORKSPACE/);
-  assert.match(html, /AI systems for real business work\./);
+  assert.match(html, /<div class="oa2-wordmark">STELLAR AI<\/div>/);
+  assert.match(html, /AI for real work\./);
+  assert.match(html, /Ask, build, automate and solve problems from one focused workspace\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /1 starting credit/);
+  assert.match(html, /href="#plans" class="oa2-secondary-action">See pricing<\/a>/);
 });
 
 test('preview is an example and its bounded prompt opens the app without generating', () => {
