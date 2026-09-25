@@ -91,128 +91,152 @@
   .stellar-call-connected .stellar-call-avatar{animation:none!important}
 }
 
-/* ChatGPT-style Settings override — loaded after the main workspace polish. */
+/* Premium Settings sheet — final override loaded after the main workspace polish. */
 .app .settings-panel{
   display:none;
   position:fixed;
   inset:0;
   z-index:2600;
-  padding:20px!important;
-  background:rgba(0,0,0,.58)!important;
-  backdrop-filter:blur(10px)!important;
-  -webkit-backdrop-filter:blur(10px)!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  padding:clamp(18px,4vw,34px)!important;
+  background:rgba(1,2,5,.68)!important;
+  backdrop-filter:blur(18px) saturate(120%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(120%)!important;
 }
+.app .settings-panel[aria-hidden="false"]{display:flex!important}
 .app .settings-card{
-  width:min(880px,calc(100vw - 40px))!important;
-  max-height:min(760px,86dvh)!important;
-  margin:5vh auto 0!important;
+  width:min(760px,calc(100vw - 34px))!important;
+  max-height:min(760px,88dvh)!important;
+  margin:clamp(10px,3vh,28px) auto 0!important;
   padding:0!important;
   overflow:hidden!important;
   display:grid!important;
-  grid-template-columns:220px minmax(0,1fr)!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
   border:1px solid rgba(255,255,255,.12)!important;
-  border-radius:16px!important;
-  background:#111111!important;
-  box-shadow:0 24px 80px rgba(0,0,0,.50)!important;
-  color:#ececf1!important;
+  border-radius:28px!important;
+  background:
+    radial-gradient(560px 220px at 50% 0%,rgba(139,124,246,.13),transparent 70%),
+    linear-gradient(180deg,#141722,#0f1118)!important;
+  box-shadow:0 34px 120px rgba(0,0,0,.56),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  color:#f2f4fa!important;
 }
 .app .settings-header{
-  grid-column:1!important;
-  grid-row:1!important;
-  position:relative!important;
-  display:block!important;
-  padding:20px 14px!important;
+  position:sticky!important;
+  top:0!important;
+  z-index:4!important;
+  min-height:72px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding:18px 20px!important;
   border:0!important;
-  border-right:1px solid rgba(255,255,255,.08)!important;
-  background:#171717!important;
-  min-height:100%!important;
+  border-bottom:1px solid rgba(255,255,255,.075)!important;
+  background:rgba(17,20,29,.94)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
 }
-.app .settings-header::after{
-  content:"General\A Account\A Plans\A Tools\A Calls\A Billing\A Support";
-  white-space:pre-line;
-  display:block;
-  margin-top:18px;
-  color:#cfcfd6;
-  font-size:13px;
-  font-weight:650;
-  line-height:2.7;
-}
-.app .settings-header-copy{display:block!important}
-.app .settings-kicker{display:none!important}
-.app .settings-header h2{
+.app .settings-header::after{display:none!important;content:none!important}
+.app .settings-header-copy{min-width:0!important;display:block!important}
+.app .settings-kicker{
+  display:block!important;
   margin:0 0 4px!important;
-  font-size:19px!important;
-  line-height:1.25!important;
-  letter-spacing:-.02em!important;
-  color:#f4f4f5!important;
+  color:#a99fff!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+}
+.app .settings-header h2{
+  margin:0!important;
+  color:#fff!important;
+  font-size:24px!important;
+  line-height:1.1!important;
+  letter-spacing:-.045em!important;
+  font-weight:780!important;
 }
 .app .settings-header p{
-  margin:0!important;
-  max-width:170px!important;
-  color:#9b9ba3!important;
+  margin:5px 0 0!important;
+  max-width:560px!important;
+  color:#97a0af!important;
   font-size:12px!important;
   line-height:1.45!important;
 }
 .app .settings-close-x{
-  position:absolute!important;
-  right:10px!important;
-  top:10px!important;
-  width:32px!important;
-  min-width:32px!important;
-  height:32px!important;
-  min-height:32px!important;
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  min-height:42px!important;
   display:grid!important;
   place-items:center!important;
-  border:0!important;
-  border-radius:8px!important;
-  background:transparent!important;
-  color:#9b9ba3!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:14px!important;
+  background:#191c26!important;
+  color:#b4bdca!important;
   font-size:20px!important;
+  box-shadow:none!important;
 }
-.app .settings-close-x:hover{background:#242424!important;color:#fff!important}
+.app .settings-close-x:hover{background:#232734!important;color:#fff!important;border-color:rgba(185,176,255,.20)!important}
 .app .settings-grid{
-  grid-column:2!important;
-  display:block!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:8px!important;
   min-width:0!important;
-  max-height:min(760px,86dvh)!important;
+  max-height:none!important;
   overflow:auto!important;
-  padding:20px 24px 24px!important;
+  padding:12px!important;
   scrollbar-width:thin!important;
-  background:#111111!important;
+  background:transparent!important;
 }
 .app .settings-grid::before{
-  content:"Settings";
-  display:block;
-  margin:0 0 16px;
-  color:#f4f4f5;
-  font-size:24px;
-  line-height:1.2;
-  letter-spacing:-.035em;
-  font-weight:720;
+  content:"Account & controls";
+  display:block!important;
+  margin:3px 6px 2px!important;
+  color:#757e8e!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
 }
 .app .settings-row,
 .app .settings-credit{
   width:100%!important;
-  min-height:54px!important;
+  min-height:58px!important;
   display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-columns:40px minmax(0,1fr) auto!important;
   align-items:center!important;
-  gap:14px!important;
+  gap:12px!important;
   margin:0!important;
-  padding:13px 0!important;
-  border:0!important;
-  border-bottom:1px solid rgba(255,255,255,.10)!important;
-  border-radius:0!important;
-  background:transparent!important;
+  padding:12px!important;
+  border:1px solid rgba(255,255,255,.065)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.028)!important;
   box-shadow:none!important;
-  color:#ececf1!important;
+  color:#e9edf6!important;
   text-align:left!important;
   transform:none!important;
 }
 .app .settings-row:hover,
-.app .settings-credit:hover{background:transparent!important;border-color:rgba(255,255,255,.14)!important;transform:none!important}
+.app .settings-credit:hover{
+  background:rgba(255,255,255,.045)!important;
+  border-color:rgba(185,176,255,.20)!important;
+  transform:none!important;
+}
 .app .settings-wide{grid-column:auto!important}
-.app .settings-icon{display:none!important}
+.app .settings-icon{
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(185,176,255,.16)!important;
+  border-radius:13px!important;
+  background:rgba(139,124,246,.11)!important;
+  color:#d7d0ff!important;
+  font-size:15px!important;
+}
 .app .settings-row-copy,
 .app .settings-credit-copy{
   min-width:0!important;
@@ -223,118 +247,211 @@
 .app .settings-credit-copy strong{
   display:block!important;
   margin:0 0 3px!important;
-  color:#ececf1!important;
+  color:#f5f7fb!important;
   font-size:14px!important;
-  line-height:1.3!important;
-  letter-spacing:-.01em!important;
-  font-weight:650!important;
+  line-height:1.25!important;
+  letter-spacing:-.012em!important;
+  font-weight:780!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
 }
 .app .settings-row small,
 .app .settings-credit-copy small{
   display:block!important;
-  color:#a9a9b3!important;
-  font-size:12px!important;
+  max-width:54ch!important;
+  color:#98a2b3!important;
+  font-size:11.5px!important;
   line-height:1.45!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
 }
 .app .settings-row-meta{
   justify-self:end!important;
   max-width:220px!important;
-  color:#a9a9b3!important;
+  padding:4px 8px!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:999px!important;
+  background:#151822!important;
+  color:#9ea7b6!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1.35!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.app .settings-row-meta>span{color:#bdb5ff!important;font-size:13px!important;margin-left:6px!important}
+.app #usage-copy,
+.app #owner-call-health,
+.app #owner-push-status,
+.app #owner-call-setup-status,
+.app .topup-status{
+  display:block!important;
+  margin-top:3px!important;
+  color:#8791a1!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+}
+.app .settings-plan-hero{
+  min-height:76px!important;
+  border-color:rgba(155,140,255,.24)!important;
+  background:linear-gradient(135deg,rgba(139,124,246,.18),rgba(21,24,34,.92))!important;
+}
+.app .settings-plan-hero .settings-icon{background:rgba(155,140,255,.18)!important;color:#eeeaff!important}
+.app .settings-row-action,
+.app .settings-credit-primary,
+.app #topup-buy,
+.app .settings-plan-actions .credit-buy-controls .btn,
+.app .settings-wallet-row .credit-buy-controls .btn{
+  min-height:38px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 13px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:12px!important;
+  background:#202331!important;
+  color:#eef1f8!important;
+  box-shadow:none!important;
   font-size:12px!important;
-  font-weight:500!important;
+  font-weight:800!important;
   white-space:nowrap!important;
 }
-.app .settings-row-meta>span{color:#8e8e96!important;font-size:16px!important;margin-left:8px!important}
-.app .settings-plan-hero,
+.app .settings-row-action:hover,
+.app .settings-credit-primary:hover,
+.app #topup-buy:hover,
+.app .settings-plan-actions .credit-buy-controls .btn:hover,
+.app .settings-wallet-row .credit-buy-controls .btn:hover{
+  background:#2a2e3d!important;
+  border-color:rgba(185,176,255,.24)!important;
+}
 .app .settings-plan-actions,
 .app .settings-wallet-row,
 .app .call-setup-panel{
-  padding:15px 0!important;
-  background:transparent!important;
+  align-items:start!important;
+  grid-template-columns:40px minmax(0,1fr) auto!important;
+  background:rgba(255,255,255,.022)!important;
 }
-.app .settings-plan-hero .settings-row-action,
-.app .settings-plan-actions .credit-buy-controls .btn,
-.app .settings-wallet-row .credit-buy-controls .btn,
-.app .settings-credit-primary,
-.app #topup-buy{
-  min-height:36px!important;
-  border-radius:999px!important;
-  border:1px solid rgba(255,255,255,.14)!important;
-  background:#2f2f2f!important;
-  color:#f4f4f5!important;
-  box-shadow:none!important;
-  padding:0 13px!important;
-  font-size:12px!important;
-  font-weight:650!important;
-}
-.app .settings-plan-hero .settings-row-action:hover,
-.app .settings-plan-actions .credit-buy-controls .btn:hover,
-.app #topup-buy:hover{background:#3a3a3a!important}
 .app .settings-plan-actions .credit-buy-controls,
 .app .settings-wallet-row .credit-buy-controls{
+  grid-column:2 / -1!important;
+  width:100%!important;
   display:flex!important;
-  justify-content:flex-end!important;
+  justify-content:flex-start!important;
   align-items:center!important;
   gap:8px!important;
   flex-wrap:wrap!important;
+  margin-top:8px!important;
 }
+.app .settings-plan-actions .credit-buy-controls .btn,
+.app .settings-wallet-row .credit-buy-controls .btn{flex:0 1 auto!important}
 .app .settings-wallet-row select{
   min-width:220px!important;
-  min-height:36px!important;
-  border-radius:8px!important;
-  border:1px solid rgba(255,255,255,.14)!important;
-  background:#1f1f1f!important;
-  color:#ececf1!important;
+  min-height:40px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:12px!important;
+  background:#10131b!important;
+  color:#eef1f8!important;
   padding:0 12px!important;
   font-size:12px!important;
 }
-.app .call-setup-panel{align-items:start!important}
 .app .call-setup-list{
+  grid-column:2 / -1!important;
   display:block!important;
   margin-top:8px!important;
-  padding:10px 11px!important;
-  border:1px solid rgba(255,255,255,.10)!important;
-  border-radius:8px!important;
-  background:#1b1b1b!important;
-  color:#b8b8c0!important;
+  padding:12px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:12px!important;
+  background:#0f1219!important;
+  color:#aeb7c6!important;
   font-family:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace!important;
-  font-size:10px!important;
-  line-height:1.55!important;
+  font-size:10.5px!important;
+  line-height:1.6!important;
   white-space:normal!important;
   overflow-wrap:anywhere!important;
 }
-.app .topup-status{grid-column:1/-1!important;color:#a9a9b3!important;font-size:12px!important}
+.app .settings-advanced-toggle{margin-top:4px!important}
+.app .settings-advanced{background:rgba(255,255,255,.018)!important}
+.app a[href="/support"].settings-row{
+  border-color:rgba(155,140,255,.22)!important;
+  background:linear-gradient(135deg,rgba(155,140,255,.12),rgba(20,23,32,.90))!important;
+}
+.app a[href="/terms"].settings-row,
+.app a[href="/privacy"].settings-row{
+  min-height:42px!important;
+  grid-template-columns:1fr auto!important;
+  padding:10px 12px!important;
+  color:#9ca5b5!important;
+  background:transparent!important;
+}
+.app a[href="/terms"] .settings-icon,
+.app a[href="/privacy"] .settings-icon{display:none!important}
+.app a[href="/terms"] small,
+.app a[href="/privacy"] small{display:none!important}
+.app a[href="/terms"] strong,
+.app a[href="/privacy"] strong{font-size:12px!important;color:#a4adbd!important}
 .app .settings-close-footer{
   width:100%!important;
-  min-height:44px!important;
-  margin:18px 0 0!important;
-  border-radius:10px!important;
-  border:1px solid rgba(255,255,255,.12)!important;
-  background:#2f2f2f!important;
-  color:#f4f4f5!important;
+  min-height:46px!important;
+  margin:10px 0 2px!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:14px!important;
+  background:#191c26!important;
+  color:#d7dde7!important;
   box-shadow:none!important;
+  font-weight:800!important;
 }
+.app .settings-close-footer:hover{background:#232734!important;color:#fff!important}
 .app .settings-row[href="/jarvis"]>strong{
   position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
 }
 @media(max-width:760px){
-  .app .settings-panel{padding:0!important;display:none;align-items:end!important;background:rgba(0,0,0,.64)!important}
+  .app .settings-panel{padding:0!important;align-items:flex-end!important;justify-content:center!important;background:rgba(0,0,0,.66)!important}
+  .app .settings-panel[aria-hidden="false"]{display:flex!important}
   .app .settings-card{
-    width:100%!important;max-width:none!important;max-height:92dvh!important;margin:8dvh 0 0!important;
-    display:block!important;border-radius:20px 20px 0 0!important;border-left:0!important;border-right:0!important;border-bottom:0!important;overflow:auto!important
+    width:100%!important;
+    max-width:none!important;
+    max-height:92dvh!important;
+    margin:8dvh 0 0!important;
+    border-radius:24px 24px 0 0!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
   }
-  .app .settings-header{position:sticky!important;top:0!important;z-index:4!important;min-height:0!important;padding:16px 52px 12px 16px!important;border-right:0!important;border-bottom:1px solid rgba(255,255,255,.10)!important;background:#171717!important}
-  .app .settings-header::after{display:none!important}
-  .app .settings-header h2{font-size:20px!important}
-  .app .settings-header p{max-width:none!important}
-  .app .settings-close-x{right:12px!important;top:12px!important;width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important}
-  .app .settings-grid{max-height:none!important;padding:16px 16px calc(18px + env(safe-area-inset-bottom))!important;overflow:visible!important}
-  .app .settings-grid::before{display:none!important}
-  .app .settings-row,.app .settings-credit{grid-template-columns:minmax(0,1fr)!important;gap:8px!important;min-height:58px!important;padding:14px 0!important}
-  .app .settings-row-meta{justify-self:start!important;max-width:100%!important}
-  .app .settings-plan-hero .settings-row-action{justify-self:start!important;margin-top:6px!important}
-  .app .settings-plan-actions .credit-buy-controls,.app .settings-wallet-row .credit-buy-controls{justify-content:flex-start!important;width:100%!important;margin-top:6px!important}
-  .app .settings-plan-actions .credit-buy-controls .btn{min-height:44px!important;flex:1 1 92px!important}
+  .app .settings-header{min-height:68px!important;padding:15px 60px 13px 16px!important}
+  .app .settings-kicker{display:none!important}
+  .app .settings-header h2{font-size:21px!important}
+  .app .settings-header p{display:none!important}
+  .app .settings-close-x{position:absolute!important;right:14px!important;top:13px!important;width:42px!important;height:42px!important}
+  .app .settings-grid{gap:7px!important;padding:10px 10px calc(16px + env(safe-area-inset-bottom))!important}
+  .app .settings-grid::before{margin:4px 6px 1px!important}
+  .app .settings-row,
+  .app .settings-credit{
+    min-height:60px!important;
+    grid-template-columns:40px minmax(0,1fr) auto!important;
+    padding:11px!important;
+  }
+  .app .settings-row small,
+  .app .settings-credit-copy small{white-space:normal!important;display:block!important;max-height:36px!important}
+  .app .settings-row-meta{max-width:42vw!important}
+  .app .settings-plan-actions,
+  .app .settings-wallet-row,
+  .app .call-setup-panel{grid-template-columns:40px minmax(0,1fr)!important}
+  .app .settings-plan-actions .credit-buy-controls,
+  .app .settings-wallet-row .credit-buy-controls{grid-column:2!important}
+  .app .settings-plan-actions .credit-buy-controls .btn{min-height:44px!important;flex:1 1 100%!important}
   .app .settings-wallet-row select{min-width:0!important;width:100%!important;min-height:44px!important}
   .app #topup-buy{min-height:44px!important;width:100%!important}
+}
+@media(max-width:430px){
+  .app .settings-row,
+  .app .settings-credit{grid-template-columns:38px minmax(0,1fr)!important}
+  .app .settings-row-meta,
+  .app .settings-row-action{grid-column:2!important;justify-self:start!important;margin-top:4px!important;max-width:100%!important}
+  .app .settings-plan-actions .credit-buy-controls,
+  .app .settings-wallet-row .credit-buy-controls,
+  .app .call-setup-list{grid-column:2!important}
 }
