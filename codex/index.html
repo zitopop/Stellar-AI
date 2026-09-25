@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>Stellar Codex Mode</title>
+<meta name="description" content="Stellar Codex Mode plans, inspects, edits and verifies coding work through Stellar AI and the paired PC Agent.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#101219;--panel2:#151823;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.14);--text:#f7f8fb;--muted:#9da5b5;--soft:#cfd6e3;--accent:#bca8ff;--accent2:#79e8ff;--good:#73e2b7;--warn:#ffd479;--bad:#ff8a9a;--max:1180px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(900px 520px at 50% -18%,rgba(121,232,255,.14),transparent 64%),radial-gradient(850px 520px at 20% 0%,rgba(188,168,255,.15),transparent 60%),var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}button,input,textarea{font:inherit}a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 28px));margin:0 auto}.top{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(8,9,13,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.topin{min-height:64px;display:flex;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.035em}.mark{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#242038,#111722);border:1px solid var(--line);color:var(--accent2);box-shadow:0 0 24px rgba(121,232,255,.14)}.back{color:var(--muted);font-weight:750}.pill{margin-left:auto;min-height:34px;display:inline-flex;align-items:center;gap:8px;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.035);color:var(--muted);font-size:12px;font-weight:750}.dot{width:8px;height:8px;border-radius:50%;background:#626a78}.dot.online{background:var(--good);box-shadow:0 0 0 4px rgba(115,226,183,.12)}main{padding:44px 0 70px}.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:22px;align-items:stretch;margin-bottom:18px}.hero-card,.card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(21,24,33,.92),rgba(12,14,20,.92));border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.24)}.hero-card{padding:28px}.kicker{color:var(--accent2);font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:11px}.hero h1{margin:10px 0 14px;font-size:clamp(40px,6.5vw,82px);line-height:.94;letter-spacing:-.065em}.lead{max-width:760px;color:var(--muted);font-size:16px}.rail{display:grid;gap:10px;padding:18px}.rail-item{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:start;padding:13px;border:1px solid var(--line);border-radius:16px;background:rgba(8,10,16,.52)}.num{width:26px;height:26px;border-radius:999px;display:grid;place-items:center;background:rgba(121,232,255,.12);color:#c9f8ff;font-weight:900}.rail strong{display:block}.rail small{color:var(--muted)}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.52fr);gap:18px}.card{padding:20px}.card h2{margin:0 0 8px;font-size:20px;letter-spacing:-.025em}.card p{margin:0 0 14px;color:var(--muted)}textarea{width:100%;min-height:168px;resize:vertical;border:1px solid var(--line2);border-radius:18px;background:#090b10;color:var(--text);padding:15px;outline:none;box-shadow:inset 0 0 0 1px rgba(188,168,255,.03)}textarea:focus{border-color:rgba(121,232,255,.38);box-shadow:0 0 0 3px rgba(121,232,255,.08)}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.btn{min-height:44px;border:1px solid var(--line2);background:#171a23;color:var(--text);border-radius:13px;padding:0 15px;cursor:pointer;font-weight:850}.btn.primary{background:linear-gradient(105deg,#efeaff,#9df4ff);color:#11131a;border:0}.btn.good{border-color:rgba(115,226,183,.28);color:#caffeb}.btn.warn{border-color:rgba(255,212,121,.26);color:#ffe9ad}.btn.danger{border-color:rgba(255,138,154,.30);color:#ffc3ca}.btn:disabled{opacity:.48;cursor:not-allowed}.statusbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.chip{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.035);color:#cbd2de;font-size:12px;font-weight:760}.chip.good{color:#caffeb}.chip.warn{color:#ffe9ad}.chip.bad{color:#ffc1c8}.plan{display:grid;gap:10px;margin-top:16px}.step{display:grid;grid-template-columns:auto 1fr;gap:12px;border:1px solid var(--line);background:#0b0d13;border-radius:16px;padding:13px}.step input{margin-top:4px;width:18px;height:18px;accent-color:#79e8ff}.type{font:900 12px ui-monospace,SFMono-Regular,Consolas,monospace;color:#d7cbff}.reason{color:var(--muted);font-size:12px;margin-top:4px}.args{font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word;margin-top:8px;color:#cdd1dc;max-height:180px;overflow:auto}.log,.answer{min-height:180px;max-height:420px;overflow:auto;background:#090b10;border:1px solid var(--line);border-radius:16px;padding:14px;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;color:#d2d6df;white-space:pre-wrap}.answer{font:13px/1.55 Inter,ui-sans-serif,system-ui;color:#e8ebf2}.ok{color:var(--good)}.bad{color:var(--bad)}.warntext{color:var(--warn)}.mini{font-size:12px;color:var(--muted)}.split{display:grid;gap:18px}.notice{margin-top:14px;padding:13px 14px;border:1px solid rgba(255,212,121,.22);background:rgba(255,212,121,.06);border-radius:14px;color:#e7d9aa;font-size:12px}.mode-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}.mode{min-height:78px;padding:12px;border:1px solid var(--line);border-radius:16px;background:#0c0f15;text-align:left;color:#e9ecf4;cursor:pointer}.mode[aria-pressed="true"]{border-color:rgba(121,232,255,.42);background:rgba(121,232,255,.08)}.mode span{display:block;color:var(--accent2);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:900}.empty{padding:18px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center}@media(max-width:900px){.hero,.grid{grid-template-columns:1fr}.topin{min-height:58px}.pill{display:none}.hero-card{padding:22px}.mode-row{grid-template-columns:1fr 1fr}}@media(max-width:560px){.wrap{width:min(100% - 18px,var(--max))}.hero h1{font-size:42px}.card{padding:16px;border-radius:19px}.actions .btn{width:100%}.mode-row{grid-template-columns:1fr}.step{grid-template-columns:1fr}.step input{display:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap topin"><a class="back" href="/app">← App</a><div class="brand"><span class="mark">⌘</span><span>Stellar Codex Mode</span></div><div class="pill" id="accountPill"><span class="dot" id="pcDot"></span><span id="accountText">Checking…</span></div></div></header>
+<main class="wrap">
+<section class="hero">
+  <div class="hero-card"><div class="kicker">Coding agent workspace</div><h1>Plan. Inspect. Edit. Verify.</h1><p class="lead">A Codex-style workspace for Stellar AI: describe the coding task, let the agent inspect your repo first, then review every edit/test action before it touches your paired PC.</p><div class="statusbar"><span class="chip" id="planChip">Plan-aware</span><span class="chip" id="pcChip">PC Agent checking</span><span class="chip">Human approves changes</span></div></div>
+  <div class="rail hero-card"><div class="rail-item"><span class="num">1</span><div><strong>Understand</strong><small>Turns messy requests into an engineering task.</small></div></div><div class="rail-item"><span class="num">2</span><div><strong>Inspect</strong><small>Reads/searches files before making claims.</small></div></div><div class="rail-item"><span class="num">3</span><div><strong>Implement</strong><small>Queues approved patches or commands only.</small></div></div><div class="rail-item"><span class="num">4</span><div><strong>Verify</strong><small>Runs focused checks and reviews the diff.</small></div></div></div>
+</section>
+<section class="grid">
+  <div class="card"><h2>New coding task</h2><p>Use this for app fixes, bugs, UI polish, refactors, tests, or repo cleanup. Do not paste API keys, passwords, recovery codes, cookies, or private customer data.</p><textarea id="prompt" placeholder="Example: Check my Stellar app, find why the model picker is bad on mobile, inspect the relevant files first, make the smallest safe fix, then show the diff and verification steps."></textarea><div class="mode-row"><button class="mode" data-mode="fix" aria-pressed="true"><span>Fix</span>Bug or UI problem</button><button class="mode" data-mode="feature"><span>Build</span>New feature safely</button><button class="mode" data-mode="review"><span>Review</span>Check code quality</button><button class="mode" data-mode="test"><span>Verify</span>Add tests/checks</button></div><div class="actions"><button class="btn primary" id="planBtn">Build repo action plan</button><button class="btn" id="answerBtn">Ask coding agent only</button><a class="btn" href="/desktop-agent.html">Connect PC Agent</a></div><div class="notice">Repo actions use your existing PC Agent guardrails. Safe inspect actions can run first; writes, URLs and terminal commands stay approval-based.</div><div id="summary" class="mini" style="margin-top:12px"></div><div class="plan" id="plan"><div class="empty">No plan yet.</div></div><div class="actions" id="runActions" hidden><button class="btn good" id="runBtn">Run selected actions</button><button class="btn warn" id="clearBtn">Clear plan</button></div></div>
+  <div class="split"><div class="card"><h2>Agent answer</h2><p>Use this when your PC is not paired. It gives a reviewable implementation plan but does not touch files.</p><div class="answer" id="answer">Ready.</div></div><div class="card"><h2>Activity</h2><p>PC Agent status, queued actions and results appear here.</p><div class="log" id="log">Stellar Codex Mode ready.</div></div></div>
+</section>
+</main>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id);
+  let token='',currentPlan=null,currentPrompt='',currentMode='fix',statusTimer=null;
+  try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
+  const auth=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
+  function log(text,kind=''){const el=document.createElement('div');el.className=kind==='ok'?'ok':kind==='bad'?'bad':kind==='warn'?'warntext':'';el.textContent='['+new Date().toLocaleTimeString()+'] '+text;$('log').appendChild(el);$('log').scrollTop=$('log').scrollHeight}
+  function setChip(id,text,kind=''){const el=$(id);if(!el)return;el.textContent=text;el.className='chip '+kind}
+  async function api(action,body={},method='POST'){
+    const url='/api/desktop-agent?action='+encodeURIComponent(action);
+    const opts=method==='GET'?{headers:{Authorization:'Bearer '+token},cache:'no-store'}:{method:'POST',headers:auth(),body:JSON.stringify({action,...body})};
+    const r=await fetch(url,opts);const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||('Request failed: '+r.status));return d;
+  }
+  async function verify(){
+    if(!token){$('accountText').textContent='Sign in required';setChip('pcChip','Sign in required','bad');log('Sign in on /app first, then come back to Codex Mode.','bad');return false}
+    try{const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Sign in again.');$('accountText').textContent=(d.accountPlan?.label||d.plan||'Signed in')+' · '+(d.owner?'owner':'user');return true}catch(e){$('accountText').textContent='Session invalid';setChip('pcChip','Session invalid','bad');log(e.message,'bad');return false}
+  }
+  async function status(){
+    if(!token)return null;
+    try{const d=await api('status',{},'GET');$('pcDot').classList.toggle('online',!!d.online);setChip('pcChip',!d.paired?'PC not paired':d.online?'PC online':'PC paired offline',d.online?'good':d.paired?'warn':'bad');return d}catch(e){setChip('pcChip','PC status unavailable','bad');return null}
+  }
+  document.querySelectorAll('.mode').forEach(btn=>btn.addEventListener('click',()=>{currentMode=btn.dataset.mode||'fix';document.querySelectorAll('.mode').forEach(x=>x.setAttribute('aria-pressed',String(x===btn)))}));
+  function modeInstruction(){
+    return {fix:'Find the root cause and make the smallest safe fix.',feature:'Build the feature with minimal, well-scoped changes.',review:'Review the implementation, identify defects, and propose exact fixes.',test:'Add focused verification or tests and explain how to run them.'}[currentMode]||'Do careful coding work.';
+  }
+  function renderPlan(plan){
+    currentPlan=plan;$('plan').innerHTML='';
+    const phase=plan?.phase==='implement'?'Implementation plan':'Inspection plan';
+    $('summary').textContent=phase+' · '+(plan?.summary||'Review these actions.');
+    const actions=Array.isArray(plan?.actions)?plan.actions:[];
+    if(!actions.length){$('plan').innerHTML='<div class="empty">No actions returned.</div>';$('runActions').hidden=true;return}
+    actions.forEach((action,i)=>{
+      const row=document.createElement('label');row.className='step';
+      const check=document.createElement('input');check.type='checkbox';check.checked=!action.requiresApproval;check.dataset.index=String(i);
+      const body=document.createElement('div');body.innerHTML='<div class="type"></div><div class="reason"></div><div class="args"></div>';
+      body.querySelector('.type').textContent=(i+1)+'. '+action.type+(action.requiresApproval?' · approval required':' · safe inspection');
+      body.querySelector('.reason').textContent=action.reason||'';
+      body.querySelector('.args').textContent=JSON.stringify(action.args||{},null,2);
+      row.append(check,body);$('plan').appendChild(row);
+    });
+    $('runActions').hidden=false;
+  }
+  async function buildPlan(){
+    const raw=$('prompt').value.trim();if(!raw){log('Type a coding task first.','warn');return}
+    const ok=await verify();if(!ok)return;
+    currentPrompt=modeInstruction()+'\n\nTask: '+raw;$('planBtn').disabled=true;$('summary').textContent='Planning repository inspection…';$('plan').innerHTML='<div class="empty">Thinking like a coding agent…</div>';$('runActions').hidden=true;
+    try{const r=await fetch('/api/desktop-agent?action=plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt:currentPrompt})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build plan.');renderPlan(d.plan);log('Inspection plan ready. Run safe inspect steps first so the implementation is grounded in real files.','ok')}catch(e){$('summary').textContent='';$('plan').innerHTML='<div class="empty">Plan failed.</div>';log(e.message,'bad')}finally{$('planBtn').disabled=false;status().catch(()=>{})}
+  }
+  async function waitTask(taskId,label){
+    for(let i=0;i<90;i++){
+      await new Promise(r=>setTimeout(r,1500));
+      const r=await fetch('/api/desktop-agent?action=taskStatus&taskId='+encodeURIComponent(taskId),{headers:{Authorization:'Bearer '+token},cache:'no-store'});const d=await r.json().catch(()=>({}));if(!r.ok)continue;
+      const state=d.task?.status;if(state==='completed'){const output=d.task.result?.output||'done';log(label+' completed.','ok');return {ok:true,output}}if(state==='failed'){const error=d.task.result?.error||'unknown error';log(label+' failed: '+error,'bad');return {ok:false,error}}
+    }
+    log(label+' still running or PC went offline.','warn');return {ok:false,error:'timeout'};
+  }
+  async function runSelected(){
+    if(!currentPlan)return;
+    const selected=[...$('plan').querySelectorAll('input[type=checkbox]:checked')].map(x=>Number(x.dataset.index));if(!selected.length){log('Select at least one action.','warn');return}
+    const state=await status().catch(()=>null);if(!state?.online){log('Start the Windows companion first, or use “Ask coding agent only”.','warn');return}
+    $('runBtn').disabled=true;const observations=[];let allOk=true;
+    try{
+      for(const i of selected){const action=currentPlan.actions[i];const label=(i+1)+'. '+action.type;log('Queueing '+label+'…');const d=await api('enqueue',{task:{type:action.type,args:action.args,approved:true}});const result=await waitTask(d.taskId,label);if(!result.ok){allOk=false;break}observations.push(label+'\n'+String(result.output||'').slice(0,12000))}
+      if(allOk&&currentPlan.phase==='inspect'&&observations.length){$('summary').textContent='Inspection complete · building grounded implementation plan…';const evidence=observations.join('\n\n').slice(0,45000);const r=await fetch('/api/desktop-agent?action=plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt:currentPrompt||$('prompt').value.trim(),observations:evidence})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build implementation plan.');renderPlan(d.plan);log(d.plan?.phase==='implement'?'Grounded implementation plan ready. Review and approve edit/test steps.':'More inspection is needed before edits.','ok')}
+    }catch(e){log(e.message,'bad')}finally{$('runBtn').disabled=false;status().catch(()=>{})}
+  }
+  async function askOnly(){
+    const raw=$('prompt').value.trim();if(!raw){log('Type a coding task first.','warn');return}
+    const ok=await verify();if(!ok)return;
+    $('answerBtn').disabled=true;$('answer').textContent='Thinking…';
+    const task='You are Stellar Codex Mode, a careful coding agent. '+modeInstruction()+' Follow this workflow: understand, inspect assumptions, propose the smallest change, include exact files likely involved, verification commands, and risks. Do not claim you edited files. User task: '+raw;
+    try{const r=await fetch('/api/chat',{method:'POST',headers:auth(),body:JSON.stringify({action:'chat',model:'star',selectedModel:'star',messages:[{role:'user',content:task}],use_credit:false,client:{source:'stellar-codex'}})});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||'Coding agent failed.')}if(!r.body){$('answer').textContent='No streamed body.';return}const reader=r.body.getReader();const decoder=new TextDecoder();let text='',buf='';const consume=line=>{if(!line.startsWith('data:'))return;const raw=line.slice(5).trim();if(!raw||raw==='[DONE]')return;try{const ev=JSON.parse(raw);const delta=(ev?.type==='content_block_delta'&&ev?.delta?.text)||ev?.delta||ev?.choices?.[0]?.delta?.content||'';if(delta){text+=delta;$('answer').textContent=text}}catch{}};while(true){const {done,value}=await reader.read();if(done)break;buf+=decoder.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop()||'';lines.forEach(consume)}buf+=decoder.decode();buf.split('\n').forEach(consume);if(!text)$('answer').textContent='No answer returned.';else log('Coding-agent answer ready.','ok')}catch(e){$('answer').textContent=e.message;log(e.message,'bad')}finally{$('answerBtn').disabled=false}
+  }
+  $('planBtn').onclick=buildPlan;$('runBtn').onclick=runSelected;$('answerBtn').onclick=askOnly;$('clearBtn').onclick=()=>{currentPlan=null;$('summary').textContent='';$('plan').innerHTML='<div class="empty">No plan yet.</div>';$('runActions').hidden=true};
+  verify().then(status).then(()=>{statusTimer=setInterval(()=>status().catch(()=>{}),15000)}).catch(()=>{});addEventListener('beforeunload',()=>statusTimer&&clearInterval(statusTimer));
+})();
+</script>
+</body>
+</html>
