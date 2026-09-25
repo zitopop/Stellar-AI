@@ -1,69 +1,87 @@
 # ✦ Stellar AI
 
-AI script generator for FiveM (QBCore) and Roblox server owners. Describe what you need in plain English — get the script plus the fxmanifest, ready to drop into your resources folder.
+AI workspace and business assistant for Stellar AI. It includes the public site, chat app, sales/SEO pages, API routes, billing, voice/Jarvis work, and deployment tooling.
 
 **Live at [trystellarai.com](https://trystellarai.com)**
 
 ---
 
+## Fast commands
+
+```bash
+npm install
+npm run check
+npm run build:static
+```
+
+- `npm run check` runs syntax checks, public-route audits and tests.
+- `npm run build:static` builds `dist-static/`, a clean public backup site for Stellar Deploy.
+- `npm run deploy:safe` runs the existing safe deployment helper.
+
+---
+
 ## What it does
 
-- Generates complete Lua scripts for FiveM (QBCore, ESX, ox_lib, standalone) and Roblox
-- Fixes and improves broken or incomplete scripts
-- Four AI models: Spark (fast), **Star (the default)**, Comet (advanced), and Nova (Pro only)
-- Login with Google, Discord, or an email account
-- Workspace panel — every generated script becomes a downloadable file
-- Server-side, per-account hourly request enforcement with usage remaining and reset-time display
-- Referral links: eligible referrer and new user both receive £1 promotional credit after a validated sign-up
-- Achievement badges for first script, 10 scripts, 50 scripts, and first paid upgrade
-- Installable as an app on phone, tablet and desktop
-- Free, Starter (£8/mo or £67/yr), Plus (£20/mo or £168/yr), and Pro (£75/mo or £630/yr) plans
+- Chat-style AI workspace for users
+- Script and project help for FiveM, Roblox and business workflows
+- Public sales pages for small business AI, AI receptionist and inbox closer offers
+- Stripe plan and credit flow support
+- Owner/Jarvis call configuration work
+- Voice input and voice reply UI work
+- SEO/blog pages and sitemap surfaces
+- Static backup deployment tooling so public pages are not trapped behind one host
+
+---
+
+## Repo structure
+
+```text
+api/                         Backend/API routes
+lib/                         Shared runtime modules and visual/PWA assets
+lib/assets/                  App/browser assets loaded by public pages
+services/                    Service/sales pages served through clean routes
+blog/                        Published SEO/blog content
+scripts/                     Build, audit, migration and deployment helpers
+docs/                        Project rules, deployment docs and operating notes
+tests/                       Regression and contract tests
+archive/                     Retired/legacy material kept away from active files
+small-business-ai/           Clean URL source for /small-business-ai
+ai-inbox-closer/             Clean URL source for /ai-inbox-closer
+.github/workflows/           GitHub Actions for checks and static deploys
+```
+
+Root HTML files are still used by the live site. Do **not** randomly move them. Move files only in safe batches with redirects/rewrites and route audits.
+
+More detail:
+
+- [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
+- [`docs/STELLAR_DEPLOY.md`](docs/STELLAR_DEPLOY.md)
+- [`docs/DEPLOYMENT_CHECKLIST.md`](docs/DEPLOYMENT_CHECKLIST.md)
+
+---
+
+## Stellar Deploy
+
+Stellar Deploy starts as a static backup system for public pages:
+
+```text
+GitHub → route audit → build static backup → publish to backup host
+```
+
+Current tooling:
+
+- `scripts/build-static-backup.mjs` builds `dist-static/`
+- `scripts/audit-public-routes.mjs` checks clean public routes and internal links
+- `.github/workflows/stellar-static-backup.yml` builds a downloadable static artifact
+- `.github/workflows/stellar-pages-static.yml` can publish the static backup through GitHub Pages after Pages is enabled for GitHub Actions
+
+Use the static backup for public pages first. Keep the full app/API on Vercel or another Node host until environment variables, HTTPS, logs, rollback and secrets are ready.
 
 ---
 
 ## Built with
 
-Static HTML/CSS/JS · Vercel serverless functions · AI API · Stripe payments · Google + Discord sign-in · Resend email
-
----
-
-## Structure
-
-```text
-index.html          landing page, plan comparison and first-run entry points
-app.html            authenticated/guest AI workspace and in-app plan modal
-blog.html           Guides hub
-support.html        Support centre for contact, billing and common help routes
-blog/               published FiveM and Roblox guides at canonical clean routes
-models / models.html model directory/SEO route pair
-api/                serverless auth, chat, billing, search, email and account APIs
-lib/                shared runtime modules and visual/PWA assets
-docs/               product, release and implementation documentation
-scripts/            repository maintenance and publishing helpers
-tests/              regression, routing, pricing, accessibility and release contracts
-archive/            retired/legacy material kept away from active runtime files
-site-polish.css     shared dark public-page polish used by legacy content pages
-manifest.json       installable app configuration
-sw.js               service worker
-vercel.json         hosting routes, redirects, rewrites and security headers
-sitemap.xml         canonical public discovery URLs
-terms.html          terms and privacy information
-affiliate.html      FiveM server-owner and sharing information
-```
-
-Route-critical public files stay in their existing locations. Add new active code to the matching folder above; move retired material to `archive/` instead of leaving temporary files at repository root.
-
----
-
-## Repository map
-
-Use [`docs/PROJECT-INDEX.md`](docs/PROJECT-INDEX.md) to find active app files, server routes, docs, tests, SEO surfaces and archive rules.
-
----
-
-## Revenue operations
-
-Use [`docs/REVENUE-OPERATIONS-CHECKLIST.md`](docs/REVENUE-OPERATIONS-CHECKLIST.md) after pricing, checkout, onboarding, SEO or billing changes. It covers paid-user billing portal testing, weekly funnel metrics, Stripe safety checks and SEO publishing steps. Use [`docs/SEO-PUBLISHING-QUEUE.md`](docs/SEO-PUBLISHING-QUEUE.md) to track safe blog batches, sitemap wiring and next Search Console targets.
+Static HTML/CSS/JS · Vercel serverless functions · AI API · Stripe payments · Google + Discord sign-in · Supabase/KV style storage · web push · GitHub Actions
 
 ---
 
@@ -96,18 +114,61 @@ KV_REST_API_TOKEN
 JWT_SECRET
 ```
 
-Optional but recommended production values:
+Owner call / Jarvis variables:
 
 ```text
-STRIPE_BILLING_PORTAL_CONFIG_ID   # use a pre-created Stripe portal config when available
-CRON_SECRET                       # protects internal scheduled routes
-RESEND_API_KEY                    # required for transactional email routes that send mail
-RESEND_FROM_EMAIL                 # required verified Resend sender, e.g. Stellar AI <hello@your-verified-domain>
-GOOGLE_CLIENT_ID                  # public sign-in client ID is also embedded in the app shell
-DISCORD_CLIENT_ID / DISCORD_CLIENT_SECRET / DISCORD_REDIRECT_URI
+OWNER_PHONE=+44...
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+TWILIO_FROM_NUMBER=+1...
+JARVIS_PUBLIC_URL=https://trystellarai.com
 ```
 
-`STRIPE_PRICE_ID_STARTER` and `STRIPE_PRICE_ID_STARTER_ANNUAL` are required for the Starter checkout path. User plan, request allowance, Nova access, referral credit, wallet credit and achievement state are resolved server-side; do not treat browser storage as an entitlement source.
+Optional production values:
+
+```text
+STRIPE_BILLING_PORTAL_CONFIG_ID
+CRON_SECRET
+RESEND_API_KEY
+RESEND_FROM_EMAIL
+GOOGLE_CLIENT_ID
+DISCORD_CLIENT_ID
+DISCORD_CLIENT_SECRET
+DISCORD_REDIRECT_URI
+GMAIL_CLIENT_ID
+GMAIL_CLIENT_SECRET
+```
+
+Never commit real secrets.
+
+---
+
+## Safe change rule
+
+Before a public deploy:
+
+```bash
+npm run check
+npm run build:static
+```
+
+Then smoke test:
+
+```text
+/
+/app
+/support
+/small-business-ai
+/ai-inbox-closer
+/ai-receptionist
+/business
+/blog
+/terms
+/privacy
+/missing-test-page
+```
+
+The missing page should show the branded Stellar 404.
 
 ---
 
