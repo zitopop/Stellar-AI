@@ -5,7 +5,7 @@ import path from 'node:path';
 const root = process.cwd();
 const ignoredPrefixes = [
   'http://', 'https://', 'mailto:', 'tel:', '#', 'javascript:', 'data:',
-  '/api/', '/auth/', '/checkout', '/billing'
+  '/api/', '/auth/', '/checkout', '/billing', '/jarvis/'
 ];
 
 const ignoredRoutes = new Set([
