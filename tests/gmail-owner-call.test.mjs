@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { classifyOwnerAutoCall } from '../lib/auto-call-rules.js';
 
 const push = readFileSync(new URL('../lib/gmail-push.js', import.meta.url), 'utf8');
 const pushApi = readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
@@ -20,6 +21,17 @@ test('Gmail push watches inbox additions but only auto-calls for urgent rules', 
   assert.match(push, /not-urgent/);
   assert.match(push, /trigger: 'gmail'/);
   assert.match(push, /GMAIL_CALL_ON_EMAIL/);
+});
+
+test('CI failure emails are treated as service-critical owner alerts', () => {
+  const result = classifyOwnerAutoCall({
+    from: 'zitopop notifications@github.com',
+    subject: '[zitopop/Stellar-AI] Run failed: Stellar AI CI - main',
+    snippet: 'Stellar AI CI workflow run: all jobs have failed',
+  });
+  assert.equal(result.shouldCall, true);
+  assert.equal(result.category, 'service');
+  assert.equal(result.severity, 'critical');
 });
 
 test('Gmail webhook requires a server secret and mailbox watch management stays owner/internal only', () => {
