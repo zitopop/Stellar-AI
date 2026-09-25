@@ -12,7 +12,8 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "check:syntax": "node scripts/check-source.mjs",
-    "check": "npm run check:syntax && npm test",
+    "audit:routes": "node scripts/audit-public-routes.mjs",
+    "check": "npm run check:syntax && npm run audit:routes && npm test",
     "build:static": "node scripts/build-static-backup.mjs",
     "deploy:safe": "node scripts/safe-deploy.mjs"
   },
