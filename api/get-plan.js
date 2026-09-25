@@ -153,7 +153,7 @@ export default async function handler(req, res) {
       owner,
       capabilities,
       availableModels: capabilities.models,
-      billing,
+      billing: billingState({ plan, user, owner }),
       walletPence,
       overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
       planBilling,
