@@ -69,6 +69,27 @@ function planCapabilities(plan) {
   };
 }
 
+function accountPlanTruth({ plan, owner, user, capabilities, usage, weeklyUsage, billing }) {
+  const walletPence = Math.max(0, Number(user?.walletPence) || 0);
+  const billingCycle = isPaidPlan(plan) ? (user?.planBilling === 'annual' ? 'annual' : 'monthly') : null;
+  return {
+    id: plan,
+    name: capabilities.name,
+    label: owner ? 'Owner' : capabilities.name,
+    owner,
+    paid: isPaidPlan(plan),
+    source: owner ? 'owner-email' : 'account-storage',
+    billingCycle,
+    billing,
+    walletPence,
+    usage,
+    weeklyUsage,
+    capabilities,
+    availableModels: capabilities.models,
+    updatedAt: user?.updatedAt || null,
+  };
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -116,16 +137,26 @@ export default async function handler(req, res) {
       exhausted: weeklyUsed >= weeklyLimit,
     } : null;
     const capabilities = planCapabilities(plan);
+    const billing = billingState({ plan, user, owner });
+    const walletPence = Math.max(0, Number(user.walletPence) || 0);
+    const planBilling = isPaidPlan(plan) ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null;
+    const accountPlan = accountPlanTruth({ plan, owner, user: { ...user, walletPence, planBilling }, capabilities, usage, weeklyUsage, billing });
 
     return res.status(200).json({
       plan,
+      planId: plan,
+      planName: capabilities.name,
+      planLabel: accountPlan.label,
+      planKnown: true,
+      planSource: accountPlan.source,
+      accountPlan,
       owner,
       capabilities,
       availableModels: capabilities.models,
-      billing: billingState({ plan, user, owner }),
-      walletPence: Math.max(0, Number(user.walletPence) || 0),
+      billing,
+      walletPence,
       overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
-      planBilling: isPaidPlan(plan) ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null,
+      planBilling,
       usage,
       weeklyUsage,
       referralCode: user.referralCode || null,
