@@ -96,8 +96,10 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 });
 
 test('plugin directory stays calm while preserving real connect manage and disconnect controls', () => {
-  assert.ok(page.includes('<h1>Connect your tools.</h1>'));
-  assert.ok(page.includes('Search the directory, review permissions, then connect only what you choose.'));
+  assert.ok(page.includes('<h1>Connected apps for Stellar.</h1>'));
+  assert.match(page, /Personal account connections/);
+  assert.match(page, /allowManualToken/);
+  assert.ok(page.includes('Connect accounts like ChatGPT: pick an app, review permissions, sign in with the provider, and disconnect anytime.'));
   assert.match(page, /Permissions first/);
   assert.match(page, /No passwords shared/);
   assert.match(page, /Disconnect anytime/);
@@ -121,7 +123,8 @@ test('plugin directory stays calm while preserving real connect manage and disco
   assert.match(page, /disconnectCurrentPlugin/);
   assert.match(page, /Connect plugin/);
   assert.match(page, />Details<\/button>/);
-  assert.match(page, /Only paste a token if OAuth is not available/);
+  assert.match(page, /Normal users should connect through the provider/);
+  assert.match(page, /Manual tokens are owner-only/);
   assert.match(page, /setupText/);
   assert.match(page, /encrypted server-side/);
   assert.match(page, /More plugins coming soon/);

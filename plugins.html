@@ -107,16 +107,16 @@ h1{font-size:clamp(34px,4.5vw,54px)!important;line-height:1.02!important}.lead{m
 <div class="main-inner">
   <header class="page-head">
     <div>
-      <div class="eyebrow">PLUGINS</div>
-      <h1>Connect your tools.</h1>
-      <p class="lead">Search the directory, review permissions, then connect only what you choose.</p>
+      <div class="eyebrow">APPS & PLUGINS</div>
+      <h1>Connected apps for Stellar.</h1>
+      <p class="lead">Connect accounts like ChatGPT: pick an app, review permissions, sign in with the provider, and disconnect anytime.</p>
       <div id="plugin-summary" class="summary" aria-live="polite"></div>
     </div>
     <div class="head-actions"><a class="btn" href="/support?topic=plugin-request">Request a plugin</a></div>
   </header>
 
   <section class="plugin-trust" aria-label="Plugin safety">
-    <span>Permissions first</span><span>No passwords shared</span><span>Disconnect anytime</span>
+    <span>Personal account connections</span><span>Permissions first</span><span>No passwords shared</span><span>Disconnect anytime</span>
   </section>
 
   <div class="controls">
@@ -146,10 +146,10 @@ h1{font-size:clamp(34px,4.5vw,54px)!important;line-height:1.02!important}.lead{m
     <div id="plugin-connect-form">
       <button id="plugin-oauth-submit" class="oauth-hero" type="button"><span id="plugin-oauth-logo" class="oauth-icon">▲</span><span id="plugin-oauth-label">Connect with OAuth</span><span class="oauth-arrow">→</span></button>
       <div class="oauth-note" id="plugin-oauth-note">Secure OAuth connection. No password is shared with Stellar.</div>
-      <div id="plugin-token-divider" class="modal-divider">OR</div>
+      <div id="plugin-token-divider" class="modal-divider">Advanced</div>
       <section id="plugin-token-section" class="token-section">
         <div class="token-title"><span>⌘</span><strong id="plugin-token-title">Use an access token</strong></div>
-        <p id="plugin-token-sub" class="token-sub">Only paste a token if OAuth is not available. Stellar encrypts it server-side.</p>
+        <p id="plugin-token-sub" class="token-sub">Owner/developer fallback only. Normal users should connect through the provider.</p>
         <input id="plugin-token" class="token-input" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste token">
         <div class="connect-help"><span class="mode-badge">Manual secure token fallback</span><a id="plugin-token-help" href="/support?topic=plugin-token" target="_blank" rel="noopener noreferrer">How to create a token ↗</a></div>
         <div class="secure-line">Your token is sent only when you connect, is never stored in browser storage, and is encrypted server-side at rest.</div>
@@ -275,7 +275,7 @@ h1{font-size:clamp(34px,4.5vw,54px)!important;line-height:1.02!important}.lead{m
     const p=plugins.find(plugin=>plugin.id===id);if(!p)return;
     const [logo]=logos[p.id]||['✦'];
     $('plugin-modal-logo').textContent=logo;
-    $('plugin-modal-title').textContent=(mode==='details'?'Plugin details: ':'Connect ')+p.name;
+    $('plugin-modal-title').textContent=(mode==='details'?'App details: ':'Connect ')+p.name;
     $('plugin-modal-copy').textContent=p.description||'';
     $('plugin-connect-form').hidden=mode!=='connect';
     $('plugin-detail-view').hidden=mode!=='details';
@@ -284,11 +284,14 @@ h1{font-size:clamp(34px,4.5vw,54px)!important;line-height:1.02!important}.lead{m
     if(mode==='connect'){
       $('plugin-token').value='';
       const oauthAvailable=p.oauthAvailable===true;
+      const allowManualToken=owner===true&&isTokenPlugin(p);
       $('plugin-oauth-submit').style.display=oauthAvailable?'flex':'none';
-      $('plugin-token-divider').style.display=oauthAvailable?'flex':'none';
-      $('plugin-oauth-note').textContent=oauthAvailable?'Recommended: connect through the provider. No password is shared with Stellar.':'OAuth setup is not ready yet. Owners can use secure token connect for now.';
-      $('plugin-oauth-label').textContent='Connect '+p.name+' with OAuth';
-      $('plugin-token-title').textContent='Connect '+p.name+' with access token';
+      $('plugin-token-divider').style.display=allowManualToken?'flex':'none';
+      $('plugin-token-section').style.display=allowManualToken?'block':'none';
+      $('plugin-connect-submit').style.display=allowManualToken?'inline-flex':'none';
+      $('plugin-oauth-note').textContent=oauthAvailable?'Connect with the provider. Stellar never sees your password and this only connects your own account.':'This app is waiting for provider setup before OAuth can start.';
+      $('plugin-oauth-label').textContent='Connect '+p.name;
+      $('plugin-token-title').textContent='Advanced: connect '+p.name+' with access token';
       $('plugin-token-help').href=p.id==='github'?'https://github.com/settings/tokens':p.id==='vercel'?'https://vercel.com/account/tokens':'/support?topic=plugin-token';
     }
     if(mode==='details')renderDetails(p);
@@ -326,6 +329,7 @@ h1{font-size:clamp(34px,4.5vw,54px)!important;line-height:1.02!important}.lead{m
   async function connectToken(){
     const p=plugins.find(plugin=>plugin.id===modalPluginId);if(!p)return;
     const value=$('plugin-token').value.trim();
+    if(owner!==true){setNotice('Use the provider connect button for apps. Manual tokens are owner-only.','bad');return}
     if(!value){setNotice('Paste a token first.','bad');return}
     try{
       const data=await api('connectToken',{id:p.id,token:value});
