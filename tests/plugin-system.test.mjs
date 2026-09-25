@@ -32,7 +32,7 @@ test('plugin registry separates working, owner-only and future integrations', ()
   assert.deepEqual(getPluginDefinition('github').permissions.map(p=>p.id), ['repos.read']);
   assert.deepEqual(getPluginDefinition('vercel').permissions.map(p=>p.id), ['deployments.read']);
   assert.equal(getPluginDefinition('gmail').status, 'available');
-  assert.equal(getPluginDefinition('gmail').audience, 'owner');
+  assert.equal(getPluginDefinition('gmail').audience, 'signed_in');
   assert.equal(getPluginDefinition('gmail').connection, 'oauth_or_token');
   assert.equal(getPluginDefinition('gmail').oauthProvider, 'google');
   for (const id of ['google-drive','google-calendar','discord','shopify','stripe']) {
@@ -144,12 +144,14 @@ test('plugins sidebar keeps tappable visible icon badges', () => {
 
 
 
-test('developer OAuth setup is owner-only and hidden from normal accounts', () => {
+test('developer OAuth setup is owner-only while Gmail is user-facing approval-only email', () => {
   assert.equal(getPluginDefinition('github').audience, 'owner');
   assert.equal(getPluginDefinition('vercel').audience, 'owner');
   assert.match(manager, /oauthStatus:exposeSetup&&OAUTH_PLUGIN_IDS/);
   assert.match(manager, /oauthSetupMissingEnv:exposeSetup&&OAUTH_PLUGIN_IDS/);
-  assert.ok(page.includes("if(!owner&&['github','vercel','gmail'].includes(id))"));
+  assert.ok(page.includes("if(!owner&&['github','vercel'].includes(id))"));
+  assert.match(page, /Email Agent workflows/);
+  assert.match(page, /Send only with approval/);
   assert.match(page, /OWNER-ONLY OAUTH MODAL POLISH/);
 });
 
