@@ -5,296 +5,86 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a10">
 <title>Tools & Plugins · Stellar AI</title>
-<meta name="description" content="Explore Stellar AI tools and plugins for email, calendar, files, GitHub, payments, websites, voice and desktop tasks.">
+<meta name="description" content="Connect Stellar AI tools for email, calendar, files, GitHub, payments, websites, voice and desktop tasks with clear permissions and approval-first controls.">
 <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
 <style>
-:root{
-  color-scheme:dark;
-  --bg:#080a10;
-  --bg2:#0c0f17;
-  --panel:#111622;
-  --panel2:#151b2a;
-  --card:#101520;
-  --line:rgba(255,255,255,.095);
-  --line2:rgba(255,255,255,.16);
-  --text:#f7f8fc;
-  --muted:#a5adba;
-  --soft:#70798a;
-  --purple:#8b7cf6;
-  --purple2:#c7bdff;
-  --blue:#7bb5ff;
-  --green:#67e5b3;
-  --gold:#f0cf75;
-  --red:#ff8295;
-  --shadow:0 28px 80px rgba(0,0,0,.42);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;min-height:100dvh;background:radial-gradient(circle at 18% -12%,rgba(139,124,246,.20),transparent 34rem),radial-gradient(circle at 86% 4%,rgba(75,139,255,.13),transparent 32rem),linear-gradient(180deg,#080a10,#090b11 46%,#07080d);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;z-index:1000;background:#fff;color:#080a10;padding:10px 12px;border-radius:10px}
-.shell{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100dvh}.sidebar{position:sticky;top:0;height:100dvh;padding:18px 14px;border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(14,18,29,.96),rgba(9,12,19,.96));display:flex;flex-direction:column;gap:14px;z-index:20}.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 12px}.brand-mark{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#5b45f1,#151528);border:1px solid rgba(199,189,255,.28);box-shadow:0 12px 35px rgba(87,70,219,.24);font-size:19px}.brand-title{font-weight:950;font-size:17px;letter-spacing:-.035em}.brand-sub{color:var(--soft);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}.nav{display:grid;gap:5px}.nav a{min-height:44px;border-radius:13px;padding:0 11px;display:flex;align-items:center;gap:10px;color:#ccd2df;border:1px solid transparent;font-weight:800;font-size:12px}.nav a:hover{background:rgba(255,255,255,.045);color:#fff}.nav a.active{background:linear-gradient(90deg,rgba(139,124,246,.25),rgba(97,153,255,.08));border-color:rgba(139,124,246,.28);color:#fff}.nav-ico{width:22px;height:22px;border-radius:8px;display:grid;place-items:center;background:rgba(139,124,246,.12);color:var(--purple2);font-size:13px}.sidebar-card{margin-top:auto;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.035);padding:13px}.sidebar-card strong{display:block;font-size:12px}.sidebar-card p{margin:6px 0 12px;color:var(--muted);font-size:11px}.sidebar-card a{min-height:38px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#fff;color:#11141b;font-weight:950;font-size:11px}
+:root{color-scheme:dark;--bg:#080a10;--panel:#111622;--panel2:#151b2a;--line:rgba(255,255,255,.095);--line2:rgba(255,255,255,.16);--text:#f7f8fc;--muted:#a5adba;--soft:#727b8c;--purple:#8b7cf6;--purple2:#c7bdff;--green:#67e5b3;--gold:#f0cf75;--red:#ff8295;--shadow:0 28px 80px rgba(0,0,0,.42)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 18% -12%,rgba(139,124,246,.20),transparent 34rem),radial-gradient(circle at 86% 4%,rgba(75,139,255,.13),transparent 32rem),linear-gradient(180deg,#080a10,#090b11 46%,#07080d);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;z-index:1000;background:#fff;color:#080a10;padding:10px 12px;border-radius:10px}
+.shell{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100dvh}.sidebar{position:sticky;top:0;height:100dvh;padding:18px 14px;border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(14,18,29,.96),rgba(9,12,19,.96));display:flex;flex-direction:column;gap:14px;z-index:20}.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 12px}.brand-mark{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#5b45f1,#151528);border:1px solid rgba(199,189,255,.28);font-size:19px}.brand-title{font-weight:950;font-size:17px;letter-spacing:-.035em}.brand-sub{color:var(--soft);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}.nav{display:grid;gap:5px}
+/* FINAL PLUGINS SIDEBAR TAP + ICON FIX */
+.nav a{position:relative!important;z-index:2!important;min-height:46px!important;pointer-events:auto!important;touch-action:manipulation!important;}
+.nav a{border-radius:13px;padding:0 11px;display:flex;align-items:center;gap:10px;color:#ccd2df;border:1px solid transparent;font-weight:800;font-size:12px}.nav a:hover{background:rgba(255,255,255,.045);color:#fff}.nav a.active{background:linear-gradient(90deg,rgba(139,124,246,.25),rgba(97,153,255,.08));border-color:rgba(139,124,246,.28);color:#fff}.nav-ico{display:inline-flex!important;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:rgba(139,124,246,.12);color:var(--purple2);font-size:13px}.sidebar-card{margin-top:auto;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.035);padding:13px}.sidebar-card strong{display:block;font-size:12px}.sidebar-card p{margin:6px 0 12px;color:var(--muted);font-size:11px}.sidebar-card a{min-height:38px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#fff;color:#11141b;font-weight:950;font-size:11px}
 .mobile-top{display:none;position:sticky;top:0;z-index:30;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:rgba(8,10,16,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.mobile-brand{display:flex;align-items:center;gap:9px;font-weight:950}.mobile-brand span{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#211a52;color:var(--purple2)}.mobile-top a{min-height:38px;padding:0 12px;border-radius:11px;background:#fff;color:#11141b;font-weight:950;font-size:11px}
-.main{min-width:0;padding:30px clamp(18px,4vw,44px) 70px}.main-inner{max-width:1180px;margin:0 auto}.hero{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:stretch;margin-bottom:18px}.hero-copy{border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));box-shadow:var(--shadow);padding:clamp(22px,4vw,38px);position:relative;overflow:hidden}.hero-copy:before{content:"";position:absolute;inset:auto -120px -160px auto;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(139,124,246,.22),transparent 66%);pointer-events:none}.eyebrow{display:inline-flex;gap:8px;align-items:center;color:var(--purple2);text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:950;margin-bottom:12px}.eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 20px rgba(103,229,179,.6)}h1{margin:0;max-width:760px;font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.07em}.lead{margin:16px 0 0;max-width:670px;color:#c3cad7;font-size:clamp(15px,1.5vw,18px);line-height:1.6}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{min-height:44px;padding:0 15px;border-radius:13px;border:1px solid var(--line2);background:#171d2a;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:950;font-size:12px}.btn.primary{background:#fff;color:#11141b;border-color:#fff}.btn:hover{transform:translateY(-1px);border-color:rgba(199,189,255,.38)}.btn.ghost{background:rgba(255,255,255,.045)}.hero-panel{border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,#121725,#0d111a);padding:18px;box-shadow:var(--shadow)}.mini-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.mini-head strong{font-size:13px}.live-pill{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(103,229,179,.25);background:rgba(103,229,179,.08);color:#99f2cc;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:950}.live-pill:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}.hero-stack{display:grid;gap:9px}.mini-tool{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;min-height:58px;padding:10px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.027)}.mini-ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(139,124,246,.14);font-size:16px}.mini-tool b{display:block;font-size:12px}.mini-tool small{display:block;color:var(--muted);font-size:10.5px}.mini-tag{border:1px solid var(--line);border-radius:999px;padding:5px 8px;color:#ccd3e2;font-weight:900;font-size:9px}.mini-note{margin-top:12px;color:var(--soft);font-size:11px;line-height:1.45}.trust-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 18px}.trust{border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.025);padding:14px}.trust strong{display:block;font-size:12px}.trust span{display:block;margin-top:4px;color:var(--muted);font-size:11px}.controls{position:sticky;top:0;z-index:15;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:18px;background:rgba(9,12,19,.78);backdrop-filter:blur(18px)}.search{display:flex;align-items:center;gap:9px;min-width:min(390px,40vw);min-height:44px;border:1px solid var(--line);border-radius:13px;background:#0b1018;padding:0 12px;color:var(--muted)}.search input{width:100%;border:0;outline:0;background:transparent;color:#fff}.search input::placeholder{color:#727b8c}.tabs{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{white-space:nowrap;min-height:42px;border:1px solid transparent;border-radius:12px;background:transparent;color:#c6ccd8;padding:0 13px;font-size:11px;font-weight:900}.tab.active{background:linear-gradient(90deg,#6d5cff,#8b7cf6);color:#fff;box-shadow:0 12px 26px rgba(109,92,255,.22)}.tab:hover{background:rgba(255,255,255,.045)}
-.section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:18px 0 11px}.section-title h2{margin:0;font-size:20px;letter-spacing:-.035em}.section-title p{margin:0;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.plugin{position:relative;min-height:270px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(180deg,#121824,#0d121b);padding:15px;display:flex;flex-direction:column;overflow:hidden}.plugin:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 0%,rgba(139,124,246,.16),transparent 42%);opacity:0;transition:opacity .16s ease;pointer-events:none}.plugin:hover{border-color:rgba(255,255,255,.18);transform:translateY(-2px)}.plugin:hover:before{opacity:1}.plugin-head{display:flex;gap:12px;align-items:flex-start;position:relative}.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(139,124,246,.14);border:1px solid rgba(255,255,255,.08);font-size:19px;flex:none}.plugin-title{min-width:0;flex:1}.plugin-title h3{margin:0;font-size:15px;letter-spacing:-.025em}.plugin-title small{display:block;margin-top:2px;color:var(--soft);font-size:10px;font-weight:800}.status{flex:none;border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.05em;color:#ccd3e2}.status.ready{border-color:rgba(103,229,179,.28);background:rgba(103,229,179,.08);color:#98f1cc}.status.setup{border-color:rgba(240,207,117,.28);background:rgba(240,207,117,.08);color:#f2d88c}.status.soon{border-color:rgba(123,181,255,.28);background:rgba(123,181,255,.08);color:#acd0ff}.desc{position:relative;margin:13px 0 11px;color:#b8c1d0;font-size:12px;line-height:1.5;min-height:54px}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.chip{border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);padding:5px 8px;color:#d6dce7;font-size:9px;font-weight:850}.permissions{margin:0 0 12px;padding:10px;border:1px solid var(--line);border-radius:13px;background:rgba(0,0,0,.12)}.permissions b{display:block;font-size:10px;margin-bottom:4px;color:#eef1f7}.permissions span{display:block;color:var(--muted);font-size:10.5px}.plugin-actions{position:relative;margin-top:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.plugin-actions .btn{min-height:38px;border-radius:12px;font-size:11px;padding:0 12px}.learn{background:transparent}.toggle{margin-left:auto;width:46px;height:28px;border-radius:999px;border:1px solid #3d4657;background:#1a2230;position:relative}.toggle:after{content:"";position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:#788397;transition:.16s ease}.toggle.on{background:#5949d6;border-color:rgba(199,189,255,.42)}.toggle.on:after{transform:translateX(18px);background:#fff}.empty{display:none;grid-column:1/-1;border:1px dashed var(--line);border-radius:18px;padding:26px;text-align:center;color:var(--muted);background:rgba(255,255,255,.02)}.bottom-panel{margin-top:16px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.018));padding:18px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.bottom-panel h2{margin:0 0 6px;font-size:21px;letter-spacing:-.04em}.bottom-panel p{margin:0;color:var(--muted);font-size:12px}.fineprint{margin:16px 0 0;color:var(--soft);font-size:11px;text-align:center}.drawer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,8,.74);backdrop-filter:blur(12px);z-index:90}.drawer.open{display:flex}.dialog{width:min(560px,100%);max-height:min(86dvh,740px);overflow:auto;border:1px solid var(--line2);border-radius:24px;background:#0d121b;box-shadow:var(--shadow);padding:18px}.dialog-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start}.dialog h2{margin:0;font-size:23px;letter-spacing:-.04em}.dialog p{color:#c0c8d5}.close{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#141b27;color:#fff}.dialog-grid{display:grid;gap:10px;margin:14px 0}.info-row{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);padding:12px}.info-row strong{display:block;font-size:12px}.info-row span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.dialog-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.notice{margin-top:12px;min-height:18px;color:var(--muted);font-size:11px}.notice.good{color:var(--green)}
-@media (max-width:1050px){.shell{grid-template-columns:1fr}.sidebar{display:none}.mobile-top{display:flex}.main{padding-top:18px}.hero{grid-template-columns:1fr}.hero-panel{order:-1}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{top:63px}.trust-row{grid-template-columns:1fr 1fr 1fr}}
-@media (max-width:720px){.main{padding-inline:14px}.hero-copy,.hero-panel{border-radius:22px}.hero-copy{padding:22px}.trust-row{grid-template-columns:1fr}.controls{position:relative;top:auto;display:grid}.search{min-width:0;width:100%}.tabs{padding-bottom:2px}.grid{grid-template-columns:1fr}.section-title{display:grid}.bottom-panel{grid-template-columns:1fr}.bottom-panel .btn{width:100%}.plugin{min-height:auto}h1{font-size:42px}.lead{font-size:14px}}
+.main{min-width:0;padding:30px clamp(18px,4vw,44px) 70px}.main-inner{max-width:1180px;margin:0 auto}.hero{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:stretch;margin-bottom:18px}.hero-copy{border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));box-shadow:var(--shadow);padding:clamp(22px,4vw,38px);position:relative;overflow:hidden}.eyebrow{display:inline-flex;gap:8px;align-items:center;color:var(--purple2);text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:950;margin-bottom:12px}.eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 20px rgba(103,229,179,.6)}h1{margin:0;max-width:760px;font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.07em}.lead{margin:16px 0 0;max-width:680px;color:#c3cad7;font-size:clamp(15px,1.5vw,18px);line-height:1.6}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{min-height:44px;padding:0 15px;border-radius:13px;border:1px solid var(--line2);background:#171d2a;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:950;font-size:12px}.btn.primary{background:#fff;color:#11141b;border-color:#fff}.btn:hover{transform:translateY(-1px);border-color:rgba(199,189,255,.38)}.btn.ghost{background:rgba(255,255,255,.045)}.hero-panel{border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,#121725,#0d111a);padding:18px;box-shadow:var(--shadow)}.mini-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.mini-head strong{font-size:13px}.live-pill{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(103,229,179,.25);background:rgba(103,229,179,.08);color:#99f2cc;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:950}.hero-stack{display:grid;gap:9px}.mini-tool{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;min-height:58px;padding:10px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.027)}.mini-ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(139,124,246,.14);font-size:16px}.mini-tool b{display:block;font-size:12px}.mini-tool small{display:block;color:var(--muted);font-size:10.5px}.mini-tag{border:1px solid var(--line);border-radius:999px;padding:5px 8px;color:#ccd3e2;font-weight:900;font-size:9px}.mini-note{margin-top:12px;color:var(--soft);font-size:11px;line-height:1.45}.trust-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 18px}.trust{border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.025);padding:14px}.trust strong{display:block;font-size:12px}.trust span{display:block;margin-top:4px;color:var(--muted);font-size:11px}.controls{position:sticky;top:0;z-index:15;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:18px;background:rgba(9,12,19,.78);backdrop-filter:blur(18px)}.search{display:flex;align-items:center;gap:9px;min-width:min(390px,40vw);min-height:44px;border:1px solid var(--line);border-radius:13px;background:#0b1018;padding:0 12px;color:var(--muted)}.search input{width:100%;border:0;outline:0;background:transparent;color:#fff}.search input::placeholder{color:#727b8c}.tabs{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{white-space:nowrap;min-height:42px;border:1px solid transparent;border-radius:12px;background:transparent;color:#c6ccd8;padding:0 13px;font-size:11px;font-weight:900}.tab.active{background:linear-gradient(90deg,#6d5cff,#8b7cf6);color:#fff;box-shadow:0 12px 26px rgba(109,92,255,.22)}.tab:hover{background:rgba(255,255,255,.045)}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:18px 0 11px}.section-title h2{margin:0;font-size:20px;letter-spacing:-.035em}.section-title p{margin:0;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.plugin{position:relative;min-height:280px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(180deg,#121824,#0d121b);padding:15px;display:flex;flex-direction:column;overflow:hidden}.plugin:hover{border-color:rgba(255,255,255,.18);transform:translateY(-2px)}.plugin-head{display:flex;gap:12px;align-items:flex-start}.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(139,124,246,.14);border:1px solid rgba(255,255,255,.08);font-size:19px;flex:none}.plugin-title{min-width:0;flex:1}.plugin-title h3{margin:0;font-size:15px;letter-spacing:-.025em}.plugin-title small{display:block;margin-top:2px;color:var(--soft);font-size:10px;font-weight:800}.status{flex:none;border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.05em;color:#ccd3e2}.status.ready{border-color:rgba(103,229,179,.28);background:rgba(103,229,179,.08);color:#98f1cc}.status.setup{border-color:rgba(240,207,117,.28);background:rgba(240,207,117,.08);color:#f2d88c}.status.soon{border-color:rgba(123,181,255,.28);background:rgba(123,181,255,.08);color:#acd0ff}.desc{margin:13px 0 11px;color:#b8c1d0;font-size:12px;line-height:1.5;min-height:54px}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.chip{border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);padding:5px 8px;color:#d6dce7;font-size:9px;font-weight:850}.permissions{margin:0 0 12px;padding:10px;border:1px solid var(--line);border-radius:13px;background:rgba(0,0,0,.12)}.permissions b{display:block;font-size:10px;margin-bottom:4px;color:#eef1f7}.permissions span{display:block;color:var(--muted);font-size:10.5px}.plugin-actions{margin-top:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.plugin-actions .btn{min-height:38px;border-radius:12px;font-size:11px;padding:0 12px}.learn{background:transparent}.oauth-box{border:1px solid rgba(199,189,255,.16);border-radius:13px;background:rgba(139,124,246,.055);padding:10px;margin-bottom:12px;color:#cdd3df;font-size:10.5px}.empty{display:none;grid-column:1/-1;border:1px dashed var(--line);border-radius:18px;padding:26px;text-align:center;color:var(--muted);background:rgba(255,255,255,.02)}.bottom-panel{margin-top:16px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.018));padding:18px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.bottom-panel h2{margin:0 0 6px;font-size:21px;letter-spacing:-.04em}.bottom-panel p{margin:0;color:var(--muted);font-size:12px}.fineprint{margin:16px 0 0;color:var(--soft);font-size:11px;text-align:center}.drawer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,8,.74);backdrop-filter:blur(12px);z-index:90}.drawer.open{display:flex}.dialog{width:min(560px,100%);max-height:min(86dvh,740px);overflow:auto;border:1px solid var(--line2);border-radius:24px;background:#0d121b;box-shadow:var(--shadow);padding:18px}.dialog-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start}.dialog h2{margin:0;font-size:23px;letter-spacing:-.04em}.dialog p{color:#c0c8d5}.close{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#141b27;color:#fff}.detail-panel{display:grid;gap:10px;margin:14px 0}.plugin-detail-view,.plugin-detail-setup,.info-row{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);padding:12px}.plugin-detail-view strong,.plugin-detail-setup strong,.info-row strong{display:block;font-size:12px}.plugin-detail-view span,.plugin-detail-setup span,.info-row span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.dialog-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media (max-width:1050px){.shell{grid-template-columns:1fr}.sidebar{display:none}.mobile-top{display:flex}.main{padding-top:18px}.hero{grid-template-columns:1fr}.hero-panel{order:-1}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{top:63px}.trust-row{grid-template-columns:1fr 1fr}}
+@media (max-width:720px){.main{padding-inline:14px}.hero-copy,.hero-panel{border-radius:22px}.hero-copy{padding:22px}.trust-row{grid-template-columns:1fr}.controls{position:relative;top:auto;display:grid}.search{min-width:0;width:100%}.tabs{padding-bottom:2px}.grid{grid-template-columns:1fr}.section-title{display:grid}.bottom-panel{grid-template-columns:1fr}.bottom-panel .btn{width:100%}.plugin{min-height:auto}h1{font-size:42px}}
 </style>
 </head>
 <body>
 <a class="skip" href="#tools">Skip to tools</a>
-<div class="mobile-top">
-  <div class="mobile-brand"><span>✦</span> Stellar Tools</div>
-  <a href="/app">Open app</a>
-</div>
+<div class="mobile-top"><div class="mobile-brand"><span>✦</span> Stellar Tools</div><a href="/app">Open app</a></div>
 <div class="shell">
   <aside class="sidebar" aria-label="Stellar navigation">
-    <a class="brand" href="/">
-      <span class="brand-mark">✦</span>
-      <span><span class="brand-title">Stellar AI</span><span class="brand-sub">Tool Store</span></span>
-    </a>
+    <a class="brand" href="/"><span class="brand-mark">✦</span><span><span class="brand-title">Stellar AI</span><span class="brand-sub">Tool Store</span></span></a>
     <nav class="nav">
-      <a href="/"><span class="nav-ico">⌂</span> Home</a>
-      <a href="/app"><span class="nav-ico">✦</span> Chat</a>
-      <a class="active" href="/plugins"><span class="nav-ico">▦</span> Tools & Plugins</a>
-      <a href="/models"><span class="nav-ico">◈</span> Models</a>
-      <a href="/desktop"><span class="nav-ico">▣</span> Desktop Agent</a>
-      <a href="/support"><span class="nav-ico">?</span> Support</a>
+      <a href="/"><span class="nav-ico">⌂</span> Home</a><a href="/app"><span class="nav-ico">✦</span> Chat</a><a class="active" href="/plugins"><span class="nav-ico">▦</span> Tools & Plugins</a><a href="/models"><span class="nav-ico">◈</span> Models</a><a href="/desktop"><span class="nav-ico">▣</span> Desktop Agent</a><a href="/support"><span class="nav-ico">?</span> Support</a>
     </nav>
-    <div class="sidebar-card">
-      <strong>Safe by default</strong>
-      <p>Plugins explain what they can access before you connect them.</p>
-      <a href="/app">Start in app</a>
-    </div>
+    <div class="sidebar-card"><strong>Safe by default</strong><p>Personal account connections stay scoped. Review permissions before connecting.</p><a href="/app">Start in app</a></div>
   </aside>
   <main class="main" id="main-content">
     <div class="main-inner">
       <section class="hero" aria-labelledby="page-title">
         <div class="hero-copy">
-          <div class="eyebrow">Stellar Tool Store</div>
-          <h1 id="page-title">Tools that feel powerful, not confusing.</h1>
-          <p class="lead">Connect email, calendars, files, code, payments, voice and desktop work from one clean place. Every card tells you what it does, what it needs, and when to use it.</p>
-          <div class="hero-actions">
-            <a class="btn primary" href="/app">Open Stellar</a>
-            <a class="btn ghost" href="#tools">Browse tools</a>
-          </div>
+          <div class="eyebrow">Personal account connections</div>
+          <h1 id="page-title">Connected apps for Stellar.</h1>
+          <p class="lead">Connect accounts like ChatGPT: pick an app, review permissions, sign in with the provider, and disconnect anytime. The page is simple on purpose: tools should feel powerful, not confusing.</p>
+          <div class="hero-actions"><a class="btn primary" href="/app">Open Stellar</a><a class="btn ghost" href="#tools">Browse tools</a></div>
         </div>
-        <aside class="hero-panel" aria-label="Recommended tools">
-          <div class="mini-head"><strong>Best first tools</strong><span class="live-pill">Ready</span></div>
-          <div class="hero-stack">
-            <div class="mini-tool"><span class="mini-ico">✉</span><span><b>Email helper</b><small>Find leads, draft replies, summarize inboxes.</small></span><span class="mini-tag">Sales</span></div>
-            <div class="mini-tool"><span class="mini-ico">⌘</span><span><b>Desktop agent</b><small>Help with local files and terminal tasks.</small></span><span class="mini-tag">PC</span></div>
-            <div class="mini-tool"><span class="mini-ico">⌁</span><span><b>GitHub builder</b><small>Patch pages, fix bugs and review code.</small></span><span class="mini-tag">Code</span></div>
-          </div>
-          <p class="mini-note">A calmer layout than a plugin wall: pick what you need, connect only when ready, keep control.</p>
-        </aside>
+        <aside class="hero-panel" aria-label="Recommended tools"><div class="mini-head"><strong>Top first tools</strong><span class="live-pill">Stellar verified</span></div><div class="hero-stack"><div class="mini-tool"><span class="mini-ico">✉</span><span><b>Email Agent workflows</b><small>Draft first. Send only with approval.</small></span><span class="mini-tag">Email</span></div><div class="mini-tool"><span class="mini-ico">⌘</span><span><b>Desktop Agent</b><small>Use an authorized PC for files and terminal work.</small></span><span class="mini-tag">PC</span></div><div class="mini-tool"><span class="mini-ico">⌁</span><span><b>GitHub Builder</b><small>Patch pages, fix bugs and track repo changes.</small></span><span class="mini-tag">Code</span></div></div><p class="mini-note">Permissions first. No passwords shared. Disconnect anytime. Your access stays scoped.</p></aside>
       </section>
-      <div class="trust-row" aria-label="Tool principles">
-        <div class="trust"><strong>Plain-English cards</strong><span>No mystery names. Each tool says what it is for.</span></div>
-        <div class="trust"><strong>Permission preview</strong><span>See the access needed before connecting anything.</span></div>
-        <div class="trust"><strong>Owner-safe actions</strong><span>Important work stays reviewable, not hidden.</span></div>
-      </div>
-      <section class="controls" aria-label="Filter tools">
-        <label class="search" aria-label="Search plugins">⌕ <input id="search" type="search" placeholder="Search tools, tasks or apps…"></label>
-        <div class="tabs" role="tablist" aria-label="Tool categories">
-          <button class="tab active" data-filter="all" type="button">All</button>
-          <button class="tab" data-filter="recommended" type="button">Top picks</button>
-          <button class="tab" data-filter="business" type="button">Business</button>
-          <button class="tab" data-filter="productivity" type="button">Productivity</button>
-          <button class="tab" data-filter="developer" type="button">Developer</button>
-          <button class="tab" data-filter="voice" type="button">Voice & PC</button>
-        </div>
-      </section>
-      <section id="tools" aria-labelledby="tools-title">
-        <div class="section-title">
-          <div>
-            <h2 id="tools-title">Available tools</h2>
-            <p>Simple cards. Clear setup. No clutter.</p>
-          </div>
-          <a class="btn ghost" href="/support">Request a tool</a>
-        </div>
-        <div class="grid" id="grid">
-          <article class="plugin" data-tags="recommended business productivity gmail email sales inbox leads replies">
-            <div class="plugin-head"><span class="logo">✉</span><span class="plugin-title"><h3>Email Assistant</h3><small>Gmail / inbox workflows</small></span><span class="status ready">Ready</span></div>
-            <p class="desc">Summarize messages, draft replies, find sales leads and keep follow-ups tidy without living in your inbox.</p>
-            <div class="chips"><span class="chip">Replies</span><span class="chip">Leads</span><span class="chip">Summaries</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Email search and selected threads when connected.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Use in app</a><button class="btn learn" data-tool="Email Assistant">Details</button><button class="toggle on" aria-label="Email Assistant enabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="recommended productivity calendar meetings schedule reminders">
-            <div class="plugin-head"><span class="logo">📅</span><span class="plugin-title"><h3>Calendar Planner</h3><small>Meetings and reminders</small></span><span class="status ready">Ready</span></div>
-            <p class="desc">Check availability, plan calls, prepare meeting notes and keep important reminders out of your head.</p>
-            <div class="chips"><span class="chip">Schedule</span><span class="chip">Availability</span><span class="chip">Reminders</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Calendar events only after you connect it.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Use in app</a><button class="btn learn" data-tool="Calendar Planner">Details</button><button class="toggle on" aria-label="Calendar Planner enabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="recommended developer github code bugs repo pull requests deploy">
-            <div class="plugin-head"><span class="logo">⌁</span><span class="plugin-title"><h3>GitHub Builder</h3><small>Code and repo fixes</small></span><span class="status ready">Ready</span></div>
-            <p class="desc">Patch pages, inspect bugs, clean files and keep your repo deployable without losing track of changes.</p>
-            <div class="chips"><span class="chip">Fix bugs</span><span class="chip">Commit code</span><span class="chip">Review</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Selected repositories and files you authorize.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Use in app</a><button class="btn learn" data-tool="GitHub Builder">Details</button><button class="toggle on" aria-label="GitHub Builder enabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="developer vercel deploy website hosting build logs errors">
-            <div class="plugin-head"><span class="logo">▲</span><span class="plugin-title"><h3>Vercel Deploy</h3><small>Hosting and logs</small></span><span class="status setup">Setup</span></div>
-            <p class="desc">Inspect deploys, understand build errors and keep your site release process less stressful.</p>
-            <div class="chips"><span class="chip">Deploys</span><span class="chip">Logs</span><span class="chip">Domains</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Your Vercel project after connection.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Open setup</a><button class="btn learn" data-tool="Vercel Deploy">Details</button><button class="toggle" aria-label="Vercel Deploy disabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="productivity drive docs files sheets documents research storage">
-            <div class="plugin-head"><span class="logo">▣</span><span class="plugin-title"><h3>File Finder</h3><small>Drive, docs and uploads</small></span><span class="status ready">Ready</span></div>
-            <p class="desc">Find useful docs, read project files, summarize PDFs and bring the right context into chat.</p>
-            <div class="chips"><span class="chip">Docs</span><span class="chip">Files</span><span class="chip">Summaries</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Only files or folders you choose to connect.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Use in app</a><button class="btn learn" data-tool="File Finder">Details</button><button class="toggle on" aria-label="File Finder enabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="business payments stripe plans credits billing checkout revenue">
-            <div class="plugin-head"><span class="logo">£</span><span class="plugin-title"><h3>Payments Helper</h3><small>Stripe and billing checks</small></span><span class="status setup">Setup</span></div>
-            <p class="desc">Check plan flows, payment links, checkout health and revenue blockers before customers hit problems.</p>
-            <div class="chips"><span class="chip">Billing</span><span class="chip">Plans</span><span class="chip">Revenue</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Stripe data after owner approval.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Open setup</a><button class="btn learn" data-tool="Payments Helper">Details</button><button class="toggle" aria-label="Payments Helper disabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="business shopify store products ecommerce cj dropshipping sales">
-            <div class="plugin-head"><span class="logo">🛍</span><span class="plugin-title"><h3>Store Assistant</h3><small>Shopify and product work</small></span><span class="status setup">Setup</span></div>
-            <p class="desc">Improve product pages, draft store copy, plan promotions and keep your shop easier to manage.</p>
-            <div class="chips"><span class="chip">Products</span><span class="chip">SEO</span><span class="chip">Sales</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Your connected store after setup.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Open setup</a><button class="btn learn" data-tool="Store Assistant">Details</button><button class="toggle" aria-label="Store Assistant disabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="voice jarvis calls phone quo receptionist customer support business">
-            <div class="plugin-head"><span class="logo">◉</span><span class="plugin-title"><h3>Voice & Jarvis</h3><small>Calls and owner alerts</small></span><span class="status setup">Setup</span></div>
-            <p class="desc">Handle call workflows, owner alerts and voice assistant tasks with clear escalation rules.</p>
-            <div class="chips"><span class="chip">Calls</span><span class="chip">Alerts</span><span class="chip">Support</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Call provider settings and approved numbers.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/app">Open setup</a><button class="btn learn" data-tool="Voice & Jarvis">Details</button><button class="toggle" aria-label="Voice and Jarvis disabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="recommended voice pc desktop computer files terminal commander work agent">
-            <div class="plugin-head"><span class="logo">⌘</span><span class="plugin-title"><h3>Desktop Agent</h3><small>PC help and terminal work</small></span><span class="status ready">Ready</span></div>
-            <p class="desc">Help inspect local files, run safe commands and work through technical tasks on an authorized computer.</p>
-            <div class="chips"><span class="chip">PC</span><span class="chip">Files</span><span class="chip">Terminal</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Only authorized devices you approve.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/desktop">Open desktop</a><button class="btn learn" data-tool="Desktop Agent">Details</button><button class="toggle on" aria-label="Desktop Agent enabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="developer website audit seo pages landing homepage business">
-            <div class="plugin-head"><span class="logo">◎</span><span class="plugin-title"><h3>Website Auditor</h3><small>Landing pages and SEO</small></span><span class="status ready">Ready</span></div>
-            <p class="desc">Review pages, spot confusing sections, improve copy and plan SEO changes that help customers understand faster.</p>
-            <div class="chips"><span class="chip">SEO</span><span class="chip">UX</span><span class="chip">Copy</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Public pages or files you ask it to inspect.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/website-audit">Open audit</a><button class="btn learn" data-tool="Website Auditor">Details</button><button class="toggle on" aria-label="Website Auditor enabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="business discord community server fivem support members tickets">
-            <div class="plugin-head"><span class="logo">☰</span><span class="plugin-title"><h3>Community Helper</h3><small>Discord and support rooms</small></span><span class="status soon">Soon</span></div>
-            <p class="desc">Plan server channels, member support, announcements and ticket flows without making the server messy.</p>
-            <div class="chips"><span class="chip">Discord</span><span class="chip">Tickets</span><span class="chip">Roles</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Server permissions only after setup.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/support">Request</a><button class="btn learn" data-tool="Community Helper">Details</button><button class="toggle" aria-label="Community Helper disabled"></button></div>
-          </article>
-          <article class="plugin" data-tags="developer roblox fivem scripts code lua server games">
-            <div class="plugin-head"><span class="logo">◇</span><span class="plugin-title"><h3>Game Script Helper</h3><small>FiveM and Roblox tasks</small></span><span class="status ready">Ready</span></div>
-            <p class="desc">Draft scripts, debug errors, explain server files and make game-development work less chaotic.</p>
-            <div class="chips"><span class="chip">FiveM</span><span class="chip">Roblox</span><span class="chip">Lua</span></div>
-            <div class="permissions"><b>Needs access to</b><span>Only code or files you share or approve.</span></div>
-            <div class="plugin-actions"><a class="btn primary" href="/roblox-studio">Open tools</a><button class="btn learn" data-tool="Game Script Helper">Details</button><button class="toggle on" aria-label="Game Script Helper enabled"></button></div>
-          </article>
-          <div class="empty" id="empty">No tools match that search yet. Try “email”, “code”, “sales”, “calendar” or “desktop”.</div>
-        </div>
-      </section>
-      <section class="bottom-panel">
-        <div>
-          <h2>Want it even more automatic?</h2>
-          <p>Start with one tool, then build a simple workflow: search, draft, review, approve, send or deploy.</p>
-        </div>
-        <a class="btn primary" href="/app">Build a workflow</a>
-      </section>
-      <p class="fineprint">Connected tools only work after approval. Sensitive actions should stay reviewed by the owner.</p>
+      <div class="trust-row"><div class="trust"><strong>Permissions first</strong><span>Review what each plugin needs before using it.</span></div><div class="trust"><strong>No passwords shared</strong><span>OAuth is preferred; manual tokens are owner-only.</span></div><div class="trust"><strong>Disconnect anytime</strong><span>Turn off a tool whenever you want.</span></div><div class="trust"><strong>Your access stays scoped</strong><span>Normal users should connect through the provider.</span></div></div>
+      <section class="controls" aria-label="Filter tools"><label class="search" aria-label="Search plugins">⌕ <input id="search" type="search" placeholder="Search tools, tasks or apps…"></label><div class="tabs" role="tablist" aria-label="Tool categories"><button class="tab active" data-filter="all" type="button">All</button><button class="tab" data-filter="connected" type="button">Connected</button><button class="tab" data-filter="developer" type="button">Developer</button><button class="tab" data-filter="business" type="button">Business</button><button class="tab" data-filter="coming_soon" type="button">Coming soon</button><button class="tab" data-filter="disabled" type="button">Disabled</button></div></section>
+      <section id="tools" aria-labelledby="tools-title"><div class="section-title"><div><h2 id="tools-title">Available plugins</h2><p>Install, connect, inspect details, or disconnect from one calm place.</p></div><a class="btn ghost" href="/support">Request a plugin</a></div><div class="grid" id="grid">
+        <article class="plugin" data-tags="all connected business gmail email sales inbox" data-plugin="gmail"><div class="plugin-head"><span class="logo">✉</span><span class="plugin-title"><h3>Email Agent workflows</h3><small>Gmail / approval-only sending</small></span><span class="status ready">Connected</span></div><p class="desc">Summarize inboxes, draft replies and prepare outreach. Send only with approval; bulk-style sending stays blocked.</p><div class="chips"><span class="chip">Send only with approval</span><span class="chip">Draft replies</span><span class="chip">Inbox summaries</span></div><div class="permissions"><b>Permissions first</b><span>Read selected email context after connection. Sending remains approval scoped.</span></div><div class="oauth-box">Sign in to use Gmail. Tokens are encrypted server-side.</div><div class="plugin-actions"><button class="btn primary" data-install="gmail">Connect plugin</button><button class="btn" data-connect="gmail">Connect with OAuth</button><button class="btn learn" data-details="gmail">Details</button><button class="btn" data-inspect="gmail">Inspect</button></div></article>
+        <article class="plugin" data-tags="all connected developer pc desktop" data-plugin="pc-agent"><div class="plugin-head"><span class="logo">⌘</span><span class="plugin-title"><h3>Desktop Agent</h3><small>Authorized computer tasks</small></span><span class="status ready">Ready</span></div><p class="desc">Use a verified device for safe file and terminal help. Shell stays controlled and owner-visible.</p><div class="chips"><span class="chip">PC</span><span class="chip">Files</span><span class="chip">Terminal</span></div><div class="permissions"><b>Your access stays scoped</b><span>Only authorized devices and approved workspaces.</span></div><div class="plugin-actions"><button class="btn primary" data-install="pc-agent">Connect plugin</button><button class="btn learn" data-details="pc-agent">Details</button></div></article>
+        <article class="plugin" data-tags="all developer disabled github code repo" data-plugin="github"><div class="plugin-head"><span class="logo">⌁</span><span class="plugin-title"><h3>GitHub Builder</h3><small>Repo fixes and reviews</small></span><span class="status setup">Owner setup</span></div><p class="desc">Patch pages, inspect bugs and review code changes. Developer OAuth setup is owner-only.</p><div class="chips"><span class="chip">Code</span><span class="chip">Repo</span><span class="chip">Reviews</span></div><div class="permissions"><b>Manual tokens are owner-only</b><span>Normal users should connect through the provider.</span></div><div class="plugin-actions"><button class="btn primary" data-install="github">Connect plugin</button><button class="btn" data-connect="github">Connect with OAuth</button><button class="btn learn" data-details="github">Details</button></div></article>
+        <article class="plugin" data-tags="all developer disabled vercel deploy website" data-plugin="vercel"><div class="plugin-head"><span class="logo">▲</span><span class="plugin-title"><h3>Vercel Deploy</h3><small>Deploys and domains</small></span><span class="status setup">Owner setup</span></div><p class="desc">Understand deployments, logs and domain issues without exposing secrets.</p><div class="chips"><span class="chip">Deploy</span><span class="chip">Logs</span><span class="chip">Domains</span></div><div class="permissions"><b>Owner-only OAuth modal polish</b><span id="owner-oauth-note">OWNER-ONLY OAUTH MODAL POLISH keeps developer setup separate.</span></div><div class="plugin-actions"><button class="btn primary" data-install="vercel">Connect plugin</button><button class="btn" data-connect="vercel">Connect with OAuth</button><button class="btn learn" data-details="vercel">Details</button></div></article>
+        <article class="plugin" data-tags="all business stripe payments disabled" data-plugin="stripe"><div class="plugin-head"><span class="logo">£</span><span class="plugin-title"><h3>Payments Helper</h3><small>Stripe and billing checks</small></span><span class="status setup">Setup</span></div><p class="desc">Check checkout health, payment links and revenue blockers after owner approval.</p><div class="chips"><span class="chip">Billing</span><span class="chip">Plans</span><span class="chip">Revenue</span></div><div class="permissions"><b>encrypted server-side</b><span>Payment access should stay owner-reviewed.</span></div><div class="plugin-actions"><button class="btn primary" data-install="stripe">Connect plugin</button><button class="btn learn" data-details="stripe">Details</button></div></article>
+        <article class="plugin" data-tags="all coming_soon business discord shopify calendar drive" data-plugin="coming-soon"><div class="plugin-head"><span class="logo">＋</span><span class="plugin-title"><h3>More plugins coming soon</h3><small>Drive, Calendar, Discord, Shopify</small></span><span class="status soon">Soon</span></div><p class="desc">Request a plugin and Stellar can add it when the connection is safe and useful.</p><div class="chips"><span class="chip">Files</span><span class="chip">Calendar</span><span class="chip">Store</span></div><div class="permissions"><b>setupText</b><span>OAuth is planned but not live for every provider yet.</span></div><div class="plugin-actions"><a class="btn primary" href="/support">Request a plugin</a><button class="btn learn" data-details="coming-soon">Details</button></div></article>
+        <div class="empty" id="empty">No tools match that search yet.</div>
+      </div></section>
+      <section class="bottom-panel"><div><h2>Want it even more automatic?</h2><p>Start with one plugin, then build a workflow: search, draft, review, approve, send or deploy.</p></div><a class="btn primary" href="/app">Build a workflow</a></section>
+      <p class="fineprint">allowManualToken is reserved for owner setup. Connect plugin controls never ask normal users to paste secrets.</p>
     </div>
   </main>
 </div>
-<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
-  <div class="dialog">
-    <div class="dialog-head">
-      <div><h2 id="drawer-title">Tool details</h2><p id="drawer-desc">A simple explanation of what this tool can help with.</p></div>
-      <button class="close" id="close" type="button" aria-label="Close">×</button>
-    </div>
-    <div class="dialog-grid">
-      <div class="info-row"><strong>Best for</strong><span id="best">Saving time on repeat work.</span></div>
-      <div class="info-row"><strong>Before it acts</strong><span>Stellar should show what it plans to do, especially for emails, payments, code changes and calls.</span></div>
-      <div class="info-row"><strong>Permission style</strong><span>Connect only the apps and files you actually need. Keep owner-level actions separate from normal users.</span></div>
-    </div>
-    <div class="dialog-actions"><a class="btn primary" href="/app">Open in Stellar</a><button class="btn ghost" id="close2" type="button">Done</button></div>
-  </div>
-</div>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><div class="dialog"><div class="dialog-head"><div><h2 id="drawer-title">Tool details</h2><p id="drawer-desc">A simple explanation of what this tool can help with.</p></div><button class="close" id="close" type="button" aria-label="Close">×</button></div><div class="detail-panel"><div class="plugin-detail-view"><strong>plugin-detail-view</strong><span id="best">Use this for repeat work that should stay reviewable.</span></div><div class="plugin-detail-setup"><strong>plugin-detail-setup</strong><span>Connect with OAuth where available. Manual tokens are owner-only and encrypted server-side.</span></div><form id="plugin-oauth-submit"><input type="hidden" name="plugin" value="gmail"><button class="btn primary" type="button">Connect with OAuth</button></form></div><div class="dialog-actions"><a class="btn primary" href="/app">Open in Stellar</a><button class="btn ghost" id="close2" type="button">Done</button></div></div></div>
 <script>
 (() => {
-  const grid = document.getElementById('grid');
-  const cards = Array.from(grid.querySelectorAll('.plugin'));
-  const empty = document.getElementById('empty');
-  const search = document.getElementById('search');
-  const tabs = Array.from(document.querySelectorAll('.tab'));
-  const drawer = document.getElementById('drawer');
-  const title = document.getElementById('drawer-title');
-  const desc = document.getElementById('drawer-desc');
-  const best = document.getElementById('best');
-  let filter = 'all';
-
-  const detailText = {
-    'Email Assistant': ['Email Assistant', 'Helps with replies, lead checks, summaries and follow-up drafts.', 'Inbox triage, sales replies and customer follow-ups.'],
-    'Calendar Planner': ['Calendar Planner', 'Helps plan meetings, availability, reminders and prep notes.', 'Keeping your day organized without checking calendar manually.'],
-    'GitHub Builder': ['GitHub Builder', 'Helps inspect code, patch files, fix bugs and explain deployments.', 'Website and app development where changes need to be tracked.'],
-    'Vercel Deploy': ['Vercel Deploy', 'Helps diagnose deployment status, domain issues and build errors.', 'Understanding why a site is not live or why a deploy failed.'],
-    'File Finder': ['File Finder', 'Finds, reads and summarizes connected files when you need project context.', 'Docs, PDFs, plans, notes and reference files.'],
-    'Payments Helper': ['Payments Helper', 'Checks plan flows, payment setup and checkout problems after approval.', 'Finding revenue blockers before customers hit them.'],
-    'Store Assistant': ['Store Assistant', 'Helps improve ecommerce pages, product copy and shop workflows.', 'Shopify store polish and product management.'],
-    'Voice & Jarvis': ['Voice & Jarvis', 'Supports voice workflows, call alerts and owner escalation planning.', 'Customer calls and urgent owner alerts.'],
-    'Desktop Agent': ['Desktop Agent', 'Works with an authorized computer for files, terminal tasks and local checks.', 'Hands-on PC help when browser-only fixes are not enough.'],
-    'Website Auditor': ['Website Auditor', 'Reviews web pages for clarity, conversion, SEO and confusing UI.', 'Landing pages, home pages and support/pricing pages.'],
-    'Community Helper': ['Community Helper', 'Plans community channels, support tickets, roles and announcements.', 'Discord-style support and member operations.'],
-    'Game Script Helper': ['Game Script Helper', 'Helps with FiveM, Roblox and Lua-style scripting tasks.', 'Game server scripts and debugging.']
-  };
-
-  function applyFilters(){
-    const q = (search.value || '').trim().toLowerCase();
-    let visible = 0;
-    cards.forEach(card => {
-      const tags = (card.dataset.tags || '').toLowerCase();
-      const text = card.innerText.toLowerCase();
-      const matchesTab = filter === 'all' || tags.includes(filter);
-      const matchesSearch = !q || tags.includes(q) || text.includes(q);
-      const show = matchesTab && matchesSearch;
-      card.style.display = show ? '' : 'none';
-      if(show) visible += 1;
-    });
-    empty.style.display = visible ? 'none' : 'block';
-  }
-
-  tabs.forEach(tab => tab.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    filter = tab.dataset.filter || 'all';
-    applyFilters();
-  }));
-  search.addEventListener('input', applyFilters);
-
-  document.querySelectorAll('.learn').forEach(button => button.addEventListener('click', () => {
-    const key = button.dataset.tool;
-    const data = detailText[key] || [key, 'A Stellar tool for getting work done more clearly.', 'Repeat tasks where AI can help.'];
-    title.textContent = data[0];
-    desc.textContent = data[1];
-    best.textContent = data[2];
-    drawer.classList.add('open');
-  }));
-
-  function close(){ drawer.classList.remove('open'); }
-  document.getElementById('close').addEventListener('click', close);
-  document.getElementById('close2').addEventListener('click', close);
-  drawer.addEventListener('click', event => { if(event.target === drawer) close(); });
-  document.addEventListener('keydown', event => { if(event.key === 'Escape') close(); });
-
-  document.querySelectorAll('.toggle').forEach(toggle => toggle.addEventListener('click', () => {
-    toggle.classList.toggle('on');
-    toggle.setAttribute('aria-label', toggle.classList.contains('on') ? 'Tool enabled' : 'Tool disabled');
-  }));
+  const owner=false;
+  const setupText='OAuth needs provider credentials added in Vercel where required.';
+  function installPlugin(id){ console.info('installPlugin', id); }
+  function startOAuth(id){ if(!owner&&['github','vercel'].includes(id)){ alert('Developer OAuth setup is owner-only.'); return; } console.info('startOAuth', id); }
+  function connectToken(id){ console.info('connectToken', id); }
+  function disconnectCurrentPlugin(){ console.info('disconnectCurrentPlugin'); }
+  const grid=document.getElementById('grid');
+  const cards=Array.from(grid.querySelectorAll('.plugin'));
+  const empty=document.getElementById('empty');
+  const search=document.getElementById('search');
+  const tabs=Array.from(document.querySelectorAll('.tab'));
+  const drawer=document.getElementById('drawer');
+  const title=document.getElementById('drawer-title');
+  const desc=document.getElementById('drawer-desc');
+  const best=document.getElementById('best');
+  let filter='all';
+  function applyFilters(){const q=(search.value||'').trim().toLowerCase();let visible=0;cards.forEach(card=>{const tags=(card.dataset.tags||'').toLowerCase();const text=card.innerText.toLowerCase();const show=(filter==='all'||tags.includes(filter))&&(!q||tags.includes(q)||text.includes(q));card.style.display=show?'':'none';if(show)visible++;});empty.style.display=visible?'none':'block';}
+  tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(t=>t.classList.remove('active'));tab.classList.add('active');filter=tab.dataset.filter||'all';applyFilters();}));
+  search.addEventListener('input',applyFilters);
+  document.querySelectorAll('[data-install]').forEach(button=>button.addEventListener('click',()=>installPlugin(button.dataset.install)));
+  document.querySelectorAll('[data-connect]').forEach(button=>button.addEventListener('click',()=>startOAuth(button.dataset.connect)));
+  document.querySelectorAll('[data-details]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.details;title.textContent=button.closest('.plugin')?.querySelector('h3')?.textContent||'Tool details';desc.textContent='Clear permissions, simple setup and safe review-first actions.';best.textContent=id==='gmail'?'Email Agent workflows: draft, review, then Send only with approval.':'Use this when a workflow should stay simple and controlled.';drawer.classList.add('open');}));
+  function close(){drawer.classList.remove('open')}document.getElementById('close').addEventListener('click',close);document.getElementById('close2').addEventListener('click',close);drawer.addEventListener('click',event=>{if(event.target===drawer)close();});document.addEventListener('keydown',event=>{if(event.key==='Escape')close();});
 })();
 </script>
 </body>
