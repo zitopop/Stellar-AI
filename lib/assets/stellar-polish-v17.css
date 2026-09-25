@@ -1,28 +1,32 @@
-/* Stellar polish v21 — CSS-only safe UI layer. No JavaScript changes. */
+/* Stellar polish v22 — safer premium UI layer. CSS only: no JavaScript, no button logic. */
 :root{
   --stellar-bg:#0b0c10;
-  --stellar-surface:#11131a;
+  --stellar-bg-soft:#101116;
+  --stellar-surface:#12141b;
   --stellar-surface-2:#171922;
-  --stellar-surface-3:#1d2029;
+  --stellar-surface-3:#20232d;
   --stellar-line:rgba(255,255,255,.075);
-  --stellar-line-strong:rgba(255,255,255,.13);
-  --stellar-text:#f4f6fb;
-  --stellar-muted:#9fa8b7;
-  --stellar-faint:#717a88;
+  --stellar-line-strong:rgba(255,255,255,.14);
+  --stellar-text:#f5f7fb;
+  --stellar-muted:#a2abb8;
+  --stellar-faint:#737c89;
   --stellar-accent:#9b8cff;
+  --stellar-accent-2:#d8d2ff;
   --stellar-accent-soft:rgba(155,140,255,.15);
-  --stellar-accent-line:rgba(155,140,255,.32);
+  --stellar-accent-line:rgba(155,140,255,.34);
   --stellar-radius:18px;
 }
 html{scroll-behavior:smooth}
+*{text-rendering:optimizeLegibility}
+button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
 /* Public landing page */
 body.stellar-public.public-home{
-  background:radial-gradient(760px 430px at 50% -12%,rgba(155,140,255,.16),transparent 70%),linear-gradient(180deg,#0b0c12 0%,#090a0f 58%,#07080c 100%)!important;
+  background:radial-gradient(760px 430px at 50% -12%,rgba(155,140,255,.15),transparent 70%),linear-gradient(180deg,#0b0c12 0%,#090a0f 58%,#07080c 100%)!important;
 }
 .public-home .site-header{
   border-bottom:1px solid var(--stellar-line)!important;
-  background:rgba(9,10,15,.86)!important;
+  background:rgba(9,10,15,.88)!important;
   backdrop-filter:blur(18px)!important;
   -webkit-backdrop-filter:blur(18px)!important;
   box-shadow:none!important;
@@ -32,428 +36,134 @@ body.stellar-public.public-home{
 .public-home .nav-links a{color:#aab2bf!important;font-size:13px!important;font-weight:760!important}
 .public-home .nav-links a:hover{color:#fff!important}
 .public-home .nav-login{color:#c6ccd8!important}
-.public-home .button,
-.public-home .oa2-primary-action,
-.public-home .oa2-secondary-action{
-  min-height:44px!important;
-  border-radius:12px!important;
-}
+.public-home .button,.public-home .oa2-primary-action,.public-home .oa2-secondary-action{min-height:44px!important;border-radius:13px!important}
+.public-home .oa2-primary-action{background:#f0ecff!important;color:#101116!important;border-color:#f0ecff!important;box-shadow:0 14px 40px rgba(155,140,255,.13)!important}
+.public-home .oa2-secondary-action{background:#151720!important;border-color:rgba(255,255,255,.09)!important;color:#e5e9f1!important}
 .public-home .oa2-hero{
   display:grid!important;
   place-items:center!important;
   text-align:center!important;
-  min-height:min(760px,82svh)!important;
+  min-height:min(770px,82svh)!important;
   padding-top:clamp(72px,9vw,118px)!important;
   padding-bottom:clamp(68px,8vw,104px)!important;
 }
-.public-home .oa2-wordmark{
-  margin-bottom:14px!important;
-  color:#8f96a4!important;
-  font-size:10px!important;
-  font-weight:850!important;
-  letter-spacing:.2em!important;
-}
-.public-home .oa2-hero h1{
-  max-width:800px!important;
-  font-size:clamp(50px,7.6vw,90px)!important;
-  line-height:.99!important;
-  letter-spacing:-.067em!important;
-  font-weight:720!important;
-  text-wrap:balance!important;
-}
-.public-home .oa2-lead{
-  max-width:640px!important;
-  margin-top:18px!important;
-  color:#aeb6c4!important;
-  font-size:clamp(16px,1.8vw,19px)!important;
-  line-height:1.64!important;
-  text-wrap:balance!important;
-}
+.public-home .oa2-wordmark{margin-bottom:14px!important;color:#8f96a4!important;font-size:10px!important;font-weight:850!important;letter-spacing:.2em!important}
+.public-home .oa2-hero h1{max-width:820px!important;font-size:clamp(50px,7.6vw,90px)!important;line-height:.99!important;letter-spacing:-.067em!important;font-weight:725!important;text-wrap:balance!important}
+.public-home .oa2-lead{max-width:650px!important;margin-top:18px!important;color:#aeb6c4!important;font-size:clamp(16px,1.8vw,19px)!important;line-height:1.64!important;text-wrap:balance!important}
 .public-home .oa2-composer{
-  width:min(740px,100%)!important;
+  width:min(750px,100%)!important;
   margin-top:30px!important;
   padding:9px!important;
-  border-radius:22px!important;
+  border-radius:24px!important;
   background:#14161d!important;
   border:1px solid rgba(255,255,255,.105)!important;
   box-shadow:0 18px 52px rgba(0,0,0,.24)!important;
 }
-.public-home .oa2-composer:focus-within{
-  border-color:rgba(155,140,255,.34)!important;
-  box-shadow:0 0 0 4px rgba(155,140,255,.055),0 20px 58px rgba(0,0,0,.25)!important;
-}
-.public-home .oa2-composer textarea{
-  min-height:64px!important;
-  padding:9px 10px 3px!important;
-  color:#f4f6fb!important;
-  font-size:16px!important;
-}
+.public-home .oa2-composer:focus-within{border-color:rgba(155,140,255,.34)!important;box-shadow:0 0 0 4px rgba(155,140,255,.055),0 20px 58px rgba(0,0,0,.25)!important}
+.public-home .oa2-composer textarea{min-height:64px!important;padding:9px 10px 3px!important;color:#f4f6fb!important;font-size:16px!important;line-height:1.45!important}
 .public-home .oa2-composer textarea::placeholder{color:#7f8897!important}
-.public-home .oa2-composer button{
-  width:44px!important;
-  min-width:44px!important;
-  height:44px!important;
-  min-height:44px!important;
-  border-radius:50%!important;
-  background:#eeeaff!important;
-  color:#101116!important;
-}
+.public-home .oa2-composer button{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important;border-radius:50%!important;background:#eeeaff!important;color:#101116!important}
 .public-home .oa2-start-note{margin-top:13px!important;color:#8c95a3!important;font-size:12px!important}
 .public-home .oa2-hero-actions{display:flex!important;justify-content:center!important;gap:10px!important;margin-top:20px!important;flex-wrap:wrap!important}
-.public-home .oa2-primary-action,.public-home .oa2-secondary-action{padding-inline:18px!important}
-.public-home .oa2-audience,
-.public-home .oa2-preview,
-.public-home .oa2-jarvis,
-.public-home .pricing-section,
-.public-home .faq-section,
-.public-home .final-cta{
-  border-top:1px solid rgba(255,255,255,.055)!important;
-  padding-top:clamp(64px,8vw,104px)!important;
-  padding-bottom:clamp(64px,8vw,104px)!important;
-}
-.public-home .oa2-section-head h2,
-.public-home .pricing-heading h2,
-.public-home .faq-section h2,
-.public-home .final-cta h2{
-  letter-spacing:-.055em!important;
-  text-wrap:balance!important;
-}
-.public-home .oa2-audience-grid article,
-.public-home .oa2-jarvis-panel,
-.public-home .oa2-jarvis-list article,
-.public-home .oa2-preview-shell,
-.public-home .plan,
-.public-home .faqs details{
-  background:#111319!important;
-  border:1px solid var(--stellar-line)!important;
-  border-radius:16px!important;
-  box-shadow:none!important;
-}
-.public-home .oa2-audience-grid article:hover,
-.public-home .plan:hover,
-.public-home .faqs details:hover{
-  transform:none!important;
-  border-color:rgba(155,140,255,.22)!important;
-}
-.public-home .plan.featured{
-  border-color:rgba(155,140,255,.38)!important;
-  box-shadow:0 0 0 1px rgba(155,140,255,.08),0 20px 60px rgba(42,34,91,.14)!important;
-}
+.public-home .oa2-audience,.public-home .oa2-preview,.public-home .oa2-jarvis,.public-home .pricing-section,.public-home .faq-section,.public-home .final-cta{border-top:1px solid rgba(255,255,255,.055)!important;padding-top:clamp(64px,8vw,104px)!important;padding-bottom:clamp(64px,8vw,104px)!important}
+.public-home .oa2-section-head h2,.public-home .pricing-heading h2,.public-home .faq-section h2,.public-home .final-cta h2{letter-spacing:-.055em!important;text-wrap:balance!important}
+.public-home .oa2-audience-grid article,.public-home .oa2-jarvis-panel,.public-home .oa2-jarvis-list article,.public-home .oa2-preview-shell,.public-home .plan,.public-home .faqs details{background:#111319!important;border:1px solid var(--stellar-line)!important;border-radius:17px!important;box-shadow:none!important}
+.public-home .oa2-audience-grid article:hover,.public-home .plan:hover,.public-home .faqs details:hover{transform:none!important;border-color:rgba(155,140,255,.22)!important;background:#141720!important}
+.public-home .plan.featured{border-color:rgba(155,140,255,.38)!important;box-shadow:0 0 0 1px rgba(155,140,255,.08),0 20px 60px rgba(42,34,91,.14)!important}
 
-/* Main app workspace */
+/* App shell */
 html body .app{background:var(--stellar-bg)!important}
-html body .app .side{
-  width:var(--side)!important;
-  background:#0e0f14!important;
-  border-right:1px solid rgba(255,255,255,.055)!important;
-  box-shadow:none!important;
-}
+html body .app .main{background:var(--stellar-bg)!important}
+html body .app .side{width:var(--side)!important;background:#0e0f14!important;border-right:1px solid rgba(255,255,255,.055)!important;box-shadow:none!important}
 html body .app .brand{font-size:14px!important;font-weight:850!important}
-html body .app .mark{
-  background:#171821!important;
-  border:1px solid rgba(255,255,255,.06)!important;
-  color:#c8c0ff!important;
-  box-shadow:none!important;
-  filter:none!important;
-}
-html body .app .side>.btn.primary{
-  background:#1a1b22!important;
-  color:#f0f1f6!important;
-  border:1px solid rgba(255,255,255,.075)!important;
-  box-shadow:none!important;
-  border-radius:12px!important;
-  font-weight:830!important;
-}
+html body .app .mark{background:#171821!important;border:1px solid rgba(255,255,255,.06)!important;color:#c8c0ff!important;box-shadow:none!important;filter:none!important}
+html body .app .side>.btn.primary{background:#1a1b22!important;color:#f0f1f6!important;border:1px solid rgba(255,255,255,.075)!important;box-shadow:none!important;border-radius:12px!important;font-weight:830!important}
 html body .app .side>.btn.primary:hover{background:#22232b!important}
-html body .app .nav-link,
-html body .app .set-item{
-  border-radius:10px!important;
-  color:#a5adba!important;
-}
-html body .app .nav-link:hover,
-html body .app .set-item:hover{
-  background:rgba(255,255,255,.055)!important;
-  color:#fff!important;
-}
-html body .app .nav-link.active{
-  background:rgba(155,140,255,.13)!important;
-  color:#fff!important;
-  box-shadow:inset 2px 0 0 var(--stellar-accent)!important;
-}
-html body .app .top{
-  background:#0b0c10!important;
-  border-bottom:1px solid rgba(255,255,255,.055)!important;
-  box-shadow:none!important;
-}
-html body .app .model-pill{
-  min-height:40px!important;
-  padding:0 10px!important;
-  border-radius:999px!important;
-  background:#151720!important;
-  border:1px solid rgba(255,255,255,.08)!important;
-  color:#dfe4ec!important;
-}
-html body .app .top-plans,
-html body .app #account-button,
-html body .app .mobile-menu{
-  border-radius:999px!important;
-  background:#14161d!important;
-  border:1px solid rgba(255,255,255,.075)!important;
-  color:#dce1ea!important;
-}
-html body .app .top-plans:hover,
-html body .app #account-button:hover,
-html body .app .mobile-menu:hover{background:#1b1d25!important;color:#fff!important}
-html body .app .chat{padding-top:clamp(18px,3vw,34px)!important}
-html body .app .home-welcome{padding-top:clamp(74px,15vh,150px)!important}
-html body .app .home-welcome h1{
-  max-width:760px!important;
-  margin-inline:auto!important;
-  text-align:center!important;
-  font-size:clamp(34px,5.6vw,58px)!important;
-  line-height:1.05!important;
-  letter-spacing:-.06em!important;
-  text-wrap:balance!important;
-}
-html body .app .assistant .bubble{font-size:15px!important;line-height:1.7!important;color:#e8ebf2!important}
-html body .app .user .bubble{background:#23242b!important;border-radius:20px!important;padding:12px 15px!important}
-html body .app .composer-wrap{
-  padding-bottom:max(18px,calc(12px + env(safe-area-inset-bottom)))!important;
-  background:linear-gradient(180deg,rgba(11,12,16,0),#0b0c10 36%)!important;
-}
-html body .app .composer{
-  border-radius:26px!important;
-  background:#171922!important;
-  border:1px solid rgba(255,255,255,.11)!important;
-  box-shadow:0 18px 60px rgba(0,0,0,.26)!important;
-}
-html body .app .composer:focus-within{
-  border-color:rgba(155,140,255,.32)!important;
-  box-shadow:0 0 0 4px rgba(155,140,255,.055),0 18px 60px rgba(0,0,0,.26)!important;
-}
-html body .app .composer textarea{min-height:54px!important;font-size:16px!important}
-html body .app #sendBtn{background:#f1edff!important;color:#0f1015!important}
-html body .app .composer-more{
-  border-color:rgba(255,255,255,.07)!important;
-  background:#13151c!important;
-  border-radius:15px!important;
-}
-html body .app #model-menu{
-  background:#14161d!important;
-  border-radius:18px!important;
-  border:1px solid rgba(255,255,255,.09)!important;
-  box-shadow:0 22px 70px rgba(0,0,0,.42)!important;
-}
-html body .app #model-menu button{border-radius:12px!important}
+html body .app .side-section{border-top-color:rgba(255,255,255,.045)!important}
+html body .app .side-title{color:#697281!important;font-size:9.5px!important;letter-spacing:.11em!important}
+html body .app .nav-link,html body .app .set-item{border-radius:10px!important;color:#a5adba!important}
+html body .app .nav-link:hover,html body .app .set-item:hover{background:rgba(255,255,255,.055)!important;color:#fff!important}
+html body .app .nav-link.active{background:rgba(155,140,255,.13)!important;color:#fff!important;box-shadow:inset 2px 0 0 var(--stellar-accent)!important}
+html body .app .saved-chat-list .nav-link{min-height:38px!important;color:#929ba9!important}
+html body .app .chat-actions .nav-link{border-radius:9px!important;background:#12141b!important}
+html body .app .chat-actions .danger-action{color:#e6aaa9!important}
+html body .app .top{background:#0b0c10!important;border-bottom:1px solid rgba(255,255,255,.055)!important;box-shadow:none!important}
+html body .app .model-pill{min-height:40px!important;padding:0 10px!important;border-radius:999px!important;background:#151720!important;border:1px solid rgba(255,255,255,.08)!important;color:#dfe4ec!important}
+html body .app .model-pill:hover{background:#1a1d25!important;border-color:rgba(155,140,255,.22)!important}
+html body .app .top-plans,html body .app #account-button,html body .app .mobile-menu{border-radius:999px!important;background:#14161d!important;border:1px solid rgba(255,255,255,.075)!important;color:#dce1ea!important}
+html body .app .top-plans:hover,html body .app #account-button:hover,html body .app .mobile-menu:hover{background:#1b1d25!important;color:#fff!important}
 
-/* Settings — CSS-only safe polish */
-html body .app .settings-panel{
-  background:rgba(2,3,6,.66)!important;
-  backdrop-filter:blur(16px)!important;
-  -webkit-backdrop-filter:blur(16px)!important;
-}
-html body .app .settings-card{
-  width:min(620px,calc(100vw - 32px))!important;
-  max-height:86dvh!important;
-  margin:6vh auto 0!important;
-  padding:0!important;
-  overflow:hidden!important;
-  background:#11131a!important;
-  border:1px solid rgba(255,255,255,.095)!important;
-  border-radius:24px!important;
-  box-shadow:0 34px 110px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.025)!important;
-}
-html body .app .settings-header{
-  position:sticky!important;
-  top:0!important;
-  z-index:3!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:14px!important;
-  padding:18px 18px 14px!important;
-  background:rgba(17,19,26,.96)!important;
-  border-bottom:1px solid rgba(255,255,255,.065)!important;
-}
-html body .app .settings-card h2,
-html body .app .settings-header h2{
-  margin:0!important;
-  font-size:24px!important;
-  line-height:1.1!important;
-  letter-spacing:-.045em!important;
-}
+/* Chat home + composer */
+html body .app .chat{padding-top:clamp(18px,3vw,34px)!important}
+html body .app .home-welcome{padding-top:clamp(76px,15vh,152px)!important}
+html body .app .home-welcome h1{max-width:760px!important;margin-inline:auto!important;text-align:center!important;font-size:clamp(34px,5.6vw,58px)!important;line-height:1.05!important;letter-spacing:-.06em!important;text-wrap:balance!important}
+html body .app .assistant .bubble{font-size:15px!important;line-height:1.72!important;color:#e8ebf2!important}
+html body .app .user .bubble{background:#23242b!important;border-radius:20px!important;padding:12px 15px!important;color:#f5f6fa!important}
+html body .app .composer-wrap{padding-bottom:max(18px,calc(12px + env(safe-area-inset-bottom)))!important;background:linear-gradient(180deg,rgba(11,12,16,0),#0b0c10 36%)!important}
+html body .app .composer{border-radius:26px!important;background:#171922!important;border:1px solid rgba(255,255,255,.11)!important;box-shadow:0 18px 60px rgba(0,0,0,.26)!important}
+html body .app .composer:focus-within{border-color:rgba(155,140,255,.32)!important;box-shadow:0 0 0 4px rgba(155,140,255,.055),0 18px 60px rgba(0,0,0,.26)!important}
+html body .app .composer textarea{min-height:54px!important;font-size:16px!important;line-height:1.5!important}
+html body .app .composer textarea::placeholder{color:#818a98!important}
+html body .app #sendBtn{background:#f1edff!important;color:#0f1015!important;box-shadow:none!important}
+html body .app .composer-tool{color:#a2abb8!important}
+html body .app .composer-tool:hover{background:#20232d!important;color:#fff!important}
+html body .app .composer-more{border-color:rgba(255,255,255,.07)!important;background:#13151c!important;border-radius:15px!important}
+html body .app .status[data-idle="true"]{display:none!important}
+
+/* Model picker */
+html body .app #model-menu{background:#14161d!important;border-radius:18px!important;border:1px solid rgba(255,255,255,.09)!important;box-shadow:0 22px 70px rgba(0,0,0,.42)!important}
+html body .app #model-menu .model-menu-heading{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;padding:9px 10px 12px!important;border-bottom:1px solid rgba(255,255,255,.06)!important}
+html body .app #model-menu .model-menu-title{display:grid!important;gap:3px!important;float:none!important}
+html body .app #model-menu .model-menu-title strong{font-size:13px!important;letter-spacing:-.02em!important;color:#fff!important}
+html body .app #model-menu .model-menu-title small{font-size:10.5px!important;color:#8e96a4!important}
+html body .app #model-menu .model-option,html body .app #model-menu .model-menu-action{display:grid!important;grid-template-columns:28px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;border-radius:12px!important;min-height:52px!important;text-align:left!important}
+html body .app #model-menu button:hover{background:#1b1e27!important;border-color:rgba(155,140,255,.18)!important}
+html body .app #model-menu button[aria-checked="true"]{background:rgba(155,140,255,.13)!important;border-color:rgba(155,140,255,.28)!important;box-shadow:inset 2px 0 0 var(--stellar-accent)!important}
+html body .app #model-menu .model-symbol{float:none!important;width:28px!important;height:28px!important;display:grid!important;place-items:center!important;border-radius:9px!important;background:#1b1e27!important;color:#cfc8ff!important;font-size:12px!important}
+html body .app #model-menu .model-copy{float:none!important;display:grid!important;gap:2px!important;min-width:0!important;color:#dfe4ed!important;font-size:12px!important}
+html body .app #model-menu .model-copy small{display:block!important;color:#8f98a7!important;font-size:10.5px!important;line-height:1.35!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+html body .app #model-menu .model-access,html body .app #model-menu .action-meta{float:none!important;color:#bfb7ff!important;font-size:10px!important}
+
+/* Settings — cleaner, premium, still fully functional */
+html body .app .settings-panel{background:rgba(2,3,6,.66)!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important}
+html body .app .settings-card{width:min(620px,calc(100vw - 32px))!important;max-height:86dvh!important;margin:6vh auto 0!important;padding:0!important;overflow:hidden!important;background:#11131a!important;border:1px solid rgba(255,255,255,.095)!important;border-radius:24px!important;box-shadow:0 34px 110px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.025)!important}
+html body .app .settings-header{position:sticky!important;top:0!important;z-index:3!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;padding:18px 18px 14px!important;background:rgba(17,19,26,.96)!important;border-bottom:1px solid rgba(255,255,255,.065)!important}
+html body .app .settings-card h2,html body .app .settings-header h2{margin:0!important;font-size:24px!important;line-height:1.1!important;letter-spacing:-.045em!important}
 html body .app .settings-header p{margin:4px 0 0!important;color:#7f8793!important;font-size:11.5px!important}
 html body .app .settings-kicker{display:none!important}
-html body .app .settings-close-x{
-  width:40px!important;
-  height:40px!important;
-  min-width:40px!important;
-  border-radius:12px!important;
-  background:#171922!important;
-  border:1px solid rgba(255,255,255,.07)!important;
-  color:#aeb5c0!important;
-}
+html body .app .settings-close-x{width:40px!important;height:40px!important;min-width:40px!important;border-radius:12px!important;background:#171922!important;border:1px solid rgba(255,255,255,.07)!important;color:#aeb5c0!important}
 html body .app .settings-close-x:hover{background:#20232d!important;color:#fff!important}
-html body .app .settings-grid{
-  display:grid!important;
-  grid-template-columns:1fr!important;
-  gap:5px!important;
-  max-height:calc(86dvh - 74px)!important;
-  overflow:auto!important;
-  padding:10px!important;
-  scrollbar-width:thin!important;
-}
-html body .app .settings-row,
-html body .app .settings-credit{
-  width:100%!important;
-  min-height:54px!important;
-  display:grid!important;
-  grid-template-columns:36px minmax(0,1fr) auto!important;
-  align-items:center!important;
-  gap:10px!important;
-  padding:9px 10px!important;
-  border:1px solid transparent!important;
-  border-radius:13px!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  color:#e9edf4!important;
-  text-align:left!important;
-}
-html body .app .settings-row:hover,
-html body .app .settings-credit:hover{
-  background:#171922!important;
-  border-color:rgba(255,255,255,.06)!important;
-}
-html body .app .settings-icon{
-  width:32px!important;
-  height:32px!important;
-  min-width:32px!important;
-  display:grid!important;
-  place-items:center!important;
-  border-radius:10px!important;
-  background:#1a1c25!important;
-  color:#b5adff!important;
-  font-size:12px!important;
-}
-html body .app .settings-row-copy,
-html body .app .settings-credit-copy{min-width:0!important;display:block!important}
-html body .app .settings-row strong,
-html body .app .settings-credit-copy strong{
-  display:block!important;
-  font-size:13px!important;
-  line-height:1.28!important;
-  font-weight:750!important;
-  color:#f2f4f8!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-}
-html body .app .settings-row small,
-html body .app .settings-credit-copy small{display:none!important}
-html body .app #usage-copy,
-html body .app #owner-call-health,
-html body .app #owner-push-status,
-html body .app #owner-call-setup-status,
-html body .app .topup-status{
-  display:block!important;
-  margin-top:2px!important;
-  color:#7f8794!important;
-  font-size:10.5px!important;
-  line-height:1.35!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-}
-html body .app .settings-row-meta{
-  margin-left:auto!important;
-  color:#6f7784!important;
-  font-size:10.5px!important;
-  white-space:nowrap!important;
-}
-html body .app .settings-plan-hero{
-  min-height:72px!important;
-  margin-bottom:6px!important;
-  background:linear-gradient(135deg,rgba(155,140,255,.14),rgba(20,22,30,.96))!important;
-  border-color:rgba(155,140,255,.24)!important;
-}
+html body .app .settings-grid{display:grid!important;grid-template-columns:1fr!important;gap:5px!important;max-height:calc(86dvh - 74px)!important;overflow:auto!important;padding:10px!important;scrollbar-width:thin!important}
+html body .app .settings-row,html body .app .settings-credit{width:100%!important;min-height:54px!important;display:grid!important;grid-template-columns:36px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;padding:9px 10px!important;border:1px solid transparent!important;border-radius:13px!important;background:transparent!important;box-shadow:none!important;color:#e9edf4!important;text-align:left!important}
+html body .app .settings-row:hover,html body .app .settings-credit:hover{background:#171922!important;border-color:rgba(255,255,255,.06)!important}
+html body .app .settings-icon{width:32px!important;height:32px!important;min-width:32px!important;display:grid!important;place-items:center!important;border-radius:10px!important;background:#1a1c25!important;color:#b5adff!important;font-size:12px!important}
+html body .app .settings-row-copy,html body .app .settings-credit-copy{min-width:0!important;display:block!important}
+html body .app .settings-row strong,html body .app .settings-credit-copy strong{display:block!important;font-size:13px!important;line-height:1.28!important;font-weight:750!important;color:#f2f4f8!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+html body .app .settings-row small,html body .app .settings-credit-copy small{display:none!important}
+html body .app #usage-copy,html body .app #owner-call-health,html body .app #owner-push-status,html body .app #owner-call-setup-status,html body .app .topup-status{display:block!important;margin-top:2px!important;color:#7f8794!important;font-size:10.5px!important;line-height:1.35!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+html body .app .settings-row-meta{margin-left:auto!important;color:#6f7784!important;font-size:10.5px!important;white-space:nowrap!important}
+html body .app .settings-plan-hero{min-height:72px!important;margin-bottom:6px!important;background:linear-gradient(135deg,rgba(155,140,255,.14),rgba(20,22,30,.96))!important;border-color:rgba(155,140,255,.24)!important}
 html body .app .settings-plan-hero:hover{border-color:rgba(155,140,255,.34)!important;background:linear-gradient(135deg,rgba(155,140,255,.18),rgba(22,24,32,.98))!important}
 html body .app .settings-plan-hero .settings-icon{background:rgba(155,140,255,.16)!important;color:#d6d0ff!important}
-html body .app .settings-row-action{
-  min-height:38px!important;
-  height:38px!important;
-  padding:0 12px!important;
-  border-radius:11px!important;
-  border:1px solid rgba(255,255,255,.07)!important;
-  background:rgba(255,255,255,.055)!important;
-  color:#e4e7ef!important;
-  box-shadow:none!important;
-}
-html body .app .settings-plan-actions,
-html body .app .settings-wallet-row,
-html body .app .call-setup-panel{
-  grid-template-columns:36px minmax(0,1fr)!important;
-  align-items:start!important;
-  background:#14161d!important;
-  border-color:rgba(255,255,255,.055)!important;
-}
-html body .app .settings-plan-actions .credit-buy-controls,
-html body .app .settings-wallet-row .credit-buy-controls{
-  grid-column:2!important;
-  width:100%!important;
-  display:flex!important;
-  gap:7px!important;
-  flex-wrap:wrap!important;
-  padding-left:0!important;
-  margin-top:7px!important;
-}
-html body .app .settings-plan-actions .credit-buy-controls .btn,
-html body .app .settings-wallet-row .btn{
-  min-height:40px!important;
-  flex:1 1 92px!important;
-  border-radius:11px!important;
-  background:#1a1c25!important;
-  border:1px solid rgba(255,255,255,.08)!important;
-  box-shadow:none!important;
-}
-html body .app .settings-plan-actions .credit-buy-controls .btn:hover,
-html body .app .settings-wallet-row .btn:hover{border-color:rgba(155,140,255,.28)!important;background:#20232d!important}
-html body .app .settings-wallet-row select{
-  min-width:220px!important;
-  min-height:40px!important;
-  padding:0 12px!important;
-  border-radius:11px!important;
-  border:1px solid rgba(255,255,255,.09)!important;
-  background:#10131a!important;
-  color:#eef1f6!important;
-}
+html body .app .settings-row-action{min-height:38px!important;height:38px!important;padding:0 12px!important;border-radius:11px!important;border:1px solid rgba(255,255,255,.07)!important;background:rgba(255,255,255,.055)!important;color:#e4e7ef!important;box-shadow:none!important}
+html body .app .settings-plan-actions,html body .app .settings-wallet-row,html body .app .call-setup-panel{grid-template-columns:36px minmax(0,1fr)!important;align-items:start!important;background:#14161d!important;border-color:rgba(255,255,255,.055)!important}
+html body .app .settings-plan-actions .credit-buy-controls,html body .app .settings-wallet-row .credit-buy-controls{grid-column:2!important;width:100%!important;display:flex!important;gap:7px!important;flex-wrap:wrap!important;padding-left:0!important;margin-top:7px!important}
+html body .app .settings-plan-actions .credit-buy-controls .btn,html body .app .settings-wallet-row .btn{min-height:40px!important;flex:1 1 92px!important;border-radius:11px!important;background:#1a1c25!important;border:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important}
+html body .app .settings-plan-actions .credit-buy-controls .btn:hover,html body .app .settings-wallet-row .btn:hover{border-color:rgba(155,140,255,.28)!important;background:#20232d!important}
+html body .app .settings-wallet-row select{min-width:220px!important;min-height:40px!important;padding:0 12px!important;border-radius:11px!important;border:1px solid rgba(255,255,255,.09)!important;background:#10131a!important;color:#eef1f6!important}
 html body .app .settings-advanced-toggle{margin-top:6px!important}
 html body .app .settings-advanced{background:#13151c!important}
-html body .app .settings-legal{
-  min-height:32px!important;
-  display:inline-grid!important;
-  grid-template-columns:minmax(0,auto)!important;
-  width:max-content!important;
-  max-width:100%!important;
-  padding:4px 8px!important;
-  margin-top:4px!important;
-  color:#79818d!important;
-  background:transparent!important;
-  border:0!important;
-}
-html body .app .settings-legal .settings-icon,
-html body .app .settings-legal small,
-html body .app .settings-legal .settings-row-meta{display:none!important}
-html body .app .settings-legal strong{font-size:10.5px!important;color:#79818d!important}
-html body .app .settings-close-footer{
-  min-height:44px!important;
-  margin-top:8px!important;
-  border-radius:12px!important;
-  background:#171922!important;
-  color:#cfd5df!important;
-  border:1px solid rgba(255,255,255,.07)!important;
-  box-shadow:none!important;
-}
+html body .app a[href="/support"].settings-row{background:linear-gradient(135deg,rgba(155,140,255,.105),rgba(20,22,30,.92))!important;border-color:rgba(155,140,255,.18)!important}
+html body .app a[href="/terms"].settings-row,html body .app a[href="/privacy"].settings-row{min-height:34px!important;display:inline-grid!important;grid-template-columns:minmax(0,auto)!important;width:max-content!important;max-width:100%!important;padding:4px 8px!important;margin-top:3px!important;color:#79818d!important;background:transparent!important;border:0!important}
+html body .app a[href="/terms"] .settings-icon,html body .app a[href="/privacy"] .settings-icon,html body .app a[href="/terms"] small,html body .app a[href="/privacy"] small,html body .app a[href="/terms"] .settings-row-meta,html body .app a[href="/privacy"] .settings-row-meta{display:none!important}
+html body .app a[href="/terms"] strong,html body .app a[href="/privacy"] strong{font-size:10.5px!important;color:#79818d!important}
+html body .app .settings-close-footer{min-height:44px!important;margin-top:8px!important;border-radius:12px!important;background:#171922!important;color:#cfd5df!important;border:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
 html body .app .settings-close-footer:hover{background:#20232d!important;color:#fff!important}
+
+/* Plugins page: loaded through shared CSS when present */
+body .plugin-grid .card{transition:border-color .15s ease,background .15s ease!important}
+body .plugin-grid .card:hover{background:#171922!important;border-color:rgba(155,140,255,.24)!important}
+body .plugin-grid .btn.primary{background:#f0ecff!important;color:#101116!important;border-color:#f0ecff!important}
 
 /* Support page polish */
 body:not(.stellar-public) .topbar{background:rgba(9,10,15,.86)!important;border-bottom:1px solid rgba(255,255,255,.07)!important}
@@ -461,9 +171,7 @@ body:not(.stellar-public) .hero h1{max-width:820px!important;font-size:clamp(44p
 body:not(.stellar-public) .hero p{color:#b3bbc8!important;line-height:1.7!important}
 body:not(.stellar-public) .card{background:linear-gradient(180deg,rgba(19,22,31,.97),rgba(13,15,21,.98))!important;border-color:rgba(255,255,255,.075)!important;border-radius:20px!important}
 body:not(.stellar-public) .support-card{border-color:rgba(155,140,255,.28)!important}
-body:not(.stellar-public) .support-email-box,
-body:not(.stellar-public) .item,
-body:not(.stellar-public) .quick-grid a{background:#12141c!important;border-color:rgba(255,255,255,.075)!important}
+body:not(.stellar-public) .support-email-box,body:not(.stellar-public) .item,body:not(.stellar-public) .quick-grid a{background:#12141c!important;border-color:rgba(255,255,255,.075)!important}
 body:not(.stellar-public) .request-box textarea{background:#0f1117!important;border-color:rgba(255,255,255,.09)!important}
 body:not(.stellar-public) .btn{border-radius:999px!important}
 body:not(.stellar-public) .btn.primary{background:#f0ecff!important;color:#101116!important;border-color:#f0ecff!important}
@@ -475,34 +183,13 @@ body:not(.stellar-public) .btn.primary{background:#f0ecff!important;color:#10111
   .public-home .oa2-hero-actions a{width:100%!important;justify-content:center!important}
   .public-home .oa2-composer{border-radius:22px!important}
   html body .app .settings-panel{padding:0!important;align-items:end!important}
-  html body .app .settings-card{
-    width:100%!important;
-    max-width:none!important;
-    max-height:92dvh!important;
-    margin:8dvh 0 0!important;
-    border-radius:24px 24px 0 0!important;
-    border-left:0!important;
-    border-right:0!important;
-    border-bottom:0!important;
-  }
+  html body .app .settings-card{width:100%!important;max-width:none!important;max-height:92dvh!important;margin:8dvh 0 0!important;border-radius:24px 24px 0 0!important;border-left:0!important;border-right:0!important;border-bottom:0!important}
   html body .app .settings-header{padding:16px 14px 13px!important}
   html body .app .settings-header p{display:none!important}
-  html body .app .settings-grid{
-    max-height:calc(92dvh - 66px)!important;
-    gap:5px!important;
-    padding:8px 8px calc(14px + env(safe-area-inset-bottom))!important;
-  }
-  html body .app .settings-row,
-  html body .app .settings-credit{
-    grid-template-columns:38px minmax(0,1fr) auto!important;
-    min-height:56px!important;
-    padding:8px 9px!important;
-  }
-  html body .app .settings-plan-actions,
-  html body .app .settings-wallet-row,
-  html body .app .call-setup-panel{grid-template-columns:38px minmax(0,1fr)!important}
-  html body .app .settings-plan-actions .credit-buy-controls,
-  html body .app .settings-wallet-row .credit-buy-controls{grid-column:2!important}
+  html body .app .settings-grid{max-height:calc(92dvh - 66px)!important;gap:5px!important;padding:8px 8px calc(14px + env(safe-area-inset-bottom))!important}
+  html body .app .settings-row,html body .app .settings-credit{grid-template-columns:38px minmax(0,1fr) auto!important;min-height:56px!important;padding:8px 9px!important}
+  html body .app .settings-plan-actions,html body .app .settings-wallet-row,html body .app .call-setup-panel{grid-template-columns:38px minmax(0,1fr)!important}
+  html body .app .settings-plan-actions .credit-buy-controls,html body .app .settings-wallet-row .credit-buy-controls{grid-column:2!important}
   html body .app .settings-plan-actions .credit-buy-controls .btn{min-height:44px!important;flex:1 1 100%!important}
   html body .app .settings-wallet-row select{min-width:0!important;width:100%!important;min-height:44px!important}
   html body .app .settings-wallet-row .btn{width:100%!important;min-height:44px!important}
@@ -517,7 +204,7 @@ body:not(.stellar-public) .btn.primary{background:#f0ecff!important;color:#10111
 }
 @media(max-width:420px){
   html body .app .settings-row-meta{display:none!important}
-  html body .app .settings-row,
-  html body .app .settings-credit{grid-template-columns:36px minmax(0,1fr)!important}
+  html body .app .settings-row,html body .app .settings-credit{grid-template-columns:36px minmax(0,1fr)!important}
   html body .app .settings-row-action{grid-column:2!important;justify-self:start!important;margin-top:5px!important}
 }
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
