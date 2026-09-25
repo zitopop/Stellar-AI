@@ -55,12 +55,85 @@ const cleanRoutePages = [
   'website-audit.html',
 ];
 
+const leaveAbsolutePrefixes = [
+  '/api/',
+  '/auth/',
+  '/checkout',
+  '/billing',
+];
+
 function exists(filePath) {
   try { fs.accessSync(filePath); return true; } catch { return false; }
 }
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
+}
+
+function posixRel(filePath) {
+  return filePath.replace(/\\/g, '/');
+}
+
+function relativePrefixFor(outputRel) {
+  const normalized = posixRel(outputRel).replace(/^\.\//, '');
+  const dir = path.posix.dirname(normalized);
+  if (!dir || dir === '.') return './';
+  const depth = dir.split('/').filter(Boolean).length;
+  return '../'.repeat(depth);
+}
+
+function shouldLeaveAbsolute(url) {
+  return leaveAbsolutePrefixes.some((prefix) => url.startsWith(prefix));
+}
+
+function makeRelativeUrl(url, outputRel) {
+  if (!url || !url.startsWith('/') || url.startsWith('//')) return url;
+  if (shouldLeaveAbsolute(url)) return url;
+  const prefix = relativePrefixFor(outputRel);
+  const withoutSlash = url.replace(/^\/+/, '');
+  return withoutSlash ? `${prefix}${withoutSlash}` : prefix;
+}
+
+function rewriteHtmlForStatic(content, outputRel) {
+  return content.replace(/\b(href|src)=(["'])(\/[^"']*)\2/gi, (_match, attr, quote, url) => {
+    return `${attr}=${quote}${makeRelativeUrl(url, outputRel)}${quote}`;
+  });
+}
+
+function rewriteCssForStatic(content, outputRel) {
+  const prefix = relativePrefixFor(outputRel);
+  return content.replace(/url\((['"]?)\/(?!\/)/gi, `url($1${prefix}`);
+}
+
+function rewriteCopiedTextFile(filePath) {
+  const rel = posixRel(path.relative(out, filePath));
+  let content = fs.readFileSync(filePath, 'utf8');
+  if (/\.html?$/i.test(rel)) content = rewriteHtmlForStatic(content, rel);
+  else if (/\.css$/i.test(rel)) content = rewriteCssForStatic(content, rel);
+  else return false;
+  fs.writeFileSync(filePath, content);
+  return true;
+}
+
+function walkOutputTextFiles(dir = out, results = []) {
+  if (!exists(dir)) return results;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const next = path.join(dir, entry.name);
+    if (entry.isDirectory()) walkOutputTextFiles(next, results);
+    else if (/\.(?:html?|css)$/i.test(entry.name)) results.push(next);
+  }
+  return results;
+}
+
+function rewriteCopiedStaticTextFiles() {
+  return walkOutputTextFiles().filter((filePath) => rewriteCopiedTextFile(filePath)).length;
+}
+
+function topLevelStaticFiles() {
+  const staticFilePattern = /\.(?:css|js|png|jpg|jpeg|webp|svg|ico|webmanifest)$/i;
+  return fs.readdirSync(root, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && staticFilePattern.test(entry.name))
+    .map((entry) => entry.name);
 }
 
 function copyFileSafe(fromRel, toRel = fromRel) {
@@ -150,13 +223,15 @@ function main() {
   fs.rmSync(out, { recursive: true, force: true });
   ensureDir(out);
 
-  const copiedFiles = copyFiles.filter((file) => copyFileSafe(file));
+  const filesToCopy = [...new Set([...copyFiles, ...topLevelStaticFiles()])];
+  const copiedFiles = filesToCopy.filter((file) => copyFileSafe(file));
   const copiedDirs = copyDirs.filter((dir) => copyDirSafe(dir));
   const cleanRoutes = cleanRoutePages.filter((file) => makeCleanRoute(file));
 
   makeRedirects();
   makeHeaders();
   makePagesDomain();
+  const rewrittenTextFiles = rewriteCopiedStaticTextFiles();
 
   console.log('Stellar static backup built.');
   console.log(`Output: ${path.relative(root, out)}`);
@@ -164,6 +239,7 @@ function main() {
   console.log(`Files copied: ${copiedFiles.length}`);
   console.log(`Directories copied: ${copiedDirs.length}`);
   console.log(`Clean routes generated: ${cleanRoutes.length}`);
+  console.log(`Static HTML/CSS files rewritten for Pages path safety: ${rewrittenTextFiles}`);
 }
 
 main();
