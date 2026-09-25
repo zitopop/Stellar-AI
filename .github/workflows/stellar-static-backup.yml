@@ -1,0 +1,54 @@
+name: Stellar static backup
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "404.html"
+      - "blog/**"
+      - "services/**"
+      - "small-business-ai/**"
+      - "ai-inbox-closer/**"
+      - "lib/assets/**"
+      - "scripts/build-static-backup.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/stellar-static-backup.yml"
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 22
+
+jobs:
+  build-static-backup:
+    name: Build Stellar static backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check source
+        run: npm run check
+
+      - name: Build static backup
+        run: npm run build:static
+
+      - name: Upload static backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stellar-static-backup
+          path: dist-static
+          if-no-files-found: error
