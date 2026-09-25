@@ -28,6 +28,16 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f package-lock.json ]]; then
+            npm ci --ignore-scripts
+          else
+            npm install --ignore-scripts
+          fi
+
       - name: Syntax-check JavaScript
         shell: bash
         run: |
