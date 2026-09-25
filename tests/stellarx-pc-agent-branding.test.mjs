@@ -20,3 +20,15 @@ test('Work Agent page uses StellarX live PC wording and blue side label', () => 
   assert.match(desktop, /writing-mode:vertical-rl/);
   assert.match(desktop, /stellarx-side-label/);
 });
+
+
+test('StellarX shows a blue online side badge before active tasks', () => {
+  assert.match(desktop, /stellarxOnlineSide/);
+  assert.match(desktop, /StellarX PC Online/);
+  assert.ok(desktop.includes('updateUseBar(d)')); 
+  assert.match(entry, /stellarx-pc-online-side/);
+  assert.match(entry, /StellarX PC Online/);
+});
+
+
+

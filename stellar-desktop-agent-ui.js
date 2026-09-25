@@ -2,6 +2,7 @@
   const BUTTON_ID='stellar-pc-agent-button';
   const BAR_ID='stellar-pc-active-bar';
   const FRAME_ID='stellar-pc-led-frame';
+  const ONLINE_SIDE_ID='stellarx-pc-online-side';
   function sessionToken(){
     try{return String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{return ''}
   }
@@ -58,7 +59,18 @@
     if(host===document.body){a.style.position='fixed';a.style.left='14px';a.style.bottom='14px';a.style.zIndex='9000';a.style.backdropFilter='blur(12px)'}
     host.appendChild(a);
   }
-  async function tick(){renderActiveBar(await pcStatus())}
+  function renderOnlineSide(status){
+    let side=document.getElementById(ONLINE_SIDE_ID);
+    const online=status?.paired&&status?.online&&!status?.activeTask&&!status?.emergencyStopped;
+    if(!online){side?.remove();return}
+    if(!side){
+      side=document.createElement('div');side.id=ONLINE_SIDE_ID;side.textContent='StellarX PC Online';
+      const style=document.createElement('style');style.id=ONLINE_SIDE_ID+'-style';
+      style.textContent='#stellarx-pc-online-side{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:2147482998;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:linear-gradient(180deg,#075cff,#18a8ff,#59e7ff);color:#fff;padding:12px 7px;font:950 10px/1.1 system-ui,-apple-system,Segoe UI,sans-serif;box-shadow:0 0 28px rgba(0,132,255,.72),inset 0 1px 0 rgba(255,255,255,.3);text-shadow:0 0 10px rgba(255,255,255,.45);pointer-events:none}';
+      document.head.appendChild(style);document.body.appendChild(side);
+    }
+  }
+  async function tick(){const status=await pcStatus();renderActiveBar(status);renderOnlineSide(status)}
   isSignedIn().then(ok=>{if(ok){mount();tick();setInterval(tick,8000)}});
   window.addEventListener('focus',()=>isSignedIn().then(ok=>{if(ok){mount();tick()}}));
 })();
