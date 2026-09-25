@@ -8,6 +8,18 @@ const ignoredPrefixes = [
   '/api/', '/auth/', '/checkout', '/billing'
 ];
 
+const ignoredRoutes = new Set([
+  '/deploy',
+]);
+
+const ignoredFilePrefixes = [
+  'archive/',
+];
+
+const ignoredFiles = new Set([
+  'affiliate.html',
+]);
+
 const expectedCleanRoutes = new Map([
   ['/', 'index.html'],
   ['/app', 'app.html'],
@@ -30,14 +42,19 @@ function exists(relativePath) {
   return fs.existsSync(path.join(root, relativePath));
 }
 
+function shouldSkipFile(relativeFile) {
+  const normalized = relativeFile.replace(/^\.\//, '');
+  return ignoredFiles.has(normalized) || ignoredFilePrefixes.some(prefix => normalized.startsWith(prefix));
+}
+
 function walk(dir, results = []) {
   const absolute = path.join(root, dir);
   if (!fs.existsSync(absolute)) return results;
   for (const entry of fs.readdirSync(absolute, { withFileTypes: true })) {
     if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'dist-static') continue;
-    const next = path.join(dir, entry.name);
+    const next = path.join(dir, entry.name).replace(/\\/g, '/');
     if (entry.isDirectory()) walk(next, results);
-    else if (/\.html?$/i.test(entry.name)) results.push(next.replace(/\\/g, '/'));
+    else if (/\.html?$/i.test(entry.name) && !shouldSkipFile(next)) results.push(next.replace(/^\.\//, ''));
   }
   return results;
 }
@@ -50,8 +67,18 @@ function normaliseHref(raw) {
 }
 
 function routeExists(route) {
+  if (ignoredRoutes.has(route)) return true;
   if (route === '/') return exists('index.html');
+
   const withoutSlash = route.replace(/^\//, '');
+
+  // Legacy explicit .html links are valid if that file exists.
+  if (/\.html?$/i.test(withoutSlash) && exists(withoutSlash)) return true;
+
+  // Legacy explicit .html links can also point at a known clean route.
+  const cleanAlias = route.replace(/\.html?$/i, '');
+  if (cleanAlias !== route && (expectedCleanRoutes.has(cleanAlias) || routeExists(cleanAlias))) return true;
+
   return exists(`${withoutSlash}.html`) || exists(`${withoutSlash}/index.html`);
 }
 
