@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07101f">
+<meta name="robots" content="noindex,nofollow">
+<title>Deploy Center · Stellar AI</title>
+<meta name="description" content="Owner deploy control room for Stellar AI: safe deploy command, deployment guard status and release checklist.">
+<link rel="canonical" href="https://trystellarai.com/deploy">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:dark;--bg:#06080f;--panel:#101722;--panel2:#141f2e;--line:rgba(255,255,255,.11);--text:#f6f8ff;--muted:#aab4c3;--accent:#58d5ff;--accent2:#bca8ff;--good:#73e2b7;--warn:#ffd479;--bad:#ff8a9a;--max:1120px}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 78% -10%,rgba(24,168,255,.22),transparent 30rem),radial-gradient(circle at 10% 16%,rgba(139,124,246,.16),transparent 26rem),var(--bg);color:var(--text);font:14px/1.55 Inter,Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button{font:inherit}a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}.top{position:sticky;top:0;z-index:10;border-bottom:1px solid var(--line);background:rgba(6,8,15,.88);backdrop-filter:blur(18px)}.nav{min-height:64px;display:flex;align-items:center;gap:14px}.back{color:var(--muted)}.brand{font-weight:900;letter-spacing:-.03em}.pill{margin-left:auto;border:1px solid rgba(88,213,255,.28);border-radius:999px;padding:7px 10px;color:#bdefff;font-size:12px;background:rgba(88,213,255,.08)}
+</style>
+<link rel="stylesheet" href="/lib/assets/stellar-refinements.css?v=20260924">
+</head>
+<body>
+<header class="top"><nav class="wrap nav"><a class="back" href="/app">← App</a><div class="brand">Stellar AI · Deploy Center</div><div class="pill">Owner release control</div></nav></header>
+<main class="wrap">
+<section class="hero">
+<div><div class="eyebrow">Owner deploy control</div><h1>Deploy once.<br>Stop the spam.</h1><p class="lead">This page keeps Stellar releases calm: GitHub pushes no longer auto-burn Vercel deploys, and production should only ship through the safe one-shot command after tests pass.</p></div>
+<div class="card status"><b>Current rule</b><span>Automatic Git deployments are disabled. Use the safe command only when Vercel is not rate-limited.</span><a class="btn primary" href="/desktop">Open StellarX PC Agent</a></div>
+</section>
+<style>
+.hero{padding:58px 0 22px;display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:end}.eyebrow{color:var(--accent);font-size:11px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}h1{font-size:clamp(42px,7vw,82px);line-height:.98;letter-spacing:-.06em;margin:8px 0 16px}.lead{max-width:760px;color:var(--muted);font-size:16px}.card{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(20,31,46,.96),rgba(9,13,22,.96));padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.24)}.status{display:grid;gap:10px}.status b{font-size:18px}.status span{color:var(--muted)}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;padding:12px 0 72px}.btn{min-height:44px;border:1px solid var(--line);border-radius:12px;background:#162231;color:var(--text);padding:0 14px;font-weight:850;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{border:0;background:linear-gradient(100deg,#effaff,#8de9ff 55%,#bca8ff);color:#07101f}.btn.good{background:#123525;border-color:rgba(115,226,183,.32);color:#bcf4dc}.actions{display:flex;gap:10px;flex-wrap:wrap}.code{border:1px solid rgba(88,213,255,.24);background:#07111e;border-radius:14px;padding:14px;white-space:pre-wrap;font:800 13px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;color:#ccf4ff;overflow:auto}.lane-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}.lane{border:1px solid var(--line);border-radius:16px;background:#0b111b;padding:14px}.lane span{color:var(--accent);font:900 10px/1.2 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase}.lane b{display:block;margin-top:8px}.lane p,.item span{color:var(--muted);font-size:12px}.list{display:grid;gap:8px}.item{border:1px solid var(--line);background:#0b111b;border-radius:13px;padding:12px}.item b{display:block}.notice{min-height:22px;color:var(--muted);font-size:12px}.notice.good{color:var(--good)}.notice.bad{color:var(--bad)}@media(max-width:850px){.hero,.grid{grid-template-columns:1fr}.lane-grid{grid-template-columns:1fr}.wrap{width:min(100% - 24px,var(--max))}.card{padding:18px;border-radius:18px}.pill{display:none}}@media(max-width:560px){.actions{display:grid}.btn{width:100%}h1{font-size:44px}}
+</style>
+<section class="card" style="margin-bottom:16px">
+<div class="eyebrow">Release path</div>
+<div class="lane-grid">
+<article class="lane"><span>01 · Test</span><b>Run checks first</b><p>Syntax and full tests must pass before a live release.</p></article>
+<article class="lane"><span>02 · Deploy</span><b>One safe command</b><p>No repeated deploy attempts while Vercel is rate-limited.</p></article>
+<article class="lane"><span>03 · Verify</span><b>Check production</b><p>Confirm trystellarai.com is live, aliased and showing the expected build.</p></article>
+</div>
+</section>
+<section class="grid">
+<article class="card">
+<h2>Safe production deploy</h2>
+<p class="lead" style="font-size:13px">Run this only when the Vercel daily limit has cleared and the repo is clean. It makes one controlled production deploy.</p>
+<div id="deploy-command" class="code">npm run deploy:safe -- --yes</div>
+<div class="actions" style="margin-top:12px"><button class="btn good" type="button" onclick="copyCommand()">Copy safe command</button><a class="btn" href="/desktop">Use StellarX PC Agent</a><a class="btn" href="/plugins">Check plugins</a></div>
+<div id="copy-status" class="notice" role="status" aria-live="polite"></div>
+<div class="lane-grid">
+<article class="lane"><span>Guard</span><b>Auto deploys off</b><p>GitHub pushes should not burn deploys automatically.</p></article>
+<article class="lane"><span>Guard</span><b>Ignore build kept</b><p>Docs/tests-only changes can still be skipped safely.</p></article>
+<article class="lane"><span>Guard</span><b>No secret display</b><p>This page shows commands and status only, never env values.</p></article>
+</div>
+</article>
+<aside class="card">
+<h2>What is still blocked?</h2>
+<div class="list">
+<div class="item"><b>Vercel daily cap</b><span>A rate-limit cannot be bypassed for free. Wait for the rolling window to clear.</span></div>
+<div class="item"><b>Privacy fix queued</b><span>The GitHub source is already cleaned. It becomes live after the next successful safe deploy.</span></div>
+<div class="item"><b>Best next action</b><span>When the limit clears, run one safe deploy, then verify production once.</span></div>
+</div>
+</aside>
+</section>
+</main>
+<script>
+function copyCommand(){
+  const text=document.getElementById('deploy-command').textContent.trim();
+  const status=document.getElementById('copy-status');
+  navigator.clipboard?.writeText(text).then(()=>{
+    status.textContent='Safe deploy command copied.';status.className='notice good';
+  }).catch(()=>{
+    status.textContent='Copy failed. Select the command and copy it manually.';status.className='notice bad';
+  });
+}
+</script>
+<script src="/lib/assets/telemetry.js"></script>
+</body>
+</html>
