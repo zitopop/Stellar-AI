@@ -49,9 +49,9 @@
     const a=document.createElement('a');
     a.id=BUTTON_ID;
     a.href='/desktop';
-    a.title='PC Agent Beta — work with your paired Windows workspace';
-    a.setAttribute('aria-label','Open PC Agent');
-    a.innerHTML='<span aria-hidden="true" style="font-size:16px">⌘</span><span class="stellar-pc-label">PC Agent</span>';
+    a.title='Work Agent Beta — Codex-style tasks with your paired Windows workspace';
+    a.setAttribute('aria-label','Open Work Agent');
+    a.innerHTML='<span aria-hidden="true" style="font-size:16px">⌘</span><span class="stellar-pc-label">Work Agent</span>';
     a.style.cssText='display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 12px;margin:8px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.045);color:inherit;text-decoration:none;font:700 12px/1 system-ui,sans-serif;cursor:pointer;touch-action:manipulation';
     a.addEventListener('mouseenter',()=>a.style.background='rgba(255,255,255,.08)');
     a.addEventListener('mouseleave',()=>a.style.background='rgba(255,255,255,.045)');
