@@ -615,8 +615,8 @@ button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-c
   min-width:0!important;
   min-height:42px!important
 }
-.settings-advanced{display:none!important}
-.settings-card.advanced-open .settings-advanced:not([hidden]){display:flex!important}
+[data-settings-advanced]{display:none!important}
+.settings-card.advanced-open [data-settings-advanced]:not([hidden]){display:flex!important}
 .settings-advanced-toggle{margin-top:6px!important}
 .settings-card.advanced-open .settings-advanced-toggle .settings-row-meta{
   font-size:0!important
@@ -723,11 +723,7 @@ button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-c
         <span class="settings-row-meta">Manage <span aria-hidden="true">›</span></span>
       </a>
 
-      <a class="settings-row" href="/jarvis">
-        <span class="settings-icon" aria-hidden="true">✦</span>
-        <span class="settings-row-copy"><strong>Jarvis assistant</strong><small>Research, products and saved business tasks</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </a>
+      <a class="settings-row" href="/jarvis"><strong>Jarvis assistant</strong><span class="settings-row-copy"><small>Research, products and saved business tasks</small></span><span class="settings-row-meta"><span aria-hidden="true">�</span></span></a>
 
       <button id="desktop-agent-nav" class="settings-row signed-in-only" type="button" onclick="location.href='/desktop'">
         <span class="settings-icon" aria-hidden="true">▰</span>
@@ -741,37 +737,37 @@ button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-c
         <span class="settings-row-meta">Show <span aria-hidden="true">›</span></span>
       </button>
 
-      <button id="roblox-studio-nav" class="settings-row owner-only settings-advanced" hidden type="button" onclick="location.href='/roblox-studio'">
+      <button id="roblox-studio-nav" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="location.href='/roblox-studio'">
         <span class="settings-icon" aria-hidden="true">◈</span>
         <span class="settings-row-copy"><strong>Roblox Studio Agent</strong><small>Owner-only Studio workspace</small></span>
         <span class="settings-row-meta">Owner only <span aria-hidden="true">›</span></span>
       </button>
 
-      <button id="owner-call-now" class="settings-row owner-only settings-advanced" hidden type="button" onclick="triggerOwnerCall('Owner requested a call from Jarvis in Stellar AI.')">
+      <button id="owner-call-now" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="triggerOwnerCall('Owner requested a call from Jarvis in Stellar AI.')">
         <span class="settings-icon" aria-hidden="true">☎</span>
         <span class="settings-row-copy"><strong>Call me now</strong><small>Owner only · start a Jarvis phone call</small></span>
         <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
       </button>
 
-      <button id="owner-call-health-btn" class="settings-row owner-only settings-advanced" hidden type="button" onclick="checkOwnerCallHealth()">
+      <button id="owner-call-health-btn" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="checkOwnerCallHealth()">
         <span class="settings-icon" aria-hidden="true">◉</span>
         <span class="settings-row-copy"><strong>Check call system</strong><small id="owner-call-health">Owner only · verify phone readiness</small></span>
         <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
       </button>
 
-      <button id="owner-push-enable" class="settings-row owner-only settings-advanced" hidden type="button" onclick="enableOwnerPushCallAlerts()">
+      <button id="owner-push-enable" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="enableOwnerPushCallAlerts()">
         <span class="settings-icon" aria-hidden="true">⚡</span>
         <span class="settings-row-copy"><strong>Enable Jarvis push calls</strong><small id="owner-push-status">Owner only · lets Jarvis buzz this device automatically</small></span>
         <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
       </button>
 
-      <button id="owner-push-test" class="settings-row owner-only settings-advanced" hidden type="button" onclick="testOwnerPushCallAlert()">
+      <button id="owner-push-test" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="testOwnerPushCallAlert()">
         <span class="settings-icon" aria-hidden="true">✦</span>
         <span class="settings-row-copy"><strong>Test Jarvis push call</strong><small>Send a safe owner-only notification to this device</small></span>
         <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
       </button>
 
-      <div id="owner-call-setup" class="settings-row settings-credit settings-wide owner-only call-setup-panel settings-advanced" hidden>
+      <div id="owner-call-setup" class="settings-row settings-credit settings-wide owner-only call-setup-panel" hidden data-settings-advanced>
         <span class="settings-icon" aria-hidden="true">&lt;/&gt;</span>
         <span class="settings-credit-copy">
           <strong>Jarvis call setup</strong>
