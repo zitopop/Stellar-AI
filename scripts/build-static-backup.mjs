@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const out = path.join(root, 'dist-static');
+const pagesDomain = 'pages.trystellarai.com';
 
 const copyDirs = [
   'blog',
@@ -141,6 +142,10 @@ function makeHeaders() {
   writeText('_headers', headers.join('\n'));
 }
 
+function makePagesDomain() {
+  writeText('CNAME', `${pagesDomain}\n`);
+}
+
 function main() {
   fs.rmSync(out, { recursive: true, force: true });
   ensureDir(out);
@@ -151,9 +156,11 @@ function main() {
 
   makeRedirects();
   makeHeaders();
+  makePagesDomain();
 
   console.log('Stellar static backup built.');
   console.log(`Output: ${path.relative(root, out)}`);
+  console.log(`Custom domain: ${pagesDomain}`);
   console.log(`Files copied: ${copiedFiles.length}`);
   console.log(`Directories copied: ${copiedDirs.length}`);
   console.log(`Clean routes generated: ${cleanRoutes.length}`);
