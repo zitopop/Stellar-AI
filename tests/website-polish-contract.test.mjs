@@ -7,13 +7,13 @@ const palette = readFileSync(new URL('../stellar-business-palette.css', import.m
 
 test('homepage explains Stellar fast without repeating conversion clutter', () => {
   assert.match(landing, /AI for real work\./);
-  assert.match(landing, /Ask, build, automate and solve problems from one focused workspace\./);
+  assert.match(landing, /Ask anything in Stellar AI\. Use StellarX when the job needs files, code, your computer or connected tools\./);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Open Stellar AI/);
   assert.match(landing, /See pricing/);
   assert.match(landing, /id="stellar-home-calm-v16"/);
   assert.match(landing, /\.oa2-business-first,[\s\S]*\.oa2-delivery,[\s\S]*\.oa2-guides,[\s\S]*\.oa2-business,[\s\S]*updates-title[^}]*\{display:none!important\}/);
-  assert.match(landing, /What Stellar helps you do\./);
+  assert.match(landing, /Know which part to use\./);
   assert.match(landing, /href="\/support"[^>]*>Support<\/a>/i);
 });
 
@@ -68,7 +68,7 @@ test('business homepage keeps the executive premium presentation layer', () => {
 
 
 test('public landing presents StellarX instead of private Jarvis branding', () => {
-  assert.match(landing, /STELLARX WORK AGENT/);
+  assert.match(landing, /<article id="stellarx-home"><span>WORK AGENT<\/span><h3>StellarX<\/h3>/);
   assert.match(landing, /Use StellarX when a normal chat needs to become real work\./);
   assert.match(landing, /href="#stellarx-home">StellarX<\/a>/);
   assert.doesNotMatch(landing, /JARVIS ASSISTANT|Jarvis helps when the work needs action|Open Jarvis|#jarvis-home/);

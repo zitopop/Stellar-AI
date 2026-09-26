@@ -11,7 +11,7 @@ test('hero stays concise and offers first-run onboarding', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /<div class="oa2-wordmark">STELLAR AI<\/div>/);
   assert.match(html, /AI for real work\./);
-  assert.match(html, /Ask, build, automate and solve problems from one focused workspace\./);
+  assert.match(html, /Ask anything in Stellar AI\. Use StellarX when the job needs files, code, your computer or connected tools\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /1 starting credit/);
@@ -38,16 +38,18 @@ test('keyboard users can skip to main content and dismiss the mobile menu', () =
   assert.match(css, /:focus-visible/);
 });
 
-test('business starters and core sections remain reachable without JavaScript', () => {
-  for (const path of ['/ai-receptionist','/website-audit','/app?starter=business-workflow','/app?starter=fix']) assert.ok(html.includes('href="' + path + '"'));
-  for (const id of ['how-it-works','capabilities','plans']) assert.ok(html.includes('id="' + id + '"'));
+test('core AI product routes remain reachable without JavaScript', () => {
+  for (const path of ['/app?welcome=1','/desktop','/plugins','/models']) assert.ok(html.includes('href="' + path + '"'));
+  for (const id of ['product-map','stellarx-home','capabilities','plans']) assert.ok(html.includes('id="' + id + '"'));
 });
 
-test('generation guidance includes review, private testing and dependencies', () => {
-  assert.match(html, /review dependencies/i);
-  assert.match(html, /test your build in a private environment before going live/i);
-  assert.match(html, /customer enquiries|internal workflows|approved agents/);
-  assert.match(html, /software when your team needs it|technical work/);
+test('landing explains when to use chat, StellarX, plugins and models', () => {
+  assert.match(html, /<h3>Stellar AI<\/h3>/);
+  assert.match(html, /<h3>StellarX<\/h3>/);
+  assert.match(html, /<h3>Plugins<\/h3>/);
+  assert.match(html, /<h3>Models<\/h3>/);
+  assert.match(html, /code, files, projects and approved computer tasks/);
+  assert.match(html, /Connect supported services only when a task needs access to a real tool or account/);
 });
 
 test('visible pricing and structured offers agree on current monthly and yearly amounts', () => {
