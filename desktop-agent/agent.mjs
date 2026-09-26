@@ -142,6 +142,15 @@ function runProcess(command,{cwd,timeoutMs=120000}={}){
     child.on('close',code=>{clearTimeout(timer);if(!settled){settled=true;resolve({code,stdout:cap(stdout),stderr:cap(stderr)})}});
   });
 }
+
+function runPowerShellInput(script,extraEnv={}){
+  if(process.platform!=='win32')return Promise.reject(new Error('Mouse and keyboard control currently requires Windows.'));
+  return new Promise((resolve,reject)=>{
+    const child=spawn('powershell.exe',['-NoProfile','-STA','-NonInteractive','-Command',script],{windowsHide:true,env:{...process.env,...extraEnv}});
+    let stderr='',settled=false; child.stderr?.on('data',d=>stderr=cap(stderr+d,4000));
+    child.on('error',err=>{if(!settled){settled=true;reject(err)}}); child.on('close',code=>{if(!settled){settled=true;code===0?resolve():reject(new Error(stderr||'Windows input action failed.'))}});
+  });
+}
 async function execute(config,task){
   const args=task?.args||{};
   switch(task?.type){
@@ -230,6 +239,27 @@ async function execute(config,task){
       const cwd=safePath(config,args.cwd||'.').target;
       const result=await runProcess(command,{cwd});
       return `EXIT ${result.code}\nSTDOUT\n${result.stdout}\nSTDERR\n${result.stderr}`;
+    }
+    case 'type_text': {
+      if(task.approved!==true) throw new Error('type_text was not approved.');
+      const text=String(args.text??''); if(!text||text.length>2000)throw new Error('Typed text must be between 1 and 2000 characters.');
+      if(redactSensitive(text)!==text)throw new Error('Typing likely credentials or secrets through Stella X is blocked.');
+      const script="Add-Type -AssemblyName System.Windows.Forms; $old=$null; try{$old=Get-Clipboard -Raw -ErrorAction SilentlyContinue}catch{}; Set-Clipboard -Value $env:STELLAR_TYPED_TEXT; [System.Windows.Forms.SendKeys]::SendWait('^v'); Start-Sleep -Milliseconds 80; if($null -ne $old){Set-Clipboard -Value $old}";
+      await runPowerShellInput(script,{STELLAR_TYPED_TEXT:text}); return `Typed text into the focused app (${text.length} characters)`;
+    }
+    case 'mouse_move': {
+      if(task.approved!==true) throw new Error('mouse_move was not approved.');
+      const x=Number(args.x),y=Number(args.y); if(!Number.isInteger(x)||!Number.isInteger(y))throw new Error('Mouse coordinates must be whole numbers.');
+      const script=`Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class StellarInput { [DllImport(\"user32.dll\")] public static extern bool SetCursorPos(int X,int Y); }'; [StellarInput]::SetCursorPos(${x},${y}) | Out-Null`;
+      await runPowerShellInput(script); return `Moved mouse to ${x},${y}`;
+    }
+    case 'mouse_click': {
+      if(task.approved!==true) throw new Error('mouse_click was not approved.');
+      const x=Number(args.x),y=Number(args.y),button=String(args.button||'left').toLowerCase(),clicks=Number(args.clicks||1);
+      const flags={left:[2,4],right:[8,16],middle:[32,64]}[button]; if(!flags)throw new Error('Unsupported mouse button.');
+      const click=`[StellarInput]::mouse_event(${flags[0]},0,0,0,[UIntPtr]::Zero); [StellarInput]::mouse_event(${flags[1]},0,0,0,[UIntPtr]::Zero);`;
+      const script=`Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class StellarInput { [DllImport(\"user32.dll\")] public static extern bool SetCursorPos(int X,int Y); [DllImport(\"user32.dll\")] public static extern void mouse_event(uint f,uint x,uint y,uint d,UIntPtr e); }'; [StellarInput]::SetCursorPos(${x},${y}) | Out-Null; ${click}${clicks===2?' Start-Sleep -Milliseconds 90; '+click:''}`;
+      await runPowerShellInput(script); return `Clicked ${button} at ${x},${y}${clicks===2?' twice':''}`;
     }
     case 'keyboard_shortcut': {
       if(task.approved!==true) throw new Error('keyboard_shortcut was not approved.');

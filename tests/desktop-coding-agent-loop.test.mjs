@@ -9,7 +9,8 @@ const ui = await readFile(new URL('../desktop-agent.html', import.meta.url), 'ut
 
 test('coding agent inspects a repository before implementation', () => {
   assert.match(planner, /Current phase: \$\{phase\}/);
-  assert.match(planner, /In INSPECT phase, return only read_file, list_directory, search_files, git_status, or git_diff actions/);
+  assert.match(planner, /In INSPECT phase, normally return only read_file, list_directory, search_files, git_status, or git_diff/);
+  assert.match(planner, /explicitly asks to control a visible app/);
   assert.match(planner, /In IMPLEMENT phase, use the observations as evidence/);
   assert.match(planner, /Always include git_diff near the end of an implementation plan after any write action/);
 });
