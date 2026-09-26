@@ -75,7 +75,9 @@ test('plugin manager is account-scoped and only enables token plugins after conn
   assert.match(manager, /action==='inspect'/);
   assert.match(manager, /Connect this plugin before enabling it/);
   assert.match(manager, /plugin\.status==='coming_soon'/);
-  assert.ok(manager.includes("visibleRegistry=PLUGIN_REGISTRY.filter(plugin=>isOwner||plugin.audience!=='owner')"));
+  assert.match(manager, /plugin\.audience==='owner'\|\|plugin\.status==='coming_soon'/);
+  assert.match(manager, /viewer:\{signedIn:true,owner:isOwner===true\}/);
+  assert.match(manager, /publicOauthStatus/);
   assert.match(manager, /exposeSetup=isOwner===true/);
 });
 
@@ -98,14 +100,16 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 test('plugin directory stays calm while preserving real connect manage and disconnect controls', () => {
   assert.ok(page.includes('<h1>Connected apps for Stellar.</h1>'));
   assert.match(page, /Personal account connections/);
-  assert.match(page, /allowManualToken/);
-  assert.ok(page.includes('Connect accounts like ChatGPT: pick an app, review permissions, sign in with the provider, and disconnect anytime.'));
+  assert.ok(page.includes('Only tools available to your account appear here.'));
   assert.match(page, /Permissions first/);
   assert.match(page, /No passwords shared/);
   assert.match(page, /Disconnect anytime/);
   assert.match(page, /Your access stays scoped/);
-  for (const filter of ['all','connected','developer','business','coming_soon','disabled']) {
+  for (const filter of ['all','connected','available']) {
     assert.ok(page.includes('data-filter="' + filter + '"'), filter);
+  }
+  for (const retired of ['developer','business','coming_soon','disabled']) {
+    assert.ok(!page.includes('data-filter="' + retired + '"'), retired);
   }
   assert.doesNotMatch(page, /Launch health|Needs Vercel/);
   assert.match(page, /data-install=/);
@@ -123,11 +127,12 @@ test('plugin directory stays calm while preserving real connect manage and disco
   assert.match(page, /disconnectCurrentPlugin/);
   assert.match(page, /Connect plugin/);
   assert.match(page, />Details<\/button>/);
-  assert.match(page, /Normal users should connect through the provider/);
-  assert.match(page, /Manual tokens are owner-only/);
-  assert.match(page, /setupText/);
-  assert.match(page, /encrypted server-side/);
-  assert.match(page, /More plugins coming soon/);
+  assert.match(page, /Private owner integrations are never offered to standard accounts/);
+  assert.match(page, /data-plugin="github" data-audience="owner" hidden/);
+  assert.match(page, /data-plugin="vercel" data-audience="owner" hidden/);
+  assert.match(page, /data-status="coming_soon" hidden/);
+  assert.match(page, /\.plugin\[hidden\]\{display:none!important\}/);
+  assert.doesNotMatch(page, /OWNER-ONLY OAUTH MODAL POLISH|setupText/);
   assert.match(page, /Request a plugin/);
   assert.match(page, /Sign in to use/);
   assert.ok(app.includes('data-tab="plugins"'));
@@ -147,12 +152,14 @@ test('plugins sidebar keeps tappable visible icon badges', () => {
 test('developer OAuth setup is owner-only while Gmail is user-facing approval-only email', () => {
   assert.equal(getPluginDefinition('github').audience, 'owner');
   assert.equal(getPluginDefinition('vercel').audience, 'owner');
-  assert.match(manager, /oauthStatus:exposeSetup&&OAUTH_PLUGIN_IDS/);
+  assert.match(manager, /publicOauthStatus\(plugin\.id,\{exposeSetup,isOwner\}\)/);
   assert.match(manager, /oauthSetupMissingEnv:exposeSetup&&OAUTH_PLUGIN_IDS/);
+  assert.match(manager, /tokenFallback:isOwner===true&&status\.tokenFallback===true/);
   assert.ok(page.includes("if(!owner&&['github','vercel'].includes(id))"));
+  assert.match(page, /owner=data\?\.viewer\?\.owner===true/);
   assert.match(page, /Email Agent workflows/);
   assert.match(page, /Send only with approval/);
-  assert.match(page, /OWNER-ONLY OAUTH MODAL POLISH/);
+  assert.match(page, /Private deployment access/);
 });
 
 
@@ -164,9 +171,9 @@ test('OAuth status covers every planned provider without pretending all exchange
   assert.match(manager, /function oauthSetupEnv\(id\)/);
   assert.match(manager, /exchangeImplemented/);
   assert.match(manager, /liveReady:supported&&exchangeImplemented/);
-  assert.match(manager, /OAuth needs provider credentials added in Vercel/);
-  assert.match(manager, /secure token exchange is not implemented yet/);
-  assert.match(manager, /OAuth is planned but not live yet/);
+  assert.match(manager, /This connection is not available yet/);
+  assert.match(manager, /still needs its secure token exchange/);
+  assert.match(manager, /is not available yet/);
   for (const id of ['google-drive','google-calendar','discord','shopify','stripe']) {
     const plugin=getPluginDefinition(id);
     assert.ok(plugin.oauthProvider, id);

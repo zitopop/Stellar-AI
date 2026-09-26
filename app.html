@@ -723,7 +723,7 @@ button,a,input,textarea,select{touch-action:manipulation!important}
       <div class="settings-header-copy">
         <span class="settings-kicker">STELLAR SETTINGS</span>
         <h2>Settings</h2>
-        <p>Manage your account, plan, connected tools and owner controls.</p>
+        <p>Manage your account, plan and connected tools.</p>
       </div>
       <button class="settings-close-x" type="button" onclick="closeSettings()" aria-label="Close settings">×</button>
     </div>
@@ -765,7 +765,7 @@ button,a,input,textarea,select{touch-action:manipulation!important}
 
       <a href="/plugins" class="settings-row">
         <span class="settings-icon" aria-hidden="true">◇</span>
-        <span class="settings-row-copy"><strong>Plugins</strong><small>Connections &amp; permissions</small></span>
+        <span class="settings-row-copy"><strong>Plugins</strong><small>Only connections available to your account</small></span>
         <span class="settings-row-meta">Manage <span aria-hidden="true">›</span></span>
       </a>
 
@@ -785,7 +785,7 @@ button,a,input,textarea,select{touch-action:manipulation!important}
 
       <button id="settings-advanced-toggle" class="settings-row settings-advanced-toggle owner-only" hidden type="button" onclick="toggleAdvancedSettings()" aria-expanded="false">
         <span class="settings-icon" aria-hidden="true">⋯</span>
-        <span class="settings-row-copy"><strong>Advanced</strong><small>Owner tools and Jarvis call setup</small></span>
+        <span class="settings-row-copy"><strong>Private owner tools</strong><small>Jarvis, deploy and developer controls</small></span>
         <span class="settings-row-meta">Show <span aria-hidden="true">›</span></span>
       </button>
 
@@ -839,7 +839,7 @@ button,a,input,textarea,select{touch-action:manipulation!important}
         <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
       </button>
 
-      <div id="topup-row" class="settings-row settings-credit settings-wide settings-wallet-row">
+      <div id="topup-row" class="settings-row settings-credit settings-wide settings-wallet-row" hidden>
         <span class="settings-icon" aria-hidden="true">▤</span>
         <span class="settings-credit-copy">
           <strong>Stellar Credit Wallet</strong>
@@ -865,21 +865,9 @@ button,a,input,textarea,select{touch-action:manipulation!important}
         <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
       </a>
 
-      <a class="settings-row" href="/terms">
-        <span class="settings-icon" aria-hidden="true">≡</span>
-        <span class="settings-row-copy"><strong>Terms of Service</strong><small>Subscription, usage and service terms</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </a>
-
-      <a class="settings-row" href="/privacy">
-        <span class="settings-icon" aria-hidden="true">◌</span>
-        <span class="settings-row-copy"><strong>Privacy Policy</strong><small>Data use, providers and your rights</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </a>
-
-      <a class="settings-row" href="/legal">
+      <a class="settings-row" href="/legal" data-legacy-label="Legal & policies">
         <span class="settings-icon" aria-hidden="true">§</span>
-        <span class="settings-row-copy"><strong>Legal & policies</strong><small>Refunds, cancellations, cookies, acceptable use and business terms</small></span>
+        <span class="settings-row-copy"><strong>Legal &amp; privacy</strong><small>Terms, privacy, refunds, cookies and acceptable use</small></span>
         <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
       </a>
 
@@ -911,7 +899,7 @@ const Store={get(key,fallback){try{return JSON.parse(localStorage.getItem(key))?
 function openResponsiveSidebar(){$('sidebar').classList.add('open');$('backdrop').classList.add('open');document.body.classList.add('drawer-open')}function closeResponsiveSidebar(){$('sidebar').classList.remove('open');$('backdrop').classList.remove('open');document.body.classList.remove('drawer-open')}const openSide=openResponsiveSidebar;const closeSide=closeResponsiveSidebar;function resetTransientUiAfterPageRestore(){const sidebar=$('sidebar'),backdrop=$('backdrop'),settings=$('settings-panel'),welcome=$('welcome-modal'),models=$('model-menu');sidebar?.classList.remove('open');backdrop?.classList.remove('open');document.body.classList.remove('drawer-open','modal-open','auth-open');if(settings){settings.style.display='none';settings.setAttribute('aria-hidden','true')}if(welcome)welcome.hidden=true;if(models){models.hidden=true;$('model-pill')?.setAttribute('aria-expanded','false')}toggleComposerMore(false)}window.addEventListener('pageshow',resetTransientUiAfterPageRestore);
 function setGenerationStatus(text,kind=''){setStatus(text,kind)}function normalizedPlan(){return String(planState.plan||'Free').toLowerCase()}function modelAllowed(id){return isOwner()||allowedModels.includes(String(id||'').toLowerCase())}
 function isOwner(){return serverOwner===true}
-function updateOwnerToolsVisibility(){const visible=isOwner();document.querySelectorAll('.owner-only').forEach(el=>{el.hidden=!visible;el.style.display=visible?'':'none'})}
+function updateOwnerToolsVisibility(){const visible=isOwner();const card=document.querySelector('#settings-panel .settings-card');if(!visible)card?.classList.remove('advanced-open');document.querySelectorAll('.owner-only').forEach(el=>{el.hidden=!visible;el.style.display=visible?'':'none';el.setAttribute('aria-hidden',visible?'false':'true')});const btn=document.getElementById('settings-advanced-toggle');if(btn&&!visible)btn.setAttribute('aria-expanded','false')}
 function consumeDiscordOAuthCallback(){const query=new URLSearchParams(location.search);const fragment=new URLSearchParams(location.hash.slice(1));const authError=query.get('auth_error');if(authError){setStatus('Discord sign-in did not complete. Please try again.','error');history.replaceState(null,'',location.pathname);return false}const encodedEmail=fragment.get('discord_login')||query.get('discord_login');const token=fragment.get('discord_session');const displayName=fragment.get('discord_user')||query.get('discord_user');if(!encodedEmail||!token)return false;try{const raw=encodedEmail.replace(/-/g,'+').replace(/_/g,'/');const email=atob(raw.padEnd(Math.ceil(raw.length/4)*4,'=')).trim().toLowerCase();if(!email.includes('@'))throw new Error('Invalid Discord account');signedInUser={email,name:displayName?decodeURIComponent(displayName):email.split('@')[0],discord:true};setSessionToken(token,signedInUser);savedChats=loadLocalChatsForCurrentAccount();renderSavedChats();firstSignIn=true;metric('login-success');history.replaceState(null,'',location.pathname);return true}catch{clearSessionToken();signedInUser=null;serverOwner=false;history.replaceState(null,'',location.pathname);setStatus('Discord sign-in could not be verified.','error');return false}}
 async function refreshSessionBeforeExpiry(expectedEmail=''){const token=getSessionToken();if(!token)return null;try{const res=await fetch('/api/auth',{method:'POST',headers:authHeaders(),body:JSON.stringify({action:'refreshSession'})});const data=await res.json().catch(()=>({}));if(!res.ok||!data.session){if(res.status===401){clearSessionToken();signedInUser=null;serverOwner=false;savedChats=loadLocalChatsForCurrentAccount();activeChatId='chat-'+Date.now();$('chatInner').innerHTML='<div class="welcome system-welcome"><p class="eyebrow">Session expired</p><h1>Sign in again</h1><p>Your account chat history is hidden until your session is verified again.</p></div>';renderSavedChats();allowedModels=['spark','star'];billingState={paid:false,manageable:false,reason:'free'};planState={plan:'Free',limit:300,used:0,remaining:300,walletPence:0,modelCreditCosts:{spark:2,star:5,comet:10,nova:20},canUseCredit:true};updateAuthUi();renderPlanTruth()}return null}const email=String(data.email||data.user?.email||signedInUser?.email||'').trim().toLowerCase();if(expectedEmail&&email&&email!==String(expectedEmail).trim().toLowerCase())return null;const previousEmail=currentAccountEmail();signedInUser=data.user||{email};setSessionToken(data.session,signedInUser);if(previousEmail!==currentAccountEmail()){savedChats=loadLocalChatsForCurrentAccount();renderSavedChats()}updateAuthUi();scheduleSessionExpiry();await loadPlanTruth();await loadChatsFromServer();return data}catch{return null}}
 function scheduleSessionExpiry(){clearTimeout(sessionExpiryTimer);const expectedEmail=signedInUser?.email||'';if(!expectedEmail||!getSessionToken())return;sessionExpiryTimer=setTimeout(()=>refreshSessionBeforeExpiry(expectedEmail),SESSION_REFRESH_LEAD_MS)}

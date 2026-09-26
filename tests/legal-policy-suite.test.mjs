@@ -65,7 +65,7 @@ test('main customer surfaces link the legal suite and sitemap publishes clean le
   const sitemap = read('sitemap.xml');
   assert.match(index, /href="\/refunds"/);
   assert.match(index, /href="\/legal"/);
-  assert.match(app, /Legal & policies/);
+  assert.match(app, /Legal &amp; privacy/);
   assert.match(support, /href="\/refunds"/);
   for (const route of Object.keys(policies)) assert.ok(sitemap.includes('https://trystellarai.com' + route), route);
 });
