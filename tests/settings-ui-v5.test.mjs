@@ -26,3 +26,12 @@ test('desktop Settings keeps internal scrolling and bounded width', () => {
 test('settings rows retain touch-safe heights', () => {
   assert.match(app, /\.settings-row\{[^}]*min-height:46px/);
 });
+
+test('Settings visually matches the calm chat workspace on desktop and phone', () => {
+  assert.match(app, /id="stellar-settings-chat-v20"/);
+  assert.match(app, /width:min\(620px,calc\(100% - 28px\)\)!important/);
+  assert.match(app, /background:rgba\(17,20,29,.96\)!important/);
+  assert.match(app, /\.settings-header\{[\s\S]*?position:sticky!important/);
+  assert.match(app, /@media\(max-width:640px\)[\s\S]*?max-height:90dvh!important/);
+  assert.match(app, /\.settings-close-footer\{display:none!important\}/);
+});
