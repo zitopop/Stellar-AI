@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const palette = readFileSync(new URL('../stellar-business-palette.css', import.meta.url), 'utf8');
+const refinements = readFileSync(new URL('../lib/assets/stellar-refinements.css', import.meta.url), 'utf8');
 
 test('homepage explains Stellar fast without repeating conversion clutter', () => {
   assert.match(landing, /AI for real work\./);
@@ -56,6 +57,8 @@ test('business palette follows older themes and the finishing layer retains the 
   assert.doesNotMatch(palette, /#(?:d4af37|f2d675|f4d676|8f6b1e|b8860b)/i);
   assert.match(palette, /Business homepage final neutral override v9/);
   assert.match(palette, /Pricing layout polish v12/);
+  assert.match(refinements, /body\.public-home \.pricing-section,body\.public-home #plans\{[^}]*width:min\(1480px,calc\(100% - 48px\)\)!important[^}]*margin-inline:auto!important/);
+  assert.doesNotMatch(refinements, /body\.public-home \.pricing-section,body\.public-home #plans\{[^}]*margin:0!important/);
 });
 
 test('business homepage keeps the executive premium presentation layer', () => {
