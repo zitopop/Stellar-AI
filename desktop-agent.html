@@ -86,6 +86,8 @@ node agent.mjs pair YOUR_CODE
   const $=id=>document.getElementById(id);
   let token='',currentPlan=null,currentPrompt='',statusTimer=null;
   try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
+  const inboundTask=String(new URLSearchParams(location.search).get('task')||'').trim().slice(0,8000);
+  if(inboundTask){$('prompt').value=inboundTask;history.replaceState(null,'',location.pathname);}
   const auth=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
   function log(message,cls=''){const line=document.createElement('div');if(cls)line.className=cls;line.textContent='['+new Date().toLocaleTimeString()+'] '+message;$('log').appendChild(line);$('log').scrollTop=$('log').scrollHeight}
   function updateUseBar(d){const bar=$('stellarUseBar'),led=$('stellarUseLed');if(!bar)return;const active=d?.activeTask&&!d?.emergencyStopped;bar.hidden=!active;if(led)led.hidden=!active;if(active){$('stellarUseMeta').textContent='StellarX is using your PC · '+(d.activeTask.type||'task')+' · '+(d.hostname||'Windows PC')}}

@@ -17,8 +17,10 @@ test('StellarX PC Agent presents a Codex-style task workspace with safeguards', 
   assert.match(page, /passwords, API keys, payment details/i);
 });
 
-test('StellarX PC Agent is discoverable from the signed-in app chrome', () => {
-  assert.ok(app.includes('<strong>StellarX PC Agent</strong><small>Codex-style tasks for your signed-in workspace</small>'));
+test('Stella X Computer is discoverable from chat and accepts a reviewed task handoff', () => {
+  assert.match(app, /openComputerActionCard/);
+  assert.match(app, />▣ Computer</);
+  assert.match(app, /\/desktop\?task=/);
+  assert.match(page, /new URLSearchParams\(location\.search\)\.get\('task'\)/);
   assert.match(entry, /Open StellarX PC Agent/);
-  assert.match(entry, /StellarX PC Agent/);
 });

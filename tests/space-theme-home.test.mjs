@@ -13,10 +13,11 @@ test('space theme is applied to landing and app home without using fake mockup p
   assert.doesNotMatch(app + landing + css, /Alex Carter|alex@stellar\.ai/);
 });
 
-test('app home has cosmic capability chips and useful suggestion cards', () => {
-  assert.match(app, /space-home-subtitle/);
-  assert.match(app, /space-home-chips/);
-  assert.match(app, /space-home-cards/);
-  for (const text of ['StellarX PC Agent', 'Email Agent', 'Business workflows', 'Build a workflow', 'Fix my website']) assert.match(app, new RegExp(text));
-  assert.match(app, /function setPrompt\(text\)/);
+test('app home stays chat-first and exposes real Computer and Plugins entry points', () => {
+  assert.match(app, /What can Stellar help you get done\?/);
+  assert.match(app, /openComputerActionCard/);
+  assert.match(app, />▣ Computer</);
+  assert.match(app, />⌘ Plugins</);
+  assert.match(app, /space-home-subtitle,.app \.space-home-chips,.app \.space-home-cards\{display:none/);
+  assert.match(app, /Review computer action/);
 });
