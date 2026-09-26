@@ -11,7 +11,7 @@ test('hero stays concise and offers first-run onboarding', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /<div class="oa2-wordmark">STELLAR AI<\/div>/);
   assert.match(html, /AI for real work\./);
-  assert.match(html, /Ask anything in Stellar AI\. Use StellarX when the job needs files, code, your computer or connected tools\./);
+  assert.match(html, /Ask anything in Stellar AI\. Use StellarX when you want the AI to build, fix or work with your files and apps\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /1 starting credit/);
@@ -48,7 +48,7 @@ test('landing explains when to use chat, StellarX, plugins and models', () => {
   assert.match(html, /<h3>StellarX<\/h3>/);
   assert.match(html, /<h3>Plugins<\/h3>/);
   assert.match(html, /<h3>Models<\/h3>/);
-  assert.match(html, /code, files, projects and approved computer tasks/);
+  assert.match(html, /code, files, approved computer tasks and connected tools/);
   assert.match(html, /Connect supported services only when a task needs access to a real tool or account/);
 });
 
