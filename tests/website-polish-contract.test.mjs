@@ -33,6 +33,7 @@ test('website polish does not reintroduce heavy gold lock styling', () => {
   assert.doesNotMatch(palette, /background:\s*linear-gradient\([^;]*(?:#d4af37|gold)[^;]*\)!important/i);
   assert.doesNotMatch(palette, /box-shadow:[^;]*(?:gold|#d4af37|#b8860b)/i);
   assert.match(palette, /Business homepage final neutral override v9/);
+  assert.match(palette, /Pricing layout polish v12/);
 });
 
 
@@ -50,10 +51,11 @@ test('homepage final polish layer beats old decorative styling', () => {
 
 test('business palette follows older themes and the finishing layer retains the neutral palette', () => {
   const styles = [...landing.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map((match) => match[1]);
-  assert.equal(styles.at(-2), '/stellar-business-palette.css?v=9');
+  assert.equal(styles.at(-2), '/stellar-business-palette.css?v=12');
   assert.equal(styles.at(-1), '/lib/assets/stellar-refinements.css?v=20260924');
   assert.doesNotMatch(palette, /#(?:d4af37|f2d675|f4d676|8f6b1e|b8860b)/i);
   assert.match(palette, /Business homepage final neutral override v9/);
+  assert.match(palette, /Pricing layout polish v12/);
 });
 
 test('business homepage keeps the executive premium presentation layer', () => {
