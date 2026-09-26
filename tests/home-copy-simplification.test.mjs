@@ -5,8 +5,8 @@ import { readFileSync } from 'node:fs';
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('home copy stays focused on one clear prompt', () => {
-  assert.match(app, /What can Stellar help you get done\?/);
-  assert.doesNotMatch(app, /id="welcome-copy"/);
+  assert.match(app, /What can I help with\?/);
+  assert.match(app, /id="composer-more-btn"[\s\S]*?aria-label="Open tools"/);
   assert.match(app, /placeholder="Message Stellar AI/);
 });
 

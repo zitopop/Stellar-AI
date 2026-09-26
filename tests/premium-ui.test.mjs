@@ -25,7 +25,7 @@ test('workspace keeps mobile-safe controls and a visible bottom composer', () =>
 
 test('workspace uses the executive premium shell without reintroducing legacy styles', () => {
   assert.match(app, /Executive workspace layer v12/);
-  assert.match(app, /What can Stellar help you get done\?/);
+  assert.match(app, /What can I help with\?/);
   assert.match(app, /\.settings-card\{/);
   assert.match(app, /\.composer\{/);
 });

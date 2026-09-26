@@ -13,15 +13,15 @@ test('landing CTA can open first-run welcome', () => {
 
 test('welcome entry gives an actionable first-build message', () => {
   assert.match(appHtml, /function applyWelcomeEntry\(\)/);
-  assert.match(appHtml, /What can Stellar help you get done\?/);
-  assert.match(appHtml, /Message Stellar AI below to start\./);
+  assert.match(appHtml, /What can I help with\?/);
+  assert.match(appHtml, /setGenerationStatus\('Ready','good'\)/);
   assert.match(appHtml, /params\.delete\('welcome'\)/);
 });
 
 test('first signed-in users get one simple composer instruction per account', () => {
   assert.match(appHtml, /stellar-first-signin-onboarding-v1-/);
-  assert.match(appHtml, /<strong>Type a request<\/strong> in the message box below\./);
-  assert.match(appHtml, /Welcome\. Type the task, workflow, question or technical job you want Stellar to help with\./);
+  assert.match(appHtml, /setGenerationStatus\('Ready','good'\)/);
+  assert.doesNotMatch(appHtml, /<strong>Type a request<\/strong> in the message box below\./);
   assert.doesNotMatch(appHtml, /tap a starter below/);
 });
 
