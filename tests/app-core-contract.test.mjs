@@ -18,7 +18,8 @@ test('app page is not empty and exposes the core chat workspace', () => {
 test('app exposes deliberate user controls and owner-gated coding agents', () => {
   for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plan and usage']) assert.ok(app.includes(text), text);
   assert.match(app, /Stellar uses included credits first, then bought add-on credits automatically/);
-  assert.match(app, /Buy add-on credits/);
+  assert.match(app, /Stellar Credit Wallet/);
+  assert.match(app, /onclick="openCreditWallet\(\)"/);
   assert.match(app, /No saved chats yet/);
   assert.match(app, /id="desktop-agent-nav"/);
   assert.match(app, /id="roblox-studio-nav"/);

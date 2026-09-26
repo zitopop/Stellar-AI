@@ -12,6 +12,10 @@ test('homepage pricing stays concise and conversion-focused', () => {
   assert.match(index, /Simple choice:/);
   assert.doesNotMatch(index, /<div class="oa2-sales-ladder"/);
   assert.match(index, /class="plan-actions plan-actions-free"/);
+  assert.match(index, /STELLAR CREDIT WALLET/);
+  for (const pack of [1000,2500,5000,10000,20000]) assert.ok(index.includes('/app?credits=' + pack), String(pack));
+  assert.match(app, /function openCreditWallet\(amount=0\)/);
+  assert.match(app, /stellar-pending-credit-pack/);
 });
 
 test('Plus is positioned as the main paid conversion plan', () => {
