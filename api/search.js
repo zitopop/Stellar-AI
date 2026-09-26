@@ -49,6 +49,7 @@ async function handlePremiumVoice(req, res) {
       method: 'POST',
       headers: { Authorization: `Bearer ${OPENAI_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ model, voice, input: text, instructions, response_format: 'mp3' }),
+      signal: AbortSignal.timeout(15000),
     });
 
     if (!upstream.ok) {
@@ -70,7 +71,12 @@ async function handlePremiumVoice(req, res) {
     res.setHeader('X-Stellar-Voice-Provider', 'openai');
     return res.end(buffer);
   } catch (error) {
-    return sendJson(res, 502, { error: 'Premium voice service is unavailable.', detail: error?.message || 'Unknown voice error.', fallback: 'browser-speech' });
+    const timedOut = error?.name === 'TimeoutError' || error?.name === 'AbortError';
+    return sendJson(res, 502, {
+      error: timedOut ? 'Premium voice timed out. Browser speech is available as a fallback.' : 'Premium voice service is unavailable.',
+      detail: error?.message || 'Unknown voice error.',
+      fallback: 'browser-speech',
+    });
   }
 }
 
@@ -90,16 +96,18 @@ export default async function handler(req, res) {
     const { query } = req.body;
     if (!query) return res.status(400).json({ error: 'Missing query' });
 
-    const controller = new AbortController();
-    const tout = setTimeout(() => controller.abort(), 6000);
     const response = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=8&extra_snippets=true`, {
       headers: {
         'Accept': 'application/json',
         'X-Subscription-Token': apiKey
       },
-      signal: controller.signal
+      signal: AbortSignal.timeout(8000),
     });
-    clearTimeout(tout);
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      return res.status(502).json({ error: 'Search provider request failed.', status: response.status, detail: detail.slice(0, 300) });
+    }
 
     const strip = (s) => String(s || '').replace(/<[^>]+>/g, '');
     const data = await response.json();
@@ -111,6 +119,7 @@ export default async function handler(req, res) {
     }));
     return res.status(200).json({ results });
   } catch (err) {
-    return res.status(500).json({ error: 'Search failed: ' + err.message });
+    const timedOut = err?.name === 'TimeoutError' || err?.name === 'AbortError';
+    return res.status(502).json({ error: timedOut ? 'Search timed out. Please try again.' : 'Search failed: ' + err.message });
   }
 }
