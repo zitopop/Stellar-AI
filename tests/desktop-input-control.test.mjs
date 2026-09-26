@@ -23,7 +23,7 @@ test('Stella X visibly announces input control and reports PC usage', () => {
   assert.match(page, /id="stellarUseSideLabel"/);
   assert.ok(page.includes("keyboard=['type_text','keyboard_shortcut'].includes(type),mouse=['mouse_move','mouse_click'].includes(type)"));
   assert.ok(page.includes("activity=keyboard?'using the keyboard':mouse?'using the mouse'"));
-  assert.ok(page.includes("'Stella X is '+activity"));
+  assert.ok(page.includes("'StellarX is '+activity"));
   assert.match(page, /id="permInput"/);
   assert.match(page, /id="pcUsageLabel"/);
   assert.match(page, /id="pcUsageFill"/);

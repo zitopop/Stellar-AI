@@ -16,7 +16,7 @@ test('StellarX PC Agent active-use banner is visible across app surfaces', () =>
 test('Work Agent page uses StellarX live PC wording and blue side label', () => {
   assert.match(desktop, /Stellar AI · StellarX PC Agent/);
   assert.match(desktop, /StellarX is using your PC to help complete this task./);
-  assert.ok(desktop.includes("'Stella X is '+activity"));
+  assert.ok(desktop.includes("'StellarX is '+activity"));
   assert.match(desktop, /using the keyboard/);
   assert.match(desktop, /using the mouse/);
   assert.match(desktop, /writing-mode:vertical-rl/);

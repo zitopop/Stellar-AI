@@ -65,3 +65,11 @@ test('business homepage keeps the executive premium presentation layer', () => {
   assert.match(landing, /Clear answers before you choose\./);
   assert.match(landing, /Bring the work\./);
 });
+
+
+test('public landing presents StellarX instead of private Jarvis branding', () => {
+  assert.match(landing, /STELLARX WORK AGENT/);
+  assert.match(landing, /Use StellarX when a normal chat needs to become real work\./);
+  assert.match(landing, /href="#stellarx-home">StellarX<\/a>/);
+  assert.doesNotMatch(landing, /JARVIS ASSISTANT|Jarvis helps when the work needs action|Open Jarvis|#jarvis-home/);
+});
