@@ -1,7 +1,7 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
-import { isPaidPlan, isValidTopupPence, topupBonusPence } from '../lib/pricing.js';
+import { ADDON_CREDITS_PER_PENCE, isPaidPlan, isValidTopupPence, topupBonusPence } from '../lib/pricing.js';
 import { kvGet } from '../lib/profile.js';
 import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
 
@@ -148,6 +148,9 @@ export default async function handler(req, res) {
       const pence = Number(rawPence);
 
       const bonus = topupBonusPence(pence);
+      const baseCredits = pence * ADDON_CREDITS_PER_PENCE;
+      const bonusCredits = bonus * ADDON_CREDITS_PER_PENCE;
+      const totalCredits = baseCredits + bonusCredits;
       const attemptId = crypto.randomUUID();
       await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'topup' });
       const checkout = await stripe.checkout.sessions.create({
@@ -159,8 +162,10 @@ export default async function handler(req, res) {
             currency: 'gbp',
             unit_amount: pence,
             product_data: {
-              name: `Stellar AI Credit — £${(pence / 100).toFixed(2)}${bonus ? ` + £${(bonus / 100).toFixed(2)} bonus` : ''}`,
-              description: 'Credit never expires and is applied after plan allowance.',
+              name: `Stellar AI Credits — ${totalCredits.toLocaleString('en-GB')} credits`,
+              description: bonusCredits
+                ? `${baseCredits.toLocaleString('en-GB')} base + ${bonusCredits.toLocaleString('en-GB')} bonus Stellar Credits. Used after included plan credits.`
+                : `${baseCredits.toLocaleString('en-GB')} Stellar Credits. Used after included plan credits.`,
             },
           },
           quantity: 1,

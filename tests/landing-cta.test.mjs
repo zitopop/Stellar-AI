@@ -14,7 +14,7 @@ test('hero stays concise and offers first-run onboarding', () => {
   assert.match(html, /Ask anything in Stellar AI\. Use StellarX when you want the AI to build, fix or work with your files and apps\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
-  assert.match(html, /1 starting credit/);
+  assert.match(html, /100 welcome Stellar Credits/);
   assert.match(html, /href="#plans" class="oa2-secondary-action">See pricing<\/a>/);
 });
 
