@@ -60,10 +60,10 @@ test('visible pricing and structured offers agree on current monthly and yearly 
   ]);
   for (const price of [0,8,20,75]) assert.match(html, new RegExp('<strong>[^<]*' + price + '</strong>'));
   for (const price of [67,168,630]) assert.match(html, new RegExp('[^0-9]' + price + '/year'));
-  for (const allowance of ['40','120','400','1,600']) assert.ok(html.includes(allowance + ' messages/hour'));
-  assert.match(html, /1 message = 1 prompt you send to Stellar AI/);
-  assert.match(html, /Included messages reset every hour/);
-  assert.match(html, /Wallet credit is separate/);
+  for (const allowance of ['300 credits/day','4,000 credits/month','12,000 credits/month','48,000 credits/month']) assert.ok(html.includes(allowance));
+  assert.match(html, /Credits are used when Stellar processes a message/);
+  assert.match(html, /Free credits refresh daily/);
+  assert.match(html, /Bought add-on credits stay on your account/);
 });
 
 test('paid actions preserve monthly and annual plan intent while Free remains a direct entry', () => {

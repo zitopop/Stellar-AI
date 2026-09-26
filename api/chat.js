@@ -3,9 +3,9 @@
 // current-model routing, safe fallbacks, and signed-session plan enforcement.
 import { isIP } from 'node:net';
 import { isOwnerEmail, readSession } from '../lib/auth.js';
-import { OVERAGE_REQUEST_COST_PENCE, PLAN_DEFINITIONS, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
+import { OVERAGE_REQUEST_COST_PENCE, PLAN_DEFINITIONS, creditCostForModel, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
 import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
-import { consumeUsage, refundUsageCredit } from '../lib/usage.js';
+import { consumeUsage, refundUsageCharge } from '../lib/usage.js';
 import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
 
 const DOMAIN = 'https://trystellarai.com';
@@ -408,12 +408,17 @@ async function kvSet(key, value, seconds) {
   }
 }
 
-async function getPlanFromServer(email) {
-  if (!email) return 'free';
+async function getAccountFromServer(email) {
+  if (!email) return { plan: 'free', user: null, owner: false, creditAnchorAt: Date.now() };
   const normalizedEmail = String(email).toLowerCase().trim();
-  if (isOwnerEmail(normalizedEmail)) return 'owner';
-  const user = await kvGet(`stellar:user:${normalizedEmail}`);
-  return normalisePlan(user?.plan) || 'free';
+  if (isOwnerEmail(normalizedEmail)) return { plan: 'owner', user: null, owner: true, creditAnchorAt: Date.now() };
+  const user = await kvGet('stellar:user:' + normalizedEmail);
+  const plan = normalisePlan(user?.plan) || 'free';
+  const creditAnchorAt = Math.max(0, Number(user?.planCreditAnchorAt || user?.createdAt || Date.now()) || Date.now());
+  return { plan, user, owner: false, creditAnchorAt };
+}
+async function getPlanFromServer(email) {
+  return (await getAccountFromServer(email)).plan;
 }
 
 function usageIdentity(session, ip) {
@@ -422,26 +427,22 @@ function usageIdentity(session, ip) {
 
 function applyUsageHeaders(res, usage) {
   if (!usage) return;
-  res.setHeader('X-RateLimit-Limit', String(usage.limit));
-  res.setHeader('X-RateLimit-Remaining', String(usage.remaining));
-  res.setHeader('X-RateLimit-Reset', usage.resetAt);
+  if (usage.limit !== null && usage.limit !== undefined) res.setHeader('X-Stellar-Credits-Limit', String(usage.limit));
+  if (usage.remaining !== null && usage.remaining !== undefined) res.setHeader('X-Stellar-Credits-Remaining', String(usage.remaining));
+  if (usage.resetAt) res.setHeader('X-Stellar-Credits-Reset', usage.resetAt);
+  res.setHeader('X-Stellar-Credit-Cost', String(usage.creditCost || 0));
   res.setHeader('X-Stellar-Plan', usage.plan);
-  res.setHeader('X-Stellar-Credit-Cost-Pence', String(usage.creditCostPence ?? OVERAGE_REQUEST_COST_PENCE));
-  res.setHeader('X-Stellar-Credit-Charged-Pence', String(usage.chargedCreditPence || 0));
-  if (Number.isFinite(Number(usage.walletPence))) res.setHeader('X-Stellar-Wallet-Pence', String(usage.walletPence));
-  if (usage.weekly) {
-    res.setHeader('X-Stellar-Weekly-Percent', String(usage.weekly.percent));
-    res.setHeader('X-Stellar-Weekly-Reset', usage.weekly.resetAt);
-  }
+  res.setHeader('X-Stellar-AddOn-Credits-Charged', String(usage.addOnCreditsCharged || 0));
+  if (Number.isFinite(Number(usage.walletPence))) res.setHeader('X-Stellar-AddOn-Credits', String(usage.walletPence));
 }
 
 function walletKeyForSession(session) {
   return session?.email ? 'stellar:user:' + String(session.email).toLowerCase().trim() : '';
 }
 
-async function consumeServerUsage(session, ip, plan, allowCredit = false) {
+async function consumeServerUsage(session, ip, plan, allowCredit = false, creditCost = OVERAGE_REQUEST_COST_PENCE, creditAnchorAt = Date.now()) {
   if (plan === 'owner') {
-    return { plan: 'owner', limit: PLAN_LIMITS.owner.requestsPerHour, used: 0, remaining: PLAN_LIMITS.owner.requestsPerHour, resetAt: new Date(Date.now() + (60 * 60 * 1000)).toISOString(), allowed: true, chargedCreditPence: 0, walletPence: null, creditCostPence: OVERAGE_REQUEST_COST_PENCE };
+    return { plan: 'owner', unit: 'credits', limit: null, used: 0, remaining: null, resetAt: null, allowed: true, creditCost: 0, includedCreditsCharged: 0, addOnCreditsCharged: 0, chargedCreditPence: 0, walletPence: null };
   }
   if (!KV_URL || !KV_TOKEN) throw new Error('Usage storage is not configured.');
   return consumeUsage({
@@ -451,7 +452,8 @@ async function consumeServerUsage(session, ip, plan, allowCredit = false) {
     plan,
     walletKey: walletKeyForSession(session),
     allowCredit: allowCredit === true && Boolean(session?.email),
-    creditCostPence: OVERAGE_REQUEST_COST_PENCE,
+    creditCost,
+    creditAnchorAt,
   });
 }
 
@@ -853,7 +855,8 @@ export default async function handler(req, res) {
   }
 
   const session = readSession(req);
-  const plan = await getPlanFromServer(session?.email);
+  const account = await getAccountFromServer(session?.email);
+  const plan = account.plan;
 
   // Owner-only routing is enforced on the server. Hiding controls in the browser
   // is presentation only; a crafted request must not unlock private models or roles.
@@ -868,10 +871,13 @@ export default async function handler(req, res) {
   }
 
   const limits = getPlanDefinition(plan);
+  const route = resolveRoute(model, role, plan);
+  const billableTier = route.tier || route.fallbackTier || resolveModelTier(model, plan);
+  const messageCreditCost = creditCostForModel(billableTier);
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);
   let usage;
   try {
-    usage = await consumeServerUsage(session, ip, plan, useCredit === true);
+    usage = await consumeServerUsage(session, ip, plan, useCredit === true, messageCreditCost, account.creditAnchorAt);
     applyUsageHeaders(res, usage);
   } catch (error) {
     console.error('Usage enforcement failed', error?.message || error);
@@ -882,14 +888,21 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'Usage checks are temporarily unavailable. Please try again shortly.' });
   }
   if (!usage.allowed) {
-    const weeklyBlocked = usage.reason === 'weekly';
+    const publicUsage = {
+      unit: usage.unit,
+      limit: usage.limit,
+      used: usage.used,
+      remaining: usage.remaining,
+      resetAt: usage.resetAt,
+      creditPeriod: usage.creditPeriod,
+      creditCost: usage.creditCost,
+      addOnCredits: Number.isFinite(Number(usage.walletPence)) ? Number(usage.walletPence) : null,
+    };
     return res.status(429).json({
-      error: weeklyBlocked
-        ? 'You have reached this week’s included usage. Turn on Usage credit to continue where eligible, add credit, or wait for the weekly reset.'
-        : (useCredit === true
-          ? 'Your included hourly usage is used and there is not enough account credit for another request.'
-          : `You have reached your included hourly usage. Turn on Usage credit to continue for ${OVERAGE_REQUEST_COST_PENCE}p per request, add credit, or wait for the reset.`),
-      usage,
+      error: useCredit === true
+        ? 'You do not have enough Stellar credits for this message. Add credits or wait for your included credits to refresh.'
+        : 'Your included Stellar credits are used. Buy add-on credits, upgrade, or wait for the refresh.',
+      usage: publicUsage,
     });
   }
 
@@ -900,14 +913,13 @@ export default async function handler(req, res) {
       console.error('Could not record accepted request telemetry', error?.message || error);
     }
   }
-
-  const route = resolveRoute(model, role, plan);
   const requestedMaxTokens = Number(maxTokens);
   const safeMaxTokens = Number.isFinite(requestedMaxTokens)
     ? Math.max(64, Math.min(Math.floor(requestedMaxTokens), limits.maxTokens))
     : limits.maxTokens;
 
   const creditChargedPence = Math.max(0, Number(usage.chargedCreditPence) || 0);
+  const includedCreditsCharged = Math.max(0, Number(usage.includedCreditsCharged) || 0);
   let streamCompleted = false;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 95_000);
@@ -988,20 +1000,23 @@ export default async function handler(req, res) {
   } finally {
     clearTimeout(timeout);
     res.removeListener('close', abortOnDisconnect);
-    if (creditChargedPence > 0 && !streamCompleted && session?.email && KV_URL && KV_TOKEN) {
+    if ((creditChargedPence > 0 || includedCreditsCharged > 0) && !streamCompleted && KV_URL && KV_TOKEN) {
       try {
-        await refundUsageCredit({
+        await refundUsageCharge({
           url: KV_URL,
           token: KV_TOKEN,
+          counterKey: usage._counterKey,
           walletKey: walletKeyForSession(session),
+          includedCredits: includedCreditsCharged,
           amountPence: creditChargedPence,
         });
       } catch (refundError) {
-        console.error('Could not refund usage credit after failed generation', refundError?.message || refundError);
+        console.error('Could not refund Stellar credits after failed generation', refundError?.message || refundError);
       }
     }
+
   }
 }
 
 
-export { CODE_INTELLIGENCE_GUIDANCE, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
+export { CODE_INTELLIGENCE_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };

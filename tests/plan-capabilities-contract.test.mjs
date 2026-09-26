@@ -15,7 +15,9 @@ test('pricing exposes current server-owned model capabilities per plan', () => {
 test('get-plan returns capabilities and billing readiness from the server', () => {
   assert.match(getPlan, /function planCapabilities\(plan\)/);
   assert.match(getPlan, /availableModels: capabilities\.models/);
-  assert.match(getPlan, /billing: billingState\(\{ plan, user, owner \}\)/);
+  assert.match(getPlan, /const billing = billingState\(\{ plan, user, owner \}\)/);
+  assert.match(getPlan, /includedCredits: definition\.includedCredits/);
+  assert.match(getPlan, /modelCreditCosts/);
   assert.match(getPlan, /manageable: \/\^cus_\[A-Za-z0-9\]\+\$\/.test\(customerId\)/);
   assert.match(getPlan, /'stripe_syncing'/);
 });

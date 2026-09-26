@@ -6,7 +6,7 @@ const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
 test('account access uses welcoming, useful sign-in and signup copy', () => {
   assert.match(appHtml, /Pick up where you left off — your chats and plan stay synced\./);
-  assert.match(appHtml, /Start free with £1 credit, then keep your chats and plan everywhere\./);
+  assert.match(appHtml, /Start free with daily credits, then keep your chats and plan everywhere\./);
   assert.match(appHtml, /Continue without signing in/);
 });
 

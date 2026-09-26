@@ -23,9 +23,7 @@ test('credit top-up checkout remains one-time bounded and actionable', () => {
 });
 
 test('checkout exposes specific plan configuration failures', () => {
-  for (const label of ['Starter', 'Plus', 'Pro']) {
-    assert.match(checkout, new RegExp(label + ' (monthly|annual) checkout is not configured yet'));
-  }
+  for (const label of ['Starter', 'Plus', 'Pro']) assert.match(checkout, new RegExp(label + ' (monthly|annual) checkout is not configured yet'));
   assert.match(checkout, /STRIPE_PRICE_MODE_MISMATCH/);
 });
 
@@ -34,9 +32,9 @@ test('client validates returned Stripe checkout and billing hosts', () => {
   assert.match(app, /portalUrl\.hostname!=='billing\.stripe\.com'/);
 });
 
-test('usage UI separates included allowance from optional spendable credit', () => {
-  assert.match(app, /Use wallet credit after included allowance/);
-  assert.match(app, /Credit does not raise your hourly limit/);
+test('usage UI presents one Stellar Credits balance with automatic add-on use', () => {
+  assert.match(app, /Stellar uses included credits first, then bought add-on credits automatically/);
+  assert.match(app, /This model costs/);
   assert.match(app, /use_credit:creditsOn\(\)/);
 });
 
@@ -48,7 +46,6 @@ test('owner accounts can open plan and wallet checkout for production testing', 
   assert.match(app, /onclick="startPlanCheckout\('pro'\)"/);
   assert.match(app, /onclick="startCreditCheckout\(\)"/);
 });
-
 
 test('guest plan clicks save the selected upgrade before sign-in', () => {
   assert.match(app, /function savePendingUpgrade\(plan\)/);

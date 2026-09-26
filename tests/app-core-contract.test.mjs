@@ -1,4 +1,4 @@
-﻿import { readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -16,11 +16,9 @@ test('app page is not empty and exposes the core chat workspace', () => {
 });
 
 test('app exposes deliberate user controls and owner-gated coding agents', () => {
-  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plan and usage']) {
-    assert.match(app, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  }
-  assert.match(app, /Use wallet credit after included allowance/);
-  assert.match(app, /Overage credit is opt-in/);
+  for (const text of ['New chat', 'Models', 'Settings', 'Account', 'Plan and usage']) assert.ok(app.includes(text), text);
+  assert.match(app, /Stellar uses included credits first, then bought add-on credits automatically/);
+  assert.match(app, /Buy add-on credits/);
   assert.match(app, /No saved chats yet/);
   assert.match(app, /id="desktop-agent-nav"/);
   assert.match(app, /id="roblox-studio-nav"/);

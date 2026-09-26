@@ -1,8 +1,8 @@
-// api/get-plan.js — retrieves the signed-in user's plan, wallet, usage, referrals, achievements, and plan capabilities
+// api/get-plan.js — retrieves the signed-in user's plan, add-on credits, usage, referrals, achievements, and plan capabilities
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { recordCheckoutCancellation } from '../lib/conversion-metrics.js';
 import { achievementDefinitions, ensureReferralProfile, kvGet, unlockedAchievements } from '../lib/profile.js';
-import { OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, getWeeklyRequestLimit, isPaidPlan, normalisePlan } from '../lib/pricing.js';
+import { MODEL_CREDIT_COSTS, OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, isPaidPlan, normalisePlan } from '../lib/pricing.js';
 import { getUsageSnapshot } from '../lib/usage.js';
 
 function setCors(req, res) {
@@ -18,13 +18,14 @@ function setCors(req, res) {
 }
 
 function ownerUsage() {
-  const definition = getPlanDefinition('owner');
   return {
     plan: 'owner',
-    limit: definition.requestsPerHour,
+    unit: 'credits',
+    limit: null,
     used: 0,
-    remaining: definition.requestsPerHour,
-    resetAt: new Date(Math.floor(Date.now() / 3600000 + 1) * 3600000).toISOString(),
+    remaining: null,
+    resetAt: null,
+    creditPeriod: 'unlimited',
   };
 }
 
@@ -61,6 +62,9 @@ function planCapabilities(plan) {
   return {
     id: definition.id,
     name: definition.name,
+    includedCredits: definition.includedCredits,
+    creditPeriod: definition.creditPeriod,
+    modelCreditCosts: { ...MODEL_CREDIT_COSTS },
     requestsPerHour: definition.requestsPerHour,
     maxTokens: definition.maxTokens,
     models: [...definition.models],
@@ -69,7 +73,7 @@ function planCapabilities(plan) {
   };
 }
 
-function accountPlanTruth({ plan, owner, user, capabilities, usage, weeklyUsage, billing }) {
+function accountPlanTruth({ plan, owner, user, capabilities, usage, billing }) {
   const walletPence = Math.max(0, Number(user?.walletPence) || 0);
   const billingCycle = isPaidPlan(plan) ? (user?.planBilling === 'annual' ? 'annual' : 'monthly') : null;
   return {
@@ -82,8 +86,9 @@ function accountPlanTruth({ plan, owner, user, capabilities, usage, weeklyUsage,
     billingCycle,
     billing,
     walletPence,
+    addOnCredits: walletPence,
     usage,
-    weeklyUsage,
+    weeklyUsage: null,
     capabilities,
     availableModels: capabilities.models,
     updatedAt: user?.updatedAt || null,
@@ -122,25 +127,16 @@ export default async function handler(req, res) {
     const stored = (await kvGet(url, token, `stellar:user:${session.email}`)) || { plan: 'free', walletPence: 0, createdAt: Date.now() };
     const user = await ensureReferralProfile(url, token, session.email, stored);
     const plan = owner ? 'owner' : (normalisePlan(user.plan) || 'free');
+    const creditAnchorAt = Math.max(0, Number(user.planCreditAnchorAt || user.createdAt || Date.now()) || Date.now());
     const usage = owner
       ? ownerUsage()
-      : await getUsageSnapshot({ url, token, identity: `email:${session.email}`, plan });
+      : await getUsageSnapshot({ url, token, identity: `email:${session.email}`, plan, creditAnchorAt });
     const achievements = unlockedAchievements(user);
-    const weeklyLimit = owner ? null : getWeeklyRequestLimit(plan);
-    const weekMs = 7 * 24 * 60 * 60 * 1000;
-    const weekStart = Math.floor(Date.now() / weekMs) * weekMs;
-    const weeklyUsed = Math.max(0, Number(await kvGet(url, token, `stellar:usage:week:${weekStart}:email:${session.email}`)) || 0);
-    const weeklyUsage = weeklyLimit ? {
-      percent: Math.min(100, Math.round((weeklyUsed / weeklyLimit) * 100)),
-      resetAt: new Date(weekStart + weekMs).toISOString(),
-      low: weeklyUsed / weeklyLimit >= 0.8,
-      exhausted: weeklyUsed >= weeklyLimit,
-    } : null;
     const capabilities = planCapabilities(plan);
     const billing = billingState({ plan, user, owner });
     const walletPence = Math.max(0, Number(user.walletPence) || 0);
     const planBilling = isPaidPlan(plan) ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null;
-    const accountPlan = accountPlanTruth({ plan, owner, user: { ...user, walletPence, planBilling }, capabilities, usage, weeklyUsage, billing });
+    const accountPlan = accountPlanTruth({ plan, owner, user: { ...user, walletPence, planBilling }, capabilities, usage, billing });
 
     return res.status(200).json({
       plan,
@@ -155,10 +151,11 @@ export default async function handler(req, res) {
       availableModels: capabilities.models,
       billing: billingState({ plan, user, owner }),
       walletPence,
+      addOnCredits: walletPence,
       overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
       planBilling,
       usage,
-      weeklyUsage,
+      weeklyUsage: null,
       referralCode: user.referralCode || null,
       referralUrl: user.referralCode ? `https://trystellarai.com/app?ref=${encodeURIComponent(user.referralCode)}` : null,
       scriptCount: Math.max(0, Number(user.scriptCount) || 0),

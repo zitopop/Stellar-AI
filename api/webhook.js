@@ -187,6 +187,7 @@ export default async function handler(req, res) {
               ...existing,
               plan,
               planBilling: checkoutPlan.endsWith('-annual') ? 'annual' : 'monthly',
+              planCreditAnchorAt: Date.now(),
               stripeCustomerId: session.customer || existing.stripeCustomerId,
               stripeSubscriptionId: session.subscription || existing.stripeSubscriptionId,
               updatedAt: Date.now(),
@@ -232,6 +233,7 @@ export default async function handler(req, res) {
           ...existing,
           plan: 'free',
           planBilling: null,
+          planCreditAnchorAt: null,
           stripeSubscriptionId: null,
           updatedAt: Date.now(),
         });
