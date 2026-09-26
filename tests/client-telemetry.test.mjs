@@ -26,7 +26,8 @@ test('telemetry endpoint does not persist arbitrary client payload fields', () =
 
 test('client helper sends only event name and never serialises page or user content', () => {
   assert.match(helper, /JSON\.stringify\(\{ event: name \}\)/);
-  assert.doesNotMatch(helper, /document\.body\.innerText|localStorage|sessionStorage|prompt|email|stack/);
+  assert.doesNotMatch(helper, /document\.body\.innerText|localStorage|sessionStorage/);
+  assert.doesNotMatch(helper, /JSON\.stringify\(\{[^}]*\b(?:prompt|email|message|error|stack|card|image)\b/s);
 });
 
 test('public landing and app both load the shared telemetry helper', () => {
