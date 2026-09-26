@@ -10,8 +10,8 @@ const graph = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<
 test('hero stays concise and offers first-run onboarding', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /<div class="oa2-wordmark">STELLAR AI<\/div>/);
-  assert.match(html, /AI for real work\./);
-  assert.match(html, /Ask anything in Stellar AI\. Use StellarX when you want the AI to build, fix or work with your files and apps\./);
+  assert.match(html, /Ask anything\.<br>Get real work done\./);
+  assert.match(html, /Chat with Stellar AI\. Hand bigger jobs to StellarX\. Connect tools only when the task needs them\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /100 welcome Stellar Credits/);
@@ -19,7 +19,7 @@ test('hero stays concise and offers first-run onboarding', () => {
 });
 
 test('preview is an example and its bounded prompt opens the app without generating', () => {
-  assert.match(html, /Product preview/);
+  assert.match(html, /SEE THE WORKFLOW/);
   assert.match(html, /EXAMPLE RESPONSE/);
   assert.match(html, /<form[^>]*action="\/app" method="get"/);
   assert.match(html, /<label for="build-prompt">/);
@@ -44,12 +44,13 @@ test('core AI product routes remain reachable without JavaScript', () => {
 });
 
 test('landing explains when to use chat, StellarX, plugins and models', () => {
-  assert.match(html, /<h3>Stellar AI<\/h3>/);
-  assert.match(html, /<h3>StellarX<\/h3>/);
-  assert.match(html, /<h3>Plugins<\/h3>/);
-  assert.match(html, /<h3>Models<\/h3>/);
-  assert.match(html, /code, files, approved computer tasks and connected tools/);
-  assert.match(html, /Connect supported services only when a task needs access to a real tool or account/);
+  assert.match(html, /<h3>Ask Stellar AI<\/h3>/);
+  assert.match(html, /<h3>Hand it to StellarX<\/h3>/);
+  assert.match(html, /<h3>Add tools when needed<\/h3>/);
+  assert.match(html, /code, files and approved computer tasks/);
+  assert.match(html, /Use supported plugins for real accounts and choose Spark, Star, Comet or Nova/);
+  assert.match(html, /href="\/plugins">Plugins ↗<\/a>/);
+  assert.match(html, /href="\/models">Models ↗<\/a>/);
 });
 
 test('visible pricing and structured offers agree on current monthly and yearly amounts', () => {
@@ -61,9 +62,9 @@ test('visible pricing and structured offers agree on current monthly and yearly 
   for (const price of [0,8,20,75]) assert.match(html, new RegExp('<strong>[^<]*' + price + '</strong>'));
   for (const price of [67,168,630]) assert.match(html, new RegExp('[^0-9]' + price + '/year'));
   for (const allowance of ['300 credits/day','4,000 credits/month','12,000 credits/month','48,000 credits/month']) assert.ok(html.includes(allowance));
-  assert.match(html, /Credits are used when Stellar processes a message/);
-  assert.match(html, /Free credits refresh daily/);
-  assert.match(html, /Bought add-on credits stay on your account/);
+  assert.match(html, /Spark 2 · Star 5 · Comet 10 · Nova 20 credits per message/);
+  assert.match(html, /Refreshes daily/);
+  assert.match(html, /Bought credits stay on your account until used/);
 });
 
 test('paid actions preserve monthly and annual plan intent while Free remains a direct entry', () => {
@@ -76,14 +77,14 @@ test('paid actions preserve monthly and annual plan intent while Free remains a 
 test('native FAQ disclosures match the published FAQ metadata', () => {
   const faq = graph.find(x => x['@type'] === 'FAQPage').mainEntity;
   const details = [...html.matchAll(/<details><summary>(.*?)<span[^>]*>\+<\/span><\/summary><p>(.*?)<\/p><\/details>/g)];
-  assert.equal(details.length, 6);
+  assert.equal(details.length, 4);
   assert.deepEqual(details.map(x => [x[1], x[2]]), faq.map(x => [x.name,x.acceptedAnswer.text]));
 });
 
 test('final CTA gives a truthful free onboarding entry', () => {
   const final = html.match(/<section class="container final-cta">(.*?)<\/section>/s)[1];
   assert.match(final, /href="\/app\?welcome=1"/);
-  assert.match(final, /(?:Free to begin\. No card needed\.|The app is free to begin with no card needed\.)/);
+  assert.match(final, /No card needed for Free\./);
 });
 
 test('dark-only homepage makes native anchor navigation clear of its sticky header', () => {

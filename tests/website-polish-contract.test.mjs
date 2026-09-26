@@ -7,14 +7,14 @@ const palette = readFileSync(new URL('../stellar-business-palette.css', import.m
 const refinements = readFileSync(new URL('../lib/assets/stellar-refinements.css', import.meta.url), 'utf8');
 
 test('homepage explains Stellar fast without repeating conversion clutter', () => {
-  assert.match(landing, /AI for real work\./);
-  assert.match(landing, /Ask anything in Stellar AI\. Use StellarX when you want the AI to build, fix or work with your files and apps\./);
+  assert.match(landing, /Ask anything\.<br>Get real work done\./);
+  assert.match(landing, /Chat with Stellar AI\. Hand bigger jobs to StellarX\. Connect tools only when the task needs them\./);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Open Stellar AI/);
   assert.match(landing, /See pricing/);
   assert.match(landing, /id="stellar-home-calm-v16"/);
   assert.match(landing, /\.oa2-business-first,[\s\S]*\.oa2-delivery,[\s\S]*\.oa2-guides,[\s\S]*\.oa2-business,[\s\S]*updates-title[^}]*\{display:none!important\}/);
-  assert.match(landing, /Stellar AI chats\. StellarX works\./);
+  assert.match(landing, /One AI workspace\. Three simple layers\./);
   assert.match(landing, /href="\/support"[^>]*>Support<\/a>/i);
 });
 
@@ -65,14 +65,15 @@ test('business homepage keeps the executive premium presentation layer', () => {
   assert.match(palette, /Executive premium layer v11/);
   assert.match(palette, /\.public-home \.site-header \.nav/);
   assert.match(palette, /\.public-home \.final-cta/);
-  assert.match(landing, /Clear answers before you choose\./);
-  assert.match(landing, /Bring the work\./);
+  assert.match(landing, /The important stuff, simply\./);
+  assert.match(landing, /Start with a question\./);
+  assert.match(landing, /id="stellar-landing-v22"/);
 });
 
 
 test('public landing presents StellarX instead of private Jarvis branding', () => {
-  assert.match(landing, /<article id="stellarx-home"><span>AI WORKER<\/span><h3>StellarX<\/h3>/);
-  assert.match(landing, /Give StellarX a job\./);
+  assert.match(landing, /<article id="stellarx-home"><span>02 · WORK<\/span><h3>Hand it to StellarX<\/h3>/);
+  assert.match(landing, /Use StellarX for bigger jobs across code, files and approved computer tasks/);
   assert.match(landing, /href="#stellarx-home">StellarX<\/a>/);
   assert.doesNotMatch(landing, /JARVIS ASSISTANT|Jarvis helps when the work needs action|Open Jarvis|#jarvis-home/);
 });

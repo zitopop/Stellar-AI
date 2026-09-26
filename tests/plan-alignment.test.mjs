@@ -30,8 +30,8 @@ test('plan copy separates hourly allowance from wallet credit', () => {
 
 test('public model access keeps model guidance visible without mis-selling plan access', () => {
   for (const model of ['Spark','Star','Comet','Nova']) assert.match(index, new RegExp(model));
-  assert.match(index, /Compare Spark, Star, Comet and Nova access across Stellar plans/);
-  assert.match(index, /Start free with 300 daily credits/);
+  assert.match(index, /Spark 2 · Star 5 · Comet 10 · Nova 20 credits per message/);
+  assert.match(index, /Free includes 300 daily credits/);
   assert.doesNotMatch(index, /Spark, Star &amp; Comet/);
 });
 

@@ -6,10 +6,10 @@ const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('homepage pricing stays concise and conversion-focused', () => {
-  assert.match(index, /Start free\. Upgrade when Stellar starts saving you time\./);
+  assert.match(index, /Start free\. Pay for more when you need it\./);
   assert.match(index, /Save 30% yearly/);
   assert.match(index, /Add-on credits stay separate/);
-  assert.match(index, /Simple choice:/);
+  assert.match(index, /Free is for trying Stellar\. Starter is for regular use\./);
   assert.doesNotMatch(index, /<div class="oa2-sales-ladder"/);
   assert.match(index, /class="plan-actions plan-actions-free"/);
   assert.match(index, /STELLAR CREDIT WALLET/);
@@ -22,7 +22,7 @@ test('Plus is positioned as the main paid conversion plan', () => {
   assert.match(index, /data-plan="plus"/);
   assert.match(index, /MOST POPULAR/);
   assert.match(index, /RECOMMENDED/);
-  assert.match(index, /Recommended for daily Stellar use/);
+  assert.match(index, /Deeper review \+ multi-file work/);
   assert.match(app, /Starter includes 4,000 credits\/month/);
   assert.match(app, /Plus is recommended for daily work with 12,000 credits\/month/);
   assert.match(app, /Pro includes 48,000 credits\/month and Nova/);

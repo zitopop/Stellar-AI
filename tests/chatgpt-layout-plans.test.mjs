@@ -23,8 +23,8 @@ test('plan and wallet detail is kept in Settings instead of cluttering the sideb
 });
 
 test('landing uses a concise conversational entry with clear pricing access', () => {
-  assert.match(landing, /AI for real work\./);
-  assert.match(landing, /Ask anything in Stellar AI\. Use StellarX when you want the AI to build, fix or work with your files and apps\./);
+  assert.match(landing, /Ask anything\.<br>Get real work done\./);
+  assert.match(landing, /Chat with Stellar AI\. Hand bigger jobs to StellarX\. Connect tools only when the task needs them\./);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /href="#plans" class="oa2-secondary-action">See pricing<\/a>/);
   assert.match(landing, /id="stellar-home-calm-v16"/);
