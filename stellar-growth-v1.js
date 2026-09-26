@@ -311,11 +311,53 @@
     document.querySelectorAll('[data-usage-tier]').forEach(n => n.classList.toggle('is-current', n.dataset.usageTier === level.key));
   }
 
-  function upgradeSidebarNewBuild() {
+  function improveDailyReturnExperience() {
     const button = document.querySelector('#sidebar .side-new');
-    if (!button) return;
-    button.textContent = 'New Build';
-    button.setAttribute('title','Start a new Stellar build chat');
+    if (button) {
+      button.textContent = 'New chat';
+      button.setAttribute('title','Start a new Stellar AI chat');
+      button.setAttribute('aria-label','Start a new chat');
+    }
+
+    const today = new Date().toISOString().slice(0,10);
+    const lastDay = window.safeStorageGet('stellar_active_day');
+    if (lastDay !== today) {
+      window.safeStorageSet('stellar_active_day', today);
+      try { window.StellarTrack?.('active-day', 'app'); } catch {}
+    }
+
+    const now = Date.now();
+    const lastSession = Number(window.safeStorageGet('stellar_last_session_at') || 0);
+    if (!lastSession || now - lastSession >= 30 * 60 * 1000) {
+      try { window.StellarTrack?.('workspace-session-started', lastSession ? 'returning' : 'first'); } catch {}
+    }
+    window.safeStorageSet('stellar_last_session_at', String(now));
+
+    const list = document.getElementById('chats-list');
+    const sidebar = document.getElementById('sidebar');
+    if (!list || !sidebar || sidebar.querySelector('[data-stellar-return]')) return;
+
+    const chats = Array.from(list.querySelectorAll('[data-chat-id], .chat-item, .chat-row')).filter(node => {
+      const text = (node.textContent || '').trim();
+      return text && !/new chat/i.test(text);
+    });
+    const latest = chats[0];
+    if (!latest) return;
+
+    const label = (latest.textContent || '').replace(/\s+/g,' ').trim().slice(0,52) || 'Recent chat';
+    const resume = document.createElement('button');
+    resume.type = 'button';
+    resume.className = 'stellar-return-row';
+    resume.dataset.stellarReturn = '1';
+    resume.innerHTML = '<span aria-hidden="true">↻</span><span><strong>Continue where you left off</strong><small></small></span>';
+    resume.querySelector('small').textContent = label;
+    resume.addEventListener('click', () => {
+      latest.click();
+      try { window.StellarTrack?.('return-resumed', 'sidebar'); } catch {}
+    });
+    const projects = sidebar.querySelector('.stellar-projects');
+    if (projects) projects.insertAdjacentElement('afterend', resume);
+    else list.insertAdjacentElement('beforebegin', resume);
   }
 
   function addGrowthSchema() {
@@ -359,7 +401,7 @@
     buildReasoningControl();
     ensureProjectsRail();
     ensureUsageExperience();
-    upgradeSidebarNewBuild();
+    improveDailyReturnExperience();
     syncReasoningControl();
     syncUsageExperience();
     observe();
