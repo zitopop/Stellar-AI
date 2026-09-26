@@ -392,7 +392,7 @@
     const chats = document.getElementById('chats-list');
     if (chats) new MutationObserver(() => {
       if (projectFrame) return;
-      projectFrame = requestAnimationFrame(() => { projectFrame = 0; renderProjects(); });
+      projectFrame = requestAnimationFrame(() => { projectFrame = 0; renderProjects(); improveDailyReturnExperience(); });
     }).observe(chats,{subtree:true,childList:true});
   }
 
