@@ -597,7 +597,7 @@ button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-c
 .settings-row small,.settings-credit-copy small{
   display:none!important
 }
-#usage-copy,.topup-status,#owner-call-health,#owner-push-status,#owner-call-setup-status{
+#usage-copy,.settings-plan-copy,.topup-status,#owner-call-health,#owner-push-status,#owner-call-setup-status{
   display:block!important
 }
 .settings-row-meta{
@@ -618,8 +618,23 @@ button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-c
   color:#c4bdff!important
 }
 .settings-plan-actions{
-  padding:8px 10px 10px!important;
-  align-items:center!important
+  padding:10px 12px 12px!important;
+  align-items:center!important;
+  flex-wrap:wrap!important
+}
+.settings-plan-actions .settings-credit-copy{
+  flex:1 1 280px!important
+}
+.settings-plan-actions .settings-plan-copy{
+  margin-top:3px!important;
+  color:#7f8794!important;
+  font-size:10.5px!important;
+  line-height:1.45!important
+}
+.settings-plan-actions .settings-compare-all{
+  width:100%!important;
+  justify-content:center!important;
+  margin-top:2px!important
 }
 .settings-plan-actions .credit-buy-controls{
   width:100%!important;
@@ -1013,26 +1028,19 @@ html body #settings-panel.settings-panel>.settings-card{
     </div>
 
     <div class="settings-grid">
-      <div class="settings-row settings-credit settings-wide settings-plan-hero">
+      <div id="settings-plan-actions" class="settings-row settings-credit settings-wide settings-plan-hero settings-plan-actions">
         <span class="settings-icon" aria-hidden="true">♛</span>
         <div class="settings-credit-copy">
           <strong id="plan-truth">Plan and usage</strong>
           <small id="usage-copy">Plan data loads after sign-in.</small>
+          <small class="settings-plan-copy">Starter gives 1,500 monthly credits. Plus unlocks Comet with 5,000 monthly credits. Pro unlocks Nova with 20,000 monthly credits.</small>
         </div>
-        <a class="btn settings-row-action" href="/#plans">Compare plans <span aria-hidden="true">→</span></a>
-      </div>
-
-      <div id="settings-plan-actions" class="settings-row settings-credit settings-wide settings-plan-actions">
-        <span class="settings-icon" aria-hidden="true">▱</span>
-        <span class="settings-credit-copy">
-          <strong>Plans</strong>
-          <small>Starter gives 1,500 monthly credits. Plus unlocks Comet with 5,000 monthly credits. Pro unlocks Nova with 20,000 monthly credits.</small>
-        </span>
-        <span class="credit-buy-controls">
+        <span class="credit-buy-controls" aria-label="Upgrade plan">
           <button class="btn" type="button" onclick="startPlanCheckout('starter')" aria-label="Choose Starter for £8 per month, with 1,500 monthly credits">Starter £8 · 1,500/mo</button>
           <button class="btn primary" type="button" onclick="startPlanCheckout('plus')" aria-label="Choose Plus for £20 per month, including Comet">Plus £20 · Comet</button>
           <button class="btn" type="button" onclick="startPlanCheckout('pro')" aria-label="Choose Pro for £75 per month, including Nova">Pro £75 · Nova</button>
         </span>
+        <a class="btn settings-row-action settings-compare-all" href="/plans">Compare all 4 plans <span aria-hidden="true">→</span></a>
       </div>
 
       <button id="auth-settings-row" class="settings-row set-click" type="button" onclick="settingsAuthAction()">
