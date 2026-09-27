@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
 
 const provider=readFileSync(new URL('../lib/owner-call.js',import.meta.url),'utf8');
 const voice=readFileSync(new URL('../lib/jarvis-voice.js',import.meta.url),'utf8');
@@ -51,4 +52,35 @@ test('Jarvis voice webhook validates Twilio and supports guarded two-way speech'
   assert.match(broadcast,/jarvisVoice/);
   assert.match(broadcast,/handleJarvisVoiceWebhook/);
   assert.match(provider,/api\/broadcast\?jarvisVoice=1/);
+});
+
+test('partial Twilio config does not block the Retell bridge fallback', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'not-a-valid-account-sid';
+  delete process.env.TWILIO_AUTH_TOKEN;
+  delete process.env.TWILIO_FROM_NUMBER;
+  delete process.env.OWNER_PHONE;
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('/api/call-owner')) return Response.json({ ready: true, retell: true, ownerNumber: true, outboundNumber: true, agent: true, configuredAgent: true, configuredNumber: true, call_id: 'call_fixture', status: 'started' });
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const call = await startOwnerCall({ purpose: 'Regression test', bridgeToken: 'fixture' });
+    assert.equal(call.provider, 'retell');
+    assert.equal(call.call_id, 'call_fixture');
+    const health = await readOwnerCallHealth({ bridgeToken: 'fixture' });
+    assert.equal(health.ready, true);
+    assert.equal(health.provider, 'retell');
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
 });
