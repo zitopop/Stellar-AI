@@ -16,7 +16,8 @@ const analytics = read('lib/assets/stellar-analytics.js');
 test('public credit wording uses Stellar Credits rather than pound-value credit language', () => {
   assert.match(index, /500 welcome Stellar Credits/);
   assert.match(affiliate, /100 bonus Stellar Credits/);
-  assert.match(auth, /const WELCOME_CREDITS = 500/);\n  assert.match(auth, /Your \\$\\{WELCOME_CREDITS\\} welcome Stellar Credits are ready/);
+  assert.match(auth, /const WELCOME_CREDITS = 500/);
+  assert.match(auth, /Your \$\{WELCOME_CREDITS\} welcome Stellar Credits are ready/);
   for (const source of [index, affiliate, auth, checkout]) {
     assert.doesNotMatch(source, /£1 (?:starting|bonus|free|referral) credit/i);
     assert.doesNotMatch(source, /Stellar AI Credit — £/);
