@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, app-load patching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-27-tab-spinner-v11';
+const SW_VERSION = 'stellar-sw-2026-09-27-simple-workspace-v12';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -65,6 +65,111 @@ function googleIdentityLazyLoader() {
 </script>`;
 }
 
+function simpleWorkspaceLayer() {
+  return `<script id="stellar-simple-workspace-v1">
+(() => {
+  if (window.__stellarSimpleWorkspaceV1) return;
+  window.__stellarSimpleWorkspaceV1 = true;
+
+  const KEEP_WORDS = [
+    'chat', 'new chat', 'continue', 'plans', 'plan', 'credits', 'credit',
+    'settings', 'account', 'support', 'help', 'billing', 'legal', 'terms'
+  ];
+  const BUSY_WORDS = [
+    'investor', 'operator', 'deploy', 'seo', 'blog', 'business', 'website audit',
+    'ai receptionist', 'email agent', 'growth', 'admin', 'owner', 'debug', 'guide',
+    'prompt', 'five m', 'fivem', 'roblox', 'shopify', 'broadcast', 'status center',
+    'toolkit', 'playbook', 'launch center', 'strategy', 'services'
+  ];
+
+  function textFor(el) {
+    return [
+      el.textContent,
+      el.getAttribute?.('href'),
+      el.getAttribute?.('aria-label'),
+      el.getAttribute?.('title'),
+      el.id,
+      el.className
+    ].filter(Boolean).join(' ').toLowerCase();
+  }
+
+  function shouldHide(el) {
+    const text = textFor(el);
+    if (!text) return false;
+    const looksBusy = BUSY_WORDS.some((word) => text.includes(word));
+    const looksCore = KEEP_WORDS.some((word) => text.includes(word));
+    return looksBusy && !looksCore;
+  }
+
+  function simplifyWorkspace() {
+    document.body?.classList?.add('stellar-simple-workspace');
+
+    document.querySelectorAll('.side a,.side button,.top a,.top button,.nav-link,.set-item').forEach((el) => {
+      if (!shouldHide(el)) return;
+      el.dataset.stellarSimpleHidden = 'true';
+      el.hidden = true;
+      el.setAttribute('aria-hidden', 'true');
+      el.setAttribute('tabindex', '-1');
+    });
+
+    document.querySelectorAll('.side-section').forEach((section) => {
+      const title = section.querySelector('.side-title')?.textContent || '';
+      const links = Array.from(section.querySelectorAll('a,button'));
+      const visibleLinks = links.filter((link) => !link.hidden && getComputedStyle(link).display !== 'none');
+      if (/tools|pages|growth|seo|business|more|owner|admin/i.test(title) && visibleLinks.length === 0) {
+        section.hidden = true;
+        section.dataset.stellarSimpleHidden = 'true';
+      }
+    });
+
+    const welcomeCopy = document.querySelector('.welcome p,.home-welcome p,.space-home-subtitle');
+    if (welcomeCopy && !welcomeCopy.dataset.stellarSimpleCopy) {
+      welcomeCopy.dataset.stellarSimpleCopy = 'true';
+      welcomeCopy.textContent = 'Ask Stellar anything. Plans, credits, settings and support are tucked away so the workspace stays clean.';
+    }
+  }
+
+  function installStyle() {
+    if (document.getElementById('stellar-simple-workspace-style-v1')) return;
+    const style = document.createElement('style');
+    style.id = 'stellar-simple-workspace-style-v1';
+    style.textContent = `
+      body.stellar-simple-workspace .quick,
+      body.stellar-simple-workspace .quality-strip,
+      body.stellar-simple-workspace .plan-quality,
+      body.stellar-simple-workspace .owner-only:not(.signed-in-only),
+      body.stellar-simple-workspace [data-stellar-simple-hidden="true"]{display:none!important;}
+      body.stellar-simple-workspace .side{gap:8px!important;}
+      body.stellar-simple-workspace .side-section{padding-top:8px!important;}
+      body.stellar-simple-workspace .side-title{margin-bottom:6px!important;color:#8f96a5!important;letter-spacing:.08em!important;}
+      body.stellar-simple-workspace .chat-actions{grid-template-columns:1fr!important;}
+      body.stellar-simple-workspace .welcome{padding-top:clamp(38px,9vh,92px)!important;}
+      body.stellar-simple-workspace .welcome h1,
+      body.stellar-simple-workspace .home-welcome h1{font-size:clamp(40px,7vw,72px)!important;max-width:850px!important;margin-inline:auto!important;}
+      body.stellar-simple-workspace .composer-wrap{z-index:40!important;}
+      @media(max-width:780px){
+        body.stellar-simple-workspace .top-actions .btn:not(.primary):not([id*="setting" i]):not([id*="account" i]){display:none!important;}
+        body.stellar-simple-workspace .top-usage{max-width:140px!important;}
+        body.stellar-simple-workspace .side{width:min(82vw,300px)!important;}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function run() {
+    installStyle();
+    simplifyWorkspace();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
+  else run();
+  window.addEventListener('pageshow', run);
+  setTimeout(run, 500);
+  setTimeout(run, 1800);
+})();
+</script>`;
+}
+
 async function patchAppNavigationResponse(request, response) {
   const url = new URL(request.url);
   if (!/\/app(?:\.html)?$/i.test(url.pathname)) return response;
@@ -75,6 +180,7 @@ async function patchAppNavigationResponse(request, response) {
   let html = await response.text();
   const eagerGoogle = '<script src="https://accounts.google.com/gsi/client" async defer></script>';
   if (html.includes(eagerGoogle)) html = html.replace(eagerGoogle, googleIdentityLazyLoader());
+  if (!html.includes('stellar-simple-workspace-v1')) html = html.replace('</head>', `${simpleWorkspaceLayer()}\n</head>`);
 
   const headers = new Headers(response.headers);
   headers.set('Content-Type', 'text/html; charset=utf-8');
