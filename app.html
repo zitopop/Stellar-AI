@@ -975,7 +975,7 @@ html body #settings-panel.settings-panel>.settings-card{
       <div class="settings-header-copy">
         <span class="settings-kicker">STELLAR SETTINGS</span>
         <h2>Settings</h2>
-        <p>Manage your account, plan and connected tools.</p>
+        <p>Account, credits, tools and support — all in one place.</p>
       </div>
       <button class="settings-close-x" type="button" onclick="closeSettings()" aria-label="Close settings">×</button>
     </div>
@@ -993,8 +993,8 @@ html body #settings-panel.settings-panel>.settings-card{
       <div id="settings-plan-actions" class="settings-row settings-credit settings-wide settings-plan-actions">
         <span class="settings-icon" aria-hidden="true">▱</span>
         <span class="settings-credit-copy">
-          <strong>Upgrade path</strong>
-          <small>Starter includes 4,000 credits/month. Plus is recommended for daily work with 12,000 credits/month. Pro includes 48,000 credits/month and Nova.</small>
+          <strong>Plans</strong>
+          <small>Choose a plan for more monthly credits and access to stronger models.</small>
         </span>
         <span class="credit-buy-controls">
           <button class="btn" type="button" onclick="startPlanCheckout('starter')">Starter £8</button>
@@ -1094,8 +1094,8 @@ html body #settings-panel.settings-panel>.settings-card{
       <div id="topup-row" class="settings-row settings-credit settings-wide settings-wallet-row" hidden>
         <span class="settings-icon" aria-hidden="true">▤</span>
         <span class="settings-credit-copy">
-          <strong>Stellar Credit Wallet</strong>
-          <small>Buy extra credits with a one-time Stripe payment. Bought credits stay until used and are spent automatically after included credits.</small>
+          <strong>Buy extra credits</strong>
+          <small>One-time credit packs. Included credits are used first, then bought credits automatically.</small>
         </span>
         <span class="credit-buy-controls">
           <label class="sr-only" for="topup-amount">Credit amount</label>
@@ -1220,7 +1220,7 @@ function handleLockedModel(name){setStatus(String(name||'This model')+' needs a 
 
 $('chatForm').addEventListener('submit',e=>{e.preventDefault();const text=$('prompt').value.trim();if(!text){setStatus('Type a message first','error');$('prompt').focus();return}sendMessage(text)});$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('chatForm').requestSubmit()}});document.addEventListener('click',e=>{const menu=$('model-menu');if(!menu||menu.hidden)return;if(e.target.closest?.('#model-menu')||e.target.closest?.('#model-pill'))return;toggleModelMenu(false)});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeResponsiveSidebar();dismissWelcome();closeSettings();toggleModelMenu(false)}});window.addEventListener('resize',()=>{if(innerWidth>900)closeResponsiveSidebar()});applyWelcomeEntry();maybeShowWelcome();applyJarvisEntry();updateAuthUi();setWorkspaceNavState(false);updateCurrentWorkVisibility();renderSavedChats();renderImageState();initImageInput();updateCreditUi();initGoogleSignIn();applyModelSelection('star',{persist:false,announce:false});loadSession().then(async()=>{await handlePaymentReturn();await handleUpgradeIntent();await handleCreditIntent()});
 </script>
-<link rel="stylesheet" href="/stellar-chat-first-v21.css?v=20260927-1">\n<script src="/stellar-credit-ui-v21.js?v=20260927-1"></script>\n<script id="stellar-app-update-guard-v1">
+<link rel="stylesheet" href="/stellar-chat-first-v21.css?v=20260927-1">\n<script src="/stellar-credit-ui-v21.js?v=20260927-1"></script>\n<link rel="stylesheet" href="/stellar-settings-v22.css?v=20260927-1">\n<script src="/stellar-settings-v22.js?v=20260927-1"></script>\n<script id="stellar-app-update-guard-v1">
 (()=>{
   if(!('serviceWorker' in navigator)) return;
   let refreshing=false;
