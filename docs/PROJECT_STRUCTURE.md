@@ -1,87 +1,138 @@
 # Stellar AI project structure
 
-This repo is a live product, so the rule is: **document first, move files in safe batches, never randomly drag files around.**
+This repository is a live product. The goal is a **predictable place for every file** without breaking public URLs or production routing.
 
-## Current live layout
+## Golden rule
 
-The current root is a mixed static/Vercel app layout. Some files must stay where they are until routing is migrated carefully.
+**Do not add new files to the repository root unless they are a deliberate public route or platform configuration file.**
 
-| Area | Current location | Purpose | Move now? |
-|---|---|---|---|
-| Main public pages | `*.html` in repo root | Landing, app, pricing/support/business pages | No, not until redirects are ready |
-| App UI | `app.html`, `lib/assets/*` | Main Stellar chat/app interface and client scripts | No |
-| API routes | `api/*` | Vercel serverless routes for chat, auth, Stripe, calls, metrics | No |
-| Shared server code | `lib/*` | Server helpers used by API routes | No |
-| Static assets | `lib/assets/*`, `manifest.json`, PWA files | CSS, JS, icons, service worker assets | No |
-| Blog pages | `blog/*` and legacy root blog pages | SEO content and redirect targets | Later batch |
-| Service pages | `services/*` plus clean route folders | Sales pages and local business pages | Later batch |
-| Tests | `tests/*` | Node test runner checks | Keep |
-| Scripts | `scripts/*` | Build checks, static backup, migration helpers | Keep |
-| Docs | `docs/*` | Project rules, deployment guide, structure map | Yes, expand |
+Existing root files are being migrated gradually because Vercel and older URLs still depend on them.
 
-## Target layout
+## Active layout
 
-This is the clean direction once redirects are ready:
+| Area | Location | What belongs there |
+|---|---|---|
+| GitHub automation | `.github/workflows/` | CI, audits, deployment workflows |
+| API | `api/` | Vercel serverless endpoints |
+| Shared runtime | `lib/` | Backend/shared JS modules |
+| Browser assets | `lib/assets/` | CSS, JS, icons, images, PWA assets |
+| Blog content | `blog/` | Canonical SEO articles |
+| Service pages | `services/` | Business and conversion pages |
+| Desktop integration | `desktop-agent/` | Desktop-agent package/runtime |
+| Roblox integration | `roblox-studio-plugin/` | Roblox Studio plugin code |
+| Mobile | `mobile/` | Mobile-specific source/assets |
+| Work-agent/Codex | `codex/` | Work-agent feature files |
+| Documentation | `docs/` | Current operating and engineering docs |
+| Documentation history | `docs/history/` | Dated/superseded recovery notes |
+| Scripts | `scripts/` | Build, audit, migration and deployment utilities |
+| Tests | `tests/` | Regression/contract tests |
+| Public support | `public/` | Static public support files |
+| Archive | `archive/` | Retired experiments and historical operations |
 
-```text
-api/                    Vercel or future server API routes
-app/                    Future app shell source, after migration
-blog/                   Canonical blog pages
-services/               Canonical sales/service pages
-lib/                    Shared runtime helpers and assets
-docs/                   Internal docs and operating rules
-scripts/                Build, check, migration and deploy helpers
-tests/                  Automated tests
-public/                 Future static public output source if app is rebuilt
-archive/                Old experiments kept out of production routing
-```
+## Root policy
 
-## Where new things go
+The root is reserved for files that currently need root-level URLs or platform discovery.
 
-| New thing | Put it here |
+### Keep at root for now
+
+- `index.html`
+- `app.html`
+- `blog.html`
+- `models.html`
+- `support.html`
+- legal/public route entry points
+- `404.html`, `offline.html`
+- `sw.js`
+- `manifest.json`
+- `robots.txt`
+- `sitemap.xml`
+- `llms.txt`
+- `vercel.json`
+- `package.json` / `package-lock.json`
+- repository config files such as `.gitignore` and `.vercelignore`
+
+Some older root CSS/JS and compatibility HTML files remain temporarily because existing pages or routing may still reference them. **Do not delete or move them just because the filename looks old.**
+
+## Where new work goes
+
+| New work | Correct location |
 |---|---|
 | New API route | `api/<name>.js` |
 | Shared API helper | `lib/<feature>.js` |
-| CSS/JS/image asset | `lib/assets/<feature-name>.*` |
-| New sales page | `services/<slug>.html` plus clean route if needed |
-| New blog post | `blog/<slug>.html` |
-| New deploy/build helper | `scripts/<name>.mjs` |
-| Internal instructions | `docs/<TOPIC>.md` |
-| Temporary experiment | `archive/<date-or-feature>/` |
+| New browser stylesheet | `lib/assets/<surface>/<name>.css` |
+| New browser script | `lib/assets/<surface>/<name>.js` |
+| New image/icon | `lib/assets/<surface-or-pwa>/` |
+| New SEO article | `blog/<slug>.html` |
+| New business page | `services/<slug>.html` |
+| New test | `tests/<name>.test.mjs` |
+| Build/deploy helper | `scripts/<name>.mjs` |
+| Current internal doc | `docs/<TOPIC>.md` |
+| Historical incident note | `docs/history/<date>-<topic>.md` |
+| Retired experiment | `archive/<feature>/` |
+| Deploy trigger/history | `archive/ops/deploy-triggers/` |
 
-## Cleanup rules
+## Public-page checklist
 
-1. Do **not** delete live root `.html` files until their clean route and redirect are tested.
-2. Do **not** move `api/`, `lib/`, `app.html`, `vercel.json`, `package.json`, `sw.js`, `manifest.json`, or `sitemap.xml` without a tested migration.
-3. Every new public page needs:
-   - a canonical URL
-   - a title and description
-   - a route test or at least a manual URL check
-4. Every deployment change should run:
+Every new public page should have:
+
+1. A deliberate clean URL.
+2. A canonical URL.
+3. A unique title and description.
+4. Internal navigation where appropriate.
+5. A sitemap entry only after the page is verified public and indexable.
+6. A route/contract test or a manual smoke test.
+
+For a new blog guide, update these together:
+
+```text
+blog/<slug>.html
+blog.html
+sitemap.xml
+vercel.json       # only when an explicit rewrite is required
+```
+
+## Runtime-change checklist
+
+Before merging/publishing:
 
 ```bash
 npm run check
 npm run build:static
 ```
 
-5. Vercel is the production app host for now. `dist-static/` is the backup static site output for our own hosting.
+For app changes, also verify:
 
-## Next cleanup batches
+- `/app` loads without a startup hang.
+- The prompt can be focused and typed into.
+- Sidebar, model picker and Settings open/close.
+- Mobile width does not create horizontal overflow.
+- Auth, billing, credits and plan entitlements still come from authoritative backend state.
 
-### Batch 1 — safe docs and backup deploy
-- Add repo map.
-- Add Stellar Deploy static backup guide.
-- Add static backup build script.
+## Cleanup rules
 
-### Batch 2 — public page routing
-- Ensure all important `.html` pages also work as clean URLs.
-- Add friendly `404.html`.
-- Keep old URLs working.
+1. **Archive instead of deleting history** when the file may still be useful.
+2. Never move route-sensitive root pages without a redirect/rewrite plan and tests.
+3. Never move `api/`, `lib/`, `app.html`, `sw.js`, `manifest.json`, `sitemap.xml` or `vercel.json` as casual cleanup.
+4. Do not add new one-off deploy-trigger files to root.
+5. Do not create a second stylesheet/script when an existing surface-specific asset can be extended safely.
+6. Do not commit generated output such as `dist-static/`, dependencies, logs or local runtime state.
+7. Do not commit secrets.
 
-### Batch 3 — split public pages from app/API
-- Move canonical sales pages to `services/`.
-- Keep redirects for old root URLs.
-- Generate static backup from canonical pages.
+## Long-term direction
 
-### Batch 4 — full own server
-- Move API runtime to a VPS/server only after secrets, logs, HTTPS, backups and rollback are ready.
+The clean target is:
+
+```text
+api/
+app/                 # future app source after a tested routing migration
+blog/
+services/
+lib/
+public/
+docs/
+scripts/
+tests/
+archive/
+```
+
+Root compatibility files can be reduced later in **tested migration batches**, not by bulk-moving them.
