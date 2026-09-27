@@ -57,14 +57,17 @@ self.addEventListener('fetch', (event) => {
   const destination = request.destination;
   if (!['style', 'script', 'image', 'font', 'manifest'].includes(destination)) return;
 
-  // UI code and styles are network-first. A bad or stale interface bundle must not
-  // remain pinned after a production fix. Cached copies are offline fallbacks only.
+  // UI code and styles use stale-while-revalidate. Versioned assets render
+  // immediately from cache on repeat visits while a fresh copy is fetched in
+  // the background. This avoids slow button/UI startup on mobile connections.
   if (destination === 'script' || destination === 'style') {
     event.respondWith((async () => {
-      const cached = await caches.match(request);
-      try {
-        const response = await fetch(request, { cache: 'no-cache' });
-        if (response.ok && response.type === 'basic') {
+      const cache = await caches.open(STATIC_CACHE);
+      const cached = await cache.match(request);
+      const refresh = (async () => {
+        try {
+          const response = await fetch(request, { cache: 'no-cache' });
+          if (!response.ok || response.type !== 'basic') return null;
           const shouldAttachGuide = destination === 'script' && ['/currency.js', '/stellar-settings-extensions.js'].includes(url.pathname);
           if (shouldAttachGuide) {
             const source = await response.clone().text();
@@ -74,17 +77,20 @@ self.addEventListener('fetch', (event) => {
               statusText: response.statusText,
               headers: { 'Content-Type': 'application/javascript; charset=utf-8', 'Cache-Control': 'no-cache' },
             });
-            const cache = await caches.open(STATIC_CACHE);
             await cache.put(request, patched.clone());
             return patched;
           }
-          const cache = await caches.open(STATIC_CACHE);
           await cache.put(request, response.clone());
+          return response;
+        } catch {
+          return null;
         }
-        return response;
-      } catch {
-        return cached || Response.error();
+      })();
+      if (cached) {
+        event.waitUntil(refresh);
+        return cached;
       }
+      return (await refresh) || Response.error();
     })());
     return;
   }
