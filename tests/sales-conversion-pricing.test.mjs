@@ -13,7 +13,7 @@ test('homepage pricing stays concise and conversion-focused', () => {
   assert.doesNotMatch(index, /<div class="oa2-sales-ladder"/);
   assert.match(index, /class="plan-actions plan-actions-free"/);
   assert.match(index, /STELLAR CREDIT WALLET/);
-  for (const pack of [1000,2500,5000,10000,20000]) assert.ok(index.includes('/app?credits=' + pack), String(pack));
+  for (const pack of [300,500,1000,2500,5000,10000,20000]) assert.ok(index.includes('/app?credits=' + pack), String(pack));
   assert.match(app, /function openCreditWallet\(amount=0\)/);
   assert.match(app, /stellar-pending-credit-pack/);
 });
@@ -23,8 +23,8 @@ test('Plus is positioned as the main paid conversion plan', () => {
   assert.match(index, /MOST POPULAR/);
   assert.match(index, /RECOMMENDED/);
   assert.match(index, /Deeper review \+ multi-file work/);
-  assert.match(app, /Starter includes 4,000 credits\/month/);
-  assert.match(app, /Plus is recommended for daily work with 12,000 credits\/month/);
-  assert.match(app, /Pro includes 48,000 credits\/month and Nova/);
-  assert.match(app, /Plus £20 · Recommended/);
+  assert.match(index, /900 credits\/day/);
+  assert.match(index, /2,500 credits\/day/);
+  assert.match(index, /8,000 credits\/day/);
+  assert.match(app, /Plus £20 · Recommended/);\n  assert.match(index, /Eligible referrals give both accounts 100 bonus Stellar Credits/);
 });
