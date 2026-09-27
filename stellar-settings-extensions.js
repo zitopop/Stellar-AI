@@ -1,11 +1,12 @@
 (() => {
   'use strict';
 
-  if (window.__stellarSettingsExtensionsV2) return;
-  window.__stellarSettingsExtensionsV2 = true;
+  if (window.__stellarSettingsExtensionsV3) return;
+  window.__stellarSettingsExtensionsV3 = true;
 
   const STORAGE_KEY = 'stellar-ui-preferences-v1';
   const STREAK_KEY = 'stellar-daily-streak-v1';
+  const SUPPORT_EMAIL = 'deadlyfox10@gmail.com';
   const DEFAULTS = Object.freeze({
     sidebarDensity: 'comfortable',
     codeWrap: true,
@@ -22,6 +23,13 @@
 
   function removeStorage(key) {
     try { return window.safeStorageRemove ? window.safeStorageRemove(key) : localStorage.removeItem(key); } catch (_) { return false; }
+  }
+
+  function safeText(selector, fallback = '') {
+    try {
+      const text = String(document.querySelector(selector)?.textContent || '').replace(/\s+/g, ' ').trim();
+      return text && text !== '—' ? text : fallback;
+    } catch (_) { return fallback; }
   }
 
   function readPrefs() {
@@ -46,9 +54,7 @@
     return merged;
   }
 
-  function todayKey(date = new Date()) {
-    return date.toISOString().slice(0, 10);
-  }
+  function todayKey(date = new Date()) { return date.toISOString().slice(0, 10); }
 
   function readStreak() {
     let stored = {};
@@ -153,6 +159,107 @@
     return heading;
   }
 
+  function setStatus(message, tone = 'good') {
+    try {
+      const status = document.querySelector('.status,[data-status],#status,[role="status"]');
+      if (!status) return;
+      status.textContent = message;
+      status.classList.remove('good', 'warn', 'error');
+      status.classList.add(tone);
+    } catch (_) {}
+  }
+
+  function clickFirst(selectors) {
+    for (const selector of selectors) {
+      const node = document.querySelector(selector);
+      if (node instanceof HTMLElement) {
+        node.click();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function openTab(id) {
+    if (typeof window.setTab === 'function') {
+      window.setTab(id);
+      return true;
+    }
+    return clickFirst([`#settings-modal [data-tab="${id}"]`]);
+  }
+
+  function commandAction(title, detail, handler) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'stellar-command-action';
+    const strong = document.createElement('strong');
+    strong.textContent = title;
+    const span = document.createElement('span');
+    span.textContent = detail;
+    button.append(strong, span);
+    button.addEventListener('click', handler);
+    return button;
+  }
+
+  function commandCard(title, detail) {
+    const card = document.createElement('div');
+    card.className = 'stellar-command-card';
+    const strong = document.createElement('strong');
+    strong.textContent = title;
+    const span = document.createElement('span');
+    span.textContent = detail;
+    card.append(strong, span);
+    return card;
+  }
+
+  function copySupportEmail() {
+    const done = () => setStatus(`Support email copied: ${SUPPORT_EMAIL}`, 'good');
+    try {
+      const result = navigator.clipboard?.writeText?.(SUPPORT_EMAIL);
+      if (result?.then) result.then(done).catch(() => setStatus(SUPPORT_EMAIL, 'warn'));
+      else setStatus(SUPPORT_EMAIL, 'warn');
+    } catch (_) { setStatus(SUPPORT_EMAIL, 'warn'); }
+  }
+
+  function buildCommandCentre(panel) {
+    const streak = readStreak();
+    const plan = safeText('#plan-name,#acct-plan,[data-plan-name]', 'Free / current plan');
+    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Daily credits ready');
+    const email = safeText('#acct-email,[data-account-email]', 'Signed-in account');
+
+    const hero = document.createElement('div');
+    hero.className = 'stellar-command-hero';
+    hero.innerHTML = '<div class="stellar-command-kicker">Command centre</div><h3>Everything important in one clean place.</h3><p>Manage credits, plan, plugins, voice, privacy and support from one premium control room. Normal users only see controls they can actually use.</p>';
+    panel.appendChild(hero);
+
+    const stats = document.createElement('div');
+    stats.className = 'stellar-command-grid';
+    stats.append(
+      commandCard('Account', email),
+      commandCard('Plan', plan),
+      commandCard('Credits', usage.replace(/^💳\s*/, '')),
+      commandCard('Daily streak', `Day ${streak.streak || 1} on this device`),
+    );
+    panel.appendChild(stats);
+
+    const row = document.createElement('div');
+    row.className = 'stellar-command-row';
+    row.innerHTML = '<div class="set-label">Quick controls</div><span class="stellar-command-pill">Approval-first</span>';
+    panel.appendChild(row);
+
+    const actions = document.createElement('div');
+    actions.className = 'stellar-command-actions';
+    actions.append(
+      commandAction('Credits & rewards', 'See daily reset, welcome bonus and top-up logic.', () => openTab('credits-rewards')),
+      commandAction('Manage plan', 'Open upgrades, billing and plan options.', () => { if (!clickFirst(['[data-open-plans]', '#plans-btn', '[data-tab="plans"]'])) location.href = '/app?upgrade=1'; }),
+      commandAction('Plugins', 'Open the plugin store and connect tools safely.', () => { location.href = '/plugins'; }),
+      commandAction('Voice / Jarvis', 'Tune voice, mic and language controls.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
+      commandAction('Privacy', 'Open privacy information and data controls.', () => { location.href = '/privacy'; }),
+      commandAction('Copy support email', 'Use this for billing, refunds and account help.', copySupportEmail),
+    );
+    panel.appendChild(actions);
+  }
+
   function buildPreferences(panel) {
     const prefs = readPrefs();
     addHeading(panel, 'Preferences', 'Make Stellar comfortable for the way you work. These choices stay on this device.');
@@ -228,7 +335,7 @@
   }
 
   function buildTrustChecklist(panel) {
-    addHeading(panel, 'Settings checklist', 'The app should feel safe, simple and premium. These are the controls normal users need.');
+    addHeading(panel, 'Trust & safety', 'A premium AI workspace needs clear controls, safe approvals and no confusing owner-only tools for normal users.');
     const group = document.createElement('div');
     group.className = 'set-group stellar-trust-grid';
     const items = [
@@ -258,6 +365,10 @@
     return true;
   }
 
+  function registerCommandCentre() {
+    return registerSection({ id: 'command-centre', label: 'Control', icon: '✦', build: buildCommandCentre });
+  }
+
   function registerPreferences() {
     return registerSection({ id: 'preferences', label: 'Preferences', icon: '⚙', build: buildPreferences });
   }
@@ -280,6 +391,7 @@
 
   function init() {
     applyPrefs();
+    registerCommandCentre();
     registerPreferences();
     registerRewards();
     registerTrustChecklist();
