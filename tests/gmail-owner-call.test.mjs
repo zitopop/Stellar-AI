@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { classifyOwnerAutoCall } from '../lib/auto-call-rules.js';
+import { gmailOAuthReady } from '../lib/gmail-auth-token.js';
 
 const push = readFileSync(new URL('../lib/gmail-push.js', import.meta.url), 'utf8');
 const pushApi = readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
@@ -59,4 +60,24 @@ test('new email call path does not hardcode an owner phone number or OAuth secre
   assert.doesNotMatch(pushApi, /07477|0477|160856/);
   assert.doesNotMatch(push, /GMAIL_CLIENT_SECRET\s*=\s*['"][^'"]+/);
   assert.doesNotMatch(pushApi, /GMAIL_PUSH_TOKEN\s*=\s*['"][^'"]+/);
+});
+
+
+test('Gmail watch does not treat owner email alone as usable OAuth', async () => {
+  const keys = ['GMAIL_CLIENT_ID','GOOGLE_OAUTH_CLIENT_ID','GMAIL_REFRESH_TOKEN','GMAIL_WATCH_EMAIL','OWNER_EMAIL','OWNER_EMAILS'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.GMAIL_CLIENT_ID = 'fixture-client-id';
+  process.env.GMAIL_WATCH_EMAIL = 'owner@example.com';
+  delete process.env.GMAIL_REFRESH_TOKEN;
+  delete process.env.GOOGLE_OAUTH_CLIENT_ID;
+  delete process.env.OWNER_EMAIL;
+  delete process.env.OWNER_EMAILS;
+  try {
+    assert.equal(await gmailOAuthReady(), false);
+  } finally {
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
 });
