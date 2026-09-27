@@ -8,10 +8,10 @@ const refinements = readFileSync(new URL('../lib/assets/stellar-refinements.css'
 
 test('homepage explains Stellar fast without repeating conversion clutter', () => {
   assert.match(landing, /Ask anything\.<br>Get real work done\./);
-  assert.match(landing, /Chat with Stellar AI\. Hand bigger jobs to StellarX\. Connect tools only when the task needs them\./);
+  assert.match(landing, /Chat, code, research and project work in one clean workspace\. Hand bigger jobs to StellarX and connect tools only when the task needs them\./);
   assert.match(landing, /Message Stellar AI/);
   assert.match(landing, /Start free/);
-  assert.match(landing, /See pricing/);
+  assert.match(landing, /Plans from £8\/month/);
   assert.match(landing, /id="stellar-home-calm-v16"/);
   assert.match(landing, /\.oa2-business-first,[\s\S]*\.oa2-delivery,[\s\S]*\.oa2-guides,[\s\S]*\.oa2-business,[\s\S]*updates-title[^}]*\{display:none!important\}/);
   assert.match(landing, /One AI workspace\. Three simple layers\./);
@@ -53,7 +53,7 @@ test('homepage final polish layer beats old decorative styling', () => {
 test('business palette follows older themes and the finishing layer retains the neutral palette', () => {
   const styles = [...landing.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map((match) => match[1]);
   assert.ok(styles.indexOf('/stellar-business-palette.css?v=12') < styles.indexOf('/lib/assets/stellar-refinements.css?v=20260924'));
-  assert.equal(styles.at(-1), '/stellar-conversion-v23.css?v=20260927-1');
+  assert.equal(styles.at(-1), '/stellar-growth-v25.css?v=20260927-1');
   assert.doesNotMatch(palette, /#(?:d4af37|f2d675|f4d676|8f6b1e|b8860b)/i);
   assert.match(palette, /Business homepage final neutral override v9/);
   assert.match(palette, /Pricing layout polish v12/);
