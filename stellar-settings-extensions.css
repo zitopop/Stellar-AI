@@ -30,13 +30,8 @@
   line-height: 1.55;
 }
 
-#settings-modal .stellar-pref-segments {
-  flex: 0 0 auto;
-}
-
-#settings-modal .stellar-pref-note {
-  margin-top: 12px !important;
-}
+#settings-modal .stellar-pref-segments { flex: 0 0 auto; }
+#settings-modal .stellar-pref-note { margin-top: 12px !important; }
 
 #settings-modal .stellar-pref-actions {
   display: flex;
@@ -68,9 +63,7 @@ body.stellar-sidebar-compact #sidebar .sidebar-item {
   padding-bottom: 8px !important;
 }
 
-body.stellar-sidebar-compact #sidebar #chats-list {
-  gap: 2px !important;
-}
+body.stellar-sidebar-compact #sidebar #chats-list { gap: 2px !important; }
 
 body.stellar-code-wrap .code-body pre,
 body.stellar-code-wrap .code-block pre,
@@ -105,11 +98,376 @@ body.light #settings-modal .stellar-pref-reset {
   background: rgba(55,45,75,.035);
 }
 
+/* Manus-inspired, Stellar-owned command-centre polish. */
+#settings-modal {
+  --ms-bg: #070911;
+  --ms-card: rgba(14,16,26,.94);
+  --ms-card-2: rgba(20,23,36,.92);
+  --ms-line: rgba(199,189,255,.14);
+  --ms-line-strong: rgba(199,189,255,.24);
+  --ms-text: #f7f7fb;
+  --ms-muted: #9aa0b4;
+  --ms-soft: #747b91;
+  --ms-purple: #b9adff;
+  --ms-green: #7ee8d1;
+  --ms-gold: #f2d879;
+}
+
 @media (min-width: 768px) {
-  body.stellar-orbit-v3 #settings-modal .set-tabs:has([data-tab="preferences"]) {
-    grid-auto-rows: min-content;
+  body.stellar-orbit-v3 #settings-modal .set-tabs:has([data-tab="preferences"]) { grid-auto-rows: min-content; }
+
+  html body:not(.light) #settings-modal {
+    padding: clamp(20px,3vw,34px) !important;
+    background:
+      radial-gradient(800px 420px at 50% 100%, rgba(139,124,246,.14), transparent 70%),
+      rgba(2,3,8,.82) !important;
+    backdrop-filter: blur(28px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(120%) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-card {
+    width: min(1120px, calc(100vw - 56px)) !important;
+    max-width: 1120px !important;
+    height: min(760px, calc(100dvh - 56px)) !important;
+    max-height: min(760px, calc(100dvh - 56px)) !important;
+    min-height: 590px !important;
+    border: 1px solid var(--ms-line-strong) !important;
+    border-radius: 30px !important;
+    background:
+      radial-gradient(720px 380px at 14% 0%, rgba(139,124,246,.16), transparent 72%),
+      linear-gradient(145deg, #11131e 0%, #0c0f18 55%, #090b12 100%) !important;
+    box-shadow:
+      0 38px 130px rgba(0,0,0,.68),
+      0 0 64px rgba(139,124,246,.12),
+      inset 0 1px 0 rgba(255,255,255,.045) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-head {
+    min-height: 104px !important;
+    padding: 28px 34px 22px 40px !important;
+    border-bottom: 1px solid rgba(255,255,255,.075) !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.025), transparent) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-head > div:first-child {
+    position: relative !important;
+    padding-left: 58px !important;
+  }
+
+  html body:not(.light) #settings-modal .set-head > div:first-child::before {
+    content: "✦" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 50% !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 42px !important;
+    height: 42px !important;
+    transform: translateY(-50%) !important;
+    border: 1px solid rgba(242,216,121,.28) !important;
+    border-radius: 14px !important;
+    background: linear-gradient(145deg, rgba(242,216,121,.18), rgba(139,124,246,.10)) !important;
+    color: var(--ms-gold) !important;
+    font-size: 22px !important;
+    box-shadow: 0 0 24px rgba(242,216,121,.12) !important;
+  }
+
+  html body:not(.light) #settings-modal .settings-title {
+    color: var(--ms-text) !important;
+    font-size: 25px !important;
+    font-weight: 860 !important;
+    letter-spacing: -.045em !important;
+  }
+
+  html body:not(.light) #settings-modal .settings-subtitle {
+    max-width: 620px !important;
+    margin-top: 5px !important;
+    color: var(--ms-muted) !important;
+    font-size: 13px !important;
+  }
+
+  html body:not(.light) #settings-modal .modal-x {
+    width: 48px !important;
+    min-width: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    border: 1px solid rgba(255,255,255,.10) !important;
+    border-radius: 16px !important;
+    background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.022)) !important;
+    color: #b5b9ca !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+  }
+
+  html body:not(.light) #settings-modal .modal-x:hover,
+  html body:not(.light) #settings-modal .modal-x:focus-visible {
+    border-color: rgba(242,216,121,.30) !important;
+    background: rgba(242,216,121,.10) !important;
+    color: #fff !important;
+  }
+
+  html body:not(.light) #settings-modal .set-body {
+    grid-template-columns: 282px minmax(0,1fr) !important;
+    column-gap: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tabs {
+    gap: 8px !important;
+    padding: 24px 18px 24px 22px !important;
+    border-right: 1px solid rgba(255,255,255,.07) !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.018), rgba(0,0,0,.08)) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tabs::after { display: none !important; }
+
+  html body:not(.light) #settings-modal .set-tab {
+    min-height: 54px !important;
+    gap: 13px !important;
+    padding: 0 16px !important;
+    border-radius: 16px !important;
+    color: #979cae !important;
+    font-size: 14px !important;
+    font-weight: 720 !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tab i,
+  html body:not(.light) #settings-modal .stellar-ext-tab-icon {
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    border-radius: 10px !important;
+    color: #80869c !important;
+    background: rgba(255,255,255,.025) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tab:hover,
+  html body:not(.light) #settings-modal .set-tab:focus-visible {
+    color: #eff1f8 !important;
+    background: rgba(255,255,255,.05) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tab.active {
+    color: #fff !important;
+    border-color: rgba(185,173,255,.32) !important;
+    background:
+      linear-gradient(90deg, rgba(139,124,246,.34), rgba(28,31,50,.68)),
+      #171a28 !important;
+    box-shadow: 0 12px 34px rgba(32,22,74,.26), inset 0 1px 0 rgba(255,255,255,.045) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tab.active::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 11px !important;
+    width: 4px !important;
+    height: 32px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(180deg, var(--ms-gold), #d4af37) !important;
+    box-shadow: 0 0 18px rgba(242,216,121,.30) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tab.active i,
+  html body:not(.light) #settings-modal .set-tab.active .stellar-ext-tab-icon {
+    color: var(--ms-gold) !important;
+    background: rgba(242,216,121,.12) !important;
+  }
+
+  html body:not(.light) #settings-modal .set-panel {
+    padding: 26px 30px 30px !important;
+    scrollbar-color: rgba(255,255,255,.16) transparent !important;
+  }
+
+  html body:not(.light) #settings-modal .profile-head,
+  html body:not(.light) #settings-modal .set-group,
+  html body:not(.light) #settings-modal .set-collapsible,
+  html body:not(.light) #settings-modal .stellar-command-card,
+  html body:not(.light) #settings-modal .stellar-command-action {
+    border-color: var(--ms-line) !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.024)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+  }
+
+  html body:not(.light) #settings-modal .profile-head,
+  html body:not(.light) #settings-modal .set-group,
+  html body:not(.light) #settings-modal .set-collapsible {
+    border-radius: 18px !important;
+  }
+
+  html body:not(.light) #settings-modal .set-label {
+    margin: 22px 2px 10px !important;
+    color: #aeb4c7 !important;
+    font-size: 11px !important;
+    font-weight: 860 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase !important;
+  }
+
+  html body:not(.light) #settings-modal .set-item {
+    min-height: 58px !important;
+    padding: 13px 15px !important;
+  }
+
+  html body:not(.light) #settings-modal .set-key {
+    color: #f0f2f8 !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+  }
+
+  html body:not(.light) #settings-modal .set-val {
+    color: #a0a7ba !important;
+    font-size: 12px !important;
+  }
+
+  html body:not(.light) #settings-modal .seg-wrap {
+    min-height: 40px !important;
+    border-color: rgba(255,255,255,.095) !important;
+    border-radius: 12px !important;
+    background: rgba(4,6,11,.68) !important;
+  }
+
+  html body:not(.light) #settings-modal .seg.active,
+  html body:not(.light) #settings-modal .seg.on {
+    background: linear-gradient(135deg, rgba(185,173,255,.24), rgba(242,216,121,.08)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05) !important;
   }
 }
+
+/* Command centre dashboard */
+#settings-modal .stellar-command-hero {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  margin: 0 0 18px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid var(--ms-line);
+  border-radius: 22px;
+  background:
+    radial-gradient(420px 210px at 88% -20%, rgba(126,232,209,.13), transparent 66%),
+    linear-gradient(145deg, rgba(139,124,246,.18), rgba(255,255,255,.025));
+}
+
+#settings-modal .stellar-command-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 18px 0 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242,216,121,.44), transparent);
+  pointer-events: none;
+}
+
+#settings-modal .stellar-command-kicker {
+  color: var(--ms-green);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+#settings-modal .stellar-command-hero h3 {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: .98;
+  letter-spacing: -.06em;
+}
+
+#settings-modal .stellar-command-hero p {
+  max-width: 640px;
+  margin: 0;
+  color: var(--ms-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+#settings-modal .stellar-command-grid,
+#settings-modal .stellar-command-actions,
+#settings-modal .stellar-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+#settings-modal .stellar-command-card,
+#settings-modal .stellar-command-action {
+  min-width: 0;
+  border: 1px solid var(--ms-line);
+  border-radius: 17px;
+  padding: 14px;
+}
+
+#settings-modal .stellar-command-card strong,
+#settings-modal .stellar-command-action strong {
+  display: block;
+  color: var(--ms-text);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+#settings-modal .stellar-command-card span,
+#settings-modal .stellar-command-action span {
+  display: block;
+  margin-top: 5px;
+  color: var(--ms-muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+#settings-modal .stellar-command-action {
+  min-height: 76px;
+  text-align: left;
+  cursor: pointer;
+}
+
+#settings-modal .stellar-command-action:hover,
+#settings-modal .stellar-command-action:focus-visible {
+  border-color: rgba(242,216,121,.34) !important;
+  background: rgba(242,216,121,.075) !important;
+}
+
+#settings-modal .stellar-command-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0 10px;
+}
+
+#settings-modal .stellar-command-row .set-label {
+  margin: 0 !important;
+}
+
+#settings-modal .stellar-command-pill {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  padding: 0 10px;
+  border: 1px solid rgba(126,232,209,.23);
+  border-radius: 999px;
+  background: rgba(126,232,209,.07);
+  color: #cafff3;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+#settings-modal .stellar-trust-grid {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#settings-modal .stellar-trust-row {
+  min-height: 82px !important;
+  border: 1px solid var(--ms-line) !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,.032) !important;
+}
+
+#settings-modal .stellar-trust-row + .stellar-trust-row::before { display: none !important; }
 
 @media (max-width: 767px) {
   #settings-modal .stellar-pref-heading { margin-bottom: 16px; }
@@ -118,16 +476,95 @@ body.light #settings-modal .stellar-pref-reset {
     align-items: flex-start !important;
     flex-direction: column !important;
   }
-  #settings-modal .stellar-pref-segments {
-    width: 100%;
+  #settings-modal .stellar-pref-segments { width: 100%; }
+  #settings-modal .stellar-pref-segments .seg { flex: 1 1 0; }
+  #settings-modal .stellar-pref-actions { justify-content: stretch; }
+  #settings-modal .stellar-pref-reset { width: 100%; }
+
+  html body:not(.light) #settings-modal,
+  body.light #settings-modal {
+    align-items: flex-end !important;
+    padding: 0 !important;
   }
-  #settings-modal .stellar-pref-segments .seg {
-    flex: 1 1 0;
+
+  html body:not(.light) #settings-modal .set-card,
+  body.light #settings-modal .set-card {
+    height: min(92dvh, 760px) !important;
+    max-height: 92dvh !important;
+    border-radius: 28px 28px 0 0 !important;
   }
-  #settings-modal .stellar-pref-actions {
-    justify-content: stretch;
+
+  html body:not(.light) #settings-modal .set-head,
+  body.light #settings-modal .set-head {
+    min-height: 76px !important;
+    padding: 18px 14px 12px 16px !important;
   }
-  #settings-modal .stellar-pref-reset {
-    width: 100%;
+
+  html body:not(.light) #settings-modal .settings-title,
+  body.light #settings-modal .settings-title {
+    font-size: 20px !important;
+  }
+
+  html body:not(.light) #settings-modal .settings-subtitle,
+  body.light #settings-modal .settings-subtitle {
+    max-width: 30ch !important;
+    font-size: 11px !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tabs,
+  body.light #settings-modal .set-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 7px !important;
+    padding: 10px 12px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    scroll-padding-inline: 12px !important;
+  }
+
+  html body:not(.light) #settings-modal .set-tabs::-webkit-scrollbar,
+  body.light #settings-modal .set-tabs::-webkit-scrollbar { display: none !important; }
+
+  html body:not(.light) #settings-modal .set-tab,
+  body.light #settings-modal .set-tab {
+    flex: 0 0 auto !important;
+    min-width: 94px !important;
+    min-height: 44px !important;
+    padding: 0 12px !important;
+    border-radius: 13px !important;
+  }
+
+  html body:not(.light) #settings-modal .set-panel,
+  body.light #settings-modal .set-panel {
+    padding: 14px 12px calc(22px + env(safe-area-inset-bottom)) !important;
+  }
+
+  #settings-modal .stellar-command-grid,
+  #settings-modal .stellar-command-actions,
+  #settings-modal .stellar-trust-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #settings-modal .stellar-command-hero {
+    padding: 15px;
+    border-radius: 20px;
+  }
+
+  #settings-modal .stellar-command-hero h3 {
+    font-size: 30px;
+  }
+
+  #settings-modal .stellar-command-action,
+  #settings-modal .stellar-command-card,
+  #settings-modal .stellar-trust-row {
+    min-height: 72px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  html body:not(.light) #settings-modal .set-tab,
+  body.light #settings-modal .set-tab {
+    min-width: 86px !important;
+    font-size: 11px !important;
   }
 }
