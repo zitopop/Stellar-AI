@@ -11,7 +11,7 @@ test('hero stays concise and offers first-run onboarding', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /<div class="oa2-wordmark">STELLAR AI<\/div>/);
   assert.match(html, /Ask anything\.<br>Get real work done\./);
-  assert.match(html, /Chat with Stellar AI\. Hand bigger jobs to StellarX\. Connect tools only when the task needs them\./);
+  assert.match(html, /Chat, code, research and project work in one clean workspace\. Hand bigger jobs to StellarX and connect tools only when the task needs them\./);
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /500 welcome Stellar Credits/);
