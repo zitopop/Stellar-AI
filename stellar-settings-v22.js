@@ -24,6 +24,7 @@
     const advanced=document.getElementById('settings-advanced-toggle');
     const billing=document.getElementById('set-billing-row');
     const topup=document.getElementById('topup-row');
+    const referral=document.getElementById('referral-row');
     const support=document.querySelector('#settings-panel a[href="/support"]');
     const legal=document.querySelector('#settings-panel a[href="/legal"]');
     if(auth) addBefore(auth,'Account');
@@ -31,6 +32,7 @@
     if(desktop&&!desktop.previousElementSibling?.classList.contains('settings-section-label')) addBefore(desktop,'Work with Stellar');
     if(billing){ addDividerBefore(billing); addBefore(billing,'Billing'); }
     if(topup && !billing) addBefore(topup,'Billing');
+    if(referral){ addDividerBefore(referral); addBefore(referral,'Rewards'); }
     if(support){ addDividerBefore(support); addBefore(support,'Help'); }
     if(advanced){ addDividerBefore(advanced); addBefore(advanced,'Advanced'); }
     if(legal && !support) addBefore(legal,'Help');
