@@ -4,50 +4,337 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a10">
-<title>Tools & Plugins · Stellar AI</title>
-<meta name="description" content="Connect Stellar AI tools for email, calendar, files, GitHub, payments, websites, voice and desktop tasks with clear permissions and approval-first controls.">
+<title>Plugins · Stellar AI</title>
+<meta name="description" content="Connect Stellar AI plugins in a simple app-store style page. Choose a tool, connect safely, then approve what Stellar AI can do.">
+<link rel="canonical" href="https://trystellarai.com/plugins">
 <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
 <style>
-:root{color-scheme:dark;--bg:#080a10;--panel:#111622;--panel2:#151b2a;--line:rgba(255,255,255,.095);--line2:rgba(255,255,255,.16);--text:#f7f8fc;--muted:#a5adba;--soft:#727b8c;--purple:#8b7cf6;--purple2:#c7bdff;--green:#67e5b3;--gold:#f0cf75;--red:#ff8295;--shadow:0 28px 80px rgba(0,0,0,.42)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 18% -12%,rgba(139,124,246,.20),transparent 34rem),radial-gradient(circle at 86% 4%,rgba(75,139,255,.13),transparent 32rem),linear-gradient(180deg,#080a10,#090b11 46%,#07080d);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;z-index:1000;background:#fff;color:#080a10;padding:10px 12px;border-radius:10px}
-.shell{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100dvh}.sidebar{position:sticky;top:0;height:100dvh;padding:18px 14px;border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(14,18,29,.96),rgba(9,12,19,.96));display:flex;flex-direction:column;gap:14px;z-index:20}.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 12px}.brand-mark{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#5b45f1,#151528);border:1px solid rgba(199,189,255,.28);font-size:19px}.brand-title{font-weight:950;font-size:17px;letter-spacing:-.035em}.brand-sub{color:var(--soft);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}.nav{display:grid;gap:5px}
-/* FINAL PLUGINS SIDEBAR TAP + ICON FIX */
-.nav a{position:relative!important;z-index:2!important;min-height:46px!important;pointer-events:auto!important;touch-action:manipulation!important;}
-.nav a{border-radius:13px;padding:0 11px;display:flex;align-items:center;gap:10px;color:#ccd2df;border:1px solid transparent;font-weight:800;font-size:12px}.nav a:hover{background:rgba(255,255,255,.045);color:#fff}.nav a.active{background:linear-gradient(90deg,rgba(139,124,246,.25),rgba(97,153,255,.08));border-color:rgba(139,124,246,.28);color:#fff}.nav-ico{display:inline-flex!important;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:rgba(139,124,246,.12);color:var(--purple2);font-size:13px}.sidebar-card{margin-top:auto;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.035);padding:13px}.sidebar-card strong{display:block;font-size:12px}.sidebar-card p{margin:6px 0 12px;color:var(--muted);font-size:11px}.sidebar-card a{min-height:38px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#fff;color:#11141b;font-weight:950;font-size:11px}
-.mobile-top{display:none;position:sticky;top:0;z-index:30;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:rgba(8,10,16,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.mobile-brand{display:flex;align-items:center;gap:9px;font-weight:950}.mobile-brand span{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#211a52;color:var(--purple2)}.mobile-top a{min-height:38px;padding:0 12px;border-radius:11px;background:#fff;color:#11141b;font-weight:950;font-size:11px}
-.main{min-width:0;padding:30px clamp(18px,4vw,44px) 70px}.main-inner{max-width:1180px;margin:0 auto}.hero{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:stretch;margin-bottom:18px}.hero-copy{border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));box-shadow:var(--shadow);padding:clamp(22px,4vw,38px);position:relative;overflow:hidden}.eyebrow{display:inline-flex;gap:8px;align-items:center;color:var(--purple2);text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:950;margin-bottom:12px}.eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 20px rgba(103,229,179,.6)}h1{margin:0;max-width:760px;font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.07em}.lead{margin:16px 0 0;max-width:680px;color:#c3cad7;font-size:clamp(15px,1.5vw,18px);line-height:1.6}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{min-height:44px;padding:0 15px;border-radius:13px;border:1px solid var(--line2);background:#171d2a;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:950;font-size:12px}.btn.primary{background:#fff;color:#11141b;border-color:#fff}.btn:hover{transform:translateY(-1px);border-color:rgba(199,189,255,.38)}.btn.ghost{background:rgba(255,255,255,.045)}.hero-panel{border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,#121725,#0d111a);padding:18px;box-shadow:var(--shadow)}.mini-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.mini-head strong{font-size:13px}.live-pill{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(103,229,179,.25);background:rgba(103,229,179,.08);color:#99f2cc;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:950}.hero-stack{display:grid;gap:9px}.mini-tool{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;min-height:58px;padding:10px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.027)}.mini-ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(139,124,246,.14);font-size:16px}.mini-tool b{display:block;font-size:12px}.mini-tool small{display:block;color:var(--muted);font-size:10.5px}.mini-tag{border:1px solid var(--line);border-radius:999px;padding:5px 8px;color:#ccd3e2;font-weight:900;font-size:9px}.mini-note{margin-top:12px;color:var(--soft);font-size:11px;line-height:1.45}.trust-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 18px}.trust{border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.025);padding:14px}.trust strong{display:block;font-size:12px}.trust span{display:block;margin-top:4px;color:var(--muted);font-size:11px}.controls{position:sticky;top:0;z-index:15;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:18px;background:rgba(9,12,19,.78);backdrop-filter:blur(18px)}.search{display:flex;align-items:center;gap:9px;min-width:min(390px,40vw);min-height:44px;border:1px solid var(--line);border-radius:13px;background:#0b1018;padding:0 12px;color:var(--muted)}.search input{width:100%;border:0;outline:0;background:transparent;color:#fff}.search input::placeholder{color:#727b8c}.tabs{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{white-space:nowrap;min-height:42px;border:1px solid transparent;border-radius:12px;background:transparent;color:#c6ccd8;padding:0 13px;font-size:11px;font-weight:900}.tab.active{background:linear-gradient(90deg,#6d5cff,#8b7cf6);color:#fff;box-shadow:0 12px 26px rgba(109,92,255,.22)}.tab:hover{background:rgba(255,255,255,.045)}
-.section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:18px 0 11px}.section-title h2{margin:0;font-size:20px;letter-spacing:-.035em}.section-title p{margin:0;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.plugin{position:relative;min-height:280px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(180deg,#121824,#0d121b);padding:15px;display:flex;flex-direction:column;overflow:hidden}.plugin[hidden]{display:none!important}.plugin:hover{border-color:rgba(255,255,255,.18);transform:translateY(-2px)}.plugin-head{display:flex;gap:12px;align-items:flex-start}.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(139,124,246,.14);border:1px solid rgba(255,255,255,.08);font-size:19px;flex:none}.plugin-title{min-width:0;flex:1}.plugin-title h3{margin:0;font-size:15px;letter-spacing:-.025em}.plugin-title small{display:block;margin-top:2px;color:var(--soft);font-size:10px;font-weight:800}.status{flex:none;border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.05em;color:#ccd3e2}.status.ready{border-color:rgba(103,229,179,.28);background:rgba(103,229,179,.08);color:#98f1cc}.status.setup{border-color:rgba(240,207,117,.28);background:rgba(240,207,117,.08);color:#f2d88c}.status.soon{border-color:rgba(123,181,255,.28);background:rgba(123,181,255,.08);color:#acd0ff}.desc{margin:13px 0 11px;color:#b8c1d0;font-size:12px;line-height:1.5;min-height:54px}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.chip{border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);padding:5px 8px;color:#d6dce7;font-size:9px;font-weight:850}.permissions{margin:0 0 12px;padding:10px;border:1px solid var(--line);border-radius:13px;background:rgba(0,0,0,.12)}.permissions b{display:block;font-size:10px;margin-bottom:4px;color:#eef1f7}.permissions span{display:block;color:var(--muted);font-size:10.5px}.plugin-actions{margin-top:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.plugin-actions .btn{min-height:38px;border-radius:12px;font-size:11px;padding:0 12px}.learn{background:transparent}.oauth-box{border:1px solid rgba(199,189,255,.16);border-radius:13px;background:rgba(139,124,246,.055);padding:10px;margin-bottom:12px;color:#cdd3df;font-size:10.5px}.empty{display:none;grid-column:1/-1;border:1px dashed var(--line);border-radius:18px;padding:26px;text-align:center;color:var(--muted);background:rgba(255,255,255,.02)}.bottom-panel{margin-top:16px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.018));padding:18px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.bottom-panel h2{margin:0 0 6px;font-size:21px;letter-spacing:-.04em}.bottom-panel p{margin:0;color:var(--muted);font-size:12px}.fineprint{margin:16px 0 0;color:var(--soft);font-size:11px;text-align:center}.drawer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,8,.74);backdrop-filter:blur(12px);z-index:90}.drawer.open{display:flex}.dialog{width:min(560px,100%);max-height:min(86dvh,740px);overflow:auto;border:1px solid var(--line2);border-radius:24px;background:#0d121b;box-shadow:var(--shadow);padding:18px}.dialog-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start}.dialog h2{margin:0;font-size:23px;letter-spacing:-.04em}.dialog p{color:#c0c8d5}.close{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#141b27;color:#fff}.detail-panel{display:grid;gap:10px;margin:14px 0}.plugin-detail-view,.plugin-detail-setup,.info-row{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);padding:12px}.plugin-detail-view strong,.plugin-detail-setup strong,.info-row strong{display:block;font-size:12px}.plugin-detail-view span,.plugin-detail-setup span,.info-row span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.dialog-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-@media (max-width:1050px){.shell{grid-template-columns:1fr}.sidebar{display:none}.mobile-top{display:flex}.main{padding-top:18px}.hero{grid-template-columns:1fr}.hero-panel{order:-1}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{top:63px}.trust-row{grid-template-columns:1fr 1fr}}
-@media (max-width:720px){.main{padding-inline:14px}.hero-copy,.hero-panel{border-radius:22px}.hero-copy{padding:22px}.trust-row{grid-template-columns:1fr}.controls{position:relative;top:auto;display:grid}.search{min-width:0;width:100%}.tabs{padding-bottom:2px}.grid{grid-template-columns:1fr}.section-title{display:grid}.bottom-panel{grid-template-columns:1fr}.bottom-panel .btn{width:100%}.plugin{min-height:auto}h1{font-size:42px}}
+:root{color-scheme:dark;--bg:#080a10;--panel:#101622;--panel2:#151c2b;--line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.18);--text:#f8f9fc;--muted:#a8b1c2;--soft:#737d90;--purple:#8b7cf6;--purple2:#c9c1ff;--green:#70e7bb;--gold:#eed074;--red:#ff8aa0;--blue:#96c8ff;--shadow:0 28px 90px rgba(0,0,0,.42);--max:1180px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:#07080d}body{margin:0;min-width:320px;min-height:100dvh;background:radial-gradient(900px 520px at 25% -14%,rgba(139,124,246,.24),transparent 70%),radial-gradient(760px 500px at 96% 4%,rgba(112,231,187,.10),transparent 68%),linear-gradient(180deg,#080a10 0%,#080a10 46%,#06070b 100%);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}a{color:inherit;text-decoration:none}button,input{font:inherit}button,a,input{min-height:44px}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;z-index:1000;background:#fff;color:#080a10;padding:10px 12px;border-radius:10px}.wrap{width:min(calc(100% - 32px),var(--max));margin:0 auto}.top{position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line);background:rgba(8,10,16,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.top-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{min-width:0;display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:-.04em}.brand-mark{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(139,124,246,.32),rgba(112,231,187,.10));border:1px solid rgba(201,193,255,.22);color:var(--purple2);box-shadow:0 0 34px rgba(139,124,246,.18)}.nav{display:flex;align-items:center;gap:8px}.pill{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);color:#dbe1ec;font-size:12px;font-weight:850}.pill.primary{background:#fff;color:#0d111a;border-color:#fff}.pill:hover{border-color:rgba(201,193,255,.38);transform:translateY(-1px)}.hero{padding:54px 0 22px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:stretch}.hero-main,.hero-side,.panel,.plugin,.step,.quick-card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.025));box-shadow:var(--shadow)}.hero-main{border-radius:32px;padding:clamp(24px,4vw,42px);overflow:hidden;position:relative}.eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:13px;color:var(--purple2);font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 22px rgba(112,231,187,.65)}h1{margin:0;max-width:790px;font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.075em;font-weight:950;text-wrap:balance}.lead{margin:16px 0 0;max-width:720px;color:#c5ccd8;font-size:clamp(15px,1.5vw,18px);line-height:1.62;text-wrap:balance}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{min-height:44px;padding:0 15px;border:1px solid var(--line2);border-radius:13px;background:#171e2c;color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:950;text-align:center}.btn.primary{background:#fff;color:#10141d;border-color:#fff}.btn.green{background:linear-gradient(135deg,#70e7bb,#c9c1ff);color:#07110e;border-color:transparent}.btn.ghost{background:rgba(255,255,255,.04)}.btn.warn{border-color:rgba(238,208,116,.30);background:rgba(238,208,116,.08);color:#f3dc94}.btn.danger{border-color:rgba(255,138,160,.32);background:rgba(255,138,160,.08);color:#ffc2cc}.btn:disabled{opacity:.55;cursor:not-allowed}.btn:not(:disabled):hover{transform:translateY(-1px);border-color:rgba(201,193,255,.38)}.hero-side{border-radius:30px;padding:18px;display:grid;gap:12px;align-content:start;background:linear-gradient(180deg,#121827,#0d111a)}.mini-title{display:flex;align-items:center;justify-content:space-between;gap:10px}.mini-title strong{font-size:13px}.live{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(112,231,187,.24);background:rgba(112,231,187,.08);color:#a2f3ce;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:950}.mini{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center;min-height:64px;padding:11px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)}.mini i{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:rgba(139,124,246,.16);font-style:normal;font-size:18px}.mini b{display:block;font-size:12px}.mini span{display:block;margin-top:2px;color:var(--muted);font-size:11px}.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0 18px}.step{border-radius:20px;padding:15px}.step-num{width:28px;height:28px;display:grid;place-items:center;border-radius:10px;background:rgba(139,124,246,.16);color:var(--purple2);font-weight:950}.step strong{display:block;margin-top:10px;font-size:13px}.step span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:18px}.quick-card{border-radius:18px;padding:14px;min-height:118px}.quick-card b{display:block;font-size:13px}.quick-card span{display:block;margin-top:5px;color:var(--muted);font-size:12px}.toolbar{position:sticky;top:70px;z-index:20;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:20px;background:rgba(9,12,19,.80);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;justify-content:space-between;gap:10px;align-items:center}.search{flex:1;min-width:190px;display:flex;align-items:center;gap:9px;min-height:44px;border:1px solid var(--line);border-radius:14px;background:#0b1018;padding:0 12px;color:var(--muted)}.search input{width:100%;border:0;outline:0;background:transparent;color:#fff}.tabs{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{white-space:nowrap;min-height:42px;padding:0 13px;border:1px solid transparent;border-radius:12px;background:transparent;color:#cbd2df;font-size:11px;font-weight:900}.tab.active{background:linear-gradient(90deg,#6d5cff,#8b7cf6);color:#fff;box-shadow:0 12px 26px rgba(109,92,255,.22)}.section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:18px 0 12px}.section-title h2{margin:0;font-size:22px;letter-spacing:-.04em}.section-title p{margin:0;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.plugin{border-radius:22px;padding:16px;min-height:278px;display:flex;flex-direction:column;gap:12px;overflow:hidden}.plugin[hidden]{display:none!important}.plugin:hover{border-color:rgba(255,255,255,.20);transform:translateY(-2px)}.plugin-head{display:flex;gap:12px;align-items:flex-start}.logo{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;flex:0 0 46px;background:rgba(139,124,246,.14);border:1px solid rgba(255,255,255,.08);font-size:21px}.plugin-title{min-width:0;flex:1}.plugin-title h3{margin:0;font-size:15px;letter-spacing:-.025em}.plugin-title small{display:block;margin-top:3px;color:var(--soft);font-size:10.5px;font-weight:800}.badge{flex:none;border:1px solid var(--line);border-radius:999px;padding:5px 8px;color:#ccd3e2;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.05em}.badge.ready{border-color:rgba(112,231,187,.28);background:rgba(112,231,187,.08);color:#a8f3d1}.badge.setup{border-color:rgba(238,208,116,.28);background:rgba(238,208,116,.08);color:#f1db93}.badge.soon{border-color:rgba(150,200,255,.28);background:rgba(150,200,255,.08);color:#b8d7ff}.badge.off{border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.04);color:#b9c0cd}.desc{margin:0;color:#bdc6d5;font-size:12px;line-height:1.52}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-flex;align-items:center;min-height:26px;padding:0 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);color:#d9dfeb;font-size:9px;font-weight:850}.safe-box{padding:10px;border:1px solid var(--line);border-radius:14px;background:rgba(0,0,0,.12)}.safe-box b{display:block;margin-bottom:4px;color:#f1f4fa;font-size:10.5px}.safe-box span{display:block;color:var(--muted);font-size:10.5px}.plugin-actions{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}.plugin-actions .btn{min-height:40px;border-radius:12px;font-size:11px;padding:0 10px}.notice{display:none;margin:14px 0;padding:14px;border:1px solid rgba(238,208,116,.26);border-radius:18px;background:rgba(238,208,116,.08);color:#f3dfa5;font-size:13px}.notice.show{display:block}.empty{display:none;grid-column:1/-1;border:1px dashed var(--line);border-radius:18px;padding:26px;text-align:center;color:var(--muted);background:rgba(255,255,255,.02)}.bottom{margin:18px 0 64px;padding:18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.018));display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.bottom h2{margin:0 0 6px;font-size:22px;letter-spacing:-.04em}.bottom p{margin:0;color:var(--muted);font-size:12px}.drawer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,8,.74);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:100}.drawer.open{display:flex}.dialog{width:min(600px,100%);max-height:min(86dvh,760px);overflow:auto;border:1px solid var(--line2);border-radius:26px;background:#0d121b;box-shadow:var(--shadow);padding:18px}.dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.dialog h2{margin:0;font-size:24px;letter-spacing:-.045em}.dialog p{color:#c3ccd9}.close{width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:#141b27;color:#fff}.detail-grid{display:grid;gap:10px;margin:14px 0}.info{border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.025);padding:12px}.info strong{display:block;font-size:12px}.info span,.info li{color:var(--muted);font-size:12px}.info ul{margin:8px 0 0;padding-left:18px}.token-form{display:grid;gap:10px;margin-top:12px}.token-form input{width:100%;border:1px solid var(--line);border-radius:13px;background:#090d15;color:#fff;padding:0 12px}.status-line{min-height:20px;color:var(--muted);font-size:12px}.fine{margin:16px 0 0;color:var(--soft);font-size:11px;text-align:center}@media(max-width:1050px){.hero{grid-template-columns:1fr}.hero-side{order:-1}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quick{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{top:64px}.how{grid-template-columns:1fr 1fr 1fr}}@media(max-width:720px){.wrap{width:min(calc(100% - 24px),var(--max))}.top-inner{min-height:64px}.nav .pill:not(.primary){display:none}.hero{padding-top:28px}.hero-main,.hero-side{border-radius:24px}.hero-actions,.bottom{grid-template-columns:1fr;display:grid}.hero-actions .btn,.bottom .btn{width:100%}.how,.quick,.grid{grid-template-columns:1fr}.toolbar{top:64px;display:grid}.tabs{padding-bottom:2px}.plugin-actions{grid-template-columns:1fr}.section-title{display:block}.section-title p{margin-top:4px}h1{font-size:clamp(38px,12vw,54px)}}
 </style>
 </head>
-<body>
-<a class="skip" href="#tools">Skip to tools</a>
-<div class="mobile-top"><div class="mobile-brand"><span>✦</span> Stellar Tools</div><a href="/app">Open app</a></div>
-<div class="shell">
-  <aside class="sidebar" aria-label="Stellar navigation"><a class="brand" href="/"><span class="brand-mark">✦</span><span><span class="brand-title">Stellar AI</span><span class="brand-sub">Tool Store</span></span></a><nav class="nav"><a href="/"><span class="nav-ico">⌂</span> Home</a><a href="/app"><span class="nav-ico">✦</span> Chat</a><a class="active" href="/plugins"><span class="nav-ico">▦</span> Tools & Plugins</a><a href="/models"><span class="nav-ico">◈</span> Models</a><a href="/desktop"><span class="nav-ico">▣</span> Desktop Agent</a><a href="/support"><span class="nav-ico">?</span> Support</a></nav><div class="sidebar-card"><strong>Safe by default</strong><p>Personal account connections stay scoped. Review permissions before connecting.</p><a href="/app">Start in app</a></div></aside>
-  <main class="main" id="main-content"><div class="main-inner"><section class="hero" aria-label="Plugins overview"><div class="hero-copy"><div class="eyebrow">Personal account connections</div><h1>Connected apps for Stellar.</h1><p class="lead">Only tools available to your account appear here. Connect a supported app, review its permissions, and disconnect whenever you want.</p><div class="hero-actions"><a class="btn primary" href="/app">Open Stellar</a><a class="btn ghost" href="#tools">Browse tools</a></div></div><aside class="hero-panel" aria-label="Recommended tools"><div class="mini-head"><strong>Top first tools</strong><span class="live-pill">Stellar verified</span></div><div class="hero-stack"><div class="mini-tool"><span class="mini-ico">↗</span><span><b>Provider sign-in</b><small>Connect supported accounts without sharing your password.</small></span><span class="mini-tag">OAuth</span></div><div class="mini-tool"><span class="mini-ico">⌘</span><span><b>Desktop Agent</b><small>Use an authorized PC for files and terminal work.</small></span><span class="mini-tag">PC</span></div><div class="mini-tool"><span class="mini-ico">◇</span><span><b>Account-scoped plugins</b><small>Only connections available to your account are shown.</small></span><span class="mini-tag">Safe</span></div></div><p class="mini-note">Permissions first. No passwords shared. Disconnect anytime. Your access stays scoped.</p></aside></section><div class="trust-row"><div class="trust"><strong>Permissions first</strong><span>Review what each plugin needs before using it.</span></div><div class="trust"><strong>No passwords shared</strong><span>Use provider sign-in where available; normal connection flows never ask for your password.</span></div><div class="trust"><strong>Disconnect anytime</strong><span>Turn off a tool whenever you want.</span></div><div class="trust"><strong>Your access stays scoped</strong><span>You only see tools available to your verified account.</span></div></div><section class="controls" aria-label="Filter tools"><label class="search" aria-label="Search plugins">⌕ <input id="search" type="search" placeholder="Search tools, tasks or apps…"></label><div class="tabs" role="tablist" aria-label="Tool categories"><button class="tab active" data-filter="all" type="button">All</button><button class="tab" data-filter="connected" type="button">Connected</button><button class="tab" data-filter="available" type="button">Available</button></div></section><section id="tools" aria-labelledby="tools-title"><div class="section-title"><div><h2 id="tools-title">Your plugins</h2><p>Only usable connections for this account are shown. Private owner tools stay private.</p></div><a class="btn ghost" href="/support">Request a plugin</a></div><div class="grid" id="grid"><article class="plugin" data-tags="all available connected gmail email sales inbox" data-plugin="gmail" data-requires-account="true" hidden><div class="plugin-head"><span class="logo">✉</span><span class="plugin-title"><h3>Email Agent workflows</h3><small>Gmail / approval-only sending</small></span><span class="status setup">Available</span></div><p class="desc">Summarize inboxes, draft replies and prepare outreach. Send only with approval; bulk-style sending stays blocked.</p><div class="chips"><span class="chip">Send only with approval</span><span class="chip">Draft replies</span><span class="chip">Inbox summaries</span></div><div class="permissions"><b>Permissions first</b><span>Read selected email context after connection. Sending remains approval scoped.</span></div><div class="oauth-box">Sign in to use Gmail. Tokens are encrypted server-side.</div><div class="plugin-actions"><button class="btn primary" data-install="gmail">Connect plugin</button><button class="btn" data-connect="gmail">Connect with OAuth</button><button class="btn learn" data-details="gmail">Details</button><button class="btn" data-inspect="gmail">Inspect</button></div></article><article class="plugin" data-tags="all available connected pc desktop" data-plugin="pc-agent"><div class="plugin-head"><span class="logo">⌘</span><span class="plugin-title"><h3>Desktop Agent</h3><small>Authorized computer tasks</small></span><span class="status setup">Available</span></div><p class="desc">Use a verified device for safe file and terminal help. Computer actions stay permissioned and auditable.</p><div class="chips"><span class="chip">PC</span><span class="chip">Files</span><span class="chip">Terminal</span></div><div class="permissions"><b>Your access stays scoped</b><span>Only authorized devices and approved workspaces.</span></div><div class="plugin-actions"><button class="btn primary" data-install="pc-agent">Connect plugin</button><button class="btn learn" data-details="pc-agent">Details</button></div></article><article class="plugin" data-tags="all available developer github code repo" data-plugin="github" data-audience="owner" hidden><div class="plugin-head"><span class="logo">⌁</span><span class="plugin-title"><h3>GitHub Builder</h3><small>Repo fixes and reviews</small></span><span class="status setup">Private</span></div><p class="desc">Inspect repositories and review code changes through a private owner connection.</p><div class="chips"><span class="chip">Code</span><span class="chip">Repo</span><span class="chip">Reviews</span></div><div class="permissions"><b>Private connection</b><span>Owner credentials and setup stay outside standard accounts.</span></div><div class="plugin-actions"><button class="btn primary" data-install="github">Connect plugin</button><button class="btn" data-connect="github">Connect with OAuth</button><button class="btn learn" data-details="github">Details</button></div></article><article class="plugin" data-tags="all available developer vercel deploy website" data-plugin="vercel" data-audience="owner" hidden><div class="plugin-head"><span class="logo">▲</span><span class="plugin-title"><h3>Vercel Deploy</h3><small>Deploys and domains</small></span><span class="status setup">Private</span></div><p class="desc">Review deployments, logs and domain issues through a private owner connection.</p><div class="chips"><span class="chip">Deploy</span><span class="chip">Logs</span><span class="chip">Domains</span></div><div class="permissions"><b>Private deployment access</b><span id="owner-oauth-note">Deployment credentials and setup stay owner-only.</span></div><div class="plugin-actions"><button class="btn primary" data-install="vercel">Connect plugin</button><button class="btn" data-connect="vercel">Connect with OAuth</button><button class="btn learn" data-details="vercel">Details</button></div></article><article class="plugin" data-tags="all business stripe payments coming_soon" data-plugin="stripe" data-audience="owner" data-status="coming_soon" hidden><div class="plugin-head"><span class="logo">£</span><span class="plugin-title"><h3>Payments Helper</h3><small>Stripe and billing checks</small></span><span class="status setup">Setup</span></div><p class="desc">Check checkout health, payment links and revenue blockers after owner approval.</p><div class="chips"><span class="chip">Billing</span><span class="chip">Plans</span><span class="chip">Revenue</span></div><div class="permissions"><b>encrypted server-side</b><span>Payment access should stay owner-reviewed.</span></div><div class="plugin-actions"><button class="btn primary" data-install="stripe">Connect plugin</button><button class="btn learn" data-details="stripe">Details</button></div></article><article class="plugin" data-tags="all coming_soon business discord shopify calendar drive" data-plugin="coming-soon" data-audience="owner" data-status="coming_soon" hidden><div class="plugin-head"><span class="logo">＋</span><span class="plugin-title"><h3>More plugins coming soon</h3><small>Drive, Calendar, Discord, Shopify</small></span><span class="status soon">Soon</span></div><p class="desc">Request a plugin and Stellar can add it when the connection is safe and useful.</p><div class="chips"><span class="chip">Files</span><span class="chip">Calendar</span><span class="chip">Store</span></div><div class="permissions"><b>Not available yet</b><span>Only finished, permissioned connections are released to standard accounts.</span></div><div class="plugin-actions"><a class="btn primary" href="/support">Request a plugin</a><button class="btn learn" data-details="coming-soon">Details</button></div></article><div class="empty" id="empty">No tools match that search yet.</div></div></section><section class="bottom-panel"><div><h2>Want it even more automatic?</h2><p>Start with one plugin, then build a workflow: search, draft, review, approve, send or deploy.</p></div><a class="btn primary" href="/app">Build a workflow</a></section><p class="fineprint">Connections are account-scoped. Private owner integrations are never offered to standard accounts.</p></div></main>
+<body class="public-plugins">
+<a class="skip" href="#plugins">Skip to plugins</a>
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="/" aria-label="Stellar AI home"><span class="brand-mark">✦</span><span>Stellar AI</span></a>
+    <nav class="nav" aria-label="Main links">
+      <a class="pill" href="/app">Chat</a>
+      <a class="pill" href="/terms">Terms</a>
+      <a class="pill primary" href="/app?open=settings">Open app</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero" aria-labelledby="plugins-title">
+    <div class="hero-main">
+      <div class="eyebrow">Plugin store</div>
+      <h1 id="plugins-title">Connect tools without the confusing stuff.</h1>
+      <p class="lead">Pick what you want Stellar AI to help with, connect safely, then approve actions before anything important happens. No hidden owner tools for normal users.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#plugins">Browse plugins</a>
+        <a class="btn ghost" href="/app?open=settings">Manage in app</a>
+        <a class="btn ghost" href="/support">Need help?</a>
+      </div>
+    </div>
+    <aside class="hero-side" aria-label="Simple plugin guide">
+      <div class="mini-title"><strong>How it works</strong><span class="live">Approval first</span></div>
+      <div class="mini"><i>1</i><div><b>Choose a tool</b><span>Email, GitHub, PC Agent, Shopify, Stripe and more.</span></div></div>
+      <div class="mini"><i>2</i><div><b>Connect safely</b><span>You only give the permission the plugin needs.</span></div></div>
+      <div class="mini"><i>3</i><div><b>Ask Stellar</b><span>Use the plugin from chat, then approve bigger actions.</span></div></div>
+    </aside>
+  </section>
+  <section class="how" aria-label="Setup steps">
+    <div class="step"><div class="step-num">1</div><strong>Read what it can do</strong><span>Every plugin card shows the normal task and permission level.</span></div>
+    <div class="step"><div class="step-num">2</div><strong>Connect or open</strong><span>Use OAuth where ready, or open StellarX/Roblox bridge pages.</span></div>
+    <div class="step"><div class="step-num">3</div><strong>Stay in control</strong><span>Disconnect stored-token tools any time from this page.</span></div>
+  </section>
+  <section class="quick" aria-label="Recommended plugins">
+    <a class="quick-card" href="#plugins" data-jump="pc-agent"><b>🖥️ PC Agent</b><span>Let Stellar help with approved computer/project tasks.</span></a>
+    <a class="quick-card" href="#plugins" data-jump="gmail"><b>✉️ Gmail</b><span>Inbox alerts and approved reply workflows.</span></a>
+    <a class="quick-card" href="#plugins" data-jump="github"><b>🐙 GitHub</b><span>Use repository context and project activity.</span></a>
+    <a class="quick-card" href="#plugins" data-jump="shopify"><b>🛍️ Shopify</b><span>Prepare store and product changes when available.</span></a>
+  </section>
+  <section id="plugins" aria-labelledby="plugins-heading">
+    <div class="toolbar">
+      <label class="search" aria-label="Search plugins">🔎<input id="search" type="search" placeholder="Search Gmail, GitHub, Shopify, PC Agent..." autocomplete="off"></label>
+      <div class="tabs" id="tabs" role="tablist" aria-label="Plugin filters">
+        <button class="tab active" data-filter="all" type="button">All</button>
+        <button class="tab" data-filter="recommended" type="button">Recommended</button>
+        <button class="tab" data-filter="connected" type="button">Connected</button>
+        <button class="tab" data-filter="available" type="button">Available</button>
+        <button class="tab" data-filter="coming_soon" type="button">Coming soon</button>
+      </div>
+    </div>
+    <div id="notice" class="notice" role="status"></div>
+    <div class="section-title">
+      <div><h2 id="plugins-heading">Plugins</h2><p id="summary">Loading your available tools…</p></div>
+      <a class="btn ghost" href="/app">Back to chat</a>
+    </div>
+    <div class="grid" id="grid" aria-live="polite">
+      <div class="empty" id="empty">No plugins match that search.</div>
+    </div>
+  </section>
+  <section class="bottom" aria-label="Safety reminder">
+    <div><h2>Keep it simple and safe.</h2><p>Normal users should see useful tools only. Owner-only tools, unfinished connectors and dangerous permissions stay hidden or clearly labelled.</p></div>
+    <a class="btn green" href="/terms#tools">Read tool terms</a>
+  </section>
+  <p class="fine">Stellar AI plugins are approval-first. Do not connect accounts or computers you do not own or control.</p>
+</main>
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <div class="dialog-head"><div><h2 id="dialog-title">Plugin details</h2><p id="dialog-subtitle">What this plugin does and what it can access.</p></div><button class="close" id="close" type="button" aria-label="Close">×</button></div>
+    <div class="detail-grid" id="detail"></div>
+    <div id="dialog-actions" class="hero-actions"></div>
+    <div class="status-line" id="dialog-status"></div>
+  </div>
 </div>
-<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><div class="dialog"><div class="dialog-head"><div><h2 id="drawer-title">Tool details</h2><p id="drawer-desc">A simple explanation of what this tool can help with.</p></div><button class="close" id="close" type="button" aria-label="Close">×</button></div><div class="detail-panel"><div class="plugin-detail-view"><strong>plugin-detail-view</strong><span id="best">Use this for repeat work that should stay reviewable.</span></div><div class="plugin-detail-setup"><strong>Connection</strong><span>Use provider sign-in where available. Review permissions before connecting and disconnect anytime.</span></div><form id="plugin-oauth-submit"><input type="hidden" name="plugin" value="gmail"><button class="btn primary" type="button">Connect with OAuth</button></form></div><div class="dialog-actions"><a class="btn primary" href="/app">Open in Stellar</a><button class="btn ghost" id="close2" type="button">Done</button></div></div></div>
 <script>
 (() => {
-  const API='/api/desktop-agent?surface=plugins'; let owner=false,signedIn=false,currentPlugin=''; const pluginState=new Map();
-  const grid=document.getElementById('grid'),cards=Array.from(grid.querySelectorAll('.plugin')),empty=document.getElementById('empty'),search=document.getElementById('search'),tabs=Array.from(document.querySelectorAll('.tab')),drawer=document.getElementById('drawer'),title=document.getElementById('drawer-title'),desc=document.getElementById('drawer-desc'),best=document.getElementById('best'),detailPanel=drawer.querySelector('.detail-panel'); let filter='all';
-  function extra(){let x=document.getElementById('plugin-live-extra');if(!x){x=document.createElement('div');x.id='plugin-live-extra';x.className='plugin-detail-setup';detailPanel.appendChild(x)}x.replaceChildren();return x}
-  function show(t,d,b){title.textContent=t;desc.textContent=d;best.textContent=b||'Review permissions before connecting.';extra();drawer.classList.add('open')}
-  async function api(action,payload={},method='POST'){const url=API+'&action='+encodeURIComponent(action);const opts={method,credentials:'same-origin',headers:{Accept:'application/json'}};if(method!=='GET'){opts.headers['content-type']='application/json';opts.body=JSON.stringify({action,...payload})}const r=await fetch(url,opts);const data=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(data.error||('Request failed ('+r.status+')'));e.status=r.status;e.data=data;throw e}return data}
-  function cardFor(id){return grid.querySelector('[data-plugin="'+CSS.escape(id)+'"]')}
-  function paint(plugin){if(!plugin?.id)return;pluginState.set(plugin.id,plugin);const card=cardFor(plugin.id);if(!card)return;const status=card.querySelector('.status'),install=card.querySelector('[data-install]'),connect=card.querySelector('[data-connect]'),inspect=card.querySelector('[data-inspect]');if(status){status.textContent=plugin.connected?'Connected':plugin.enabled?'Enabled':plugin.status==='coming_soon'?'Soon':'Available';status.className='status '+(plugin.connected||plugin.enabled?'ready':plugin.status==='coming_soon'?'soon':'setup')}if(install){install.textContent=plugin.connected?'Disconnect':plugin.installLabel||'Connect plugin';install.disabled=plugin.installable===false;if(plugin.installable===false&&plugin.status!=='coming_soon')install.hidden=true}if(connect){connect.hidden=plugin.connected===true||plugin.oauthAvailable!==true;connect.textContent='Connect with provider'}if(inspect)inspect.disabled=!plugin.inspectable;card.dataset.tags=(card.dataset.tags||'').replace(/connected/g,'').trim()+(plugin.connected?' connected':'')}
-  async function refreshPlugins(){try{const data=await api('list',{},'GET');signedIn=true;owner=data?.viewer?.owner===true;const list=Array.isArray(data.plugins)?data.plugins:[];const ids=new Set(list.map(p=>p.id));const hasFuture=owner&&list.some(p=>p.status==='coming_soon');cards.forEach(card=>{const id=card.dataset.plugin;if(id==='coming-soon'){card.hidden=!hasFuture;return}card.hidden=!ids.has(id)});list.forEach(paint);applyFilters()}catch(e){signedIn=false;owner=false;cards.forEach(card=>{card.hidden=card.dataset.audience==='owner'||card.dataset.status==='coming_soon'||card.dataset.requiresAccount==='true'});if(e.status===401){document.querySelectorAll('[data-install],[data-connect],[data-inspect]').forEach(b=>{const card=b.closest('.plugin');if(card?.hidden)return;b.dataset.needsSignin='1';if(b.hasAttribute('data-install'))b.textContent='Sign in to use'});show('Sign in to use plugins','Your plugin connections belong to your Stellar account.','Open Stellar, sign in, then return here to connect apps.')}else show('Plugins unavailable',e.message,'Your existing settings were not changed.')}}
-  async function installPlugin(id){if(!signedIn){location.href='/app';return}const state=pluginState.get(id);if(state?.connected)return disconnectCurrentPlugin(id);const button=document.querySelector('[data-install="'+CSS.escape(id)+'"]');const old=button?.textContent;if(button){button.disabled=true;button.textContent='Connecting…'}try{const data=await api('install',{id});if(data.plugin)paint(data.plugin);if(data.needsConnection){if(data.oauthAvailable!==false)return startOAuth(id);show('Connection needed',data.oauthStatus?.configured===false?'This provider still needs OAuth setup before it can connect.':'Connect this provider before enabling the plugin.','No changes were made to your account.')}}catch(e){show('Could not connect '+id,e.message,'Nothing was changed.')}finally{if(button){button.disabled=false;if(old&&!pluginState.get(id)?.connected)button.textContent=old}}}
-  async function startOAuth(id){if(!signedIn){location.href='/app';return}if(!owner&&['github','vercel'].includes(id)){show('Owner-only connection','Developer OAuth setup for this plugin is owner-only.','Normal users should connect through the provider options available to their account.');return}try{const data=await api('startOAuth',{id});if(data.url){location.assign(data.url);return}show('OAuth unavailable','The provider did not return a connection URL.','Try again from Plugins.')}catch(e){if(owner&&e.data?.tokenFallback){show('OAuth is not ready',e.message,'You can use the secure owner-only token fallback.');const x=extra(),btn=document.createElement('button');btn.className='btn';btn.type='button';btn.textContent='Use secure token';btn.addEventListener('click',()=>connectToken(id));x.appendChild(btn)}else show('Could not start OAuth',e.message,'Your current plugin settings were not changed.')}}
-  async function connectToken(id,token=''){if(!owner){show('Provider sign-in required','Manual tokens are owner-only.','Normal users should connect through the provider.');return}if(!token){show('Connect '+id+' securely','Paste the provider token below. It is sent to Stellar secure storage and is not kept in this page.','Use a read-only/scoped token where the provider supports it.');const x=extra(),input=document.createElement('input'),btn=document.createElement('button');input.type='password';input.autocomplete='off';input.placeholder='Provider token';input.style.cssText='width:100%;min-height:44px;margin:10px 0;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:#0d1118;color:#fff;padding:0 12px';btn.className='btn primary';btn.type='button';btn.textContent='Connect securely';btn.addEventListener('click',()=>connectToken(id,input.value));x.append(input,btn);input.focus();return}try{const data=await api('connectToken',{id,token});if(data.plugin)paint(data.plugin);show('Plugin connected',data.account?.label?('Connected '+data.account.label+'.'):'The provider connection is active.','You can disconnect it anytime from this page.')}catch(e){show('Token connection failed',e.message,'Check the token scope and try again.')}}
-  async function disconnectCurrentPlugin(id=currentPlugin){if(!id)return;try{const data=await api('disconnect',{id});if(data.plugin)paint(data.plugin);show('Plugin disconnected','The stored connection was removed and the plugin was disabled.','You can reconnect it whenever you want.')}catch(e){show('Could not disconnect',e.message,'Your connection was not changed.')}}
-  async function inspectPlugin(id){if(!signedIn){location.href='/app';return}try{const data=await api('inspect',{id});const label=data.account?.label||data.provider||id;show('Connection check passed','Stellar reached '+label+' successfully.','The plugin is connected and responding.')}catch(e){show('Connection check failed',e.message,'Reconnect the plugin if the provider access has expired.')}}
-  function applyFilters(){const q=(search.value||'').trim().toLowerCase();let visible=0;cards.forEach(card=>{if(card.hidden)return;const tags=(card.dataset.tags||'').toLowerCase(),text=card.innerText.toLowerCase(),show=(filter==='all'||tags.includes(filter))&&(!q||tags.includes(q)||text.includes(q));card.style.display=show?'':'none';if(show)visible++});empty.style.display=visible?'none':'block'}
-  tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(t=>t.classList.remove('active'));tab.classList.add('active');filter=tab.dataset.filter||'all';applyFilters()}));search.addEventListener('input',applyFilters);document.querySelectorAll('[data-install]').forEach(b=>b.addEventListener('click',()=>installPlugin(b.dataset.install)));document.querySelectorAll('[data-connect]').forEach(b=>b.addEventListener('click',()=>startOAuth(b.dataset.connect)));document.querySelectorAll('[data-inspect]').forEach(b=>b.addEventListener('click',()=>inspectPlugin(b.dataset.inspect)));document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.details;currentPlugin=id;const st=pluginState.get(id);show(b.closest('.plugin')?.querySelector('h3')?.textContent||'Tool details','Clear permissions, simple setup and safe review-first actions.',id==='gmail'?'Email Agent workflows: draft, review, then Send only with approval.':'Use this when a workflow should stay simple and controlled.');const x=extra();if(st?.connected){const off=document.createElement('button');off.className='btn';off.type='button';off.textContent='Disconnect';off.addEventListener('click',()=>disconnectCurrentPlugin(id));x.appendChild(off)}}));
-  const oauthForm=document.getElementById('plugin-oauth-submit');oauthForm?.querySelector('button')?.addEventListener('click',()=>startOAuth(currentPlugin||oauthForm.querySelector('[name="plugin"]')?.value||'gmail'));function close(){drawer.classList.remove('open')}document.getElementById('close').addEventListener('click',close);document.getElementById('close2').addEventListener('click',close);drawer.addEventListener('click',e=>{if(e.target===drawer)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});refreshPlugins();
+  const API = '/api/desktop-agent?surface=plugins';
+  const ICONS = { 'pc-agent':'🖥️','roblox-studio':'🎮','github':'🐙','vercel':'▲','gmail':'✉️','google-drive':'📁','google-calendar':'📅','discord':'💬','shopify':'🛍️','stripe':'💳' };
+  const RECOMMENDED = new Set(['pc-agent','gmail','github','vercel','shopify','stripe']);
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const notice = document.getElementById('notice');
+  const summary = document.getElementById('summary');
+  const search = document.getElementById('search');
+  const tabs = document.getElementById('tabs');
+  const drawer = document.getElementById('drawer');
+  const close = document.getElementById('close');
+  const detail = document.getElementById('detail');
+  const dialogTitle = document.getElementById('dialog-title');
+  const dialogSubtitle = document.getElementById('dialog-subtitle');
+  const dialogActions = document.getElementById('dialog-actions');
+  const dialogStatus = document.getElementById('dialog-status');
+  let plugins = fallbackPlugins();
+  let viewer = { signedIn: false, owner: false };
+  let filter = 'all';
+  let activePlugin = null;
+
+  function showNotice(message, tone = '') {
+    notice.textContent = message || '';
+    notice.classList.toggle('show', Boolean(message));
+    notice.style.borderColor = tone === 'bad' ? 'rgba(255,138,160,.32)' : '';
+    notice.style.background = tone === 'bad' ? 'rgba(255,138,160,.08)' : '';
+  }
+  async function api(action, body = {}, method = 'POST') {
+    const url = method === 'GET' ? `${API}&action=${encodeURIComponent(action)}` : API;
+    const res = await fetch(url, { method, credentials:'same-origin', headers:{'content-type':'application/json'}, body: method === 'GET' ? undefined : JSON.stringify({ action, ...body }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) throw new Error(data.error || 'Plugin action failed.');
+    return data;
+  }
+  function fallbackPlugins(){
+    return [
+      {id:'pc-agent',name:'StellarX PC Agent',category:'Coding',status:'beta',description:'Pair your Windows PC so Stellar can inspect files and propose approved edits.',developer:'Stellar AI',verified:true,route:'/desktop',enabled:true,availableToUser:true,skills:['Inspect files','Approve edits','Run approved commands'],permissions:[{label:'Read project files',risk:'read'},{label:'Write approved files',risk:'write'}]},
+      {id:'gmail',name:'Gmail',category:'Productivity',status:'available',description:'Use Gmail for urgent inbox alerts and approved reply workflows.',developer:'Google + Stellar AI',verified:true,enabled:false,availableToUser:true,connection:'oauth_or_token',connectLabel:'Connect Gmail',skills:['Inbox alerts','Prepare replies','Approval-only sending'],permissions:[{label:'Read selected email metadata',risk:'read'},{label:'Create approved drafts',risk:'write'}]},
+      {id:'github',name:'GitHub',category:'Developer tools',status:'available',description:'Connect repository context so Stellar can understand your projects faster.',developer:'GitHub + Stellar AI',verified:true,enabled:false,availableToUser:true,connection:'oauth_or_token',connectLabel:'Connect GitHub',skills:['Read repository metadata','Review project activity'],permissions:[{label:'Read repositories',risk:'read'}]},
+      {id:'vercel',name:'Vercel',category:'Developer tools',status:'available',description:'Check projects and deployment status from Stellar.',developer:'Vercel + Stellar AI',verified:true,enabled:false,availableToUser:true,connection:'oauth_or_token',connectLabel:'Connect Vercel',skills:['Read projects','Review deployments'],permissions:[{label:'Read deployment metadata',risk:'read'}]},
+      {id:'shopify',name:'Shopify',category:'Business',status:'coming_soon',description:'Prepare catalogue and storefront changes with approval.',developer:'Shopify',verified:false,enabled:false,availableToUser:false,skills:['Read store data','Apply approved changes'],permissions:[{label:'Read store data',risk:'read'},{label:'Apply approved store changes',risk:'write'}]},
+      {id:'stripe',name:'Stripe',category:'Business',status:'coming_soon',description:'Review payment context and approved billing work.',developer:'Stripe',verified:false,enabled:false,availableToUser:false,skills:['Read billing data','Create approved billing objects'],permissions:[{label:'Read billing data',risk:'read'}]}
+    ];
+  }
+  function statusText(plugin){
+    if (plugin.connected || plugin.enabled) return 'Connected';
+    if (plugin.status === 'coming_soon') return 'Soon';
+    if (plugin.oauthSetupMissing || plugin.needsConnection) return 'Setup';
+    return plugin.status === 'available' || plugin.status === 'beta' ? 'Ready' : String(plugin.status || 'Ready');
+  }
+  function statusClass(plugin){
+    if (plugin.connected || plugin.enabled) return 'ready';
+    if (plugin.status === 'coming_soon') return 'soon';
+    if (plugin.oauthSetupMissing || plugin.needsConnection) return 'setup';
+    return 'off';
+  }
+  function shortPermission(plugin){
+    const perms = (plugin.permissions || []).map(p => p.label || p.id).filter(Boolean);
+    if (!perms.length) return 'No extra account permission shown yet.';
+    return perms.slice(0,2).join(' · ') + (perms.length > 2 ? ' · more' : '');
+  }
+  function card(plugin){
+    const el = document.createElement('article');
+    el.className = 'plugin';
+    el.dataset.id = plugin.id;
+    el.dataset.category = plugin.category || '';
+    el.dataset.status = plugin.status || '';
+    el.dataset.connected = String(Boolean(plugin.connected || plugin.enabled));
+    el.innerHTML = `
+      <div class="plugin-head">
+        <div class="logo" aria-hidden="true">${ICONS[plugin.id] || '🔌'}</div>
+        <div class="plugin-title"><h3>${escapeHtml(plugin.name)}</h3><small>${escapeHtml(plugin.category || plugin.developer || 'Plugin')}</small></div>
+        <span class="badge ${statusClass(plugin)}">${escapeHtml(statusText(plugin))}</span>
+      </div>
+      <p class="desc">${escapeHtml(plugin.description || 'Connect this tool to Stellar AI.')}</p>
+      <div class="chips">${(plugin.skills || []).slice(0,3).map(skill => `<span class="chip">${escapeHtml(skill)}</span>`).join('')}</div>
+      <div class="safe-box"><b>Access</b><span>${escapeHtml(shortPermission(plugin))}</span></div>
+      <div class="plugin-actions"></div>`;
+    const actions = el.querySelector('.plugin-actions');
+    actions.append(actionButton(plugin), learnButton(plugin));
+    return el;
+  }
+  function actionButton(plugin){
+    const btn = document.createElement(plugin.route ? 'a' : 'button');
+    btn.className = 'btn primary';
+    if (plugin.route && (plugin.enabled || plugin.id === 'pc-agent' || plugin.id === 'roblox-studio')) {
+      btn.href = plugin.route;
+      btn.textContent = 'Open';
+      return btn;
+    }
+    btn.type = 'button';
+    if (plugin.status === 'coming_soon' || plugin.availableToUser === false) {
+      btn.textContent = 'Coming soon';
+      btn.disabled = true;
+      btn.className = 'btn warn';
+      return btn;
+    }
+    if (plugin.connected || plugin.enabled) {
+      btn.textContent = 'Manage';
+      btn.addEventListener('click', () => openDetails(plugin));
+      return btn;
+    }
+    btn.textContent = plugin.connectLabel || plugin.installLabel || 'Connect';
+    btn.addEventListener('click', () => connect(plugin));
+    return btn;
+  }
+  function learnButton(plugin){
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn ghost';
+    btn.textContent = 'Learn';
+    btn.addEventListener('click', () => openDetails(plugin));
+    return btn;
+  }
+  function render(){
+    const q = search.value.trim().toLowerCase();
+    const existing = [...grid.querySelectorAll('.plugin')];
+    existing.forEach(node => node.remove());
+    let shown = 0;
+    plugins.forEach(plugin => {
+      const haystack = [plugin.name,plugin.category,plugin.description,plugin.developer,...(plugin.skills||[])].join(' ').toLowerCase();
+      const matchesQuery = !q || haystack.includes(q);
+      const matchesFilter = filter === 'all'
+        || (filter === 'recommended' && RECOMMENDED.has(plugin.id))
+        || (filter === 'connected' && (plugin.connected || plugin.enabled))
+        || (filter === 'available' && plugin.status !== 'coming_soon')
+        || (filter === 'coming_soon' && plugin.status === 'coming_soon');
+      if (!matchesQuery || !matchesFilter) return;
+      grid.insertBefore(card(plugin), empty);
+      shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+    const connected = plugins.filter(p => p.connected || p.enabled).length;
+    summary.textContent = `${plugins.length} tools shown · ${connected} connected/enabled · ${viewer.owner ? 'owner view' : 'normal user view'}`;
+  }
+  async function load(){
+    render();
+    try {
+      const data = await api('list', {}, 'GET');
+      viewer = data.viewer || viewer;
+      if (Array.isArray(data.plugins) && data.plugins.length) plugins = data.plugins;
+      showNotice(viewer.signedIn ? '' : 'Sign in to connect plugins and save settings.');
+    } catch (error) {
+      const msg = String(error.message || '');
+      showNotice(/sign|session|401|again/i.test(msg) ? 'Sign in to connect plugins. You can still preview what each tool does.' : msg, /sign|session|401|again/i.test(msg) ? '' : 'bad');
+    }
+    render();
+  }
+  async function connect(plugin){
+    dialogStatus.textContent = '';
+    if (plugin.route && (plugin.id === 'pc-agent' || plugin.id === 'roblox-studio')) { location.href = plugin.route; return; }
+    try {
+      if (plugin.oauthAvailable) {
+        const data = await api('startOAuth', { id: plugin.id });
+        if (data.url) { location.href = data.url; return; }
+      }
+      const data = await api('install', { id: plugin.id });
+      if (data.needsConnection) {
+        openDetails({ ...plugin, ...data.plugin, oauthStatus:data.oauthStatus, tokenFallback:data.tokenFallback, needsConnection:true });
+        dialogStatus.textContent = data.oauthAvailable ? 'Choose Connect again to finish OAuth.' : 'This plugin needs a connection before it can be enabled.';
+        return;
+      }
+      await load();
+      showNotice(`${plugin.name} is enabled.`);
+    } catch (error) {
+      openDetails(plugin);
+      dialogStatus.textContent = error.message || 'Could not connect this plugin.';
+    }
+  }
+  function openDetails(plugin){
+    activePlugin = plugin;
+    dialogTitle.textContent = plugin.name || 'Plugin details';
+    dialogSubtitle.textContent = plugin.description || 'Plugin details and permissions.';
+    detail.innerHTML = '';
+    dialogActions.innerHTML = '';
+    dialogStatus.textContent = '';
+    addInfo('Best for', (plugin.skills || ['Using this tool inside Stellar AI']).map(escapeHtml), true);
+    addInfo('Permissions', (plugin.permissions || []).map(p => `${escapeHtml(p.label || p.id)}${p.risk ? ` — ${escapeHtml(p.risk)}` : ''}`), true);
+    addInfo('Status', [`${escapeHtml(statusText(plugin))}`, `Developer: ${escapeHtml(plugin.developer || 'Stellar AI')}`, plugin.verified ? 'Verified plugin' : 'Not fully verified yet']);
+    if (plugin.oauthSetupMissingEnv?.length) addInfo('Owner setup needed', plugin.oauthSetupMissingEnv.map(escapeHtml), true);
+    const main = actionButton(plugin);
+    if (main.tagName === 'A') dialogActions.appendChild(main); else { main.classList.add('green'); dialogActions.appendChild(main); }
+    if (plugin.connected) dialogActions.appendChild(disconnectButton(plugin));
+    if (plugin.tokenFallback || plugin.connection === 'oauth_or_token') dialogActions.appendChild(tokenButton(plugin));
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+  }
+  function addInfo(title, lines, asList = false){
+    const box = document.createElement('div');
+    box.className = 'info';
+    const arr = Array.isArray(lines) ? lines.filter(Boolean) : [lines];
+    box.innerHTML = `<strong>${escapeHtml(title)}</strong>${asList ? `<ul>${arr.map(line => `<li>${line}</li>`).join('')}</ul>` : arr.map(line => `<span>${line}</span>`).join('')}`;
+    detail.appendChild(box);
+  }
+  function tokenButton(plugin){
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn ghost';
+    btn.textContent = 'Use token';
+    btn.addEventListener('click', () => showTokenForm(plugin));
+    return btn;
+  }
+  function showTokenForm(plugin){
+    const box = document.createElement('div');
+    box.className = 'info';
+    box.innerHTML = `<strong>Manual token connection</strong><span>Paste a provider token only if you trust this page and own the account.</span><form class="token-form"><input name="token" type="password" autocomplete="off" placeholder="Paste token"><button class="btn green" type="submit">Connect token</button></form>`;
+    const form = box.querySelector('form');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const token = new FormData(form).get('token');
+      dialogStatus.textContent = 'Checking token…';
+      try { await api('connectToken', { id: plugin.id, token }); dialogStatus.textContent = `${plugin.name} connected.`; await load(); }
+      catch (error) { dialogStatus.textContent = error.message || 'Token failed.'; }
+    });
+    detail.appendChild(box);
+  }
+  function disconnectButton(plugin){
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn danger';
+    btn.textContent = 'Disconnect';
+    btn.addEventListener('click', async () => {
+      dialogStatus.textContent = 'Disconnecting…';
+      try { await api('disconnect', { id: plugin.id }); dialogStatus.textContent = `${plugin.name} disconnected.`; await load(); }
+      catch (error) { dialogStatus.textContent = error.message || 'Could not disconnect.'; }
+    });
+    return btn;
+  }
+  function escapeHtml(value){ return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  search.addEventListener('input', render);
+  tabs.addEventListener('click', event => {
+    const btn = event.target.closest('.tab'); if (!btn) return;
+    filter = btn.dataset.filter || 'all';
+    tabs.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab === btn));
+    render();
+  });
+  document.querySelectorAll('[data-jump]').forEach(link => link.addEventListener('click', () => { search.value = link.dataset.jump.replace('-', ' '); setTimeout(render, 0); }));
+  close.addEventListener('click', () => { drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); });
+  drawer.addEventListener('click', event => { if (event.target === drawer) close.click(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && drawer.classList.contains('open')) close.click(); });
+  load();
 })();
 </script>
+<script src="/lib/assets/stellar-analytics.js?v=2"></script>
+<script src="/lib/assets/telemetry.js"></script>
 </body>
 </html>
