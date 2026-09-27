@@ -12,7 +12,7 @@ test('current public model routing downgrades unavailable tiers safely', () => {
 
 test('anthropic candidate fallbacks remain configured for each visible tier', () => {
   assert.deepEqual(getModelCandidates('spark'), ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6']);
-  assert.deepEqual(getModelCandidates('star'), ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001']);
+  assert.deepEqual(getModelCandidates('star'), ['claude-sonnet-5', 'claude-sonnet-4-6']);
   assert.deepEqual(getModelCandidates('comet'), ['claude-opus-4-6', 'claude-sonnet-4-6']);
   assert.deepEqual(getModelCandidates('nova'), ['claude-opus-4-8', 'claude-sonnet-4-6']);
 });
