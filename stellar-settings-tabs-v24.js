@@ -72,8 +72,17 @@
     const panel=q('#settings-panel');
     if(panel&&panel.getAttribute('aria-hidden')==='false')show(current());
   }
+  function observeSettings(){
+    const panel=q('#settings-panel');
+    if(!panel||panel.dataset.stellarTabsObserver==='1')return;
+    panel.dataset.stellarTabsObserver='1';
+    new MutationObserver(()=>{
+      ensureTabs();
+      const o=panel.querySelector('.stellar-settings-tab[data-settings-tab="owner"]');
+      if(o)o.hidden=!ownerAvailable();
+    }).observe(panel,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','aria-hidden']});
+  }
   window.StellarSettingsTabs={show,sync};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
-  new MutationObserver(()=>{ensureTabs();const o=document.querySelector('.stellar-settings-tab[data-settings-tab="owner"]');if(o)o.hidden=!ownerAvailable()})
-    .observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','aria-hidden']});
+  const start=()=>{sync();observeSettings()};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
