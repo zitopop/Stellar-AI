@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__stellarSettingsExtensionsV4) return;
-  window.__stellarSettingsExtensionsV4 = true;
+  if (window.__stellarSettingsExtensionsV5) return;
+  window.__stellarSettingsExtensionsV5 = true;
 
   const STORAGE_KEY = 'stellar-ui-preferences-v1';
   const STREAK_KEY = 'stellar-daily-streak-v1';
@@ -30,6 +30,109 @@
       const text = String(document.querySelector(selector)?.textContent || '').replace(/\s+/g, ' ').trim();
       return text && text !== '—' && text !== '?' ? text : fallback;
     } catch (_) { return fallback; }
+  }
+
+  function installLineMapStyles() {
+    if (document.getElementById('stellar-settings-line-map-style')) return;
+    const style = document.createElement('style');
+    style.id = 'stellar-settings-line-map-style';
+    style.textContent = `
+      #settings-modal .stellar-line-map{
+        display:grid!important;
+        gap:0!important;
+        overflow:hidden!important;
+        border:1px solid var(--ms-line,rgba(199,189,255,.14))!important;
+        border-radius:18px!important;
+        background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018))!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.03)!important;
+      }
+      #settings-modal .stellar-line-row{
+        position:relative!important;
+        display:grid!important;
+        grid-template-columns:minmax(128px,190px) minmax(0,1fr)!important;
+        gap:16px!important;
+        align-items:center!important;
+        min-height:66px!important;
+        padding:14px 16px!important;
+      }
+      #settings-modal .stellar-line-row + .stellar-line-row::before{
+        content:""!important;
+        position:absolute!important;
+        top:0!important;
+        left:16px!important;
+        right:16px!important;
+        height:1px!important;
+        background:rgba(255,255,255,.07)!important;
+      }
+      #settings-modal .stellar-line-name{
+        min-width:0!important;
+        color:var(--ms-text,#f7f7fb)!important;
+        font-size:13px!important;
+        font-weight:850!important;
+        letter-spacing:-.015em!important;
+      }
+      #settings-modal .stellar-line-copy{
+        min-width:0!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:space-between!important;
+        gap:12px!important;
+        color:var(--ms-muted,#9aa0b4)!important;
+        font-size:12px!important;
+        line-height:1.45!important;
+      }
+      #settings-modal .stellar-line-copy span:first-child{
+        min-width:0!important;
+      }
+      #settings-modal .stellar-line-pill{
+        flex:0 0 auto!important;
+        display:inline-flex!important;
+        align-items:center!important;
+        min-height:28px!important;
+        max-width:190px!important;
+        padding:0 9px!important;
+        overflow:hidden!important;
+        border:1px solid rgba(126,232,209,.20)!important;
+        border-radius:999px!important;
+        background:rgba(126,232,209,.065)!important;
+        color:#cafff3!important;
+        font-size:10px!important;
+        font-weight:900!important;
+        text-overflow:ellipsis!important;
+        white-space:nowrap!important;
+      }
+      #settings-modal .stellar-line-map.owner .stellar-line-pill{
+        border-color:rgba(242,216,121,.24)!important;
+        background:rgba(242,216,121,.07)!important;
+        color:#f7e4a1!important;
+      }
+      body.light #settings-modal .stellar-line-map{
+        border-color:rgba(0,0,0,.08)!important;
+        background:#fafafa!important;
+      }
+      body.light #settings-modal .stellar-line-row + .stellar-line-row::before{
+        background:rgba(0,0,0,.075)!important;
+      }
+      body.light #settings-modal .stellar-line-name{color:#25212b!important;}
+      body.light #settings-modal .stellar-line-copy{color:#6d6876!important;}
+      @media (max-width:767px){
+        #settings-modal .stellar-line-row{
+          grid-template-columns:1fr!important;
+          gap:6px!important;
+          min-height:76px!important;
+          padding:13px!important;
+        }
+        #settings-modal .stellar-line-copy{
+          align-items:flex-start!important;
+          flex-direction:column!important;
+          gap:8px!important;
+        }
+        #settings-modal .stellar-line-pill{
+          max-width:100%!important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
   }
 
   function readPrefs() {
@@ -245,6 +348,41 @@
     return group;
   }
 
+  function lineMapRow(title, detail, where = '') {
+    const row = document.createElement('div');
+    row.className = 'stellar-line-row';
+
+    const name = document.createElement('div');
+    name.className = 'stellar-line-name';
+    name.textContent = title;
+
+    const copy = document.createElement('div');
+    copy.className = 'stellar-line-copy';
+
+    const text = document.createElement('span');
+    text.textContent = detail;
+    copy.appendChild(text);
+
+    if (where) {
+      const pill = document.createElement('span');
+      pill.className = 'stellar-line-pill';
+      pill.textContent = where;
+      copy.appendChild(pill);
+    }
+
+    row.append(name, copy);
+    return row;
+  }
+
+  function appendLineMap(panel, rows, mode = '') {
+    installLineMapStyles();
+    const group = document.createElement('div');
+    group.className = `stellar-line-map ${mode}`.trim();
+    rows.forEach(([title, detail, where]) => group.appendChild(lineMapRow(title, detail, where)));
+    panel.appendChild(group);
+    return group;
+  }
+
   function copySupportEmail() {
     const done = () => setStatus(`Support email copied: ${SUPPORT_EMAIL}`, 'good');
     try {
@@ -287,30 +425,32 @@
       commandAction('Manage plan', 'Open upgrades, billing and plan options.', () => { if (!clickFirst(['[data-open-plans]', '#plans-btn', '[data-tab="plans"]'])) location.href = '/app?upgrade=1'; }),
       commandAction('Plugins', 'Connect Gmail, GitHub, PC Agent and other tools safely.', () => { location.href = '/plugins'; }),
       commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
-      commandAction('What is what?', 'Open the plain-English guide for every Settings section.', () => openTab('settings-guide')),
+      commandAction('What is what?', 'Open the line-by-line Settings map.', () => openTab('settings-guide')),
       commandAction(isOwnerViewer() ? 'Owner perks' : 'Owner tools', isOwnerViewer() ? 'Open private owner controls and business perks.' : 'Owner-only tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Owner perks only appear on the owner account.', 'warn'); }),
     );
     panel.appendChild(actions);
   }
 
   function buildSettingsGuide(panel) {
-    addHeading(panel, 'What is what?', 'Plain-English labels so people understand every Settings area before they click it.');
-    appendInfoGrid(panel, [
-      ['Account', 'Who is signed in, what email is saved, and where to sign out.'],
-      ['Credits', 'Your daily allowance, wallet top-up balance, reset cycle and bonus-credit rules.'],
-      ['Plan', 'Your paid tier, upgrade button, billing help and what features you unlock.'],
-      ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Owner/provider models stay hidden from normal users.'],
-      ['Voice', 'Mic, Jarvis/Ava speech, language, call-style controls and accessibility.'],
-      ['Plugins', 'Connect external tools like Gmail, GitHub or PC Agent. Stellar should ask before high-impact actions.'],
-      ['Devices / StellarX', 'Your approved PC or desktop agent connection. Only connect devices you own.'],
-      ['Privacy', 'Data controls, legal pages, delete/export guidance and safety information.'],
-      ['Support', 'Billing, refunds, account help and the support email people can copy.'],
-      ['Owner perks', 'Private admin and business controls. Hidden from normal users unless they are the owner.'],
+    addHeading(panel, 'What is what?', 'A clean line-by-line map: the left side is the name, the middle explains it, and the pill tells people where to go.');
+
+    appendLineMap(panel, [
+      ['Control', 'Main dashboard for your account, plan, credits and quick actions.', 'Settings > Control'],
+      ['Account', 'Shows who is signed in, which email is active, and where saved chats/billing connect.', 'Account area'],
+      ['Credits', 'Shows daily credits, wallet top-ups, welcome credits, bonuses and reset meaning.', 'Credits tab'],
+      ['Plan', 'Explains the user’s tier, billing, upgrade path and unlocked features.', 'Plan / upgrade'],
+      ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Owner models stay hidden.', 'Model picker'],
+      ['Voice', 'Mic, Jarvis/Ava voice, language, call-style controls and accessibility.', 'Voice tab'],
+      ['Plugins', 'External tools like Gmail, GitHub, Vercel or PC Agent. High-impact actions should ask first.', 'Plugins page'],
+      ['Devices / StellarX', 'Connected PC or desktop-agent features. Only use devices the user owns.', 'PC Agent'],
+      ['Privacy', 'Data controls, legal pages, delete/export guidance and safety information.', 'Privacy page'],
+      ['Support', 'Billing, refunds, account help and support email copy action.', 'Support action'],
+      ['Owner perks', 'Private admin/business controls for the owner only. Not for normal users.', 'Owner tab'],
     ]);
 
     const note = document.createElement('div');
     note.className = 'set-note stellar-pref-note';
-    note.textContent = 'Best rule: normal users should only see controls they can use. Owner-only tools should be labelled clearly and kept away from public accounts.';
+    note.textContent = 'This page should feel like a map. People should be able to scan one line and instantly know what it is and where to press.';
     panel.appendChild(note);
   }
 
@@ -322,16 +462,16 @@
     hero.innerHTML = '<div class="stellar-command-kicker">Owner only</div><h3>Run Stellar like a business.</h3><p>These are admin perks for the owner account. Normal users should not see private models, provider tools, revenue controls or desktop-agent permissions.</p>';
     panel.appendChild(hero);
 
-    appendInfoGrid(panel, [
-      ['Private owner models', 'Provider/owner models and experimental tools stay hidden from normal users.'],
-      ['StellarX / PC Agent', 'Pair your own computer, inspect files and approve edits or terminal actions.'],
-      ['GitHub + Vercel', 'Check repo changes, deployments, build errors and live status from one workflow.'],
-      ['Revenue controls', 'Watch plans, credits, checkout readiness, Stripe context and support issues.'],
-      ['Growth automations', 'SEO, lead follow-up and inbox workflows should stay approval-first and compliant.'],
-      ['Plugin testing', 'Try Gmail, GitHub, Vercel and future connectors before exposing them publicly.'],
-      ['Safety gate', 'High-impact actions need approval, clear logs and no hidden sending/deleting.'],
-      ['Business polish', 'Use this area to keep Terms, Privacy, pricing and support copy aligned.'],
-    ]);
+    appendLineMap(panel, [
+      ['Private owner models', 'Experimental/provider models for admin testing. Hide these from normal users.', 'Owner only'],
+      ['StellarX / PC Agent', 'Pair your own computer, inspect files and approve edits or terminal actions.', 'Open PC Agent'],
+      ['GitHub + Vercel', 'Check repo changes, deployments, build errors and live status from one workflow.', 'Dev tools'],
+      ['Revenue controls', 'Monitor plans, credits, checkout readiness, Stripe context and support issues.', 'Business ops'],
+      ['Growth automations', 'SEO, lead follow-up and inbox workflows; keep sending approval-first.', 'Revenue bot farm'],
+      ['Plugin testing', 'Try Gmail, GitHub, Vercel and future connectors before exposing them publicly.', 'Plugins'],
+      ['Safety gate', 'High-impact actions need approval, clear logs and no hidden sending/deleting.', 'Approval-first'],
+      ['Business polish', 'Keep Terms, Privacy, pricing, support and plan copy aligned.', 'Public pages'],
+    ], 'owner');
 
     const row = document.createElement('div');
     row.className = 'stellar-command-row';
@@ -425,15 +565,15 @@
 
   function buildTrustChecklist(panel) {
     addHeading(panel, 'Trust & safety', 'A premium AI workspace needs clear controls, safe approvals and no confusing owner-only tools for normal users.');
-    appendInfoGrid(panel, [
-      ['Account', 'Show email, sign-in state and sign-out clearly.'],
-      ['Credits', 'Show daily allowance, wallet balance and reset meaning.'],
-      ['Plan', 'Show current plan, upgrade path and billing help.'],
-      ['Models', 'Show only models the user can actually use. Hide owner/provider tools.'],
-      ['Voice', 'Explain Jarvis/Ava, mic access, language and call controls.'],
-      ['Privacy', 'Make export, delete, cookies and legal pages easy to find.'],
-      ['Devices', 'Explain StellarX/PC Agent approvals and connected-device safety.'],
-      ['Support', 'Copy support email and explain billing/refund/account help.'],
+    appendLineMap(panel, [
+      ['Account', 'Show email, sign-in state and sign-out clearly.', 'Account'],
+      ['Credits', 'Show daily allowance, wallet balance and reset meaning.', 'Credits'],
+      ['Plan', 'Show current plan, upgrade path and billing help.', 'Plan'],
+      ['Models', 'Show only models the user can actually use. Hide owner/provider tools.', 'Models'],
+      ['Voice', 'Explain Jarvis/Ava, mic access, language and call controls.', 'Voice'],
+      ['Privacy', 'Make export, delete, cookies and legal pages easy to find.', 'Privacy'],
+      ['Devices', 'Explain StellarX/PC Agent approvals and connected-device safety.', 'Devices'],
+      ['Support', 'Copy support email and explain billing/refund/account help.', 'Support'],
     ]);
   }
 
@@ -480,6 +620,7 @@
   });
 
   function init() {
+    installLineMapStyles();
     applyPrefs();
     registerCommandCentre();
     registerGuide();
