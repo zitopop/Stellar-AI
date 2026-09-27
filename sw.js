@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-26-interaction-recovery-v1';
+const SW_VERSION = 'stellar-sw-2026-09-27-capabilities-guide-v1';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -8,6 +8,7 @@ const PRECACHE = [
   '/manifest.json',
   '/lib/assets/pwa/icon-192.png',
   '/lib/assets/pwa/icon-512.png',
+  '/stellar-capabilities-guide.js',
 ];
 
 self.addEventListener('install', (event) => {
@@ -29,9 +30,15 @@ self.addEventListener('activate', (event) => {
   })());
 });
 
+function capabilityGuideLoader() {
+  return `\n;(() => {\n  if (window.__stellarCapabilitiesGuideLoaderV1) return;\n  window.__stellarCapabilitiesGuideLoaderV1 = true;\n  try {\n    const script = document.createElement('script');\n    script.src = '/stellar-capabilities-guide.js?v=1';\n    script.defer = true;\n    script.setAttribute('data-stellar-capabilities-guide-loader', 'true');\n    document.head.appendChild(script);\n  } catch (_) {}\n})();\n`;
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
+
+  const url = new URL(request.url);
 
   if (request.mode === 'navigate') {
     event.respondWith((async () => {
@@ -58,6 +65,19 @@ self.addEventListener('fetch', (event) => {
       try {
         const response = await fetch(request, { cache: 'no-cache' });
         if (response.ok && response.type === 'basic') {
+          const shouldAttachGuide = destination === 'script' && ['/currency.js', '/stellar-settings-extensions.js'].includes(url.pathname);
+          if (shouldAttachGuide) {
+            const source = await response.clone().text();
+            const body = source.includes('__stellarCapabilitiesGuideLoaderV1') ? source : source + capabilityGuideLoader();
+            const patched = new Response(body, {
+              status: response.status,
+              statusText: response.statusText,
+              headers: { 'Content-Type': 'application/javascript; charset=utf-8', 'Cache-Control': 'no-cache' },
+            });
+            const cache = await caches.open(STATIC_CACHE);
+            await cache.put(request, patched.clone());
+            return patched;
+          }
           const cache = await caches.open(STATIC_CACHE);
           await cache.put(request, response.clone());
         }
@@ -85,7 +105,6 @@ self.addEventListener('fetch', (event) => {
     }
   })());
 });
-
 
 self.addEventListener('push', (event) => {
   let payload = {};
