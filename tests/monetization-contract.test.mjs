@@ -17,7 +17,7 @@ test('credit top-up checkout remains one-time bounded and actionable', () => {
   assert.match(checkout, /mode: 'payment'/);
   assert.match(checkout, /if \(!isValidTopupPence\(rawPence\)\)/);
   assert.match(app, /id="topup-amount"/);
-  assert.match(app, /Choose a valid amount between £10 and £200\./);
+  assert.match(app, /Choose a valid amount between £3 and £200\./);
   assert.match(app, /Credit checkout could not start\./);
   assert.match(app, /Could not reach credit checkout\./);
 });

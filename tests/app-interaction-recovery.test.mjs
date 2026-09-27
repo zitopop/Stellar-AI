@@ -15,6 +15,6 @@ test('app keeps phone controls tappable and inactive overlays inert',()=>{
 test('app actively refreshes the service worker without cached navigation HTML',()=>{
   assert.match(app,/stellar-app-update-guard-v1/);
   assert.match(app,/serviceWorker\.register\('\/sw\.js',\{updateViaCache:'none'\}\)/);
-  assert.match(sw,/interaction-recovery-v1/);
+  assert.match(sw,/const SW_VERSION = 'stellar-sw-/);
   assert.match(sw,/fetch\(request, \{ cache: 'no-store' \}\)/);
 });

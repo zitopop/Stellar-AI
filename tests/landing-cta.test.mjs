@@ -61,7 +61,7 @@ test('visible pricing and structured offers agree on current monthly and yearly 
   ]);
   for (const price of [0,8,20,75]) assert.match(html, new RegExp('<strong>[^<]*' + price + '</strong>'));
   for (const price of [67,168,630]) assert.match(html, new RegExp('[^0-9]' + price + '/year'));
-  for (const allowance of ['300 credits/day','4,000 credits/month','12,000 credits/month','48,000 credits/month']) assert.ok(html.includes(allowance));
+  for (const allowance of ['300 credits/day','900 credits/day','2,500 credits/day','8,000 credits/day']) assert.ok(html.includes(allowance));
   assert.match(html, /Spark 2 · Star 5 · Comet 10 · Nova 20 credits per message/);
   assert.match(html, /Refreshes daily/);
   assert.match(html, /Bought credits stay on your account until used/);
