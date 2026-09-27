@@ -46,9 +46,20 @@
   function observe(){
     ['top-usage','usage-copy'].forEach(id=>{
       const node=$(id);
-      if(node)new MutationObserver(syncCredits).observe(node,{subtree:true,childList:true,characterData:true});
+      if(!node||node.dataset.stellarCreditObserver==='1')return;
+      node.dataset.stellarCreditObserver='1';
+      new MutationObserver(syncCredits).observe(node,{subtree:true,childList:true,characterData:true});
     });
-    new MutationObserver(syncCredits).observe(document.body,{subtree:true,childList:true});
+    const settings=document.getElementById('settings-panel');
+    if(settings&&settings.dataset.stellarCreditObserver!=='1'){
+      settings.dataset.stellarCreditObserver='1';
+      new MutationObserver(syncCredits).observe(settings,{
+        childList:true,
+        subtree:true,
+        attributes:true,
+        attributeFilter:['hidden','aria-hidden']
+      });
+    }
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{syncCredits();observe()},{once:true});
   else {syncCredits();observe();}
