@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__stellarSettingsExtensionsV5) return;
-  window.__stellarSettingsExtensionsV5 = true;
+  if (window.__stellarSettingsExtensionsV6) return;
+  window.__stellarSettingsExtensionsV6 = true;
 
   const STORAGE_KEY = 'stellar-ui-preferences-v1';
   const STREAK_KEY = 'stellar-daily-streak-v1';
@@ -39,44 +39,39 @@
     style.textContent = `
       #settings-modal .stellar-line-map{
         display:grid!important;
-        gap:0!important;
-        overflow:hidden!important;
-        border:1px solid var(--ms-line,rgba(199,189,255,.14))!important;
-        border-radius:18px!important;
-        background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018))!important;
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.03)!important;
+        gap:10px!important;
+        overflow:visible!important;
+        border:0!important;
+        border-radius:0!important;
+        background:transparent!important;
+        box-shadow:none!important;
       }
       #settings-modal .stellar-line-row{
         position:relative!important;
         display:grid!important;
-        grid-template-columns:minmax(128px,190px) minmax(0,1fr)!important;
+        grid-template-columns:minmax(118px,180px) minmax(0,1fr)!important;
         gap:16px!important;
-        align-items:center!important;
-        min-height:66px!important;
-        padding:14px 16px!important;
+        align-items:start!important;
+        min-height:72px!important;
+        padding:15px 16px!important;
+        border:1px solid var(--ms-line,rgba(199,189,255,.14))!important;
+        border-radius:16px!important;
+        background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.022))!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
       }
-      #settings-modal .stellar-line-row + .stellar-line-row::before{
-        content:""!important;
-        position:absolute!important;
-        top:0!important;
-        left:16px!important;
-        right:16px!important;
-        height:1px!important;
-        background:rgba(255,255,255,.07)!important;
-      }
+      #settings-modal .stellar-line-row + .stellar-line-row::before{display:none!important;}
       #settings-modal .stellar-line-name{
         min-width:0!important;
         color:var(--ms-text,#f7f7fb)!important;
-        font-size:13px!important;
-        font-weight:850!important;
-        letter-spacing:-.015em!important;
+        font-size:14px!important;
+        font-weight:880!important;
+        letter-spacing:-.018em!important;
+        line-height:1.25!important;
       }
       #settings-modal .stellar-line-copy{
         min-width:0!important;
-        display:flex!important;
-        align-items:center!important;
-        justify-content:space-between!important;
-        gap:12px!important;
+        display:grid!important;
+        gap:7px!important;
         color:var(--ms-muted,#9aa0b4)!important;
         font-size:12px!important;
         line-height:1.45!important;
@@ -85,11 +80,11 @@
         min-width:0!important;
       }
       #settings-modal .stellar-line-pill{
-        flex:0 0 auto!important;
+        justify-self:start!important;
         display:inline-flex!important;
         align-items:center!important;
-        min-height:28px!important;
-        max-width:190px!important;
+        min-height:26px!important;
+        max-width:100%!important;
         padding:0 9px!important;
         overflow:hidden!important;
         border:1px solid rgba(126,232,209,.20)!important;
@@ -106,30 +101,21 @@
         background:rgba(242,216,121,.07)!important;
         color:#f7e4a1!important;
       }
-      body.light #settings-modal .stellar-line-map{
+      body.light #settings-modal .stellar-line-row{
         border-color:rgba(0,0,0,.08)!important;
         background:#fafafa!important;
-      }
-      body.light #settings-modal .stellar-line-row + .stellar-line-row::before{
-        background:rgba(0,0,0,.075)!important;
       }
       body.light #settings-modal .stellar-line-name{color:#25212b!important;}
       body.light #settings-modal .stellar-line-copy{color:#6d6876!important;}
       @media (max-width:767px){
+        #settings-modal .stellar-line-map{gap:9px!important;}
         #settings-modal .stellar-line-row{
           grid-template-columns:1fr!important;
-          gap:6px!important;
-          min-height:76px!important;
-          padding:13px!important;
+          gap:7px!important;
+          min-height:86px!important;
+          padding:14px!important;
         }
-        #settings-modal .stellar-line-copy{
-          align-items:flex-start!important;
-          flex-direction:column!important;
-          gap:8px!important;
-        }
-        #settings-modal .stellar-line-pill{
-          max-width:100%!important;
-        }
+        #settings-modal .stellar-line-pill{max-width:100%!important;}
       }
     `;
     document.head.appendChild(style);
@@ -360,13 +346,13 @@
     copy.className = 'stellar-line-copy';
 
     const text = document.createElement('span');
-    text.textContent = detail;
+    text.textContent = `What it does: ${detail}`;
     copy.appendChild(text);
 
     if (where) {
       const pill = document.createElement('span');
       pill.className = 'stellar-line-pill';
-      pill.textContent = where;
+      pill.textContent = `Where: ${where}`;
       copy.appendChild(pill);
     }
 
@@ -425,14 +411,14 @@
       commandAction('Manage plan', 'Open upgrades, billing and plan options.', () => { if (!clickFirst(['[data-open-plans]', '#plans-btn', '[data-tab="plans"]'])) location.href = '/app?upgrade=1'; }),
       commandAction('Plugins', 'Connect Gmail, GitHub, PC Agent and other tools safely.', () => { location.href = '/plugins'; }),
       commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
-      commandAction('What is what?', 'Open the line-by-line Settings map.', () => openTab('settings-guide')),
+      commandAction('What is what?', 'Open the separate line-by-line Settings guide.', () => openTab('settings-guide')),
       commandAction(isOwnerViewer() ? 'Owner perks' : 'Owner tools', isOwnerViewer() ? 'Open private owner controls and business perks.' : 'Owner-only tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Owner perks only appear on the owner account.', 'warn'); }),
     );
     panel.appendChild(actions);
   }
 
   function buildSettingsGuide(panel) {
-    addHeading(panel, 'What is what?', 'A clean line-by-line map: the left side is the name, the middle explains it, and the pill tells people where to go.');
+    addHeading(panel, 'What is what?', 'Every setting is now its own separate line: name, what it does, and where to press.');
 
     appendLineMap(panel, [
       ['Control', 'Main dashboard for your account, plan, credits and quick actions.', 'Settings > Control'],
@@ -450,7 +436,7 @@
 
     const note = document.createElement('div');
     note.className = 'set-note stellar-pref-note';
-    note.textContent = 'This page should feel like a map. People should be able to scan one line and instantly know what it is and where to press.';
+    note.textContent = 'This is meant to read line by line, not as one big mixed block. Each row explains one thing only.';
     panel.appendChild(note);
   }
 
