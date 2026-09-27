@@ -8,10 +8,13 @@ const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 const plugins = await readFile(new URL('../plugins.html', import.meta.url), 'utf8');
 const vercel = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
 
-test('Email Agent is approval-only and blocks bulk-style sending', () => {
-  assert.match(email, /Email Agent/);
-  assert.match(email, /Draft first\.<br>Send only when approved\./);
-  assert.match(email, /Approval-only sending/);
+test('Draft Email Helper is approval-only and blocks bulk-style sending', () => {
+  assert.match(email, /Draft Email Helper/);
+  assert.match(email, /Write the email\.<br>You choose Send\./);
+  assert.match(email, /Draft only · you approve send/);
+  assert.match(email, /What is this tab\?/);
+  assert.match(email, /Signed in:/);
+  assert.match(email, /refreshAccountPill/);
   assert.match(email, /openReviewedEmail/);
   assert.match(email, /oneRecipient/);
   assert.match(email, /Bulk\/multiple recipients are blocked here/);
@@ -21,7 +24,7 @@ test('Email Agent is approval-only and blocks bulk-style sending', () => {
   assert.ok(!email.includes('fetch(\"/api'));
 });
 
-test('Email Agent is discoverable from app settings and routing', () => {
+test('Email draft helper is discoverable from app settings and routing', () => {
   assert.match(app, /id="email-agent-nav"/);
   assert.match(app, /Draft, review and send only after approval/);
   assert.ok(vercel.rewrites.some(route => route.source === '/email-agent' && route.destination === '/email-agent.html'));
