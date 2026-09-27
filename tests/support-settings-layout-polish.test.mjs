@@ -6,7 +6,7 @@ const support = readFileSync(new URL('../support.html', import.meta.url), 'utf8'
 const analytics = readFileSync(new URL('../lib/assets/stellar-analytics.js', import.meta.url), 'utf8');
 
 test('support page explains routes and keeps a clean help layout', () => {
-  assert.match(support, /Support that tells you what is what/);
+  assert.match(support, /Know exactly where to get help/);
   assert.match(support, /Settings help/);
   assert.match(support, /Credits and top-ups/);
   assert.match(support, /Discord promo credits/);
