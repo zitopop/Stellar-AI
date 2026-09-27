@@ -9,7 +9,7 @@
   <meta name="description" content="Your private workspace for research, product drafts and business operations.">
   <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/lib/assets/jarvis-workspace.css?v=1">
-  <script src="/lib/assets/jarvis-workspace.js?v=1" type="module"></script>
+  <script src="/lib/assets/jarvis-workspace.js?v=2" type="module"></script>
 </head>
 <body>
 <a class="skip" href="#mission-objective">Skip to your mission</a>
@@ -39,6 +39,11 @@
             </div>
             <label for="mission-objective" class="sr-only">Describe your objective</label>
             <textarea id="mission-objective" minlength="10" maxlength="4000" required rows="4" placeholder="Give Jarvis a goal, your audience and any constraints. For example: research a useful FiveM product for small roleplay servers, draft an offer and plan the first week."></textarea>
+            <div class="task-actions" aria-label="Jarvis voice controls">
+              <button id="jarvis-listen" type="button" class="button secondary" aria-pressed="false">🎙 Talk to Jarvis</button>
+              <a class="button secondary" href="/jarvis/vision">Open live voice &amp; vision <span aria-hidden="true">↗</span></a>
+              <span id="jarvis-voice-status" class="fine-print" role="status" aria-live="polite">Speak your objective. Jarvis will not start a mission until you press Start mission.</span>
+            </div>
             <div class="composer-footer"><div class="notify-options"><span>When it’s ready</span><label><input type="checkbox" id="notify-email"> Email me</label><label><input type="checkbox" id="notify-call"> Call me</label></div><button id="create-mission" type="submit" class="button primary">Start mission <span aria-hidden="true">↑</span></button></div>
           </fieldset>
         </form>
