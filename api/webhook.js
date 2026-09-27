@@ -174,7 +174,27 @@ export default async function handler(req, res) {
       } else {
         const existing = (await kvGet(userKey)) || {};
 
-        if (checkoutPlan === 'topup') {
+        if (checkoutPlan === 'website-builder') {
+          const amount = Math.round(Number(session.metadata?.amount || 0));
+          const paid = session.payment_status === 'paid';
+          const amountMatches = Number(session.amount_total) === 9900 && amount === 9900;
+          if (!paid || !amountMatches) {
+            throw new Error(`Invalid completed website-builder session ${session.id}`);
+          }
+          const saved = await kvSet(`stellar:website-builder:${email}`, {
+            status: 'active',
+            checkoutSessionId: session.id,
+            paymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : '',
+            amountPence: 9900,
+            purchasedAt: Date.now(),
+          });
+          if (!saved) throw new Error(`Could not persist website-builder entitlement for ${session.id}`);
+          await Promise.all([
+            incrementConversionMetric('checkout-completed'),
+            incrementConversionMetric('website-builder-completed'),
+            incrementConversionMetric('revenue-pence', 9900),
+          ]);
+        } else if (checkoutPlan === 'topup') {
           const amount = Math.round(Number(session.metadata?.amount || session.metadata?.qty || 0));
           const paid = session.payment_status === 'paid';
           const amountMatches = Number(session.amount_total) === amount;
@@ -226,7 +246,29 @@ export default async function handler(req, res) {
       await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI subscription invoice payment failed in Stripe.' });
     } else if (event.type === 'payout.failed') {
       await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI Stripe payout failed and needs owner attention.' });
+    } else if (event.type === 'charge.refunded') {
+      const charge = event.data.object;
+      const email = String(charge.metadata?.email || charge.billing_details?.email || '').toLowerCase().trim();
+      if (charge.metadata?.plan === 'website-builder' && email) {
+        await kvSet(`stellar:website-builder:${email}`, {
+          status: 'refunded',
+          chargeId: charge.id,
+          amountRefunded: Number(charge.amount_refunded || 0),
+          updatedAt: Date.now(),
+        });
+      }
     } else if (event.type === 'charge.dispute.created') {
+      const dispute = event.data.object;
+      const charge = typeof dispute.charge === 'string' ? await stripe.charges.retrieve(dispute.charge) : dispute.charge;
+      const email = String(charge?.metadata?.email || charge?.billing_details?.email || '').toLowerCase().trim();
+      if (charge?.metadata?.plan === 'website-builder' && email) {
+        await kvSet(`stellar:website-builder:${email}`, {
+          status: 'disputed',
+          chargeId: charge.id,
+          disputeId: dispute.id,
+          updatedAt: Date.now(),
+        });
+      }
       await escalateOwner({ category: 'fraud', severity: 'critical', summary: 'A new Stripe charge dispute was opened for Stellar AI.' });
     } else if (event.type === 'radar.early_fraud_warning.created') {
       await escalateOwner({ category: 'fraud', severity: 'urgent', summary: 'Stripe Radar created an early fraud warning for Stellar AI.' });
