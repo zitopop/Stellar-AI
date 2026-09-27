@@ -6,12 +6,12 @@ const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('paid plan cards translate credits into understandable value', () => {
-  assert.match(index, /900 credits\/day/);
-  assert.match(index, /up to 180 Star messages\/day/);
-  assert.match(index, /Unlock Comet \+ 2,500 credits\/day/);
-  assert.match(index, /up to 250 Comet messages\/day/);
-  assert.match(index, /Unlock Nova \+ 8,000 credits\/day/);
-  assert.match(index, /up to 400 Nova messages\/day/);
+  assert.match(index, /1,500 credits\/month/);
+  assert.match(index, /up to 300 Star messages\/month/);
+  assert.match(index, /Unlock Comet \+ 5,000 credits\/month/);
+  assert.match(index, /up to 500 Comet messages\/month/);
+  assert.match(index, /Unlock Nova \+ 20,000 credits\/month/);
+  assert.match(index, /up to 1,000 Nova messages\/month/);
 });
 
 test('plan comparison shows output limits and strongest-model usage', () => {
@@ -23,8 +23,8 @@ test('plan comparison shows output limits and strongest-model usage', () => {
 });
 
 test('Settings communicates the key paid unlocks', () => {
-  assert.match(app, /Starter £8 · 3× Free/);
+  assert.match(app, /Starter £8 · 1,500\/mo/);
   assert.match(app, /Plus £20 · Comet/);
   assert.match(app, /Pro £75 · Nova/);
-  assert.match(app, /Starter gives 3× Free daily credits\. Plus unlocks Comet\. Pro unlocks Nova/);
+  assert.match(app, /Starter gives 1,500 monthly credits\. Plus unlocks Comet with 5,000 monthly credits\. Pro unlocks Nova with 20,000 monthly credits\./);
 });

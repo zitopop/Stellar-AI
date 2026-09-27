@@ -6,7 +6,7 @@ const analytics = readFileSync(new URL('../lib/assets/stellar-analytics.js', imp
 
 test('landing page v4 keeps a clean conversion-first hero', () => {
   assert.match(analytics, /stellar-public-conversion-polish-v4/);
-  assert.match(analytics, /Your daily AI workspace/);
+  assert.match(analytics, /Your AI workspace/);
   assert.match(analytics, /STELLAR AI · CLEAN WORKSPACE/);
   assert.match(analytics, /Start free/);
   assert.match(analytics, /See plans/);
@@ -23,7 +23,7 @@ test('landing page explains value without adding noisy sections', () => {
 });
 
 test('landing page keeps credits and community promo wording clear', () => {
-  assert.match(analytics, /300 credits every 24 hours/);
+  assert.match(analytics, /300 credits\/month/);
   assert.match(analytics, /promo and giveaway credits for Discord events/);
   assert.match(analytics, /Run Discord giveaways, launch promos and creator rewards with Stellar credits/);
   assert.doesNotMatch(analytics, /free money/i);

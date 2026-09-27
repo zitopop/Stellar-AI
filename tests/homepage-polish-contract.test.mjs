@@ -9,9 +9,9 @@ test('homepage polish keeps the public landing page clean and conversion-focused
   assert.match(landing, /public-home/);
   assert.match(analytics, /stellar-public-conversion-polish-v2/);
   assert.match(analytics, /polishHomepageContent/);
-  assert.match(analytics, /Your daily AI workspace\./);
+  assert.match(analytics, /Your AI workspace\./);
   assert.match(analytics, /Start free/);
-  assert.match(analytics, /Free to start · 300 credits every 24 hours/);
+  assert.match(analytics, /Free to start · 300 credits\/month/);
 });
 
 test('homepage value strip is compact and mobile-safe', () => {

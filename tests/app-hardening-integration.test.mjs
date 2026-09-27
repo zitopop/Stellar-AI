@@ -35,7 +35,7 @@ test('credits stay visible as a Manus-style sparkle token without exposing owner
   assert.match(telemetry, /ensureCreditIcon/);
   assert.match(telemetry, /sparkle-token/);
   assert.match(telemetry, /✦/u);
-  assert.match(telemetry, /daily allowance plus wallet top-ups/);
+  assert.match(telemetry, /monthly allowance plus wallet top-ups/);
   assert.match(telemetry, /\[data-admin-credit\]/);
 });
 

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { MODEL_CREDIT_COSTS, OVERAGE_REQUEST_COST_PENCE, getPlanDefinition } from '../lib/pricing.js';
-import { consumeUsage, refundUsageCharge } from '../lib/usage.js';
+import { creditWindow, consumeUsage, refundUsageCharge } from '../lib/usage.js';
 
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const chat = fs.readFileSync(new URL('../api/chat.js', import.meta.url), 'utf8');
@@ -22,9 +22,9 @@ test('credit bundles and model costs are server-owned', () => {
   assert.equal(OVERAGE_REQUEST_COST_PENCE, 5);
   assert.deepEqual(MODEL_CREDIT_COSTS, { spark:2, star:5, comet:10, nova:20 });
   assert.equal(getPlanDefinition('free').includedCredits, 300);
-  assert.equal(getPlanDefinition('starter').includedCredits, 900);
-  assert.equal(getPlanDefinition('plus').includedCredits, 2500);
-  assert.equal(getPlanDefinition('pro').includedCredits, 8000);
+  assert.equal(getPlanDefinition('starter').includedCredits, 1500);
+  assert.equal(getPlanDefinition('plus').includedCredits, 5000);
+  assert.equal(getPlanDefinition('pro').includedCredits, 20000);
 });
 
 test('included request does not spend wallet credit', async () => {
@@ -63,4 +63,16 @@ test('client automatically uses purchased add-on credits after included credits'
   assert.match(app, /This model costs/);
   assert.match(app, /function creditsOn\(\)/);
   assert.match(app, /use_credit:creditsOn\(\)/);
+});
+
+
+test('free monthly credits use one stable calendar-month bucket', () => {
+  const firstNow = Date.UTC(2026, 8, 10, 8, 0, 0);
+  const laterNow = Date.UTC(2026, 8, 28, 20, 0, 0);
+  const first = creditWindow('free', firstNow, firstNow);
+  const later = creditWindow('free', laterNow, laterNow);
+  assert.equal(first.startAt, Date.UTC(2026, 8, 1));
+  assert.equal(later.startAt, first.startAt);
+  assert.equal(first.resetAt, Date.UTC(2026, 9, 1));
+  assert.equal(later.resetAt, first.resetAt);
 });

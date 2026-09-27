@@ -6,7 +6,7 @@ const terms = readFileSync(new URL('../terms.html', import.meta.url), 'utf8');
 const privacy = readFileSync(new URL('../privacy.html', import.meta.url), 'utf8');
 
 test('terms explain the current Stellar Credits plan model', () => {
-  for (const text of ['300 credits per day','900 credits per day','2,500 credits per day','8,000 credits per day']) assert.ok(terms.includes(text), text);
+  for (const text of ['300 credits per month','1,500 credits per month','5,000 credits per month','20,000 credits per month']) assert.ok(terms.includes(text), text);
   assert.match(terms, /Spark 2 credits, Star 5 credits, Comet 10 credits, and Nova 20 credits/);
   assert.match(terms, /StellarX AI planning pass currently costs 20 credits/);
   assert.match(terms, /They do not roll over/);
