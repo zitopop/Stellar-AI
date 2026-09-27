@@ -122,3 +122,29 @@ body.public-home .pricing-section .plans,body.public-home #plans .plans{position
 body.public-home .pricing-section .plan,body.public-home #plans .plan{position:relative!important;inset:auto!important;transform:none!important}
 @media(max-width:900px){body.public-home .site-header .nav{min-width:0!important;padding-inline:12px!important;gap:12px!important}body.public-home .nav-links{display:none!important}body.public-home .nav-actions{margin-left:auto!important;gap:8px!important;min-width:0!important;flex:0 0 auto!important}body.public-home .nav-actions .button-small{min-width:0!important;padding-inline:12px!important;white-space:nowrap!important}}
 @media(max-width:520px){body.public-home .nav-actions .nav-login{display:none!important}body.public-home .site-header .nav{padding-inline:10px!important;gap:9px!important}body.public-home .brand{min-width:0!important;flex:0 1 auto!important;font-size:16px!important}body.public-home .brand>svg{width:24px!important;height:24px!important;flex:0 0 auto!important}body.public-home .nav-actions .button-small{min-height:38px!important;padding-inline:10px!important;font-size:10px!important}}
+
+/* tap-blocker-rescue-v30: hidden overlays must never steal taps, even if a body class is stuck. */
+body.drawer-open .drawer-backdrop[hidden],
+body.drawer-open #backdrop[hidden],
+body.modal-open #backdrop[hidden],
+body.settings-open #settings-panel[hidden],
+body.settings-open .settings-panel[hidden],
+body.auth-open #welcome-modal[hidden],
+body.modal-open #welcome-modal[hidden]{
+  display:none!important;
+  pointer-events:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+}
+body:not(.drawer-open) .drawer-backdrop,
+body:not(.drawer-open) #backdrop:not(.open),
+body:not(.settings-open) #settings-panel[aria-hidden="true"],
+body:not(.modal-open) #welcome-modal[hidden]{
+  display:none!important;
+  pointer-events:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+}
+body .app::before,body .app::after,body .app .main::before,body .app .main::after,body .app .welcome::before,body .app .welcome::after{
+  pointer-events:none!important;
+}
