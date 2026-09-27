@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__stellarCapabilitiesGuideV4) return;
-  window.__stellarCapabilitiesGuideV4 = true;
+  if (window.__stellarCapabilitiesGuideV5) return;
+  window.__stellarCapabilitiesGuideV5 = true;
 
   const PUBLIC_GUIDE_ITEMS = [
     ['Chat', 'Ask Stellar to write, plan, explain, fix and organise daily work.'],
@@ -69,6 +69,9 @@
       .stellar-capability-owner-card{border-color:rgba(242,216,121,.24);background:linear-gradient(180deg,rgba(242,216,121,.08),rgba(12,14,22,.68));}
       .stellar-capability-owner-card b{color:#f7e4a1;}
       #settings-modal .stellar-capabilities-guide{width:100%;margin:0 0 16px;background:linear-gradient(145deg,rgba(139,124,246,.16),rgba(255,255,255,.024));}
+      #model-menu [data-model-choice="stellarx"],.model-menu [data-model-choice="stellarx"]{position:relative;border-color:rgba(185,176,255,.26)!important;background:linear-gradient(135deg,rgba(139,124,246,.14),rgba(255,255,255,.035))!important;}
+      #model-menu [data-model-choice="stellarx"] .model-symbol,.model-menu [data-model-choice="stellarx"] .model-symbol{color:#d9d2ff!important;filter:drop-shadow(0 0 12px rgba(185,176,255,.36));}
+      #model-menu [data-model-choice="stellarx"] .model-access,.model-menu [data-model-choice="stellarx"] .model-access{color:#d9d2ff!important;border-color:rgba(185,176,255,.22)!important;background:rgba(185,176,255,.08)!important;}
       @media(max-width:640px){.stellar-capabilities-guide{padding:12px;border-radius:18px}.stellar-capabilities-grid{grid-template-columns:1fr}.stellar-capability-card{padding:10px}}
     `;
     document.head.appendChild(style);
@@ -134,11 +137,74 @@
     panel.prepend(guideNode(true));
   }
 
+  function modelMenu() {
+    return document.querySelector('#model-menu,.model-menu,[data-model-menu]');
+  }
+
+  function refreshModelButtonLabel() {
+    const button = document.querySelector('#model-btn,.model-pill,[data-model-button]');
+    if (!button) return;
+    const strong = button.querySelector('strong');
+    if (strong) {
+      strong.textContent = 'StellarX';
+      return;
+    }
+    const label = Array.from(button.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && /spark|star|comet|nova|stellarx/i.test(node.textContent || ''));
+    if (label) label.textContent = ' StellarX ';
+    else button.setAttribute('aria-label', 'StellarX model selected');
+  }
+
+  function markStellarXSelected(menu, button) {
+    menu.querySelectorAll('[data-model-choice]').forEach((option) => option.setAttribute('aria-checked', option === button ? 'true' : 'false'));
+    button.classList.add('active', 'selected');
+    refreshModelButtonLabel();
+  }
+
+  function chooseStellarX(button) {
+    try {
+      if (typeof window.setModel === 'function') window.setModel('Comet', 'StellarX advanced guided tasks');
+    } catch (_) {}
+    window.setTimeout(() => {
+      const menu = modelMenu();
+      const nextButton = button || menu?.querySelector('[data-model-choice="stellarx"]');
+      if (menu && nextButton) markStellarXSelected(menu, nextButton);
+    }, 0);
+  }
+
+  function stellarXModelOption() {
+    const button = document.createElement('button');
+    button.className = 'model-option stellarx-model-option';
+    button.type = 'button';
+    button.setAttribute('role', 'menuitemradio');
+    button.setAttribute('aria-checked', 'false');
+    button.dataset.modelChoice = 'stellarx';
+    button.dataset.publicModel = 'true';
+    button.innerHTML = '<span class="model-symbol">✧</span><span class="model-copy"><strong>StellarX</strong><small>Advanced guided tasks, bigger projects, website and business workflows</small></span><span class="model-access">Public</span>';
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      chooseStellarX(button);
+    });
+    return button;
+  }
+
+  function installModelPickerOption() {
+    if (!isAppPage()) return;
+    const menu = modelMenu();
+    if (!menu || menu.querySelector('[data-model-choice="stellarx"]')) return;
+    const holder = menu.querySelector('.model-options') || menu;
+    const option = stellarXModelOption();
+    const before = holder.querySelector('[data-model-choice="comet"],[data-model-choice="nova"],[data-model-choice="ultra"]');
+    if (before) before.insertAdjacentElement('beforebegin', option);
+    else holder.appendChild(option);
+  }
+
   function install() {
     if (!isAppPage()) return;
     addStyles();
     installHomeGuide();
     installSettingsGuide();
+    installModelPickerOption();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
