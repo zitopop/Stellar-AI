@@ -1,75 +1,149 @@
-/* Stellar app focus v23 */
+/* Stellar app focus v23 — chat-only home + credit UI sync */
 (()=>{
   const $=id=>document.getElementById(id);
-  const STARTERS=[
-    ['Build a website','Build me a clean modern website. Ask only for essential details, then give me the structure and next steps.'],
-    ['Fix my code','Help me debug my code. I will paste the code and error; find the likely cause, explain it clearly, and give me the safest fix.'],
-    ['Plan a task','Turn my goal into a simple step-by-step plan with priorities, dependencies, and the first action I should take.'],
-    ['Research something','Research this topic carefully and give me the key facts, trade-offs, and practical next steps.']
-  ];
-  function addStarters(){
-    const welcome=$('welcomeShell');
-    if(!welcome||welcome.querySelector('.stellar-starters'))return;
-    const wrap=document.createElement('div');
-    wrap.className='stellar-starters';
-    wrap.setAttribute('aria-label','Starter prompts');
-    STARTERS.forEach(([label,prompt])=>{
-      const b=document.createElement('button');
-      b.type='button';
-      b.className='stellar-starter';
-      b.textContent=label;
-      b.addEventListener('click',()=>{
-        const input=$('prompt');
-        if(!input)return;
-        input.value=prompt;
-        input.dispatchEvent(new Event('input',{bubbles:true}));
-        input.focus();
-        input.setSelectionRange(input.value.length,input.value.length);
-      });
-      wrap.appendChild(b);
-    });
-    welcome.appendChild(wrap);
+  const format=n=>Number.isFinite(n)?Math.max(0,n).toLocaleString():'—';
+
+  function removeLegacyStarters(){
+    document.querySelectorAll('.stellar-starters').forEach(node=>node.remove());
   }
+
   function improveEmptyCopy(){
     const empty=$('saved-chat-empty');
-    if(empty&&/No saved chats yet/i.test(empty.textContent||''))empty.textContent='Your recent chats will appear here.';
-  }
-  function parseCredits(){
-    const top=$('top-usage');
-    const usage=$('usage-copy');
-    const source=(top?.textContent||'')+' '+(usage?.textContent||'');
-    const m=source.match(/([\d,]+)\s+credits/i);
-    return m?Number(m[1].replace(/,/g,'')):null;
-  }
-  function syncCreditContext(){
-    const total=parseCredits();
-    const pill=document.querySelector('.stellar-credit-pill');
-    if(pill&&Number.isFinite(total)){
-      const spark=Math.floor(total/2);
-      const star=Math.floor(total/5);
-      pill.title=`${total.toLocaleString()} credits available · about ${star.toLocaleString()} Star or ${spark.toLocaleString()} Spark messages at current per-message costs`;
-      pill.setAttribute('aria-label',`Open credits wallet. ${total.toLocaleString()} credits available.`);
+    if(empty&&/No saved chats yet|Your recent chats will appear here/i.test(empty.textContent||'')){
+      empty.textContent='Recent chats appear here.';
     }
-    const wallet=$('stellar-wallet-summary');
-    if(wallet){
-      let note=wallet.querySelector('.stellar-credit-context');
+  }
+
+  function parseCreditsFrom(text=''){
+    const value=String(text||'').replace(/\u00a0/g,' ');
+    const patterns=[
+      /([\d,]+)\s+credits?\b/i,
+      /credits?\s*[:·-]?\s*([\d,]+)/i,
+      /(?:balance|available|remaining)\s*[:·-]?\s*([\d,]+)/i
+    ];
+    for(const pattern of patterns){
+      const match=value.match(pattern);
+      if(!match)continue;
+      const n=Number(String(match[1]).replace(/,/g,''));
+      if(Number.isFinite(n))return Math.max(0,n);
+    }
+    return null;
+  }
+
+  function creditTotal(){
+    const sources=[
+      $('top-usage')?.textContent,
+      $('usage-copy')?.textContent,
+      $('plan-truth')?.textContent,
+      $('topup-status')?.textContent
+    ].filter(Boolean);
+    for(const source of sources){
+      const n=parseCreditsFrom(source);
+      if(Number.isFinite(n))return n;
+    }
+    return null;
+  }
+
+  function isSignedIn(){
+    return Boolean(document.querySelector('.signed-in-only:not([hidden])')) ||
+      /sign out/i.test($('settings-signout-row')?.textContent||'');
+  }
+
+  function ensureCreditPill(){
+    const buttons=[...document.querySelectorAll('.top-actions .top-plans')];
+    const btn=buttons.find(el=>/credits/i.test(el.textContent||''))||buttons[0];
+    if(!btn)return null;
+    btn.classList.add('stellar-credit-pill');
+    if(!$('stellar-credit-balance')){
+      btn.replaceChildren();
+      const icon=document.createElement('span');
+      icon.className='stellar-credit-icon';
+      icon.setAttribute('aria-hidden','true');
+      icon.textContent='✦';
+      const balance=document.createElement('span');
+      balance.className='stellar-credit-balance';
+      balance.id='stellar-credit-balance';
+      balance.textContent='—';
+      const label=document.createElement('span');
+      label.className='stellar-credit-label';
+      label.textContent='credits';
+      btn.append(icon,balance,label);
+    }
+    btn.setAttribute('aria-label','Open credits wallet');
+    return btn;
+  }
+
+  function ensureWalletSummary(){
+    const hero=document.querySelector('.settings-plan-hero');
+    if(!hero)return null;
+    let summary=$('stellar-wallet-summary');
+    if(!summary){
+      summary=document.createElement('div');
+      summary.id='stellar-wallet-summary';
+      summary.className='stellar-wallet-summary';
+      summary.innerHTML='<span>Credit balance</span><strong id="stellar-wallet-total">—</strong>';
+      hero.insertAdjacentElement('afterend',summary);
+    }
+    return summary;
+  }
+
+  function syncCreditContext(){
+    const total=creditTotal();
+    const pill=ensureCreditPill();
+    ensureWalletSummary();
+    const balance=$('stellar-credit-balance');
+    const wallet=$('stellar-wallet-total');
+
+    if(Number.isFinite(total)){
+      if(balance)balance.textContent=format(total);
+      if(wallet)wallet.textContent=format(total)+' credits';
+      if(pill){
+        pill.title=format(total)+' credits available';
+        pill.setAttribute('aria-label','Open credits wallet. '+format(total)+' credits available.');
+      }
+    }else{
+      if(balance)balance.textContent=isSignedIn()?'…':'Free';
+      if(wallet)wallet.textContent=isSignedIn()?'Loading balance…':'Sign in to view';
+      if(pill) pill.title=isSignedIn()?'Loading credit balance':'Sign in to view and buy credits';
+    }
+
+    const summary=$('stellar-wallet-summary');
+    if(summary){
+      let note=summary.querySelector('.stellar-credit-context');
       if(!note){
         note=document.createElement('div');
         note.className='stellar-credit-context';
-        wallet.appendChild(note);
+        summary.appendChild(note);
       }
-      const nextText=Number.isFinite(total)
-        ? `At current costs: about ${Math.floor(total/5).toLocaleString()} Star messages or ${Math.floor(total/2).toLocaleString()} Spark messages.`
-        : 'Usage examples appear after your credit balance loads.';
-      if(note.textContent!==nextText)note.textContent=nextText;
+      note.textContent=Number.isFinite(total)
+        ? 'Included credits are used first. Add-on credits stay in your wallet until used.'
+        : 'Your balance appears here after account data loads.';
     }
   }
+
   function sync(){
-    addStarters();
+    removeLegacyStarters();
     improveEmptyCopy();
     syncCreditContext();
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
-  new MutationObserver(sync).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+
+  let queued=false;
+  function scheduleSync(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(()=>{queued=false;sync()});
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',sync,{once:true});
+  }else sync();
+
+  new MutationObserver(scheduleSync).observe(document.documentElement,{
+    subtree:true,childList:true,characterData:true,attributes:true,
+    attributeFilter:['hidden','class','aria-hidden']
+  });
   window.addEventListener('pageshow',sync);
+  window.addEventListener('focus',sync);
+  setTimeout(sync,250);
+  setTimeout(sync,1200);
 })();
