@@ -3,1510 +3,212 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#09090e">
+<meta name="theme-color" content="#0b0c10">
 <title>Stellar AI Workspace</title>
-<meta name="description" content="A calm AI workspace for planning, building, debugging and reviewing real projects without hype or fake tested claims.">
+<meta name="description" content="Stellar AI chat workspace for planning, writing, building and debugging projects.">
 <meta name="robots" content="noindex,nofollow">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-:root{color-scheme:dark;--bg:#080a11;--panel:#11141d;--panel2:#171b26;--panel3:#1c2130;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.14);--text:#f7f8fb;--muted:#a8afbd;--soft:#cfd6e3;--accent:#8b7cf6;--accent2:#b9b0ff;--danger:#ff7474;--good:#52d69f;--warn:#e9c86a;--max-width:860px;--max:860px;--side:248px;--top:60px}
-*{box-sizing:border-box}html,body{min-width:320px;max-width:100%;overflow-x:hidden}html{height:100%}body{margin:0;min-height:100dvh;background:radial-gradient(900px 520px at 50% -12%,rgba(139,124,246,.18),transparent 68%),linear-gradient(180deg,#0b0d14 0%,#080a11 55%,#05060a 100%);color:var(--text);font:15px/1.55 Manrope,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body.drawer-open,body.auth-open,body.modal-open{overflow:hidden}button,a,textarea,input{font:inherit;-webkit-tap-highlight-color:transparent}button{touch-action:manipulation}a{color:inherit;text-decoration:none}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent2);outline-offset:3px}
-.app{min-height:100dvh;display:grid;grid-template-columns:var(--side) minmax(0,1fr);position:relative;z-index:1}.side{min-width:0;border-right:1px solid var(--line);background:rgba(12,14,21,.94);padding:14px;display:flex;flex-direction:column;gap:11px;height:100dvh;overflow:auto;overscroll-behavior:contain;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);scrollbar-width:thin}.brand-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{min-height:44px;display:flex;align-items:center;gap:9px;font-weight:850;letter-spacing:-.03em;min-width:0}.brand span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mark{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(135deg,#2c2852,#171a26);color:var(--accent2);filter:drop-shadow(0 0 18px rgba(139,124,246,.28))}.side .btn{width:100%}.side-section{padding-top:10px;border-top:1px solid var(--line)}.side-title{margin:0 0 8px;color:#7d8593;font-size:10px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}.nav-link,.set-item{width:100%;min-height:44px;display:flex;align-items:center;gap:9px;padding:0 11px;border:1px solid transparent;border-radius:11px;color:var(--muted);background:transparent;text-decoration:none;font-size:13px;font-weight:650;cursor:pointer}.nav-link:hover,.set-item:hover{background:rgba(139,124,246,.08);color:#fff;border-color:rgba(185,176,255,.28)}.nav-link span:first-child{width:18px;text-align:center;opacity:.88}.nav-link.active{background:rgba(139,124,246,.12);color:#fff;border-color:rgba(185,176,255,.18);box-shadow:inset 2px 0 0 var(--accent)}.owner-only,.signed-in-only{display:none}.empty-work{margin:0;color:#848d9d;font-size:12px}.chat-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.chat-actions .nav-link{min-height:40px;padding:0 8px;justify-content:center;font-size:11px}.chat-actions .nav-link span:first-child{width:auto}.chat-actions .danger-action{color:#e8a3a3}.chat-actions .danger-action:hover{background:rgba(255,116,116,.07);border-color:rgba(255,116,116,.22);color:#ffc0c0}.continue-chat{width:100%;margin:0 0 7px;justify-content:flex-start;text-align:left;background:rgba(139,124,246,.07);border-color:rgba(185,176,255,.18)}.continue-chat .continue-copy{min-width:0;display:grid;gap:1px}.continue-chat .continue-copy strong{font-size:12px}.continue-chat .continue-copy small{color:#8f98a6;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.saved-chat-list{display:grid;gap:4px;margin-top:8px}.chat-history-item{width:100%;justify-content:flex-start;text-align:left}.chat-history-item .chat-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chat-history-item .pin-mark{margin-left:auto;width:auto!important;font-size:10px;color:#b9b0ff}.icon-btn{width:34px;height:34px;border:0;border-radius:9px;background:transparent;color:#8992a2;display:grid;place-items:center;cursor:pointer}.icon-btn:hover{background:#171d27;color:#fff}
-.main{min-width:0;display:grid;grid-template-rows:var(--top) minmax(0,1fr) auto;min-height:100dvh;background:radial-gradient(700px 420px at 50% 5%,rgba(139,124,246,.075),transparent 70%)}.top{height:var(--top);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);background:rgba(13,15,20,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);position:sticky;top:0;z-index:10}.top-left,.top-actions{min-width:0;display:flex;align-items:center;gap:8px}.model-pill{min-height:40px;max-width:100%;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:rgba(20,24,35,.82);color:#cfd4df;font-size:12px;font-weight:720;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;cursor:pointer}.model-dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px rgba(82,214,159,.12)}.top-usage{min-height:32px;display:inline-flex;align-items:center;gap:6px;padding:0 10px;border:1px solid var(--line);border-radius:999px;color:#cbd3df;background:rgba(17,20,30,.72);font-size:11px;font-weight:750}.chat{min-width:0;min-height:0;overflow:auto;padding:24px 18px 18px;scroll-behavior:smooth;overscroll-behavior:contain}.chat-inner{width:min(var(--max),100%);margin:0 auto;display:grid;gap:14px}.welcome{padding:clamp(28px,5vh,52px) 0 18px;text-align:center;position:relative;isolation:isolate}.welcome::before{content:"";position:absolute;z-index:-1;left:50%;top:-42px;width:min(470px,68vw);height:min(330px,50vw);transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 45%,rgba(139,124,246,.12),transparent 70%);opacity:.72}.eyebrow{margin:0 0 10px;color:#aaa2ff;font-size:11px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}.welcome h1{margin:0;color:var(--text);font-size:clamp(38px,5.4vw,62px);line-height:1.02;letter-spacing:-.055em;font-weight:680;text-wrap:balance}.welcome p{max-width:700px;margin:14px auto 0;color:var(--muted);font-size:15px}.quality-strip{width:min(650px,100%);margin:18px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.quality-strip span{min-height:38px;display:flex;align-items:center;justify-content:center;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(17,20,30,.70);color:#d7dce6;font-size:12px;font-weight:720}.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:22px}.quick button{min-height:68px;text-align:left;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(17,20,30,.70);color:#e4e8f0;font-weight:720;cursor:pointer;overflow:hidden}.quick button span{display:block;margin-bottom:4px;color:var(--accent2);font-size:9px;text-transform:uppercase;letter-spacing:.08em}.quick button:hover{border-color:rgba(185,176,255,.30);background:rgba(139,124,246,.08)}.msg{display:grid;gap:6px;max-width:min(760px,100%)}.msg.user{justify-self:end;max-width:min(680px,92%)}.msg.assistant{justify-self:start}.bubble{padding:13px 15px;border:1px solid var(--line);border-radius:16px;background:rgba(17,20,30,.70);white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}.user .bubble{background:#eef0f6;color:#111319;border-color:#eef0f6}.assistant .bubble{background:rgba(17,20,30,.70)}.meta{color:#717a88;font-size:11px;padding:0 2px}.retry-row{display:flex;gap:8px;margin-top:8px}.message-actions{display:flex;align-items:center;gap:6px;min-height:32px;opacity:.78}.msg:hover .message-actions,.msg:focus-within .message-actions{opacity:1}.message-action{min-height:36px;padding:0 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:#8f98a7;font-size:10px;font-weight:760;cursor:pointer}.message-action:hover,.message-action:focus-visible{border-color:var(--line);background:rgba(255,255,255,.035);color:#eef1f6}.message-action[hidden]{display:none!important}.chat-export{margin-top:6px!important;justify-content:flex-start!important}.offline-note{color:var(--warn)}.composer-wrap{position:sticky;bottom:0;z-index:9;padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(8,10,17,.72),rgba(8,10,17,.97));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}.composer{width:min(var(--max),100%);margin:0 auto;padding:10px;border:1px solid var(--line2);border-radius:20px;background:rgba(18,21,31,.84);box-shadow:0 26px 85px rgba(0,0,0,.24),0 0 0 1px rgba(139,124,246,.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.composer:focus-within{border-color:rgba(185,176,255,.42);box-shadow:0 0 0 3px rgba(139,124,246,.095),0 28px 90px rgba(0,0,0,.26)}.composer textarea{width:100%;min-height:58px;max-height:34dvh;resize:vertical;border:0;outline:0;background:transparent;color:var(--text);padding:8px;font-size:15px;line-height:1.45}.composer textarea::placeholder{color:#747d8b}.composer-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 4px 7px}.composer-tool{min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.035);color:#cbd2de;font-size:11px;font-weight:730;cursor:pointer}.composer-tool:hover{border-color:rgba(185,176,255,.34);background:rgba(139,124,246,.08)}.image-status{min-width:0;max-width:260px;color:#8f98a6;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.credit-option{min-height:36px;display:inline-flex;align-items:center;gap:7px;padding:0 10px;border:1px solid var(--line);border-radius:10px;color:#aeb6c4;font-size:11px;cursor:pointer}.credit-option input{width:16px;height:16px;accent-color:#8b7cf6}.credit-option.is-disabled{opacity:.55;cursor:not-allowed}.credit-note{width:100%;color:#7f8897;font-size:10px}.composer-bar{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:8px}.status{min-width:0;color:#7e8795;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status.error{color:var(--danger)}.status.good{color:var(--good)}.status.warn{color:var(--warn)}.btn{min-height:44px;padding:0 14px;border:1px solid var(--line2);border-radius:11px;background:rgba(255,255,255,.045);color:var(--text);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:760;text-decoration:none;cursor:pointer;white-space:nowrap}.btn:hover{border-color:rgba(185,176,255,.34);background:rgba(139,124,246,.09)}.btn.primary{background:linear-gradient(135deg,#f7f7fb,#cfc9ff 55%,#8b7cf6);color:#090a10;border-color:transparent;box-shadow:0 18px 50px rgba(139,124,246,.18)}.btn.danger{border-color:rgba(255,116,116,.32);color:#ffb2b2}.btn:disabled{opacity:.55;cursor:not-allowed}.plan-box{margin-top:auto;border:1px solid var(--line);border-radius:15px;background:rgba(15,18,27,.78);padding:13px}.plan-box h3{margin:0 0 8px;font-size:14px}.plan-box p{margin:0 0 8px;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis}.plan-usage-pill{display:inline-flex;margin:3px 3px 0 0;padding:4px 7px;border:1px solid var(--line);border-radius:999px;color:#cbd1dc;font-size:10px}.plan-quality{display:none}.mobile-menu,.side-close{display:none}.drawer-backdrop{display:none}#account-box .acct-out-btn{min-width:86px!important;text-indent:0!important}#account-box .acct-out-btn::after{content:none!important}
-#welcome-modal[hidden]{display:none!important}#welcome-modal{position:fixed;inset:0;z-index:4000!important;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.64);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}#welcome-modal .welcome-card{position:relative;z-index:4001!important;width:min(540px,100%);padding:24px!important;border:1px solid rgba(255,255,255,.10);border-radius:24px !important;background:rgba(20,24,35,.94);color:var(--text);box-shadow:0 24px 90px rgba(0,0,0,.45)}#welcome-modal .welcome-card h2{margin:0;color:#fff;font-size:30px;line-height:1.04;letter-spacing:-.055em}#welcome-modal .welcome-card p{margin:9px 0 0;color:#a7afbd;font-size:13px;line-height:1.55}#welcome-modal .auth-grid{display:grid;gap:9px;margin-top:18px}#welcome-modal .own-input{width:100%;min-height:44px;padding:0 12px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:#0d0f13!important;color:#f4f6fb}#welcome-modal .auth-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}#welcome-modal .auth-link{min-height:42px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:#11151d;color:#e8ebf1;text-decoration:none;font-size:12px;font-weight:750}#welcome-modal .auth-muted{background:transparent;color:#a7afbd}.auth-note{color:#828a98!important;font-size:11px!important}.welcome-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border:0;border-radius:10px;background:#222936;color:#cfd4df;cursor:pointer}.settings-panel{display:none;position:fixed;inset:0;z-index:2600;padding:18px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px)}.settings-card{width:min(560px,100%);max-height:86dvh;overflow:auto;margin:6vh auto 0;border:1px solid var(--line2);border-radius:22px;background:#11141d;padding:18px}.settings-card h2{margin:0 0 4px}.settings-card p{margin:0 0 14px;color:var(--muted)}.set-click{cursor:pointer}.settings-grid{display:grid;gap:8px}.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;border:1px solid var(--line);border-radius:13px;background:#151a25;padding:0 12px;color:#dfe4ed}.settings-row small{color:var(--muted)}.settings-credit{flex-wrap:wrap}.settings-credit-copy{display:grid;gap:2px}.credit-buy-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.credit-buy-controls select{min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:#0d1119;color:#eef2f8}.credit-buy-controls button{min-height:40px}.topup-status{grid-column:1/-1;width:100%;min-height:16px;color:#9aa3b1;font-size:11px}.topup-status.error{color:var(--danger)}.topup-status.good{color:var(--good)}.call-setup-panel{align-items:flex-start!important}.call-setup-list{display:block!important;margin-top:6px!important;white-space:normal!important;line-height:1.5!important;color:#9ca6b5!important}
-#model-menu[hidden]{display:none!important}#model-menu{position:fixed;z-index:3000;top:58px;left:calc(var(--side) + 18px);width:min(380px,calc(100vw - var(--side) - 36px));max-height:min(560px,72dvh);overflow:auto;padding:10px;border:1px solid var(--line2);border-radius:18px;background:rgba(17,20,30,.96);box-shadow:0 24px 80px rgba(0,0,0,.48);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}#model-menu .model-menu-heading{padding:7px 8px 10px;display:grid;gap:2px;color:#fff;font-weight:850}#model-menu .model-menu-heading span:last-child{color:var(--muted);font-size:11px;font-weight:650}#model-menu button{width:100%;min-height:48px;margin-top:4px;padding:0 12px;border:1px solid transparent;border-radius:12px;background:transparent;color:#dfe4ed;text-align:left;font-weight:730;cursor:pointer}#model-menu button:hover{background:rgba(139,124,246,.10);border-color:rgba(185,176,255,.24)}#model-menu button[aria-checked="true"]{background:rgba(139,124,246,.14);border-color:rgba(185,176,255,.28);color:#fff;box-shadow:inset 2px 0 0 var(--accent2)}#model-menu button[data-locked="true"]{color:#aab2c1}#model-menu button span{float:right;color:#b8aeff;font-size:10px}.professional-note{margin:10px 0 0;color:#8992a2;font-size:11px}
-@media(min-width:1280px){:root{--side:292px;--max:920px}.top{padding-inline:24px}.chat{padding-top:34px}}@media(max-width:1100px){:root{--side:244px}.side{padding:12px}.quick{grid-template-columns:repeat(2,minmax(0,1fr))}.quality-strip{grid-template-columns:1fr}.plan-box{padding:11px}}@media(max-width:900px){.app{grid-template-columns:1fr}.side{position:fixed;inset:0 auto 0 0;z-index:60;width:min(320px,88vw);display:flex;transform:translateX(-104%);transition:transform .2s ease;box-shadow:0 20px 80px rgba(0,0,0,.55);border-right:1px solid var(--line2)}.side.open{transform:translateX(0)}.side-close,.mobile-menu{display:inline-flex}.drawer-backdrop{display:block;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.46);opacity:0;pointer-events:none;transition:opacity .2s ease}.drawer-backdrop.open{opacity:1;pointer-events:auto}.top{padding:0 12px}.chat{padding:20px 12px 24px}.composer-wrap{padding-inline:12px}.welcome{text-align:left}.welcome p{margin-left:0}.quality-strip{margin-left:0}.model-pill{max-width:48vw;overflow:hidden;text-overflow:ellipsis}.desktop-only{display:none!important}#model-menu{left:12px;right:12px;top:58px;width:auto}.op-hide-sm{display:none!important}}@media(max-width:640px){:root{--top:58px}.top{gap:8px}.top-actions{gap:6px}.btn{min-height:44px;padding-inline:12px}.quick{grid-template-columns:1fr 1fr}.quick button{min-height:58px}.welcome h1{font-size:clamp(38px,12vw,56px)}.welcome p{font-size:14px}.msg.user{max-width:96%}.bubble{padding:12px 13px}.composer{border-radius:17px}.composer textarea{min-height:52px}.composer-tools{gap:6px}.composer-tool{min-height:44px}.credit-option{flex:1 1 100%;max-width:100%;min-height:44px;white-space:normal}.image-status{flex:1 1 120px;max-width:100%}.composer-bar{grid-template-columns:minmax(0,1fr) auto auto}.composer-bar .btn:not(.primary):not(.stop-btn){display:none}.status{font-size:11px}.model-pill{max-width:42vw;padding-inline:10px}.top-usage{display:none}}@media(max-width:420px){.quick{grid-template-columns:1fr}.top{padding-inline:10px}.mobile-menu{padding-inline:10px}.model-pill{font-size:11px;max-width:38vw}.top-actions .btn.primary{padding-inline:10px}.chat{padding-inline:10px}.composer-wrap{padding-inline:10px}.composer{padding:8px}.composer-tools{align-items:stretch}.composer-tool{flex:1 1 auto}.image-status{order:3;flex-basis:100%}.credit-option{order:4}.credit-note{order:5}.composer-bar{gap:6px}.send-label{display:none}.btn.primary{min-width:44px}}@media (max-width: 520px){#welcome-modal{align-items:end;padding:0}#welcome-modal .welcome-card{width:100%;max-width:none;max-height:92dvh;overflow:auto;border-radius:24px 24px 0 0!important}.settings-panel{padding:0;display:none}.settings-card{width:100%;max-height:90dvh;margin:10dvh 0 0;border-radius:22px 22px 0 0;padding-bottom:calc(18px + env(safe-area-inset-bottom))}}@media(max-height:620px) and (max-width:900px){.welcome{padding-top:12px}.quick button{min-height:50px}.composer textarea{min-height:44px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
-
-/* Executive workspace layer v12 */
-body{background:
-  radial-gradient(780px 460px at 55% -8%,rgba(139,124,246,.12),transparent 68%),
-  linear-gradient(180deg,#0b0d12 0%,#080a0f 60%,#06070b 100%)}
-.side{
-  background:linear-gradient(180deg,rgba(14,17,23,.98),rgba(10,12,17,.98));
-  border-right-color:rgba(255,255,255,.075);
-  box-shadow:inset -1px 0 0 rgba(255,255,255,.015)
-}
-.brand-row{min-height:48px}
-.brand{font-weight:820;letter-spacing:-.04em}
-.mark{
-  width:32px;height:32px;flex-basis:32px;border-radius:11px;
-  background:linear-gradient(145deg,#2b2850 0%,#171a25 72%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 10px 28px rgba(0,0,0,.22);
-  filter:none
-}
-.side-title{color:#6f7785;letter-spacing:.115em}
-.nav-link,.set-item{border-radius:12px;color:#959eac}
-.nav-link:hover,.set-item:hover{
-  background:rgba(255,255,255,.035);
-  border-color:rgba(255,255,255,.07)
-}
-.nav-link.active{
-  background:linear-gradient(90deg,rgba(139,124,246,.11),rgba(139,124,246,.035));
-  border-color:rgba(139,124,246,.16);
-  box-shadow:inset 2px 0 0 #9c91ff
-}
-.top{
-  background:rgba(10,12,17,.76);
-  border-bottom-color:rgba(255,255,255,.07);
-  backdrop-filter:blur(22px) saturate(120%);
-  -webkit-backdrop-filter:blur(22px) saturate(120%)
-}
-.model-pill,.top-usage{
-  background:rgba(18,21,29,.78);
-  border-color:rgba(255,255,255,.085);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)
-}
-.chat{padding-top:30px}
-.welcome{padding-top:clamp(34px,6vh,62px)}
-.welcome::before{
-  top:-60px;width:min(540px,72vw);height:min(360px,52vw);
-  background:radial-gradient(circle at 50% 46%,rgba(139,124,246,.105),transparent 72%);
-  opacity:.9
-}
-.eyebrow{color:#9f96ff;letter-spacing:.18em}
-.welcome h1{
-  font-size:clamp(40px,5.1vw,60px);
-  line-height:1.03;
-  letter-spacing:-.05em;
-  font-weight:690
-}
-.welcome p{max-width:680px;color:#9da6b4;line-height:1.72}
-.quality-strip{gap:7px}
-.quality-strip span{
-  min-height:36px;
-  border-color:rgba(255,255,255,.075);
-  background:rgba(16,19,26,.76);
-  color:#c9cfda;
-  font-size:11px
-}
-.msg{gap:7px}
-.meta{color:#687180;font-size:10px;letter-spacing:.02em}
-.bubble{
-  border-color:rgba(255,255,255,.075);
-  border-radius:17px;
-  background:linear-gradient(180deg,rgba(19,23,31,.94),rgba(15,18,25,.94));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.018)
-}
-.user .bubble{
-  background:linear-gradient(180deg,#eef0f5,#e2e5ec);
-  color:#101218;
-  border-color:transparent;
-  box-shadow:0 8px 30px rgba(0,0,0,.12)
-}
-.assistant .bubble{
-  background:linear-gradient(180deg,rgba(19,23,31,.94),rgba(15,18,25,.94))
-}
-.composer-wrap{
-  background:linear-gradient(180deg,rgba(8,10,15,.48),rgba(8,10,15,.97) 38%);
-  border-top-color:rgba(255,255,255,.065);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px)
-}
-.composer{
-  padding:11px;
-  border-radius:22px;
-  border-color:rgba(255,255,255,.11);
-  background:linear-gradient(180deg,rgba(20,24,33,.94),rgba(15,18,25,.96));
-  box-shadow:0 26px 90px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.025)
-}
-.composer:focus-within{
-  border-color:rgba(159,150,255,.36);
-  box-shadow:0 0 0 4px rgba(139,124,246,.065),0 30px 90px rgba(0,0,0,.30)
-}
-.composer textarea{font-size:15px;line-height:1.55}
-.composer-tool,.credit-option{
-  background:rgba(255,255,255,.025);
-  border-color:rgba(255,255,255,.075);
-  border-radius:10px
-}
-.btn{
-  border-radius:11px;
-  border-color:rgba(255,255,255,.09);
-  background:rgba(255,255,255,.035);
-  color:#d9dee7;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)
-}
-.btn:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.13)}
-.btn.primary{
-  background:linear-gradient(135deg,#f6f5ff 0%,#d9d4ff 55%,#9a8df8 100%);
-  color:#0d0f14;
-  border-color:transparent;
-  font-weight:820;
-  box-shadow:0 10px 28px rgba(139,124,246,.12)
-}
-.settings-panel{background:rgba(4,5,8,.66);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.settings-card{
-  border-color:rgba(255,255,255,.09);
-  border-radius:24px;
-  background:linear-gradient(180deg,#151922,#10131a);
-  box-shadow:0 34px 110px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.03)
-}
-.settings-row{
-  min-height:50px;
-  border-color:rgba(255,255,255,.075);
-  border-radius:14px;
-  background:rgba(255,255,255,.025)
-}
-.settings-row:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.11)}
-#welcome-modal .welcome-card{
-  background:linear-gradient(180deg,rgba(22,26,35,.98),rgba(15,18,25,.98));
-  border-color:rgba(255,255,255,.09);
-  box-shadow:0 34px 110px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.03)
-}
-@media(max-width:640px){
-  .chat{padding-top:18px}
-  .welcome{padding-top:24px}
-  .welcome h1{font-size:clamp(36px,11vw,50px)}
-  .quality-strip{grid-template-columns:1fr}
-  .quality-strip span{min-height:34px}
-  .composer{border-radius:19px}
-}
-
-
-/* Workspace declutter v13 */
-.side-section[hidden],.chat-actions[hidden]{display:none!important}
-#current-work-section{margin-top:2px}
-#account-box{
-  padding:12px;
-  border-radius:14px;
-  background:rgba(255,255,255,.018);
-  border-color:rgba(255,255,255,.07)
-}
-#account-box h3{font-size:12px;letter-spacing:.02em}
-#account-box p{font-size:11px;line-height:1.45}
-#account-box .btn{width:100%;min-height:40px}
-#settings-nav.active{
-  background:linear-gradient(90deg,rgba(139,124,246,.11),rgba(139,124,246,.035));
-  border-color:rgba(139,124,246,.16);
-  box-shadow:inset 2px 0 0 #9c91ff;
-  color:#fff
-}
-#chat-nav:not(.active){box-shadow:none}
-.top-usage{
-  max-width:340px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap
-}
-.welcome{max-width:840px;margin-inline:auto}
-.welcome p{max-width:660px}
-.quality-strip{max-width:620px}
-@media(max-width:900px){
-  .side{box-shadow:16px 0 60px rgba(0,0,0,.34)}
-}
-
-/* Focused workspace v14 */
-.side{padding:13px 12px;gap:10px}
-.side-section{padding-top:10px;margin-top:0}
-.side-title{margin-bottom:6px}
-.nav-link{min-height:40px}
-.top{min-height:56px;height:56px}
-.chat{padding-top:18px}
-.welcome{padding-top:clamp(26px,4vh,44px)}
-.welcome h1{font-size:clamp(38px,4.7vw,56px)}
-.welcome p{max-width:560px;margin-top:12px;font-size:14px}
-.quality-strip{display:none!important}
-.composer-tools{gap:6px;padding-bottom:6px}
-.composer-more[hidden]{display:none!important}
-.composer-more{
-  margin:2px 4px 8px;
-  padding:10px;
-  display:grid;
-  gap:9px;
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:12px;
-  background:rgba(255,255,255,.018)
-}
-.composer-more-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.composer-more .credit-option{width:max-content;max-width:100%}
-.composer-more .credit-note{margin:0}
-.stop-btn:disabled{display:none!important}
-.composer-bar{grid-template-columns:minmax(0,1fr) auto auto}
-.professional-note{display:none!important}
-#account-box,.plan-quality{display:none!important}
-@media(max-width:900px){
-  :root{--side:248px}
-}
-@media(max-width:640px){
-  .welcome{padding-top:18px}
-  .welcome p{font-size:13px}
-  .composer-tools .composer-tool{flex:0 0 auto}
-  .composer-more .credit-option{width:100%}
-}
-
-/* Calm workspace v13 — reduced visual noise, same features. */
-:root{--side:224px;--top:56px;--max:820px;--bg:#0b0c10;--panel:#111218;--panel2:#15161d;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.11)}
-body{background:#0b0c10!important}
-.app{background:#0b0c10}
-.side{padding:10px!important;gap:6px!important;background:#0e0f14!important;border-right:1px solid rgba(255,255,255,.06)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
-.brand-row{min-height:44px!important}.brand{font-size:14px}.mark{width:28px!important;height:28px!important;flex-basis:28px!important;border-radius:9px!important;background:#171822!important;box-shadow:none!important;filter:none!important}
-.side>.btn.primary{min-height:40px!important;margin:2px 0 6px;background:#ece9ff!important;color:#111218!important;border:0!important;box-shadow:none!important}
-.side-section{padding-top:7px!important;border-top:0!important}.side-title{margin:2px 8px 5px!important;color:#666d79!important;font-size:9px!important;letter-spacing:.09em!important}
-.nav-link,.set-item{min-height:40px!important;padding:0 10px!important;border:0!important;border-radius:9px!important;background:transparent!important;color:#969daa!important;font-size:12.5px!important}
-.nav-link:hover,.set-item:hover{background:rgba(255,255,255,.045)!important;color:#f4f5f7!important}.nav-link.active{background:rgba(255,255,255,.065)!important;color:#fff!important;box-shadow:none!important}
-.chat-actions{grid-template-columns:repeat(3,1fr)!important;gap:3px!important}.chat-actions .nav-link{min-height:36px!important;font-size:10.5px!important;padding:0 4px!important}.saved-chat-list{gap:2px!important;margin-top:5px!important}
-.main{background:#0b0c10!important}.top{height:var(--top)!important;padding:0 14px!important;background:#0b0c10!important;border-bottom:1px solid rgba(255,255,255,.055)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.top-usage{display:none!important}.model-pill{min-height:36px!important;padding:0 10px!important;border:0!important;background:transparent!important}.model-pill:hover{background:rgba(255,255,255,.045)!important}.model-dot{width:6px!important;height:6px!important;box-shadow:none!important}
-.jarvis-call-top{background:rgba(139,124,246,.16)!important;color:#f1efff!important;border:1px solid rgba(185,176,255,.22)!important}
-.jarvis-call-top:hover{background:rgba(139,124,246,.24)!important}
-.top-actions .btn{min-height:38px!important;border:0!important;background:transparent!important}.top-actions .btn:hover{background:rgba(255,255,255,.045)!important}
-.chat{padding:18px 18px 10px!important}.chat-inner{gap:16px!important}.welcome{padding:clamp(54px,14vh,130px) 0 10px!important}.welcome::before{display:none!important}.welcome .eyebrow,.welcome>p{display:none!important}.welcome h1{font-size:clamp(30px,4.6vw,48px)!important;line-height:1.08!important;letter-spacing:-.045em!important;font-weight:650!important;max-width:720px;margin-inline:auto!important}
-.bubble{border:0!important;background:transparent!important;padding:10px 12px!important}.assistant .bubble{background:transparent!important}.user .bubble{background:#202127!important;color:#f5f5f7!important;border-radius:18px!important}.meta{font-size:10px!important;color:#676e79!important}
-.composer-wrap{padding:8px 16px max(12px,calc(8px + env(safe-area-inset-bottom)))!important;border-top:0!important;background:linear-gradient(180deg,rgba(11,12,16,0),#0b0c10 28%)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.composer{padding:7px 8px 7px 12px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:22px!important;background:#15161c!important;box-shadow:0 10px 30px rgba(0,0,0,.18)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.composer:focus-within{border-color:rgba(185,176,255,.28)!important;box-shadow:0 10px 30px rgba(0,0,0,.18)!important}.composer textarea{min-height:50px!important;max-height:28dvh!important;padding:8px 6px 4px!important;resize:none!important;font-size:15px!important}
-.composer-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}.composer-tools{padding:0!important;gap:4px!important}.composer-tool{min-height:34px!important;padding:0 9px!important;border:0!important;border-radius:9px!important;background:transparent!important;color:#8f96a3!important;font-size:11px!important}.composer-tool:hover{background:rgba(255,255,255,.05)!important;color:#eceef2!important}
-.composer-bar{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important}.status{max-width:260px!important;font-size:10.5px!important}.status:not(.error):not(.good):not(.warn){opacity:0!important}.stop-btn:not(:disabled){min-height:34px!important;padding:0 9px!important;border:0!important;background:transparent!important}.stop-btn:disabled{display:none!important}
-#sendBtn{width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;padding:0!important;border-radius:50%!important;background:#eeeaff!important;color:#111218!important;box-shadow:none!important}.send-label{display:none!important}
-.composer-more{margin-top:7px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.06)!important}.composer-more-row{gap:5px!important}.credit-option{border:0!important;background:transparent!important;padding:4px 2px!important;min-height:32px!important}.credit-note{padding-left:2px!important}
-.settings-panel{background:rgba(0,0,0,.54)!important;backdrop-filter:blur(7px)!important}.settings-card{width:min(520px,100%)!important;padding:16px!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;background:#111218!important}.settings-card>p{font-size:12px!important;margin-bottom:10px!important}.settings-grid{gap:5px!important}.settings-row{min-height:44px!important;border:0!important;border-radius:10px!important;background:#17181f!important;padding:9px 11px!important}.settings-row:hover{background:#1d1e26!important}.settings-row small{font-size:10.5px!important}.credit-buy-controls{gap:5px!important}.credit-buy-controls .btn{min-height:36px!important;padding:0 10px!important}
-#model-menu{padding:7px!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:14px!important;background:#14151b!important;box-shadow:0 18px 50px rgba(0,0,0,.38)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}#model-menu .model-menu-heading{padding:6px 8px!important}#model-menu button{min-height:44px!important;margin-top:1px!important;border:0!important;border-radius:9px!important}#model-menu button:hover{background:rgba(255,255,255,.05)!important}
-@media(max-width:900px){:root{--top:54px}.welcome{text-align:center!important;padding:clamp(44px,12vh,96px) 10px 8px!important}.composer-wrap{padding-inline:10px!important}.chat{padding-inline:12px!important}.side{width:min(300px,86vw)!important}}
-@media(max-width:640px){.welcome h1{font-size:clamp(28px,9vw,40px)!important}.composer{padding:6px 7px 6px 10px!important;border-radius:20px!important}.composer textarea{min-height:46px!important}.composer-more-row{display:flex!important;flex-wrap:wrap!important}.credit-option{width:100%!important}.settings-card{padding:14px!important}.side-title{display:none!important}.side-section{padding-top:3px!important}.nav-link,.set-item,.composer-tool,.model-pill,.top-actions .btn{min-height:44px!important}#sendBtn{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important}}
-
-.app .computer-action-card{width:min(720px,100%);margin:8px auto 2px;padding:16px;border:1px solid rgba(185,176,255,.18);border-radius:18px;background:#12141b;box-shadow:0 18px 56px rgba(0,0,0,.24)}
-.app .computer-action-card .computer-card-kicker{color:#a9a0ff;font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}.app .computer-action-card h3{margin:5px 0 12px;font-size:18px}.app .computer-card-row{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06)}.app .computer-card-row span{color:#7f8897;font-size:11px}.app .computer-card-row strong{color:#eef0f5;font-size:12px;overflow-wrap:anywhere}.app .computer-card-note{margin:10px 0 0;color:#9099a8;font-size:11px;line-height:1.5}.app .computer-card-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.app .computer-card-actions .btn{min-width:84px}
-
-
-/* Mobile reliability v25 — readable controls + lighter iPhone rendering */
-button,.btn,.nav-link,.set-item,.composer-tool,.model-pill,.model-option,.model-menu-action{
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-@media(max-width:640px){
-  .app button,.app .btn,.app .nav-link,.app .set-item,.app .composer-tool,.app .model-pill,
-  #model-menu button,.settings-panel button,.settings-panel a{
-    opacity:1!important;
-  }
-  .app .top-actions .btn,.app .model-pill,.app .composer-tool:not(#sendBtn){
-    color:#f0f1f5!important;
-  }
-  .app .nav-link,.app .set-item{color:#d0d3db!important}
-  .app .nav-link.active{color:#fff!important}
-  .settings-panel .settings-row,.settings-panel .settings-row strong,
-  .settings-panel .settings-credit-copy strong{color:#f5f6f8!important}
-  .settings-panel .settings-row small,.settings-panel .settings-credit-copy small,
-  .settings-panel .settings-row-meta{color:#aeb4bf!important}
-  .settings-panel .btn:not(.primary){color:#f0f2f6!important;background:#24262d!important}
-  .settings-panel .btn.primary{color:#101217!important;background:#f0f1f5!important}
-  #sendBtn{color:#111218!important;background:#f2f2f4!important}
-  .settings-panel,.settings-header,.composer-wrap,.side{
-    backdrop-filter:none!important;
-    -webkit-backdrop-filter:none!important;
-  }
-  .settings-panel{background:rgba(0,0,0,.68)!important}
-  .settings-card{box-shadow:none!important}
-}
-
-</style>
-<link rel="stylesheet" href="/lib/assets/stellar-refinements.css?v=20260924">
-<style id="stellar-user-polish-v15">
-/* Focused workspace polish: ChatGPT-like rhythm, compact settings, no leftover home hero in chats. */
-:root{--side:212px;--max:780px}
-.app .top{border-bottom:0!important;background:#0b0c10!important;box-shadow:none!important}
-.app .side{padding:9px!important}
-.app .side-title{display:none!important}
-.app .side-section{padding-top:2px!important}
-.app .side>.btn.primary{background:#1a1b21!important;color:#eceef3!important;border:1px solid rgba(255,255,255,.07)!important}
-.app .side>.btn.primary:hover{background:#202128!important}
-.app .nav-link,.app .set-item{border-radius:8px!important}
-.app .meta{display:none!important}
-.app .assistant .bubble{background:transparent!important;border:0!important;border-radius:0!important;padding:8px 2px!important;color:#e5e7ec!important}
-.app .user .bubble{background:#24252c!important;border:0!important;border-radius:18px!important;color:#f4f5f7!important}
-#chat:not(:has(.msg)) .chat-inner{min-height:100%;display:flex;flex-direction:column;align-items:stretch}
-#chat:not(:has(.msg)) .home-welcome{padding-top:clamp(70px,15vh,150px)!important}
-.app .home-welcome>p,.app .home-welcome .eyebrow{display:none!important}
-.app .system-welcome>p{display:block!important;color:#aeb5c2!important}
-.app .system-welcome .eyebrow{display:block!important}
-.app .system-welcome{padding-top:clamp(42px,9vh,86px)!important}
-.app .composer-wrap{padding:8px 16px max(18px,calc(12px + env(safe-area-inset-bottom)))!important}
-.app .composer{width:min(760px,100%)!important;border-radius:24px!important;background:#17181e!important;border-color:rgba(255,255,255,.10)!important}
-.app .composer textarea{min-height:48px!important}
-.app .status[data-idle="true"]{display:none!important}
-.app .status:not([data-idle="true"]){opacity:.82!important}
-.app .top-plans{min-height:38px!important;padding-inline:11px!important;background:transparent!important;border:0!important;color:#b6bdc9!important}
-.app .top-plans:hover{background:rgba(255,255,255,.045)!important;color:#fff!important}
-.settings-panel .settings-card{width:min(760px,calc(100vw - 32px))!important;max-height:84dvh!important;overflow:auto!important;padding:16px!important}
-.settings-panel .settings-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
-.settings-panel .settings-row,.settings-panel .set-item{min-height:48px!important;padding:10px 11px!important;border:0!important;background:#181a21!important}
-.settings-panel .settings-row.settings-credit{grid-column:1/-1}
-.settings-panel .settings-grid>.btn:last-child{grid-column:1/-1}
-.settings-panel .settings-row small,.settings-panel .set-item small{font-size:10.5px!important}
-@media(max-width:900px){
-  :root{--side:280px}
-  .app .top{padding-inline:10px!important}
-  #chat:not(:has(.msg)) .home-welcome{padding-top:clamp(52px,12vh,104px)!important}
-  .app .composer-wrap{padding-inline:10px!important}
-}
-@media(max-width:640px){
-  .app .top-plans{min-height:44px!important;padding-inline:9px!important}
-  .settings-panel .settings-card{width:100%!important;max-width:none!important;max-height:90dvh!important;margin:10dvh 0 0!important;border-radius:22px 22px 0 0!important;padding:14px 12px calc(14px + env(safe-area-inset-bottom))!important}
-  .settings-panel .settings-grid{grid-template-columns:1fr!important;gap:5px!important}
-  .settings-panel .settings-row.settings-credit,.settings-panel .settings-grid>.btn:last-child{grid-column:auto}
-  .settings-panel .settings-row,.settings-panel .set-item{min-height:44px!important;padding:9px 10px!important}
-  .app .composer{border-radius:22px!important}
-}
-@media(max-width:380px){
-  .app .top-plans{font-size:11px!important;padding-inline:7px!important}
-  .app .model-pill{max-width:34vw!important}
-}
-/* Clean workspace v16 — no gold, no dashboard clutter, composer always visible. */
-:root{--side:212px!important;--top:56px!important;--max:780px!important;--warn:#b9b0ff!important;--accent:#8b7cf6!important;--accent2:#c8c0ff!important}
-html,body{height:100%!important;overflow:hidden!important;background:#0b0c10!important;color:#f4f5f7!important}
-.app,.app .main{height:100vh!important;max-height:100vh!important;overflow:hidden!important;background:#0b0c10!important}
-.app .chat{min-height:0!important;overflow:auto!important;padding:12px 18px 8px!important}
-.app .top{height:56px!important;background:#0b0c10!important;border-bottom:1px solid rgba(255,255,255,.055)!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.app #top-usage,.app .top-usage{display:none!important}
-.app .side{background:#0e0f14!important;border-right:1px solid rgba(255,255,255,.06)!important;box-shadow:none!important;padding:10px!important;gap:7px!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.app .brand,.app .brand *{color:#eef0f5!important}
-.app .mark{background:#171821!important;border:1px solid rgba(255,255,255,.06)!important;color:#c8c0ff!important;box-shadow:none!important;filter:none!important}
-.app .side>.btn.primary{background:#1a1b22!important;color:#f0f1f6!important;border:1px solid rgba(255,255,255,.085)!important;box-shadow:none!important}
-.app .side>.btn.primary:hover{background:#22232b!important}
-
-</style>
-<link rel="stylesheet" href="/lib/assets/stellar-polish-v17.css?v=20260924-3">
-<link rel="stylesheet" href="/lib/assets/stellar-smooth-smart.css?v=20260925">
-<link rel="stylesheet" href="/lib/assets/stellar-call.css?v=20260924-1">
-
-<!-- STELLAR APP RESPONSIVE POLISH V18 -->
-<style id="stellar-app-responsive-polish-v18">
-:root{--side:244px;--top:58px;--max:880px}
-*{box-sizing:border-box}
-html,body{max-width:100%;overflow-x:hidden}
-button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.btn,.nav-link,.set-item,.composer-tool,.model-pill,.side-close,.mobile-menu,.welcome-close{
-  min-height:44px
-}
-.side{
-  width:var(--side)!important;
-  padding:12px!important;
-  gap:8px!important
-}
-.brand-row{min-height:48px!important}
-.side>.btn.primary{min-height:44px!important}
-.side-section{min-width:0}
-.nav-link,.set-item{
-  width:100%!important;min-height:44px!important;padding:0 11px!important;
-  display:flex!important;align-items:center!important;gap:9px!important;
-  border-radius:10px!important;font-size:12.5px!important;line-height:1.2!important;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
-}
-.chat-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
-.chat-actions .nav-link{
-  min-width:0!important;min-height:40px!important;padding:0 6px!important;
-  justify-content:center!important;font-size:10.5px!important
-}
-.saved-chat-list{min-width:0}
-.saved-chat-list>*{min-width:0}
-.main{min-width:0}
-.top{
-  min-height:var(--top)!important;height:var(--top)!important;
-  padding-inline:16px!important;gap:10px!important
-}
-.model-pill{max-width:min(42vw,300px)!important;min-width:0!important}
-.top-actions{display:flex!important;align-items:center!important;gap:6px!important;min-width:0}
-.top-actions .btn{min-width:44px!important}
-.chat{
-  padding:22px 18px 18px!important;
-  overflow-x:hidden!important
-}
-.chat-inner{width:min(100%,var(--max))!important;margin-inline:auto!important;min-width:0!important}
-.welcome{width:100%!important;max-width:760px!important;margin-inline:auto!important;padding-top:clamp(52px,12vh,116px)!important}
-.welcome h1{
-  font-size:clamp(34px,5vw,50px)!important;line-height:1.06!important;
-  max-width:700px!important;margin-inline:auto!important;text-wrap:balance
-}
-.msg{width:100%!important;min-width:0!important}
-.bubble{max-width:100%!important;overflow-wrap:anywhere}
-.composer-wrap{
-  padding:10px 18px max(14px,calc(10px + env(safe-area-inset-bottom)))!important
-}
-.composer{
-  width:min(100%,var(--max))!important;margin-inline:auto!important;
-  padding:8px 9px 8px 12px!important;border-radius:22px!important
-}
-.composer textarea{
-  width:100%!important;min-width:0!important;min-height:52px!important;
-  max-height:30dvh!important;font-size:16px!important;line-height:1.5!important
-}
-.composer-tools{display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important}
-.composer-tool{min-width:44px!important;padding-inline:10px!important}
-.composer-bar{grid-template-columns:minmax(0,1fr) auto auto!important;gap:7px!important;align-items:center!important}
-.composer-bar .btn.primary{min-width:44px!important;height:44px!important;padding-inline:12px!important}
-.settings-row{min-height:50px!important}
-#welcome-modal .welcome-close{width:44px!important;height:44px!important}
-#model-menu{max-width:calc(100vw - 24px)!important}
-#model-menu button{min-height:48px!important}
-
-@media (min-width:1280px){
-  :root{--side:260px;--max:920px}
-  .side{padding:14px!important}
-  .chat{padding-inline:24px!important}
-  .composer-wrap{padding-inline:24px!important}
-}
-
-@media (max-width:1100px){
-  :root{--side:232px;--max:840px}
-  .side{padding:10px!important}
-}
-
-@media (max-width:900px){
-  :root{--side:300px;--max:760px}
-  .app{grid-template-columns:1fr!important}
-  .side{
-    position:fixed!important;left:0!important;top:0!important;bottom:0!important;
-    width:min(var(--side),88vw)!important;z-index:60!important;
-    transform:translateX(-104%);transition:transform .2s ease!important;
-    padding:12px!important
-  }
-  .side.open{transform:translateX(0)!important}
-  .side-close,.mobile-menu{display:inline-flex!important;align-items:center!important;justify-content:center!important}
-  .top{padding-inline:12px!important}
-  .chat{padding:18px 12px 14px!important}
-  .composer-wrap{padding-inline:12px!important}
-  #model-menu{left:12px!important;right:12px!important;width:auto!important}
-  .welcome{padding-top:clamp(40px,9vh,82px)!important}
-}
-
-@media (max-width:640px){
-  :root{--top:58px;--max:100%}
-  .top{gap:6px!important;padding-inline:10px!important}
-  .mobile-menu{width:44px!important;min-width:44px!important;padding:0!important}
-  .model-pill{max-width:44vw!important;min-height:42px!important;padding-inline:8px!important;font-size:11.5px!important}
-  .top-actions{gap:4px!important}
-  .top-actions .btn{padding-inline:10px!important}
-  .chat{padding:12px 10px 8px!important}
-  .welcome{padding-top:clamp(34px,8vh,64px)!important}
-  .welcome h1{font-size:clamp(32px,10vw,44px)!important}
-  .msg.user{max-width:100%!important}
-  .composer-wrap{padding:8px 10px max(12px,calc(8px + env(safe-area-inset-bottom)))!important}
-  .composer{padding:7px 8px 7px 10px!important;border-radius:18px!important}
-  .composer textarea{min-height:48px!important}
-  .composer-tools{gap:5px!important}
-  .composer-tool{min-width:44px!important;min-height:44px!important}
-  .composer-bar{gap:5px!important}
-  .send-label{display:none!important}
-  .settings-card{
-    width:100%!important;max-width:none!important;max-height:90dvh!important;
-    margin:10dvh 0 0!important;border-radius:22px 22px 0 0!important;
-    padding-bottom:calc(18px + env(safe-area-inset-bottom))!important
-  }
-  .settings-row{min-height:52px!important}
-}
-
-@media (max-width:420px){
-  .top{padding-inline:8px!important}
-  .model-pill{max-width:40vw!important}
-  .top-actions .btn{min-width:42px!important;padding-inline:8px!important}
-  .chat{padding-inline:8px!important}
-  .composer-wrap{padding-inline:8px!important}
-  .composer{padding-inline:8px!important}
-  .composer-tools{align-items:stretch!important}
-  .composer-tool{flex:1 1 auto!important}
-}
-
-@media (max-height:620px) and (max-width:900px){
-  .welcome{padding-top:20px!important}
-  .composer textarea{min-height:44px!important}
-}
-</style>
-<!-- /STELLAR APP RESPONSIVE POLISH V18 -->
-
-<!-- STELLAR SETTINGS CALM V19 -->
-<style id="stellar-settings-calm-v19">
-.settings-panel{
-  background:rgba(5,6,9,.66)!important;
-  backdrop-filter:blur(12px)!important;
-  -webkit-backdrop-filter:blur(12px)!important
-}
-.settings-card{
-  width:min(540px,100%)!important;
-  padding:16px!important;
-  border-radius:20px!important;
-  background:#111218!important;
-  box-shadow:0 28px 90px rgba(0,0,0,.42)!important
-}
-.settings-header{
-  display:flex!important;
-  align-items:flex-start!important;
-  justify-content:space-between!important;
-  gap:16px!important;
-  padding:2px 2px 14px!important;
-  border-bottom:1px solid rgba(255,255,255,.06)!important
-}
-.settings-kicker{display:none!important}
-.settings-header h2{
-  margin:0!important;
-  font-size:24px!important;
-  line-height:1.1!important;
-  letter-spacing:-.035em!important
-}
-.settings-header p{
-  margin:5px 0 0!important;
-  max-width:380px!important;
-  color:#858c98!important;
-  font-size:12px!important;
-  line-height:1.45!important
-}
-.settings-close-x{
-  width:44px!important;height:44px!important;min-width:44px!important;
-  border:0!important;border-radius:11px!important;
-  background:transparent!important;color:#9299a5!important;
-  font-size:22px!important;cursor:pointer!important
-}
-.settings-close-x:hover{background:rgba(255,255,255,.05)!important;color:#fff!important}
-.settings-grid{
-  display:grid!important;
-  gap:2px!important;
-  padding-top:10px!important
-}
-.settings-row{
-  min-height:52px!important;
-  padding:8px 10px!important;
-  gap:10px!important;
-  border:0!important;
-  border-radius:10px!important;
-  background:transparent!important;
-  box-shadow:none!important
-}
-.settings-row:hover{
-  background:rgba(255,255,255,.04)!important
-}
-.settings-icon{
-  width:28px!important;height:28px!important;min-width:28px!important;
-  display:grid!important;place-items:center!important;
-  border-radius:8px!important;
-  background:rgba(255,255,255,.035)!important;
-  color:#969daa!important;
-  font-size:13px!important
-}
-.settings-row-copy,.settings-credit-copy{
-  min-width:0!important;
-  flex:1 1 auto!important
-}
-.settings-row strong,.settings-credit-copy strong{
-  display:block!important;
-  font-size:13px!important;
-  font-weight:700!important;
-  color:#eceef3!important
-}
-.settings-row small,.settings-credit-copy small{
-  display:none!important
-}
-#usage-copy,.settings-plan-copy,.topup-status,#owner-call-health,#owner-push-status,#owner-call-setup-status{
-  display:block!important
-}
-.settings-row-meta{
-  margin-left:auto!important;
-  color:#737b87!important;
-  font-size:11px!important;
-  white-space:nowrap!important
-}
-.settings-plan-hero{
-  min-height:64px!important;
-  margin-bottom:6px!important;
-  padding:10px 12px!important;
-  background:rgba(139,124,246,.07)!important;
-  border:1px solid rgba(185,176,255,.10)!important
-}
-.settings-plan-hero .settings-icon{
-  background:rgba(139,124,246,.12)!important;
-  color:#c4bdff!important
-}
-.settings-plan-actions{
-  padding:10px 12px 12px!important;
-  align-items:center!important;
-  flex-wrap:wrap!important
-}
-.settings-plan-actions .settings-credit-copy{
-  flex:1 1 280px!important
-}
-.settings-plan-actions .settings-plan-copy{
-  margin-top:3px!important;
-  color:#7f8794!important;
-  font-size:10.5px!important;
-  line-height:1.45!important
-}
-.settings-plan-actions .settings-compare-all{
-  width:100%!important;
-  justify-content:center!important;
-  margin-top:2px!important
-}
-.settings-plan-actions .credit-buy-controls{
-  width:100%!important;
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:6px!important
-}
-.settings-plan-actions .credit-buy-controls .btn{
-  min-height:40px!important;
-  padding:0 8px!important;
-  font-size:11px!important;
-  border-radius:9px!important;
-  background:rgba(255,255,255,.035)!important;
-  box-shadow:none!important
-}
-.settings-wallet-row{
-  margin-top:6px!important;
-  padding:10px!important;
-  background:rgba(255,255,255,.018)!important
-}
-.settings-wallet-row .credit-buy-controls{
-  width:100%!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  gap:7px!important
-}
-.settings-wallet-row select{
-  width:100%!important;
-  min-width:0!important;
-  min-height:42px!important
-}
-[data-settings-advanced]{display:none!important}
-.settings-card.advanced-open [data-settings-advanced]:not([hidden]){display:flex!important}
-.settings-advanced-toggle{margin-top:6px!important}
-.settings-card.advanced-open .settings-advanced-toggle .settings-row-meta{
-  font-size:0!important
-}
-.settings-card.advanced-open .settings-advanced-toggle .settings-row-meta::before{
-  content:"Hide";font-size:11px
-}
-.call-setup-panel{
-  align-items:center!important;
-  background:rgba(255,255,255,.018)!important
-}
-.call-setup-list{display:none!important}
-
-@media(max-width:640px){
-  .settings-card{
-    padding:14px 12px calc(14px + env(safe-area-inset-bottom))!important;
-    border-radius:20px 20px 0 0!important
-  }
-  .settings-header{padding-inline:4px!important}
-  .settings-header p{display:none!important}
-  .settings-grid{gap:1px!important}
-  .settings-row{min-height:50px!important;padding:7px 8px!important}
-  .settings-row-meta{font-size:0!important}
-  .settings-row-meta span{font-size:18px!important}
-  .settings-plan-actions .credit-buy-controls{
-    grid-template-columns:1fr!important
-  }
-  .settings-plan-actions .credit-buy-controls .btn{
-    min-height:44px!important
-  }
-  .settings-wallet-row .credit-buy-controls{
-    grid-template-columns:1fr!important
-  }
-  .settings-wallet-row .credit-buy-controls button{width:100%!important}
-}
-
-/* Chat-first workspace v2 */
-.app .space-home-subtitle,.app .space-home-chips,.app .space-home-cards{display:none!important}
-.app .home-welcome{padding-top:clamp(76px,15vh,152px)!important}
-.app .composer-tools{display:flex!important;align-items:center!important;gap:4px!important;flex-wrap:wrap!important}
-.app .composer-tools .composer-tool{display:inline-flex!important;align-items:center!important;justify-content:center!important;text-decoration:none!important;white-space:nowrap!important}
-.app .composer-computer{color:#ddd8ff!important;background:rgba(139,124,246,.10)!important;border:1px solid rgba(185,176,255,.16)!important}
-.app .composer-computer:hover{background:rgba(139,124,246,.17)!important;color:#fff!important}
-.app .composer-plugins{color:#aeb6c4!important}
-@media(max-width:640px){.app .home-welcome{padding-top:clamp(30px,8vh,70px)!important}.app .composer-tools{overflow-x:auto!important;flex-wrap:nowrap!important;scrollbar-width:none!important}.app .composer-tools::-webkit-scrollbar{display:none}.app .composer-tools .composer-tool{min-height:40px!important;flex:0 0 auto!important}}
-</style>
-<!-- /STELLAR SETTINGS CALM V19 -->
-
-
-<style id="stellar-settings-chat-v20">
-/* Settings should feel like the Stellar chat workspace, not a separate admin panel. */
-.settings-panel{
-  background:rgba(3,4,7,.58)!important;
-  backdrop-filter:blur(18px)!important;
-  -webkit-backdrop-filter:blur(18px)!important
-}
-.settings-card{
-  width:min(620px,calc(100% - 28px))!important;
-  max-height:88dvh!important;
-  margin:6dvh auto 0!important;
-  padding:0!important;
-  overflow:auto!important;
-  overscroll-behavior:contain!important;
-  border:1px solid rgba(255,255,255,.09)!important;
-  border-radius:24px!important;
-  background:rgba(17,20,29,.96)!important;
-  box-shadow:0 28px 90px rgba(0,0,0,.40),0 0 0 1px rgba(139,124,246,.035)!important;
-  backdrop-filter:blur(22px)!important;
-  -webkit-backdrop-filter:blur(22px)!important
-}
-.settings-header{
-  position:sticky!important;
-  top:0!important;
-  z-index:5!important;
-  align-items:center!important;
-  padding:17px 18px 15px!important;
-  border-bottom:1px solid rgba(255,255,255,.065)!important;
-  background:rgba(17,20,29,.94)!important;
-  backdrop-filter:blur(18px)!important;
-  -webkit-backdrop-filter:blur(18px)!important
-}
-.settings-header h2{
-  font-size:22px!important;
-  font-weight:760!important;
-  letter-spacing:-.035em!important
-}
-.settings-header p{
-  margin-top:3px!important;
-  color:#828a98!important;
-  font-size:11px!important
-}
-.settings-close-x{
-  border:1px solid transparent!important;
-  border-radius:12px!important
-}
-.settings-close-x:hover{
-  border-color:rgba(255,255,255,.075)!important;
-  background:rgba(255,255,255,.045)!important
-}
-.settings-grid{
-  gap:6px!important;
-  padding:12px!important
-}
-.settings-row{
-  min-height:56px!important;
-  padding:9px 11px!important;
-  border:1px solid transparent!important;
-  border-radius:14px!important;
-  background:transparent!important;
-  transition:background .15s ease,border-color .15s ease!important
-}
-.settings-row:hover{
-  border-color:rgba(255,255,255,.07)!important;
-  background:rgba(255,255,255,.035)!important
-}
-.settings-icon{
-  width:32px!important;
-  height:32px!important;
-  min-width:32px!important;
-  border:1px solid rgba(255,255,255,.055)!important;
-  border-radius:10px!important;
-  background:rgba(255,255,255,.028)!important;
-  color:#aab2c0!important
-}
-.settings-row strong,.settings-credit-copy strong{
-  font-size:13px!important;
-  font-weight:720!important;
-  letter-spacing:-.01em!important;
-  color:#f0f2f6!important
-}
-.settings-row-meta{
-  color:#6f7784!important;
-  font-size:10px!important
-}
-.settings-plan-hero{
-  min-height:72px!important;
-  margin:0 0 4px!important;
-  padding:12px!important;
-  border:1px solid rgba(185,176,255,.12)!important;
-  border-radius:17px!important;
-  background:linear-gradient(180deg,rgba(139,124,246,.085),rgba(139,124,246,.035))!important
-}
-.settings-plan-hero .settings-icon{
-  border-color:rgba(185,176,255,.10)!important;
-  background:rgba(139,124,246,.13)!important;
-  color:#c8c1ff!important
-}
-.settings-plan-hero .settings-row-action{
-  min-height:38px!important;
-  padding-inline:11px!important;
-  border-radius:10px!important;
-  background:rgba(255,255,255,.045)!important;
-  box-shadow:none!important;
-  color:#e8eaf0!important
-}
-.settings-plan-actions{
-  margin-bottom:5px!important;
-  padding:10px!important;
-  border:1px solid rgba(255,255,255,.055)!important;
-  border-radius:15px!important;
-  background:rgba(255,255,255,.018)!important
-}
-.settings-plan-actions .settings-icon{display:none!important}
-.settings-plan-actions .credit-buy-controls{
-  gap:7px!important
-}
-.settings-plan-actions .credit-buy-controls .btn{
-  min-height:42px!important;
-  border:1px solid rgba(255,255,255,.075)!important;
-  border-radius:11px!important;
-  background:rgba(255,255,255,.035)!important;
-  color:#dfe3eb!important
-}
-.settings-plan-actions .credit-buy-controls .btn.primary{
-  border-color:rgba(185,176,255,.18)!important;
-  background:rgba(139,124,246,.14)!important;
-  color:#f3f1ff!important
-}
-.settings-wallet-row,.call-setup-panel{
-  border:1px solid rgba(255,255,255,.055)!important;
-  border-radius:15px!important;
-  background:rgba(255,255,255,.018)!important
-}
-.settings-close-footer{display:none!important}
-#settings-signout-row .settings-icon-danger{color:#e9a3aa!important;background:rgba(255,116,116,.055)!important}
-
-@media(max-width:640px){
-  .settings-panel{align-items:end!important;padding:0!important}
-  .settings-card{
-    width:100%!important;
-    max-width:none!important;
-    max-height:90dvh!important;
-    margin:10dvh 0 0!important;
-    border-left:0!important;
-    border-right:0!important;
-    border-bottom:0!important;
-    border-radius:22px 22px 0 0!important;
-    padding-bottom:calc(10px + env(safe-area-inset-bottom))!important
-  }
-  .settings-header{
-    padding:14px 14px 12px!important
-  }
-  .settings-header h2{font-size:20px!important}
-  .settings-grid{
-    gap:4px!important;
-    padding:8px 8px 12px!important
-  }
-  .settings-row{
-    min-height:54px!important;
-    padding:8px 10px!important;
-    border-radius:13px!important
-  }
-  .settings-icon{
-    width:31px!important;height:31px!important;min-width:31px!important
-  }
-  .settings-plan-hero{
-    min-height:68px!important;
-    padding:10px!important
-  }
-  .settings-plan-hero .settings-row-action{
-    min-height:40px!important
-  }
-  .settings-plan-actions{
-    padding:8px!important
-  }
-  .settings-plan-actions .credit-buy-controls{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important
-  }
-  .settings-plan-actions .credit-buy-controls .btn{
-    min-height:42px!important;
-    padding-inline:5px!important;
-    font-size:10px!important
-  }
-}
-@media(max-width:420px){
-  .settings-plan-hero{
-    align-items:flex-start!important
-  }
-  .settings-plan-hero .settings-row-action{
-    padding-inline:9px!important;
-    font-size:10px!important
-  }
-  .settings-plan-actions .credit-buy-controls{
-    grid-template-columns:1fr!important
-  }
-  .settings-plan-actions .credit-buy-controls .btn{
-    min-height:44px!important;
-    font-size:11px!important
-  }
-}
-</style>
-
-
-<style id="stellar-rename-dialog-v1">
-.rename-chat-modal{position:fixed;inset:0;z-index:4200;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.rename-chat-dialog{width:min(420px,100%);padding:18px;border:1px solid rgba(255,255,255,.10);border-radius:18px;background:#12151d;box-shadow:0 28px 90px rgba(0,0,0,.42)}
-.rename-chat-dialog h3{margin:0;color:#f5f6fa;font-size:18px;letter-spacing:-.025em}
-.rename-chat-dialog p{margin:6px 0 14px;color:#8f98a7;font-size:12px}
-.rename-chat-input{width:100%;min-height:46px;padding:0 12px;border:1px solid rgba(255,255,255,.10);border-radius:11px;background:#0d1016;color:#f4f6fb;outline:0}
-.rename-chat-input:focus{border-color:rgba(185,176,255,.36);box-shadow:0 0 0 3px rgba(139,124,246,.09)}
-.rename-chat-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
-@media(max-width:520px){.rename-chat-modal{align-items:end;padding:0}.rename-chat-dialog{width:100%;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}}
-</style>
-
-<style id="stellar-home-easy-v3">
-.app .home-welcome{padding-top:clamp(58px,11vh,108px)!important;padding-bottom:12px!important}
-.app .home-welcome h1{font-size:clamp(34px,5vw,54px)!important}
-.app .home-welcome>p.home-hint{display:block!important;max-width:520px!important;margin:12px auto 0!important;color:#8e96a5!important;font-size:13px!important;line-height:1.55!important}
-.app .composer-plus{width:38px!important;min-width:38px!important;padding:0!important;font-size:20px!important;border-radius:10px!important}
-.app .composer-tool-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;align-items:center!important}
-.app .composer-tool-grid .composer-tool{width:100%!important;min-width:0!important;text-decoration:none!important}
-.app .composer-tool-grid .image-status{grid-column:1 / -1!important;max-width:100%!important;padding:2px 4px!important}
-@media(max-width:640px){.app .home-welcome{padding-top:clamp(34px,7vh,58px)!important}.app .home-hint{font-size:12px!important;padding-inline:8px!important}.app .top-plans{display:none!important}.app .composer-tools{overflow:visible!important}.app .composer-plus{min-height:40px!important;width:40px!important;min-width:40px!important}.app .composer-tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.app .composer-tool-grid .composer-tool{min-height:44px!important}.app .composer-more{max-height:42dvh!important;overflow:auto!important}}
-</style>
-<style id="stellar-tap-safety-v1">
-.drawer-backdrop[hidden],#backdrop[aria-hidden="true"]{display:none!important;opacity:0!important;pointer-events:none!important;visibility:hidden!important}
-.drawer-backdrop:not(.open){opacity:0!important;pointer-events:none!important}
-#settings-panel[aria-hidden="true"]{display:none!important;pointer-events:none!important}
-#welcome-modal[hidden],#model-menu[hidden],#composer-more[hidden]{display:none!important;pointer-events:none!important}
-@media(max-width:900px){.side:not(.open){pointer-events:none!important;visibility:hidden!important}.side.open{pointer-events:auto!important;visibility:visible!important}.main,.top,.chat,.composer-wrap{pointer-events:auto!important}}
-</style>
-<style id="stellar-interaction-recovery-v1">
-/* Interaction recovery: decorative layers never intercept taps and inactive overlays are inert. */
-body::before,body::after,.app::before,.app::after,.main::before,.main::after,.chat::before,.chat::after,.welcome::before,.welcome::after{pointer-events:none!important}
-#backdrop:not(.open),#welcome-modal[hidden],#settings-panel[aria-hidden="true"],#model-menu[hidden]{pointer-events:none!important;visibility:hidden!important}
-#backdrop.open,#welcome-modal:not([hidden]),#settings-panel[aria-hidden="false"],#model-menu:not([hidden]){pointer-events:auto!important;visibility:visible!important}
-.app,.main,.top,.side,.chat,.composer-wrap,.composer{pointer-events:auto!important}
-button,a,input,textarea,select{touch-action:manipulation!important}
-.top-actions{display:flex!important;pointer-events:auto!important}
-#account-button{display:inline-flex!important;pointer-events:auto!important;min-width:44px!important}
-@media(max-width:640px){
-  .app .home-welcome h1{width:100%!important;max-width:100%!important;white-space:normal!important;text-wrap:balance!important;overflow-wrap:normal!important;font-size:clamp(30px,9vw,40px)!important}
-  .top-actions{display:flex!important}
-  #account-button{display:inline-flex!important;padding-inline:10px!important;font-size:11px!important}
-}
-</style>
-
-<style id="stellar-chat-render-and-settings-fix-v1">
-/* Keep the settings backdrop full-screen. The card, not the overlay, owns the panel width. */
-html body #settings-panel.settings-panel{
-  position:fixed!important;inset:0!important;width:auto!important;max-width:none!important;max-height:none!important;
-  margin:0!important;padding:18px!important;border:0!important;border-radius:0!important;
-  background:rgba(4,5,8,.72)!important;box-shadow:none!important;overflow:auto!important;
-}
-html body #settings-panel.settings-panel>.settings-card{
-  width:min(680px,100%)!important;max-width:680px!important;max-height:86dvh!important;
-  margin:5vh auto 0!important;border-radius:22px!important;overflow:auto!important;
-}
-.assistant .bubble.stellar-rich-message{white-space:normal!important;line-height:1.66!important;overflow-wrap:anywhere}
-.assistant .bubble.stellar-rich-message>*:first-child{margin-top:0!important}
-.assistant .bubble.stellar-rich-message>*:last-child{margin-bottom:0!important}
-.assistant .bubble.stellar-rich-message p{margin:0 0 12px}
-.assistant .bubble.stellar-rich-message h2,.assistant .bubble.stellar-rich-message h3,.assistant .bubble.stellar-rich-message h4{
-  margin:18px 0 8px;color:#f7f8fb;font-size:1.02em;line-height:1.35;letter-spacing:-.015em
-}
-.assistant .bubble.stellar-rich-message ul,.assistant .bubble.stellar-rich-message ol{margin:8px 0 14px;padding-left:22px}
-.assistant .bubble.stellar-rich-message li{margin:5px 0}
-.assistant .bubble.stellar-rich-message blockquote{margin:10px 0;padding:8px 12px;border-left:2px solid rgba(185,176,255,.55);color:#c7ccda;background:rgba(185,176,255,.045);border-radius:0 10px 10px 0}
-.assistant .bubble.stellar-rich-message pre{margin:12px 0;max-width:100%;overflow:auto;padding:13px 14px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:#080a0f}
-.assistant .bubble.stellar-rich-message pre code{font:12px/1.55 "DM Mono",ui-monospace,SFMono-Regular,Consolas,monospace;color:#e9ecf4;white-space:pre}
-.assistant .bubble.stellar-rich-message code.stellar-inline-code{padding:2px 5px;border:1px solid rgba(255,255,255,.08);border-radius:6px;background:rgba(255,255,255,.055);font:12px/1.45 "DM Mono",ui-monospace,SFMono-Regular,Consolas,monospace;color:#eceefa}
-.assistant .bubble.stellar-rich-message strong{font-weight:800;color:#fff}
-@media(max-width:780px){
-  html body #settings-panel.settings-panel{inset:0!important;padding:0!important;background:rgba(4,5,8,.76)!important}
-  html body #settings-panel.settings-panel>.settings-card{
-    width:100%!important;max-width:none!important;max-height:90dvh!important;margin:10dvh 0 0!important;
-    border-radius:22px 22px 0 0!important;padding:16px!important;padding-bottom:calc(18px + env(safe-area-inset-bottom))!important
-  }
-}
-</style>
-
-
-<link rel="stylesheet" href="/stellar-chat-first-v21.css?v=20260927-v27">
-<link rel="stylesheet" href="/stellar-settings-v22.css?v=20260927-v27">
-<link rel="stylesheet" href="/stellar-app-focus-v23.css?v=20260927-v27">
-<link rel="stylesheet" href="/stellar-chatgpt-v24.css?v=20260927-v27">\n<link rel="stylesheet" href="/stellar-operator-v28.css?v=20260927-v28">
-<style id="stellar-input-reliability-v27">
-/* Reliability layer: closed overlays must never intercept taps. */
-#settings-panel[hidden],
-#settings-panel[aria-hidden="true"],
-#welcome-modal[hidden],
-#backdrop[hidden],
-#model-menu[hidden],
-#model-menu[inert]{
-  display:none!important;
-  pointer-events:none!important;
-}
-#settings-panel:not([hidden])[aria-hidden="false"],
-#welcome-modal:not([hidden]){
-  pointer-events:auto!important;
-}
-.drawer-backdrop:not(.open){pointer-events:none!important}
-.stellar-credit-pill{visibility:visible!important;opacity:1!important;pointer-events:auto!important}
-.top-left{flex:1 1 auto!important;min-width:0!important;overflow:hidden!important}
-.top-actions{flex:0 0 auto!important;min-width:0!important;flex-wrap:nowrap!important}
-.model-pill{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important}
-.settings-close-x,.mobile-menu,#model-pill,.stellar-credit-pill,#account-button,#sendBtn{touch-action:manipulation!important}
-
-/* Tablet/iPad: keep Settings spacious without using the phone bottom-sheet layout. */
-@media (min-width:641px) and (max-width:1024px){
-  #settings-panel{padding:16px!important}
-  #settings-panel .settings-card{
-    width:min(760px,calc(100vw - 32px))!important;
-    max-height:90dvh!important;
-    margin:5dvh auto 0!important;
-    border-radius:22px!important;
-  }
-  #settings-panel .settings-header{padding-inline:18px!important}
-  #settings-panel .stellar-settings-tabs{padding-inline:14px!important}
-  #settings-panel .settings-grid{padding:10px 14px 18px!important}
-  #settings-panel .settings-row{min-height:54px!important}
-  .top{padding-inline:12px!important}
-  .stellar-credit-pill{flex:0 0 auto!important}
-  .model-pill{max-width:42vw!important}
-  #settings-panel .settings-close-x{position:sticky!important;right:0!important}
-}
-@media(max-width:640px){
-  .stellar-credit-pill{display:inline-flex!important;min-width:58px!important}
-  .stellar-credit-balance{display:inline!important;max-width:64px!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  .model-pill{max-width:34vw!important}
-  .top-actions{gap:2px!important}
-}
-@media(max-width:380px){
-  .model-pill{max-width:29vw!important}
-  .stellar-credit-pill{min-width:50px!important;padding-inline:7px!important}
-}
+:root{color-scheme:dark;--bg:#0b0c10;--panel:#14151b;--panel2:#1b1d25;--line:rgba(255,255,255,.09);--text:#f5f6f8;--muted:#9aa2af;--soft:#cdd2dc;--accent:#9b8cff;--good:#57d99a;--warn:#e4c66a;--danger:#ff7777;--max:820px}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:15px/1.55 Inter,Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}button,a,textarea,input{font:inherit}button,a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}a{color:inherit;text-decoration:none}.app{min-height:100dvh;display:grid;grid-template-columns:236px minmax(0,1fr)}.side{height:100dvh;overflow:auto;border-right:1px solid var(--line);background:#0f1015;padding:12px;display:flex;flex-direction:column;gap:8px}.brand{min-height:44px;display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em}.mark{width:30px;height:30px;border-radius:10px;background:#191b25;color:#c9c2ff;display:grid;place-items:center}.nav-title{margin:12px 8px 3px;color:#6f7682;font-size:10px;text-transform:uppercase;letter-spacing:.12em}.nav,.btn{min-height:44px;border:1px solid transparent;border-radius:11px;background:transparent;color:#d9dde6;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;font-weight:700;font-size:13px;cursor:pointer}.nav{justify-content:flex-start;color:#aab1bd}.nav:hover,.nav.active,.btn:hover{background:rgba(255,255,255,.055);color:#fff}.btn.primary{background:#eeeaff;color:#101118;border-color:transparent}.btn.ghost{border-color:var(--line);background:rgba(255,255,255,.025)}.main{min-width:0;display:grid;grid-template-rows:58px minmax(0,1fr) auto;min-height:100dvh}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.06)}.left,.actions{display:flex;align-items:center;gap:8px;min-width:0}.mobile-menu{display:none}.pill{min-height:38px;display:inline-flex;align-items:center;gap:7px;border-radius:999px;background:#151720;border:1px solid var(--line);padding:0 11px;color:#d3d7e1;font-size:12px;font-weight:750;white-space:nowrap}.credit-pill{cursor:pointer}.dot{width:7px;height:7px;border-radius:50%;background:var(--good)}.chat{min-height:0;overflow:auto;padding:26px 18px 14px}.chat-inner{width:min(var(--max),100%);margin:0 auto;display:grid;gap:14px}.welcome{padding:clamp(70px,14vh,150px) 0 16px;text-align:center}.welcome h1{margin:0;font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-.055em;font-weight:720}.welcome p{max-width:560px;margin:13px auto 0;color:var(--muted)}.msg{max-width:min(760px,100%);display:grid;gap:5px}.msg.user{justify-self:end;max-width:min(680px,94%)}.bubble{padding:12px 14px;border-radius:16px;white-space:pre-wrap;overflow-wrap:anywhere}.user .bubble{background:#24262f;color:#fff}.assistant .bubble{background:transparent;color:#e8ebf2}.meta{color:#69717f;font-size:11px}.composer-wrap{padding:10px 16px max(16px,calc(10px + env(safe-area-inset-bottom)));background:linear-gradient(180deg,rgba(11,12,16,0),#0b0c10 28%)}.composer{width:min(var(--max),100%);margin:0 auto;padding:9px 10px 9px 12px;border:1px solid rgba(255,255,255,.11);border-radius:23px;background:#15161d;display:grid;gap:8px}.composer:focus-within{border-color:rgba(155,140,255,.45)}textarea{width:100%;min-height:56px;max-height:30dvh;resize:vertical;border:0;outline:0;background:transparent;color:var(--text);font-size:16px;line-height:1.45}textarea::placeholder{color:#77808d}.bar{display:flex;align-items:center;justify-content:space-between;gap:8px}.tools,.send-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.tool{min-height:38px;border:0;border-radius:10px;background:transparent;color:#aeb5c0;padding:0 10px;font-size:12px;font-weight:750;cursor:pointer}.tool:hover{background:rgba(255,255,255,.055);color:#fff}.status{min-width:0;color:#7e8795;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status.good{color:var(--good)}.status.warn{color:var(--warn)}.status.error{color:var(--danger)}#sendBtn{width:42px;height:42px;min-width:42px;border-radius:999px;border:0;background:#eeeaff;color:#101118;font-weight:900;cursor:pointer}.panel-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;place-items:center;padding:18px;z-index:20}.panel-backdrop.open{display:grid}.panel{width:min(560px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--line);border-radius:22px;background:#12141b;padding:16px;box-shadow:0 24px 80px rgba(0,0,0,.42)}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px}.panel h2{margin:0;font-size:24px;letter-spacing:-.04em}.panel p{color:var(--muted)}.close{width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:#b7bdc8;font-size:24px;cursor:pointer}.close:hover{background:rgba(255,255,255,.055);color:#fff}.settings-grid,.plans-grid{display:grid;gap:8px}.row,.plan{border:1px solid rgba(255,255,255,.075);border-radius:14px;background:rgba(255,255,255,.025);padding:12px}.row strong,.plan strong{display:block}.row small,.plan small{display:block;color:var(--muted);margin-top:3px}.plan.popular{border-color:rgba(155,140,255,.35);background:rgba(155,140,255,.08)}.plan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.drawer-backdrop{display:none}.safe-note{margin-top:auto;border:1px solid rgba(87,217,154,.18);background:rgba(87,217,154,.055);color:#bfead4;border-radius:14px;padding:10px;font-size:12px}.hidden{display:none!important}@media(max-width:860px){.app{grid-template-columns:1fr}.side{position:fixed;z-index:30;inset:0 auto 0 0;width:min(300px,88vw);transform:translateX(-105%);transition:transform .18s ease;box-shadow:18px 0 70px rgba(0,0,0,.42)}.side.open{transform:translateX(0)}.drawer-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.46);z-index:25;opacity:0;pointer-events:none}.drawer-backdrop.open{opacity:1;pointer-events:auto}.mobile-menu{display:inline-flex}.top{padding-inline:10px}.chat{padding-inline:10px}.composer-wrap{padding-inline:10px}.pill.model{max-width:42vw;overflow:hidden;text-overflow:ellipsis}.hide-mobile{display:none}}@media(max-width:520px){.welcome{padding-top:44px;text-align:left}.welcome h1{font-size:clamp(34px,10vw,44px)}.welcome p{margin-left:0}.actions{gap:4px}.pill{padding-inline:8px;font-size:11px}.tool{min-height:42px}.bar{align-items:flex-end}.status{max-width:46vw}.panel-backdrop{align-items:end;padding:0}.panel{width:100%;max-height:90dvh;border-radius:22px 22px 0 0;padding-bottom:calc(16px + env(safe-area-inset-bottom))}}
 </style>
 </head>
 <body>
-<div class="drawer-backdrop" id="backdrop" onclick="closeResponsiveSidebar()" aria-hidden="true" hidden inert></div>
+<div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
 <div class="app">
-<aside id="sidebar" class="side" aria-label="Stellar app sidebar">
-  <div class="brand-row"><a class="brand" href="/"><span class="mark">✦</span><span>Stellar AI</span></a><button class="icon-btn side-close" type="button" onclick="closeResponsiveSidebar()" aria-label="Close sidebar">×</button></div>
-  <button class="btn primary" type="button" onclick="newChat()">New chat</button>
-  <div class="side-section"><p class="side-title">Workspace</p><a id="chat-nav" class="nav-link active" href="/app"><span>●</span>Chat</a><a class="nav-link" href="/models"><span>◇</span>Models</a><a class="nav-link" data-tab="plugins" href="/plugins"><span>▣</span>Plugins</a><a class="nav-link" href="/support"><span>?</span>Support</a><button id="settings-nav" class="nav-link" type="button" onclick="openSettings()"><span>□</span>Settings</button></div>
-  <div id="current-work-section" class="side-section"><p class="side-title">Recent</p><div id="chat-list" class="chat-actions"><button class="nav-link" type="button" onclick="pinChat()" title="Pin current chat"><span>⌖</span>Pin</button><button class="nav-link" type="button" onclick="renameChat()" title="Rename current chat"><span>✎</span>Rename</button><button class="nav-link danger-action" type="button" onclick="deleteChat()" title="Delete current chat"><span>⌫</span>Delete</button></div><button id="export-chat-btn" class="nav-link chat-export" type="button" onclick="exportCurrentChat()" title="Download the current chat as Markdown"><span>⇩</span>Export chat</button><div id="saved-chat-list" class="saved-chat-list" aria-label="Saved chats"></div><p id="saved-chat-empty" class="empty-work">No saved chats yet.</p></div>
-</aside>
-<main class="main">
-  <header class="top"><div class="top-left"><button class="btn mobile-menu" type="button" onclick="openResponsiveSidebar()">Menu</button><button id="model-pill" class="model-pill" type="button" onclick="toggleModelMenu()" title="Current model" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span class="model-dot"></span><span id="current-model-label">Star · balanced</span></button><span id="top-usage" class="top-usage op-hide-sm">Usage loading…</span></div><div class="top-actions"><button id="jarvis-quick-call" class="btn jarvis-call-top owner-only" hidden type="button" aria-label="Ask Jarvis to call me now" title="Ask Jarvis to call me now" onclick="triggerOwnerCall('Owner pressed the one-click Jarvis call me button in Stellar AI.')">Call me</button><button class="btn top-plans stellar-credit-pill" type="button" onclick="openCreditWallet()" aria-label="Open credits wallet"><span class="stellar-credit-icon" aria-hidden="true">✦</span><span class="stellar-credit-balance" id="stellar-credit-balance">—</span><span class="stellar-credit-label">credits</span></button><button class="btn top-plans" type="button" onclick="openPlanSettings()">Plans</button><button id="account-button" class="btn" type="button" onclick="accountAction()">Account</button></div></header>
-  <section id="chat" class="chat"><div class="chat-inner" id="chatInner"><div class="welcome home-welcome" id="welcomeShell"><h1 id="homeGreeting">What can I help with?</h1><p id="welcome-copy" class="home-hint">Tell Stellar what you want done. Auto chooses the right level; use Action for approved computer work.</p></div></div></section>
-  <section class="composer-wrap"><form id="chatForm" class="composer" aria-label="Message composer"><label for="prompt" class="sr-only">Message Stellar AI</label><textarea id="prompt" name="prompt" maxlength="8000" placeholder="Message Stellar AI…" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line." required></textarea><input id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden><div class="composer-bottom"><div class="composer-tools"><button id="composer-more-btn" class="composer-tool composer-plus" type="button" aria-label="Open tools" title="Tools" aria-expanded="false" aria-controls="composer-more" onclick="toggleComposerMore()">＋</button></div><div class="composer-bar"><span id="status" class="status" data-idle="true" role="status" aria-live="polite">Ready</span><button id="stopBtn" class="btn stop-btn" type="button" onclick="stopGeneration()" disabled>Stop</button><button id="sendBtn" class="btn primary" type="submit" aria-label="Send message" title="Send message"><span class="send-label">Send</span><span aria-hidden="true">↑</span></button></div></div><div id="composer-more" class="composer-more" hidden><div class="composer-more-row composer-tool-grid"><button id="image-upload-btn" class="composer-tool" type="button" aria-label="Attach an image" onclick="document.getElementById('image-upload-input').click()">＋ Image</button><button id="voice-input-btn" class="composer-tool" type="button" aria-label="Start voice input" aria-pressed="false" onclick="toggleVoiceInput()">◉ Voice</button><button class="composer-tool composer-computer signed-in-only" type="button" onclick="openComputerActionCard()" title="Use StellarX with this computer">▣ StellarX</button><a class="composer-tool composer-plugins" href="/plugins" title="Open Stellar plugins">◇ Plugins</a><span id="image-upload-status" class="image-status" role="status" aria-live="polite">No image attached</span><button id="image-remove-btn" class="composer-tool" type="button" onclick="removeImage()" hidden>Remove</button></div><span id="credit-note" class="credit-note">Stellar uses included credits first, then bought add-on credits automatically.</span></div></form></section>
-</main>
+  <aside class="side" id="side" aria-label="Stellar navigation">
+    <a class="brand" href="/"><span class="mark">✦</span><span>Stellar AI</span></a>
+    <button class="btn primary" type="button" id="newChatBtn">New chat</button>
+    <p class="nav-title">Workspace</p>
+    <a class="nav active" href="/app">● Chat</a>
+    <button class="nav" type="button" data-open="plans">◇ Plans</button>
+    <button class="nav" type="button" data-open="credits">✦ Credits</button>
+    <button class="nav" type="button" data-open="settings">□ Settings</button>
+    <a class="nav" href="/support">? Support</a>
+    <p class="nav-title">Business</p>
+    <a class="nav" href="/business">Business AI</a>
+    <a class="nav" href="/investors">Investor page</a>
+    <p class="nav-title">Legal</p>
+    <a class="nav" href="/legal">Legal hub</a>
+    <a class="nav" href="/privacy">Privacy</a>
+    <a class="nav" href="/terms">Terms</a>
+    <div class="safe-note">Safe mode is on. The heavy old app shell has been bypassed so the website is clickable again.</div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <div class="left"><button class="btn ghost mobile-menu" id="menuBtn" type="button">Menu</button><span class="pill model"><span class="dot"></span>Star · balanced</span></div>
+      <div class="actions"><button class="pill credit-pill" type="button" data-open="credits"><span>✦</span><span id="creditCount">75</span><span class="hide-mobile">credits</span></button><button class="btn ghost" type="button" data-open="plans">Plans</button><button class="btn ghost" type="button" data-open="settings">Account</button></div>
+    </header>
+    <section class="chat" id="chat"><div class="chat-inner" id="chatInner"><div class="welcome" id="welcome"><h1>What can I help with?</h1><p>Message Stellar AI. Keep it simple: chat first, plans and settings tucked away.</p></div></div></section>
+    <section class="composer-wrap"><form class="composer" id="chatForm"><label class="hidden" for="prompt">Message Stellar AI</label><textarea id="prompt" maxlength="8000" placeholder="Message Stellar AI…" autocomplete="off"></textarea><div class="bar"><div class="tools"><button class="tool" type="button" data-open="plans">Plans</button><button class="tool" type="button" data-open="credits">Credits</button><a class="tool" href="/plugins">Plugins</a></div><div class="send-row"><span class="status good" id="status">Ready</span><button id="sendBtn" type="submit" aria-label="Send message">↑</button></div></div></form></section>
+  </main>
 </div>
-<div id="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="welcome-title" hidden><div class="welcome-card"><button class="welcome-close" type="button" onclick="dismissWelcome()" aria-label="Close account access">×</button><h2 id="welcome-title">Pick up where you left off — your chats and plan stay synced.</h2><p>Start free with 300 credits/day, resetting at midnight UK time, then keep your chats and plan everywhere.</p><div id="g-signin-main" class="auth-grid" aria-label="Google sign in area"></div><div class="auth-grid"><a id="discord-signin-btn" class="auth-link" href="/api/discord-oauth" onclick="pendingUpgradeIntent()">Continue with Discord</a><input id="auth-email" class="own-input" type="email" autocomplete="email" placeholder="Email address"><input id="auth-password" class="own-input" type="password" autocomplete="current-password" minlength="8" maxlength="100" placeholder="Password (8+ characters)"><div class="auth-row"><button type="button" onclick="emailAuth('login')" class="auth-link">Sign in</button><button type="button" onclick="emailAuth('signup')" class="auth-link">Create account</button></div><a href="/support#account-help" class="auth-link auth-muted">Forgot password or lost account access?</a><button type="button" onclick="dismissWelcome()" class="auth-link auth-muted">Continue without signing in</button><p class="auth-note">Sign in when you want synced chats and plan access across devices. Lost-access help is handled through Support.</p></div></div></div>
-<section id="settings-panel" class="settings-panel" aria-hidden="true" hidden inert onclick="closeSettingsOnBackdrop(event)">
-  <div class="settings-card">
-    <div class="settings-header">
-      <div class="settings-header-copy">
-        <span class="settings-kicker">STELLAR SETTINGS</span>
-        <h2>Settings</h2>
-        <p>Manage your account, plan and connected tools.</p>
-      </div>
-      <button class="settings-close-x" type="button" onclick="closeSettings()" aria-label="Close settings" title="Close settings"><svg class="settings-close-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    </div>
-
-    <div class="settings-grid">
-      <div id="settings-plan-actions" class="settings-row settings-credit settings-wide settings-plan-hero settings-plan-actions">
-        <span class="settings-icon" aria-hidden="true">♛</span>
-        <div class="settings-credit-copy">
-          <strong id="plan-truth">Plan and usage</strong>
-          <small id="usage-copy">Plan data loads after sign-in.</small>
-          <small class="settings-plan-copy">Starter gives 1,500 monthly credits. Plus unlocks Comet with 5,000 monthly credits. Pro unlocks Nova with 20,000 monthly credits.</small>
-        </div>
-        <span class="credit-buy-controls" aria-label="Upgrade plan">
-          <button class="btn" type="button" onclick="startPlanCheckout('starter')" aria-label="Choose Starter for £8 per month, with 1,500 monthly credits">Starter £8 · 1,500/mo</button>
-          <button class="btn primary" type="button" onclick="startPlanCheckout('plus')" aria-label="Choose Plus for £20 per month, including Comet">Plus £20 · Comet</button>
-          <button class="btn" type="button" onclick="startPlanCheckout('pro')" aria-label="Choose Pro for £75 per month, including Nova">Pro £75 · Nova</button>
-        </span>
-        <a class="btn settings-row-action settings-compare-all" href="/plans">Compare all 4 plans <span aria-hidden="true">→</span></a>
-      </div>
-
-      <button id="auth-settings-row" class="settings-row set-click" type="button" onclick="settingsAuthAction()">
-        <span class="settings-icon" aria-hidden="true">◎</span>
-        <span class="settings-row-copy"><strong id="auth-key">Sign in</strong><small>Manage your account and profile</small></span>
-        <span class="settings-row-meta">Account <span aria-hidden="true">›</span></span>
-      </button>
-
-      <button id="settings-signout-row" class="settings-row signed-in-only" type="button" onclick="signOut();closeSettings()">
-        <span class="settings-icon settings-icon-danger" aria-hidden="true">↪</span>
-        <span class="settings-row-copy"><strong>Sign out</strong><small>End this session on this device</small></span>
-        <span class="settings-row-meta">End session <span aria-hidden="true">›</span></span>
-      </button>
-
-      <a href="/plugins" class="settings-row">
-        <span class="settings-icon" aria-hidden="true">◇</span>
-        <span class="settings-row-copy"><strong>Plugins</strong><small>Only connections available to your account</small></span>
-        <span class="settings-row-meta">Manage <span aria-hidden="true">›</span></span>
-      </a>
-
-      <a class="settings-row owner-only" hidden data-settings-advanced href="/jarvis"><span class="settings-icon" aria-hidden="true">◈</span><span class="settings-row-copy"><strong>Jarvis</strong><small>Private owner assistant, missions and calls</small></span><span class="settings-row-meta">Owner only <span aria-hidden="true">›</span></span></a>
-
-      <button id="desktop-agent-nav" class="settings-row signed-in-only" type="button" onclick="location.href='/desktop'">
-        <span class="settings-icon" aria-hidden="true">▰</span>
-        <span class="settings-row-copy"><strong>Computer</strong><small>StellarX computer access</small></span>
-        <span class="settings-row-meta">Signed in <span aria-hidden="true">›</span></span>
-      </button>
-
-      <button id="email-agent-nav" class="settings-row signed-in-only" type="button" onclick="location.href='/email-agent'">
-        <span class="settings-icon" aria-hidden="true">✉</span>
-        <span class="settings-row-copy"><strong>Email Agent</strong><small>Draft, review and send only after approval</small></span>
-        <span class="settings-row-meta">Approval only <span aria-hidden="true">›</span></span>
-      </button>
-
-      <button id="settings-advanced-toggle" class="settings-row settings-advanced-toggle owner-only" hidden type="button" onclick="toggleAdvancedSettings()" aria-expanded="false">
-        <span class="settings-icon" aria-hidden="true">⋯</span>
-        <span class="settings-row-copy"><strong>Private owner tools</strong><small>Advanced controls</small></span>
-        <span class="settings-row-meta">Show <span aria-hidden="true">›</span></span>
-      </button>
-
-      <button id="roblox-studio-nav" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="location.href='/roblox-studio'">
-        <span class="settings-icon" aria-hidden="true">◈</span>
-        <span class="settings-row-copy"><strong>Roblox Studio Agent</strong><small>Owner-only Studio workspace</small></span>
-        <span class="settings-row-meta">Owner only <span aria-hidden="true">›</span></span>
-      </button>
-
-
-      <button id="deploy-center-nav" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="location.href='/deploy'">
-        <span class="settings-icon" aria-hidden="true">?</span>
-        <span class="settings-row-copy"><strong>Deploy Center</strong><small>Owner-only safe release controls</small></span>
-        <span class="settings-row-meta">Owner only <span aria-hidden="true">></span></span>
-      </button>      <button id="owner-call-now" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="triggerOwnerCall('Owner requested a call from Jarvis in Stellar AI.')">
-        <span class="settings-icon" aria-hidden="true">☎</span>
-        <span class="settings-row-copy"><strong>Call me now</strong><small>Owner only · start a Jarvis phone call</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </button>
-
-      <button id="owner-call-health-btn" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="checkOwnerCallHealth()">
-        <span class="settings-icon" aria-hidden="true">◉</span>
-        <span class="settings-row-copy"><strong>Check call system</strong><small id="owner-call-health">Owner only · verify phone readiness</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </button>
-
-      <button id="owner-push-enable" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="enableOwnerPushCallAlerts()">
-        <span class="settings-icon" aria-hidden="true">⚡</span>
-        <span class="settings-row-copy"><strong>Enable Jarvis push calls</strong><small id="owner-push-status">Owner only · lets Jarvis buzz this device automatically</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </button>
-
-      <button id="owner-push-test" class="settings-row owner-only" hidden data-settings-advanced type="button" onclick="testOwnerPushCallAlert()">
-        <span class="settings-icon" aria-hidden="true">✦</span>
-        <span class="settings-row-copy"><strong>Test Jarvis push call</strong><small>Send a safe owner-only notification to this device</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </button>
-
-      <div id="owner-call-setup" class="settings-row settings-credit settings-wide owner-only call-setup-panel" hidden data-settings-advanced>
-        <span class="settings-icon" aria-hidden="true">&lt;/&gt;</span>
-        <span class="settings-credit-copy">
-          <strong>Jarvis call setup</strong>
-          <small id="owner-call-setup-status">Press Check call system to see what is missing.</small>
-          <small id="owner-call-setup-list" class="call-setup-list">Owner-only call configuration is checked securely at runtime.</small>
-        </span>
-      </div>
-
-      <button id="set-billing-row" class="settings-row settings-wide" type="button" onclick="openBillingPortal()" hidden>
-        <span class="settings-icon" aria-hidden="true">▣</span>
-        <span class="settings-row-copy"><strong>Manage subscription</strong><small>Card, invoices &amp; cancellation</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </button>
-
-      <div id="topup-row" class="settings-row settings-credit settings-wide settings-wallet-row" hidden>
-        <span class="settings-icon" aria-hidden="true">▤</span>
-        <span class="settings-credit-copy">
-          <strong>Buy extra credits</strong>
-          <small>One-time credit packs. Included credits are used first, then bought credits automatically.</small>
-        </span>
-        <span class="credit-buy-controls">
-          <label class="sr-only" for="topup-amount">Credit amount</label>
-          <select id="topup-amount" aria-label="Add-on credit amount">
-            <option value="300">Pay £3 · get 300 credits</option>
-            <option value="500">Pay £5 · get 525 credits</option>
-            <option value="1000">Pay £10 · get 1,100 credits</option>
-            <option value="2500">Pay £25 · get 2,875 credits</option>
-            <option value="5000">Pay £50 · get 6,000 credits</option>
-            <option value="10000">Pay £100 · get 12,000 credits</option>
-            <option value="20000">Pay £200 · get 24,000 credits</option>
-          </select>
-          <button id="topup-buy" class="btn settings-credit-primary" type="button" onclick="startCreditCheckout()">＋ Buy credits</button>
-        </span>
-        <span id="topup-status" class="topup-status" role="status" aria-live="polite"></span>
-      </div>
-
-      <div id="referral-row" class="settings-row settings-credit settings-wide settings-referral-row signed-in-only" hidden>
-        <span class="settings-icon" aria-hidden="true">↗</span>
-        <span class="settings-credit-copy">
-          <strong>Invite a builder</strong>
-          <small id="referral-copy">Share your personal Stellar link. Eligible referrals give both accounts 100 bonus Stellar Credits.</small>
-        </span>
-        <span class="credit-buy-controls settings-referral-actions">
-          <button id="referral-copy-btn" class="btn" type="button" onclick="copyReferralLink()">Copy link</button>
-          <button id="referral-share-btn" class="btn" type="button" onclick="shareReferralLink()">Share</button>
-          <a class="btn" href="/affiliate">Creator guide</a>
-        </span>
-      </div>
-
-      <a class="settings-row" href="/support">
-        <span class="settings-icon" aria-hidden="true">?</span>
-        <span class="settings-row-copy"><strong>Support</strong><small>Help, billing, account access and broken buttons · deadlyfox10@gmail.com</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </a>
-
-      <a class="settings-row" href="/legal" data-legacy-label="Legal & policies">
-        <span class="settings-icon" aria-hidden="true">§</span>
-        <span class="settings-row-copy"><strong>Legal &amp; privacy</strong><small>Terms, privacy, refunds, cookies and acceptable use</small></span>
-        <span class="settings-row-meta"><span aria-hidden="true">›</span></span>
-      </a>
-
-      <button class="btn settings-close-footer" type="button" onclick="closeSettings()">Close settings</button>
-    </div>
-  </div>
-</section>
-<div id="model-menu" role="menu" aria-label="Choose AI model" hidden>
-  <div class="model-menu-heading">
-    <span class="model-menu-title"><strong>Choose a model</strong><small>Pick the right balance of speed and depth for this chat.</small></span>
-    <button class="model-menu-close" type="button" onclick="toggleModelMenu(false)" aria-label="Close model picker">×</button>
-  </div>
-  <div class="model-options">
-    <button class="model-option" type="button" role="menuitemradio" aria-checked="false" data-model-choice="spark" onclick="setModel('Spark','quick draft')"><span class="model-symbol">⚡</span><span class="model-copy"><strong>Spark</strong><small>Fast answers, short drafts and quick fixes</small></span><span class="model-access">Free</span></button>
-    <button class="model-option" type="button" role="menuitemradio" aria-checked="false" data-model-choice="star" onclick="setModel('Star','balanced')"><span class="model-symbol">✦</span><span class="model-copy"><strong>Star</strong><small>Balanced everyday work and problem solving</small></span><span class="model-access">Default</span></button>
-    <button class="model-option" type="button" role="menuitemradio" aria-checked="false" data-model-choice="comet" onclick="setModel('Comet','deeper review')"><span class="model-symbol">◈</span><span class="model-copy"><strong>Comet</strong><small>Deeper review for larger and harder tasks</small></span><span class="model-access">Plus</span></button>
-    <button id="nova-model-btn" class="model-option" type="button" role="menuitemradio" aria-checked="false" data-model-choice="nova" data-locked="true" onclick="handleLockedModel('Nova')"><span class="model-symbol">✺</span><span class="model-copy"><strong>Nova</strong><small>Maximum depth and multi-pass review</small></span><span class="model-access">Pro</span></button>
-  </div>
-  <div class="model-menu-actions">
-    <button class="model-menu-action" type="button" onclick="openPlanSettings()">Upgrade or compare plans <span class="action-meta">Model access ↗</span></button>
-    <button class="model-menu-action signed-in-only" type="button" aria-label="Open StellarX computer" onclick="location.href='/desktop'">Computer <span class="action-meta">Signed in ↗</span></button>
-    <button class="owner-only" hidden aria-label="Open Roblox Studio coding agent" type="button" onclick="location.href='/roblox-studio'">Roblox Studio agent <span class="action-meta">Owner ↗</span></button>
-  </div>
+<div class="panel-backdrop" id="panelBackdrop" role="presentation">
+  <section class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+    <div class="panel-head"><div><h2 id="panelTitle">Settings</h2><p id="panelIntro">Manage Stellar AI.</p></div><button class="close" type="button" id="closePanel" aria-label="Close">×</button></div>
+    <div id="panelBody"></div>
+  </section>
 </div>
-<script defer src="/lib/assets/stellar-analytics.js?v=2"></script>
-<script src="/lib/assets/telemetry.js?v=20260927-interaction-fix-3"></script>
 <script>
-const $=id=>document.getElementById(id);const metric=name=>window.StellarTelemetry?.track?.(name);let sending=false;let signedInUser=null;let firstSignIn=false;let sessionExpiryTimer=null;let abortController=null;let activeChatId='chat-'+Date.now();let uploadedImage=null;let imageUploadRequestId=0;let voiceRecognition=null;let voiceListening=false;let serverOwner=false;let billingState={paid:false,manageable:false,reason:'free'};let referralState={url:'',code:''};const SESSION_REFRESH_LEAD_MS = 10 * 60 * 1000;const params=new URLSearchParams(location.search);const STARTER_PROMPTS=Object.freeze({police:'Create a QBCore police job with duty controls, cuffing and a configurable jail timer.',roblox:'Build a Roblox coin collection system with saved progress and a simple player HUD.',fix:'Help me diagnose and fix a script error. I will paste the code, exact error and expected behaviour.',heist:'Plan a secure FiveM heist system with server-side validation, configurable stages, police requirements and a testing checklist.'});function starterPrompt(value){const key=String(value||'').trim().toLowerCase();if(STARTER_PROMPTS[key])return STARTER_PROMPTS[key];if(!/^[a-z0-9-]{3,80}$/.test(key))return '';const topic=key.split('-').filter(Boolean).join(' ');return 'Help me with '+topic+'. Diagnose the likely cause first, use the smallest safe fix, and give me a clear test checklist.'}function consumeInboundPrompt(){const direct=String(params.get('prompt')||'').trim().slice(0,8000);const starter=starterPrompt(params.get('starter'));const value=direct||starter;if(value)$('prompt').value=value;let changed=false;for(const key of ['prompt','starter'])if(params.has(key)){params.delete(key);changed=true}if(changed){const next=params.toString();history.replaceState(null,'',location.pathname+(next?'?'+next:'')+location.hash)}return Boolean(value)}consumeInboundPrompt();function setPrompt(text){const promptEl=$('prompt');if(!promptEl)return;promptEl.value=String(text||'').slice(0,8000);promptEl.focus();setStatus('Prompt ready. Review it, then press Send.','good')}
-const Store={get(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}},set(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch{return false}}};const SESSION_STORE_KEY='stellar-store';function sessionState(){const state=Store.get(SESSION_STORE_KEY,{});return state&&typeof state==='object'?state:{}}function getSessionToken(){const token=sessionState().session;return typeof token==='string'?token:''}function setSessionToken(token,user=null){const state=sessionState();Store.set(SESSION_STORE_KEY,{...state,session:String(token||''),...(user?{user}: {})})}function clearSessionToken(){const state=sessionState();Store.set(SESSION_STORE_KEY,{...state,session:'',user:null,owner:false})}function currentAccountEmail(){return String(signedInUser?.email||'').trim().toLowerCase()}function chatStorageKey(){const email=currentAccountEmail();return email?'stellarChats:'+email:'stellarChats:guest'}function loadLocalChatsForCurrentAccount(){const chats=Store.get(chatStorageKey(),[]);return Array.isArray(chats)?chats:[]}function persistLocalChats(){Store.set(chatStorageKey(),savedChats)}function creditPreferenceKey(){const email=currentAccountEmail();return 'stellarUseCredit:'+(email||'guest')}function trackFirstMessageOnce(){const key='stellarFirstReply:'+(currentAccountEmail()||'guest');if(!Store.get(key,false)){Store.set(key,true);metric('first-message-sent')}}function authHeaders(json=true){const headers=json?{'content-type':'application/json'}:{};const token=getSessionToken();if(token)headers.Authorization='Bearer '+token;return headers}async function fetchStartup(url,options={},timeoutMs=8000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeoutMs);try{return await fetch(url,{...options,signal:controller.signal})}finally{clearTimeout(timer)}}function referralCodeFromUrl(){const value=new URLSearchParams(location.search).get('ref')||'';return /^[A-Z0-9]{8,16}$/i.test(value)?value.toUpperCase():''}const UPGRADE_PLANS=new Set(['starter','plus','pro','starter-annual','plus-annual','pro-annual']);function savePendingUpgrade(plan){const normalized=String(plan||'').trim().toLowerCase();if(!UPGRADE_PLANS.has(normalized))return '';try{sessionStorage.setItem('stellar-pending-upgrade',normalized)}catch{}return normalized}function pendingUpgradeIntent(plan=''){const explicit=savePendingUpgrade(plan);if(explicit)return explicit;const queryValue=String(params.get('upgrade')||'').trim().toLowerCase();if(UPGRADE_PLANS.has(queryValue)){return savePendingUpgrade(queryValue)}try{const stored=String(sessionStorage.getItem('stellar-pending-upgrade')||'').trim().toLowerCase();return UPGRADE_PLANS.has(stored)?stored:''}catch{return ''}}function clearPendingUpgrade(){try{sessionStorage.removeItem('stellar-pending-upgrade')}catch{}}const CREDIT_PACKS=new Set([300,500,1000,2500,5000,10000,20000]);function savePendingCreditPack(value){const amount=Number(value||0);if(!CREDIT_PACKS.has(amount))return 0;try{sessionStorage.setItem('stellar-pending-credit-pack',String(amount))}catch{}return amount}function pendingCreditPack(value=0){const explicit=savePendingCreditPack(value);if(explicit)return explicit;const queryValue=Number(params.get('credits')||0);if(CREDIT_PACKS.has(queryValue))return savePendingCreditPack(queryValue);try{const stored=Number(sessionStorage.getItem('stellar-pending-credit-pack')||0);return CREDIT_PACKS.has(stored)?stored:0}catch{return 0}}function clearPendingCreditPack(){try{sessionStorage.removeItem('stellar-pending-credit-pack')}catch{}}function rememberAuthReturnIntent(){const raw=String(params.get('return')||'').trim();if(raw==='business-builder'||raw==='/business-builder'){try{sessionStorage.setItem('stellar-auth-return','/business-builder')}catch{}}}function resumeAuthReturnIntent(){let target='';try{target=String(sessionStorage.getItem('stellar-auth-return')||'');if(target)sessionStorage.removeItem('stellar-auth-return')}catch{}if(target==='/business-builder'){location.assign('/business-builder');return true}return false}rememberAuthReturnIntent();const GOOGLE_CLIENT_ID='308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';async function handleGoogleSignIn(response){const credential=response?.credential||'';if(!credential){setStatus('Google sign-in did not return a credential.','error');return}setStatus('Signing in with Google…');try{const res=await fetch('/api/auth',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'googleLogin',credential,referralCode:referralCodeFromUrl()})});const data=await res.json().catch(()=>({}));if(!res.ok||!data.session||!data.user)throw new Error(data.error||'Google sign-in failed.');signedInUser=data.user;setSessionToken(data.session,signedInUser);savedChats=loadLocalChatsForCurrentAccount();renderSavedChats();firstSignIn=data.isNew===true;metric(firstSignIn?'signup-success':'login-success');dismissWelcome();setStatus('Signed in','good');updateAuthUi();scheduleSessionExpiry();await loadPlanTruth();await loadChatsFromServer();if(firstSignIn)showFirstSignInOnboarding(signedInUser);await handleUpgradeIntent();await handleCreditIntent();resumeAuthReturnIntent()}catch(error){setStatus(error?.message||'Google sign-in failed.','error')}}function initGoogleSignIn(attempt=0){const host=$('g-signin-main');if(!host||signedInUser)return;if(window.google?.accounts?.id){try{google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleSignIn});host.innerHTML='';google.accounts.id.renderButton(host,{theme:'filled_black',size:'large',width:300,text:'continue_with',shape:'pill'});return}catch{}}if(attempt<20){setTimeout(()=>initGoogleSignIn(attempt+1),300);return}host.textContent='Google sign-in is unavailable right now. Use email or Discord.'}let savedChats=loadLocalChatsForCurrentAccount();let preferredModel=String(Store.get('selectedModel','star')||'star').trim().toLowerCase();const model={current:'star'};let planState={plan:'Free',limit:300,used:0,remaining:300,walletPence:0,modelCreditCosts:{spark:2,star:5,comet:10,nova:20},canUseCredit:true};let allowedModels=['spark','star'];function currentModelCreditCost(){return Math.max(1,Number(planState.modelCreditCosts?.[String(model.current||'star').toLowerCase()]||5))}function creditsOn(){return Boolean(getSessionToken()&&planState.canUseCredit&&Number(planState.walletPence)>=currentModelCreditCost())}function setCreditsOn(){updateCreditUi()}function updateCreditUi(){const note=$('credit-note');if(!note)return;const signedIn=Boolean(getSessionToken()&&currentAccountEmail());const cost=currentModelCreditCost();const addon=Math.max(0,Number(planState.walletPence||0));note.textContent=!signedIn?'Sign in to use Stellar credits.':addon>0?'This model costs '+cost+' credits · '+addon.toLocaleString()+' add-on credits available. Included credits are used first.':'This model costs '+cost+' credits. Included credits are used first.'}const MODEL_PLAN={spark:'Free',star:'Free',comet:'Plus',nova:'Pro'};
-function openResponsiveSidebar(){const sidebar=$('sidebar'),backdrop=$('backdrop');sidebar?.classList.add('open');if(backdrop){backdrop.hidden=false;backdrop.inert=false;backdrop.setAttribute('aria-hidden','false');backdrop.classList.add('open')}document.body.classList.add('drawer-open')}function closeResponsiveSidebar(){const sidebar=$('sidebar'),backdrop=$('backdrop');sidebar?.classList.remove('open');if(backdrop){backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');backdrop.inert=true;backdrop.hidden=true}document.body.classList.remove('drawer-open')}const openSide=openResponsiveSidebar;const closeSide=closeResponsiveSidebar;function resetTransientUiAfterPageRestore(){const sidebar=$('sidebar'),backdrop=$('backdrop'),settings=$('settings-panel'),welcome=$('welcome-modal'),models=$('model-menu');sidebar?.classList.remove('open');if(backdrop){backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');backdrop.inert=true;backdrop.hidden=true}document.body.classList.remove('drawer-open','modal-open','auth-open');if(settings){settings.style.display='none';settings.setAttribute('aria-hidden','true');settings.inert=true;settings.hidden=true}if(welcome){welcome.hidden=true;welcome.inert=true}if(models){models.hidden=true;models.inert=true;$('model-pill')?.setAttribute('aria-expanded','false')}toggleComposerMore(false)}window.addEventListener('pageshow',resetTransientUiAfterPageRestore);
-function setGenerationStatus(text,kind=''){setStatus(text,kind)}function normalizedPlan(){return String(planState.plan||'Free').toLowerCase()}function modelAllowed(id){return isOwner()||allowedModels.includes(String(id||'').toLowerCase())}
-function isOwner(){return serverOwner===true}
-function updateOwnerToolsVisibility(){const visible=isOwner();const card=document.querySelector('#settings-panel .settings-card');if(!visible)card?.classList.remove('advanced-open');document.querySelectorAll('.owner-only').forEach(el=>{el.hidden=!visible;el.style.display=visible?'':'none';el.setAttribute('aria-hidden',visible?'false':'true')});const btn=document.getElementById('settings-advanced-toggle');if(btn&&!visible)btn.setAttribute('aria-expanded','false')}
-function consumeDiscordOAuthCallback(){const query=new URLSearchParams(location.search);const fragment=new URLSearchParams(location.hash.slice(1));const authError=query.get('auth_error');if(authError){setStatus('Discord sign-in did not complete. Please try again.','error');history.replaceState(null,'',location.pathname);return false}const encodedEmail=fragment.get('discord_login')||query.get('discord_login');const token=fragment.get('discord_session');const displayName=fragment.get('discord_user')||query.get('discord_user');if(!encodedEmail||!token)return false;try{const raw=encodedEmail.replace(/-/g,'+').replace(/_/g,'/');const email=atob(raw.padEnd(Math.ceil(raw.length/4)*4,'=')).trim().toLowerCase();if(!email.includes('@'))throw new Error('Invalid Discord account');signedInUser={email,name:displayName?decodeURIComponent(displayName):email.split('@')[0],discord:true};setSessionToken(token,signedInUser);savedChats=loadLocalChatsForCurrentAccount();renderSavedChats();firstSignIn=true;metric('login-success');history.replaceState(null,'',location.pathname);return true}catch{clearSessionToken();signedInUser=null;serverOwner=false;history.replaceState(null,'',location.pathname);setStatus('Discord sign-in could not be verified.','error');return false}}
-async function refreshSessionBeforeExpiry(expectedEmail=''){const token=getSessionToken();if(!token)return null;try{const res=await fetchStartup('/api/auth',{method:'POST',headers:authHeaders(),body:JSON.stringify({action:'refreshSession'})},3500);const data=await res.json().catch(()=>({}));if(!res.ok||!data.session){if(res.status===401){clearSessionToken();signedInUser=null;serverOwner=false;savedChats=loadLocalChatsForCurrentAccount();activeChatId='chat-'+Date.now();$('chatInner').innerHTML='<div class="welcome system-welcome"><p class="eyebrow">Session expired</p><h1>Sign in again</h1><p>Your account chat history is hidden until your session is verified again.</p></div>';renderSavedChats();allowedModels=['spark','star'];billingState={paid:false,manageable:false,reason:'free'};planState={plan:'Free',limit:300,used:0,remaining:300,walletPence:0,modelCreditCosts:{spark:2,star:5,comet:10,nova:20},canUseCredit:true};updateAuthUi();renderPlanTruth()}return null}const email=String(data.email||data.user?.email||signedInUser?.email||'').trim().toLowerCase();if(expectedEmail&&email&&email!==String(expectedEmail).trim().toLowerCase())return null;const previousEmail=currentAccountEmail();signedInUser=data.user||{email};setSessionToken(data.session,signedInUser);if(previousEmail!==currentAccountEmail()){savedChats=loadLocalChatsForCurrentAccount();renderSavedChats()}updateAuthUi();scheduleSessionExpiry();await loadPlanTruth();await loadChatsFromServer();return data}catch{return null}}
-function scheduleSessionExpiry(){clearTimeout(sessionExpiryTimer);const expectedEmail=signedInUser?.email||'';if(!expectedEmail||!getSessionToken())return;sessionExpiryTimer=setTimeout(()=>refreshSessionBeforeExpiry(expectedEmail),SESSION_REFRESH_LEAD_MS)}
-async function loadSession(){const fromDiscord=consumeDiscordOAuthCallback();const token=getSessionToken();if(!token){updateAuthUi();await loadPlanTruth();return}if(fromDiscord&&signedInUser){updateAuthUi();scheduleSessionExpiry();await loadPlanTruth();await loadChatsFromServer();showFirstSignInOnboarding(signedInUser);if(resumeAuthReturnIntent())return;return}const refreshed=await refreshSessionBeforeExpiry(signedInUser?.email||'');updateAuthUi();if(!refreshed)await loadPlanTruth()}
-async function loadPlanTruth(){const token=getSessionToken();if(!token){serverOwner=false;billingState={paid:false,manageable:false,reason:'free'};referralState={url:'',code:''};planState={plan:'Free',limit:300,used:0,remaining:300,walletPence:0,modelCreditCosts:{spark:2,star:5,comet:10,nova:20},canUseCredit:true};allowedModels=['spark','star'];renderPlanTruth();updateModelLocks();return}try{const res=await fetchStartup('/api/get-plan',{cache:'no-store',headers:authHeaders(false)},8000);const data=await res.json().catch(()=>({}));if(res.status===401){clearSessionToken();signedInUser=null;serverOwner=false;savedChats=loadLocalChatsForCurrentAccount();activeChatId='chat-'+Date.now();$('chatInner').innerHTML='<div class="welcome"><p class="eyebrow">Session expired</p><h1>Sign in again</h1><p>Your account chat history is hidden until your session is verified again.</p></div>';renderSavedChats();billingState={paid:false,manageable:false,reason:'free'};planState={plan:'Free',limit:300,used:0,remaining:300,walletPence:0,modelCreditCosts:{spark:2,star:5,comet:10,nova:20},canUseCredit:true};allowedModels=['spark','star'];updateAuthUi();return}if(res.ok){serverOwner=data.owner===true;const usage=data.usage||{};const capabilities=data.capabilities||{};allowedModels=(Array.isArray(data.availableModels)?data.availableModels:Array.isArray(capabilities.models)?capabilities.models:['spark','star']).map(value=>String(value).toLowerCase());billingState=data.billing&&typeof data.billing==='object'?data.billing:{paid:false,manageable:false,reason:'free'};referralState={url:String(data.referralUrl||''),code:String(data.referralCode||'')};planState={plan:data.plan||planState.plan,limit:Number(usage.limit??capabilities.includedCredits??planState.limit)||300,used:Math.max(0,Number(usage.used||0)||0),remaining:Math.max(0,Number(usage.remaining??planState.remaining)||0),walletPence:Math.max(0,Number(data.addOnCredits??data.walletPence??0)||0),modelCreditCosts:capabilities.modelCreditCosts||planState.modelCreditCosts,canUseCredit:capabilities.canUseCredit!==false};}}catch{}finally{updateOwnerToolsVisibility();renderPlanTruth();updateModelLocks();}}
-function renderReferralTruth(){const row=$('referral-row');if(!row)return;const signedIn=Boolean(getSessionToken()&&currentAccountEmail());row.hidden=!(signedIn&&referralState.url);const copy=$('referral-copy');if(copy)copy.textContent=referralState.url?'Share your personal Stellar link. Eligible referrals give both accounts 100 bonus Stellar Credits.':'Your personal referral link appears after account data loads.'}
-async function copyReferralLink(){if(!referralState.url){setStatus('Your referral link is still loading.','warn');return false}try{await navigator.clipboard.writeText(referralState.url);metric('referral-link-copied');setStatus('Referral link copied.','good');return true}catch{setStatus('Could not copy automatically. Open the affiliate page to copy your link.','warn');return false}}
-async function shareReferralLink(){if(!referralState.url){setStatus('Your referral link is still loading.','warn');return false}const data={title:'Stellar AI',text:'Try Stellar AI — eligible referrals give us both 100 bonus Stellar Credits.',url:referralState.url};if(navigator.share){try{await navigator.share(data);metric('referral-link-shared');return true}catch(error){if(error?.name==='AbortError')return false}}return copyReferralLink()}
-function renderPlanTruth(){const remaining=Math.max(0,Number(planState.remaining||0));const limit=Math.max(0,Number(planState.limit||300));const addon=Math.max(0,Number(planState.walletPence||0));const total=remaining+addon;const owner=isOwner();const detail=owner?'Owner access · unlimited credits':planState.plan+' · '+total.toLocaleString()+' credits available · '+remaining.toLocaleString()+' included + '+addon.toLocaleString()+' wallet';const usage=$('usage-copy');if(usage)usage.textContent=detail;const top=$('top-usage');if(top){top.textContent=owner?'Owner · unlimited':total.toLocaleString()+' credits';top.title=owner?'Unlimited owner credits':addon>0?remaining.toLocaleString()+' included + '+addon.toLocaleString()+' wallet credits':remaining.toLocaleString()+' included credits'}const balance=$('stellar-credit-balance');if(balance)balance.textContent=owner?'∞':total.toLocaleString('en-GB');const pill=document.querySelector('.stellar-credit-pill');if(pill){pill.title=owner?'Owner access · unlimited credits':addon>0?total.toLocaleString('en-GB')+' credits · '+remaining.toLocaleString('en-GB')+' included + '+addon.toLocaleString('en-GB')+' wallet':total.toLocaleString('en-GB')+' credits available';pill.setAttribute('aria-label',owner?'Open credits wallet. Owner access with unlimited credits.':'Open credits wallet. '+total.toLocaleString('en-GB')+' credits available.')}updateCreditUi();updateBillingVisibility();renderReferralTruth();window.StellarCreditDisplay?.sync?.();if(!owner&&remaining<=0&&addon>0)setStatus('Included credits used. Stellar is now using your wallet credits.','warn');if(!owner&&total<=0)setStatus('No Stellar credits left. Buy wallet credits, upgrade, or wait for your plan credits to refresh.','warn')}
-function updateModelLocks(){document.querySelectorAll('[data-model-choice]').forEach(btn=>{const id=String(btn.getAttribute('data-model-choice')||'').toLowerCase();const locked=!modelAllowed(id);btn.dataset.locked=locked?'true':'false';if(id==='nova')btn.onclick=locked?()=>handleLockedModel('Nova'):()=>setModel('Nova','maximum review');if(id==='comet')btn.onclick=locked?()=>handleLockedModel('Comet'):()=>setModel('Comet','deeper review');});reconcilePreferredModel();}
-function applyWelcomeEntry(){if(params.get('welcome')!=='1')return;const greeting=document.getElementById('homeGreeting');const copy=document.getElementById('welcome-copy');if(greeting)greeting.textContent='What can I help with?';if(copy)copy.textContent='Ask anything. Use + for voice, images, StellarX or plugins.';setGenerationStatus('Ready','good');params.delete('welcome');const next=params.toString();history.replaceState(null,'',location.pathname+(next?'?'+next:'')+location.hash)}
-function maybeShowWelcome(){if(params.has('signin')||((pendingUpgradeIntent()||pendingCreditPack())&&!getSessionToken()))openWelcome()}function showFirstSignInOnboarding(user){const email=(user&&user.email)||'local';const key='stellar-first-signin-onboarding-v1-'+String(email).trim().toLowerCase();if(Store.get(key,false))return;Store.set(key,true);const shell=document.getElementById('welcomeShell');setGenerationStatus('Ready','good')}
-function openWelcome(){closeResponsiveSidebar();closeSettings();toggleModelMenu(false);document.body.classList.add('auth-open');const modal=document.getElementById('welcome-modal');if(modal){modal.inert=false;modal.hidden=false}}function dismissWelcome(){const modal=document.getElementById('welcome-modal');if(modal){modal.hidden=true;modal.inert=true}document.body.classList.remove('auth-open')}
-function signOut(){closeResponsiveSidebar();document.body.classList.remove('auth-open');saveCurrentChat();clearSessionToken();signedInUser=null;serverOwner=false;savedChats=loadLocalChatsForCurrentAccount();activeChatId='chat-'+Date.now();$('chatInner').innerHTML='<div class="welcome"><p class="eyebrow">Signed out</p><h1>What can I help with?</h1><p>Your signed-in chat history is hidden on this device until you sign back in.</p></div>';renderSavedChats();firstSignIn=false;allowedModels=['spark','star'];billingState={paid:false,manageable:false,reason:'free'};planState={plan:'Free',limit:300,used:0,remaining:300,walletPence:0,modelCreditCosts:{spark:2,star:5,comet:10,nova:20},canUseCredit:true};clearTimeout(sessionExpiryTimer);dismissWelcome();removeImage();setStatus('Signed out');updateAuthUi();loadPlanTruth()}
-async function emailAuth(mode){const email=($('auth-email')?.value||'').trim().toLowerCase();const password=$('auth-password')?.value||'';if(!email||!email.includes('@')){setStatus('Enter a valid email address.','error');$('auth-email')?.focus();return}if(password.length<8){setStatus('Password needs to be at least 8 characters.','error');$('auth-password')?.focus();return}setStatus(mode==='signup'?'Creating account…':'Signing in…');try{const res=await fetch('/api/auth',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:mode,email,password,referralCode:referralCodeFromUrl()})});const data=await res.json().catch(()=>({}));if(!res.ok||!data.session)throw new Error(data.error||'Sign-in failed.');signedInUser=data.user||{email:data.email||email};setSessionToken(data.session,signedInUser);savedChats=loadLocalChatsForCurrentAccount();renderSavedChats();firstSignIn=mode==='signup'||data.isNew===true;metric(firstSignIn?'signup-success':'login-success');dismissWelcome();setStatus(mode==='signup'?'Account ready':'Signed in','good');updateAuthUi();scheduleSessionExpiry();await loadPlanTruth();await loadChatsFromServer();if(firstSignIn)showFirstSignInOnboarding(signedInUser);await handleUpgradeIntent();await handleCreditIntent();resumeAuthReturnIntent()}catch(error){setStatus(error?.message||'Could not sign in.','error')}}
-function updateAuthUi(){const signedIn=Boolean(signedInUser&&signedInUser.email);document.querySelectorAll('.signed-in-only').forEach(el=>{el.style.display=signedIn?'':'none'});const authKey=document.getElementById('auth-key');if(authKey)authKey.textContent=signedIn?'Signed in':'Sign in';const authRow=document.getElementById('auth-settings-row');if(authRow)authRow.classList.toggle('set-click',!signedIn);const discordRow=document.getElementById('discord-signin-btn');if(discordRow)discordRow.style.display=signedIn?'none':'';const googleRow=document.getElementById('g-signin-main');if(googleRow)googleRow.style.display=signedIn?'none':'';const accountButton=$('account-button');if(accountButton)accountButton.textContent=signedIn?'Account':'Sign in';updateOwnerToolsVisibility();updateGreeting()}
-function safeFirstName(user){const source=String(user?.given_name||user?.name||'').replace(/[._-]+/g,' ').trim();const first=(source.split(/\s+/)[0]||'').replace(/[^A-Za-zÀ-ÿ'’-]/g,'').slice(0,30);return first}function updateGreeting(){const greeting=$('homeGreeting');if(!greeting)return;const name=isOwner()?'Tobi':safeFirstName(signedInUser);greeting.textContent=name?name+', what can I help with?':'What can I help with?'}async function startPlanCheckout(plan){const normalized=String(plan||'').trim().toLowerCase();if(!UPGRADE_PLANS.has(normalized)){setStatus('That plan is not available.','error');return false}if(!getSessionToken()){pendingUpgradeIntent(normalized);openWelcome();setStatus('Sign in or create an account, then Stripe checkout will open for '+normalized.replace('-annual',' annual')+'.','warn');return false}setStatus('Opening secure plan checkout…');metric('checkout-open');try{const res=await fetch('/api/create-checkout',{method:'POST',headers:authHeaders(),body:JSON.stringify({plan:normalized})});const data=await res.json().catch(()=>({}));if(res.status===401){clearSessionToken();signedInUser=null;serverOwner=false;openWelcome();throw new Error('Your sign-in expired. Sign in again to upgrade.')}if(!res.ok||!data.url)throw new Error(data.error||'Plan checkout could not start.');let checkoutUrl=null;try{checkoutUrl=new URL(data.url)}catch{}if(!checkoutUrl||checkoutUrl.protocol!=='https:'||checkoutUrl.hostname!=='checkout.stripe.com')throw new Error('Stripe returned an unexpected checkout address.');clearPendingUpgrade();location.assign(checkoutUrl.href);return true}catch(error){metric('checkout-error');setStatus(error?.message||'Could not reach plan checkout.','error');return false}}async function handleUpgradeIntent(){const plan=pendingUpgradeIntent();if(!plan)return false;if(!getSessionToken()){openWelcome();setStatus('Sign in to continue with '+plan.replace('-annual',' annual')+'.','warn');return false}return startPlanCheckout(plan)}function updateBillingVisibility(){const row=$('set-billing-row');if(row)row.hidden=!(Boolean(getSessionToken())&&billingState.paid===true);const topup=$('topup-row');if(topup)topup.hidden=!Boolean(getSessionToken())}function setTopupStatus(message='',kind=''){const status=$('topup-status');if(!status)return;status.textContent=message;status.className='topup-status'+(kind?' '+kind:'')}function pendingTopup(){try{const value=JSON.parse(sessionStorage.getItem('stellar-pending-topup')||'null');return value&&Number.isFinite(Number(value.amountPence))?value:null}catch{return null}}function clearPendingTopup(){try{sessionStorage.removeItem('stellar-pending-topup')}catch{}}async function startCreditCheckout(){if(!getSessionToken()){closeSettings();openWelcome();setStatus('Sign in to buy Stellar credits.','warn');return}const select=$('topup-amount');const amount=Number(select?.value||0);if(!Number.isInteger(amount)||amount<300||amount>20000||amount%50!==0){setTopupStatus('Choose a valid amount between £3 and £200.','error');return}const button=$('topup-buy');if(button?.disabled)return;const label=button?.textContent||'Add credit';if(button){button.disabled=true;button.textContent='Opening Stripe…'}setTopupStatus('Connecting to secure checkout…');metric('checkout-open');try{const res=await fetch('/api/create-checkout',{method:'POST',headers:authHeaders(),body:JSON.stringify({plan:'topup',amount})});const data=await res.json().catch(()=>({}));if(res.status===401){clearSessionToken();signedInUser=null;serverOwner=false;closeSettings();openWelcome();throw new Error('Your sign-in expired. Sign in again to add credit.')}if(!res.ok||!data.url)throw new Error(data.error||'Credit checkout could not start.');let checkoutUrl=null;try{checkoutUrl=new URL(data.url)}catch{}if(!checkoutUrl||checkoutUrl.protocol!=='https:'||checkoutUrl.hostname!=='checkout.stripe.com')throw new Error('Stripe returned an unexpected checkout address.');try{sessionStorage.setItem('stellar-pending-topup',JSON.stringify({amountPence:amount,walletPence:Number(planState.walletPence||0),startedAt:Date.now()}))}catch{}setTopupStatus('Stripe is ready. Redirecting…','good');location.assign(checkoutUrl.href)}catch(error){metric('checkout-error');setTopupStatus(error?.message||'Could not reach credit checkout.','error');if(button){button.disabled=false;button.textContent=label}}}async function handlePaymentReturn(){const query=new URLSearchParams(location.search);const payment=query.get('payment');if(!payment)return;if(payment==='cancelled'){const attempt=query.get('attempt')||'';if(getSessionToken()&&attempt){try{await fetch('/api/get-plan?event=checkout_cancelled&attempt='+encodeURIComponent(attempt),{cache:'no-store',headers:authHeaders(false)})}catch{}}setStatus('Checkout cancelled. Nothing was charged.','warn')}else if(payment==='success'){const pending=pendingTopup();const before=Math.max(0,Number(pending?.walletPence)||0);let refreshed=false;for(const delay of [0,600,1400,2600]){if(delay)await new Promise(resolve=>setTimeout(resolve,delay));await loadPlanTruth();if(!pending||Number(planState.walletPence||0)>before){refreshed=true;break}}if(pending&&refreshed)clearPendingTopup();setStatus(query.get('plan')==='topup'?(refreshed?'Credits added to your account.':'Payment completed. Your add-on credits are still syncing.'):'Payment completed. Your plan has been refreshed.',refreshed||query.get('plan')!=='topup'?'good':'warn')}for(const key of ['payment','plan','attempt','success'])query.delete(key);const next=query.toString();history.replaceState(null,'',location.pathname+(next?'?'+next:'')+location.hash)}async function openBillingPortal(){if(!getSessionToken()){closeSettings();openWelcome();setStatus('Sign in to manage billing.','warn');return}if(!billingState.paid){setStatus('There is no paid subscription to manage on this account.','warn');return}if(!billingState.manageable){setStatus('Billing is still syncing. Try again shortly or use Support.','warn');return}setStatus('Opening secure billing…');metric('billing-open');try{const res=await fetch('/api/create-checkout',{method:'POST',headers:authHeaders(),body:JSON.stringify({plan:'manage-billing'})});const data=await res.json().catch(()=>({}));if(!res.ok||!data.url)throw new Error(data.error||'Could not open billing.');const portalUrl=new URL(data.url);if(portalUrl.protocol!=='https:'||portalUrl.hostname!=='billing.stripe.com')throw new Error('Billing returned an unexpected address.');location.assign(portalUrl.href)}catch(error){setStatus(error?.message||'Could not open billing.','error')}}function accountAction(){if(signedInUser&&signedInUser.email)openSettings();else openWelcome()}function settingsAuthAction(){if(signedInUser&&signedInUser.email){setStatus('You are signed in.','good');return}closeSettings();openWelcome()}function setWorkspaceNavState(settingsOpen=false){const chat=$('chat-nav'),settings=$('settings-nav');if(chat)chat.classList.toggle('active',!settingsOpen);if(settings)settings.classList.toggle('active',settingsOpen)}function updateCurrentWorkVisibility(){const section=$('current-work-section');const actions=$('chat-list');if(!section)return;const hasCurrent=chatText().length>0;const hasSaved=savedChats.length>0;section.hidden=!(hasCurrent||hasSaved);if(actions)actions.hidden=!hasCurrent}let settingsReturnFocus=null;function openSettings(){closeResponsiveSidebar();dismissWelcome();toggleModelMenu(false);const panel=$('settings-panel');if(!panel)return;settingsReturnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;setWorkspaceNavState(true);panel.hidden=false;panel.inert=false;panel.style.display='block';panel.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestAnimationFrame(()=>{window.StellarSettingsTabs?.sync?.();panel.querySelector('.settings-close-x')?.focus?.({preventScroll:true})})}function closeSettings(){const panel=$('settings-panel');if(!panel)return;const card=panel.querySelector('.settings-card');const btn=document.getElementById('settings-advanced-toggle');card?.classList.remove('advanced-open');btn?.setAttribute('aria-expanded','false');setWorkspaceNavState(false);panel.style.display='none';panel.setAttribute('aria-hidden','true');panel.inert=true;panel.hidden=true;document.body.classList.remove('modal-open');const target=settingsReturnFocus;settingsReturnFocus=null;if(target&&document.contains(target))requestAnimationFrame(()=>target.focus?.({preventScroll:true}))}function closeSettingsOnBackdrop(event){if(event?.target===event?.currentTarget)closeSettings()}
-function openComputerActionCard(){const task=String($('prompt')?.value||'').trim()||'Use StellarX with this computer';if(!getSessionToken()){openWelcome();setStatus('Sign in to use Computer.','warn');return}document.getElementById('computer-action-card')?.remove();document.querySelector('#chatInner .home-welcome')?.remove();const card=document.createElement('section');card.id='computer-action-card';card.className='computer-action-card';const kicker=document.createElement('div');kicker.className='computer-card-kicker';kicker.textContent='StellarX · Computer';const title=document.createElement('h3');title.textContent='Review computer action';const target=document.createElement('div');target.className='computer-card-row';target.innerHTML='<span>Target</span><strong>This computer</strong>';const action=document.createElement('div');action.className='computer-card-row';const actionLabel=document.createElement('span');actionLabel.textContent='Action';const actionText=document.createElement('strong');actionText.textContent=task;action.append(actionLabel,actionText);const note=document.createElement('p');note.className='computer-card-note';note.textContent='Approving opens StellarX Computer with this task prefilled. File writes and terminal commands still require their own approval.';const actions=document.createElement('div');actions.className='computer-card-actions';const deny=document.createElement('button');deny.className='btn';deny.type='button';deny.textContent='Deny';deny.onclick=()=>{card.remove();setStatus('Computer action cancelled','warn')};const approve=document.createElement('button');approve.className='btn primary';approve.type='button';approve.textContent='Approve';approve.onclick=()=>{location.href='/desktop?task='+encodeURIComponent(task)};actions.append(deny,approve);card.append(kicker,title,target,action,note,actions);$('chatInner').appendChild(card);card.scrollIntoView({behavior:'smooth',block:'end'});setStatus('Review the Computer action card.','warn')}
-function homeWelcomeMarkup(){return '<div class="welcome home-welcome" id="welcomeShell"><h1 id="homeGreeting">What can I help with?</h1><p id="welcome-copy" class="home-hint">Ask anything. Use + for voice, images, StellarX or plugins.</p></div>'}function newChat(skipSave=false){if(!skipSave)saveCurrentChat();activeChatId='chat-'+Date.now();$('chatInner').innerHTML=homeWelcomeMarkup();$('prompt').value='';removeImage();toggleComposerMore(false);updateGreeting();updateAuthUi();renderSavedChats();updateCurrentWorkVisibility();closeResponsiveSidebar();$('prompt').focus();setStatus('Ready','good')}function clearPrompt(){$('prompt').value='';$('prompt').focus()}function toggleComposerMore(force){const panel=$('composer-more'),button=$('composer-more-btn');if(!panel||!button)return;const open=typeof force==='boolean'?force:panel.hidden;panel.hidden=!open;button.setAttribute('aria-expanded',String(open));button.textContent=open?'×':'＋';button.setAttribute('aria-label',open?'Close tools':'Open tools');button.title=open?'Close tools':'Tools'}function starter(text){$('prompt').value=text;$('prompt').focus()}
-function chatText(){return [...document.querySelectorAll('#chatInner .msg')].map(m=>{const bubble=m.querySelector('.bubble');return{role:m.classList.contains('user')?'user':'assistant',content:bubble?.dataset.rawText??bubble?.textContent??''}})}
-function exportCurrentChat(){
-  const messages=chatText().filter(message=>String(message.content||'').trim());
-  if(!messages.length){setStatus('Start a chat before exporting it.','warn');return false}
-  const current=savedChats.find(chat=>chat.id===activeChatId);
-  const title=String(current?.title||messages.find(message=>message.role==='user')?.content||'Stellar AI chat').trim().slice(0,80)||'Stellar AI chat';
-  const safeTitle=title.replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ').trim();
-  const body=['# '+title,'','Exported from Stellar AI','','---','']
-    .concat(messages.flatMap(message=>[(message.role==='user'?'## You':'## Stellar'),'',
-      String(message.content||'').trim(),'']))
-    .join('\n');
-  const blob=new Blob([body],{type:'text/markdown;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const link=document.createElement('a');
-  link.href=url;
-  link.download=(safeTitle||'stellar-chat')+'.md';
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-  setStatus('Chat exported.','good');
-  return true;
-}
-function renderSavedChats(){const host=$('saved-chat-list');const empty=$('saved-chat-empty');if(!host)return;host.innerHTML='';const ordered=[...savedChats].sort((a,b)=>Number(Boolean(b.pinned))-Number(Boolean(a.pinned))||(Number(b.updatedAt)||0)-(Number(a.updatedAt)||0));const latest=[...savedChats].sort((a,b)=>(Number(b.updatedAt)||0)-(Number(a.updatedAt)||0))[0];let resume=$('continue-last-chat');if(latest){if(!resume){resume=document.createElement('button');resume.type='button';resume.id='continue-last-chat';resume.className='nav-link continue-chat';resume.innerHTML='<span aria-hidden="true">↻</span><span class="continue-copy"><strong>Continue where you left off</strong><small></small></span>';host.insertAdjacentElement('beforebegin',resume)}resume.querySelector('small').textContent=latest.title||latest.name||'Recent chat';resume.onclick=()=>{try{window.StellarTrack?.('return-resumed','sidebar')}catch{}loadSavedChat(latest.id)};resume.style.display=''}else if(resume){resume.style.display='none'}if(empty)empty.style.display=ordered.length?'none':'';for(const chat of ordered){const button=document.createElement('button');button.type='button';button.className='nav-link chat-history-item'+(chat.id===activeChatId?' active':'');button.setAttribute('aria-current',chat.id===activeChatId?'page':'false');const icon=document.createElement('span');icon.textContent='◦';const title=document.createElement('span');title.className='chat-title';title.textContent=chat.title||chat.name||'New chat';button.append(icon,title);if(chat.pinned){const pin=document.createElement('span');pin.className='pin-mark';pin.textContent='PIN';button.append(pin)}button.addEventListener('click',()=>loadSavedChat(chat.id));host.appendChild(button)}updateCurrentWorkVisibility()}function loadSavedChat(id){if(id===activeChatId){closeResponsiveSidebar();return}saveCurrentChat();const chat=savedChats.find(item=>item.id===id);if(!chat)return;activeChatId=chat.id;const requestedModel=String(chat.model||'star').toLowerCase();const nextModel=modelAllowed(requestedModel)?requestedModel:'star';applyModelSelection(nextModel,{persist:true,announce:false});const inner=$('chatInner');inner.innerHTML='';for(const message of chat.messages||[])addMessage(message.role==='assistant'?'assistant':'user',String(message.content||''));if(!(chat.messages||[]).length)inner.innerHTML='<div class="welcome system-welcome"><p class="eyebrow">Saved chat</p><h1>'+String(chat.title||'New chat').replace(/[<>&]/g,'')+'</h1><p>This chat has no saved messages yet.</p></div>';renderSavedChats();closeResponsiveSidebar();$('prompt').focus();setStatus('Chat opened','good')}function chatsForServer(){return savedChats.slice(0,15).map(chat=>({id:String(chat.id||''),name:String(chat.title||chat.name||'New chat'),pinned:Boolean(chat.pinned),updatedAt:Number(chat.updatedAt)||Date.now(),messages:Array.isArray(chat.messages)?chat.messages.slice(-30).map(message=>({role:message.role==='assistant'?'assistant':'user',content:String(message.content||'').slice(0,8000),t:Number(message.t||message.createdAt)||Date.now()})):[]})).filter(chat=>chat.id)}async function syncChatsToServer(){if(!getSessionToken())return false;try{const res=await fetch('/api/get-chats',{method:'POST',headers:authHeaders(),body:JSON.stringify({chats:chatsForServer()})});if(res.status===401){clearSessionToken();signedInUser=null;serverOwner=false;updateAuthUi();return false}return res.ok}catch{return false}}async function loadChatsFromServer(){if(!getSessionToken())return [];try{const res=await fetch('/api/get-chats',{cache:'no-store',headers:authHeaders(false)});if(!res.ok)return [];const data=await res.json().catch(()=>({}));const remote=Array.isArray(data.chats)?data.chats.map(chat=>({id:String(chat.id||''),title:String(chat.name||chat.title||'New chat'),pinned:Boolean(chat.pinned),updatedAt:Number(chat.updatedAt)||Date.now(),model:chat.model||'star',messages:Array.isArray(chat.messages)?chat.messages.map(message=>({role:message.role==='assistant'?'assistant':'user',content:String(message.content||'')})):[]})).filter(chat=>chat.id):[];if(remote.length){const remoteIds=new Set(remote.map(chat=>chat.id));savedChats=[...remote,...savedChats.filter(chat=>!remoteIds.has(chat.id))].slice(0,30);persistLocalChats()}renderSavedChats();if(!remote.length&&savedChats.length)void syncChatsToServer();return remote}catch{return []}}function saveCurrentChat(){const messages=chatText();if(!messages.length)return;const existing=savedChats.find(c=>c.id===activeChatId);const title=(messages.find(m=>m.role==='user')?.content||existing?.title||'New chat').slice(0,42);const item={id:activeChatId,title,messages,model:model.current,updatedAt:Date.now(),pinned:Boolean(existing?.pinned)};savedChats=[item,...savedChats.filter(c=>c.id!==activeChatId)].slice(0,30);persistLocalChats();renderSavedChats();void syncChatsToServer()}
-function pinChat(){saveCurrentChat();const current=savedChats.find(c=>c.id===activeChatId);if(!current){setStatus('Start this chat before pinning it.','warn');return}const nextPinned=!Boolean(current.pinned);savedChats=savedChats.map(c=>c.id===activeChatId?{...c,pinned:nextPinned,updatedAt:Date.now()}:c);persistLocalChats();renderSavedChats();void syncChatsToServer();setStatus(nextPinned?'Chat pinned. Unpin it before deleting.':'Chat unpinned.','good')}
-function renameChat(){saveCurrentChat();const current=savedChats.find(c=>c.id===activeChatId);if(!current){setStatus('Start this chat before renaming it.','warn');return}document.getElementById('rename-chat-modal')?.remove();const overlay=document.createElement('div');overlay.id='rename-chat-modal';overlay.className='rename-chat-modal';overlay.setAttribute('role','presentation');const dialog=document.createElement('div');dialog.className='rename-chat-dialog';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','rename-chat-title');const title=document.createElement('h3');title.id='rename-chat-title';title.textContent='Rename chat';const copy=document.createElement('p');copy.textContent='Choose a short name that will be easy to find later.';const input=document.createElement('input');input.className='rename-chat-input';input.type='text';input.maxLength=70;input.value=current.title||'New chat';input.setAttribute('aria-label','Chat name');const actions=document.createElement('div');actions.className='rename-chat-actions';const cancel=document.createElement('button');cancel.type='button';cancel.className='btn';cancel.textContent='Cancel';const save=document.createElement('button');save.type='button';save.className='btn primary';save.textContent='Save';const close=()=>overlay.remove();const commit=()=>{const next=input.value.trim();if(!next){input.focus();return}savedChats=savedChats.map(c=>c.id===activeChatId?{...c,title:next.slice(0,70),updatedAt:Date.now()}:c);persistLocalChats();renderSavedChats();void syncChatsToServer();close();setStatus('Chat renamed','good')};cancel.onclick=close;save.onclick=commit;overlay.addEventListener('click',e=>{if(e.target===overlay)close()});input.addEventListener('keydown',e=>{if(e.key==='Escape')close();if(e.key==='Enter'){e.preventDefault();commit()}});actions.append(cancel,save);dialog.append(title,copy,input,actions);overlay.append(dialog);document.body.append(overlay);requestAnimationFrame(()=>{input.focus();input.select()})}
-function deleteChat(){const current=savedChats.find(c=>c.id===activeChatId);if(current?.pinned){setStatus('Unpin this chat before deleting it.','warn');return}savedChats=savedChats.filter(c=>c.id!==activeChatId);persistLocalChats();renderSavedChats();void syncChatsToServer();newChat(true);setStatus('Chat deleted','good')}
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const side = $('side');
+  const backdrop = $('backdrop');
+  const panelBackdrop = $('panelBackdrop');
+  const panelTitle = $('panelTitle');
+  const panelIntro = $('panelIntro');
+  const panelBody = $('panelBody');
+  const chatInner = $('chatInner');
+  const prompt = $('prompt');
+  const status = $('status');
+  const sendBtn = $('sendBtn');
+  let messages = [];
+  let busy = false;
 
-function voiceRecognitionConstructor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null}function updateVoiceInputUi(){const button=$('voice-input-btn');if(!button)return;button.setAttribute('aria-pressed',String(voiceListening));button.setAttribute('aria-label',voiceListening?'Stop voice input':'Start voice input');button.textContent=voiceListening?'■ Stop voice':'◉ Voice'}function stopVoiceInput(){try{voiceRecognition?.abort?.()}catch{}try{voiceRecognition?.stop?.()}catch{}voiceListening=false;updateVoiceInputUi()}async function ensureMicPermission(){return true}async function toggleVoiceInput(){if(voiceListening){stopVoiceInput();return}if(window.StellarVoiceAgent?.micBlocked){setStatus('Wait for Jarvis to finish speaking, then press Voice again.','warn');return}const Recognition=voiceRecognitionConstructor();if(!Recognition){setStatus('Voice input is not supported in this browser. Use Chrome/Edge desktop or Android Chrome, or type your message.','warn');return}const allowed=await ensureMicPermission();if(!allowed)return;try{voiceRecognition=new Recognition();voiceRecognition.lang='en-GB';voiceRecognition.interimResults=true;voiceRecognition.continuous=false;const prompt=$('prompt');let committed=prompt?.value||'';let heardSomething=false;voiceRecognition.onstart=()=>{voiceListening=true;updateVoiceInputUi();setStatus('Listening now — speak your message.','good')};voiceRecognition.onresult=event=>{let finalText='';let interimText='';for(let i=event.resultIndex;i<event.results.length;i++){const text=String(event.results[i]?.[0]?.transcript||'').trim();if(!text)continue;if(event.results[i].isFinal)finalText+=(finalText?' ':'')+text;else interimText+=(interimText?' ':'')+text}if(finalText){committed=[committed,finalText].filter(Boolean).join(committed&&finalText?' ':'');heardSomething=true}if(interimText)heardSomething=true;if(prompt){prompt.value=[committed,interimText].filter(Boolean).join(committed&&interimText?' ':'');prompt.focus()}};voiceRecognition.onerror=event=>{const code=String(event.error||'');if(code==='not-allowed'||code==='service-not-allowed')setStatus('Microphone permission is blocked. Allow microphone access in your browser and try again.','error');else if(code==='no-speech')setStatus('I did not hear anything. Press Voice again and speak closer to the mic.','warn');else if(code!=='aborted')setStatus('Voice input stopped: '+code+'. Try again or type your message.','warn')};voiceRecognition.onend=()=>{voiceListening=false;updateVoiceInputUi();if(prompt?.value.trim())setStatus('Voice input ready. Review it, then press Send.','good');else if(!heardSomething)setStatus('I did not hear anything. Check your mic and press Voice again.','warn')};voiceRecognition.start()}catch{voiceListening=false;updateVoiceInputUi();setStatus('Voice input could not start. Check microphone permission and try again.','error')}}window.stopVoiceInput=stopVoiceInput;function applyJarvisEntry(){const mode=params.get('jarvis');if(!mode)return;if(mode==='voice'){setStatus('Voice mode ready. Press Voice and speak your message.','good');setTimeout(()=>$('voice-input-btn')?.focus(),0)}else if(mode==='chat'){setStatus('Jarvis opened Stellar chat.','good');setTimeout(()=>$('prompt')?.focus(),0)}params.delete('jarvis');const next=params.toString();history.replaceState(null,'',location.pathname+(next?'?'+next:'')+location.hash)}const UPLOAD_IMAGE_MAX_BYTES=3_000_000;const UPLOAD_IMAGE_MEDIA_TYPES=new Set(['image/png','image/jpeg','image/gif','image/webp']);function renderImageState(){const status=$('image-upload-status');const remove=$('image-remove-btn');if(status)status.textContent=uploadedImage?(uploadedImage.name||'Image attached'):'No image attached';if(remove)remove.hidden=!uploadedImage;if(uploadedImage)toggleComposerMore(true)}function removeImage(){imageUploadRequestId+=1;uploadedImage=null;const input=$('image-upload-input');if(input)input.value='';renderImageState()}function attachImageFile(file,input=null,label='Image'){if(!file)return false;if(!UPLOAD_IMAGE_MEDIA_TYPES.has(file.type)){setStatus('Attach a PNG, JPEG, GIF, or WebP image.','error');return false}if(file.size>UPLOAD_IMAGE_MAX_BYTES){setStatus('Choose an image under 3 MB.','error');return false}const uploadRequestId=++imageUploadRequestId;const reader=new FileReader();reader.onload=function(e){if(uploadRequestId!==imageUploadRequestId)return;const result=String(e.target?.result||'');const comma=result.indexOf(',');if(comma<0){setStatus('That image could not be read.','error');return}uploadedImage={mediaType:file.type,data:result.slice(comma+1),name:file.name||label};if(input)input.value='';renderImageState();setStatus((file.name||label)+' attached','good')};reader.onerror=function(){if(uploadRequestId!==imageUploadRequestId)return;setStatus('That image could not be read.','error')};reader.readAsDataURL(file);return true}function initImageInput(){const input=$('image-upload-input');if(input)input.addEventListener('change',()=>{const file=input.files?.[0];if(file)attachImageFile(file,input,'Selected image')});const prompt=$('prompt');if(prompt)prompt.addEventListener('paste',event=>{const imageItem=Array.from(event.clipboardData?.items||[]).find(item=>item.kind==='file'&&item.type.startsWith('image/'));const imageFile=imageItem?.getAsFile?.();if(imageFile){event.preventDefault();attachImageFile(imageFile,null,'Pasted image')}});const composer=$('chatForm');if(composer){composer.addEventListener('dragover',event=>{if(Array.from(event.dataTransfer?.types||[]).includes('Files'))event.preventDefault()});composer.addEventListener('drop',event=>{const droppedFile=Array.from(event.dataTransfer?.files||[]).find(file=>file.type.startsWith('image/'));if(droppedFile){event.preventDefault();attachImageFile(droppedFile,null,'Dropped image')}})}}function setStatus(text,kind=''){const status=$('status');if(!status)return;status.textContent=text;status.className='status '+kind;status.dataset.idle=/^(?:Ready|Sent|New chat ready|Chat opened|.+ selected)$/.test(String(text||''))?'true':'false'}function updatePlanFromChatHeaders(res){const limit=Number(res.headers.get('X-Stellar-Credits-Limit'));const remaining=Number(res.headers.get('X-Stellar-Credits-Remaining'));const plan=res.headers.get('X-Stellar-Plan');const addon=Number(res.headers.get('X-Stellar-AddOn-Credits'));if(plan)planState.plan=plan;if(Number.isFinite(limit)&&limit>0)planState.limit=limit;if(Number.isFinite(remaining)&&remaining>=0){planState.remaining=remaining;planState.used=Math.max(0,planState.limit-remaining)}if(Number.isFinite(addon)&&addon>=0)planState.walletPence=addon;renderPlanTruth()}function streamEventText(event){if(event?.type==='content_block_delta'&&typeof event?.delta?.text==='string')return event.delta.text;if(event?.type==='response.output_text.delta'&&typeof event?.delta==='string')return event.delta;if(typeof event?.choices?.[0]?.delta?.content==='string')return event.choices[0].delta.content;return ''}async function readChatStream(res,assistantBubble){if(!res.body)throw new Error('The AI service returned an empty response.');const reader=res.body.getReader();const decoder=new TextDecoder();let buffer='';let full='';let streamError='';const consumeLine=line=>{if(!line.startsWith('data:'))return;const payload=line.slice(5).trim();if(!payload||payload==='[DONE]')return;try{const event=JSON.parse(payload);if(event?.type==='error'){streamError=event.error?.message||event.message||'The AI service returned an error.';return}const delta=streamEventText(event);if(delta){full+=delta;setMessagePlainText(assistantBubble,full);assistantBubble.scrollIntoView({behavior:'auto',block:'end'})}}catch{}};while(true){const {done,value}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const lines=buffer.split('\n');buffer=lines.pop()||'';for(const line of lines)consumeLine(line)}buffer+=decoder.decode();if(buffer)for(const line of buffer.split('\n'))consumeLine(line);if(!full)throw new Error(streamError||'The AI service returned no text. Please try again.');return full}async function ownerRequest(endpoint,payload){const res=await fetch(endpoint,{method:'POST',headers:authHeaders(),body:JSON.stringify(payload)});const data=await res.json().catch(()=>({}));if(res.status===401){clearSessionToken();signedInUser=null;serverOwner=false;updateAuthUi();throw new Error('Your secure sign-in expired. Please sign in again.')}if(!res.ok)throw new Error(data.error||'Owner request failed.');return data}function ownerCallCommand(text){const value=String(text||'').trim().replace(/[.!?]+$/g,'').replace(/\s+/g,' ');return /^(?:(?:hey\s+)?jarvis\s*[,\-:]?\s*)?call me(?:\s*[,\-:]?\s*jarvis)?(?:\s+please)?(?:\s+(?:about|for)\s+.+)?$/i.test(value)}async function triggerOwnerCall(purpose='Owner requested a call from Jarvis in Stellar AI.'){if(!isOwner()){setStatus('Owner access is required for phone calls.','error');return false}setStatus('Starting Jarvis call…');try{const data=await ownerRequest('/api/broadcast',{action:'callOwner',purpose:String(purpose||'').slice(0,300)});if(data?.stellar_call?.id&&window.StellarCall?.showIncoming){window.StellarCall.showIncoming(data.stellar_call);setStatus(data.phone_blocked?'Phone blocked · opened Stellar in-app call':'Stellar in-app call opened','warn');return true}if(data?.fallback==='in_app_call'){setStatus('Phone blocked · Stellar in-app call is ringing','warn');window.StellarCall?.poll?.();return true}setStatus('Jarvis call started'+(data.status?' · '+data.status:''),'good');return true}catch(error){setStatus(error?.message||'Could not start the Jarvis call.','error');window.StellarCall?.poll?.();return false}}function renderOwnerCallSetup(data={},message=''){
-  const status=$('owner-call-setup-status'),list=$('owner-call-setup-list');
-  if(!status||!list)return;
-  const twilio=data.twilio===true||data.provider==='twilio';
-  const telnyx=data.telnyx===true||data.provider==='telnyx';
-  const owner=data.ownerNumber===true||data.ownerNumberConfigured===true;
-  const storage=data.callContextStorage===true||data.callContextStorageConfigured===true;
-  const verified=data.endToEndVerified===true;
-  const bridge=data.retell===true||data.bridgeConfigured===true||data.provider==='retell';
-  const missing=[];
-  if(!twilio&&!telnyx&&!bridge)missing.push('Connect Twilio, Telnyx, or the Retell bridge');
-  if(!owner)missing.push('Add OWNER_PHONE');
-  if(!storage)missing.push('Check KV_REST_API_URL and KV_REST_API_TOKEN');
-  if(!verified)missing.push('Set OWNER_CALL_END_TO_END_VERIFIED=true after one successful test');
-  status.textContent=message||(missing.length?'Phone setup is not ready yet.':'Jarvis phone setup looks ready.');
-  list.textContent=missing.length?('Missing: '+missing.join(' · ')):('Ready provider: '+(data.provider||'phone')+'. You can press Call me.');
-}
-async function checkOwnerCallHealth(){const out=$('owner-call-health');const render=(...args)=>{try{if(typeof renderOwnerCallSetup==='function')renderOwnerCallSetup(...args)}catch{}};if(!isOwner()){if(out)out.textContent='Owner access required';render({},'Sign in as owner first.');return false}if(out)out.textContent='Checking phone service.';render({},'Checking Jarvis phone setup.');try{const data=await ownerRequest('/api/broadcast',{action:'callHealth'});const ready=data.ready===true;if(out)out.textContent=ready?'Phone service ready':'Phone service configured but not ready';render(data,ready?'Jarvis can call you.':'Jarvis cannot call yet.');setStatus(ready?'Jarvis phone service is ready.':'Jarvis phone setup needs Twilio/owner phone details.',ready?'good':'warn');return ready}catch(error){if(out)out.textContent=error?.message||'Phone service unavailable';render({},'Phone service unavailable.');setStatus(error?.message||'Phone service unavailable.','error');return false}}function base64UrlToUint8Array(value){const padding='='.repeat((4-String(value||'').length%4)%4);const base64=(String(value||'')+padding).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(base64);const out=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);return out}
-async function readyServiceWorker(){if(!('serviceWorker'in navigator))throw new Error('This browser does not support service workers.');const registration=await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});return navigator.serviceWorker.ready||registration}
-async function enableOwnerPushCallAlerts(){const label=$('owner-push-status');if(!isOwner()){setStatus('Owner access is required for Jarvis push calls.','error');return false}if(!('Notification'in window)||!('PushManager'in window)){setStatus('This browser cannot receive web push calls. Install Stellar as a phone app or use another browser.','error');if(label)label.textContent='Push not supported on this browser';return false}try{if(label)label.textContent='Checking push setup.';const keyData=await ownerRequest('/api/broadcast',{action:'ownerPushPublicKey'});if(!keyData.configured||!keyData.publicKey)throw new Error('Jarvis push keys are not configured in Vercel yet. Add WEB_PUSH_PUBLIC_KEY and WEB_PUSH_PRIVATE_KEY.');const permission=Notification.permission==='granted'?'granted':await Notification.requestPermission();if(permission!=='granted')throw new Error('Notifications are blocked. Allow notifications for Stellar AI on this device.');const registration=await readyServiceWorker();let subscription=await registration.pushManager.getSubscription();if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:base64UrlToUint8Array(keyData.publicKey)});const saved=await ownerRequest('/api/broadcast',{action:'ownerPushSubscribe',subscription:subscription.toJSON?subscription.toJSON():subscription});if(!saved.saved)throw new Error(saved.reason||'Push subscription could not be saved.');if(label)label.textContent='Enabled on this device';setStatus('Jarvis push calls are enabled on this device.','good');return true}catch(error){if(label)label.textContent=error?.message||'Push setup failed';setStatus(error?.message||'Push setup failed.','error');return false}}
-async function testOwnerPushCallAlert(){if(!isOwner()){setStatus('Owner access is required for Jarvis push calls.','error');return false}try{const ok=await enableOwnerPushCallAlerts();if(!ok)return false;const data=await ownerRequest('/api/broadcast',{action:'ownerPushTest'});if(data?.call&&window.StellarCall?.showIncoming)window.StellarCall.showIncoming(data.call);setStatus(data?.push?.sent>0?'Jarvis push test sent.':'Push test ran, but no device subscription was reached.','good');return true}catch(error){setStatus(error?.message||'Could not send Jarvis push test.','error');return false}}
-function setMessagePlainText(bubble,text){const value=String(text??'');bubble.dataset.rawText=value;bubble.classList.remove('stellar-rich-message');bubble.textContent=value;return value}
-function appendAssistantInline(parent,text){const value=String(text??'');const token=/(`[^`\n]+`|\*\*[^*\n]+\*\*)/g;let last=0;for(const match of value.matchAll(token)){if(match.index>last)parent.appendChild(document.createTextNode(value.slice(last,match.index)));const raw=match[0];if(raw.startsWith('`')){const code=document.createElement('code');code.className='stellar-inline-code';code.textContent=raw.slice(1,-1);parent.appendChild(code)}else{const strong=document.createElement('strong');strong.textContent=raw.slice(2,-2);parent.appendChild(strong)}last=match.index+raw.length}if(last<value.length)parent.appendChild(document.createTextNode(value.slice(last)))}
-function renderAssistantText(bubble,text){const source=String(text??'');bubble.dataset.rawText=source;bubble.classList.add('stellar-rich-message');bubble.replaceChildren();const fragment=document.createDocumentFragment();const lines=source.replace(/\r\n?/g,'\n').split('\n');let paragraph=[];let list=null;let listType='';let codeLines=null;let codeLanguage='';const flushParagraph=()=>{if(!paragraph.length)return;const p=document.createElement('p');appendAssistantInline(p,paragraph.join(' '));fragment.appendChild(p);paragraph=[]};const flushList=()=>{if(list){fragment.appendChild(list);list=null;listType=''}};const flushCode=()=>{if(codeLines===null)return;const pre=document.createElement('pre');const code=document.createElement('code');if(codeLanguage)code.dataset.language=codeLanguage;code.textContent=codeLines.join('\n');pre.appendChild(code);fragment.appendChild(pre);codeLines=null;codeLanguage=''};for(const line of lines){const fence=line.match(/^\s*```([^\s`]*)\s*$/);if(codeLines!==null){if(fence)flushCode();else codeLines.push(line);continue}if(fence){flushParagraph();flushList();codeLines=[];codeLanguage=String(fence[1]||'').slice(0,30);continue}if(!line.trim()){flushParagraph();flushList();continue}const heading=line.match(/^\s*(#{1,4})\s+(.+)$/);if(heading){flushParagraph();flushList();const level=Math.min(4,Math.max(2,heading[1].length+1));const h=document.createElement('h'+level);appendAssistantInline(h,heading[2]);fragment.appendChild(h);continue}const bullet=line.match(/^\s*[-*]\s+(.+)$/);const numbered=line.match(/^\s*\d+[.)]\s+(.+)$/);if(bullet||numbered){flushParagraph();const type=numbered?'ol':'ul';if(!list||listType!==type){flushList();list=document.createElement(type);listType=type}const li=document.createElement('li');appendAssistantInline(li,(numbered||bullet)[1]);list.appendChild(li);continue}const quote=line.match(/^\s*>\s?(.*)$/);if(quote){flushParagraph();flushList();const block=document.createElement('blockquote');appendAssistantInline(block,quote[1]);fragment.appendChild(block);continue}paragraph.push(line.trim())}flushParagraph();flushList();flushCode();if(!fragment.childNodes.length){const p=document.createElement('p');p.textContent=source;fragment.appendChild(p)}bubble.appendChild(fragment)}
-function syncAssistantActions(){
-  const assistants=[...document.querySelectorAll('#chatInner .msg.assistant')];
-  const latest=assistants.at(-1)||null;
-  assistants.forEach(wrap=>{
-    const regenerate=wrap.querySelector('[data-message-action="regenerate"]');
-    if(regenerate)regenerate.hidden=wrap!==latest||wrap!==document.querySelector('#chatInner .msg:last-of-type');
-  });
-}
-async function copyAssistantResponse(button){
-  const bubble=button?.closest?.('.msg.assistant')?.querySelector('.bubble');
-  const value=String(bubble?.dataset.rawText??bubble?.textContent??'').trim();
-  if(!value){setStatus('There is nothing to copy yet.','warn');return false}
-  try{
-    await navigator.clipboard.writeText(value);
-  }catch{
-    const area=document.createElement('textarea');
-    area.value=value;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';
-    document.body.appendChild(area);area.select();
-    const ok=document.execCommand?.('copy');area.remove();
-    if(!ok){setStatus('Clipboard access is blocked in this browser.','error');return false}
-  }
-  const original=button.textContent;button.textContent='Copied';
-  setTimeout(()=>{if(button.isConnected)button.textContent=original},1200);
-  setStatus('Response copied.','good');
-  return true;
-}
-function addAssistantActions(wrap,bubble){
-  if(!wrap||!bubble||wrap.querySelector('.message-actions'))return;
-  const actions=document.createElement('div');
-  actions.className='message-actions';
-  actions.setAttribute('aria-label','Response actions');
-  const copy=document.createElement('button');
-  copy.type='button';copy.className='message-action';copy.dataset.messageAction='copy';copy.textContent='Copy';
-  copy.addEventListener('click',()=>copyAssistantResponse(copy));
-  const regenerate=document.createElement('button');
-  regenerate.type='button';regenerate.className='message-action';regenerate.dataset.messageAction='regenerate';regenerate.textContent='Regenerate';
-  regenerate.addEventListener('click',()=>regenerateAssistantResponse(regenerate));
-  actions.append(copy,regenerate);
-  wrap.appendChild(actions);
-  syncAssistantActions();
-}
-function regenerateAssistantResponse(button){
-  if(sending)return;
-  const wrap=button?.closest?.('.msg.assistant');
-  if(!wrap||wrap!==document.querySelector('#chatInner .msg:last-of-type')){setStatus('Regenerate is available on the latest reply.','warn');return}
-  let user=wrap.previousElementSibling;
-  while(user&&!user.classList.contains('msg'))user=user.previousElementSibling;
-  if(!user?.classList.contains('user')){setStatus('I could not find the prompt for that reply.','error');return}
-  const bubble=user.querySelector('.bubble');
-  const prompt=String(bubble?.dataset.rawText??bubble?.textContent??'').trim();
-  if(!prompt)return;
-  wrap.remove();
-  user.remove();
-  updateCurrentWorkVisibility();
-  sendMessage(prompt);
-}
-function addMessage(role,text){if(role==='user')document.querySelector('#chatInner .home-welcome')?.remove();const wrap=document.createElement('article');wrap.className='msg '+role;const meta=document.createElement('div');meta.className='meta';meta.textContent=role==='user'?'You':'Stellar';const bubble=document.createElement('div');bubble.className='bubble';const value=String(text??'');if(role==='assistant'&&value!=='Thinking…')renderAssistantText(bubble,value);else setMessagePlainText(bubble,value);wrap.append(meta,bubble);$('chatInner').appendChild(wrap);if(role==='assistant'&&value!=='Thinking…')addAssistantActions(wrap,bubble);else syncAssistantActions();updateCurrentWorkVisibility();wrap.scrollIntoView({behavior:'smooth',block:'end'});return bubble}
-function stopGeneration(){if(abortController){abortController.abort();setStatus('Stopped','warn')}}function retryLastMessage(){const last=[...document.querySelectorAll('.msg.user .bubble')].pop();if(last)sendMessage(last.dataset.rawText??last.textContent)}
-async function sendMessage(text){if(sending)return;if(navigator.onLine===false){setStatus('You are offline. Your message has not been sent.','warn');$('prompt')?.focus();return}syncAssistantActions();const promptEl=$('prompt');const originalText=String(text||'').trim();if(isOwner()&&ownerCallCommand(originalText)){addMessage('user',originalText);const bubble=addMessage('assistant','Starting your Jarvis call…');const ok=await triggerOwnerCall('Owner requested a call from Jarvis in Stellar AI.');renderAssistantText(bubble,ok?'Jarvis call started.':'I could not start the Jarvis call. Check the call system in Settings for details.');addAssistantActions(bubble.closest('.msg.assistant'),bubble);saveCurrentChat();if(promptEl)promptEl.value='';promptEl?.focus();return}sending=true;$('sendBtn').disabled=true;$('stopBtn').disabled=false;abortController=new AbortController();setStatus('Sending…');const requestImage=uploadedImage;if(promptEl&&promptEl.value.trim()===originalText)promptEl.value='';addMessage('user',originalText);const requestMessages=chatText().map(m=>({role:m.role,content:m.content}));const assistantBubble=addMessage('assistant','Thinking…');try{const payload={messages:requestMessages,action:'chat',model:model.current,selectedModel:model.current,plan:planState.plan,image:requestImage,use_credit:creditsOn(),client:{source:'stellar-app',chatId:activeChatId}};const res=await fetch('/api/chat',{method:'POST',headers:authHeaders(),body:JSON.stringify(payload),signal:abortController.signal});if(!res.ok){const raw=await res.text();let data={};try{data=JSON.parse(raw)}catch{};throw new Error(data.error||data.message||raw||('HTTP '+res.status))}updatePlanFromChatHeaders(res);const reply=await readChatStream(res,assistantBubble);renderAssistantText(assistantBubble,reply);addAssistantActions(assistantBubble.closest('.msg.assistant'),assistantBubble);if(uploadedImage===requestImage)removeImage();setStatus('Sent','good');saveCurrentChat();trackFirstMessageOnce();void loadPlanTruth()}catch(err){if(promptEl&&!promptEl.value.trim())promptEl.value=originalText;if(err.name==='AbortError'){if(assistantBubble.textContent&&assistantBubble.textContent!=='Thinking…'){saveCurrentChat();setStatus('Stopped','warn')}else{setMessagePlainText(assistantBubble,'Generation stopped.');setStatus('Stopped','warn')}return}metric('chat-send-error');const message='I could not send that message. Your draft is still available. Check your connection, then Retry. If it keeps happening, use Support and include this error: '+(err.message||err);setMessagePlainText(assistantBubble,message);const row=document.createElement('div');row.className='retry-row';row.innerHTML='<button class="btn" type="button" onclick="retryLastMessage()">Retry</button><a class="btn" href="/support">Support</a>';assistantBubble.after(row);setStatus('Send failed','error')}finally{sending=false;abortController=null;$('sendBtn').disabled=false;$('stopBtn').disabled=true;promptEl?.focus()}}
-
-function toggleModelMenu(force){const menu=$('model-menu');const trigger=$('model-pill');if(!menu)return;const open=typeof force==='boolean'?force:menu.hidden;if(open){closeResponsiveSidebar();dismissWelcome();closeSettings()}menu.inert=!open;menu.hidden=!open;if(trigger)trigger.setAttribute('aria-expanded',String(open));if(open){const selected=menu.querySelector('[aria-checked="true"]');setTimeout(()=>selected?.focus?.(),0)}}
-function applyModelSelection(id,{persist=false,announce=false}={}){const normalized=String(id||'star').toLowerCase();const meta={spark:['Spark','quick draft'],star:['Star','balanced'],comet:['Comet','deeper review'],nova:['Nova','maximum review']}[normalized]||['Star','balanced'];model.current=normalized;if(persist){preferredModel=normalized;Store.set('selectedModel',normalized)}const label=$('current-model-label');if(label)label.textContent=meta[0]+' · '+meta[1];document.querySelectorAll('[data-model-choice]').forEach(btn=>btn.setAttribute('aria-checked',String(String(btn.getAttribute('data-model-choice')||'').toLowerCase()===normalized)));toggleModelMenu(false);if(announce)setStatus(meta[0]+' selected','good')}
-function reconcilePreferredModel(){const preferred=String(preferredModel||'star').toLowerCase();const next=modelAllowed(preferred)?preferred:(modelAllowed(model.current)?model.current:'star');applyModelSelection(next,{persist:false,announce:false})}
-function setModel(name,mode){const id=String(name||'star').toLowerCase();if(!modelAllowed(id))return handleLockedModel(name);applyModelSelection(id,{persist:true,announce:true})}
-function toggleAdvancedSettings(){
-  const card=document.querySelector('#settings-panel .settings-card');
-  const btn=document.getElementById('settings-advanced-toggle');
-  if(!card||!btn)return;
-  const open=card.classList.toggle('advanced-open');
-  btn.setAttribute('aria-expanded',String(open));
-}
-function openPlanSettings(){toggleModelMenu(false);openSettings();requestAnimationFrame(()=>window.StellarSettingsTabs?.show?.('plan'));setStatus('Choose the plan that fits your work.','good')}
-function openCreditWallet(amount=0){const requested=savePendingCreditPack(amount)||pendingCreditPack()||1000;if(!getSessionToken()){openWelcome();setStatus('Sign in or create an account to buy Stellar credits.','warn');return false}dismissWelcome();toggleModelMenu(false);openSettings();window.StellarSettingsTabs?.show?.('plan');const select=$('topup-amount');if(select&&CREDIT_PACKS.has(requested))select.value=String(requested);clearPendingCreditPack();if(params.has('credits')){params.delete('credits');const next=params.toString();history.replaceState(null,'',location.pathname+(next?'?'+next:'')+location.hash)}requestAnimationFrame(()=>document.getElementById('topup-row')?.scrollIntoView?.({behavior:'smooth',block:'center'}));setStatus('Choose a credit pack, then continue to secure Stripe checkout.','good');return true}
-async function handleCreditIntent(){const amount=pendingCreditPack();if(!amount)return false;return openCreditWallet(amount)}
-function handleLockedModel(name){setStatus(String(name||'This model')+' needs a higher plan. Choose a plan to unlock it.','warn');openPlanSettings()}
-
-function syncConnectivity(){
-  if(navigator.onLine===false){
-    document.body.dataset.connection='offline';
-    setStatus('Offline · messages will not send until you reconnect.','warn');
-    return false;
-  }
-  const wasOffline=document.body.dataset.connection==='offline';
-  document.body.dataset.connection='online';
-  if(wasOffline)setStatus('Back online.','good');
-  return true;
-}
-window.addEventListener('offline',syncConnectivity);
-window.addEventListener('online',syncConnectivity);
-syncConnectivity();
-
-resetTransientUiAfterPageRestore();
-$('chatForm').addEventListener('submit',e=>{e.preventDefault();const text=$('prompt').value.trim();if(!text){setStatus('Type a message first','error');$('prompt').focus();return}sendMessage(text)});$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('chatForm').requestSubmit()}});document.addEventListener('click',e=>{const menu=$('model-menu');if(!menu||menu.hidden)return;if(e.target.closest?.('#model-menu')||e.target.closest?.('#model-pill'))return;toggleModelMenu(false)});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeResponsiveSidebar();dismissWelcome();closeSettings();toggleModelMenu(false);return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('prompt')?.focus()}});window.addEventListener('resize',()=>{if(innerWidth>900)closeResponsiveSidebar()});applyWelcomeEntry();maybeShowWelcome();applyJarvisEntry();updateAuthUi();setWorkspaceNavState(false);updateCurrentWorkVisibility();renderSavedChats();renderImageState();initImageInput();renderPlanTruth();updateCreditUi();initGoogleSignIn();applyModelSelection('star',{persist:false,announce:false});loadSession().then(async()=>{await handlePaymentReturn();await handleUpgradeIntent();await handleCreditIntent()}).catch(()=>{renderPlanTruth();setStatus('Account sync is taking longer than expected. You can still use the app.','warn')});
-</script>
-<script defer src="/stellar-credit-ui-v21.js?v=20260927-v27"></script>
-<script defer src="/stellar-settings-v22.js?v=20260927-v27"></script>
-<script defer src="/stellar-app-focus-v23.js?v=20260927-v27"></script>
-<script defer src="/stellar-settings-tabs-v24.js?v=20260927-v27"></script>\n<script defer src="/stellar-operator-v28.js?v=20260927-v28"></script>
-<script id="stellar-app-update-guard-v1">
-(()=>{
-  if(!('serviceWorker' in navigator)) return;
-  let refreshing=false;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    if(refreshing) return;
-    let already=false;
-    try{already=sessionStorage.getItem('stellar-controller-refresh-v2')==='1';sessionStorage.setItem('stellar-controller-refresh-v2','1')}catch{}
-    if(already) return;
-    refreshing=true;
-    location.reload();
-  });
-  navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
-})();
-</script>
-<script defer src="/lib/assets/stellar-call.js?v=20260925-voiceguard"></script>
-
-<script id="stellar-credit-direct-sync-v27">
-(()=>{
-  const $=id=>document.getElementById(id);
-  function syncCreditPill(){
-    const pill=document.querySelector('.stellar-credit-pill');
-    const balance=$('stellar-credit-balance');
-    if(!pill||!balance)return;
-    let owner=false,total=null,remaining=0,addon=0;
-    try{owner=typeof isOwner==='function'&&isOwner()}catch{}
+  async function clearOldWorkerOnce(){
     try{
-      if(typeof planState!=='undefined'&&planState){
-        remaining=Math.max(0,Number(planState.remaining||0)||0);
-        addon=Math.max(0,Number(planState.walletPence||0)||0);
-        total=remaining+addon;
+      if(!('serviceWorker' in navigator)) return;
+      const key = 'stellar-safe-mode-sw-cleared-v1';
+      if(sessionStorage.getItem(key)==='1') return;
+      sessionStorage.setItem(key,'1');
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(reg => reg.unregister()));
+      if(window.caches){
+        const keys = await caches.keys();
+        await Promise.all(keys.filter(k => /^stellar-|^app-|^static-|^tab-spinner/i.test(k)).map(k => caches.delete(k)));
       }
+      if(navigator.serviceWorker.controller) location.reload();
     }catch{}
-    if(owner){
-      balance.textContent='∞';
-      pill.title='Owner access · unlimited credits';
-      pill.setAttribute('aria-label','Open credits wallet. Owner access with unlimited credits.');
-      return;
-    }
-    if(Number.isFinite(total)){
-      balance.textContent=total.toLocaleString('en-GB');
-      pill.title=addon>0
-        ? total.toLocaleString('en-GB')+' credits · '+remaining.toLocaleString('en-GB')+' included + '+addon.toLocaleString('en-GB')+' wallet'
-        : total.toLocaleString('en-GB')+' credits available';
-      pill.setAttribute('aria-label','Open credits wallet. '+total.toLocaleString('en-GB')+' credits available.');
+  }
+  clearOldWorkerOnce();
+
+  function setStatus(text, kind='good'){
+    status.textContent = text;
+    status.className = 'status ' + kind;
+  }
+  function openSide(){ side.classList.add('open'); backdrop.classList.add('open'); backdrop.setAttribute('aria-hidden','false'); }
+  function closeSide(){ side.classList.remove('open'); backdrop.classList.remove('open'); backdrop.setAttribute('aria-hidden','true'); }
+  $('menuBtn')?.addEventListener('click', openSide);
+  backdrop.addEventListener('click', closeSide);
+  window.addEventListener('resize', () => { if(innerWidth > 860) closeSide(); });
+
+  function openPanel(kind){
+    closeSide();
+    panelBackdrop.classList.add('open');
+    if(kind === 'plans'){
+      panelTitle.textContent = 'Plans';
+      panelIntro.textContent = 'Simple plan ladder. Free gets people in; paid plans unlock more capacity.';
+      panelBody.innerHTML = `<div class="plans-grid">
+        <div class="plan"><strong>Free</strong><small>75 credits/day · Spark and Star · basic chat</small></div>
+        <div class="plan"><strong>Starter · £8/mo</strong><small>5,000 credits/month · more project capacity</small><div class="plan-actions"><a class="btn primary" href="/plans">Choose Starter</a></div></div>
+        <div class="plan popular"><strong>Plus · £20/mo</strong><small>15,000 credits/month · Comet · best upgrade path</small><div class="plan-actions"><a class="btn primary" href="/plans">Choose Plus</a></div></div>
+        <div class="plan"><strong>Pro · £75/mo</strong><small>50,000 credits/month · Nova · serious build work</small><div class="plan-actions"><a class="btn primary" href="/plans">Choose Pro</a></div></div>
+      </div>`;
+    } else if(kind === 'credits'){
+      panelTitle.textContent = 'Credits';
+      panelIntro.textContent = 'Use included credits first, then add-on credits if you buy more.';
+      panelBody.innerHTML = `<div class="settings-grid">
+        <div class="row"><strong>Free today</strong><small>75 credits available in safe mode.</small></div>
+        <div class="row"><strong>Buy more credits</strong><small>Open the full plans page when checkout is needed.</small></div>
+        <a class="btn primary" href="/plans">Open plans and credits</a>
+      </div>`;
+    } else {
+      panelTitle.textContent = 'Settings';
+      panelIntro.textContent = 'The app is simplified so buttons work. Extra pages are tucked away.';
+      panelBody.innerHTML = `<div class="settings-grid">
+        <div class="row"><strong>Account</strong><small>Sign-in is paused in safe mode so the app loads fast. Full account sync can be restored after the heavy shell is cleaned.</small></div>
+        <a class="row" href="/support"><strong>Support</strong><small>Get help with billing, login or broken buttons.</small></a>
+        <a class="row" href="/legal"><strong>Legal & privacy</strong><small>Terms, privacy, refunds, cookies and acceptable use.</small></a>
+        <a class="row" href="/business"><strong>Business pages</strong><small>Sales pages are kept separate from the chat app.</small></a>
+      </div>`;
     }
   }
-  function repairClosedLayers(){
-    const entries=[
-      ['settings-panel',true],
-      ['welcome-modal',false],
-      ['backdrop',false],
-      ['model-menu',false]
-    ];
-    for(const [id] of entries){
-      const el=$(id); if(!el)continue;
-      if(el.hidden||el.getAttribute('aria-hidden')==='true'){
-        el.style.pointerEvents='none';
-      }else{
-        el.style.removeProperty('pointer-events');
+  document.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', () => openPanel(el.dataset.open)));
+  $('closePanel').addEventListener('click', () => panelBackdrop.classList.remove('open'));
+  panelBackdrop.addEventListener('click', (event) => { if(event.target === panelBackdrop) panelBackdrop.classList.remove('open'); });
+  document.addEventListener('keydown', (event) => { if(event.key === 'Escape'){ closeSide(); panelBackdrop.classList.remove('open'); } });
+
+  function addMessage(role, text){
+    $('welcome')?.remove();
+    const wrap = document.createElement('article');
+    wrap.className = 'msg ' + role;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = role === 'user' ? 'You' : 'Stellar';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = String(text || '');
+    wrap.append(meta, bubble);
+    chatInner.append(wrap);
+    wrap.scrollIntoView({block:'end'});
+    return bubble;
+  }
+  function readTextFromStream(event){
+    if(event?.type === 'content_block_delta' && typeof event?.delta?.text === 'string') return event.delta.text;
+    if(event?.type === 'response.output_text.delta' && typeof event?.delta === 'string') return event.delta;
+    if(typeof event?.choices?.[0]?.delta?.content === 'string') return event.choices[0].delta.content;
+    return '';
+  }
+  async function streamReply(res, bubble){
+    if(!res.body){ bubble.textContent = await res.text(); return; }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let full = '';
+    while(true){
+      const {done,value} = await reader.read();
+      if(done) break;
+      buffer += decoder.decode(value,{stream:true});
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for(const line of lines){
+        if(!line.startsWith('data:')) continue;
+        const payload = line.slice(5).trim();
+        if(!payload || payload === '[DONE]') continue;
+        try{
+          const event = JSON.parse(payload);
+          const delta = readTextFromStream(event);
+          if(delta){ full += delta; bubble.textContent = full; bubble.scrollIntoView({block:'end'}); }
+        }catch{}
       }
     }
+    if(!full && buffer) bubble.textContent = buffer;
   }
-  function sync(){syncCreditPill();repairClosedLayers()}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
-  window.addEventListener('pageshow',sync);
-  window.addEventListener('focus',sync);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
-  const usage=$('top-usage');
-  if(usage&&'MutationObserver'in window)new MutationObserver(syncCreditPill).observe(usage,{subtree:true,childList:true,characterData:true});
-  const settings=$('settings-panel');
-  if(settings&&'MutationObserver'in window)new MutationObserver(repairClosedLayers).observe(settings,{attributes:true,attributeFilter:['hidden','aria-hidden']});
-  [250,900,1800].forEach(ms=>setTimeout(sync,ms));
-  window.StellarCreditDisplay={sync:syncCreditPill};
+  async function send(text){
+    if(busy) return;
+    if(!text.trim()){ prompt.focus(); setStatus('Type a message first','warn'); return; }
+    busy = true;
+    sendBtn.disabled = true;
+    setStatus('Sending…','warn');
+    const userText = text.trim();
+    prompt.value = '';
+    messages.push({role:'user',content:userText});
+    addMessage('user', userText);
+    const reply = addMessage('assistant', 'Thinking…');
+    try{
+      const res = await fetch('/api/chat', {method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'chat',model:'star',selectedModel:'star',messages:messages.slice(-12),client:{source:'stellar-safe-mode'}})});
+      if(!res.ok){
+        const raw = await res.text();
+        let err = raw;
+        try{ err = JSON.parse(raw).error || raw; }catch{}
+        throw new Error(err || 'Chat failed');
+      }
+      reply.textContent = '';
+      await streamReply(res, reply);
+      messages.push({role:'assistant',content:reply.textContent});
+      setStatus('Ready','good');
+    }catch(error){
+      reply.textContent = 'I could not send that yet. The site is in safe mode, so the page is clickable while I repair the full app shell. Error: ' + (error?.message || error);
+      setStatus('Send failed','error');
+    }finally{
+      busy = false;
+      sendBtn.disabled = false;
+      prompt.focus();
+    }
+  }
+  $('chatForm').addEventListener('submit', (event) => { event.preventDefault(); send(prompt.value); });
+  prompt.addEventListener('keydown', (event) => { if(event.key === 'Enter' && !event.shiftKey){ event.preventDefault(); send(prompt.value); } });
+  $('newChatBtn').addEventListener('click', () => { messages = []; chatInner.innerHTML = '<div class="welcome" id="welcome"><h1>What can I help with?</h1><p>Message Stellar AI. Keep it simple: chat first, plans and settings tucked away.</p></div>'; closeSide(); setStatus('Ready','good'); prompt.focus(); });
+  setTimeout(() => { document.body.classList.remove('drawer-open','modal-open','auth-open'); setStatus('Ready','good'); }, 300);
 })();
 </script>
 </body>
