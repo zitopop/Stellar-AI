@@ -9,7 +9,7 @@ test('terms explain the current Stellar Credits plan model', () => {
   for (const text of ['300 credits per day','900 credits per day','2,500 credits per day','8,000 credits per day']) assert.ok(terms.includes(text), text);
   assert.match(terms, /2 credits on Spark, 5 credits on Star, 10 credits on Comet and 20 credits on Nova/);
   assert.match(terms, /StellarX AI planning pass currently costs 20 credits/);
-  assert.match(terms, /Unused included plan credits do not roll over/);
+  assert.match(terms, /They do not roll over/);
 });
 
 test('terms explain wallet packs, bonus credits and automatic fallback', () => {
