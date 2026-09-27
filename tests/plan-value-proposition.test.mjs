@@ -6,7 +6,7 @@ const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('paid plan cards translate credits into understandable value', () => {
-  assert.match(index, /900 credits every day/);
+  assert.match(index, /900 credits\/day/);
   assert.match(index, /up to 180 Star messages\/day/);
   assert.match(index, /Unlock Comet \+ 2,500 credits\/day/);
   assert.match(index, /up to 250 Comet messages\/day/);
