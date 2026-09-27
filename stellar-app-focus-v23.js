@@ -128,10 +128,12 @@
   }
 
   function attachKnownUpdateHooks(){
+    if(!('MutationObserver' in window))return;
     ['top-usage','usage-copy','plan-truth','topup-status'].forEach(id=>{
       const node=$(id);
-      if(!node)return;
-      node.addEventListener('DOMSubtreeModified',sync,{passive:true});
+      if(!node||node.dataset.stellarCreditWatch==='1')return;
+      node.dataset.stellarCreditWatch='1';
+      new MutationObserver(sync).observe(node,{subtree:true,childList:true,characterData:true});
     });
   }
 
