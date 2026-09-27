@@ -1,4 +1,4 @@
-/* Stellar app focus v23 — chat-only home + credit UI sync */
+/* Stellar app focus v23 — chat-only home + lightweight credit UI sync */
 (()=>{
   const $=id=>document.getElementById(id);
   const format=n=>Number.isFinite(n)?Math.max(0,n).toLocaleString():'—';
@@ -104,7 +104,7 @@
     }else{
       if(balance)balance.textContent=isSignedIn()?'…':'Free';
       if(wallet)wallet.textContent=isSignedIn()?'Loading balance…':'Sign in to view';
-      if(pill) pill.title=isSignedIn()?'Loading credit balance':'Sign in to view and buy credits';
+      if(pill)pill.title=isSignedIn()?'Loading credit balance':'Sign in to view and buy credits';
     }
 
     const summary=$('stellar-wallet-summary');
@@ -127,23 +127,27 @@
     syncCreditContext();
   }
 
-  let queued=false;
-  function scheduleSync(){
-    if(queued)return;
-    queued=true;
-    requestAnimationFrame(()=>{queued=false;sync()});
+  function attachKnownUpdateHooks(){
+    ['top-usage','usage-copy','plan-truth','topup-status'].forEach(id=>{
+      const node=$(id);
+      if(!node)return;
+      node.addEventListener('DOMSubtreeModified',sync,{passive:true});
+    });
   }
 
   if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',sync,{once:true});
-  }else sync();
+    document.addEventListener('DOMContentLoaded',()=>{sync();attachKnownUpdateHooks()},{once:true});
+  }else{
+    sync();
+    attachKnownUpdateHooks();
+  }
 
-  new MutationObserver(scheduleSync).observe(document.documentElement,{
-    subtree:true,childList:true,characterData:true,attributes:true,
-    attributeFilter:['hidden','class','aria-hidden']
-  });
   window.addEventListener('pageshow',sync);
   window.addEventListener('focus',sync);
-  setTimeout(sync,250);
-  setTimeout(sync,1200);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+  document.addEventListener('click',event=>{
+    if(event.target.closest?.('.stellar-credit-pill,#settings-nav,#account-button'))setTimeout(sync,120);
+  });
+
+  [250,900,1800,3500].forEach(delay=>setTimeout(sync,delay));
 })();
