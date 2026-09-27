@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-27-capabilities-guide-v4';
+const SW_VERSION = 'stellar-sw-2026-09-27-capabilities-guide-v5';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -31,7 +31,7 @@ self.addEventListener('activate', (event) => {
 });
 
 function capabilityGuideLoader() {
-  return `\n;(() => {\n  if (window.__stellarCapabilitiesGuideLoaderV4) return;\n  window.__stellarCapabilitiesGuideLoaderV4 = true;\n  try {\n    const script = document.createElement('script');\n    script.src = '/stellar-capabilities-guide.js?v=4';\n    script.defer = true;\n    script.setAttribute('data-stellar-capabilities-guide-loader', 'true');\n    document.head.appendChild(script);\n  } catch (_) {}\n})();\n`;
+  return `\n;(() => {\n  if (window.__stellarCapabilitiesGuideLoaderV5) return;\n  window.__stellarCapabilitiesGuideLoaderV5 = true;\n  try {\n    const script = document.createElement('script');\n    script.src = '/stellar-capabilities-guide.js?v=5';\n    script.defer = true;\n    script.setAttribute('data-stellar-capabilities-guide-loader', 'true');\n    document.head.appendChild(script);\n  } catch (_) {}\n})();\n`;
 }
 
 self.addEventListener('fetch', (event) => {
@@ -68,7 +68,7 @@ self.addEventListener('fetch', (event) => {
           const shouldAttachGuide = destination === 'script' && ['/currency.js', '/stellar-settings-extensions.js'].includes(url.pathname);
           if (shouldAttachGuide) {
             const source = await response.clone().text();
-            const body = source.includes('__stellarCapabilitiesGuideLoaderV4') ? source : source + capabilityGuideLoader();
+            const body = source.includes('__stellarCapabilitiesGuideLoaderV5') ? source : source + capabilityGuideLoader();
             const patched = new Response(body, {
               status: response.status,
               statusText: response.statusText,
