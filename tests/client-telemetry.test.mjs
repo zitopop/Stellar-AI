@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 
 const endpoint = readFileSync(new URL('../api/track-event.js', import.meta.url), 'utf8');
 const helper = readFileSync(new URL('../lib/assets/telemetry.js', import.meta.url), 'utf8');
+const analytics = readFileSync(new URL('../lib/assets/stellar-analytics.js', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
@@ -43,4 +44,13 @@ test('app tracks conversion milestones without sending user content', () => {
   assert.match(app, /metric\('checkout-error'\)/);
   assert.match(app, /metric\('chat-send-error'\)/);
   assert.doesNotMatch(app, /metric\([^)]*text/);
+});
+
+test('analytics helper applies app settings polish without collecting settings content', () => {
+  assert.match(analytics, /stellar-settings-polish-v1/);
+  assert.match(analytics, /injectAppSettingsPolish/);
+  assert.match(analytics, /polishSettingsPanel/);
+  assert.match(analytics, /Workspace controls/);
+  assert.match(analytics, /data-settings-panel/);
+  assert.doesNotMatch(analytics, /innerText|textarea\.value|prompt\.value|sessionStorage/);
 });
