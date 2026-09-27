@@ -15,8 +15,10 @@ test('Stellar capabilities guide explains public app features', () => {
   assert.match(guide, /Safety & approvals/);
 });
 
-test('owner capabilities are only added for privileged viewers', () => {
+test('owner and StellarX capabilities are only added for privileged viewers', () => {
   assert.match(guide, /OWNER_GUIDE_ITEMS/);
+  assert.match(guide, /StellarX/);
+  assert.match(guide, /approved internal workflows/);
   assert.match(guide, /isPrivilegedViewer/);
   assert.match(guide, /privileged\) appendCards\(grid, OWNER_GUIDE_ITEMS, true\)/);
   assert.match(guide, /ownerCapability/);
@@ -25,8 +27,8 @@ test('owner capabilities are only added for privileged viewers', () => {
 });
 
 test('service worker loads the capabilities guide without replacing existing app scripts', () => {
-  assert.match(sw, /stellar-sw-2026-09-27-capabilities-guide-v2/);
-  assert.match(sw, /stellar-capabilities-guide\.js\?v=2/);
+  assert.match(sw, /stellar-sw-2026-09-27-capabilities-guide-v3/);
+  assert.match(sw, /stellar-capabilities-guide\.js\?v=3/);
   assert.match(sw, /capabilityGuideLoader/);
   assert.match(sw, /\/currency\.js/);
   assert.match(sw, /\/stellar-settings-extensions\.js/);
