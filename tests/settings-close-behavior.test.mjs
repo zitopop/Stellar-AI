@@ -20,7 +20,10 @@ test('Settings returns keyboard focus after dismissal', () => {
 });
 
 test('Settings close control is touch safe and visibly focusable', () => {
+  assert.match(app, /class="settings-close-x"[\s\S]*?class="settings-close-icon"/);
+  assert.match(app, /viewBox="0 0 24 24"/);
   assert.match(css, /\.settings-close-x\{[\s\S]*?width:44px!important;[\s\S]*?height:44px!important/);
+  assert.match(css, /\.settings-close-icon\{[\s\S]*?width:19px!important/);
   assert.match(css, /touch-action:manipulation!important/);
   assert.match(css, /\.settings-close-x:focus-visible/);
 });
