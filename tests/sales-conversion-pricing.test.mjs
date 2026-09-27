@@ -26,5 +26,6 @@ test('Plus is positioned as the main paid conversion plan', () => {
   assert.match(index, /900 credits\/day/);
   assert.match(index, /2,500 credits\/day/);
   assert.match(index, /8,000 credits\/day/);
-  assert.match(app, /Plus £20 · Recommended/);\n  assert.match(index, /Eligible referrals give both accounts 100 bonus Stellar Credits/);
+  assert.match(app, /Plus £20 · Recommended/);
+  assert.match(index, /both accounts receive 100 bonus Stellar Credits/);
 });
