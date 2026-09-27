@@ -58,9 +58,10 @@
         note.className='stellar-credit-context';
         wallet.appendChild(note);
       }
-      note.textContent=Number.isFinite(total)
+      const nextText=Number.isFinite(total)
         ? `At current costs: about ${Math.floor(total/5).toLocaleString()} Star messages or ${Math.floor(total/2).toLocaleString()} Spark messages.`
         : 'Usage examples appear after your credit balance loads.';
+      if(note.textContent!==nextText)note.textContent=nextText;
     }
   }
   function sync(){
