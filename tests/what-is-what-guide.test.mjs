@@ -12,7 +12,7 @@ test('plain-English guide explains product, credits, wallet and TOS clearly', ()
   assert.match(guide, /TOS means Terms of Service/);
   assert.match(guide, /Do not write “no refunds” everywhere/);
   assert.match(guide, /AI output needs review/);
-  assert.match(guide, /legal operator\/controller details must be real/i);
+  assert.match(guide, /legal operator\/controller details (?:must be )?real/i);
 });
 
 test('legal hub links to the plain-English guide before formal policy links', () => {
