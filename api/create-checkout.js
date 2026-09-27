@@ -140,6 +140,47 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: portal.url });
     }
 
+    if (plan === 'website-builder') {
+      const attemptId = crypto.randomUUID();
+      await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
+      const checkout = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['card'],
+        customer_email: sessionUser.email,
+        line_items: [{
+          price_data: {
+            currency: 'gbp',
+            unit_amount: 9900,
+            product_data: {
+              name: 'Stellar AI Business Website Package',
+              description: 'One-time access to the Stellar AI Business Website Builder for an approved business website project, including AI generation, preview, refinement and HTML download.',
+            },
+          },
+          quantity: 1,
+        }],
+        success_url: 'https://trystellarai.com/business-builder?payment=success',
+        cancel_url: `https://trystellarai.com/business-builder?payment=cancelled&attempt=${encodeURIComponent(attemptId)}`,
+        after_expiration: { recovery: { enabled: true } },
+        client_reference_id: attemptId,
+        metadata: {
+          email: sessionUser.email,
+          plan: 'website-builder',
+          amount: '9900',
+          country,
+          currency,
+        },
+        payment_intent_data: {
+          metadata: {
+            email: sessionUser.email,
+            plan: 'website-builder',
+            amount: '9900',
+          },
+        },
+      });
+      await incrementConversionMetric('checkout-started');
+      return res.status(200).json({ url: checkout.url });
+    }
+
     if (plan === 'topup') {
       const rawPence = amount ?? qty;
       if (!isValidTopupPence(rawPence)) {
