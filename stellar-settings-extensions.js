@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__stellarSettingsExtensionsV3) return;
-  window.__stellarSettingsExtensionsV3 = true;
+  if (window.__stellarSettingsExtensionsV4) return;
+  window.__stellarSettingsExtensionsV4 = true;
 
   const STORAGE_KEY = 'stellar-ui-preferences-v1';
   const STREAK_KEY = 'stellar-daily-streak-v1';
@@ -28,7 +28,7 @@
   function safeText(selector, fallback = '') {
     try {
       const text = String(document.querySelector(selector)?.textContent || '').replace(/\s+/g, ' ').trim();
-      return text && text !== '—' ? text : fallback;
+      return text && text !== '—' && text !== '?' ? text : fallback;
     } catch (_) { return fallback; }
   }
 
@@ -66,6 +66,18 @@
     const next = { last: today, streak };
     writeStorage(STREAK_KEY, JSON.stringify(next));
     return next;
+  }
+
+  function isOwnerViewer() {
+    const email = safeText('#acct-email,[data-account-email]', '');
+    const body = document.body;
+    const html = document.documentElement;
+    return /deadlyfox10@gmail\.com/i.test(email)
+      || body?.classList?.contains('owner')
+      || body?.classList?.contains('is-owner')
+      || html?.dataset?.owner === 'true'
+      || body?.dataset?.owner === 'true'
+      || document.querySelector('[data-owner-only],#provider-models,.owner-tools') !== null;
   }
 
   function makeTab({ id, label, icon = '⚙' }) {
@@ -212,6 +224,27 @@
     return card;
   }
 
+  function makeInfoRow(title, detail, className = 'stellar-trust-row') {
+    const row = document.createElement('div');
+    row.className = `set-item ${className}`;
+    const key = document.createElement('div');
+    key.className = 'set-key';
+    key.textContent = title;
+    const value = document.createElement('div');
+    value.className = 'set-val';
+    value.textContent = detail;
+    row.append(key, value);
+    return row;
+  }
+
+  function appendInfoGrid(panel, items, className = 'stellar-trust-grid') {
+    const group = document.createElement('div');
+    group.className = `set-group ${className}`;
+    items.forEach(([title, detail]) => group.appendChild(makeInfoRow(title, detail)));
+    panel.appendChild(group);
+    return group;
+  }
+
   function copySupportEmail() {
     const done = () => setStatus(`Support email copied: ${SUPPORT_EMAIL}`, 'good');
     try {
@@ -229,16 +262,16 @@
 
     const hero = document.createElement('div');
     hero.className = 'stellar-command-hero';
-    hero.innerHTML = '<div class="stellar-command-kicker">Command centre</div><h3>Everything important in one clean place.</h3><p>Manage credits, plan, plugins, voice, privacy and support from one premium control room. Normal users only see controls they can actually use.</p>';
+    hero.innerHTML = '<div class="stellar-command-kicker">Command centre</div><h3>Everything important in one clean place.</h3><p>Manage credits, plan, plugins, voice, privacy and support from one premium control room. Every card explains what it does so normal users are not guessing.</p>';
     panel.appendChild(hero);
 
     const stats = document.createElement('div');
     stats.className = 'stellar-command-grid';
     stats.append(
-      commandCard('Account', email),
-      commandCard('Plan', plan),
-      commandCard('Credits', usage.replace(/^💳\s*/, '')),
-      commandCard('Daily streak', `Day ${streak.streak || 1} on this device`),
+      commandCard('Account', `${email} — your sign-in, saved chats and billing identity.`),
+      commandCard('Plan', `${plan} — controls model access, daily credits and paid features.`),
+      commandCard('Credits', `${usage.replace(/^💳\s*/, '')} — daily credits refresh; wallet top-ups stay separate.`),
+      commandCard('Daily streak', `Day ${streak.streak || 1} on this device — return rewards can encourage daily use.`),
     );
     panel.appendChild(stats);
 
@@ -250,12 +283,68 @@
     const actions = document.createElement('div');
     actions.className = 'stellar-command-actions';
     actions.append(
-      commandAction('Credits & rewards', 'See daily reset, welcome bonus and top-up logic.', () => openTab('credits-rewards')),
+      commandAction('Credits & rewards', 'See daily reset, welcome bonus, wallet top-ups and bonus logic.', () => openTab('credits-rewards')),
       commandAction('Manage plan', 'Open upgrades, billing and plan options.', () => { if (!clickFirst(['[data-open-plans]', '#plans-btn', '[data-tab="plans"]'])) location.href = '/app?upgrade=1'; }),
-      commandAction('Plugins', 'Open the plugin store and connect tools safely.', () => { location.href = '/plugins'; }),
-      commandAction('Voice / Jarvis', 'Tune voice, mic and language controls.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
-      commandAction('Privacy', 'Open privacy information and data controls.', () => { location.href = '/privacy'; }),
-      commandAction('Copy support email', 'Use this for billing, refunds and account help.', copySupportEmail),
+      commandAction('Plugins', 'Connect Gmail, GitHub, PC Agent and other tools safely.', () => { location.href = '/plugins'; }),
+      commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
+      commandAction('What is what?', 'Open the plain-English guide for every Settings section.', () => openTab('settings-guide')),
+      commandAction(isOwnerViewer() ? 'Owner perks' : 'Owner tools', isOwnerViewer() ? 'Open private owner controls and business perks.' : 'Owner-only tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Owner perks only appear on the owner account.', 'warn'); }),
+    );
+    panel.appendChild(actions);
+  }
+
+  function buildSettingsGuide(panel) {
+    addHeading(panel, 'What is what?', 'Plain-English labels so people understand every Settings area before they click it.');
+    appendInfoGrid(panel, [
+      ['Account', 'Who is signed in, what email is saved, and where to sign out.'],
+      ['Credits', 'Your daily allowance, wallet top-up balance, reset cycle and bonus-credit rules.'],
+      ['Plan', 'Your paid tier, upgrade button, billing help and what features you unlock.'],
+      ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Owner/provider models stay hidden from normal users.'],
+      ['Voice', 'Mic, Jarvis/Ava speech, language, call-style controls and accessibility.'],
+      ['Plugins', 'Connect external tools like Gmail, GitHub or PC Agent. Stellar should ask before high-impact actions.'],
+      ['Devices / StellarX', 'Your approved PC or desktop agent connection. Only connect devices you own.'],
+      ['Privacy', 'Data controls, legal pages, delete/export guidance and safety information.'],
+      ['Support', 'Billing, refunds, account help and the support email people can copy.'],
+      ['Owner perks', 'Private admin and business controls. Hidden from normal users unless they are the owner.'],
+    ]);
+
+    const note = document.createElement('div');
+    note.className = 'set-note stellar-pref-note';
+    note.textContent = 'Best rule: normal users should only see controls they can use. Owner-only tools should be labelled clearly and kept away from public accounts.';
+    panel.appendChild(note);
+  }
+
+  function buildOwnerPerks(panel) {
+    addHeading(panel, 'Owner perks', 'Private controls for the account owner: business growth, deployments, agents, plugins and safer high-power tools.');
+
+    const hero = document.createElement('div');
+    hero.className = 'stellar-command-hero';
+    hero.innerHTML = '<div class="stellar-command-kicker">Owner only</div><h3>Run Stellar like a business.</h3><p>These are admin perks for the owner account. Normal users should not see private models, provider tools, revenue controls or desktop-agent permissions.</p>';
+    panel.appendChild(hero);
+
+    appendInfoGrid(panel, [
+      ['Private owner models', 'Provider/owner models and experimental tools stay hidden from normal users.'],
+      ['StellarX / PC Agent', 'Pair your own computer, inspect files and approve edits or terminal actions.'],
+      ['GitHub + Vercel', 'Check repo changes, deployments, build errors and live status from one workflow.'],
+      ['Revenue controls', 'Watch plans, credits, checkout readiness, Stripe context and support issues.'],
+      ['Growth automations', 'SEO, lead follow-up and inbox workflows should stay approval-first and compliant.'],
+      ['Plugin testing', 'Try Gmail, GitHub, Vercel and future connectors before exposing them publicly.'],
+      ['Safety gate', 'High-impact actions need approval, clear logs and no hidden sending/deleting.'],
+      ['Business polish', 'Use this area to keep Terms, Privacy, pricing and support copy aligned.'],
+    ]);
+
+    const row = document.createElement('div');
+    row.className = 'stellar-command-row';
+    row.innerHTML = '<div class="set-label">Owner shortcuts</div><span class="stellar-command-pill">Private</span>';
+    panel.appendChild(row);
+
+    const actions = document.createElement('div');
+    actions.className = 'stellar-command-actions';
+    actions.append(
+      commandAction('Open plugins', 'Manage connected tools and see how to get each plugin.', () => { location.href = '/plugins'; }),
+      commandAction('Open PC Agent', 'Pair or check your StellarX desktop workflow.', () => { location.href = '/desktop'; }),
+      commandAction('Credits setup', 'Review daily credits, welcome bonus and top-up packs.', () => openTab('credits-rewards')),
+      commandAction('Trust checklist', 'Check public safety, privacy and support controls.', () => openTab('trust-checklist')),
     );
     panel.appendChild(actions);
   }
@@ -316,45 +405,36 @@
 
   function buildCreditsRewards(panel) {
     const streak = readStreak();
-    addHeading(panel, 'Credits & rewards', 'Daily credits should feel generous, clear and safe from abuse. Wallet top-ups stay separate.');
+    addHeading(panel, 'Credits & rewards', 'Daily credits are the free/plan allowance. Wallet credits are bought top-ups and stay separate.');
 
     const group = document.createElement('div');
     group.className = 'set-group stellar-rewards-group';
     group.innerHTML = `
       <div class="set-item stellar-reward-row"><div class="set-key">Daily reset</div><div class="set-val">Free 300/day · Starter 900/day · Plus 2,500/day · Pro 8,000/day</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Welcome bonus</div><div class="set-val">500 one-time credits for new accounts</div></div>
-      <div class="set-item stellar-reward-row"><div class="set-key">Streak idea</div><div class="set-val">Day ${streak.streak || 1} on this device · server rewards should be Day 2 +50, Day 3 +75, Day 7 +150</div></div>
+      <div class="set-item stellar-reward-row"><div class="set-key">Streak idea</div><div class="set-val">Day ${streak.streak || 1} on this device · suggested server rewards: Day 2 +50, Day 3 +75, Day 7 +150</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Top-ups</div><div class="set-val">£3, £5, £10, £25, £50+ with bigger bonuses only on bigger packs</div></div>
     `;
     panel.appendChild(group);
 
     const note = document.createElement('div');
     note.className = 'set-note stellar-pref-note';
-    note.textContent = 'Do not give huge free credits forever. Use daily allowance, welcome bonus, and small streak rewards so people come back without burning money.';
+    note.textContent = 'Daily credits keep people coming back. Bought wallet credits should not reset. That protects your costs while still making the app feel generous.';
     panel.appendChild(note);
   }
 
   function buildTrustChecklist(panel) {
     addHeading(panel, 'Trust & safety', 'A premium AI workspace needs clear controls, safe approvals and no confusing owner-only tools for normal users.');
-    const group = document.createElement('div');
-    group.className = 'set-group stellar-trust-grid';
-    const items = [
-      ['Account', 'Email, sign-in state, sign out'],
-      ['Credits', 'Daily allowance, wallet balance, reset time'],
-      ['Plan', 'Current plan, upgrade, billing help'],
-      ['Models', 'Allowed models only, no owner tools'],
-      ['Voice', 'Jarvis/Ava controls and language'],
-      ['Privacy', 'Export, delete, data controls'],
-      ['Devices', 'StellarX approvals and connected PC'],
-      ['Support', 'Copy email, refund/billing help'],
-    ];
-    items.forEach(([key, value]) => {
-      const row = document.createElement('div');
-      row.className = 'set-item stellar-trust-row';
-      row.innerHTML = `<div class="set-key">${key}</div><div class="set-val">${value}</div>`;
-      group.appendChild(row);
-    });
-    panel.appendChild(group);
+    appendInfoGrid(panel, [
+      ['Account', 'Show email, sign-in state and sign-out clearly.'],
+      ['Credits', 'Show daily allowance, wallet balance and reset meaning.'],
+      ['Plan', 'Show current plan, upgrade path and billing help.'],
+      ['Models', 'Show only models the user can actually use. Hide owner/provider tools.'],
+      ['Voice', 'Explain Jarvis/Ava, mic access, language and call controls.'],
+      ['Privacy', 'Make export, delete, cookies and legal pages easy to find.'],
+      ['Devices', 'Explain StellarX/PC Agent approvals and connected-device safety.'],
+      ['Support', 'Copy support email and explain billing/refund/account help.'],
+    ]);
   }
 
   function registerSection(config) {
@@ -367,6 +447,15 @@
 
   function registerCommandCentre() {
     return registerSection({ id: 'command-centre', label: 'Control', icon: '✦', build: buildCommandCentre });
+  }
+
+  function registerGuide() {
+    return registerSection({ id: 'settings-guide', label: 'Guide', icon: '?', build: buildSettingsGuide });
+  }
+
+  function registerOwnerPerks() {
+    if (!isOwnerViewer()) return false;
+    return registerSection({ id: 'owner-perks', label: 'Owner', icon: '♛', build: buildOwnerPerks });
   }
 
   function registerPreferences() {
@@ -387,14 +476,19 @@
     setPreferences: writePrefs,
     applyPreferences: applyPrefs,
     getDailyStreak: readStreak,
+    isOwnerViewer,
   });
 
   function init() {
     applyPrefs();
     registerCommandCentre();
+    registerGuide();
+    registerOwnerPerks();
     registerPreferences();
     registerRewards();
     registerTrustChecklist();
+    window.setTimeout(registerOwnerPerks, 650);
+    window.setTimeout(registerOwnerPerks, 1800);
   }
 
   if (document.readyState === 'loading') {
