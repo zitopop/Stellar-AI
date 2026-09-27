@@ -11,7 +11,7 @@ test('AI business website builder is visibly priced and locked by default', () =
   assert.match(html, /class="form locked"/);
   assert.match(html, /Buy package · £99/);
   assert.match(html, /plan:'website-builder'/);
-  assert.match(html, /\/api\/business-builder-access/);
+  assert.match(html, /\/api\/get-plan/);
 });
 
 test('website builder checkout is a server-created £99 one-time Stripe payment', () => {
@@ -44,9 +44,10 @@ test('AI API rejects unpaid builder calls server-side', () => {
   assert.match(chat, /WEBSITE_BUILDER_PAYMENT_REQUIRED/);
 });
 
-test('paid builder access endpoint requires a signed Stellar session', () => {
-  const access = read('api/business-builder-access.js');
-  assert.match(access, /requireSession/);
-  assert.match(access, /status === 'active'/);
-  assert.match(access, /pricePence: 9900/);
+test('existing account API exposes paid builder entitlement without adding another Vercel function', () => {
+  const plan = read('api/get-plan.js');
+  assert.match(plan, /requireSession/);
+  assert.match(plan, /stellar:website-builder:/);
+  assert.match(plan, /websiteBuilder/);
+  assert.match(plan, /pricePence: 9900/);
 });
