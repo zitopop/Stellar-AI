@@ -60,10 +60,11 @@ The static backup builder makes both file URLs and clean URLs work where possibl
 /index.html
 /app.html
 /support.html
-/small-business-ai.html
 /small-business-ai/index.html
-/ai-inbox-closer.html
 /ai-inbox-closer/index.html
+/business/index.html
+/ai-receptionist/index.html
+/website-audit/index.html
 /404.html
 /blog/...
 /services/...
