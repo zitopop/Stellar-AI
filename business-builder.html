@@ -122,13 +122,13 @@ async function checkAccess(retry=false){
   signin.classList.add('hidden');
   recheck.classList.remove('hidden');
   try{
-    const res=await fetch('/api/business-builder-access',{cache:'no-store',headers:headers()});
+    const res=await fetch('/api/get-plan',{cache:'no-store',headers:headers()});
     const data=await res.json().catch(()=>({}));
     if(res.status===401){setLocked(true,'Your sign-in expired. Sign in again to continue.');signin.classList.remove('hidden');buy.classList.add('hidden');return false}
     if(!res.ok)throw new Error(data.error||'Could not verify package access.');
-    if(data.entitled){
+    if(data.websiteBuilder?.entitled){
       paywall.hidden=true;buy.classList.add('hidden');recheck.classList.add('hidden');
-      setLocked(false,data.owner?'Owner access enabled.':'£99 website package verified. Builder unlocked.');
+      setLocked(false,data.websiteBuilder?.owner?'Owner access enabled.':'£99 website package verified. Builder unlocked.');
       return true;
     }
     paywall.hidden=false;buy.classList.remove('hidden');
