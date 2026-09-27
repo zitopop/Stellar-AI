@@ -24,6 +24,7 @@ const expectedCleanRoutes = new Map([
   ['/', 'index.html'],
   ['/app', 'app.html'],
   ['/support', 'support.html'],
+  ['/plans', 'plans.html'],
   ['/plugins', 'plugins.html'],
   ['/models', 'models.html'],
   ['/desktop', 'desktop-agent.html'],
