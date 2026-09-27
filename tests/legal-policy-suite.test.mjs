@@ -76,3 +76,23 @@ test('business terms are scoped and do not promise commercial outcomes', () => {
   assert.match(terms, /£150 setup \+ £49\/month/);
   assert.match(terms, /do not guarantee rankings, traffic, customer enquiries, bookings, response rates, sales, revenue/i);
 });
+
+test('UK legal disclosures stay explicit and internally consistent', () => {
+  const terms = read('terms.html');
+  const privacy = read('privacy.html');
+  const refunds = read('refunds.html');
+  const cookies = read('cookies.html');
+  const business = read('business-terms.html');
+
+  assert.match(terms, /total price payable/);
+  assert.match(terms, /blanket “no refunds” rule/);
+  assert.match(refunds, /14-day cancellation period/);
+  assert.match(refunds, /reasonable care and skill/);
+  assert.match(privacy, /normally within one month/);
+  assert.match(privacy, /Controller identity/);
+  assert.match(cookies, /statistical purposes/);
+  assert.match(cookies, /stellar_metrics_active_day/);
+  assert.match(cookies, /stellar_metrics_last_session_at/);
+  assert.match(cookies, /stellar_metrics_optout/);
+  assert.match(business, /We do not describe Stellar as VAT registered unless and until that is true/);
+});
