@@ -30,7 +30,18 @@
     return null;
   }
 
+  function ownerUnlimited(){
+    try{return typeof isOwner==='function'&&isOwner()}catch{return false}
+  }
+
   function creditTotal(){
+    try{
+      if(typeof planState!=='undefined'&&planState){
+        const included=Math.max(0,Number(planState.remaining||0)||0);
+        const wallet=Math.max(0,Number(planState.walletPence||0)||0);
+        return included+wallet;
+      }
+    }catch{}
     const sources=[
       $('top-usage')?.textContent,
       $('usage-copy')?.textContent,
@@ -45,8 +56,10 @@
   }
 
   function isSignedIn(){
-    return Boolean(document.querySelector('.signed-in-only:not([hidden])')) ||
-      /sign out/i.test($('settings-signout-row')?.textContent||'');
+    try{
+      if(typeof getSessionToken==='function')return Boolean(getSessionToken());
+    }catch{}
+    return /sign out/i.test($('settings-signout-row')?.textContent||'');
   }
 
   function ensureCreditPill(){
@@ -94,7 +107,14 @@
     const balance=$('stellar-credit-balance');
     const wallet=$('stellar-wallet-total');
 
-    if(Number.isFinite(total)){
+    if(ownerUnlimited()){
+      if(balance)balance.textContent='∞';
+      if(wallet)wallet.textContent='Unlimited credits';
+      if(pill){
+        pill.title='Owner access · unlimited credits';
+        pill.setAttribute('aria-label','Open credits wallet. Owner access with unlimited credits.');
+      }
+    }else if(Number.isFinite(total)){
       if(balance)balance.textContent=format(total);
       if(wallet)wallet.textContent=format(total)+' credits';
       if(pill){
