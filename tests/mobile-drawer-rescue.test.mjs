@@ -6,7 +6,7 @@ const telemetry = readFileSync(new URL('../lib/assets/telemetry.js', import.meta
 
 test('mobile drawer rescue installs visible controls and backdrop', () => {
   assert.match(telemetry, /function ensureMobileDrawerControls\(\)/);
-  assert.match(telemetry, /data\.stellarMobileMenu = 'true'/);
+  assert.match(telemetry, /dataset\.stellarMobileMenu = 'true'/);
   assert.match(telemetry, /className = 'drawer-backdrop'/);
   assert.match(telemetry, /aria-label', 'Open menu'/);
   assert.match(telemetry, /aria-label', 'Close menu'/);
