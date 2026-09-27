@@ -21,7 +21,7 @@ test('owner-only behaviour remains gated by auth code and hidden UI class', () =
 });
 
 test('telemetry rescue layer keeps core app interactions recoverable', () => {
-  assert.match(telemetry, /stellar-business-polish-v7/);
+  assert.match(telemetry, /stellar-business-polish-v8/);
   assert.match(telemetry, /function safeGetStorage/);
   assert.match(telemetry, /function closeDrawer/);
   assert.match(telemetry, /rescueInteractionState/);
