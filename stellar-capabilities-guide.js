@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__stellarCapabilitiesGuideV5) return;
-  window.__stellarCapabilitiesGuideV5 = true;
+  if (window.__stellarCapabilitiesGuideV6) return;
+  window.__stellarCapabilitiesGuideV6 = true;
 
   const PUBLIC_GUIDE_ITEMS = [
     ['Chat', 'Ask Stellar to write, plan, explain, fix and organise daily work.'],
@@ -19,6 +19,17 @@
     ['Owner controls', 'Private owner/admin/staff settings for approvals, escalation routing and internal configuration.'],
     ['Staff controls', 'Team-only operational views and private configuration stay hidden from normal users.'],
   ];
+
+  const MODEL_PICKER_COPY = Object.freeze({
+    spark: { icon: '⚡', name: 'Spark', detail: 'Fast answers, short drafts and quick fixes', badge: 'Free' },
+    fabie: { icon: '⚡', name: 'Spark', detail: 'Fast answers, short drafts and quick fixes', badge: 'Free' },
+    star: { icon: '✦', name: 'Star', detail: 'Balanced everyday work and problem solving', badge: 'Default' },
+    smart: { icon: '✦', name: 'Star', detail: 'Balanced everyday work and problem solving', badge: 'Default' },
+    stellarx: { icon: '✧', name: 'StellarX', detail: 'Advanced guided tasks, bigger projects, website and business workflows', badge: 'Public' },
+    comet: { icon: '☄', name: 'Comet', detail: 'Deeper reasoning for bigger builds, reviews and planning', badge: 'Plus' },
+    nova: { icon: '✺', name: 'Nova', detail: 'Highest power for complex builds and long-form project work', badge: 'Pro' },
+    ultra: { icon: '✺', name: 'Nova', detail: 'Highest power for complex builds and long-form project work', badge: 'Pro' },
+  });
 
   function isAppPage() {
     return /\/app(?:\.html)?\/?$/i.test(location.pathname) || Boolean(document.querySelector('.app'));
@@ -69,10 +80,12 @@
       .stellar-capability-owner-card{border-color:rgba(242,216,121,.24);background:linear-gradient(180deg,rgba(242,216,121,.08),rgba(12,14,22,.68));}
       .stellar-capability-owner-card b{color:#f7e4a1;}
       #settings-modal .stellar-capabilities-guide{width:100%;margin:0 0 16px;background:linear-gradient(145deg,rgba(139,124,246,.16),rgba(255,255,255,.024));}
+      #model-menu [data-model-choice],.model-menu [data-model-choice]{min-height:58px;}
       #model-menu [data-model-choice="stellarx"],.model-menu [data-model-choice="stellarx"]{position:relative;border-color:rgba(185,176,255,.26)!important;background:linear-gradient(135deg,rgba(139,124,246,.14),rgba(255,255,255,.035))!important;}
       #model-menu [data-model-choice="stellarx"] .model-symbol,.model-menu [data-model-choice="stellarx"] .model-symbol{color:#d9d2ff!important;filter:drop-shadow(0 0 12px rgba(185,176,255,.36));}
       #model-menu [data-model-choice="stellarx"] .model-access,.model-menu [data-model-choice="stellarx"] .model-access{color:#d9d2ff!important;border-color:rgba(185,176,255,.22)!important;background:rgba(185,176,255,.08)!important;}
-      @media(max-width:640px){.stellar-capabilities-guide{padding:12px;border-radius:18px}.stellar-capabilities-grid{grid-template-columns:1fr}.stellar-capability-card{padding:10px}}
+      #model-menu [data-model-choice="nova"] .model-access,#model-menu [data-model-choice="ultra"] .model-access,.model-menu [data-model-choice="nova"] .model-access,.model-menu [data-model-choice="ultra"] .model-access{color:#f7e4a1!important;border-color:rgba(242,216,121,.24)!important;background:rgba(242,216,121,.08)!important;}
+      @media(max-width:640px){.stellar-capabilities-guide{padding:12px;border-radius:18px}.stellar-capabilities-grid{grid-template-columns:1fr}.stellar-capability-card{padding:10px}#model-menu [data-model-choice],.model-menu [data-model-choice]{min-height:64px!important}}
     `;
     document.head.appendChild(style);
   }
@@ -141,6 +154,29 @@
     return document.querySelector('#model-menu,.model-menu,[data-model-menu]');
   }
 
+  function updateText(node, selector, value) {
+    const target = node.querySelector(selector);
+    if (target && target.textContent !== value) target.textContent = value;
+  }
+
+  function polishModelOption(option) {
+    const key = String(option?.dataset?.modelChoice || '').trim().toLowerCase();
+    const copy = MODEL_PICKER_COPY[key];
+    if (!copy) return;
+    option.dataset.publicModel = 'true';
+    option.setAttribute('aria-label', `${copy.name}: ${copy.detail}. ${copy.badge}.`);
+    updateText(option, '.model-symbol', copy.icon);
+    updateText(option, '.model-copy strong,strong', copy.name);
+    updateText(option, '.model-copy small,small', copy.detail);
+    updateText(option, '.model-access', copy.badge);
+  }
+
+  function polishModelPickerOptions() {
+    const menu = modelMenu();
+    if (!menu) return;
+    menu.querySelectorAll('[data-model-choice]').forEach(polishModelOption);
+  }
+
   function refreshModelButtonLabel() {
     const button = document.querySelector('#model-btn,.model-pill,[data-model-button]');
     if (!button) return;
@@ -191,12 +227,15 @@
   function installModelPickerOption() {
     if (!isAppPage()) return;
     const menu = modelMenu();
-    if (!menu || menu.querySelector('[data-model-choice="stellarx"]')) return;
+    if (!menu) return;
     const holder = menu.querySelector('.model-options') || menu;
-    const option = stellarXModelOption();
-    const before = holder.querySelector('[data-model-choice="comet"],[data-model-choice="nova"],[data-model-choice="ultra"]');
-    if (before) before.insertAdjacentElement('beforebegin', option);
-    else holder.appendChild(option);
+    if (!menu.querySelector('[data-model-choice="stellarx"]')) {
+      const option = stellarXModelOption();
+      const before = holder.querySelector('[data-model-choice="comet"],[data-model-choice="nova"],[data-model-choice="ultra"]');
+      if (before) before.insertAdjacentElement('beforebegin', option);
+      else holder.appendChild(option);
+    }
+    polishModelPickerOptions();
   }
 
   function install() {
