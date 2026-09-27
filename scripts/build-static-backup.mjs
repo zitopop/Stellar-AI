@@ -18,7 +18,6 @@ const copyFiles = [
   '404.html',
   'app.html',
   'blog.html',
-  'business.html',
   'index.html',
   'manifest.json',
   'models.html',
@@ -29,10 +28,6 @@ const copyFiles = [
   'support.html',
   'sw.js',
   'terms.html',
-  'ai-inbox-closer.html',
-  'small-business-ai.html',
-  'ai-receptionist.html',
-  'website-audit.html',
   'desktop-agent.html',
   'email-agent.html',
   'roblox-studio.html',
@@ -163,8 +158,17 @@ function routeNameFor(fileName) {
   return fileName.replace(/\.html$/i, '').replace(/-agent$/i, '');
 }
 
+const cleanRouteSources = new Map([
+  ['business.html', 'services/business.html'],
+  ['ai-receptionist.html', 'services/ai-receptionist.html'],
+  ['website-audit.html', 'services/website-audit.html'],
+  ['small-business-ai.html', 'small-business-ai/index.html'],
+  ['ai-inbox-closer.html', 'ai-inbox-closer/index.html'],
+]);
+
 function makeCleanRoute(fileName) {
-  const source = path.join(root, fileName);
+  const sourceRel = cleanRouteSources.get(fileName) || fileName;
+  const source = path.join(root, sourceRel);
   if (!exists(source)) return false;
   const route = routeNameFor(fileName);
   const target = path.join(out, route, 'index.html');
@@ -182,15 +186,15 @@ function makeRedirects() {
     '/terms /terms.html 200',
     '/models /models.html 200',
     '/plugins /plugins.html 200',
-    '/business /business.html 200',
+    '/business /business/index.html 200',
     '/blog /blog.html 200',
     '/desktop /desktop-agent.html 200',
     '/email-agent /email-agent.html 200',
     '/roblox-studio /roblox-studio.html 200',
-    '/ai-receptionist /ai-receptionist.html 200',
-    '/website-audit /website-audit.html 200',
-    '/small-business-ai /small-business-ai.html 200',
-    '/ai-inbox-closer /ai-inbox-closer.html 200',
+    '/ai-receptionist /ai-receptionist/index.html 200',
+    '/website-audit /website-audit/index.html 200',
+    '/small-business-ai /small-business-ai/index.html 200',
+    '/ai-inbox-closer /ai-inbox-closer/index.html 200',
     '/* /404.html 404',
     '',
   ];
