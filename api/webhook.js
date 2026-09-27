@@ -99,8 +99,13 @@ async function handleGmailWatch(req, res) {
     }
     return res.status(400).json({ error: 'Unknown Gmail watch action.' });
   } catch (error) {
-    console.error('Gmail watch action failed', error?.message || error);
-    return res.status(502).json({ error: error?.message || 'Gmail watch could not be updated.' });
+    const message = String(error?.message || '');
+    if (/Gmail OAuth is not configured|Gmail token refresh failed/i.test(message)) {
+      console.warn('Gmail watch skipped until OAuth is ready');
+      return res.status(200).json({ ok: true, active: false, skipped: true, reason: 'oauth-not-ready' });
+    }
+    console.error('Gmail watch action failed', message || error);
+    return res.status(502).json({ error: message || 'Gmail watch could not be updated.' });
   }
 }
 
