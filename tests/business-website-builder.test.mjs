@@ -16,8 +16,8 @@ test('builder uses Stellar AI and requires approval before publishing', () => {
   assert.match(builder, /fetch\('\/api\/chat'/);
   assert.match(builder, /model:'star'/);
   assert.match(builder, /role:'implementer'/);
-  assert.match(builder, /Approval first/);
-  assert.match(builder, /will not publish to a real domain/);
+  assert.match(builder, /Paid access/);
+  assert.match(builder, /Publishing to a real domain still requires approval/);
 });
 
 test('generated websites are previewed through a constrained iframe and sanitized', () => {
@@ -29,7 +29,7 @@ test('generated websites are previewed through a constrained iframe and sanitize
 });
 
 test('business services surface the builder separately from the paid audit', () => {
-  assert.match(business, /AI Website Builder/);
+  assert.match(business, /AI Business Website Package/);
   assert.match(business, /href="\/business-builder"/);
   assert.match(business, /£99 one-time/);
 });
