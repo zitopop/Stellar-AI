@@ -156,7 +156,7 @@ export default async function handler(req, res) {
       const data = await startOwnerCall({ purpose, authorization, bridgeToken });
       return res.status(200).json({ ok: true, provider: data.provider, call_id: data.call_id || null, status: data.status || 'started' });
     } catch (error) {
-      console.error('Owner call provider error', error?.provider || '', error?.message || error);
+      console.warn('Owner phone provider unavailable; using Stellar fallback', error?.provider || '', error?.message || error);
       try {
         const created = await createStellarCallSession({
           category: 'owner-call',
