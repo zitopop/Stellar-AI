@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__stellarCapabilitiesGuideV6) return;
-  window.__stellarCapabilitiesGuideV6 = true;
+  if (window.__stellarCapabilitiesGuideV7) return;
+  window.__stellarCapabilitiesGuideV7 = true;
 
   const PUBLIC_GUIDE_ITEMS = [
     ['Chat', 'Ask Stellar to write, plan, explain, fix and organise daily work.'],
@@ -79,13 +79,146 @@
       .stellar-capability-card span{display:block;color:#929baa;font-size:11px;line-height:1.38;}
       .stellar-capability-owner-card{border-color:rgba(242,216,121,.24);background:linear-gradient(180deg,rgba(242,216,121,.08),rgba(12,14,22,.68));}
       .stellar-capability-owner-card b{color:#f7e4a1;}
+
+      /* Stellar settings UI polish v7 */
+      #settings-modal .set-card,
+      #settings-modal .settings-card{
+        overflow:hidden!important;
+        border-radius:28px!important;
+        border:1px solid rgba(185,176,255,.18)!important;
+        background:
+          radial-gradient(760px 420px at 18% -10%,rgba(139,124,246,.18),transparent 65%),
+          linear-gradient(145deg,rgba(16,18,30,.98),rgba(8,10,18,.98))!important;
+        box-shadow:0 34px 120px rgba(0,0,0,.56),0 0 58px rgba(139,124,246,.11)!important;
+      }
+      #settings-modal .set-head{
+        min-height:92px!important;
+        padding:24px clamp(18px,3vw,34px)!important;
+        border-bottom:1px solid rgba(255,255,255,.075)!important;
+        background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))!important;
+      }
+      #settings-modal .settings-title{
+        color:#f7f7fb!important;
+        font-size:clamp(21px,2.1vw,27px)!important;
+        font-weight:860!important;
+        letter-spacing:-.045em!important;
+      }
+      #settings-modal .settings-subtitle{
+        max-width:620px!important;
+        margin-top:6px!important;
+        color:#a7adbd!important;
+        line-height:1.45!important;
+      }
+      #settings-modal .modal-x{
+        min-width:46px!important;
+        min-height:46px!important;
+        border-radius:15px!important;
+        border:1px solid rgba(255,255,255,.10)!important;
+        background:rgba(255,255,255,.045)!important;
+        color:#eef1f7!important;
+      }
+      #settings-modal .modal-x:hover,
+      #settings-modal .modal-x:focus-visible{
+        border-color:rgba(185,176,255,.34)!important;
+        background:rgba(185,176,255,.12)!important;
+      }
+      #settings-modal .set-tabs{
+        gap:8px!important;
+        padding:18px!important;
+      }
+      #settings-modal .set-tab{
+        min-height:48px!important;
+        border-radius:15px!important;
+        border:1px solid rgba(255,255,255,.055)!important;
+        color:#aeb4c4!important;
+        background:rgba(255,255,255,.025)!important;
+        font-weight:760!important;
+      }
+      #settings-modal .set-tab:hover,
+      #settings-modal .set-tab:focus-visible{
+        color:#fff!important;
+        border-color:rgba(185,176,255,.20)!important;
+        background:rgba(185,176,255,.075)!important;
+      }
+      #settings-modal .set-tab.active{
+        color:#fff!important;
+        border-color:rgba(185,176,255,.36)!important;
+        background:linear-gradient(135deg,rgba(139,124,246,.26),rgba(255,255,255,.055))!important;
+        box-shadow:0 12px 32px rgba(27,20,70,.25),inset 0 1px 0 rgba(255,255,255,.05)!important;
+      }
+      #settings-modal .set-panel{
+        padding:clamp(16px,2.3vw,28px)!important;
+        scrollbar-color:rgba(185,176,255,.22) transparent!important;
+      }
+      #settings-modal .profile-head,
+      #settings-modal .set-group,
+      #settings-modal .set-collapsible{
+        border-radius:18px!important;
+        border:1px solid rgba(185,176,255,.14)!important;
+        background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.023))!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+      }
+      #settings-modal .set-label{
+        margin:20px 2px 10px!important;
+        color:#b7bed0!important;
+        font-size:11px!important;
+        font-weight:880!important;
+        letter-spacing:.08em!important;
+        text-transform:uppercase!important;
+      }
+      #settings-modal .set-item{
+        min-height:56px!important;
+        padding:13px 15px!important;
+        border-radius:14px!important;
+      }
+      #settings-modal .set-item:hover{
+        background:rgba(255,255,255,.035)!important;
+      }
+      #settings-modal .set-key{
+        color:#f2f4f8!important;
+        font-weight:760!important;
+      }
+      #settings-modal .set-val{
+        color:#a5adbd!important;
+        line-height:1.4!important;
+      }
+      #settings-modal .seg-wrap,
+      #settings-modal select,
+      #settings-modal input,
+      #settings-modal textarea{
+        border-radius:13px!important;
+        border-color:rgba(255,255,255,.10)!important;
+        background:rgba(7,9,16,.62)!important;
+      }
       #settings-modal .stellar-capabilities-guide{width:100%;margin:0 0 16px;background:linear-gradient(145deg,rgba(139,124,246,.16),rgba(255,255,255,.024));}
+
       #model-menu [data-model-choice],.model-menu [data-model-choice]{min-height:58px;}
       #model-menu [data-model-choice="stellarx"],.model-menu [data-model-choice="stellarx"]{position:relative;border-color:rgba(185,176,255,.26)!important;background:linear-gradient(135deg,rgba(139,124,246,.14),rgba(255,255,255,.035))!important;}
       #model-menu [data-model-choice="stellarx"] .model-symbol,.model-menu [data-model-choice="stellarx"] .model-symbol{color:#d9d2ff!important;filter:drop-shadow(0 0 12px rgba(185,176,255,.36));}
       #model-menu [data-model-choice="stellarx"] .model-access,.model-menu [data-model-choice="stellarx"] .model-access{color:#d9d2ff!important;border-color:rgba(185,176,255,.22)!important;background:rgba(185,176,255,.08)!important;}
       #model-menu [data-model-choice="nova"] .model-access,#model-menu [data-model-choice="ultra"] .model-access,.model-menu [data-model-choice="nova"] .model-access,.model-menu [data-model-choice="ultra"] .model-access{color:#f7e4a1!important;border-color:rgba(242,216,121,.24)!important;background:rgba(242,216,121,.08)!important;}
-      @media(max-width:640px){.stellar-capabilities-guide{padding:12px;border-radius:18px}.stellar-capabilities-grid{grid-template-columns:1fr}.stellar-capability-card{padding:10px}#model-menu [data-model-choice],.model-menu [data-model-choice]{min-height:64px!important}}
+      @media(max-width:640px){
+        #settings-modal{align-items:flex-end!important;padding:0!important;}
+        #settings-modal .set-card,
+        #settings-modal .settings-card{
+          width:100vw!important;
+          height:min(90dvh,720px)!important;
+          max-height:90dvh!important;
+          border-radius:26px 26px 0 0!important;
+          border-left:0!important;
+          border-right:0!important;
+          border-bottom:0!important;
+        }
+        #settings-modal .set-head{min-height:82px!important;padding:18px 16px 14px!important;}
+        #settings-modal .settings-title{font-size:22px!important;}
+        #settings-modal .set-body{display:flex!important;flex-direction:column!important;min-height:0!important;}
+        #settings-modal .set-tabs{display:flex!important;gap:8px!important;overflow-x:auto!important;padding:10px 12px!important;border-right:0!important;border-bottom:1px solid rgba(255,255,255,.07)!important;scrollbar-width:none!important;}
+        #settings-modal .set-tabs::-webkit-scrollbar{display:none!important;}
+        #settings-modal .set-tab{flex:0 0 auto!important;min-width:max-content!important;min-height:46px!important;padding:0 14px!important;}
+        #settings-modal .set-panel{min-height:0!important;overflow:auto!important;padding:14px 12px calc(18px + env(safe-area-inset-bottom))!important;}
+        #settings-modal .set-item{min-height:54px!important;}
+        .stellar-capabilities-guide{padding:12px;border-radius:18px}.stellar-capabilities-grid{grid-template-columns:1fr}.stellar-capability-card{padding:10px}#model-menu [data-model-choice],.model-menu [data-model-choice]{min-height:64px!important}
+      }
     `;
     document.head.appendChild(style);
   }
