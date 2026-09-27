@@ -10,6 +10,7 @@ test('public Jarvis uses normal Stellar chat with type and voice controls', () =
   assert.match(publicJarvis, /fetch\('\/api\/chat'/);
   assert.match(publicJarvis, /window\.SpeechRecognition\|\|window\.webkitSpeechRecognition/);
   assert.match(publicJarvis, /SpeechSynthesisUtterance/);
+  assert.match(publicJarvis, /use_credit:true/);
   assert.match(publicJarvis, /client:\{source:'jarvis-public'\}/);
 });
 
