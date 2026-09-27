@@ -15,13 +15,15 @@ test('Draft Email Helper is approval-only and blocks bulk-style sending', () => 
   assert.match(email, /What is this tab\?/);
   assert.match(email, /Signed in:/);
   assert.match(email, /refreshAccountPill/);
+  assert.match(email, /fetch\('\/api\/auth'/);
   assert.match(email, /openReviewedEmail/);
   assert.match(email, /oneRecipient/);
   assert.match(email, /Bulk\/multiple recipients are blocked here/);
   assert.match(email, /mail\.google\.com\/mail\/\?view=cm/);
   assert.match(email, /mailto:/);
-  assert.ok(!email.includes("fetch('/api"));
-  assert.ok(!email.includes('fetch(\"/api'));
+  assert.ok(!email.includes('/api/send-email'));
+  assert.ok(!email.includes('/api/gmail/send'));
+  assert.ok(!email.includes('/api/broadcast'));
 });
 
 test('Email draft helper is discoverable from app settings and routing', () => {
