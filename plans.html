@@ -110,6 +110,26 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding:28px 0 44px;colo
   .final{grid-template-columns:1fr;padding:24px}.final .btn{width:100%}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+
+/* Pricing polish */
+.plan{overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.plan:before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);opacity:.55}
+.plan:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.15);box-shadow:0 24px 70px rgba(0,0,0,.24)}
+.plan.recommended{background:linear-gradient(180deg,rgba(31,27,54,.98),rgba(13,15,23,.98) 42%);box-shadow:0 24px 80px rgba(76,57,190,.18)}
+.plan.recommended:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px 160px at 50% 0%,rgba(145,132,255,.13),transparent 72%)}
+.plan.recommended>*{position:relative;z-index:1}
+.value{background:linear-gradient(180deg,#10141d,#0c0f16)}
+.btn.primary{box-shadow:0 10px 30px rgba(255,255,255,.06)}
+.pack{transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.pack:hover{transform:translateY(-2px);background:linear-gradient(180deg,#151a26,#0f121a)}
+.pack.popular{box-shadow:inset 0 0 0 1px rgba(145,132,255,.06)}
+@media(max-width:700px){
+  .trust{justify-content:flex-start;overflow:auto;flex-wrap:nowrap;padding-bottom:4px;scrollbar-width:none}
+  .trust::-webkit-scrollbar{display:none}
+  .trust span{flex:0 0 auto}
+  .plan:hover,.pack:hover{transform:none}
+}
+
 </style>
 </head>
 <body>
@@ -129,8 +149,8 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding:28px 0 44px;colo
 <main>
 <section class="hero wrap">
   <div class="eyebrow">Simple pricing</div>
-  <h1>Pick the amount of Stellar you actually need.</h1>
-  <p>Start free. Upgrade for more monthly credits, longer outputs and stronger Stellar model tiers. Wallet credits are optional and stay separate from your subscription.</p>
+  <h1>Choose a plan that grows with your work.</h1>
+  <p>Start free, then upgrade when you need more credits, longer outputs or stronger Stellar models. Bought wallet credits stay separate, so you can top up without changing plan.</p>
   <div class="trust" aria-label="Pricing trust points">
     <span>No card for Free</span>
     <span>Secure Stripe checkout</span>
@@ -176,7 +196,7 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding:28px 0 44px;colo
   </article>
 
   <article class="plan recommended">
-    <span class="badge">RECOMMENDED FOR BUILDERS</span>
+    <span class="badge">MOST POPULAR</span>
     <span class="fit">Deeper project work</span>
     <h2>Plus</h2>
     <p class="desc">For frequent coding, FiveM or Roblox projects, debugging and deeper multi-file work.</p>
