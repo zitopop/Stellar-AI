@@ -7,7 +7,6 @@ import assert from 'node:assert/strict';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const marker = '<link rel="stylesheet" href="/site-polish.css">';
 const sharedPolishPages = [
-  'affiliate.html',
   'terms.html',
   ...readdirSync(join(root, 'blog')).filter((filename) => /^blog-.*\.html$/.test(filename)).map((filename) => join('blog', filename)),
 ].sort();
