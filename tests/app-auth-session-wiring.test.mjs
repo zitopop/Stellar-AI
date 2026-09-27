@@ -20,7 +20,7 @@ test('Google sign-in exchanges verified credential for Stellar session', () => {
 });
 
 test('session-protected APIs receive bearer token', () => {
-  assert.match(app, /fetch\('\/api\/get-plan'.*headers:authHeaders\(false\)/);
+  assert.match(app, /fetch(?:Startup)?\('\/api\/get-plan'.*headers:authHeaders\(false\)/);
   assert.match(app, /fetch\('\/api\/chat'.*headers:authHeaders\(\)/);
   assert.match(app, /fetch\('\/api\/get-chats'.*headers:authHeaders\(\)/);
   assert.doesNotMatch(app, /x-stellar-email/);
