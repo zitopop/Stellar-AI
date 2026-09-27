@@ -1,5 +1,5 @@
-// Stellar AI service worker — offline shell, safe static caching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-27-ui-reliability-v10';
+// Stellar AI service worker — offline shell, safe static caching, app-load patching, and update signalling.
+const SW_VERSION = 'stellar-sw-2026-09-27-tab-spinner-v11';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -34,6 +34,54 @@ function capabilityGuideLoader() {
   return `\n;(() => {\n  if (window.__stellarCapabilitiesGuideLoaderV7) return;\n  window.__stellarCapabilitiesGuideLoaderV7 = true;\n  try {\n    const script = document.createElement('script');\n    script.src = '/stellar-capabilities-guide.js?v=7';\n    script.defer = true;\n    script.setAttribute('data-stellar-capabilities-guide-loader', 'true');\n    document.head.appendChild(script);\n  } catch (_) {}\n})();\n`;
 }
 
+function googleIdentityLazyLoader() {
+  return `<script id="stellar-google-identity-lazy-loader-v1">
+(() => {
+  if (window.StellarGoogleIdentity?.load) return;
+  let promise = null;
+  function loadGoogleIdentity() {
+    if (window.google?.accounts?.id) return Promise.resolve(window.google);
+    if (promise) return promise;
+    promise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve(window.google);
+      script.onerror = () => reject(new Error('google_identity_load_failed'));
+      document.head.appendChild(script);
+    });
+    return promise;
+  }
+  window.StellarGoogleIdentity = { load: loadGoogleIdentity };
+  const authSelector = '[data-auth],[data-google],#google-signin,#googleSignIn,#login-btn,#signup-btn,#loginBtn,#signupBtn,.google-login,.google-signin';
+  document.addEventListener('pointerdown', (event) => {
+    if (event.target?.closest?.(authSelector)) loadGoogleIdentity().catch(() => {});
+  }, { capture: true, passive: true });
+  document.addEventListener('focusin', (event) => {
+    if (event.target?.closest?.(authSelector)) loadGoogleIdentity().catch(() => {});
+  }, { capture: true });
+})();
+</script>`;
+}
+
+async function patchAppNavigationResponse(request, response) {
+  const url = new URL(request.url);
+  if (!/\/app(?:\.html)?$/i.test(url.pathname)) return response;
+  if (!response?.ok || response.type !== 'basic') return response;
+  const type = response.headers.get('Content-Type') || '';
+  if (!type.toLowerCase().includes('text/html')) return response;
+
+  let html = await response.text();
+  const eagerGoogle = '<script src="https://accounts.google.com/gsi/client" async defer></script>';
+  if (html.includes(eagerGoogle)) html = html.replace(eagerGoogle, googleIdentityLazyLoader());
+
+  const headers = new Headers(response.headers);
+  headers.set('Content-Type', 'text/html; charset=utf-8');
+  headers.set('Cache-Control', 'no-store');
+  return new Response(html, { status: response.status, statusText: response.statusText, headers });
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
@@ -43,7 +91,8 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate') {
     event.respondWith((async () => {
       try {
-        return await fetch(request, { cache: 'no-store' });
+        const response = await fetch(request, { cache: 'no-store' });
+        return await patchAppNavigationResponse(request, response);
       } catch {
         return (await caches.match(OFFLINE_URL)) || new Response('Stellar AI is offline. Please try again when you reconnect.', {
           status: 503,
