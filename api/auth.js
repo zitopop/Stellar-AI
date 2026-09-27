@@ -6,6 +6,7 @@ import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js
 import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';
+const WELCOME_CREDITS = 500;
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -42,7 +43,6 @@ async function allowAuthAttempt(url, token, req, action, email = '') {
   const count = Math.max(0, Number(Array.isArray(result) ? result[0]?.result : 0) || 0);
   return count <= limit;
 }
-
 
 function decodeBase64Url(value) {
   return JSON.parse(Buffer.from(value, 'base64url').toString('utf8'));
@@ -95,7 +95,7 @@ async function sendWelcomeEmail(email, requestedName = '') {
   const displayName = String(requestedName || email.split('@')[0].replace(/[._-]+/g, ' ')).slice(0, 100);
   const safeName = escapeEmailHtml(displayName);
   try {
-    await fetch('https://api.resend.com/emails', {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -106,13 +106,12 @@ async function sendWelcomeEmail(email, requestedName = '') {
         html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#09090b;color:#f4f4f5;line-height:1.6;">
           <div style="font-size:20px;font-weight:900;margin-bottom:24px;">✦ Stellar AI</div>
           <h1 style="font-size:26px;line-height:1.15;margin:0 0 12px;">Welcome, ${safeName}.</h1>
-          <p style="color:#d4d4d8;">Stellar AI turns a plain-English game idea into a structured starting point for FiveM and Roblox. It plans the system, writes the files, explains what changed, and helps you revise the next version.</p>
-          <p style="color:#61e6bf;font-weight:800;">Your 100 free Stellar Credits are ready.</p>
-          <h2 style="font-size:16px;margin:24px 0 8px;">Generate your first script</h2>
-          <ol style="padding-left:22px;color:#d4d4d8;"><li>Open <a href="https://trystellarai.com/app?welcome=1" style="color:#61e6bf;">Stellar AI</a>.</li><li>Tell it what you want to build, for example: “Build a QBCore police job with an F6 menu and jail timer.”</li><li>Review the file list, dependencies and server-side checks, then test the result privately in your own environment.</li></ol>
-          <p style="color:#a1a1aa;">You can ask follow-up questions in the same chat to change a requirement, fix an error or improve the next version.</p>
-          <a href="https://trystellarai.com/app?welcome=1" style="display:block;text-align:center;background:#61e6bf;color:#061c16;font-weight:900;padding:14px 18px;border-radius:10px;text-decoration:none;margin-top:24px;">Generate your first script free →</a>
-          <p style="color:#71717a;font-size:12px;text-align:center;margin-top:28px;">— The Stellar AI Team · <a href="mailto:${SUPPORT_EMAIL}" style="color:#a1a1aa;">deadlyfox10@gmail.com</a></p>
+          <p style="color:#d4d4d8;">Stellar AI helps you ask, plan, write, debug, organise and improve real projects from one clean workspace.</p>
+          <p style="color:#61e6bf;font-weight:800;">Your ${WELCOME_CREDITS} welcome Stellar Credits are ready.</p>
+          <h2 style="font-size:16px;margin:24px 0 8px;">Start with one useful task</h2>
+          <ol style="padding-left:22px;color:#d4d4d8;"><li>Open <a href="https://trystellarai.com/app?welcome=1" style="color:#61e6bf;">Stellar AI</a>.</li><li>Ask for something specific, like a website fix, email reply, code explanation, or FiveM/Roblox plan.</li><li>Review the result before publishing or running anything important.</li></ol>
+          <a href="https://trystellarai.com/app?welcome=1" style="display:block;text-align:center;background:#61e6bf;color:#061c16;font-weight:900;padding:14px 18px;border-radius:10px;text-decoration:none;margin-top:24px;">Open Stellar AI →</a>
+          <p style="color:#71717a;font-size:12px;text-align:center;margin-top:28px;">— The Stellar AI Team · <a href="mailto:${SUPPORT_EMAIL}" style="color:#a1a1aa;">${SUPPORT_EMAIL}</a></p>
         </div>`,
       }),
     });
@@ -122,7 +121,6 @@ async function sendWelcomeEmail(email, requestedName = '') {
     }
     return true;
   } catch {
-    // Signup remains successful if a non-essential email delivery fails.
     return false;
   }
 }
@@ -137,7 +135,7 @@ async function ensureUser(url, token, email, source) {
 
   const user = {
     plan: 'free',
-    walletPence: 100,
+    walletPence: WELCOME_CREDITS,
     welcomeCreditGiven: true,
     welcomeCreditAt: Date.now(),
     createdAt: Date.now(),
@@ -202,12 +200,13 @@ export default async function handler(req, res) {
       res.setHeader('Retry-After', '60');
       return res.status(429).json({ error: 'Too many account attempts. Wait a minute and try again.' });
     }
+
     if (action === 'googleLogin') {
       const googleUser = await verifyGoogleCredential(credential);
       const { isNew } = await ensureUser(url, token, googleUser.email, 'google');
       const referral = await awardReferralIfEligible(url, token, googleUser.email, referralCode, isNew);
       if (isNew) {
-        void sendWelcomeEmail(googleUser.email);
+        void sendWelcomeEmail(googleUser.email, googleUser.name);
         void recordFunnelSignup({ url, token, email: googleUser.email });
       }
       return res.status(200).json({ ok: true, user: googleUser, session: createSession(googleUser.email), isNew, referralAwarded: Boolean(referral?.applied) });
