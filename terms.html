@@ -1,438 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-  <meta name="theme-color" content="#090b12">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stellar AI">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
-  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
-  <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
-
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Terms of Service — Stellar AI</title>
-  <meta name="description" content="Stellar AI terms covering accounts, subscriptions, Stellar Credits, wallet top-ups, bonus credits, business services, connected tools, cancellations, refunds and acceptable use.">
+  <meta name="description" content="Stellar AI terms covering accounts, subscriptions, daily Stellar Credits, wallet top-ups, bonus credits, AI outputs, connected tools, cancellation rights, refunds, acceptable use and support.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://trystellarai.com/terms">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html {
-      background-color: #0b0518;
-      background-image:
-        radial-gradient(ellipse 120% 80% at 50% 0%, rgba(212,175,55,0.22), transparent 65%),
-        radial-gradient(ellipse 100% 70% at 50% 100%, rgba(212,175,55,0.16), transparent 65%);
-    }
-    /* iOS-safe fixed starfield layer (background-attachment: fixed is broken on iOS) */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      background-color: #0b0518;
-      background-image:
-        /* bright stars */
-        radial-gradient(2.6px 2.6px at 18% 12%, rgba(255,255,255,0.95), transparent 100%),
-        radial-gradient(2.4px 2.4px at 72% 8%, rgba(233,226,255,0.85), transparent 100%),
-        radial-gradient(2.5px 2.5px at 88% 40%, rgba(255,255,255,0.80), transparent 100%),
-        radial-gradient(2.2px 2.2px at 10% 48%, rgba(214,199,255,0.75), transparent 100%),
-        radial-gradient(2.8px 2.8px at 42% 68%, rgba(255,255,255,0.85), transparent 100%),
-        radial-gradient(2.2px 2.2px at 92% 78%, rgba(233,226,255,0.70), transparent 100%),
-        radial-gradient(2.4px 2.4px at 30% 88%, rgba(255,255,255,0.72), transparent 100%),
-        /* distant dust */
-        radial-gradient(1.6px 1.6px at 55% 26%, rgba(255,255,255,0.45), transparent 100%),
-        radial-gradient(1.6px 1.6px at 22% 62%, rgba(255,255,255,0.42), transparent 100%),
-        radial-gradient(1.6px 1.6px at 78% 58%, rgba(255,255,255,0.40), transparent 100%),
-        /* nebula */
-        radial-gradient(ellipse 95% 55% at 50% -15%, rgba(212,175,55,0.16), transparent 62%),
-        radial-gradient(ellipse 65% 50% at -10% 80%, rgba(212,175,55,0.12), transparent 62%),
-        radial-gradient(ellipse 60% 45% at 110% 105%, rgba(16,163,127,0.11), transparent 62%);
-      transform: translateZ(0);
-      -webkit-transform: translateZ(0);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
-      background-color: transparent;
-      color: #c3c3d0; line-height: 1.75; font-size: 14.5px; font-weight: 450;
-      padding: 46px 20px 90px;
-      -webkit-font-smoothing: antialiased;
-    }
-    .wrap { max-width: 680px; margin: 0 auto; }
-    header { text-align: center; margin-bottom: 34px; }
-    .brand { font-size: 21px; font-weight: 900; letter-spacing: -0.3px; margin-bottom: 20px; }
-    .brand .star { color: #10a37f; filter: drop-shadow(0 0 10px rgba(16,163,127,.6)); }
-    .brand .grad {
-      background: linear-gradient(135deg, #ffffff 0%, #ddd0ff 50%, #f4d676 100%);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    h1 { color: #ffffff; font-size: 30px; font-weight: 900; letter-spacing: -0.7px; margin-bottom: 10px; line-height: 1.2; }
-    .updated { display: inline-block; color: #a5a5ba; font-size: 11.5px; font-weight: 800;
-      letter-spacing: .09em; text-transform: uppercase; padding: 5px 13px; border-radius: 99px;
-      border: 1px solid rgba(212,175,55,0.30); background: rgba(212,175,55,0.10); }
-    .legal-draft { max-width: 520px; margin: 12px auto 0; color: #d8c98d; font-size: 12px; font-weight: 700; line-height: 1.5; }
-    body.light .legal-draft { color: #7c5f00; }
-    .sheet { border: 1px solid rgba(255,255,255,0.14); border-radius: 22px;
-      background: rgba(15,15,20,0.42); backdrop-filter: blur(7px) saturate(1.2);
-      -webkit-backdrop-filter: blur(7px) saturate(1.2);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 18px 48px -20px rgba(0,0,0,0.7);
-      padding: 34px 30px; }
-    section { padding-bottom: 26px; margin-bottom: 26px; border-bottom: 1px solid rgba(255,255,255,0.055); }
-    section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 4px; }
-    h2 { display: flex; align-items: baseline; gap: 11px;
-      color: #ffffff; font-size: 15.5px; font-weight: 900; letter-spacing: -0.1px; margin-bottom: 9px; }
-    h2 .n { flex: none; font-size: 11px; font-weight: 900; color: #b79cff;
-      font-variant-numeric: tabular-nums; letter-spacing: .04em; }
-    p { margin-bottom: 11px; }
-    p:last-child { margin-bottom: 0; }
-    a { color: #f4d676; text-decoration: none; font-weight: 700; }
-    a:hover { color: #cdbcff; }
-    .foot { text-align: center; margin-top: 34px; }
-    .terms-x { position: fixed; top: calc(env(safe-area-inset-top) + 12px); right: 14px; z-index: 60;
-      width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 26px; line-height: 1; text-decoration: none; color: #fff;
-      background: rgba(20,20,28,0.62); border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      transition: background .16s ease, transform .12s ease; }
-    .terms-x:hover { background: rgba(255,255,255,0.16); }
-    .terms-x:active { transform: scale(0.94); }
-    .back { display: inline-block; padding: 12px 26px; border-radius: 99px; font-weight: 800; font-size: 13.5px;
-      background: linear-gradient(180deg, rgba(212,175,55,0.28), rgba(212,175,55,0.12));
-      border: 1px solid rgba(212,175,55,0.40); color: #ffffff; }
-    .back:hover { background: linear-gradient(180deg, rgba(212,175,55,0.40), rgba(212,175,55,0.18)); color: #fff; }
-    .copyright { font-size: 11.5px; font-weight: 600; color: #6b6b80; margin-top: 20px; }
-    @media (max-width: 1024px) {
-      .sheet { padding: 30px 24px !important; border-radius: 26px !important; }
-      section { padding-bottom: 30px !important; margin-bottom: 30px !important; }
-      h1 { font-size: 27px !important; line-height: 1.25 !important; }
-      h2 { font-size: 16px !important; margin-bottom: 11px !important; }
-      body { line-height: 1.8 !important; }
-    }
-    a[href^="mailto:"] { display: inline-block; min-height: 28px; overflow-wrap: anywhere; }
-    @media (max-width: 560px) {
-      body { padding: 74px 18px 80px; font-size: 14.5px; }
-      .sheet { padding: 24px 20px; border-radius: 18px; }
-      h1 { font-size: 25px; }
-      a[href^="mailto:"] { min-height: 44px; padding-top: 8px; }
-    }
-  
-    /* ═══════════ LIGHT MODE ═══════════ */
-    html.light { background-color: #f7f7f8; background-image: none; }
-    body.light { color: #334155; }
-    body.light::before {
-      background-color: #f7f7f8;
-      background-image:
-        radial-gradient(ellipse 95% 55% at 50% -15%, rgba(212,175,55,0.07), transparent 62%),
-        radial-gradient(ellipse 65% 50% at -10% 80%, rgba(212,175,55,0.05), transparent 62%);
-    }
-    body.light .sheet { background: #ffffff; border-color: rgba(0,0,0,0.08);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 10px 34px -18px rgba(0,0,0,0.14); }
-    body.light h1 { color: #0f172a; }
-    body.light h2 { color: #0f172a; }
-    body.light h2 .n { color: #d4af37; background: #f3efff; border-color: #ddd0ff; }
-    body.light .updated { color: #64748b; background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); }
-    body.light .brand { color: #0f172a; }
-    body.light .brand .star { color: #10a37f; filter: none; }
-    body.light section { border-color: rgba(0,0,0,0.07); }
-    body.light a { color: #d4af37; }
-    body.light a:hover { color: #8f6b1e; }
-    body.light .copyright { color: #94a3b8; }
-    body.light .terms-x { background: rgba(255,255,255,0.9); color: #334155;
-      border-color: rgba(0,0,0,0.12); }
-    body.light .terms-x:hover { background: #f1f1f3; }
-    body.light .back { background: linear-gradient(180deg, #d4af37, #d4af37);
-      border-color: #d4af37; color: #ffffff; }
-    body.light .back:hover { filter: brightness(1.08); color: #ffffff; }
-
-  
-    /* COLOURFUL TERMS */
-    body {
-      background: linear-gradient(135deg, #080818 0%, #0d0b2a 100%) !important;
-      background-attachment: fixed !important;
-    }
-    .grad {
-      background: linear-gradient(90deg, #f4d676, #34d399) !important;
-      -webkit-background-clip: text !important;
-      -webkit-text-fill-color: transparent !important;
-    }
-    h1 {
-      background: linear-gradient(135deg, #fff, #f4d676, #34d399) !important;
-      -webkit-background-clip: text !important;
-      -webkit-text-fill-color: transparent !important;
-      background-clip: text !important;
-    }
-    h2 { color: #f4d676 !important; }
-    a { color: #34d399 !important; }
-    .terms-x {
-      background: rgba(212,175,55,0.2) !important;
-      border: 1px solid rgba(212,175,55,0.4) !important;
-      color: #f4d676 !important;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #d4af37, #10a37f) !important;
-    }
-</style>
-  <style>
-    /* Legal page polish: calm editorial reading surface with reliable light-first contrast. */
-    html { background: #f4f7f6 !important; }
-    body { padding-top: 34px !important; color: #334155 !important; font-size: 15px !important; line-height: 1.8 !important; }
-    body::before { opacity: .18 !important; }
-    .wrap { max-width: 820px !important; }
-    header { margin-bottom: 22px !important; }
-    .brand { margin-bottom: 14px !important; font-size: 20px !important; }
-    h1 { font-size: clamp(30px, 4vw, 42px) !important; letter-spacing: -.055em !important; line-height: 1.08 !important; }
-    .updated { color: #087d60 !important; border-color: #b9e6d8 !important; background: #effaf6 !important; }
-    .legal-draft { color: #7c5f00 !important; background: #fff8dc; border: 1px solid #eadb9e; border-radius: 10px; padding: 10px 14px; }
-    .sheet { max-width: 760px; margin: 0 auto; padding: 30px 34px !important; border-color: #dbe5e2 !important; border-radius: 24px !important; background: rgba(255,255,255,.94) !important; box-shadow: 0 24px 70px rgba(20,40,34,.10), 0 1px 0 rgba(255,255,255,.9) inset !important; }
-    section { padding: 0 0 24px !important; margin: 0 0 24px !important; border-bottom-color: #e7eeec !important; }
-    h2 { margin-bottom: 10px !important; color: #18211f !important; font-size: 17px !important; letter-spacing: -.02em !important; }
-    h2 .n { min-width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: #087d60 !important; background: #effaf6; border: 1px solid #cbe9df; }
-    p { color: #4b5563 !important; margin-bottom: 12px !important; }
-    a { color: #087d60 !important; text-decoration: underline; text-decoration-color: #b9e6d8; text-underline-offset: 3px; }
-    a:hover { color: #065f4a !important; text-decoration-color: #087d60; }
-    .foot { margin-top: 28px !important; }
-    .back { min-height: 44px; display: inline-flex !important; align-items: center; gap: 8px; padding: 12px 20px !important; color: #ffffff !important; background: linear-gradient(135deg, #087d60, #0e9f7a) !important; border-color: #087d60 !important; box-shadow: 0 10px 22px rgba(8,125,96,.18); }
-    .back:hover { color: #ffffff !important; filter: brightness(1.06); transform: translateY(-1px); }
-    .copyright { color: #82908d !important; }
-    .terms-x { background: rgba(255,255,255,.92) !important; color: #334155 !important; border-color: #cbd9d5 !important; box-shadow: 0 8px 24px rgba(24,24,27,.10); }
-    .terms-x:hover, .terms-x:focus-visible { background: #effaf6 !important; color: #087d60 !important; border-color: #87cdb8 !important; }
-    @media (max-width: 700px) {
-      body { padding: 28px 14px 64px !important; font-size: 14.5px !important; }
-      .sheet { padding: 22px 19px !important; border-radius: 18px !important; }
-      h1 { font-size: 30px !important; }
-      h2 { font-size: 16px !important; gap: 9px !important; }
-      section { padding-bottom: 21px !important; margin-bottom: 21px !important; }
-      .terms-x { top: calc(env(safe-area-inset-top) + 10px) !important; right: 10px !important; }
-    }
-  </style>
-<script>
-  // Stellar AI is intentionally dark-only across public pages.
-  (function () {
-    document.documentElement.classList.remove('light');
-    document.addEventListener('DOMContentLoaded', function () {
-      document.body.classList.remove('light');
-    });
-  })();
-</script>
+  <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/site-polish.css">
+  <link rel="stylesheet" href="/stellar-public-v2.css?v=20260927">
   <style>
-    /* Final dark-only legal surface: keep Terms & Privacy consistent with the app. */
-    html, html.light { background: #080808 !important; color-scheme: dark !important; }
-    body, body.light { background: transparent !important; color: #d4d4d8 !important; }
-    body::before { opacity: .16 !important; }
-    .sheet { width: min(100%, 760px) !important; background: rgba(18,18,20,.96) !important; border-color: rgba(255,255,255,.14) !important; box-shadow: 0 24px 70px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06) !important; }
-    h1, h2 { color: #fafafa !important; }
-    h2 .n { color: #9cebd8 !important; background: rgba(16,163,127,.12) !important; border-color: rgba(16,163,127,.28) !important; }
-    p { color: #b8b8c0 !important; }
-    .updated { color: #9cebd8 !important; background: rgba(16,163,127,.10) !important; border-color: rgba(16,163,127,.28) !important; }
-    .legal-draft { color: #e8d79a !important; background: rgba(194,164,65,.10) !important; border-color: rgba(194,164,65,.28) !important; }
-    section { border-bottom-color: rgba(255,255,255,.08) !important; }
-    a { color: #b8a8ff !important; text-decoration-color: rgba(184,168,255,.48) !important; }
-    a:hover, a:focus-visible { color: #d8d0ff !important; }
-    .terms-x { background: rgba(28,28,31,.96) !important; color: #f4f4f5 !important; border-color: rgba(255,255,255,.2) !important; }
-    .terms-x:hover, .terms-x:focus-visible { background: rgba(255,255,255,.12) !important; color: #ffffff !important; border-color: rgba(255,255,255,.35) !important; }
-    .back { color: #090909 !important; background: linear-gradient(135deg, #9cebd8, #b8a8ff) !important; border-color: transparent !important; box-shadow: 0 10px 26px rgba(16,163,127,.16) !important; }
-    .back:hover, .back:focus-visible { color: #090909 !important; filter: brightness(1.08); }
-    .copyright { color: #85858e !important; }
-    @media (max-width: 700px) {
-      body { padding: calc(24px + env(safe-area-inset-top)) 14px calc(58px + env(safe-area-inset-bottom)) !important; }
-      .sheet { padding: 22px 18px !important; }
-      .terms-x { top: calc(10px + env(safe-area-inset-top)) !important; right: 10px !important; }
-    }
+    :root{color-scheme:dark;--bg:#08090f;--panel:#11131c;--panel2:#161925;--line:rgba(255,255,255,.12);--soft:rgba(255,255,255,.075);--text:#f7f8fb;--muted:#a6adbb;--green:#9cebd8;--purple:#b8a8ff;--gold:#efd47a;--danger:#ffb4b4;--max:920px}
+    *{box-sizing:border-box}html{scroll-padding-top:88px;background:radial-gradient(900px 520px at 50% -10%,rgba(139,124,246,.20),transparent 68%),linear-gradient(180deg,#0a0b12 0%,#07080d 100%)}
+    body{margin:0;min-width:320px;color:var(--text);font:15px/1.75 Manrope,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:transparent}
+    a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:3px}button,a{min-height:44px}.wrap{width:min(calc(100% - 32px),var(--max));margin:0 auto}.nav{position:sticky;top:0;z-index:20;background:rgba(8,9,15,.78);border-bottom:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+    .nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:inline-flex;align-items:center;gap:9px;font-weight:900;letter-spacing:-.04em}.brand-star{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(184,168,255,.12);color:var(--purple);box-shadow:0 0 28px rgba(139,124,246,.16)}
+    .nav-actions{display:flex;gap:8px;align-items:center}.pill-link{display:inline-flex;align-items:center;justify-content:center;padding:0 13px;border:1px solid var(--line);border-radius:999px;color:#dbe1ec;background:rgba(255,255,255,.04);font-size:12px;font-weight:800}.pill-link.primary{color:#08120f;background:linear-gradient(135deg,var(--green),var(--purple));border-color:transparent}
+    .hero{padding:64px 0 26px;text-align:center}.eyebrow{margin:0 0 11px;color:var(--green);font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero h1{margin:0 auto;max-width:760px;font-size:clamp(42px,7vw,74px);line-height:.98;letter-spacing:-.07em;font-weight:900;text-wrap:balance}.lead{max-width:720px;margin:18px auto 0;color:#c6ccd8;font-size:16px;text-wrap:balance}.updated{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:7px 12px;border:1px solid rgba(156,235,216,.25);border-radius:999px;background:rgba(156,235,216,.08);color:#cffff4;font-size:12px;font-weight:850}
+    .notice{margin:20px auto 0;max-width:780px;padding:14px 16px;border:1px solid rgba(239,212,122,.26);border-radius:18px;background:rgba(239,212,122,.08);color:#f4e7b0;text-align:left;font-size:13px}.notice strong{color:#fff}
+    .summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:30px 0}.summary-card{min-height:96px;padding:15px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.025));box-shadow:0 18px 50px rgba(0,0,0,.18)}.summary-card strong{display:block;margin-bottom:4px;font-size:13px}.summary-card span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+    main{padding:0 0 72px}.sheet{border:1px solid var(--line);border-radius:28px;background:rgba(15,17,25,.90);box-shadow:0 26px 90px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.055);overflow:hidden}.toc{display:flex;gap:8px;flex-wrap:wrap;padding:18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.025)}.toc a{min-height:36px;display:inline-flex;align-items:center;padding:0 11px;border:1px solid var(--line);border-radius:999px;color:#cfd6e5;background:rgba(255,255,255,.035);font-size:12px;font-weight:800}.content{padding:30px}
+    section{padding:0 0 28px;margin:0 0 28px;border-bottom:1px solid var(--soft)}section:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}h2{display:flex;gap:11px;align-items:flex-start;margin:0 0 10px;font-size:20px;line-height:1.2;letter-spacing:-.035em}.num{flex:0 0 auto;width:26px;height:26px;display:grid;place-items:center;border-radius:9px;background:rgba(184,168,255,.12);color:var(--purple);font-size:12px;font-weight:900}p{margin:0 0 12px;color:#c4c9d3}p:last-child{margin-bottom:0}ul,ol{margin:8px 0 0;padding-left:22px;color:#c4c9d3}li{margin:6px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}.card{padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035)}.card strong{display:block;margin-bottom:5px;color:#fff}.card span{color:var(--muted);font-size:13px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:620px;background:rgba(255,255,255,.025)}th,td{padding:12px 14px;border-bottom:1px solid var(--soft);text-align:left;vertical-align:top}th{color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:.08em}td{color:#c4c9d3}.tag{display:inline-flex;align-items:center;min-height:26px;padding:0 8px;border:1px solid rgba(156,235,216,.24);border-radius:999px;background:rgba(156,235,216,.075);color:#d7fff6;font-size:12px;font-weight:850}.danger{color:var(--danger)}.footer{padding:24px 0 42px;color:#858b98;font-size:12px;text-align:center}
+    @media(max-width:820px){.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}.content{padding:22px}.nav-actions .pill-link:not(.primary){display:none}}
+    @media(max-width:520px){.wrap{width:min(calc(100% - 24px),var(--max))}.hero{padding-top:42px}.summary{grid-template-columns:1fr}.content{padding:18px}.sheet{border-radius:22px}.toc{padding:13px}.toc a{font-size:11px}.lead{font-size:14px}h2{font-size:18px}.nav-inner{min-height:64px}}
   </style>
-  <link rel="stylesheet" href="/stellar-business-palette.css?v=8">
-  <link rel="stylesheet" href="/stellar-public-v2.css?v=20260923">
 </head>
 <body class="stellar-public public-terms">
-  <button class="terms-x" onclick="history.back()" aria-label="Close">&times;</button>
-  <div class="wrap">
-    <header>
-      <div class="brand"><span class="star">✦</span> <span class="grad">Stellar AI</span></div>
-    <h1>Terms of Service</h1>
-    <div class="updated" id="updated">Last updated: 26 September 2026</div>
-    </header>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/" aria-label="Stellar AI home"><span class="brand-star">✦</span><span>Stellar AI</span></a>
+      <nav class="nav-actions" aria-label="Terms navigation">
+        <a class="pill-link" href="/privacy">Privacy</a>
+        <a class="pill-link" href="/support">Support</a>
+        <a class="pill-link primary" href="/app">Open app</a>
+      </nav>
+    </div>
+  </header>
 
-    <div class="sheet">
-    <section class="terms-summary" aria-label="Key terms summary">
-      <h2><span class="n">✓</span>Key points before you use Stellar AI</h2>
-      <p><strong>Stellar AI is an AI-assisted software service, not a guarantee of a particular result.</strong> Review and test generated output before relying on it. Paid subscriptions renew until cancelled. Plans include a stated amount of Stellar Credits; bought wallet credits are separate one-off purchases and are used automatically after included credits. Current wallet packs may include bonus credits, which are added only after a successful payment. Business services such as the Website Mini Audit / Quick Fix and AI Receptionist have their own stated scope and do not guarantee rankings, leads, revenue, bookings, response times, or professional advice. UK consumer cancellation and refund rights apply where the law gives them to you, and these terms do not remove those statutory rights.</p>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="terms-title">
+      <p class="eyebrow">Legal terms</p>
+      <h1 id="terms-title">Terms of Service</h1>
+      <p class="lead">These terms explain how Stellar AI accounts, plans, daily credits, wallet top-ups, AI outputs, connected tools, subscriptions, refunds and support work.</p>
+      <div class="updated">Last updated: 27 September 2026</div>
+      <div class="notice"><strong>Plain-English note:</strong> this page is designed to be clear and fair for customers. It should still be reviewed by a qualified legal adviser before relying on it as final legal advice, especially before taking large volumes of paid orders.</div>
     </section>
 
-    <section><h2><span class="n">1</span>Who we are and your agreement</h2>
-    <p>Stellar AI is an AI software and business-services platform available at trystellarai.com ("Stellar AI", "we", "us"). These terms apply when you browse the site, use the AI workspace, create an account, buy a subscription or credit, use connected tools, or purchase a business service from us. You can contact us at <a href="mailto:deadlyfox10@gmail.com">deadlyfox10@gmail.com</a>. By using a paid or free Stellar AI service you agree to the terms that apply to that service. If a checkout page or service page states additional service-specific terms, those apply alongside this document.</p>
-
-    </section><section><h2><span class="n">2</span>What the service does</h2>
-    <p>Stellar AI provides an AI workspace that can generate, explain, organise, and help debug code and other content from your instructions. It currently focuses on FiveM, Roblox, and related development workflows, and may also offer connected tools, plugins, Desktop Agent features, and other AI-assisted functions. The service can make mistakes. You remain responsible for reviewing output, checking dependencies and permissions, testing safely, complying with third-party platform rules, and deciding whether to publish or run anything generated by Stellar AI.</p>
-
-    </section><section><h2><span class="n">2A</span>Business services</h2>
-    <p>Stellar AI may also sell clearly described business services through its public service pages. The Website Mini Audit / Quick Fix is currently offered at £99 and is limited to the scope stated on the purchase page; it does not guarantee search rankings, traffic, leads, sales, or revenue. The AI Receptionist is currently offered at £150 setup plus £49 per month and is intended to handle routine enquiries and information within an approved business scope. It must not be represented as a doctor, lawyer, accountant, emergency service, or other regulated professional, and it must not make unapproved promises, quotations, diagnoses, legal conclusions, financial recommendations, or binding commitments. The customer remains responsible for the accuracy of business information supplied to the receptionist, lawful call handling and notices, human escalation routes, and any sector-specific obligations. Current scope and pricing shown on the relevant service and checkout pages apply at the time of purchase.</p>
-
-    </section><section><h2><span class="n">3</span>The technology behind Stellar</h2>
-    <p>Stellar AI uses automated AI systems to generate scripts and answers. When you send a message, it is processed by the service and relevant technology providers so we can return a response. Responses are generated automatically, not by a human. You must review and test anything produced before using it.</p>
-
-    </section><section><h2><span class="n">4</span>Not affiliated with FiveM, Rockstar, or Roblox</h2>
-    <p>Stellar AI is an independent tool. We are not affiliated with, endorsed by, or sponsored by Cfx.re (FiveM), Rockstar Games, Take-Two Interactive, or Roblox Corporation. FiveM, Grand Theft Auto, and Roblox are trademarks of their respective owners. You are responsible for making sure anything you build and deploy follows those platforms' own terms of service and rules.</p>
-
-    </section>    <section><h2><span class="n">5</span>Accounts</h2>
-    <p>You can try Stellar AI without an account. Guest chats and settings are kept in the browser on the device you are using; clearing browser data can remove them and we may not be able to recover them. An account is needed to save chats across visits and devices, receive promotional credits, buy wallet credits, or subscribe. Signed-in chat history is stored in account storage so the service can restore it, subject to the limits shown in the app. You can sign in with Google or Discord, or create an account with your email address and password. Passwords are stored in hashed form, not readable text.</p>
-    <p>At the date of these terms, a new eligible account may receive 100 promotional Stellar Credits. Promotional or welcome grants are limited to the eligibility rules shown with the offer and may be withheld for duplicate accounts, fraud, bots, abuse or other attempts to obtain repeated grants. You must be at least 13. If you are under 18, use the service only with a parent or guardian’s knowledge and permission, and do not make a payment without their permission. Anyone making a payment confirms they are 18 or over or has the required permission. Keep your account details accurate, protect your sign-in details, and tell us if you suspect unauthorised access. You are responsible for activity under your account.
-
-    </section><section><h2><span class="n">6</span>Plans, included Stellar Credits and model costs</h2>
-    <p>The current plans are Free (£0), Starter (£8 per month or £67 per year), Plus (£20 per month or £168 per year), and Pro (£75 per month or £630 per year). Current included-credit allowances are: Free 300 credits per day; Starter 4,000 credits per month; Plus 12,000 credits per month; and Pro 48,000 credits per month. Free included credits refresh on the daily credit cycle. Paid-plan included credits refresh on the account’s monthly credit cycle, including where the subscription itself is billed annually. Unused included plan credits do not roll over into the next included-credit period unless the pricing page expressly says otherwise.</p>
-    <p>Stellar Credits are usage units, not money. At the date of these terms, a standard AI message costs 2 credits on Spark, 5 credits on Star, 10 credits on Comet and 20 credits on Nova. Nova is available only on Pro. A StellarX AI planning pass currently costs 20 credits. Approved local PC actions such as reading or clicking do not by themselves add a separate credit charge unless another AI planning or generation pass is requested. Other features may have a different credit cost where that cost is shown before use.</p>
-    <p>Credits can be deducted when Stellar begins processing an eligible AI request. Where our systems reserve or deduct credits for a generation or StellarX planning pass that fails before a successful result is returned, the service is designed to restore the charged credits. If you believe a failed request was charged incorrectly, contact support so we can review the account record.</p>
-    <p>Plan prices and checkout are shown and charged in GBP (£) worldwide. Your bank or card provider may convert the GBP charge into your local currency and may apply its own exchange rate or fees. Plans, credit allowances, model availability, model credit costs, output limits and other features may change for future periods or purchases; the pricing page and in-app usage information show the current offer. Internal safety, anti-abuse, technical or rate limits may still apply separately from the displayed credit balance and are not themselves an additional purchased allowance.
-
-    </section><section><h2><span class="n">7</span>Stellar Credit Wallet, top-ups and bonus credits</h2>
-    <p>Signed-in users can buy one-off Stellar Credit Wallet top-ups from £10 to £200 through Stripe. Bought wallet credits are separate from subscription plan credits. Stellar uses included plan credits first and, when those are exhausted, automatically uses available bought wallet credits for eligible usage. A top-up does not upgrade, downgrade, start, cancel or renew a subscription.</p>
-    <p>At the date of these terms, the advertised packs are: £10 for 1,100 credits (1,000 base + 100 bonus); £25 for 2,875 credits (2,500 base + 375 bonus); £50 for 6,000 credits (5,000 base + 1,000 bonus); £100 for 12,000 credits (10,000 base + 2,000 bonus); and £200 for 24,000 credits (20,000 base + 4,000 bonus). The applicable pack, bonus and total credits are shown before checkout. If a future checkout displays a different pack or promotion, the checkout terms shown for that purchase control.</p>
-    <p>Bonus credits are not a separate cash payment: they are additional usage credits applied with an eligible successful top-up. The paid amount and bonus amount are recorded with the checkout so that the full advertised credit total can be added after successful payment. Bought and included credits have no cash value, cannot be withdrawn, sold or transferred between accounts, and cannot be used outside Stellar AI. Bought wallet credits currently remain on the account until used unless a specific promotion or legal requirement says otherwise.</p>
-    <p>Wallet balances may take a short time to update after Stripe confirms payment. We protect top-ups against duplicate processing so the same successful checkout is not intentionally credited twice. If a successful payment is not reflected correctly, contact support with the account email and Stripe transaction details; never send us a full card number.
-
-    </section><section><h2><span class="n">8</span>Promotions, referrals, giveaways and free credits</h2>
-    <p>We may offer welcome credits, referral rewards, giveaways, competitions, discount codes or other promotional Stellar Credits. At the date of these terms, an eligible new account may receive 100 welcome credits, and a valid referral currently awards 100 promotional credits to the referred new account and 100 promotional credits to the referrer after the referral is validated. Referral rewards are limited to a valid new-account sign-up and may be withheld or reversed for self-referrals, duplicate or controlled accounts, bots, fraud, chargeback abuse or other manipulation.</p>
-    <p>Promotional credits and prizes have no cash value and cannot be withdrawn or exchanged for money. A specific promotion may have its own expiry date, eligibility limit, household/person limit or other conditions. We may change, pause or withdraw future promotional offers, but doing so does not remove statutory rights or credits already required to be honoured by law. Any terms shown with a specific promotion apply alongside this document.
-
-    </section><section><h2><span class="n">9</span>Billing, subscriptions and cancellation</h2>
-    <p>Payments are processed by Stripe. We do not receive or store your full card number. Stellar AI subscriptions, wallet top-ups and the prices shown on the main pricing page are charged in GBP (£) worldwide unless a checkout clearly says otherwise. Your bank or card provider may apply currency conversion, tax, rounding or other fees.</p>
-    <p>Recurring subscriptions renew at the monthly or annual interval selected at checkout until cancelled. Cancelling stops the next renewal and normally leaves paid plan access available until the end of the current paid billing period. Annual billing is a billing discount/interval; included Starter, Plus and Pro credits still operate on the monthly credit cycle described above rather than being issued as one annual lump sum. One-off wallet top-ups and one-off business services are separate purchases and do not start, cancel or change an AI subscription unless the checkout explicitly says they do. Prices and plan contents may change for future purchases or renewals, with notice where required by law.
-
-    </section><section><h2><span class="n">10</span>Refunds, credits and consumer rights</h2>
-    <p>If you are a UK consumer buying online, statutory cancellation rights may apply. For many service contracts the cancellation period is 14 days from the day the contract is made. If you expressly ask us to begin a service during that period and then cancel, the law may allow a proportionate charge for work already supplied. Where a service is fully performed during the cancellation period, the cancellation right is lost only where the law allows it and the required request and acknowledgement were obtained. For digital content supplied immediately, a 14-day cancellation right is lost only where the law allows it and, before supply begins, you expressly consent to immediate supply, acknowledge that the cancellation right will be lost, and receive the required confirmation. Simply accepting these terms or making a payment does not by itself waive a statutory cancellation right.</p>
-    <p>Credits already consumed on successfully delivered AI processing are usage consumed under the service rather than a cash balance. Bought wallet credits themselves are not withdrawable for cash, but this does not remove any refund, cancellation, repeat-performance, price-reduction or other remedy that applicable consumer law requires. If a payment, subscription, wallet top-up, bonus-credit allocation, Website Mini Audit / Quick Fix, or AI Receptionist charge is incorrect, contact <a href="mailto:deadlyfox10@gmail.com?subject=Billing%20or%20refund%20help">deadlyfox10@gmail.com</a> with the account and transaction details; never send us a full card number. We will apply any remedy required by applicable law. Nothing in these terms excludes rights that cannot legally be excluded, including rights relating to faulty or misdescribed digital content or services.
-
-    </section><section><h2><span class="n">11</span>Acceptable use, credits and fair access</h2>
-    <p>Do not use Stellar AI to do anything illegal, to create malware, cheats, or scripts designed to harm other people's servers, accounts or data, to harass or abuse others, or to generate content that breaks the law. Do not attempt to hack, overload, scrape, resell, automate against, or work around the service, its credit accounting, its internal safety/rate controls, or its other safeguards.</p>
-    <p>A positive Stellar Credit balance does not guarantee unlimited throughput, simultaneous tasks, model availability or uninterrupted service. Internal hourly, weekly, concurrency, safety, fraud-prevention or provider limits may apply to protect the platform and other users. Those controls can temporarily delay or block requests without converting wallet credits into a right to bypass them. We may suspend or end access for accounts that break these rules.
-
-    </section><section><h2><span class="n">12</span>Security and enforcement</h2>
-    <p>Attempting to hack, breach, disrupt, reverse-engineer, or gain unauthorised access to Stellar AI, its servers, its accounts, or its data is strictly prohibited, and so is scraping the service, abusing its limits, or using automated tools against it without our written permission. We monitor for abuse and log suspicious activity. Where we find deliberate attacks, fraud, chargeback abuse, or theft of the service, we may suspend accounts, block access, report the matter to the relevant authorities, and take legal action to recover losses and costs. Unauthorised access to computer systems is a criminal offence in the UK under the Computer Misuse Act 1990.</p>
-
-    </section><section><h2><span class="n">13</span>AI outputs and accuracy</h2>
-    <p>AI-generated code and answers can contain mistakes, and similar requests can produce similar outputs for different users. Always review and test generated code on a test server before using it anywhere that matters. Stellar AI is not a substitute for professional advice, and you should not rely on it for anything where an error could cause serious loss.</p>
-
-    </section><section><h2><span class="n">14</span>Your content</h2>
-    <p>Your prompts belong to you. You give us the limited permission needed to process your prompts through Stellar's AI engine in order to run the service for you. Do not submit content you have no right to share, or personal information about other people.</p>
-
-    </section><section><h2><span class="n">15</span>Ownership of outputs</h2>
-    <p>Code that Stellar AI generates in response to your requests is yours to use in your projects. Because of how AI works, we cannot promise outputs are unique to you, and we cannot promise generated code does not resemble other code that exists in the world.</p>
-
-    </section><section><h2><span class="n">16</span>Our intellectual property</h2>
-    <p>The Stellar AI name, star logo, design, and the service itself belong to us. These terms do not give you any right to copy, resell, or rebrand the service.</p>
-
-    </section><section><h2><span class="n">17</span>Third-party services</h2>
-    <p>Stellar AI relies on third-party services including Stripe for payments, Google and Discord for optional sign-in, Vercel for hosting, Redis-compatible account storage, AI processing providers used to return responses, and any connected apps, plugins, or developer tools you choose to connect. A connected service may receive the information needed to perform the action you requested and remains subject to its own terms, privacy notice, availability, and account permissions. We do not control third-party outages, policies, or security practices, but we choose service providers for the functions the product needs.</p>
-
-    </section><section><h2><span class="n">18</span>StellarX, Desktop Agent, plugins and connected tools</h2>
-    <p>Stellar AI may provide optional StellarX, local-computer, plugin, connector, browser or automation features. Signed-in users may pair their own authorised computer to an account-scoped Desktop Agent. Pairings, device tokens, permissions, queued tasks, results and audit records are separated by account, and a user must not attempt to access or control another person's device or task data.</p>
-    <p>StellarX may use Stellar Credits for AI planning or generation. At the date of these terms, each StellarX AI planning pass costs 20 Stellar Credits. The app or task surface will govern any future feature-specific credit price. Approved local PC actions do not by themselves create an extra Stellar Credit charge merely because a click, file read or similar approved device action occurs; a new AI planning/generation pass can use credits.</p>
-    <p>Connected features can read, create, edit, open, or process information only within the permissions and access you grant. You must only connect computers, accounts, files, servers, stores, repositories, or other systems that you own or are authorised to control. Review requested permissions and proposed actions before approving them. Workspace restrictions, approval prompts, rate limits, audit records, backups, emergency-stop controls, secret redaction and other safeguards reduce risk but do not guarantee that every action will be error-free. Keep independent backups of important data and do not rely on the agent as the only copy of any file. Do not use connected tools to obtain passwords, private keys, browser cookies, payment credentials, recovery codes or other secrets you are not authorised to access. We may block actions that appear destructive, unsafe, unauthorised, abusive or likely to compromise security.
-
-    </section><section><h2><span class="n">19</span>Discord and community spaces</h2>
-    <p>Stellar AI may provide an optional Discord community for announcements, discussion, support guidance, and product feedback. Discord is a third-party service and its own terms and privacy rules apply. Community posts may be visible to other members, so do not post passwords, API keys, payment details, private customer data, recovery codes, confidential business information, or anything you do not want other members to see. Discord messages are not a guaranteed route for account, billing, privacy, legal, or security requests; for those matters use the support contact shown on Stellar AI. Community moderators may remove content or restrict access where needed to protect users, comply with platform rules, or enforce these terms.</p>
-
-    </section><section id="privacy"><h2><span class="n">20</span>Privacy summary</h2>
-    <p>We collect and use personal information only where needed to provide, secure, support, bill, measure, and improve Stellar AI and its business services. Depending on the feature you use, this can include your email address or sign-in provider, account and plan status, credit balance, usage records, referral records, support messages, prompts and chat content, service-enquiry information, transaction status, device or session information, and security logs. Guest chats may be kept in browser storage; signed-in chat history may be stored in account storage so it can be restored across visits and devices. Prompts and generated responses may be sent to AI processing providers when needed to operate the generation feature. Desktop Agent and connected tools may process the device identifier, connection state, permissions, task metadata, selected workspace content, task results, and audit records necessary to perform and secure the action you requested. Stripe processes payment-card details and sends us payment and subscription status rather than your full card number. We do not sell personal data. We may send account, security, billing, service, and—where permitted—marketing messages; you can opt out of direct marketing at any time. We keep information only for as long as reasonably needed for the purpose it was collected, legal and accounting obligations, dispute handling, fraud prevention, and security. Under applicable UK data-protection law, your rights may include being informed, access, correction, erasure, restriction, objection, and data portability, depending on the circumstances and lawful basis. The right to object to direct marketing is absolute. Contact <a href="mailto:deadlyfox10@gmail.com?subject=Privacy%20request">deadlyfox10@gmail.com</a> to exercise a privacy right or raise a concern. You can also complain to the UK Information Commissioner’s Office. Read the full <a href="/privacy">Stellar AI Privacy Policy</a> for the dedicated privacy notice.</p>
-
-    </section><section><h2><span class="n">21</span>Availability, changes and ending the service</h2>
-    <p>We work to keep Stellar AI online, but the service may occasionally be interrupted, updated, or changed, including the AI models used. We may add, change, or remove features. If we ever discontinue the service or suspend an account for breaking these terms, active paid time will be handled fairly and in line with your legal rights.</p>
-
-    </section><section><h2><span class="n">22</span>Service limitations</h2>
-    <p>AI services and internet services can occasionally be unavailable or produce incorrect output. We do not promise uninterrupted availability or that every generated answer, image or piece of code will be accurate or suitable for your particular project. This does not reduce any duty that applies to us by law, including the duty to provide consumer services with reasonable care and skill or any remedy you have for faulty or misdescribed digital content or services.</p>
-
-    </section><section><h2><span class="n">23</span>Responsibility when something goes wrong</h2>
-    <p>Nothing in these terms excludes or limits liability where the law does not allow that, including liability for death or personal injury caused by negligence, fraud or fraudulent misrepresentation, or your non-excludable statutory consumer rights. If you use Stellar as a consumer, your right to a lawful remedy is not capped by a blanket contractual limit in these terms. We are not responsible for a loss to the extent it was not caused by our breach, negligence or other legal responsibility, or was caused by your unauthorised or unlawful misuse of the service.</p>
-    <p>If you use Stellar wholly for business purposes, different rules can apply to business losses. Any limitation applying to a business customer must still be lawful and reasonable in the circumstances and does not override liability that cannot legally be limited.</p>
-
-    </section><section><h2><span class="n">24</span>Your responsibility for misuse</h2>
-    <p>You are responsible for using Stellar lawfully, respecting third-party rights and reviewing generated output before deployment. If your unlawful or unauthorised misuse directly causes us a reasonably foreseeable loss or third-party claim, we may seek the remedy available under applicable law. We will not use this clause to make a consumer pay for our own breach, negligence, unfair terms, or losses that the law says remain our responsibility.</p>
-
-    </section><section><h2><span class="n">25</span>Things outside our control</h2>
-    <p>We are not responsible for failures or delays caused by events outside our reasonable control. This includes outages or changes at the third-party services Stellar AI depends on, such as Stellar's AI engine, payment providers, or hosting provider, as well as internet failures, power cuts, and similar events. If such an event seriously affects the service for a long period, we will handle any paid time fairly and in line with your legal rights.</p>
-
-    </section><section><h2><span class="n">26</span>Governing law</h2>
-    <p>These terms are governed by the laws of England and Wales, and disputes will be dealt with by the courts of England and Wales — except that if you live elsewhere in the UK, you can also use your local courts, and consumers always keep the protections of their local law.</p>
-
-    </section><section><h2><span class="n">27</span>General</h2>
-    <p>If any part of these terms is unenforceable, the remaining terms continue to apply. If we do not enforce a term immediately, that does not automatically waive it. These written terms should be read with the pricing, checkout and service information presented to you before purchase and with rights or information that applicable law treats as part of the contract. You may not transfer an account in a way that defeats security or eligibility rules. We may transfer our rights and obligations as part of a genuine business transfer provided that doing so does not reduce your legal rights or materially worsen an existing paid contract without an appropriate remedy.</p>
-
-    </section><section><h2><span class="n">28</span>Changes to these terms</h2>
-    <p>We may make changes required by law, security, provider changes or reasonable product development. We will not use this clause as a blank cheque to impose an unexpected price increase, remove a material paid benefit or reduce an accrued consumer right during a paid period without the notice and remedy required by law. Where a future material change adversely affects an ongoing paid subscription, we will give reasonable notice where practicable and provide any cancellation or other remedy required by law before the change takes effect. The date at the top shows the current version.</p>
-
-    </section>
+    <div class="summary" aria-label="Key terms summary">
+      <div class="summary-card"><strong>Daily credits</strong><span>Plan credits refresh every daily credit cycle; bought wallet credits stay separate until used.</span></div>
+      <div class="summary-card"><strong>No guaranteed results</strong><span>AI output can be wrong. Review, test and approve important work before using it.</span></div>
+      <div class="summary-card"><strong>Fair refunds</strong><span>UK consumer cancellation and refund rights are not removed by these terms.</span></div>
+      <div class="summary-card"><strong>Safe use</strong><span>No hacking, malware, spam, abuse, fraud, scraping, resale or attempts to bypass limits.</span></div>
     </div>
 
-    <div class="foot">
-      <a class="back" href="/legal">Legal &amp; policies</a>
-      <div class="copyright">© 2026 Stellar AI</div>
-    </div>
-  </div>
-  <script>
-    (function () {
-      var d = new Date(document.lastModified);
-      var el = document.getElementById('updated');
-      if (el && !isNaN(d.getTime())) {
-        el.textContent = 'Last updated: ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-      }
-    })();
-    // keep this page fresh automatically
-    (function () {
-      var stamp = null;
-      async function check() {
-        try {
-          var r = await fetch('/terms?v=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
-          var s = r.headers.get('last-modified') || r.headers.get('etag');
-          if (!s) return;
-          if (!stamp) { stamp = s; return; }
-          if (s !== stamp) location.reload();
-        } catch (e) {}
-      }
-      check();
-      setInterval(check, 5 * 60 * 1000);
-      document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
-    })();
-  </script>
-  <script>
-    (function () {
-      document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
-      document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
-      document.addEventListener('gestureend', function (e) { e.preventDefault(); }, { passive: false });
-      document.addEventListener('touchmove', function (e) {
-        if (e.touches && e.touches.length > 1) { e.preventDefault(); }
-      }, { passive: false });
-      var lastTouch = 0;
-      document.addEventListener('touchend', function (e) {
-        var t = e.target;
-        if (t && t.closest && t.closest('button, a, input, textarea, select, [onclick], label')) { lastTouch = Date.now(); return; }
-        var now = Date.now();
-        if (now - lastTouch <= 300) { e.preventDefault(); }
-        lastTouch = now;
-      }, { passive: false });
-      document.addEventListener('wheel', function (e) {
-        if (e.ctrlKey) { e.preventDefault(); }
-      }, { passive: false });
-    })();
-  </script>
+    <article class="sheet">
+      <nav class="toc" aria-label="On this page">
+        <a href="#who">Who we are</a>
+        <a href="#service">Service</a>
+        <a href="#accounts">Accounts</a>
+        <a href="#credits">Credits</a>
+        <a href="#billing">Billing</a>
+        <a href="#refunds">Refunds</a>
+        <a href="#tools">Connected tools</a>
+        <a href="#rules">Rules</a>
+        <a href="#support">Support</a>
+      </nav>
 
+      <div class="content">
+        <section id="who">
+          <h2><span class="num">1</span><span>Who we are and how to contact us</span></h2>
+          <p>Stellar AI is an AI software and business-services platform available at <strong>trystellarai.com</strong> (“Stellar AI”, “we”, “us” and “our”). These terms apply when you browse the website, use the AI workspace, create an account, use connected tools, buy a subscription, buy wallet credits, or buy a business service from us.</p>
+          <p>You can contact support at <a href="mailto:deadlyfox10@gmail.com">deadlyfox10@gmail.com</a>. Do not send card numbers, passwords, private keys, recovery codes or other secrets by email.</p>
+          <p><strong>Business-detail reminder:</strong> before taking payments at scale, the operator should add the correct legal/trading name, business address and any company or tax details required for the way the business is operated.</p>
+        </section>
+
+        <section id="service">
+          <h2><span class="num">2</span><span>What Stellar AI does</span></h2>
+          <p>Stellar AI provides an AI workspace that can help generate, explain, organise, debug, plan and review content, code and project work from your instructions. It may also provide model choices, plugins, browser/desktop assistance, website/business services, AI receptionist workflows, lead support, or other AI-assisted features.</p>
+          <p>AI systems can make mistakes, omit important details, generate insecure code, misunderstand instructions, or produce content that is not suitable for your use case. You are responsible for reviewing outputs, testing safely, checking third-party rights and dependencies, and deciding whether to publish, send, run or rely on anything generated by Stellar AI.</p>
+          <div class="grid">
+            <div class="card"><strong>Not professional advice</strong><span>Stellar AI is not a lawyer, accountant, doctor, financial adviser, emergency service or regulated professional.</span></div>
+            <div class="card"><strong>No outcome guarantee</strong><span>We do not guarantee rankings, traffic, leads, sales, revenue, acceptance, uptime, model availability or error-free output.</span></div>
+          </div>
+        </section>
+
+        <section id="accounts">
+          <h2><span class="num">3</span><span>Accounts, age and sign-in</span></h2>
+          <p>You can try parts of Stellar AI without an account. Guest chats and settings may be stored in your browser on the device you use; clearing browser data can remove them. An account is needed to save chats across devices, receive eligible promotional credits, buy wallet credits, subscribe, use certain connected tools, or access account-specific settings.</p>
+          <p>You must be at least 13 to use Stellar AI. If you are under 18, use the service only with a parent or guardian’s knowledge and permission, and do not make a payment without the required permission. Anyone making a payment confirms that they are 18 or over, or that they have the required permission.</p>
+          <p>You are responsible for keeping your sign-in details secure and for activity under your account. Tell us promptly if you suspect unauthorised access.</p>
+        </section>
+
+        <section id="credits">
+          <h2><span class="num">4</span><span>Plans, daily Stellar Credits and model costs</span></h2>
+          <p>Stellar Credits are usage units for AI processing inside Stellar AI. They are not money, cannot be withdrawn as cash, and cannot be used outside Stellar AI. Included plan credits are used first. Bought wallet credits are separate and are used automatically only when included plan credits are exhausted for eligible usage.</p>
+          <div class="table-wrap" role="region" aria-label="Current Stellar AI plan credits" tabindex="0">
+            <table>
+              <thead><tr><th>Plan</th><th>Price</th><th>Included credits</th><th>Model access</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Free</strong></td><td>£0</td><td>300 credits per day</td><td>Spark + Star</td></tr>
+                <tr><td><strong>Starter</strong></td><td>£8/month or £67/year</td><td>900 credits per day</td><td>Spark + Star</td></tr>
+                <tr><td><strong>Plus</strong></td><td>£20/month or £168/year</td><td>2,500 credits per day</td><td>Spark + Star + Comet</td></tr>
+                <tr><td><strong>Pro</strong></td><td>£75/month or £630/year</td><td>8,000 credits per day</td><td>Spark + Star + Comet + Nova</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>At the date of these terms, standard model costs are: Spark 2 credits, Star 5 credits, Comet 10 credits, and Nova 20 credits per AI message or generation pass. Feature-specific costs may differ where shown in the app before use.</p>
+          <p>Daily included credits refresh on the daily credit cycle. They do not roll over into later days unless the pricing page or in-app offer expressly says otherwise. Bought wallet credits currently remain on the account until used, unless a specific promotion, legal requirement or refund decision says otherwise.</p>
+        </section>
+
+        <section id="wallet">
+          <h2><span class="num">5</span><span>Wallet top-ups, bonus credits and promotions</span></h2>
+          <p>Signed-in users may buy one-off Stellar Credit Wallet top-ups through Stripe. A top-up does not start, upgrade, downgrade, cancel or renew a subscription unless the checkout clearly says so.</p>
+          <div class="table-wrap" role="region" aria-label="Wallet top-up packs" tabindex="0">
+            <table>
+              <thead><tr><th>Top-up</th><th>Total credits</th><th>Bonus</th></tr></thead>
+              <tbody>
+                <tr><td>£3</td><td>300 credits</td><td>No bonus</td></tr>
+                <tr><td>£5</td><td>525 credits</td><td>+5%</td></tr>
+                <tr><td>£10</td><td>1,100 credits</td><td>+10%</td></tr>
+                <tr><td>£25</td><td>2,875 credits</td><td>+15%</td></tr>
+                <tr><td>£50</td><td>6,000 credits</td><td>+20%</td></tr>
+                <tr><td>£100</td><td>12,000 credits</td><td>+20%</td></tr>
+                <tr><td>£200</td><td>24,000 credits</td><td>+20%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Bonus credits are additional usage credits added with an eligible successful top-up. They are not a separate cash payment. The checkout or in-app offer shown at the time of purchase controls the applicable pack, bonus and total credits.</p>
+          <p>Eligible new accounts may receive a one-time welcome grant of <strong>500 credits</strong>. Referral rewards, streak rewards, giveaways or other promotions may have their own eligibility rules, limits, expiry dates and abuse protections. Promotional credits may be withheld or reversed for fraud, duplicate accounts, self-referrals, bots, chargeback abuse, or attempts to obtain repeated grants unfairly.</p>
+        </section>
+
+        <section id="billing">
+          <h2><span class="num">6</span><span>Billing, subscriptions and Stripe checkout</span></h2>
+          <p>Payments are processed by Stripe or another checkout provider shown at purchase. Stellar AI does not receive your full payment-card number. Prices are shown and charged in GBP (£) unless a checkout clearly says otherwise. Your bank or card provider may apply exchange rates, taxes, rounding, conversion charges or other fees.</p>
+          <p>Recurring subscriptions renew at the monthly or annual interval selected at checkout until cancelled. Cancelling normally stops the next renewal and leaves paid plan access available until the end of the current paid billing period. Annual billing is a discounted billing interval; it does not necessarily mean all included credits are issued as one annual lump sum.</p>
+          <p>Plans, prices, credit allowances, model access, model costs, output limits, features and internal safety limits may change for future purchases or renewal periods. We will not intentionally reduce already-paid access in a way that removes rights you have under applicable law.</p>
+        </section>
+
+        <section id="refunds">
+          <h2><span class="num">7</span><span>Cancellation rights, refunds and failed charges</span></h2>
+          <p>If you are a UK consumer buying online, statutory cancellation and refund rights may apply. For many distance contracts, consumers have a 14-day cancellation period. For services started during that period, the law may allow a proportionate charge for work already supplied. For digital content supplied immediately, cancellation rights can be lost only where the law allows it and the required consent and acknowledgement have been obtained before supply begins.</p>
+          <p>Nothing in these terms removes rights that cannot legally be excluded, including statutory rights relating to faulty, misdescribed or non-conforming digital content or services.</p>
+          <p>Credits consumed on successfully delivered AI processing are usage consumed under the service rather than a cash balance. Bought wallet credits are not normally withdrawable as cash, but this does not remove any refund, cancellation, repeat-performance, price-reduction or other remedy required by law.</p>
+          <p>If a payment, subscription, top-up, bonus-credit allocation, Website Mini Audit / Quick Fix, AI Receptionist setup, or other charge is incorrect, contact <a href="mailto:deadlyfox10@gmail.com?subject=Billing%20or%20refund%20help">deadlyfox10@gmail.com</a> with your account email and Stripe transaction details. Never send a full card number.</p>
+        </section>
+
+        <section id="business-services">
+          <h2><span class="num">8</span><span>Business services and AI receptionist work</span></h2>
+          <p>Stellar AI may sell clearly described business services, such as a Website Mini Audit / Quick Fix, setup assistance, automation help, or an AI Receptionist. The scope, price and delivery details shown on the relevant purchase page apply at the time of purchase.</p>
+          <p>Business services do not guarantee rankings, traffic, leads, revenue, approval, bookings, response times, defect-free code, or a particular commercial result. AI Receptionist workflows must be used only within an approved business scope and must not pretend to be a doctor, lawyer, accountant, emergency service, regulated adviser, or another professional person.</p>
+          <p>The customer remains responsible for supplying accurate business information, lawful call handling notices, human escalation routes, sector-specific compliance, and final approval of any public-facing claims or commitments.</p>
+        </section>
+
+        <section id="tools">
+          <h2><span class="num">9</span><span>Connected tools, plugins, StellarX and desktop features</span></h2>
+          <p>Stellar AI may provide optional connected tools, plugins, browser workflows, repository access, local-computer features, StellarX tasks, or desktop-agent functions. These features can read, create, edit, open or process information only within the permissions and access you grant.</p>
+          <p>You must only connect accounts, computers, repositories, files, stores, servers, calendars, inboxes, phone systems or other systems that you own or are authorised to control. Review permissions and proposed actions before approving them. Keep independent backups of important data.</p>
+          <p>Safeguards such as approvals, audit records, rate limits, secret redaction, sandboxing, prompts and emergency-stop controls reduce risk but do not guarantee that every action will be error-free. Do not use connected tools to obtain passwords, private keys, browser cookies, payment credentials, recovery codes, or other secrets.</p>
+        </section>
+
+        <section id="ownership">
+          <h2><span class="num">10</span><span>Your content, outputs and intellectual property</span></h2>
+          <p>Your prompts and uploaded content remain yours. You give Stellar AI the limited permission needed to host, process, transmit and analyse that content so the service can operate, generate responses, provide support, secure the platform, and deliver requested connected-tool actions.</p>
+          <p>Subject to your compliance with these terms and third-party rights, outputs generated for you can generally be used by you for your own projects. Because AI can produce similar or repeated outputs for different users, we do not promise that outputs are unique, free from third-party rights, or suitable for every use case.</p>
+          <p>The Stellar AI name, branding, design, code, website, documentation, prompts, systems and service are owned by us or our licensors. These terms do not let you copy, resell, reverse-engineer, clone, scrape, rebrand or commercially exploit the service except as expressly allowed.</p>
+        </section>
+
+        <section id="rules">
+          <h2><span class="num">11</span><span>Acceptable use and fair access</span></h2>
+          <p>You must not use Stellar AI to do anything illegal, unsafe, harmful, abusive or deceptive. You must not use the service to create malware, steal data, bypass security, attack systems, spam people, harass others, impersonate someone, commit fraud, infringe rights, or generate code intended to harm another person’s server, account, data or device.</p>
+          <p>You must not hack, overload, scrape, resell, automate against, or work around the service, credit accounting, access controls, internal safety limits, rate limits, fraud protections or other safeguards. A positive credit balance does not guarantee unlimited throughput, simultaneous tasks, specific model availability, or uninterrupted service.</p>
+          <p>We may suspend, limit or end access for accounts that break these rules, create risk for other users, abuse credits, attempt chargeback fraud, or put the service, users, suppliers or connected systems at risk.</p>
+        </section>
+
+        <section id="availability">
+          <h2><span class="num">12</span><span>Availability, changes and third-party services</span></h2>
+          <p>Stellar AI depends on third-party providers such as hosting, storage, payment processors, sign-in providers, AI model providers, email providers, phone/calling systems and connected apps. We do not control their outages, policy changes, pricing, rate limits or security decisions.</p>
+          <p>We may update, improve, pause, withdraw or replace features where needed for safety, reliability, legal compliance, cost control, supplier changes, security, abuse prevention or product improvement. We will try to avoid unnecessary disruption to paid users.</p>
+        </section>
+
+        <section id="liability">
+          <h2><span class="num">13</span><span>Liability</span></h2>
+          <p>Nothing in these terms limits or excludes liability where it would be unlawful to do so, including liability for death or personal injury caused by negligence, fraud, fraudulent misrepresentation, or rights that cannot legally be excluded.</p>
+          <p>Subject to the paragraph above, Stellar AI is provided with reasonable care but without any promise that every output, connection, checkout, generation, workflow, automation, model or business result will be uninterrupted, secure, accurate, profitable or error-free. You are responsible for checking outputs and keeping backups before relying on them.</p>
+        </section>
+
+        <section id="law">
+          <h2><span class="num">14</span><span>Governing law and changes to these terms</span></h2>
+          <p>These terms are governed by the laws of England and Wales, except where mandatory consumer protection laws in your location require otherwise. Courts with jurisdiction under applicable law may hear disputes.</p>
+          <p>We may update these terms from time to time. The updated date at the top shows when this page was last changed. If we make material changes to paid features, credits, subscriptions or user obligations, we will take reasonable steps to make the new terms available before they apply to future purchases or renewal periods.</p>
+        </section>
+
+        <section id="support">
+          <h2><span class="num">15</span><span>Support</span></h2>
+          <p>For account, billing, refund, security or credit issues, contact <a href="mailto:deadlyfox10@gmail.com">deadlyfox10@gmail.com</a>. Include your account email, a short description of the problem, relevant timestamps, and Stripe transaction details where relevant. Do not include passwords, card numbers or secrets.</p>
+          <p><span class="tag">Important</span> If you believe your account, device, repository, inbox, phone system or payment method has been compromised, contact support promptly and revoke the affected third-party permissions directly with that provider.</p>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer wrap">
+    © Stellar AI · <a href="/privacy">Privacy</a> · <a href="/cookies">Cookies</a> · <a href="/support">Support</a>
+  </footer>
+
+  <script src="/lib/assets/telemetry.js"></script>
 </body>
 </html>
