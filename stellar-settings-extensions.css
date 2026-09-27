@@ -501,9 +501,7 @@ body.light #settings-modal .stellar-pref-reset {
   }
 
   html body:not(.light) #settings-modal .settings-title,
-  body.light #settings-modal .settings-title {
-    font-size: 20px !important;
-  }
+  body.light #settings-modal .settings-title { font-size: 20px !important; }
 
   html body:not(.light) #settings-modal .settings-subtitle,
   body.light #settings-modal .settings-subtitle {
@@ -541,24 +539,14 @@ body.light #settings-modal .stellar-pref-reset {
 
   #settings-modal .stellar-command-grid,
   #settings-modal .stellar-command-actions,
-  #settings-modal .stellar-trust-grid {
-    grid-template-columns: 1fr;
-  }
+  #settings-modal .stellar-trust-grid { grid-template-columns: 1fr; }
 
-  #settings-modal .stellar-command-hero {
-    padding: 15px;
-    border-radius: 20px;
-  }
-
-  #settings-modal .stellar-command-hero h3 {
-    font-size: 30px;
-  }
+  #settings-modal .stellar-command-hero { padding: 15px; border-radius: 20px; }
+  #settings-modal .stellar-command-hero h3 { font-size: 30px; }
 
   #settings-modal .stellar-command-action,
   #settings-modal .stellar-command-card,
-  #settings-modal .stellar-trust-row {
-    min-height: 72px !important;
-  }
+  #settings-modal .stellar-trust-row { min-height: 72px !important; }
 }
 
 @media (max-width: 420px) {
@@ -566,5 +554,257 @@ body.light #settings-modal .stellar-pref-reset {
   body.light #settings-modal .set-tab {
     min-width: 86px !important;
     font-size: 11px !important;
+  }
+}
+
+/* Stellar model picker v3 — clear, scrollable and non-squashed. */
+#composer-model-trigger.stellar-inline-model-trigger,
+.stellar-model-proxy,
+#model-btn {
+  min-width: 112px !important;
+  max-width: 210px !important;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 0 12px !important;
+  border: 1px solid rgba(199,189,255,.18) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, rgba(139,124,246,.15), rgba(255,255,255,.035)) !important;
+  color: #eee9f7 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 10px 28px rgba(0,0,0,.14) !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#composer-model-trigger.stellar-inline-model-trigger:hover,
+.stellar-model-proxy:hover,
+#model-btn:hover {
+  border-color: rgba(199,189,255,.32) !important;
+  background: linear-gradient(135deg, rgba(139,124,246,.22), rgba(212,175,55,.07)) !important;
+  color: #fff !important;
+}
+
+#composer-model-trigger.stellar-inline-model-trigger .composer-mode-name,
+.stellar-model-proxy .composer-mode-name,
+#model-btn .composer-mode-name {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#model-menu.stellar-model-picker-v2 {
+  position: fixed !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: clamp(86px, 13dvh, 132px) !important;
+  width: min(448px, calc(100vw - 24px)) !important;
+  max-width: 448px !important;
+  max-height: min(70dvh, 560px) !important;
+  overflow: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  transform: translateX(-50%) !important;
+  z-index: 4200 !important;
+  padding: 12px !important;
+  border: 1px solid rgba(199,189,255,.20) !important;
+  border-radius: 24px !important;
+  background:
+    radial-gradient(420px 220px at 20% 0%, rgba(139,124,246,.18), transparent 70%),
+    linear-gradient(180deg, rgba(19,20,31,.98), rgba(10,12,20,.98)) !important;
+  box-shadow: 0 30px 90px rgba(0,0,0,.60), 0 0 46px rgba(139,124,246,.12) !important;
+  backdrop-filter: blur(22px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(120%) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(199,189,255,.20) transparent !important;
+}
+
+#model-menu.stellar-model-picker-v2.hidden,
+#model-menu.stellar-model-picker-v2[hidden] { display: none !important; }
+
+#model-menu.stellar-model-picker-v2 .model-menu-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin: 0 0 10px !important;
+  padding: 4px 4px 12px !important;
+  border-bottom: 1px solid rgba(255,255,255,.075) !important;
+}
+
+#model-menu.stellar-model-picker-v2 .model-menu-heading strong {
+  display: block !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+  letter-spacing: -.025em !important;
+}
+
+#model-menu.stellar-model-picker-v2 .model-menu-heading small {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #9ca3b8 !important;
+  font-size: 11px !important;
+  font-weight: 650 !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-heading-mark {
+  width: 34px !important;
+  height: 34px !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 1px solid rgba(212,175,55,.24) !important;
+  border-radius: 12px !important;
+  background: rgba(212,175,55,.08) !important;
+  color: #f2d879 !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-option,
+#model-menu.stellar-model-picker-v2 [data-model-choice] {
+  width: 100% !important;
+  min-height: 74px !important;
+  display: grid !important;
+  grid-template-columns: 44px minmax(0,1fr) 28px !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 7px 0 !important;
+  padding: 12px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,.035) !important;
+  color: #f4f1fb !important;
+  text-align: left !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-option:hover,
+#model-menu.stellar-model-picker-v2 [data-model-choice]:hover,
+#model-menu.stellar-model-picker-v2 .stellar-model-option:focus-visible,
+#model-menu.stellar-model-picker-v2 [data-model-choice]:focus-visible {
+  border-color: rgba(199,189,255,.25) !important;
+  background: rgba(139,124,246,.105) !important;
+  outline: none !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-option[aria-checked="true"],
+#model-menu.stellar-model-picker-v2 [data-model-choice][aria-checked="true"] {
+  border-color: rgba(212,175,55,.36) !important;
+  background: linear-gradient(135deg, rgba(139,124,246,.18), rgba(212,175,55,.08)) !important;
+  box-shadow: inset 3px 0 0 rgba(212,175,55,.82), inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-icon {
+  width: 44px !important;
+  height: 44px !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 1px solid rgba(199,189,255,.16) !important;
+  border-radius: 15px !important;
+  background: rgba(139,124,246,.12) !important;
+  color: #d9ccff !important;
+  font-size: 19px !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-copy,
+#model-menu.stellar-model-picker-v2 .stellar-model-title-row,
+#model-menu.stellar-model-picker-v2 .stellar-model-description { min-width: 0 !important; }
+
+#model-menu.stellar-model-picker-v2 .stellar-model-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-title {
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-badge {
+  min-height: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 7px !important;
+  border: 1px solid rgba(199,189,255,.16) !important;
+  border-radius: 999px !important;
+  color: #c9c1ff !important;
+  background: rgba(139,124,246,.08) !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: .05em !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-description {
+  display: block !important;
+  margin-top: 4px !important;
+  color: #9aa0b4 !important;
+  font-size: 11.5px !important;
+  line-height: 1.35 !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-model-selected {
+  width: 28px !important;
+  height: 28px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 999px !important;
+  color: transparent !important;
+  background: transparent !important;
+}
+
+#model-menu.stellar-model-picker-v2 [aria-checked="true"] .stellar-model-selected {
+  color: #0c1019 !important;
+  background: linear-gradient(135deg, #f2d879, #c9c1ff) !important;
+}
+
+#model-menu.stellar-model-picker-v2 .stellar-owner-model-option,
+#model-menu.stellar-model-picker-v2 #provider-models {
+  max-height: 220px !important;
+  overflow: auto !important;
+}
+
+#model-menu.stellar-model-picker-v2 #provider-models:not(:empty) {
+  margin-top: 10px !important;
+  padding-top: 10px !important;
+  border-top: 1px solid rgba(255,255,255,.075) !important;
+}
+
+@media (max-width: 767px) {
+  #composer-model-trigger.stellar-inline-model-trigger,
+  .stellar-model-proxy,
+  #model-btn {
+    min-width: 96px !important;
+    max-width: 142px !important;
+    min-height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+  }
+
+  #model-menu.stellar-model-picker-v2 {
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(82px + env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: min(72dvh, 540px) !important;
+    transform: none !important;
+    border-radius: 22px !important;
+  }
+
+  #model-menu.stellar-model-picker-v2 .stellar-model-option,
+  #model-menu.stellar-model-picker-v2 [data-model-choice] {
+    min-height: 70px !important;
+    grid-template-columns: 40px minmax(0,1fr) 26px !important;
+    gap: 10px !important;
+    padding: 11px !important;
+  }
+
+  #model-menu.stellar-model-picker-v2 .stellar-model-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 13px !important;
   }
 }
