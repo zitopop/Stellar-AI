@@ -18,7 +18,7 @@ test('credit top-up checkout remains one-time bounded and actionable', () => {
   assert.match(checkout, /if \(!isValidTopupPence\(rawPence\)\)/);
   assert.match(app, /id="topup-amount"/);
   assert.match(app, /Choose a valid amount between £3 and £200\./);
-  assert.match(app, /Credit checkout could not start\./);
+  assert.match(app, /const CREDIT_PACKS=new Set\(\[300,500,1000,2500,5000,10000,20000\]\)/);\n  assert.match(app, /Credit checkout could not start\./);
   assert.match(app, /Could not reach credit checkout\./);
 });
 
@@ -51,4 +51,13 @@ test('guest plan clicks save the selected upgrade before sign-in', () => {
   assert.match(app, /function savePendingUpgrade\(plan\)/);
   assert.match(app, /pendingUpgradeIntent\(normalized\)/);
   assert.match(app, /then Stripe checkout will open for/);
+});
+
+
+test('signed-in accounts can share a server-owned referral link', () => {
+  assert.match(app, /id="referral-row"/);
+  assert.match(app, /data\.referralUrl/);
+  assert.match(app, /function copyReferralLink\(\)/);
+  assert.match(app, /function shareReferralLink\(\)/);
+  assert.match(app, /both accounts 100 bonus Stellar Credits/);
 });
