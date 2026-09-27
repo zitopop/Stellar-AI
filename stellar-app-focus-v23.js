@@ -141,15 +141,78 @@
     }
   }
 
+  function visible(el){
+    if(!el||el.hidden||el.getAttribute('aria-hidden')==='true')return false;
+    const style=getComputedStyle(el);
+    if(style.display==='none'||style.visibility==='hidden'||style.pointerEvents==='none')return false;
+    const rect=el.getBoundingClientRect();
+    return rect.width>0&&rect.height>0;
+  }
+
+  function closeStaleBackdrop(){
+    const backdrop=$('backdrop');
+    if(!backdrop)return;
+    const drawerOpen=document.body.classList.contains('drawer-open');
+    const settingsOpen=$('settings-panel')?.getAttribute('aria-hidden')==='false';
+    const modalOpen=document.body.classList.contains('modal-open')||document.body.classList.contains('auth-open');
+    if(!drawerOpen&&!settingsOpen&&!modalOpen){
+      backdrop.hidden=true;
+      backdrop.setAttribute('aria-hidden','true');
+      backdrop.setAttribute('inert','');
+      backdrop.style.pointerEvents='none';
+    }
+  }
+
+  function recoverClosedOverlays(){
+    ['settings-panel','welcome-modal','composer-more'].forEach(id=>{
+      const el=$(id);
+      if(!el)return;
+      if(el.hidden||el.getAttribute('aria-hidden')==='true'){
+        el.setAttribute('inert','');
+        el.style.pointerEvents='none';
+      }
+    });
+    document.querySelectorAll('[hidden], [aria-hidden="true"]').forEach(el=>{
+      if(el.id==='settings-panel'||el.id==='welcome-modal'||el.id==='backdrop')el.style.pointerEvents='none';
+    });
+  }
+
+  function anyIntentionalBlockerOpen(){
+    return visible($('settings-panel'))||visible($('welcome-modal'))||document.body.classList.contains('drawer-open');
+  }
+
+  function releaseIfStartupStuck(){
+    const status=$('status');
+    const send=$('sendBtn');
+    const stop=$('stopBtn');
+    closeStaleBackdrop();
+    recoverClosedOverlays();
+    if(!anyIntentionalBlockerOpen()){
+      document.body.classList.remove('modal-open','auth-open');
+      document.documentElement.classList.remove('modal-open','auth-open');
+    }
+    if(send&&send.disabled&&!visible(stop))send.disabled=false;
+    if(stop&&stop.disabled===false&&send&&!send.disabled)stop.disabled=true;
+    if(status&&/loading|sending|checking|starting|syncing/i.test(status.textContent||'')){
+      status.textContent='Ready';
+      status.className='status good';
+      status.dataset.idle='true';
+    }
+    const usage=$('top-usage');
+    if(usage&&/loading/i.test(usage.textContent||''))usage.textContent=isSignedIn()?'Credits ready':'Free credits';
+  }
+
   function sync(){
     removeLegacyStarters();
     improveEmptyCopy();
     syncCreditContext();
+    closeStaleBackdrop();
+    recoverClosedOverlays();
   }
 
   function attachKnownUpdateHooks(){
     if(!('MutationObserver' in window))return;
-    ['top-usage','usage-copy','plan-truth','topup-status'].forEach(id=>{
+    ['top-usage','usage-copy','plan-truth','topup-status','status'].forEach(id=>{
       const node=$(id);
       if(!node||node.dataset.stellarCreditWatch==='1')return;
       node.dataset.stellarCreditWatch='1';
@@ -164,12 +227,16 @@
     attachKnownUpdateHooks();
   }
 
-  window.addEventListener('pageshow',sync);
+  window.addEventListener('pageshow',()=>{sync();setTimeout(releaseIfStartupStuck,900)});
   window.addEventListener('focus',sync);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){sync();setTimeout(releaseIfStartupStuck,900)}});
   document.addEventListener('click',event=>{
-    if(event.target.closest?.('.stellar-credit-pill,#settings-nav,#account-button'))setTimeout(sync,120);
+    if(event.target.closest?.('.stellar-credit-pill,#settings-nav,#account-button,#composer-more-btn,.top-actions button,.side button'))setTimeout(sync,120);
   });
+  window.addEventListener('error',()=>setTimeout(releaseIfStartupStuck,250));
+  window.addEventListener('unhandledrejection',()=>setTimeout(releaseIfStartupStuck,250));
 
-  [250,900,1800,3500].forEach(delay=>setTimeout(sync,delay));
+  [250,900,1800,3500,5200,8000].forEach(delay=>setTimeout(sync,delay));
+  [4500,8500,13000].forEach(delay=>setTimeout(releaseIfStartupStuck,delay));
+  window.StellarInteractionRecovery={sync,releaseIfStartupStuck};
 })();
