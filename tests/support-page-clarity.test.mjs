@@ -29,9 +29,9 @@ test('support page keeps safe contact flow and support email templates', () => {
 });
 
 test('support page explains credits and owner-tool meaning', () => {
-  assert.match(support, /Monthly credits<\/strong> reset once per month/);
+  assert.match(support, /Free resets daily at midnight UK time\. Paid plan credits reset monthly/);
   assert.match(support, /Wallet credits<\/strong> are bought top-ups and stay until used/);
-  assert.match(support, /Plans<\/strong> unlock bigger monthly allowances and higher models/);
+  assert.match(support, /Paid plans use monthly allowances and unlock higher models/);
   assert.match(support, /Owner tools<\/strong> stay private and are not visible to normal users/);
   assert.match(support, /Promo credits<\/strong> can be used for Discord\/community rewards/);
 });

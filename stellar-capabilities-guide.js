@@ -9,7 +9,7 @@
     ['StellarX', 'Use StellarX for advanced guided tasks, bigger projects, website and business workflows, with approval-first steps.'],
     ['Website help', 'Improve landing pages, support pages, SEO copy, layout and calls to action.'],
     ['Business help', 'Draft lead replies, follow-up messages, offers, sales copy and simple plans.'],
-    ['Credits', 'Understand monthly plan credits, wallet top-ups, custom credit amounts, Discord promos and giveaways.'],
+    ['Credits', 'Understand Free daily credits, paid monthly plan credits, wallet top-ups, custom credit amounts, Discord promos and giveaways.'],
     ['Support', 'Find the right help route for billing, refunds, account access, bugs, credits or Discord rewards.'],
     ['Settings', 'See what each control does before changing account, model, voice, privacy or app preferences.'],
     ['Safety & approvals', 'Bigger actions are explained first so users know what happens before anything important runs.'],

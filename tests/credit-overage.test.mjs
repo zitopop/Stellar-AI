@@ -66,13 +66,21 @@ test('client automatically uses purchased add-on credits after included credits'
 });
 
 
-test('free monthly credits use one stable calendar-month bucket', () => {
-  const firstNow = Date.UTC(2026, 8, 10, 8, 0, 0);
-  const laterNow = Date.UTC(2026, 8, 28, 20, 0, 0);
-  const first = creditWindow('free', firstNow, firstNow);
-  const later = creditWindow('free', laterNow, laterNow);
-  assert.equal(first.startAt, Date.UTC(2026, 8, 1));
-  assert.equal(later.startAt, first.startAt);
-  assert.equal(first.resetAt, Date.UTC(2026, 9, 1));
-  assert.equal(later.resetAt, first.resetAt);
+test('free credits reset at midnight UK time during BST', () => {
+  const now = Date.parse('2026-09-27T12:00:00Z');
+  const window = creditWindow('free', now, now);
+  assert.equal(window.startAt, Date.parse('2026-09-26T23:00:00Z'));
+  assert.equal(window.resetAt, Date.parse('2026-09-27T23:00:00Z'));
+});
+
+test('free UK-midnight reset handles daylight-saving boundary days', () => {
+  const spring = Date.parse('2026-03-29T12:00:00Z');
+  const springWindow = creditWindow('free', spring, spring);
+  assert.equal(springWindow.startAt, Date.parse('2026-03-29T00:00:00Z'));
+  assert.equal(springWindow.resetAt, Date.parse('2026-03-29T23:00:00Z'));
+
+  const autumn = Date.parse('2026-10-25T12:00:00Z');
+  const autumnWindow = creditWindow('free', autumn, autumn);
+  assert.equal(autumnWindow.startAt, Date.parse('2026-10-24T23:00:00Z'));
+  assert.equal(autumnWindow.resetAt, Date.parse('2026-10-26T00:00:00Z'));
 });

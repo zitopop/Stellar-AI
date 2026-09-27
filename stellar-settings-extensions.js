@@ -381,7 +381,7 @@
   function buildCommandCentre(panel) {
     const streak = readStreak();
     const plan = safeText('#plan-name,#acct-plan,[data-plan-name]', 'Free / current plan');
-    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Monthly credits ready');
+    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Credits ready');
     const email = safeText('#acct-email,[data-account-email]', 'Signed-in account');
 
     const hero = document.createElement('div');
@@ -393,7 +393,7 @@
     stats.className = 'stellar-command-grid';
     stats.append(
       commandCard('Account', `${email} — your sign-in, saved chats and billing identity.`),
-      commandCard('Plan', `${plan} — controls model access, monthly credits and paid features.`),
+      commandCard('Plan', `${plan} — controls model access, included credits and paid features.`),
       commandCard('Credits', `${usage.replace(/^💳\s*/, '')} — monthly plan credits refresh; wallet top-ups stay separate.`),
       commandCard('Daily streak', `Day ${streak.streak || 1} on this device — return rewards can encourage daily use.`),
     );
@@ -531,12 +531,12 @@
 
   function buildCreditsRewards(panel) {
     const streak = readStreak();
-    addHeading(panel, 'Credits & rewards', 'Monthly plan credits are the included allowance. Wallet credits are bought top-ups and stay separate.');
+    addHeading(panel, 'Credits & rewards', 'Free credits reset daily at midnight UK time. Paid plan credits reset monthly. Wallet credits are bought top-ups and stay separate.');
 
     const group = document.createElement('div');
     group.className = 'set-group stellar-rewards-group';
     group.innerHTML = `
-      <div class="set-item stellar-reward-row"><div class="set-key">Monthly reset</div><div class="set-val">Free 300/month · Starter 1,500/month · Plus 5,000/month · Pro 20,000/month</div></div>
+      <div class="set-item stellar-reward-row"><div class="set-key">Included credits</div><div class="set-val">Free 300/day (00:00 UK reset) · Starter 1,500/month · Plus 5,000/month · Pro 20,000/month</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Welcome bonus</div><div class="set-val">500 one-time credits for new accounts</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Streak idea</div><div class="set-val">Day ${streak.streak || 1} on this device · suggested server rewards: Day 2 +50, Day 3 +75, Day 7 +150</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Top-ups</div><div class="set-val">£3, £5, £10, £25, £50+ with bigger bonuses only on bigger packs</div></div>
@@ -545,7 +545,7 @@
 
     const note = document.createElement('div');
     note.className = 'set-note stellar-pref-note';
-    note.textContent = 'Monthly plan credits put a clear ceiling on included usage. Bought wallet credits stay separate and do not reset.';
+    note.textContent = 'Free credits reset daily at midnight UK time. Paid plan credits reset monthly. Bought wallet credits stay separate and do not reset.';
     panel.appendChild(note);
   }
 
@@ -553,7 +553,7 @@
     addHeading(panel, 'Trust & safety', 'A premium AI workspace needs clear controls, safe approvals and no confusing owner-only tools for normal users.');
     appendLineMap(panel, [
       ['Account', 'Show email, sign-in state and sign-out clearly.', 'Account'],
-      ['Credits', 'Show monthly allowance, wallet balance and reset meaning.', 'Credits'],
+      ['Credits', 'Show included allowance, wallet balance and reset timing.', 'Credits'],
       ['Plan', 'Show current plan, upgrade path and billing help.', 'Plan'],
       ['Models', 'Show only models the user can actually use. Hide owner/provider tools.', 'Models'],
       ['Voice', 'Explain Jarvis/Ava, mic access, language and call controls.', 'Voice'],
