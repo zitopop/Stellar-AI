@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__stellarCapabilitiesGuideV2) return;
-  window.__stellarCapabilitiesGuideV2 = true;
+  if (window.__stellarCapabilitiesGuideV3) return;
+  window.__stellarCapabilitiesGuideV3 = true;
 
   const PUBLIC_GUIDE_ITEMS = [
     ['Chat', 'Ask Stellar to write, plan, explain, fix and organise daily work.'],
@@ -11,11 +11,12 @@
     ['Credits', 'Understand daily credits, wallet top-ups, custom credit amounts, Discord promos and giveaways.'],
     ['Support', 'Find the right help route for billing, refunds, account access, bugs, credits or Discord rewards.'],
     ['Settings', 'See what each control does before changing account, model, voice, privacy or app preferences.'],
-    ['Safety & approvals', 'Bigger actions stay approval-first so users understand what happens before anything important runs.'],
+    ['Safety & approvals', 'If advanced help is needed, Stellar explains the approval step first instead of exposing internal owner tools.'],
   ];
 
   const OWNER_GUIDE_ITEMS = [
-    ['Owner tools', 'Jarvis, Computer access, Roblox Studio help and bigger actions are private owner/admin/staff capabilities.'],
+    ['StellarX', 'Private owner/admin/staff workspace for approved internal workflows and operational follow-through.'],
+    ['Owner tools', 'Jarvis, specialist project help and bigger actions are private owner/admin/staff capabilities.'],
     ['Staff controls', 'Internal approvals, escalations and private operational tools stay hidden from normal users.'],
   ];
 
