@@ -9,7 +9,7 @@ import { recordFirstUpgrade } from '../lib/profile.js';
 import { incrementConversionMetric, recordCheckoutCompletion, recordCheckoutExpiry } from '../lib/conversion-metrics.js';
 import { escalateOwner } from '../lib/owner-escalation.js';
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
-import { getGmailWatchStatus, processGmailPush, startGmailWatch } from '../lib/gmail-push.js';
+import { getGmailPushConfiguration, getGmailWatchStatus, processGmailPush, startGmailWatch } from '../lib/gmail-push.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -83,6 +83,17 @@ async function handleGmailWatch(req, res) {
     const action = req.method === 'GET' ? 'start' : String(body?.action || 'status').trim().toLowerCase();
     if (action === 'status') return res.status(200).json({ ok: true, ...(await getGmailWatchStatus()) });
     if (action === 'start' || action === 'renew') {
+      const config = getGmailPushConfiguration();
+      if (!config.gmailConfigured || !config.storageConfigured || !config.topicConfigured) {
+        return res.status(200).json({
+          ok: true,
+          active: false,
+          skipped: true,
+          reason: 'not-configured',
+          configuration: config,
+          status: await getGmailWatchStatus(),
+        });
+      }
       const watch = await startGmailWatch();
       return res.status(200).json({ ok: true, watch, status: await getGmailWatchStatus() });
     }
