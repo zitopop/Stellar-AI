@@ -11,7 +11,7 @@ test('homepage polish keeps the public landing page clean and conversion-focused
   assert.match(analytics, /polishHomepageContent/);
   assert.match(analytics, /Your AI workspace\./);
   assert.match(analytics, /Start free/);
-  assert.match(analytics, /Free to start · 300 credits\/month/);
+  assert.match(analytics, /Free to start · 300 credits\/day · resets at midnight UK time/);
 });
 
 test('homepage value strip is compact and mobile-safe', () => {
