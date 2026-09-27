@@ -23,7 +23,7 @@ test('Plus is positioned as the main paid conversion plan', () => {
   assert.match(index, /MOST POPULAR/);
   assert.match(index, /RECOMMENDED/);
   assert.match(index, /Deeper review \+ multi-file work/);
-  assert.match(index, /3× the Free daily credits/);
+  assert.match(index, /3× FREE USAGE/);
   assert.match(index, /up to 250 Comet messages\/day/);
   assert.match(index, /up to 400 Nova messages\/day/);
   assert.match(index, /900 credits\/day/);
