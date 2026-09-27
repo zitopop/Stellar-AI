@@ -19,7 +19,7 @@ test('plan and wallet detail is kept in Settings instead of cluttering the sideb
   assert.match(app, /id="plan-truth">Plan and usage/);
   assert.match(app, /id="usage-copy">Plan data loads after sign-in/);
   assert.equal((app.match(/class="plan-usage-pill"/g) || []).length, 0);
-  assert.match(app, /Compare plans/);
+  assert.match(app, /Compare all 4 plans/);
 });
 
 test('landing uses a concise conversational entry with clear pricing access', () => {
