@@ -101,8 +101,18 @@ a{color:inherit;text-decoration:none}
 .hero-note{margin:16px auto 0;color:var(--faint);font-size:11px}
 .snapshot{
   display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-  max-width:900px;margin:52px auto 0;text-align:left
+  max-width:960px;margin:52px auto 0;text-align:left
 }
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.proof-panel{padding:28px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(18,22,32,.94),rgba(10,13,19,.96))}
+.proof-panel h3{margin:8px 0 14px;font-size:24px;letter-spacing:-.04em}
+.proof-panel>p{margin:0 0 14px;color:var(--muted)}
+.proof-list{display:grid;gap:0}
+.proof-row{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:13px 0;border-top:1px solid var(--line)}
+.proof-row:first-child{border-top:0}
+.proof-row b{width:24px;height:24px;display:grid;place-items:center;border:1px solid rgba(146,133,255,.18);border-radius:8px;color:var(--accent-soft);font-size:10px}
+.proof-row strong{display:block;font-size:13px}
+.proof-row span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
 .stat{
   min-height:118px;padding:20px;border:1px solid var(--line);
   border-radius:18px;background:rgba(15,18,27,.72)
@@ -199,7 +209,7 @@ footer{margin-top:74px;border-top:1px solid var(--line);padding:28px 0 44px;colo
 .foot-links{display:flex;gap:15px;flex-wrap:wrap}
 .foot-links a:hover{color:#fff}
 @media(max-width:980px){
-  .thesis,.model{grid-template-columns:1fr}
+  .thesis,.model,.proof-grid{grid-template-columns:1fr}
   .milestones{grid-template-columns:1fr 1fr}
   .product-grid,.capital-grid{grid-template-columns:1fr 1fr}
   .contact{grid-template-columns:1fr}
@@ -238,19 +248,50 @@ footer{margin-top:74px;border-top:1px solid var(--line);padding:28px 0 44px;colo
 
 <main>
   <section class="hero wrap">
-    <div class="kicker">Company & investor information</div>
-    <h1>Building the useful layer between AI chat and real work.</h1>
-    <p class="lead">Stellar AI is building a focused AI workspace that combines conversation, structured task workflows, connected tools and paid usage in one product. This page is a concise overview for prospective investors, advisers and strategic partners.</p>
+    <div class="kicker">Stellar AI · investor brief</div>
+    <h1>An AI workspace designed to turn conversation into completed work.</h1>
+    <p class="lead">Stellar AI combines a simple chat workspace with paid usage, connected tools and deeper task workflows. This page separates what is live today from what the company still needs to prove.</p>
     <div class="actions">
-      <a class="btn primary" href="/app?welcome=1">Explore the product</a>
-      <a class="btn" href="mailto:deadlyfox10@gmail.com?subject=Stellar%20AI%20investor%20information%20request">Request investor information</a>
+      <a class="btn primary" href="/app?welcome=1">Use the live product</a>
+      <a class="btn" href="/pricing">See the business model</a>
+      <a class="btn" href="mailto:deadlyfox10@gmail.com?subject=Stellar%20AI%20investor%20pack%20request">Request investor information</a>
     </div>
-    <p class="hero-note">No investment is offered on this page. Current commercial and financial information is shared privately where appropriate.</p>
+    <p class="hero-note"><strong>No public fundraising offer.</strong> Current financial, ownership and investment information should be reviewed privately with appropriate documentation.</p>
 
     <div class="snapshot" aria-label="Stellar AI company snapshot">
-      <article class="stat"><small>Product</small><strong>Live web application</strong><span>Stellar AI is available publicly at trystellarai.com.</span></article>
-      <article class="stat"><small>Revenue model</small><strong>Subscriptions + usage</strong><span>Free entry, paid plans and optional add-on credits.</span></article>
-      <article class="stat"><small>Stage</small><strong>Product & growth</strong><span>Current work is focused on reliability, retention, conversion and distribution.</span></article>
+      <article class="stat"><small>Product</small><strong>Live and publicly testable</strong><span>The Stellar AI web application is available at trystellarai.com.</span></article>
+      <article class="stat"><small>Monetisation</small><strong>Subscriptions + paid usage</strong><span>Free entry, recurring plans, add-on credits and separate business services.</span></article>
+      <article class="stat"><small>Current priority</small><strong>Prove repeatable value</strong><span>Reliability, retention, paid conversion and sustainable acquisition come before expansion.</span></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker">Investor lens</div>
+        <h2>Separate current evidence from the next proof points.</h2>
+        <p>A credible investment case should get stronger as the product produces measurable customer behaviour. Stellar does not need invented metrics to explain the opportunity.</p>
+      </div>
+      <div class="proof-grid">
+        <article class="proof-panel">
+          <div class="kicker">Evidence today</div>
+          <h3>What can already be checked.</h3>
+          <div class="proof-list">
+            <div class="proof-row"><b>01</b><div><strong>Working product</strong><span>The public app, pricing, accounts, credits and checkout surfaces can be tested directly.</span></div></div>
+            <div class="proof-row"><b>02</b><div><strong>Defined monetisation</strong><span>Recurring plans, add-on usage and business services create multiple clear revenue paths.</span></div></div>
+            <div class="proof-row"><b>03</b><div><strong>Product direction</strong><span>Chat, StellarX and integrations are organised around completing useful work rather than disconnected demos.</span></div></div>
+          </div>
+        </article>
+        <article class="proof-panel">
+          <div class="kicker">Next proof</div>
+          <h3>What the company still needs to demonstrate.</h3>
+          <div class="proof-list">
+            <div class="proof-row"><b>01</b><div><strong>Retention</strong><span>Users return because Stellar repeatedly solves valuable problems, not just because they tried it once.</span></div></div>
+            <div class="proof-row"><b>02</b><div><strong>Paid conversion</strong><span>Free users convert to paid plans or business products for clear, measurable reasons.</span></div></div>
+            <div class="proof-row"><b>03</b><div><strong>Unit economics</strong><span>Model, infrastructure, support and acquisition costs remain compatible with sustainable growth.</span></div></div>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -366,7 +407,7 @@ footer{margin-top:74px;border-top:1px solid var(--line);padding:28px 0 44px;colo
       </div>
       <div class="diligence">
         <strong>Due diligence over hype.</strong>
-        <p>Current financials, ownership details, customer metrics, legal structure and any proposed investment terms should be reviewed privately with appropriate documentation rather than presented as unsupported claims on a marketing page.</p>
+        <p>Current financials, ownership details, customer metrics, legal structure, source-of-funds requirements and any proposed investment terms should be reviewed privately with appropriate professional documentation. This public page deliberately avoids unsupported traction, valuation or return claims.</p>
       </div>
     </div>
   </section>
@@ -376,8 +417,8 @@ footer{margin-top:74px;border-top:1px solid var(--line);padding:28px 0 44px;colo
       <div class="contact">
         <div>
           <div class="kicker">Professional enquiries</div>
-          <h2>Interested in the company behind Stellar AI?</h2>
-          <p>Prospective investors, advisers and strategic partners can request current company information and discuss the product, roadmap and business privately.</p>
+          <h2>Review the company, not just the story.</h2>
+          <p>Prospective investors, advisers and strategic partners can request current product, ownership, commercial and financial information for a private discussion. Any information shared should reflect the company’s actual position at that time.</p>
         </div>
         <a class="btn primary" href="mailto:deadlyfox10@gmail.com?subject=Stellar%20AI%20investor%20enquiry">Contact Stellar AI</a>
       </div>
