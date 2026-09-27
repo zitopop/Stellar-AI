@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090f">
+<title>AI Business Website Builder | Stellar AI</title>
+<meta name="description" content="Describe a business and let Stellar AI create a responsive one-page website you can preview, refine and download before publishing.">
+<link rel="canonical" href="https://trystellarai.com/business-builder">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:dark;--bg:#08090f;--panel:#11141c;--panel2:#171b27;--line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.16);--text:#f7f8fb;--muted:#a8b0be;--accent:#9b8cff;--accent2:#83ead2;--danger:#ff9292;--good:#7de0b7}
+*{box-sizing:border-box}html{min-width:320px;background:var(--bg)}body{margin:0;min-height:100dvh;background:radial-gradient(900px 520px at 50% -12%,rgba(139,124,246,.18),transparent 68%),linear-gradient(180deg,#090b11,#06070b 70%);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}button,input,textarea,select{font:inherit}button,a,input,textarea,select{min-height:44px}.wrap{width:min(1240px,calc(100% - 32px));margin:auto}.top{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);background:rgba(8,9,15,.86);backdrop-filter:blur(18px)}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:900;letter-spacing:-.03em}.brand-mark{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:#1d1a2e;color:#c9c2ff}.nav-actions{display:flex;gap:8px;align-items:center}.nav-actions a{padding:0 13px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:#d7dce6;display:inline-flex;align-items:center;font-size:12px;font-weight:800}.hero{padding:60px 0 28px;text-align:center}.eyebrow{color:var(--accent2);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero h1{max-width:850px;margin:13px auto 14px;font-size:clamp(42px,7vw,76px);line-height:.99;letter-spacing:-.062em}.hero p{max-width:720px;margin:0 auto;color:#b5bdca;font-size:16px}.notice{max-width:820px;margin:18px auto 0;padding:12px 14px;border:1px solid rgba(131,234,210,.22);border-radius:14px;background:rgba(131,234,210,.06);color:#ccefe7;font-size:12px}.workspace{display:grid;grid-template-columns:minmax(320px,430px) minmax(0,1fr);gap:16px;padding:20px 0 72px;align-items:start}.panel{border:1px solid var(--line);border-radius:22px;background:rgba(17,20,28,.92);box-shadow:0 24px 80px rgba(0,0,0,.24);overflow:hidden}.panel-head{padding:18px 18px 12px;border-bottom:1px solid var(--line)}.panel-head h2{margin:0;font-size:18px;letter-spacing:-.025em}.panel-head p{margin:5px 0 0;color:var(--muted);font-size:12px}.form{display:grid;gap:12px;padding:18px}.field{display:grid;gap:6px}.field label{font-size:11px;font-weight:850;color:#dce1ea}.field small{color:#7e8796}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:12px;background:#0c0f16;color:#f4f6fa;padding:10px 11px;outline:none}.field textarea{min-height:92px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(155,140,255,.6);box-shadow:0 0 0 3px rgba(155,140,255,.1)}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line2);border-radius:12px;background:#171b25;color:#eef1f6;padding:0 14px;font-weight:820;cursor:pointer}.btn:hover{border-color:rgba(155,140,255,.45)}.btn.primary{background:linear-gradient(135deg,#f2f3f8,#cfc8ff 58%,#9184ff);color:#090a0f;border-color:transparent}.btn:disabled{opacity:.55;cursor:not-allowed}.status{min-height:22px;color:var(--muted);font-size:12px}.status.good{color:var(--good)}.status.error{color:var(--danger)}.preview-panel{min-width:0}.preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid var(--line);flex-wrap:wrap}.preview-title{display:grid;gap:1px}.preview-title strong{font-size:13px}.preview-title span{font-size:11px;color:var(--muted)}.preview-wrap{background:#d9dde5;padding:10px;min-height:620px}.preview-frame{display:block;width:100%;min-height:600px;border:0;border-radius:14px;background:#fff}.empty{min-height:600px;display:grid;place-items:center;text-align:center;color:#565d69;padding:30px;background:#f3f5f8;border-radius:14px}.empty strong{display:block;color:#272b33;font-size:24px;margin-bottom:8px}.refine{padding:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.refine input{width:100%;border:1px solid var(--line);border-radius:12px;background:#0c0f16;color:#fff;padding:0 12px}.footnote{padding:0 18px 18px;color:#7f8896;font-size:11px}.hidden{display:none!important}
+@media(max-width:900px){.workspace{grid-template-columns:1fr}.preview-wrap,.preview-frame,.empty{min-height:520px}.nav-actions a:not(:last-child){display:none}}
+@media(max-width:560px){.wrap{width:min(100% - 20px,1240px)}.hero{padding-top:42px}.hero h1{font-size:44px}.form{padding:14px}.panel-head{padding:15px}.preview-wrap{padding:6px}.refine{grid-template-columns:1fr}.actions .btn{flex:1 1 auto}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap nav"><a class="brand" href="/"><span class="brand-mark">✦</span><span>Stellar AI</span></a><nav class="nav-actions" aria-label="Business builder navigation"><a href="/business">Business</a><a href="/legal">Legal</a><a href="/app">Open app</a></nav></div></header>
+<main class="wrap">
+<section class="hero">
+<div class="eyebrow">Business Website Builder</div>
+<h1>Tell Stellar about the business. Get a website.</h1>
+<p>No coding required. Stellar creates a responsive one-page business website from the facts you provide, then lets you preview and refine it before you download or publish it.</p>
+<div class="notice"><strong>Approval first:</strong> Stellar will not publish to a real domain from this page. Check names, prices, hours, contact details and legal claims before putting the generated site live.</div>
+</section>
+<section class="workspace" aria-label="AI business website builder">
+<div class="panel">
+<div class="panel-head"><h2>Business details</h2><p>Only include facts the business has actually approved.</p></div>
+<form id="builder-form" class="form">
+<div class="field"><label for="business-name">Business name *</label><input id="business-name" maxlength="100" required autocomplete="organization" placeholder="e.g. North Street Barbers"></div>
+<div class="field"><label for="business-type">What does the business do? *</label><input id="business-type" maxlength="160" required placeholder="e.g. Barber shop specialising in fades and beard trims"></div>
+<div class="field"><label for="location">Location / service area</label><input id="location" maxlength="140" placeholder="e.g. Leeds, West Yorkshire"></div>
+<div class="field"><label for="services">Services and prices</label><textarea id="services" maxlength="1600" placeholder="Haircut — £20&#10;Skin fade — £25&#10;Beard trim — £12"></textarea></div>
+<div class="field"><label for="about">What makes the business different?</label><textarea id="about" maxlength="1000" placeholder="Friendly local team, walk-ins welcome, 10 years experience..."></textarea></div>
+<div class="field"><label for="hours">Opening hours</label><textarea id="hours" maxlength="800" placeholder="Mon–Fri 9–6&#10;Sat 9–4&#10;Sun closed"></textarea></div>
+<div class="field"><label for="phone">Phone</label><input id="phone" maxlength="40" autocomplete="tel" placeholder="e.g. 0113 000 0000"></div>
+<div class="field"><label for="email">Email</label><input id="email" type="email" maxlength="160" autocomplete="email" placeholder="hello@example.com"></div>
+<div class="field"><label for="style">Style</label><select id="style"><option>Clean and premium</option><option>Modern and bold</option><option>Warm and local</option><option>Minimal black and white</option><option>Professional corporate</option><option>Colourful and friendly</option></select></div>
+<div class="field"><label for="colour">Preferred colour</label><input id="colour" maxlength="60" placeholder="e.g. black and gold, dark blue, green"></div>
+<div class="actions"><button id="generate-btn" class="btn primary" type="submit">✦ Build website</button><button id="clear-btn" class="btn" type="button">Clear</button></div>
+<div id="status" class="status" role="status" aria-live="polite">Ready to build.</div>
+</form>
+<div class="footnote">Building or refining uses your normal Stellar AI allowance/credits. AI can make mistakes, so review the preview before using it commercially.</div>
+</div>
+<div class="panel preview-panel">
+<div class="preview-toolbar"><div class="preview-title"><strong>Website preview</strong><span id="preview-label">Nothing generated yet</span></div><div class="actions"><button id="copy-btn" class="btn" type="button" disabled>Copy HTML</button><button id="download-btn" class="btn" type="button" disabled>Download site</button></div></div>
+<div class="preview-wrap"><div id="empty-preview" class="empty"><div><strong>Your site will appear here.</strong><span>Fill in the business details and press “Build website”.</span></div></div><iframe id="preview-frame" class="preview-frame hidden" title="Generated business website preview" sandbox="allow-popups"></iframe></div>
+<div class="refine"><input id="refine-input" maxlength="500" placeholder="Change it: make it black and gold, make the hero smaller..."><button id="refine-btn" class="btn" type="button" disabled>Apply change</button></div>
+</div>
+</section>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const DRAFT_KEY='stellar_business_builder_draft_v1';
+let currentHtml='';
+let busy=false;
+
+function sessionToken(){
+  try{
+    const store=JSON.parse(localStorage.getItem('stellar-store')||'{}');
+    return typeof store.session==='string'?store.session:'';
+  }catch{return ''}
+}
+function headers(){
+  const h={'content-type':'application/json'};
+  const token=sessionToken();
+  if(token)h.Authorization='Bearer '+token;
+  return h;
+}
+function setStatus(message,kind=''){
+  const el=$('status'); if(!el)return;
+  el.textContent=message; el.className='status '+kind;
+}
+function setBusy(value,label='Building…'){
+  busy=value;
+  $('generate-btn').disabled=value;
+  $('refine-btn').disabled=value||!currentHtml;
+  $('clear-btn').disabled=value;
+  if(value)$('generate-btn').textContent=label; else $('generate-btn').textContent='✦ Build website';
+}
+function streamText(event){
+  if(event?.type==='content_block_delta'&&typeof event?.delta?.text==='string')return event.delta.text;
+  if(event?.type==='response.output_text.delta'&&typeof event?.delta==='string')return event.delta;
+  if(typeof event?.choices?.[0]?.delta?.content==='string')return event.choices[0].delta.content;
+  return '';
+}
+async function readStream(res){
+  if(!res.body)throw new Error('Stellar returned an empty response.');
+  const reader=res.body.getReader(),decoder=new TextDecoder();
+  let buffer='',full='',streamError='';
+  const consume=line=>{
+    if(!line.startsWith('data:'))return;
+    const payload=line.slice(5).trim();
+    if(!payload||payload==='[DONE]')return;
+    try{
+      const event=JSON.parse(payload);
+      if(event?.type==='error'){streamError=event.error?.message||event.message||'AI generation failed.';return}
+      full+=streamText(event);
+    }catch{}
+  };
+  while(true){
+    const {done,value}=await reader.read(); if(done)break;
+    buffer+=decoder.decode(value,{stream:true});
+    const lines=buffer.split('\n'); buffer=lines.pop()||'';
+    lines.forEach(consume);
+  }
+  buffer+=decoder.decode(); if(buffer)buffer.split('\n').forEach(consume);
+  if(!full.trim())throw new Error(streamError||'Stellar returned no website code.');
+  return full;
+}
+function stripFences(value){
+  let s=String(value||'').trim();
+  s=s.replace(/^\`\`\`(?:html)?\s*/i,'').replace(/\s*\`\`\`$/,'');
+  const doc=s.match(/<!doctype html[\s\S]*$/i)||s.match(/<html[\s\S]*$/i);
+  return (doc?doc[0]:s).trim();
+}
+function sanitiseHtml(value){
+  let html=stripFences(value);
+  if(!/<html[\s>]/i.test(html))throw new Error('The AI did not return a complete website. Try again.');
+  html=html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'')
+    .replace(/<(?:iframe|object|embed|base)\b[^>]*>[\s\S]*?<\/(?:iframe|object|embed)>/gi,'')
+    .replace(/<(?:iframe|object|embed|base)\b[^>]*\/?>/gi,'')
+    .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?refresh["']?[^>]*>/gi,'')
+    .replace(/\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,'')
+    .replace(/javascript\s*:/gi,'');
+  return html;
+}
+function formData(){
+  return {
+    name:$('business-name').value.trim(),
+    type:$('business-type').value.trim(),
+    location:$('location').value.trim(),
+    services:$('services').value.trim(),
+    about:$('about').value.trim(),
+    hours:$('hours').value.trim(),
+    phone:$('phone').value.trim(),
+    email:$('email').value.trim(),
+    style:$('style').value,
+    colour:$('colour').value.trim()
+  };
+}
+function buildPrompt(data){
+return `Create a complete production-quality responsive one-page website for this real business.
+
+BUSINESS FACTS
+Business name: ${data.name}
+Business type: ${data.type}
+Location/service area: ${data.location||'Not provided'}
+Services/prices:
+${data.services||'Not provided'}
+About/differentiators:
+${data.about||'Not provided'}
+Opening hours:
+${data.hours||'Not provided'}
+Phone: ${data.phone||'Not provided'}
+Email: ${data.email||'Not provided'}
+Visual style: ${data.style}
+Preferred colour: ${data.colour||'Choose a tasteful palette suitable for the business'}
+
+STRICT RULES
+- Return exactly one complete HTML5 document and nothing else. No markdown fences or explanation.
+- Use inline CSS inside <style>. Do not use JavaScript, iframes, embeds, tracking, analytics, external fonts, CDN files, external CSS or external images.
+- Build a polished accessible mobile-first site with header/nav, strong hero, services, trust/about section, opening hours when supplied, contact CTA, footer and sensible SEO title/description.
+- Use only the facts supplied above. Do not invent awards, years in business, ratings, reviews, staff names, addresses, prices, guarantees, certifications, customer counts or opening hours.
+- If information is missing, omit that claim/section rather than making it up.
+- Phone CTAs may use tel: only when a phone was provided. Email CTAs may use mailto: only when email was provided.
+- Do not include a contact form unless a real form endpoint was supplied; use contact links instead.
+- Make it look custom rather than like a generic AI template.
+- Include visible keyboard focus states and good colour contrast.
+- Do not say that AI made the website.`;
+}
+function refinePrompt(change){
+return `Revise the complete HTML website below according to the requested change.
+
+REQUESTED CHANGE
+${change}
+
+CURRENT HTML
+${currentHtml}
+
+RULES
+- Return the complete revised HTML5 document only. No markdown or explanation.
+- Preserve all real business facts exactly unless the requested change explicitly changes a supplied fact.
+- Never invent reviews, ratings, awards, addresses, prices, guarantees, certifications or business facts.
+- Keep it responsive, accessible and mobile-first.
+- No JavaScript, iframes, embeds, trackers, analytics, external fonts, CDN files or external images.`;
+}
+async function askStellar(prompt){
+  const res=await fetch('/api/chat',{method:'POST',headers:headers(),body:JSON.stringify({
+    model:'star',role:'implementer',messages:[{role:'user',content:prompt}],max_tokens:3500,use_credit:false,
+    client:{source:'business-builder'}
+  })});
+  if(!res.ok){
+    const raw=await res.text(); let data={}; try{data=JSON.parse(raw)}catch{}
+    throw new Error(data.error||data.message||raw||('HTTP '+res.status));
+  }
+  return readStream(res);
+}
+function render(html){
+  currentHtml=html;
+  $('preview-frame').srcdoc=html;
+  $('preview-frame').classList.remove('hidden');
+  $('empty-preview').classList.add('hidden');
+  $('preview-label').textContent='Generated draft · review before publishing';
+  $('copy-btn').disabled=false;$('download-btn').disabled=false;$('refine-btn').disabled=false;
+  try{localStorage.setItem(DRAFT_KEY,JSON.stringify({form:formData(),html:currentHtml,updatedAt:Date.now()}))}catch{}
+}
+async function generate(){
+  if(busy)return;
+  const data=formData();
+  if(!data.name||!data.type){setStatus('Add the business name and what it does first.','error');return}
+  setBusy(true);setStatus('Stellar is designing the website…');
+  try{
+    const raw=await askStellar(buildPrompt(data));
+    render(sanitiseHtml(raw));
+    setStatus('Website draft ready. Check every business fact before using it.','good');
+  }catch(error){setStatus(error?.message||'Could not build the website.','error')}
+  finally{setBusy(false)}
+}
+async function refine(){
+  if(busy||!currentHtml)return;
+  const change=$('refine-input').value.trim();
+  if(!change){setStatus('Tell Stellar what you want changed.','error');return}
+  setBusy(true,'Updating…');setStatus('Applying your change…');
+  try{
+    const raw=await askStellar(refinePrompt(change));
+    render(sanitiseHtml(raw));$('refine-input').value='';
+    setStatus('Change applied. Review the updated preview.','good');
+  }catch(error){setStatus(error?.message||'Could not apply that change.','error')}
+  finally{setBusy(false)}
+}
+function clearAll(){
+  if(busy)return;
+  ['business-name','business-type','location','services','about','hours','phone','email','colour','refine-input'].forEach(id=>$(id).value='');
+  $('style').selectedIndex=0;currentHtml='';
+  $('preview-frame').srcdoc='';$('preview-frame').classList.add('hidden');$('empty-preview').classList.remove('hidden');
+  $('preview-label').textContent='Nothing generated yet';$('copy-btn').disabled=true;$('download-btn').disabled=true;$('refine-btn').disabled=true;
+  setStatus('Cleared.','good');try{localStorage.removeItem(DRAFT_KEY)}catch{}
+}
+async function copyHtml(){
+  if(!currentHtml)return;
+  try{await navigator.clipboard.writeText(currentHtml);setStatus('HTML copied.','good')}
+  catch{setStatus('Your browser blocked clipboard access. Use Download site instead.','error')}
+}
+function download(){
+  if(!currentHtml)return;
+  const name=($('business-name').value||'business').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'business';
+  const blob=new Blob([currentHtml],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=name+'-website.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  setStatus('Website file downloaded.','good');
+}
+function restore(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null'); if(!saved)return;
+    const f=saved.form||{};
+    const map={'business-name':'name','business-type':'type','location':'location','services':'services','about':'about','hours':'hours','phone':'phone','email':'email','colour':'colour'};
+    Object.entries(map).forEach(([id,key])=>{if(typeof f[key]==='string')$(id).value=f[key]});
+    if(f.style)$('style').value=f.style;
+    if(typeof saved.html==='string'&&saved.html.includes('<html')){render(sanitiseHtml(saved.html));setStatus('Restored your last local draft.','good')}
+  }catch{}
+}
+$('builder-form').addEventListener('submit',e=>{e.preventDefault();generate()});
+$('refine-btn').addEventListener('click',refine);
+$('refine-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();refine()}});
+$('clear-btn').addEventListener('click',clearAll);
+$('copy-btn').addEventListener('click',copyHtml);
+$('download-btn').addEventListener('click',download);
+restore();
+})();
+</script>
+</body>
+</html>
