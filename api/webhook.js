@@ -83,7 +83,7 @@ async function handleGmailWatch(req, res) {
     const action = req.method === 'GET' ? 'start' : String(body?.action || 'status').trim().toLowerCase();
     if (action === 'status') return res.status(200).json({ ok: true, ...(await getGmailWatchStatus()) });
     if (action === 'start' || action === 'renew') {
-      const config = getGmailPushConfiguration();
+      const config = await getGmailPushConfiguration();
       if (!config.gmailConfigured || !config.storageConfigured || !config.topicConfigured) {
         return res.status(200).json({
           ok: true,
