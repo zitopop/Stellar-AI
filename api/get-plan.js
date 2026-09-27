@@ -132,6 +132,18 @@ export default async function handler(req, res) {
       ? ownerUsage()
       : await getUsageSnapshot({ url, token, identity: `email:${session.email}`, plan, creditAnchorAt });
     const achievements = unlockedAchievements(user);
+    const websiteBuilderEntitlement = owner
+      ? { entitled: true, owner: true, package: 'website-builder', pricePence: 9900, purchasedAt: null }
+      : await kvGet(url, token, `stellar:website-builder:${session.email}`);
+    const websiteBuilder = owner
+      ? websiteBuilderEntitlement
+      : {
+          entitled: websiteBuilderEntitlement?.status === 'active' && Boolean(websiteBuilderEntitlement?.checkoutSessionId),
+          owner: false,
+          package: 'website-builder',
+          pricePence: 9900,
+          purchasedAt: websiteBuilderEntitlement?.status === 'active' ? Number(websiteBuilderEntitlement.purchasedAt) || null : null,
+        };
     const capabilities = planCapabilities(plan);
     const billing = billingState({ plan, user, owner });
     const walletPence = Math.max(0, Number(user.walletPence) || 0);
@@ -161,6 +173,7 @@ export default async function handler(req, res) {
       scriptCount: Math.max(0, Number(user.scriptCount) || 0),
       achievements,
       achievementDefinitions: achievementDefinitions(),
+      websiteBuilder,
       updatedAt: user.updatedAt || null,
     });
   } catch (error) {
