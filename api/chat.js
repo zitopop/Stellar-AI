@@ -840,7 +840,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
   if (!ANTHROPIC_KEY && !(FORGE_URL && FORGE_KEY)) return res.status(500).json({ error: 'The AI service is not configured.' });
 
-  const { model, role, messages, max_tokens: maxTokens, image, search_context: searchContext, memory_context: memoryContext, use_credit: useCredit } = req.body || {};
+  const { model, role, messages, max_tokens: maxTokens, image, search_context: searchContext, memory_context: memoryContext, use_credit: useCredit, client } = req.body || {};
   const cleanMessages = normaliseMessages(messages);
   if (!cleanMessages) return res.status(400).json({ error: 'Send at least one message before asking Stellar.' });
   const imageAttachment = normaliseImageAttachment(image);
@@ -858,6 +858,23 @@ export default async function handler(req, res) {
   const session = readSession(req);
   const account = await getAccountFromServer(session?.email);
   const plan = account.plan;
+  const websiteBuilderRequest = String(client?.source || '').trim().toLowerCase() === 'business-builder';
+
+  if (websiteBuilderRequest && plan !== 'owner') {
+    if (!session?.email) {
+      return res.status(401).json({ error: 'Sign in and buy the £99 Business Website Package before using the builder.' });
+    }
+    if (!KV_URL || !KV_TOKEN) {
+      return res.status(503).json({ error: 'Website package access cannot be verified right now.' });
+    }
+    const entitlement = await kvGet('stellar:website-builder:' + String(session.email).toLowerCase().trim());
+    if (entitlement?.status !== 'active' || !entitlement?.checkoutSessionId) {
+      return res.status(402).json({
+        error: 'The AI Business Website Builder requires the £99 one-time Business Website Package.',
+        code: 'WEBSITE_BUILDER_PAYMENT_REQUIRED',
+      });
+    }
+  }
 
   // Owner-only routing is enforced on the server. Hiding controls in the browser
   // is presentation only; a crafted request must not unlock private models or roles.
