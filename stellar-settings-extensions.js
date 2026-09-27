@@ -381,7 +381,7 @@
   function buildCommandCentre(panel) {
     const streak = readStreak();
     const plan = safeText('#plan-name,#acct-plan,[data-plan-name]', 'Free / current plan');
-    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Daily credits ready');
+    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Monthly credits ready');
     const email = safeText('#acct-email,[data-account-email]', 'Signed-in account');
 
     const hero = document.createElement('div');
@@ -393,8 +393,8 @@
     stats.className = 'stellar-command-grid';
     stats.append(
       commandCard('Account', `${email} — your sign-in, saved chats and billing identity.`),
-      commandCard('Plan', `${plan} — controls model access, daily credits and paid features.`),
-      commandCard('Credits', `${usage.replace(/^💳\s*/, '')} — daily credits refresh; wallet top-ups stay separate.`),
+      commandCard('Plan', `${plan} — controls model access, monthly credits and paid features.`),
+      commandCard('Credits', `${usage.replace(/^💳\s*/, '')} — monthly plan credits refresh; wallet top-ups stay separate.`),
       commandCard('Daily streak', `Day ${streak.streak || 1} on this device — return rewards can encourage daily use.`),
     );
     panel.appendChild(stats);
@@ -407,7 +407,7 @@
     const actions = document.createElement('div');
     actions.className = 'stellar-command-actions';
     actions.append(
-      commandAction('Credits & rewards', 'See daily reset, welcome bonus, wallet top-ups and bonus logic.', () => openTab('credits-rewards')),
+      commandAction('Credits & rewards', 'See monthly reset, welcome bonus, wallet top-ups and bonus logic.', () => openTab('credits-rewards')),
       commandAction('Manage plan', 'Open upgrades, billing and plan options.', () => { if (!clickFirst(['[data-open-plans]', '#plans-btn', '[data-tab="plans"]'])) location.href = '/app?upgrade=1'; }),
       commandAction('Plugins', 'Connect Gmail, GitHub, PC Agent and other tools safely.', () => { location.href = '/plugins'; }),
       commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
@@ -423,7 +423,7 @@
     appendLineMap(panel, [
       ['Control', 'Main dashboard for your account, plan, credits and quick actions.', 'Settings > Control'],
       ['Account', 'Shows who is signed in, which email is active, and where saved chats/billing connect.', 'Account area'],
-      ['Credits', 'Shows daily credits, wallet top-ups, welcome credits, bonuses and reset meaning.', 'Credits tab'],
+      ['Credits', 'Shows monthly plan credits, wallet top-ups, welcome credits, bonuses and reset meaning.', 'Credits tab'],
       ['Plan', 'Explains the user’s tier, billing, upgrade path and unlocked features.', 'Plan / upgrade'],
       ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Owner models stay hidden.', 'Model picker'],
       ['Voice', 'Mic, Jarvis/Ava voice, language, call-style controls and accessibility.', 'Voice tab'],
@@ -469,7 +469,7 @@
     actions.append(
       commandAction('Open plugins', 'Manage connected tools and see how to get each plugin.', () => { location.href = '/plugins'; }),
       commandAction('Open PC Agent', 'Pair or check your StellarX desktop workflow.', () => { location.href = '/desktop'; }),
-      commandAction('Credits setup', 'Review daily credits, welcome bonus and top-up packs.', () => openTab('credits-rewards')),
+      commandAction('Credits setup', 'Review monthly plan credits, welcome bonus and top-up packs.', () => openTab('credits-rewards')),
       commandAction('Trust checklist', 'Check public safety, privacy and support controls.', () => openTab('trust-checklist')),
     );
     panel.appendChild(actions);
@@ -531,12 +531,12 @@
 
   function buildCreditsRewards(panel) {
     const streak = readStreak();
-    addHeading(panel, 'Credits & rewards', 'Daily credits are the free/plan allowance. Wallet credits are bought top-ups and stay separate.');
+    addHeading(panel, 'Credits & rewards', 'Monthly plan credits are the included allowance. Wallet credits are bought top-ups and stay separate.');
 
     const group = document.createElement('div');
     group.className = 'set-group stellar-rewards-group';
     group.innerHTML = `
-      <div class="set-item stellar-reward-row"><div class="set-key">Daily reset</div><div class="set-val">Free 300/day · Starter 900/day · Plus 2,500/day · Pro 8,000/day</div></div>
+      <div class="set-item stellar-reward-row"><div class="set-key">Monthly reset</div><div class="set-val">Free 300/month · Starter 1,500/month · Plus 5,000/month · Pro 20,000/month</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Welcome bonus</div><div class="set-val">500 one-time credits for new accounts</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Streak idea</div><div class="set-val">Day ${streak.streak || 1} on this device · suggested server rewards: Day 2 +50, Day 3 +75, Day 7 +150</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Top-ups</div><div class="set-val">£3, £5, £10, £25, £50+ with bigger bonuses only on bigger packs</div></div>
@@ -545,7 +545,7 @@
 
     const note = document.createElement('div');
     note.className = 'set-note stellar-pref-note';
-    note.textContent = 'Daily credits keep people coming back. Bought wallet credits should not reset. That protects your costs while still making the app feel generous.';
+    note.textContent = 'Monthly plan credits put a clear ceiling on included usage. Bought wallet credits stay separate and do not reset.';
     panel.appendChild(note);
   }
 
@@ -553,7 +553,7 @@
     addHeading(panel, 'Trust & safety', 'A premium AI workspace needs clear controls, safe approvals and no confusing owner-only tools for normal users.');
     appendLineMap(panel, [
       ['Account', 'Show email, sign-in state and sign-out clearly.', 'Account'],
-      ['Credits', 'Show daily allowance, wallet balance and reset meaning.', 'Credits'],
+      ['Credits', 'Show monthly allowance, wallet balance and reset meaning.', 'Credits'],
       ['Plan', 'Show current plan, upgrade path and billing help.', 'Plan'],
       ['Models', 'Show only models the user can actually use. Hide owner/provider tools.', 'Models'],
       ['Voice', 'Explain Jarvis/Ava, mic access, language and call controls.', 'Voice'],

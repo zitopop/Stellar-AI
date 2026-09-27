@@ -20,7 +20,7 @@ const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 // turns into a spinner or failed customer request.
 const MODEL_TIERS = {
   spark: { primary: 'claude-haiku-4-5-20251001', fallback: 'claude-sonnet-4-6' },
-  star: { primary: 'claude-sonnet-4-6', fallback: 'claude-haiku-4-5-20251001' },
+  star: { primary: 'claude-sonnet-5', fallback: 'claude-sonnet-4-6' },
   comet: { primary: 'claude-opus-4-6', fallback: 'claude-sonnet-4-6' },
   nova: { primary: 'claude-opus-4-8', fallback: 'claude-sonnet-4-6' },
 };
@@ -290,8 +290,8 @@ const ROLE_OUTPUT_CONTRACTS = {
 const MODEL_MAP = {
   spark: 'claude-haiku-4-5-20251001', fabie: 'claude-haiku-4-5-20251001', haiku: 'claude-haiku-4-5-20251001',
   'claude-haiku-4-5': 'claude-haiku-4-5-20251001', 'claude-haiku-4-5-20251001': 'claude-haiku-4-5-20251001',
-  star: 'claude-sonnet-4-6', smart: 'claude-sonnet-4-6', sonnet: 'claude-sonnet-4-6',
-  'claude-sonnet-5': 'claude-sonnet-4-6', 'claude-sonnet-4-6': 'claude-sonnet-4-6',
+  star: 'claude-sonnet-5', smart: 'claude-sonnet-5', sonnet: 'claude-sonnet-5',
+  'claude-sonnet-5': 'claude-sonnet-5', 'claude-sonnet-4-6': 'claude-sonnet-4-6',
   comet: 'claude-opus-4-6', opus: 'claude-opus-4-6',
   'claude-opus-5': 'claude-opus-4-6', 'claude-opus-4-6': 'claude-opus-4-6',
   nova: 'claude-opus-4-8', ultra: 'claude-opus-4-8', fable: 'claude-opus-4-8',
@@ -300,6 +300,7 @@ const MODEL_MAP = {
 
 const MODEL_TIER_BY_ID = {
   'claude-haiku-4-5-20251001': 'spark',
+  'claude-sonnet-5': 'star',
   'claude-sonnet-4-6': 'star',
   'claude-opus-4-6': 'comet',
   'claude-opus-4-8': 'nova',
