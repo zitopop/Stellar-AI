@@ -33,8 +33,8 @@ test('client helper sends only event name and never serialises page or user cont
 });
 
 test('public landing and app both load the shared telemetry helper', () => {
-  assert.match(landing, /<script src="\/lib\/assets\/telemetry\.js"><\/script>/);
-  assert.match(app, /<script src="\/lib\/assets\/telemetry\.js"><\/script>/);
+  assert.match(landing, /<script src="\/lib\/assets\/telemetry\.js(?:\?[^"]+)?"><\/script>/);
+  assert.match(app, /<script src="\/lib\/assets\/telemetry\.js(?:\?[^"]+)?"><\/script>/);
 });
 
 test('app tracks conversion milestones without sending user content', () => {
