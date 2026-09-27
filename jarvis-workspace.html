@@ -1,56 +1,119 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0c0e16">
-  <meta name="robots" content="noindex,nofollow">
-  <title>Jarvis — Stellar AI</title>
-  <meta name="description" content="Your private workspace for research, product drafts and business operations.">
-  <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/lib/assets/jarvis-workspace.css?v=1">
-  <script src="/lib/assets/jarvis-workspace.js?v=1" type="module"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a12">
+<meta name="robots" content="noindex,nofollow">
+<title>Jarvis — Stellar AI</title>
+<meta name="description" content="Talk or type to Jarvis, the conversational assistant inside Stellar AI.">
+<link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--bg:#090a12;--panel:#11131c;--panel2:#171a25;--line:#292d3b;--text:#f2f1f7;--muted:#969baa;--accent:#b7a7ff;--good:#80d7b2}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 50% -10%,rgba(119,91,220,.14),transparent 34rem),var(--bg);color:var(--text)}button,textarea,a{font:inherit}button,a{-webkit-tap-highlight-color:transparent}.shell{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto}.topbar{height:64px;display:flex;align-items:center;gap:12px;padding:0 max(18px,env(safe-area-inset-right)) 0 max(18px,env(safe-area-inset-left));border-bottom:1px solid rgba(255,255,255,.06);background:rgba(9,10,18,.86);backdrop-filter:blur(18px);position:sticky;top:0;z-index:5}.brand{display:flex;align-items:center;gap:9px;color:#fff;text-decoration:none;font-weight:780}.brand-mark{width:31px;height:31px;border:1px solid rgba(183,167,255,.26);border-radius:10px;display:grid;place-items:center;color:var(--accent);background:rgba(183,167,255,.07)}.title{font-size:13px;color:#d8d5e2}.top-actions{margin-left:auto;display:flex;gap:8px}.top-actions a,.top-actions button{min-height:38px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#12141d;color:#bbb8c7;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.top-actions button[aria-pressed=true]{border-color:rgba(183,167,255,.4);color:#eee9ff;background:rgba(183,167,255,.1)}#owner-link{display:none}.chat{width:min(900px,100%);margin:0 auto;padding:38px 22px 170px}.hero{text-align:center;padding:8vh 0 42px}.orb{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;border:1px solid rgba(183,167,255,.28);background:radial-gradient(circle at 35% 28%,#c8b9ff 0,#7564a5 22%,#342c48 55%,#151620 78%);box-shadow:0 0 64px rgba(127,94,220,.16);font-size:27px;color:#fff9}.hero h1{font-size:clamp(34px,6vw,58px);letter-spacing:-.055em;margin:0 0 13px;font-weight:680}.hero p{margin:0 auto;color:var(--muted);max-width:520px;font-size:14px;line-height:1.65}.messages{display:grid;gap:20px}.msg{display:flex;gap:11px;align-items:flex-start}.msg.user{justify-content:flex-end}.avatar{flex:0 0 29px;width:29px;height:29px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;color:#c7bcf5;background:#151722}.msg.user .avatar{display:none}.bubble{max-width:min(720px,88%);padding:13px 15px;border:1px solid rgba(255,255,255,.055);border-radius:16px;background:rgba(18,20,29,.78);font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user .bubble{background:#1b1d29;border-color:#2b2e3a}.status{width:min(900px,100%);margin:0 auto;padding:0 22px 8px;color:var(--muted);font-size:11px;min-height:24px}.status.good{color:var(--good)}.status.bad{color:#ffabb8}.composer-wrap{position:fixed;left:0;right:0;bottom:0;padding:12px max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:linear-gradient(180deg,transparent,rgba(9,10,18,.96) 28%);z-index:5}.composer{width:min(900px,100%);margin:auto;border:1px solid var(--line);border-radius:19px;background:#141720;padding:10px;box-shadow:0 18px 55px rgba(0,0,0,.28)}textarea{display:block;width:100%;min-height:54px;max-height:170px;resize:none;border:0;outline:0;background:transparent;color:var(--text);font-size:16px;line-height:1.5;padding:8px 9px}textarea::placeholder{color:#7f8492}.composer-row{display:flex;align-items:center;gap:8px}.composer-row button{min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:12px;background:#1a1d28;color:#d7d3e4;cursor:pointer;padding:0 13px}.composer-row button.primary{margin-left:auto;border-color:#b7a7ff;background:#b7a7ff;color:#1c1729;font-weight:750}.composer-row button[aria-pressed=true]{border-color:#8d78ec;color:#fff;background:#31284e}.composer-row button:disabled{opacity:.45;cursor:wait}.listening{animation:pulse 1.15s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(183,167,255,.08)}}.signin{display:none;margin:18px auto 0;width:min(900px,calc(100% - 44px));padding:16px;border:1px solid #42385f;border-radius:14px;background:#181524;color:#cfc8e8;font-size:13px;line-height:1.6}.signin a{color:white}.signin.show{display:block}@media(max-width:600px){.topbar{height:58px}.title{display:none}.top-actions a,.top-actions button{min-height:36px;padding:0 9px;font-size:11px}.chat{padding:24px 15px 158px}.hero{padding:5vh 0 30px}.hero p{font-size:12px}.bubble{max-width:92%;font-size:13px}.status{padding-left:16px}.composer-wrap{padding-left:10px;padding-right:10px}.composer{border-radius:16px}.composer-row button{padding:0 10px;font-size:12px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-<a class="skip" href="#mission-objective">Skip to your mission</a>
-<div class="workspace">
-  <aside class="sidebar" aria-label="Workspace navigation">
-    <a class="brand" href="/app"><span class="brand-icon" aria-hidden="true">✦</span>Stellar<span class="brand-caption">AI</span></a>
-    <p class="nav-label">Your workspace</p>
-    <nav><a href="/app"><span aria-hidden="true">↗</span> Chat</a><a href="/jarvis" class="selected" aria-current="page"><span aria-hidden="true">◈</span> Jarvis <span class="private">Private</span></a><a href="/plugins"><span aria-hidden="true">⊞</span> Connections</a><a href="/desktop"><span aria-hidden="true">⌘</span> PC Agent</a><a href="/jarvis/vision"><span aria-hidden="true">◎</span> Voice &amp; Vision</a></nav>
-    <div class="sidebar-note"><span class="small-orb" aria-hidden="true"></span><strong>A little less busywork.</strong><p>Give Jarvis a clear objective. Come back to research, drafts and next steps.</p></div>
-    <a class="support-link" href="/support">Help &amp; support <span aria-hidden="true">↗</span></a>
-  </aside>
-  <main>
-    <header class="topbar"><span>Personal assistant <span class="slash">/</span> Jarvis</span><a href="/app">Back to Stellar <span aria-hidden="true">↗</span></a></header>
-    <div class="content">
-      <section class="intro"><div><p class="eyebrow">MAKE ROOM FOR THE BIGGER PICTURE</p><h1>Your ambition.<br><span>A helping hand.</span></h1><p class="lede">Research your next opportunity. Build something worth selling. Put your day in order.</p></div><div class="orb" aria-hidden="true"><div></div><span>J</span></div></section>
-      <p id="feedback" class="feedback" role="status" aria-live="polite">Checking your private workspace…</p>
-      <section id="access-panel" class="access-panel" hidden><h2>Your private Jarvis workspace</h2><p id="access-message">Sign in with your owner account to see your missions.</p><a class="button primary" href="/app?signin=1">Open sign in <span aria-hidden="true">↗</span></a></section>
-      <section class="mission-composer" aria-labelledby="create-heading">
-        <div class="section-heading"><h2 id="create-heading">What shall we work on?</h2><span class="quiet-label">One objective. A small AI team.</span></div>
-        <form id="mission-form">
-          <fieldset id="mission-fields" disabled><legend class="sr-only">New mission</legend>
-            <div class="mission-types" role="group" aria-label="Choose a mission type">
-              <button type="button" data-kind="everything" aria-pressed="true"><span aria-hidden="true">✦</span> Everything</button>
-              <button type="button" data-kind="customers" aria-pressed="false"><span aria-hidden="true">↗</span> Find opportunities</button>
-              <button type="button" data-kind="products" aria-pressed="false"><span aria-hidden="true">⌘</span> Build a product</button>
-              <button type="button" data-kind="operations" aria-pressed="false"><span aria-hidden="true">☷</span> Plan my work</button>
-            </div>
-            <label for="mission-objective" class="sr-only">Describe your objective</label>
-            <textarea id="mission-objective" minlength="10" maxlength="4000" required rows="4" placeholder="Give Jarvis a goal, your audience and any constraints. For example: research a useful FiveM product for small roleplay servers, draft an offer and plan the first week."></textarea>
-            <div class="composer-footer"><div class="notify-options"><span>When it’s ready</span><label><input type="checkbox" id="notify-email"> Email me</label><label><input type="checkbox" id="notify-call"> Call me</label></div><button id="create-mission" type="submit" class="button primary">Start mission <span aria-hidden="true">↑</span></button></div>
-          </fieldset>
-        </form>
-        <p class="composer-note">Results always stay here. Missions create research and drafts; they don’t contact customers, publish changes or guarantee income. Uses your configured AI services.</p>
-      </section>
-      <section class="work-section" aria-labelledby="work-heading"><div class="section-heading"><div><p class="eyebrow">FROM IDEA TO SOMETHING USEFUL</p><h2 id="work-heading">Your missions</h2></div><button class="button secondary" id="refresh-missions" type="button">Refresh <span aria-hidden="true">↻</span></button></div>
-        <div class="work-grid"><div id="mission-list" class="mission-list"><div class="empty-state"><span aria-hidden="true">◇</span><h3>A clear place to start.</h3><p>Your saved missions will appear here after you sign in.</p></div></div><section id="mission-detail" class="mission-detail" aria-label="Selected mission"><div class="detail-empty"><span class="outline-orb" aria-hidden="true">✦</span><h3>One step at a time.</h3><p>Choose a mission to see each specialist’s progress, sources and results.</p></div></section></div>
-      </section>
-      <section class="connections-section" aria-labelledby="connections-heading"><div class="section-heading"><h2 id="connections-heading">Ready when connected</h2><a href="/plugins">Manage connections ↗</a></div><div id="capabilities" class="capabilities"><p>Sign in to check service configuration.</p></div><p id="schedule-note" class="fine-print">Provider configuration and successful delivery are shown separately.</p></section>
-      <footer>Made for your next good idea.<span>Stellar AI · Jarvis</span></footer>
-    </div>
-  </main>
+<div class="shell">
+<header class="topbar">
+<a class="brand" href="/app"><span class="brand-mark" aria-hidden="true">✦</span><span>Stellar AI</span></a>
+<span class="title">Jarvis</span>
+<div class="top-actions">
+<a href="/app">Chat</a>
+<a id="owner-link" href="/jarvis-owner.html">Owner workspace</a>
+<button id="voice-toggle" type="button" aria-pressed="true">🔊 Voice on</button>
 </div>
+</header>
+<main>
+<div id="signin" class="signin">Sign in to Stellar AI to use Jarvis with your plan and credits. <a href="/app?signin=1">Open sign in →</a></div>
+<section id="chat" class="chat" aria-label="Jarvis conversation">
+<div id="hero" class="hero"><div class="orb" aria-hidden="true">J</div><h1>Talk to Jarvis.</h1><p>Ask by typing or speaking. Jarvis uses your normal Stellar AI plan, limits and credits. Private owner controls are kept separate.</p></div>
+<div id="messages" class="messages" aria-live="polite"></div>
+</section>
+<div id="status" class="status" role="status" aria-live="polite">Ready.</div>
+</main>
+<div class="composer-wrap">
+<form id="composer" class="composer">
+<label for="prompt" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message Jarvis</label>
+<textarea id="prompt" rows="1" maxlength="12000" placeholder="Message Jarvis…"></textarea>
+<div class="composer-row">
+<button id="mic" type="button" aria-label="Talk to Jarvis" aria-pressed="false">🎙 Talk</button>
+<button id="stop-voice" type="button" aria-label="Stop Jarvis speaking" hidden>■ Stop voice</button>
+<button id="send" class="primary" type="submit">Send ↑</button>
+</div>
+</form>
+</div>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const messages = [];
+  let busy = false, recognition = null, speaking = false;
+  let voiceOn = localStorage.getItem('stellarJarvisVoiceReplies') !== '0';
+
+  function sessionToken(){
+    try{return String(JSON.parse(localStorage.getItem('stellar-store')||'{}').session||'')}catch{return ''}
+  }
+  function headers(){const h={'Content-Type':'application/json'};const token=sessionToken();if(token)h.Authorization='Bearer '+token;return h}
+  function setStatus(text,kind=''){const el=$('status');el.textContent=text;el.className='status '+kind}
+  function setBusy(value){busy=value;$('send').disabled=value;$('mic').disabled=value}
+  function addMessage(role,text){
+    $('hero').hidden=true;
+    const row=document.createElement('div');row.className='msg '+role;
+    const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=role==='assistant'?'J':'You';
+    const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;
+    row.append(avatar,bubble);$('messages').appendChild(row);row.scrollIntoView({block:'end',behavior:'smooth'});return bubble;
+  }
+  function cleanSpeech(text){return String(text||'').replace(/```[\s\S]*?```/g,'I have code ready for you on screen.').replace(/`([^`]+)`/g,'$1').replace(/https?:\/\/\S+/g,'a link').replace(/[•*_>#~]/g,' ').replace(/\s+/g,' ').trim()}
+  function chooseVoice(){const list=speechSynthesis?.getVoices?.()||[];return list.find(v=>/^en-GB$/i.test(v.lang)&&/natural|premium|google|microsoft|daniel|oliver|ryan|male/i.test(v.name))||list.find(v=>/^en-GB$/i.test(v.lang))||list.find(v=>/^en/i.test(v.lang))||null}
+  function stopSpeech(){try{speechSynthesis?.cancel()}catch{};speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Ready.')}
+  function speak(text){
+    if(!voiceOn||!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window))return;
+    const clean=cleanSpeech(text).slice(0,1800);if(!clean)return;
+    stopSpeech();speaking=true;$('stop-voice').hidden=false;setStatus('Speaking…','good');
+    const utterance=new SpeechSynthesisUtterance(clean);utterance.lang='en-GB';utterance.rate=1.01;utterance.pitch=.94;const v=chooseVoice();if(v)utterance.voice=v;
+    utterance.onend=utterance.onerror=()=>{speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Ready.')};speechSynthesis.speak(utterance);
+  }
+  function updateVoiceToggle(){const b=$('voice-toggle');b.setAttribute('aria-pressed',String(voiceOn));b.textContent=voiceOn?'🔊 Voice on':'🔇 Voice off'}
+  function parseEvent(raw){
+    try{const e=JSON.parse(raw);return e?.delta?.text||e?.text||e?.content_block?.text||e?.message?.content?.[0]?.text||(typeof e?.choices?.[0]?.delta?.content==='string'?e.choices[0].delta.content:'')||''}catch{return ''}
+  }
+  async function sendMessage(text){
+    text=String(text||'').trim();if(!text||busy)return;
+    stopSpeech();addMessage('user',text);messages.push({role:'user',content:text});$('prompt').value='';setBusy(true);setStatus('Thinking…','good');
+    const bubble=addMessage('assistant','');let full='';
+    try{
+      const response=await fetch('/api/chat',{method:'POST',headers:headers(),body:JSON.stringify({action:'chat',model:'star',selectedModel:'star',messages:messages.slice(-24),use_credit:false,client:{source:'jarvis-public'}})});
+      if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===401){$('signin').classList.add('show');throw new Error(data.error||'Sign in to use Jarvis.')}throw new Error(data.error||'Jarvis could not answer that request.')}
+      if(!response.body)throw new Error('Jarvis returned no response.');
+      const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
+      while(true){const {done,value}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const chunks=buffer.split('\n');buffer=chunks.pop()||'';for(const line of chunks){if(!line.startsWith('data:'))continue;const raw=line.slice(5).trim();if(!raw||raw==='[DONE]')continue;const delta=parseEvent(raw);if(delta){full+=delta;bubble.textContent=full;bubble.scrollIntoView({block:'end'})}}}
+      if(buffer.startsWith('data:')){const raw=buffer.slice(5).trim();if(raw&&raw!=='[DONE]'){const delta=parseEvent(raw);if(delta)full+=delta}}
+      if(!full.trim())full='I could not produce a response this time. Please try again.';bubble.textContent=full;messages.push({role:'assistant',content:full});setStatus('Ready.');speak(full);
+    }catch(error){bubble.textContent=error.message||'Jarvis could not answer.';setStatus(error.message||'Jarvis could not answer.','bad')}
+    finally{setBusy(false)}
+  }
+  function setupMic(){
+    const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!Recognition){$('mic').disabled=true;$('mic').textContent='Mic unavailable';return}
+    recognition=new Recognition();recognition.lang='en-GB';recognition.interimResults=true;recognition.continuous=false;
+    let finalText='';
+    recognition.onstart=()=>{$('mic').classList.add('listening');$('mic').setAttribute('aria-pressed','true');$('mic').textContent='Listening…';setStatus('Listening…','good')};
+    recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}$('prompt').value=(finalText||interim).trim()};
+    recognition.onerror=e=>setStatus(e.error==='not-allowed'?'Microphone permission was denied.':'Voice input stopped.','bad');
+    recognition.onend=()=>{$('mic').classList.remove('listening');$('mic').setAttribute('aria-pressed','false');$('mic').textContent='🎙 Talk';const spoken=finalText.trim();finalText='';if(spoken)sendMessage(spoken);else if(!busy)setStatus('Ready.')};
+    $('mic').addEventListener('click',()=>{if(speaking)stopSpeech();try{recognition.start()}catch{try{recognition.stop()}catch{}}});
+  }
+  async function revealOwnerLink(){
+    if(!sessionToken())return;
+    try{const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+sessionToken()},cache:'no-store'});const d=await r.json().catch(()=>({}));if(r.ok&&d?.owner===true)$('owner-link').style.display='inline-flex'}catch{}
+  }
+  $('composer').addEventListener('submit',e=>{e.preventDefault();sendMessage($('prompt').value)});
+  $('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage($('prompt').value)}});
+  $('voice-toggle').addEventListener('click',()=>{voiceOn=!voiceOn;localStorage.setItem('stellarJarvisVoiceReplies',voiceOn?'1':'0');updateVoiceToggle();if(!voiceOn)stopSpeech()});
+  $('stop-voice').addEventListener('click',stopSpeech);
+  if(!sessionToken())$('signin').classList.add('show');
+  updateVoiceToggle();setupMic();revealOwnerLink();
+})();
+</script>
 </body>
 </html>
