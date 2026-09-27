@@ -25,6 +25,19 @@ test('StellarX is inserted into the model picker as a public option', () => {
   assert.match(guide, /Advanced guided tasks, bigger projects, website and business workflows/);
 });
 
+test('public model picker lineup has clear roles and badges', () => {
+  assert.match(guide, /MODEL_PICKER_COPY/);
+  assert.match(guide, /Spark/);
+  assert.match(guide, /Fast answers, short drafts and quick fixes/);
+  assert.match(guide, /Star/);
+  assert.match(guide, /Balanced everyday work and problem solving/);
+  assert.match(guide, /Comet/);
+  assert.match(guide, /Deeper reasoning for bigger builds, reviews and planning/);
+  assert.match(guide, /Nova/);
+  assert.match(guide, /Highest power for complex builds and long-form project work/);
+  assert.match(guide, /polishModelPickerOptions/);
+});
+
 test('owner controls remain gated for privileged viewers', () => {
   assert.match(guide, /OWNER_GUIDE_ITEMS/);
   assert.match(guide, /Owner controls/);
@@ -35,9 +48,9 @@ test('owner controls remain gated for privileged viewers', () => {
   assert.match(guide, /staff/);
 });
 
-test('service worker loads the latest public StellarX model picker guide', () => {
-  assert.match(sw, /stellar-sw-2026-09-27-capabilities-guide-v5/);
-  assert.match(sw, /stellar-capabilities-guide\.js\?v=5/);
+test('service worker loads the latest public model picker guide', () => {
+  assert.match(sw, /stellar-sw-2026-09-27-capabilities-guide-v6/);
+  assert.match(sw, /stellar-capabilities-guide\.js\?v=6/);
   assert.match(sw, /capabilityGuideLoader/);
   assert.match(sw, /\/currency\.js/);
   assert.match(sw, /\/stellar-settings-extensions\.js/);
