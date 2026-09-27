@@ -1,9 +1,10 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const auth = fs.readFileSync(new URL('../lib/auth.js', import.meta.url), 'utf8');
+const telemetry = fs.readFileSync(new URL('../lib/assets/telemetry.js', import.meta.url), 'utf8');
 
 test('workspace keeps signed-in state, server plan truth, and local chat persistence hooks', () => {
   assert.match(app, /Store\.get\('selectedModel','star'\)/);
@@ -19,3 +20,12 @@ test('owner-only behaviour remains gated by auth code and hidden UI class', () =
   assert.match(app, /deadlyfox10@gmail\.com|@stellar\.ai/);
 });
 
+test('telemetry rescue layer keeps core app interactions recoverable', () => {
+  assert.match(telemetry, /stellar-business-polish-v3/);
+  assert.match(telemetry, /function safeGetStorage/);
+  assert.match(telemetry, /function closeDrawer/);
+  assert.match(telemetry, /rescueInteractionState/);
+  assert.match(telemetry, /billing help/);
+  assert.match(telemetry, /Pinned chats are protected/);
+  assert.match(telemetry, /📌/u);
+});
