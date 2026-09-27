@@ -23,7 +23,7 @@ test('landing page explains value without adding noisy sections', () => {
 });
 
 test('landing page keeps credits and community promo wording clear', () => {
-  assert.match(analytics, /300 credits\/month/);
+  assert.match(analytics, /300 credits\/day/);
   assert.match(analytics, /promo and giveaway credits for Discord events/);
   assert.match(analytics, /Run Discord giveaways, launch promos and creator rewards with Stellar credits/);
   assert.doesNotMatch(analytics, /free money/i);
