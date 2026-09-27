@@ -15,7 +15,7 @@ test('hero stays concise and offers first-run onboarding', () => {
   assert.match(html, /href="\/app\?welcome=1"/);
   assert.match(html, /No card required/);
   assert.match(html, /500 welcome Stellar Credits/);
-  assert.match(html, /href="#plans" class="oa2-secondary-action">See pricing<\/a>/);
+  assert.match(html, /href="#plans" class="oa2-secondary-action">Plans from £8\/month<\/a>/);
 });
 
 test('preview is an example and its bounded prompt opens the app without generating', () => {
@@ -104,7 +104,7 @@ test('support uses the dedicated support route while Discord remains a separate 
 
 test('public metadata describes a free developer workspace without unverified endorsements', () => {
   const app = graph.find(x => x['@type'] === 'SoftwareApplication');
-  assert.equal(app.applicationCategory, 'BusinessApplication');
+  assert.equal(app.applicationCategory, 'DeveloperApplication');
   assert.equal(app.isAccessibleForFree, true);
   assert.match(html, /rel="canonical" href="https:\/\/trystellarai\.com"/);
   assert.doesNotMatch(html, /Used by FiveM and Roblox builders worldwide|guaranteed profit|guaranteed approval/i);
