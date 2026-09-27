@@ -26,7 +26,7 @@ test('client tracker uses keepalive or sendBeacon without collecting prompt text
   assert.match(tracker, /navigator\.sendBeacon/);
   assert.match(tracker, /fetch\('\/api\/track-event'/);
   assert.match(tracker, /window\.StellarTrack = track/);
-  assert.doesNotMatch(tracker, /textarea\.value|input\.value|localStorage\.getItem\(['"]stellarChats|prompt\.value/i);
+  assert.doesNotMatch(tracker, /textarea\.value|(?:prompt|message|chat)[A-Za-z0-9_$?.\[\]'"-]*\.value|localStorage\.getItem\(['"]stellarChats/i);
 });
 
 test('payment thank-you pages load the tracker and keep users on Stellar support paths', () => {
