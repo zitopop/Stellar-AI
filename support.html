@@ -17,7 +17,7 @@
 <main class="wrap">
 <section class="hero">
   <div class="eyebrow">Support centre</div>
-  <h1>Support that tells you what is what.</h1>
+  <h1>Know exactly where to get help.</h1>
   <p>Choose the right support route for account access, plans, credits, app bugs, refunds, Discord promo credits, settings, or project help. Every section explains what it is for and what to include.</p>
   <div class="hero-actions"><a class="btn primary" href="/app?welcome=1">Open Stellar app</a><button class="btn" type="button" onclick="focusRequest()">Write support request</button><button class="btn" type="button" onclick="openSupportEmail('general')">Email support</button></div>
   <div class="search"><input id="helpSearch" aria-label="Search support" placeholder="Search billing, credits, refund, login, Discord, bug, settings, scripts"><button type="button" class="btn" onclick="filterHelp()">Search</button></div>
@@ -35,7 +35,7 @@
     </article>
     <div class="route-grid" id="supportRoutes">
       <article class="route-card" data-key="account login sign in password access wrong email profile"><div class="route-top"><span class="icon">A</span><span class="pill">Account</span></div><h3>Account access</h3><ul><li>Login or sign-in problems</li><li>Wrong email/name showing</li><li>Account page not opening</li></ul><button class="btn" type="button" onclick="openSupportEmail('account')">Email account help</button></article>
-      <article class="route-card" data-key="billing checkout stripe subscription invoice cancellation card payment plan"><div class="route-top"><span class="icon">£</span><span class="pill">Billing</span></div><h3>Plans and payments</h3><ul><li>Checkout will not open</li><li>Plan did not update</li><li>Invoices, cards or cancellation</li></ul><button class="btn" type="button" onclick="openSupportEmail('billing')">Email billing</button></article>
+      <article class="route-card" data-key="billing checkout stripe subscription invoice cancellation card payment plan"><div class="route-top"><span class="icon">£</span><span class="pill">Billing</span></div><h3>Plans and billing</h3><ul><li>Checkout will not open</li><li>Plan did not update</li><li>Invoices, cards or cancellation</li></ul><button class="btn" type="button" onclick="openSupportEmail('billing')">Email billing</button></article>
       <article class="route-card" data-key="credits topup custom wallet daily bonus giveaway discord promo rewards"><div class="route-top"><span class="icon">✦</span><span class="pill">Credits</span></div><h3>Credits and top-ups</h3><ul><li>Daily credits and wallet credits</li><li>Custom top-up issues</li><li>Discord giveaway or promo credits</li></ul><button class="btn" type="button" onclick="openSupportEmail('credits')">Email credits help</button></article>
       <article class="route-card" data-key="settings account tab owner perks model picker phone layout"><div class="route-top"><span class="icon">⚙</span><span class="pill">Settings</span></div><h3>Settings help</h3><ul><li>Settings tab looks wrong</li><li>Owner perks are confusing</li><li>Model picker or credit wallet layout</li></ul><button class="btn" type="button" onclick="openSupportEmail('settings')">Email settings help</button></article>
       <article class="route-card" data-key="bug app messages send chat button broken mobile settings model picker"><div class="route-top"><span class="icon">!</span><span class="pill">Bug</span></div><h3>App bugs</h3><ul><li>Message will not send</li><li>Button does nothing</li><li>Phone/tablet layout problem</li></ul><button class="btn" type="button" onclick="openSupportEmail('bug')">Report bug</button></article>
@@ -50,11 +50,11 @@
       <span class="label">What is what?</span>
       <h2>Quick meanings</h2>
       <div class="what-grid">
-        <div class="what-row"><strong>Daily credits</strong><span>Included credits that refresh every 24 hours.</span></div>
-        <div class="what-row"><strong>Wallet credits</strong><span>Bought top-up credits that stay until used.</span></div>
-        <div class="what-row"><strong>Plans</strong><span>Monthly access and daily allowance level.</span></div>
-        <div class="what-row"><strong>Owner tools</strong><span>Private controls hidden from normal users.</span></div>
-        <div class="what-row"><strong>Promo credits</strong><span>Credits for Discord giveaways, launch promos or creator rewards.</span></div>
+        <div class="what-row"><strong>Daily credits</strong> reset every 24 hours.</div>
+        <div class="what-row"><strong>Wallet credits</strong> are bought top-ups and stay until used.</div>
+        <div class="what-row"><strong>Plans</strong> unlock bigger daily allowances and higher models.</div>
+        <div class="what-row"><strong>Owner tools</strong> stay private and are not visible to normal users.</div>
+        <div class="what-row"><strong>Promo credits</strong> can be used for Discord/community rewards.</div>
         <div class="what-row"><strong>Settings</strong><span>Account, plan, billing, credit wallet, owner perks and app controls.</span></div>
       </div>
     </article>
@@ -79,18 +79,18 @@
 <footer><div class="wrap foot"><span>© 2026 Stellar AI</span><span><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="/refunds">Refunds</a> · <a href="/legal">Legal</a> · <a href="/blog">Guides</a></span></div></footer>
 <script>
 const SUPPORT_EMAIL='deadlyfox10@gmail.com';
-function template(kind,msg=''){
- const base={
+const templates={
   general:['Stellar AI support request','Hi Stellar AI,\n\nI need help with:\n\nMy account email is:\n\nDevice/browser:\n\nWhat I clicked or saw:\n'],
   billing:['Billing help','Hi Stellar AI,\n\nI need help with billing or my plan.\n\nMy account email is:\n\nPlan or checkout issue:\n'],
   account:['Account help','Hi Stellar AI,\n\nI need help with my account.\n\nMy account email is:\n\nWhat happened:\n'],
-  credits:['Credits help','Hi Stellar AI,\n\nI need help with credits.\n\nMy account email is:\n\nDaily credits, wallet credits, custom top-up or promo issue:\n'],
+  credits:['Stellar AI credits help','Hi Stellar AI,\n\nI need help with credits.\n\nMy account email is:\n\nDaily credits, wallet credits, custom top-up or promo issue:\n'],
   settings:['Settings help','Hi Stellar AI,\n\nI need help with the Settings page.\n\nMy account email is:\n\nWhat looks wrong or confusing:\n\nDevice/browser:\n'],
-  bug:['Bug report','Hi Stellar AI,\n\nI found a bug.\n\nMy account email is:\n\nDevice/browser:\n\nSteps to reproduce:\n\nError text or screenshot details:\n'],
-  refund:['Refund or cancellation help','Hi Stellar AI,\n\nI need help with a refund or cancellation.\n\nMy account email is:\n\nPayment/plan details:\n'],
+  bug:['Stellar AI bug report','Hi Stellar AI,\n\nI found a bug.\n\nMy account email is:\n\nDevice/browser:\n\nSteps to reproduce:\n\nError text or screenshot details:\n'],
+  refund:['Stellar AI refund or cancellation help','Hi Stellar AI,\n\nI need help with a refund or cancellation.\n\nMy account email is:\n\nPayment/plan details:\n'],
   promo:['Discord promo credits help','Hi Stellar AI,\n\nI need help with Discord promo/giveaway credits.\n\nMy account email is:\n\nPromo or giveaway details:\n']
- };
- const t=base[kind]||base.general;
+};
+function template(kind,msg=''){
+ const t=templates[kind]||templates.general;
  return {subject:t[0],body:msg?`Hi Stellar AI,\n\n${msg}\n\nMy account email is:\n\nDevice/browser:\n`:t[1]};
 }
 function openSupportEmail(kind,msg=''){
