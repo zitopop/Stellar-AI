@@ -55,7 +55,7 @@ test('owner controls remain gated for privileged viewers', () => {
 });
 
 test('service worker loads the latest public StellarX model picker guide', () => {
-  assert.match(sw, /stellar-sw-2026-09-27-app-interaction-v9/);
+  assert.match(sw, /stellar-sw-2026-09-27-ui-reliability-v10/);
   assert.match(sw, /stellar-capabilities-guide\.js\?v=7/);
   assert.match(sw, /capabilityGuideLoader/);
   assert.match(sw, /\/currency\.js/);
