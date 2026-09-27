@@ -89,10 +89,10 @@ Static HTML/CSS/JS · Vercel serverless functions · AI API · Stripe payments �
 
 | Plan | Monthly | Annual | Included |
 |------|---------|--------|----------|
-| Free | £0 | £0 | 40 requests/hour · up to 2,000 output tokens · £1 starting credit · Spark and Star |
-| Starter | £8/mo | £67/yr · save £29 (30%) | 120 requests/hour · up to 3,500 output tokens · stronger context and deliberate self-review · Spark and Star |
-| Plus | £20/mo | £168/yr · save £72 (30%) | 400 requests/hour · up to 5,000 output tokens · deeper architecture/debugging and multi-file validation · Spark, Star and Comet |
-| Pro | £75/mo | £630/yr · save £270 (30%) | 1,600 requests/hour · up to 8,000 output tokens · Nova · maximum multi-pass engineering review |
+| Free | £0 | £0 | 300 credits/day · up to 2,000 output tokens · Spark and Star |
+| Starter | £8/mo | £67/yr · save £29 (30%) | 900 credits/day · up to 3,500 output tokens · stronger context and deliberate self-review · Spark and Star |
+| Plus | £20/mo | £168/yr · save £72 (30%) | 2,500 credits/day · up to 5,000 output tokens · deeper architecture/debugging and multi-file validation · Spark, Star and Comet |
+| Pro | £75/mo | £630/yr · save £270 (30%) | 8,000 credits/day · up to 8,000 output tokens · Nova · maximum multi-pass engineering review |
 
 ---
 
