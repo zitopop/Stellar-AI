@@ -12,7 +12,7 @@ test('app navigation receives a simple workspace layer that hides busy secondary
   assert.match(sw, /operator/);
   assert.match(sw, /seo/);
   assert.match(sw, /business/);
-  assert.match(sw, /data\.stellarSimpleHidden/);
+  assert.match(sw, /dataset\.stellarSimpleHidden/);
   assert.match(sw, /quick/);
   assert.match(sw, /quality-strip/);
 });
