@@ -6,7 +6,7 @@ const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('homepage pricing stays concise and conversion-focused', () => {
-  assert.match(index, /Start free\. Pay for more when you need it\./);
+  assert.match(index, /Start free\. Upgrade when Stellar becomes part of your day\./);
   assert.match(index, /Save 30% yearly/);
   assert.match(index, /Add-on credits stay separate/);
   assert.match(index, /Free is for trying Stellar\. Starter is for regular use\./);
@@ -23,9 +23,12 @@ test('Plus is positioned as the main paid conversion plan', () => {
   assert.match(index, /MOST POPULAR/);
   assert.match(index, /RECOMMENDED/);
   assert.match(index, /Deeper review \+ multi-file work/);
+  assert.match(index, /3× the Free daily credits/);
+  assert.match(index, /up to 250 Comet messages\/day/);
+  assert.match(index, /up to 400 Nova messages\/day/);
   assert.match(index, /900 credits\/day/);
   assert.match(index, /2,500 credits\/day/);
   assert.match(index, /8,000 credits\/day/);
-  assert.match(app, /Plus £20 · Recommended/);
+  assert.match(app, /Plus £20 · Comet/);
   assert.match(index, /both accounts receive 100 bonus Stellar Credits/);
 });
