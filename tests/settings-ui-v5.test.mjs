@@ -8,7 +8,7 @@ test('Settings exposes the current account plugins voice plans billing and suppo
   assert.match(app, /id="auth-settings-row"/);
   assert.match(app, /href="\/plugins"/);
   assert.match(app, /href="\/jarvis"/);
-  assert.match(app, /href="\/#plans"/);
+  assert.match(app, /href="\/plans"/);
   assert.match(app, /id="set-billing-row"/);
   assert.match(app, /href="\/support"/);
 });
