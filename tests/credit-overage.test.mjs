@@ -22,9 +22,9 @@ test('credit bundles and model costs are server-owned', () => {
   assert.equal(OVERAGE_REQUEST_COST_PENCE, 5);
   assert.deepEqual(MODEL_CREDIT_COSTS, { spark:2, star:5, comet:10, nova:20 });
   assert.equal(getPlanDefinition('free').includedCredits, 300);
-  assert.equal(getPlanDefinition('starter').includedCredits, 4000);
-  assert.equal(getPlanDefinition('plus').includedCredits, 12000);
-  assert.equal(getPlanDefinition('pro').includedCredits, 48000);
+  assert.equal(getPlanDefinition('starter').includedCredits, 900);
+  assert.equal(getPlanDefinition('plus').includedCredits, 2500);
+  assert.equal(getPlanDefinition('pro').includedCredits, 8000);
 });
 
 test('included request does not spend wallet credit', async () => {
