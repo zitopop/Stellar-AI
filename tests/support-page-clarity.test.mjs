@@ -8,7 +8,7 @@ test('support page explains each help route clearly', () => {
   for (const text of [
     'Know exactly where to get help.',
     'Account access',
-    'Plans and payments',
+    'Plans and billing',
     'Credits and top-ups',
     'App bugs',
     'Refunds and cancellation',
