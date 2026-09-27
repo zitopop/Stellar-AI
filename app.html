@@ -999,6 +999,46 @@ html body #settings-panel.settings-panel>.settings-card{
 }
 </style>
 
+
+<style id="stellar-input-reliability-v26">
+/* Reliability layer: closed overlays must never intercept taps. */
+#settings-panel[hidden],
+#settings-panel[aria-hidden="true"],
+#welcome-modal[hidden],
+#backdrop[hidden],
+#model-menu[hidden],
+#model-menu[inert]{
+  display:none!important;
+  pointer-events:none!important;
+}
+#settings-panel:not([hidden])[aria-hidden="false"],
+#welcome-modal:not([hidden]){
+  pointer-events:auto!important;
+}
+.drawer-backdrop:not(.open){pointer-events:none!important}
+.stellar-credit-pill{visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+
+/* Tablet/iPad: keep Settings spacious without using the phone bottom-sheet layout. */
+@media (min-width:641px) and (max-width:1024px){
+  #settings-panel{padding:16px!important}
+  #settings-panel .settings-card{
+    width:min(760px,calc(100vw - 32px))!important;
+    max-height:90dvh!important;
+    margin:5dvh auto 0!important;
+    border-radius:22px!important;
+  }
+  #settings-panel .settings-header{padding-inline:18px!important}
+  #settings-panel .stellar-settings-tabs{padding-inline:14px!important}
+  #settings-panel .settings-grid{padding:10px 14px 18px!important}
+  #settings-panel .settings-row{min-height:54px!important}
+  .top{padding-inline:12px!important}
+  .stellar-credit-pill{flex:0 0 auto!important}
+}
+@media(max-width:640px){
+  .stellar-credit-pill{display:inline-flex!important;min-width:58px!important}
+  .stellar-credit-balance{display:inline!important;max-width:64px!important;overflow:hidden!important;text-overflow:ellipsis!important}
+}
+</style>
 </head>
 <body>
 <div class="drawer-backdrop" id="backdrop" onclick="closeResponsiveSidebar()" aria-hidden="true" hidden inert></div>
@@ -1010,7 +1050,7 @@ html body #settings-panel.settings-panel>.settings-card{
   <div id="current-work-section" class="side-section"><p class="side-title">Recent</p><div id="chat-list" class="chat-actions"><button class="nav-link" type="button" onclick="pinChat()" title="Pin current chat"><span>⌖</span>Pin</button><button class="nav-link" type="button" onclick="renameChat()" title="Rename current chat"><span>✎</span>Rename</button><button class="nav-link danger-action" type="button" onclick="deleteChat()" title="Delete current chat"><span>⌫</span>Delete</button></div><button id="export-chat-btn" class="nav-link chat-export" type="button" onclick="exportCurrentChat()" title="Download the current chat as Markdown"><span>⇩</span>Export chat</button><div id="saved-chat-list" class="saved-chat-list" aria-label="Saved chats"></div><p id="saved-chat-empty" class="empty-work">No saved chats yet.</p></div>
 </aside>
 <main class="main">
-  <header class="top"><div class="top-left"><button class="btn mobile-menu" type="button" onclick="openResponsiveSidebar()">Menu</button><button id="model-pill" class="model-pill" type="button" onclick="toggleModelMenu()" title="Current model" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span class="model-dot"></span><span id="current-model-label">Star · balanced</span></button><span id="top-usage" class="top-usage op-hide-sm">Usage loading…</span></div><div class="top-actions"><button id="jarvis-quick-call" class="btn jarvis-call-top owner-only" hidden type="button" aria-label="Ask Jarvis to call me now" title="Ask Jarvis to call me now" onclick="triggerOwnerCall('Owner pressed the one-click Jarvis call me button in Stellar AI.')">Call me</button><button class="btn top-plans" type="button" onclick="openCreditWallet()">Credits</button><button class="btn top-plans" type="button" onclick="openPlanSettings()">Plans</button><button id="account-button" class="btn" type="button" onclick="accountAction()">Account</button></div></header>
+  <header class="top"><div class="top-left"><button class="btn mobile-menu" type="button" onclick="openResponsiveSidebar()">Menu</button><button id="model-pill" class="model-pill" type="button" onclick="toggleModelMenu()" title="Current model" aria-haspopup="menu" aria-controls="model-menu" aria-expanded="false"><span class="model-dot"></span><span id="current-model-label">Star · balanced</span></button><span id="top-usage" class="top-usage op-hide-sm">Usage loading…</span></div><div class="top-actions"><button id="jarvis-quick-call" class="btn jarvis-call-top owner-only" hidden type="button" aria-label="Ask Jarvis to call me now" title="Ask Jarvis to call me now" onclick="triggerOwnerCall('Owner pressed the one-click Jarvis call me button in Stellar AI.')">Call me</button><button class="btn top-plans stellar-credit-pill" type="button" onclick="openCreditWallet()" aria-label="Open credits wallet"><span class="stellar-credit-icon" aria-hidden="true">✦</span><span class="stellar-credit-balance" id="stellar-credit-balance">—</span><span class="stellar-credit-label">credits</span></button><button class="btn top-plans" type="button" onclick="openPlanSettings()">Plans</button><button id="account-button" class="btn" type="button" onclick="accountAction()">Account</button></div></header>
   <section id="chat" class="chat"><div class="chat-inner" id="chatInner"><div class="welcome home-welcome" id="welcomeShell"><h1 id="homeGreeting">What can I help with?</h1><p id="welcome-copy" class="home-hint">Ask anything. Use + for voice, images, StellarX or plugins.</p></div></div></section>
   <section class="composer-wrap"><form id="chatForm" class="composer" aria-label="Message composer"><label for="prompt" class="sr-only">Message Stellar AI</label><textarea id="prompt" name="prompt" maxlength="8000" placeholder="Message Stellar AI…" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line." required></textarea><input id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden><div class="composer-bottom"><div class="composer-tools"><button id="composer-more-btn" class="composer-tool composer-plus" type="button" aria-label="Open tools" title="Tools" aria-expanded="false" aria-controls="composer-more" onclick="toggleComposerMore()">＋</button></div><div class="composer-bar"><span id="status" class="status" data-idle="true" role="status" aria-live="polite">Ready</span><button id="stopBtn" class="btn stop-btn" type="button" onclick="stopGeneration()" disabled>Stop</button><button id="sendBtn" class="btn primary" type="submit" aria-label="Send message" title="Send message"><span class="send-label">Send</span><span aria-hidden="true">↑</span></button></div></div><div id="composer-more" class="composer-more" hidden><div class="composer-more-row composer-tool-grid"><button id="image-upload-btn" class="composer-tool" type="button" aria-label="Attach an image" onclick="document.getElementById('image-upload-input').click()">＋ Image</button><button id="voice-input-btn" class="composer-tool" type="button" aria-label="Start voice input" aria-pressed="false" onclick="toggleVoiceInput()">◉ Voice</button><button class="composer-tool composer-computer signed-in-only" type="button" onclick="openComputerActionCard()" title="Use StellarX with this computer">▣ StellarX</button><a class="composer-tool composer-plugins" href="/plugins" title="Open Stellar plugins">◇ Plugins</a><span id="image-upload-status" class="image-status" role="status" aria-live="polite">No image attached</span><button id="image-remove-btn" class="composer-tool" type="button" onclick="removeImage()" hidden>Remove</button></div><span id="credit-note" class="credit-note">Stellar uses included credits first, then bought add-on credits automatically.</span></div></form></section>
 </main>
@@ -1397,5 +1437,65 @@ $('chatForm').addEventListener('submit',e=>{e.preventDefault();const text=$('pro
 })();
 </script>
 <script defer src="/lib/assets/stellar-call.js?v=20260925-voiceguard"></script>
+
+<script id="stellar-credit-direct-sync-v26">
+(()=>{
+  const $=id=>document.getElementById(id);
+  function syncCreditPill(){
+    const pill=document.querySelector('.stellar-credit-pill');
+    const balance=$('stellar-credit-balance');
+    if(!pill||!balance)return;
+    let owner=false,total=null,remaining=0,addon=0;
+    try{owner=typeof isOwner==='function'&&isOwner()}catch{}
+    try{
+      if(typeof planState!=='undefined'&&planState){
+        remaining=Math.max(0,Number(planState.remaining||0)||0);
+        addon=Math.max(0,Number(planState.walletPence||0)||0);
+        total=remaining+addon;
+      }
+    }catch{}
+    if(owner){
+      balance.textContent='∞';
+      pill.title='Owner access · unlimited credits';
+      pill.setAttribute('aria-label','Open credits wallet. Owner access with unlimited credits.');
+      return;
+    }
+    if(Number.isFinite(total)){
+      balance.textContent=total.toLocaleString('en-GB');
+      pill.title=addon>0
+        ? total.toLocaleString('en-GB')+' credits · '+remaining.toLocaleString('en-GB')+' included + '+addon.toLocaleString('en-GB')+' wallet'
+        : total.toLocaleString('en-GB')+' credits available';
+      pill.setAttribute('aria-label','Open credits wallet. '+total.toLocaleString('en-GB')+' credits available.');
+    }
+  }
+  function repairClosedLayers(){
+    const entries=[
+      ['settings-panel',true],
+      ['welcome-modal',false],
+      ['backdrop',false],
+      ['model-menu',false]
+    ];
+    for(const [id] of entries){
+      const el=$(id); if(!el)continue;
+      if(el.hidden||el.getAttribute('aria-hidden')==='true'){
+        el.style.pointerEvents='none';
+      }else{
+        el.style.removeProperty('pointer-events');
+      }
+    }
+  }
+  function sync(){syncCreditPill();repairClosedLayers()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
+  window.addEventListener('pageshow',sync);
+  window.addEventListener('focus',sync);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+  const usage=$('top-usage');
+  if(usage&&'MutationObserver'in window)new MutationObserver(syncCreditPill).observe(usage,{subtree:true,childList:true,characterData:true});
+  const settings=$('settings-panel');
+  if(settings&&'MutationObserver'in window)new MutationObserver(repairClosedLayers).observe(settings,{attributes:true,attributeFilter:['hidden','aria-hidden']});
+  [250,900,1800].forEach(ms=>setTimeout(sync,ms));
+  window.StellarCreditDisplay={sync:syncCreditPill};
+})();
+</script>
 </body>
 </html>
