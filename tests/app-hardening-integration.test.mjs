@@ -21,11 +21,19 @@ test('owner-only behaviour remains gated by auth code and hidden UI class', () =
 });
 
 test('telemetry rescue layer keeps core app interactions recoverable', () => {
-  assert.match(telemetry, /stellar-business-polish-v3/);
+  assert.match(telemetry, /stellar-business-polish-v5/);
   assert.match(telemetry, /function safeGetStorage/);
   assert.match(telemetry, /function closeDrawer/);
   assert.match(telemetry, /rescueInteractionState/);
   assert.match(telemetry, /billing help/);
   assert.match(telemetry, /Pinned chats are protected/);
   assert.match(telemetry, /📌/u);
+});
+
+test('credits stay visible to normal users without exposing owner credit controls', () => {
+  assert.match(telemetry, /stellar-credit-pill/);
+  assert.match(telemetry, /ensureCreditIcon/);
+  assert.match(telemetry, /💳/u);
+  assert.match(telemetry, /daily allowance plus wallet top-ups/);
+  assert.match(telemetry, /\[data-admin-credit\]/);
 });
