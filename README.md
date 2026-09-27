@@ -98,6 +98,15 @@ Then smoke-test at minimum:
 
 Never commit real credentials, API keys, private tokens or customer secrets.
 
+### Email delivery configuration
+
+Welcome and operational emails use Resend only when a verified sender is configured in the deployment environment:
+
+- `RESEND_API_KEY` — Resend API credential.
+- `RESEND_FROM_EMAIL` — verified sender identity/domain used in the From header.
+
+The support inbox can remain a Gmail address for replies, but it must not be used as an unverified Resend From address.
+
 ## Documentation
 
 Start with:
