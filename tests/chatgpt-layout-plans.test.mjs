@@ -26,7 +26,7 @@ test('landing uses a concise conversational entry with clear pricing access', ()
   assert.match(landing, /Ask anything\.<br>Get real work done\./);
   assert.match(landing, /Chat with Stellar AI\. Hand bigger jobs to StellarX\. Connect tools only when the task needs them\./);
   assert.match(landing, /Message Stellar AI/);
-  assert.match(landing, /href="#plans" class="oa2-secondary-action">See (?:pricing|plans)<\/a>/);
+  assert.match(landing, /href="#plans" class="oa2-secondary-action">(?:See (?:pricing|plans)|Plans from £8\/month)<\/a>/);
   assert.match(landing, /id="stellar-home-calm-v16"/);
   assert.match(landing, /\.oa2-proof-row,.public-home \.oa2-starters,.public-home \.oa2-quicklinks\{display:none!important\}/);
   assert.match(landing, /Prices and checkout are in GBP/);
