@@ -1,23 +1,23 @@
 (() => {
   'use strict';
 
-  if (window.__stellarCapabilitiesGuideV3) return;
-  window.__stellarCapabilitiesGuideV3 = true;
+  if (window.__stellarCapabilitiesGuideV4) return;
+  window.__stellarCapabilitiesGuideV4 = true;
 
   const PUBLIC_GUIDE_ITEMS = [
     ['Chat', 'Ask Stellar to write, plan, explain, fix and organise daily work.'],
+    ['StellarX', 'Use StellarX for advanced guided tasks, bigger projects, website and business workflows, with approval-first steps.'],
     ['Website help', 'Improve landing pages, support pages, SEO copy, layout and calls to action.'],
     ['Business help', 'Draft lead replies, follow-up messages, offers, sales copy and simple plans.'],
     ['Credits', 'Understand daily credits, wallet top-ups, custom credit amounts, Discord promos and giveaways.'],
     ['Support', 'Find the right help route for billing, refunds, account access, bugs, credits or Discord rewards.'],
     ['Settings', 'See what each control does before changing account, model, voice, privacy or app preferences.'],
-    ['Safety & approvals', 'If advanced help is needed, Stellar explains the approval step first instead of exposing internal owner tools.'],
+    ['Safety & approvals', 'Bigger actions are explained first so users know what happens before anything important runs.'],
   ];
 
   const OWNER_GUIDE_ITEMS = [
-    ['StellarX', 'Private owner/admin/staff workspace for approved internal workflows and operational follow-through.'],
-    ['Owner tools', 'Jarvis, specialist project help and bigger actions are private owner/admin/staff capabilities.'],
-    ['Staff controls', 'Internal approvals, escalations and private operational tools stay hidden from normal users.'],
+    ['Owner controls', 'Private owner/admin/staff settings for approvals, escalation routing and internal configuration.'],
+    ['Staff controls', 'Team-only operational views and private configuration stay hidden from normal users.'],
   ];
 
   function isAppPage() {
@@ -98,7 +98,7 @@
     title.textContent = compact ? 'What Stellar can do' : 'What Stellar AI can do for you';
     const intro = document.createElement('p');
     intro.textContent = compact
-      ? 'Use Stellar as a daily helper for chat, websites, credits, support, business follow-up and clear approval steps.'
+      ? 'Use Stellar and StellarX for chat, advanced projects, websites, credits, support, business follow-up and clear approval steps.'
       : 'Stellar is not just a blank chat box. It helps users understand what to ask, what to click and when bigger actions need approval.';
     const grid = document.createElement('div');
     grid.className = 'stellar-capabilities-grid';
