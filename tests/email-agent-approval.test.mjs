@@ -35,7 +35,7 @@ test('Email draft helper is discoverable from app settings and routing', () => {
 
 test('Gmail connector is user-facing but sending remains approval scoped', () => {
   assert.equal(getPluginDefinition('gmail').audience, 'signed_in');
-  assert.match(plugins, /Connect inbox, draft replies, and send only with approval\./);
-  assert.match(plugins, /send only with approval/i);
+  assert.match(plugins, /Email Agent workflows/);
+  assert.match(plugins, /Send only with approval/);
   assert.ok(!plugins.includes("['github','vercel','gmail']"));
 });
