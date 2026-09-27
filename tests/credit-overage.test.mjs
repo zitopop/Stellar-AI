@@ -21,10 +21,13 @@ function redisResult(result) {
 test('credit bundles and model costs are server-owned', () => {
   assert.equal(OVERAGE_REQUEST_COST_PENCE, 5);
   assert.deepEqual(MODEL_CREDIT_COSTS, { spark:2, star:5, comet:10, nova:20 });
-  assert.equal(getPlanDefinition('free').includedCredits, 300);
-  assert.equal(getPlanDefinition('starter').includedCredits, 1500);
-  assert.equal(getPlanDefinition('plus').includedCredits, 5000);
-  assert.equal(getPlanDefinition('pro').includedCredits, 20000);
+  assert.equal(getPlanDefinition('free').includedCredits, 75);
+  assert.equal(getPlanDefinition('starter').includedCredits, 5000);
+  assert.equal(getPlanDefinition('plus').includedCredits, 15000);
+  assert.equal(getPlanDefinition('pro').includedCredits, 50000);
+  assert.ok(getPlanDefinition('free').includedCredits * 31 < getPlanDefinition('starter').includedCredits);
+  assert.ok(getPlanDefinition('starter').includedCredits < getPlanDefinition('plus').includedCredits);
+  assert.ok(getPlanDefinition('plus').includedCredits < getPlanDefinition('pro').includedCredits);
 });
 
 test('included request does not spend wallet credit', async () => {
@@ -36,7 +39,7 @@ test('included request does not spend wallet credit', async () => {
 });
 
 test('request after allowance can spend exactly five pence when opted in', async () => {
-  redisResult([1, 300, 0, 5, 95]);
+  redisResult([1, 75, 0, 5, 95]);
   const result = await consumeUsage({ url: 'https://kv.test', token: 't', identity: 'email:a@test.com', plan: 'free', walletKey: 'stellar:user:a@test.com', allowCredit: true, now: 1_700_000_000_000 });
   assert.equal(result.allowed, true);
   assert.equal(result.chargedCreditPence, 5);
@@ -44,9 +47,9 @@ test('request after allowance can spend exactly five pence when opted in', async
 });
 
 test('failed generation can refund included and add-on credits', async () => {
-  redisResult([295,100]);
+  redisResult([70,100]);
   const refund = await refundUsageCharge({ url:'https://kv.test', token:'t', counterKey:'stellar:credits:test', walletKey:'stellar:user:a@test.com', includedCredits:5, amountPence:5, now:1_700_000_000_000 });
-  assert.equal(refund.usedCredits,295);
+  assert.equal(refund.usedCredits,70);
   assert.equal(refund.walletPence,100);
   assert.match(chat, /includedCreditsCharged > 0/);
   assert.match(chat, /refundUsageCharge/);
@@ -64,7 +67,6 @@ test('client automatically uses purchased add-on credits after included credits'
   assert.match(app, /function creditsOn\(\)/);
   assert.match(app, /use_credit:creditsOn\(\)/);
 });
-
 
 test('free credits reset at midnight UK time during BST', () => {
   const now = Date.parse('2026-09-27T12:00:00Z');
