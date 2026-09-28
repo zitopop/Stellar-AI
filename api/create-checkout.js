@@ -111,13 +111,19 @@ export default async function handler(req, res) {
   try {
     const Stripe = (await import('stripe')).default;
     const stripe = new Stripe(stripeSecret);
+    const kvUrl = process.env.KV_REST_API_URL;
+    const kvToken = process.env.KV_REST_API_TOKEN;
+    const accountUser = kvUrl && kvToken
+      ? await kvGet(kvUrl, kvToken, `stellar:user:${sessionUser.email}`)
+      : null;
+    const existingCustomerId = String(accountUser?.stripeCustomerId || '').trim();
+    const checkoutCustomer = /^cus_[A-Za-z0-9]+$/.test(existingCustomerId)
+      ? { customer: existingCustomerId }
+      : { customer_email: sessionUser.email };
 
     if (plan === 'manage-billing') {
-      const kvUrl = process.env.KV_REST_API_URL;
-      const kvToken = process.env.KV_REST_API_TOKEN;
       if (!kvUrl || !kvToken) return res.status(500).json({ error: 'Account storage is not configured.' });
-
-      const user = await kvGet(kvUrl, kvToken, `stellar:user:${sessionUser.email}`);
+      const user = accountUser;
       if (!user || !isPaidPlan(user.plan)) {
         return res.status(400).json({ error: 'A paid Stellar plan is required to manage subscription billing.' });
       }
@@ -146,7 +152,7 @@ export default async function handler(req, res) {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
-        customer_email: sessionUser.email,
+        ...checkoutCustomer,
         line_items: [{
           price_data: {
             currency: 'gbp',
@@ -197,7 +203,7 @@ export default async function handler(req, res) {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
-        customer_email: sessionUser.email,
+        ...checkoutCustomer,
         line_items: [{
           price_data: {
             currency: 'gbp',
@@ -216,9 +222,21 @@ export default async function handler(req, res) {
         after_expiration: { recovery: { enabled: true } },
         client_reference_id: attemptId,
         metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus), country, currency },
+        payment_intent_data: {
+          metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
+        },
       });
       await incrementConversionMetric('checkout-started');
       return res.status(200).json({ url: checkout.url });
+    }
+
+    // Never create a second recurring subscription for an account that already has one.
+    const existingSubscriptionId = String(accountUser?.stripeSubscriptionId || '').trim();
+    if (isPaidPlan(accountUser?.plan) && /^sub_[A-Za-z0-9]+$/.test(existingSubscriptionId)) {
+      return res.status(409).json({
+        error: 'This account already has an active Stellar subscription. Open Manage billing before starting another plan checkout.',
+        code: 'ACTIVE_SUBSCRIPTION_EXISTS',
+      });
     }
 
     // Price IDs are server-owned. Historic Plus aliases remain supported, but a
@@ -231,13 +249,16 @@ export default async function handler(req, res) {
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
-      customer_email: sessionUser.email,
+      ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       after_expiration: { recovery: { enabled: true } },
       client_reference_id: attemptId,
       metadata: { email: sessionUser.email, plan, country, currency },
+      subscription_data: {
+        metadata: { email: sessionUser.email, plan, app: 'stellar-ai' },
+      },
       adaptive_pricing: { enabled: true },
     });
 
