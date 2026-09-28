@@ -186,6 +186,128 @@
   justify-content:space-between!important;
   gap:10px!important
 }
+
+/* Settings spacing fix — keeps name/email and title/description stacked instead of glued together. */
+.panel .account-card,
+.settings-card .account-card,
+.account-card{
+  overflow:hidden!important
+}
+.panel .account-top,
+.settings-card .account-top,
+.account-top{
+  align-items:center!important;
+  gap:12px!important;
+  min-width:0!important
+}
+.panel .account-title,
+.settings-card .account-title,
+.account-title{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  display:grid!important;
+  gap:4px!important;
+  align-content:center!important;
+  line-height:1.2!important
+}
+.panel .account-title strong,
+.settings-card .account-title strong,
+.account-title strong{
+  display:block!important;
+  max-width:100%!important;
+  margin:0!important;
+  color:#fff!important;
+  font-weight:900!important;
+  line-height:1.18!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important
+}
+.panel .account-title small,
+.settings-card .account-title small,
+.account-title small{
+  display:block!important;
+  max-width:100%!important;
+  margin:0!important;
+  color:#a9b2c1!important;
+  font-size:12px!important;
+  line-height:1.32!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important
+}
+.panel .settings-row,
+.settings-card .settings-row,
+.settings-row{
+  min-height:58px!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:12px!important
+}
+.panel .settings-row .copy,
+.settings-card .settings-row .copy,
+.settings-row .copy{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  display:grid!important;
+  gap:3px!important;
+  align-content:center!important;
+  line-height:1.2!important
+}
+.panel .settings-row .copy strong,
+.settings-card .settings-row .copy strong,
+.settings-row .copy strong{
+  display:block!important;
+  max-width:100%!important;
+  margin:0!important;
+  color:#f6f7fb!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  line-height:1.22!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important
+}
+.panel .settings-row .copy small,
+.settings-card .settings-row .copy small,
+.settings-row .copy small{
+  display:block!important;
+  max-width:100%!important;
+  margin:0!important;
+  color:#8f98a7!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important
+}
+.panel .settings-row .ico,
+.settings-card .settings-row .ico,
+.settings-row .ico{
+  flex:0 0 32px!important
+}
+.panel .settings-row .chev,
+.settings-card .settings-row .chev,
+.settings-row .chev{
+  flex:0 0 auto!important;
+  margin-left:4px!important
+}
+.panel .stats,
+.settings-card .stats,
+.stats{
+  gap:8px!important
+}
+.panel .stat span,
+.settings-card .stat span,
+.stat span,
+.panel .stat strong,
+.settings-card .stat strong,
+.stat strong{
+  display:block!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important
+}
 @media(max-width:900px){
   body.modal-open .side{transform:translateX(-104%)!important}
   .home-welcome{padding-top:clamp(48px,11vh,96px)!important}
@@ -221,10 +343,24 @@
   }
   .settings-header{padding-inline:13px!important}
   .settings-grid{padding-inline:7px!important}
-  .settings-row{min-height:50px!important;padding-inline:8px!important}
+  .settings-row{min-height:60px!important;padding-inline:10px!important}
   .settings-plan-actions .credit-buy-controls{grid-template-columns:1fr!important}
   .settings-plan-actions .credit-buy-controls .btn{min-height:44px!important}
   .settings-wallet-row .credit-buy-controls{grid-template-columns:1fr!important}
+  .panel .account-title small,
+  .settings-card .account-title small,
+  .account-title small{
+    white-space:nowrap!important;
+    max-width:calc(100vw - 132px)!important
+  }
+  .panel .settings-row .copy small,
+  .settings-card .settings-row .copy small,
+  .settings-row .copy small{
+    white-space:normal!important;
+    display:-webkit-box!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important
+  }
   #model-menu{
     left:8px!important;right:8px!important;
     top:56px!important;
@@ -241,4 +377,7 @@
   .stellar-credit-icon{display:none!important}
   .stellar-credit-pill{min-width:46px!important}
   .model-pill{max-width:38vw!important}
+  .panel .account-title small,
+  .settings-card .account-title small,
+  .account-title small{max-width:calc(100vw - 112px)!important}
 }
