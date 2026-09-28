@@ -68,6 +68,79 @@
   border-radius:8px!important;
   font-size:10px!important
 }
+/* Chat history action polish — pin, rename and delete should be obvious but not noisy. */
+.saved-chat-list,.chat-history-list,#saved-chat-list{display:grid!important;gap:4px!important}
+.chat-history-item,[data-chat-row]{
+  position:relative!important;
+  min-height:44px!important;
+  border-radius:12px!important;
+  padding-right:4px!important;
+  transition:background .14s ease,border-color .14s ease!important
+}
+.chat-history-item:hover,[data-chat-row]:hover,
+.chat-history-item:focus-within,[data-chat-row]:focus-within{
+  background:rgba(255,255,255,.045)!important
+}
+.chat-history-item.stellar-chat-pinned,[data-chat-row].stellar-chat-pinned{
+  background:rgba(155,140,255,.07)!important;
+  box-shadow:inset 2px 0 0 rgba(155,140,255,.65)!important
+}
+.chat-history-item.stellar-chat-pinned::before,[data-chat-row].stellar-chat-pinned::before{
+  content:'Pinned';
+  position:absolute;
+  right:8px;
+  top:4px;
+  color:#bdb5ff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.75;
+  pointer-events:none
+}
+.chat-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:4px!important;
+  margin-top:4px!important
+}
+.chat-actions button,.chat-actions .nav-link,.stellar-chat-action{
+  width:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  height:34px!important;
+  padding:0!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#aeb6c5!important;
+  font-size:0!important;
+  line-height:1!important
+}
+.stellar-chat-action::before,.chat-actions button::before,.chat-actions .nav-link::before{
+  font-size:13px!important;
+  font-weight:900!important
+}
+.stellar-chat-action[data-stellar-chat-action="pin"]::before{content:'📌'}
+.stellar-chat-action[data-stellar-chat-action="rename"]::before{content:'✎'}
+.stellar-chat-action[data-stellar-chat-action="delete"]::before{content:'⌫'}
+.stellar-chat-action:hover,.chat-actions button:hover,.chat-actions .nav-link:hover{
+  background:rgba(255,255,255,.075)!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.14)!important
+}
+.stellar-chat-action[data-stellar-chat-action="delete"]:hover{
+  color:#ffd2d2!important;
+  border-color:rgba(255,119,119,.25)!important;
+  background:rgba(255,119,119,.08)!important
+}
+.stellar-chat-action[aria-disabled="true"],.stellar-chat-action.is-disabled{
+  opacity:.42!important;
+  cursor:not-allowed!important
+}
 .stellar-credit-context{
   margin-top:3px;
   color:#777f8c;
@@ -156,6 +229,12 @@
     left:8px!important;right:8px!important;
     top:56px!important;
     max-height:calc(100dvh - 72px)!important
+  }
+  .chat-actions button,.chat-actions .nav-link,.stellar-chat-action{
+    width:38px!important;
+    min-width:38px!important;
+    height:38px!important;
+    min-height:38px!important
   }
 }
 @media(max-width:380px){
