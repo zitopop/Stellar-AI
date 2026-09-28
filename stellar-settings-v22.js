@@ -1,4 +1,4 @@
-/* Stellar Settings grouping v22.3 — cleaner account/profile dashboard */
+/* Stellar Settings grouping v22.4 — cleaner account/profile dashboard + owner privacy guard */
 (()=>{
   function el(tag,cls,text){
     const node=document.createElement(tag);
@@ -21,10 +21,59 @@
     const node=part==='small'?row.querySelector('small'):part==='strong'?row.querySelector('strong'):row;
     return cleanText(node?.textContent||'');
   }
-  function injectProfileStyles(){
-    if(document.getElementById('stellar-settings-profile-v22-3'))return;
+  function isOwnerViewer(){
+    try{return typeof window.isOwner==='function'&&window.isOwner()===true}catch{return false}
+  }
+  function injectOwnerPrivacyStyles(){
+    if(document.getElementById('stellar-owner-privacy-v22-4'))return;
     const style=document.createElement('style');
-    style.id='stellar-settings-profile-v22-3';
+    style.id='stellar-owner-privacy-v22-4';
+    style.textContent=`
+      html:not(.stellar-owner-viewer) #settings-panel .owner-only,
+      html:not(.stellar-owner-viewer) #settings-panel [data-owner-only="true"],
+      html:not(.stellar-owner-viewer) #settings-panel [data-audience="owner"],
+      html:not(.stellar-owner-viewer) #settings-panel #settings-advanced-toggle,
+      html:not(.stellar-owner-viewer) #settings-panel #stellar-call-settings,
+      html:not(.stellar-owner-viewer) #settings-panel a[href="/jarvis"],
+      html:not(.stellar-owner-viewer) #settings-panel a[href="/owner"],
+      html:not(.stellar-owner-viewer) #settings-panel a[href="/admin"]{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+      html:not(.stellar-owner-viewer) .owner-only:not(.allow-owner-placeholder),
+      html:not(.stellar-owner-viewer) [data-owner-only="true"]:not(.allow-owner-placeholder){display:none!important;visibility:hidden!important;pointer-events:none!important;}
+    `;
+    document.head.appendChild(style);
+  }
+  function protectOwnerTools(){
+    injectOwnerPrivacyStyles();
+    const owner=isOwnerViewer();
+    document.documentElement.classList.toggle('stellar-owner-viewer',owner);
+    const selector=[
+      '#settings-panel .owner-only',
+      '#settings-panel [data-owner-only="true"]',
+      '#settings-panel [data-audience="owner"]',
+      '#settings-panel #settings-advanced-toggle',
+      '#settings-panel #stellar-call-settings',
+      '#settings-panel a[href="/jarvis"]',
+      '#settings-panel a[href="/owner"]',
+      '#settings-panel a[href="/admin"]'
+    ].join(',');
+    document.querySelectorAll(selector).forEach(node=>{
+      if(owner){
+        node.hidden=false;
+        node.removeAttribute('aria-hidden');
+        node.removeAttribute('inert');
+        node.dataset.ownerConcealed='0';
+      }else{
+        node.hidden=true;
+        node.setAttribute('aria-hidden','true');
+        node.setAttribute('inert','');
+        node.dataset.ownerConcealed='1';
+      }
+    });
+  }
+  function injectProfileStyles(){
+    if(document.getElementById('stellar-settings-profile-v22-4'))return;
+    const style=document.createElement('style');
+    style.id='stellar-settings-profile-v22-4';
     style.textContent=`
       #settings-panel .stellar-profile-summary{margin:12px 12px 8px!important;padding:14px!important;display:grid!important;grid-template-columns:48px minmax(0,1fr) auto!important;gap:12px!important;align-items:center!important;border:1px solid rgba(184,175,255,.20)!important;border-radius:20px!important;background:linear-gradient(135deg,rgba(139,124,246,.15),rgba(94,225,170,.055) 42%,rgba(15,17,24,.96))!important;box-shadow:0 18px 58px rgba(0,0,0,.24)!important;}
       #settings-panel .stellar-profile-avatar{width:48px!important;height:48px!important;border-radius:16px!important;display:grid!important;place-items:center!important;background:linear-gradient(135deg,#d8d0ff,#86f2dd)!important;color:#11131a!important;font-size:21px!important;font-weight:950!important;letter-spacing:-.04em!important;box-shadow:0 12px 30px rgba(134,242,221,.12)!important;}
@@ -101,9 +150,11 @@
   function setup(){
     const grid=document.querySelector('#settings-panel .settings-grid');
     if(!grid)return;
+    protectOwnerTools();
     ensureProfileSummary();
-    if(grid.dataset.grouped==='1')return;
+    if(grid.dataset.grouped==='1'){protectOwnerTools();return;}
     grid.dataset.grouped='1';
+    const owner=isOwnerViewer();
     const auth=document.getElementById('auth-settings-row');
     const plugins=document.querySelector('#settings-panel a[href="/plugins"]');
     const desktop=document.getElementById('desktop-agent-nav');
@@ -120,16 +171,17 @@
     if(topup && !billing) addBefore(topup,'Billing and credits');
     if(referral){ addDividerBefore(referral); addBefore(referral,'Rewards'); }
     if(support){ addDividerBefore(support); addBefore(support,'Help'); }
-    if(advanced){ addDividerBefore(advanced); addBefore(advanced,'Advanced'); }
+    if(advanced&&owner){ addDividerBefore(advanced); addBefore(advanced,'Advanced owner tools'); }
     if(legal && !support) addBefore(legal,'Help');
+    protectOwnerTools();
   }
   function observe(){
     const panel=document.getElementById('settings-panel');
     if(!panel||panel.dataset.stellarProfileObserver==='1')return;
     panel.dataset.stellarProfileObserver='1';
-    new MutationObserver(()=>ensureProfileSummary()).observe(panel,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden','aria-hidden','class']});
+    new MutationObserver(()=>{ensureProfileSummary();protectOwnerTools();}).observe(panel,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden','aria-hidden','class','data-audience']});
   }
-  const start=()=>{setup();observe()};
+  const start=()=>{injectOwnerPrivacyStyles();protectOwnerTools();setup();observe();protectOwnerTools()};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
   window.addEventListener('pageshow',start);
 })();
