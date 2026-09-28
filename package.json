@@ -13,9 +13,10 @@
     "test": "node --test tests/*.test.mjs",
     "check:syntax": "node scripts/check-source.mjs",
     "audit:routes": "node scripts/audit-public-routes.mjs",
-    "check": "npm run check:syntax && npm run audit:routes && npm test",
+    "check": "npm run check:syntax && npm run audit:routes && npm run audit:files && npm test",
     "build:static": "node scripts/build-static-backup.mjs",
-    "deploy:safe": "node scripts/safe-deploy.mjs"
+    "deploy:safe": "node scripts/safe-deploy.mjs",
+    "audit:files": "node scripts/audit-repo-hygiene.mjs"
   },
   "engines": {
     "node": "22.x"
