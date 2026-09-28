@@ -1,83 +1,6 @@
-/* Stellar growth layer v25 — compact referral + creator proof without homepage clutter */
-.public-home .stellar-growth-strip{
-  width:min(1120px,calc(100% - 36px));
-  margin:clamp(50px,7vw,82px) auto 0;
-  padding:22px;
-  display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
-  align-items:center;
-  gap:18px;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:20px;
-  background:linear-gradient(135deg,rgba(139,124,246,.075),rgba(15,17,23,.96));
-}
-.public-home .stellar-growth-copy{min-width:0}
-.public-home .stellar-growth-copy span{
-  display:inline-flex;
-  color:#a59cff;
-  font:800 10px/1 "DM Mono",monospace;
-  letter-spacing:.12em;
-}
-.public-home .stellar-growth-copy h2{
-  margin:8px 0 7px;
-  font-size:clamp(25px,3.6vw,38px);
-  line-height:1.04;
-  letter-spacing:-.045em;
-}
-.public-home .stellar-growth-copy p{
-  margin:0;
-  max-width:720px;
-  color:#9da6b5;
-  font-size:12.5px;
-  line-height:1.65;
-}
-.public-home .stellar-growth-actions{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-  gap:8px;
-}
-.public-home .stellar-growth-actions .button{
-  min-height:42px!important;
-  white-space:nowrap;
-}
-.public-home .stellar-growth-facts{
-  grid-column:1/-1;
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:8px;
-  margin-top:2px;
-}
-.public-home .stellar-growth-facts div{
-  padding:12px 13px;
-  border:1px solid rgba(255,255,255,.065);
-  border-radius:12px;
-  background:rgba(0,0,0,.10);
-}
-.public-home .stellar-growth-facts strong{
-  display:block;
-  color:#eceef4;
-  font-size:11px;
-}
-.public-home .stellar-growth-facts span{
-  display:block;
-  margin-top:3px;
-  color:#7f8897;
-  font-size:10px;
-  line-height:1.5;
-}
-@media(max-width:760px){
-  .public-home .stellar-growth-strip{
-    width:calc(100% - 24px);
-    grid-template-columns:1fr;
-    padding:18px;
-  }
-  .public-home .stellar-growth-actions{justify-content:stretch}
-  .public-home .stellar-growth-actions .button{width:100%}
-  .public-home .stellar-growth-facts{grid-template-columns:1fr}
-}
+/* Stellar landing compact mode v28 — smaller landing page, tighter pricing, less vertical weight. */
 
-/* Stellar calm landing override v26 — reduce busy sections and keep the page conversion-first. */
+/* Hide noisy/large legacy homepage sections. */
 .public-home .stellar-proof,
 .public-home .stellar-growth-strip,
 .public-home .stellar-plan-table-wrap,
@@ -98,222 +21,340 @@
   display:none!important;
 }
 
+/* Smaller top nav. */
+.public-home .site-header,
+.public-home .nav{
+  min-height:52px!important;
+}
+.public-home .site-header{
+  background:rgba(9,11,16,.9)!important;
+  backdrop-filter:blur(14px)!important;
+}
+.public-home .nav{
+  width:min(1040px,calc(100% - 24px))!important;
+  padding-block:6px!important;
+}
+.public-home .brand-mark,
+.public-home .logo,
+.public-home .nav-brand{
+  transform:scale(.92)!important;
+  transform-origin:left center!important;
+}
+.public-home .nav-links{
+  gap:12px!important;
+}
+.public-home .nav-links a,
+.public-home .nav-login,
+.public-home .button-small{
+  font-size:10.5px!important;
+}
+.public-home .button-small{
+  min-height:32px!important;
+  padding-inline:10px!important;
+  border-radius:9px!important;
+}
 .public-home .nav-links a[href="#stellarx-home"],
 .public-home .nav-links a[href="/plugins"],
-.public-home .nav-links a[href="/business"]{
+.public-home .nav-links a[href="/business"],
+.public-home .nav-links a[href="/support"]{
   display:none!important;
 }
 
+/* Smaller hero. */
 .public-home .oa2-hero{
-  width:min(880px,calc(100% - 32px))!important;
-  padding-top:clamp(82px,11vw,138px)!important;
-  padding-bottom:clamp(70px,9vw,112px)!important;
+  width:min(760px,calc(100% - 28px))!important;
+  min-height:auto!important;
+  padding-top:clamp(48px,7vw,82px)!important;
+  padding-bottom:clamp(34px,6vw,64px)!important;
+}
+.public-home .oa2-wordmark{
+  font-size:8.5px!important;
+  letter-spacing:.13em!important;
+  margin-bottom:10px!important;
 }
 .public-home .oa2-hero h1{
-  max-width:790px!important;
-  font-size:clamp(48px,7vw,82px)!important;
-  line-height:.99!important;
+  max-width:650px!important;
+  margin-inline:auto!important;
+  font-size:clamp(35px,5.4vw,58px)!important;
+  line-height:1!important;
+  letter-spacing:-.058em!important;
 }
 .public-home .oa2-lead{
-  max-width:590px!important;
-  font-size:clamp(15px,1.55vw,18px)!important;
+  max-width:500px!important;
+  margin-top:13px!important;
+  font-size:clamp(13px,1.25vw,15px)!important;
+  line-height:1.5!important;
 }
-.public-home .oa2-hero-proof{
+.public-home .oa2-hero-proof,
+.public-home .oa2-proof-row,
+.public-home .oa2-starters,
+.public-home .oa2-quicklinks,
+.public-home .oa2-start-note,
+.public-home .oa2-composer-tools,
+.public-home .oa2-model{
   display:none!important;
 }
 .public-home .oa2-composer{
-  max-width:680px!important;
-  margin-top:28px!important;
+  max-width:540px!important;
+  margin-top:18px!important;
+  padding:8px!important;
+  border-radius:15px!important;
 }
-.public-home .oa2-start-note{
-  display:none!important;
+.public-home .oa2-composer textarea,
+.public-home .oa2-composer input{
+  min-height:46px!important;
+  max-height:96px!important;
+  font-size:13px!important;
+  padding:4px 5px!important;
+}
+.public-home .oa2-composer-bar{
+  min-height:30px!important;
+}
+.public-home .oa2-composer button{
+  width:31px!important;
+  height:31px!important;
+  min-width:31px!important;
+  border-radius:9px!important;
 }
 .public-home .oa2-hero-actions{
-  margin-top:18px!important;
+  margin-top:14px!important;
+  gap:8px!important;
+}
+.public-home .oa2-primary-action,
+.public-home .oa2-secondary-action,
+.public-home .button{
+  min-height:34px!important;
+  padding:0 11px!important;
+  border-radius:9px!important;
+  font-size:10.5px!important;
 }
 
+/* Smaller product cards. */
 .public-home .oa2-audience{
-  width:min(980px,calc(100% - 36px))!important;
-  padding-top:clamp(54px,7vw,82px)!important;
-  padding-bottom:clamp(54px,7vw,82px)!important;
+  width:min(860px,calc(100% - 28px))!important;
+  padding-top:34px!important;
+  padding-bottom:34px!important;
 }
 .public-home .oa2-section-head{
-  margin-bottom:20px!important;
+  margin-bottom:12px!important;
 }
 .public-home .oa2-section-head h2{
-  max-width:660px!important;
-  font-size:clamp(32px,4.6vw,52px)!important;
+  max-width:540px!important;
+  font-size:clamp(26px,3.6vw,38px)!important;
+  line-height:1.04!important;
 }
 .public-home .oa2-section-copy{
-  max-width:560px!important;
-  font-size:13px!important;
+  max-width:470px!important;
+  font-size:11.5px!important;
+  line-height:1.5!important;
 }
+.public-home .oa2-audience-grid,
 .public-home .oa2-audience-grid-simple{
-  gap:10px!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
 }
+.public-home .oa2-audience-grid article,
 .public-home .oa2-audience-grid-simple article{
-  min-height:190px!important;
-  padding:20px!important;
-  border-radius:18px!important;
+  min-height:126px!important;
+  padding:13px!important;
+  border-radius:14px!important;
 }
+.public-home .oa2-audience-grid article>span,
+.public-home .oa2-audience-grid-simple article>span{
+  font-size:8px!important;
+  letter-spacing:.1em!important;
+}
+.public-home .oa2-audience-grid h3,
 .public-home .oa2-audience-grid-simple h3{
-  margin-top:20px!important;
-  font-size:20px!important;
+  margin:10px 0 5px!important;
+  font-size:15.5px!important;
+  line-height:1.1!important;
 }
+.public-home .oa2-audience-grid p,
 .public-home .oa2-audience-grid-simple p{
-  font-size:12.5px!important;
+  font-size:10.5px!important;
+  line-height:1.45!important;
+}
+.public-home .oa2-audience-grid a,
+.public-home .oa2-audience-grid-simple a{
+  margin-top:9px!important;
+  font-size:10px!important;
 }
 
+/* Pricing/plans: very compact. */
 .public-home .pricing-section{
-  width:min(1160px,calc(100% - 36px))!important;
-  padding-top:clamp(54px,7vw,86px)!important;
-  padding-bottom:clamp(54px,7vw,86px)!important;
+  width:min(980px,calc(100% - 28px))!important;
+  padding-top:34px!important;
+  padding-bottom:34px!important;
 }
 .public-home .pricing-heading{
-  max-width:680px!important;
+  max-width:540px!important;
+  margin-bottom:14px!important;
+}
+.public-home .pricing-heading .eyebrow{
+  font-size:8px!important;
+  letter-spacing:.12em!important;
 }
 .public-home .pricing-heading h2{
-  font-size:clamp(34px,4.8vw,56px)!important;
+  font-size:clamp(27px,3.8vw,42px)!important;
+  line-height:1.03!important;
 }
 .public-home .pricing-heading>p:last-child{
-  max-width:540px!important;
-  font-size:13px!important;
+  max-width:450px!important;
+  font-size:11px!important;
+  line-height:1.45!important;
 }
 .public-home .plans{
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:10px!important;
+  gap:7px!important;
 }
 .public-home .plan{
-  padding:18px!important;
-  border-radius:17px!important;
+  min-height:0!important;
+  padding:11px!important;
+  border-radius:13px!important;
+}
+.public-home .plan-topline{
+  min-height:14px!important;
+  margin-bottom:3px!important;
+}
+.public-home .plan-fit,
+.public-home .plan-badge{
+  font-size:7.5px!important;
+  letter-spacing:.09em!important;
+  padding:3px 5px!important;
 }
 .public-home .plan h3{
-  font-size:21px!important;
+  margin:0 0 3px!important;
+  font-size:15.5px!important;
+  line-height:1.1!important;
 }
-.public-home .plan-desc,
-.public-home .plan-value span,
-.public-home .plan li{
-  font-size:11.5px!important;
+.public-home .plan-desc{
+  min-height:0!important;
+  margin:0!important;
+  font-size:9.5px!important;
+  line-height:1.35!important;
 }
-.public-home .plan-value{
-  min-height:auto!important;
-  margin-top:10px!important;
+.public-home .price{
+  margin-top:6px!important;
 }
 .public-home .price strong{
-  font-size:34px!important;
+  font-size:24px!important;
+  letter-spacing:-.05em!important;
+}
+.public-home .price span,
+.public-home .annual,
+.public-home .plan-yearly-link{
+  font-size:9.5px!important;
+}
+.public-home .plan-value{
+  min-height:0!important;
+  margin-top:6px!important;
+  padding:6px 7px!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.016)!important;
+}
+.public-home .plan-value strong{
+  font-size:9.5px!important;
+  line-height:1.2!important;
+}
+.public-home .plan-value span{
+  display:none!important;
+}
+.public-home .plan-actions{
+  margin-top:7px!important;
+  gap:4px!important;
+}
+.public-home .plan-actions .button,
+.public-home .plan .button{
+  min-height:31px!important;
+  padding-inline:7px!important;
+  border-radius:8px!important;
+  font-size:9.5px!important;
 }
 .public-home .plan ul{
-  margin-top:12px!important;
-  padding-top:12px!important;
+  margin-top:8px!important;
+  padding-top:8px!important;
+  gap:4px!important;
 }
+.public-home .plan li{
+  font-size:9.5px!important;
+  line-height:1.25!important;
+}
+.public-home .plan li:nth-of-type(n+3),
 .public-home .pricing-foot{
   display:none!important;
 }
 
+/* FAQ and CTA: compact. */
 .public-home .faq-section{
-  width:min(880px,calc(100% - 36px))!important;
-  padding-top:clamp(48px,7vw,76px)!important;
-  padding-bottom:clamp(48px,7vw,76px)!important;
+  width:min(760px,calc(100% - 28px))!important;
+  padding-top:30px!important;
+  padding-bottom:30px!important;
+}
+.public-home .faq-section h2,
+.public-home .faq-section>div:first-child h2{
+  font-size:clamp(25px,3.5vw,36px)!important;
+}
+.public-home .faqs summary{
+  padding-block:10px!important;
+  font-size:11px!important;
+}
+.public-home .faqs details p{
+  font-size:10.5px!important;
+  line-height:1.45!important;
+}
+.public-home .faqs details:nth-of-type(n+4){
+  display:none!important;
 }
 .public-home .final-cta{
-  width:min(860px,calc(100% - 36px))!important;
-  margin-bottom:64px!important;
-  padding:clamp(36px,6vw,60px)!important;
+  width:min(760px,calc(100% - 28px))!important;
+  margin-bottom:36px!important;
+  padding:24px 16px!important;
+  border-radius:18px!important;
+}
+.public-home .final-cta h2{
+  font-size:clamp(26px,3.8vw,40px)!important;
+}
+.public-home .final-cta p{
+  font-size:11.5px!important;
+}
+.public-home .final-cta-actions{
+  gap:7px!important;
+}
+.public-home .footer,
+.public-home footer{
+  font-size:10.5px!important;
 }
 
-@media(max-width:900px){
-  .public-home .plans{grid-template-columns:1fr 1fr!important}
+/* Tablet + phone: keep everything tight and readable. */
+@media(max-width:1000px){
+  .public-home .plans{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:760px){
+  .public-home .nav{width:calc(100% - 20px)!important;min-height:48px!important}
   .public-home .nav-links a[href="#product-map"],
-  .public-home .nav-links a[href="/support"]{display:none!important}
-  .public-home .oa2-hero{width:calc(100% - 24px)!important;padding-top:58px!important;padding-bottom:58px!important}
-  .public-home .oa2-hero h1{font-size:clamp(40px,12vw,54px)!important}
-  .public-home .oa2-composer{margin-top:22px!important}
+  .public-home .nav-links a[href="#pricing"]{display:none!important}
+  .public-home .oa2-hero{width:calc(100% - 22px)!important;padding-top:36px!important;padding-bottom:32px!important}
+  .public-home .oa2-hero h1{font-size:clamp(31px,10vw,42px)!important}
+  .public-home .oa2-lead{font-size:12.5px!important}
+  .public-home .oa2-composer{max-width:100%!important;margin-top:16px!important}
+  .public-home .oa2-composer textarea,
+  .public-home .oa2-composer input{min-height:42px!important;font-size:12.5px!important}
   .public-home .oa2-audience,
   .public-home .pricing-section,
   .public-home .faq-section,
-  .public-home .final-cta{width:calc(100% - 24px)!important}
-  .public-home .plans{grid-template-columns:1fr!important}
-  .public-home .plan{padding:17px!important}
-  .public-home .faq-section .faqs details:nth-of-type(n+4){display:none!important}
-}
-
-/* Stellar compact landing override v27 — smaller credits, smaller cards, less vertical weight. */
-.public-home .nav{min-height:58px!important}
-.public-home .nav-links{gap:14px!important}
-.public-home .nav-links a,.public-home .nav-login{font-size:11px!important}
-.public-home .button-small{min-height:34px!important;padding-inline:11px!important;font-size:11px!important}
-
-.public-home .oa2-hero{padding-top:clamp(60px,8vw,104px)!important;padding-bottom:clamp(46px,7vw,82px)!important}
-.public-home .oa2-wordmark{font-size:9px!important;letter-spacing:.14em!important}
-.public-home .oa2-hero h1{max-width:720px!important;font-size:clamp(42px,6.3vw,72px)!important;letter-spacing:-.058em!important}
-.public-home .oa2-lead{max-width:540px!important;margin-top:16px!important;font-size:clamp(14px,1.4vw,16px)!important;line-height:1.55!important}
-.public-home .oa2-composer{max-width:600px!important;margin-top:22px!important;padding:9px!important;border-radius:17px!important}
-.public-home .oa2-composer textarea{min-height:56px!important;font-size:14px!important;padding:5px 6px!important}
-.public-home .oa2-composer-bar{min-height:34px!important}
-.public-home .oa2-composer button{width:34px!important;height:34px!important;border-radius:10px!important}
-.public-home .oa2-primary-action,.public-home .oa2-secondary-action{min-height:38px!important;padding-inline:12px!important;font-size:11px!important;border-radius:10px!important}
-
-.public-home .oa2-audience{width:min(900px,calc(100% - 32px))!important;padding-top:44px!important;padding-bottom:44px!important}
-.public-home .oa2-section-head{margin-bottom:14px!important}
-.public-home .oa2-section-head h2{font-size:clamp(28px,4.1vw,44px)!important;max-width:590px!important}
-.public-home .oa2-section-copy{font-size:12.5px!important;max-width:500px!important}
-.public-home .oa2-audience-grid-simple{gap:8px!important}
-.public-home .oa2-audience-grid-simple article{min-height:154px!important;padding:16px!important;border-radius:16px!important}
-.public-home .oa2-audience-grid-simple article>span{font-size:9px!important}
-.public-home .oa2-audience-grid-simple h3{margin-top:14px!important;margin-bottom:6px!important;font-size:18px!important}
-.public-home .oa2-audience-grid-simple p{font-size:11.5px!important;line-height:1.55!important}
-.public-home .oa2-audience-grid-simple a{margin-top:13px!important;font-size:11px!important}
-
-.public-home .pricing-section{width:min(1040px,calc(100% - 32px))!important;padding-top:46px!important;padding-bottom:46px!important}
-.public-home .pricing-heading{max-width:600px!important}
-.public-home .pricing-heading .eyebrow{font-size:9px!important;letter-spacing:.13em!important}
-.public-home .pricing-heading h2{font-size:clamp(30px,4.2vw,48px)!important}
-.public-home .pricing-heading>p:last-child{max-width:500px!important;font-size:12px!important;line-height:1.55!important}
-.public-home .plans{gap:8px!important}
-.public-home .plan{padding:14px!important;border-radius:15px!important}
-.public-home .plan-topline{min-height:18px!important;margin-bottom:5px!important}
-.public-home .plan-fit,.public-home .plan-badge{font-size:8px!important;letter-spacing:.1em!important}
-.public-home .plan h3{font-size:18px!important;margin-bottom:5px!important}
-.public-home .plan-desc{min-height:auto!important;margin-top:4px!important;font-size:10.5px!important;line-height:1.45!important}
-.public-home .price{margin-top:8px!important}
-.public-home .price strong{font-size:28px!important}
-.public-home .price span,.public-home .annual{font-size:10.5px!important}
-.public-home .plan-value{margin-top:8px!important;padding:7px 8px!important;border-radius:10px!important;background:rgba(255,255,255,.018)!important}
-.public-home .plan-value strong{font-size:10.5px!important;line-height:1.25!important}
-.public-home .plan-value span{display:none!important}
-.public-home .plan-actions{margin-top:10px!important;gap:5px!important}
-.public-home .plan-actions .button{min-height:36px!important;padding-inline:9px!important;font-size:10.5px!important;border-radius:9px!important}
-.public-home .plan-yearly-link{font-size:10px!important;margin-top:3px!important}
-.public-home .plan ul{margin-top:10px!important;padding-top:10px!important;gap:6px!important}
-.public-home .plan li{font-size:10.5px!important;line-height:1.35!important}
-.public-home .plan li:nth-of-type(n+3){display:none!important}
-
-.public-home .faq-section{padding-top:38px!important;padding-bottom:38px!important}
-.public-home .faq-section>div:first-child h2{font-size:clamp(28px,4vw,42px)!important}
-.public-home .faqs summary{font-size:12.5px!important;padding-block:12px!important}
-.public-home .faqs details p{font-size:11.5px!important}
-.public-home .final-cta{padding:30px 18px!important;margin-bottom:46px!important;border-radius:20px!important}
-.public-home .final-cta h2{font-size:clamp(30px,4.5vw,46px)!important}
-.public-home .final-cta-actions .button{min-height:38px!important;font-size:11px!important}
-
-@media(max-width:900px){
-  .public-home .pricing-section{width:calc(100% - 24px)!important}
-  .public-home .plans{grid-template-columns:1fr 1fr!important}
-}
-@media(max-width:760px){
-  .public-home .nav{min-height:54px!important}
-  .public-home .oa2-hero{padding-top:46px!important;padding-bottom:44px!important}
-  .public-home .oa2-hero h1{font-size:clamp(36px,11vw,48px)!important}
-  .public-home .oa2-lead{font-size:13.5px!important}
-  .public-home .oa2-composer textarea{min-height:50px!important}
-  .public-home .oa2-audience{padding-top:36px!important;padding-bottom:36px!important}
-  .public-home .pricing-section{padding-top:38px!important;padding-bottom:38px!important}
-  .public-home .plans{grid-template-columns:1fr!important;gap:8px!important}
-  .public-home .plan{padding:14px!important}
+  .public-home .final-cta{width:calc(100% - 22px)!important}
+  .public-home .oa2-audience{padding-top:28px!important;padding-bottom:28px!important}
+  .public-home .oa2-audience-grid,
+  .public-home .oa2-audience-grid-simple{grid-template-columns:1fr!important}
+  .public-home .oa2-audience-grid article,
+  .public-home .oa2-audience-grid-simple article{min-height:0!important;padding:12px!important}
+  .public-home .pricing-section{padding-top:30px!important;padding-bottom:30px!important}
+  .public-home .plans{grid-template-columns:1fr!important;gap:6px!important}
+  .public-home .plan{padding:10px!important}
   .public-home .plan-value{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
-  .public-home .plan-value:after{content:'credits';color:#707988;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+  .public-home .plan-value:after{content:'credits';color:#707988;font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+  .public-home .plan ul{display:none!important}
   .public-home .faq-section details:nth-of-type(n+3){display:none!important}
-  .public-home .footer-links{gap:18px!important}
+  .public-home .final-cta{padding:22px 14px!important;margin-bottom:30px!important}
 }
