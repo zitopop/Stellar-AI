@@ -3,6 +3,7 @@
 
 import Stripe from 'stripe';
 import { timingSafeEqual } from 'node:crypto';
+import { refundedTopupCreditDelta, rememberRefundedCharge, subscriptionHasAccess, subscriptionShouldRevoke } from '../lib/billing-lifecycle.js';
 import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, normalisePlan } from '../lib/pricing.js';
 import { applyTopupCheckout } from '../lib/topup.js';
 import { recordFirstUpgrade } from '../lib/profile.js';
@@ -109,7 +110,6 @@ async function handleGmailWatch(req, res) {
   }
 }
 
-
 async function kvGet(key) {
   if (!KV_URL || !KV_TOKEN) return null;
   try {
@@ -145,6 +145,19 @@ function eventKey(eventId) {
   return `stellar:stripe-event:${eventId}`;
 }
 
+async function customerEmail(stripe, customer) {
+  if (customer && typeof customer === 'object' && !customer.deleted) {
+    return String(customer.email || '').toLowerCase().trim();
+  }
+  if (typeof customer !== 'string' || !customer.startsWith('cus_')) return '';
+  const record = await stripe.customers.retrieve(customer);
+  return record && !record.deleted ? String(record.email || '').toLowerCase().trim() : '';
+}
+
+function subscriptionBilling(plan) {
+  return String(plan || '').toLowerCase().endsWith('-annual') ? 'annual' : 'monthly';
+}
+
 export default async function handler(req, res) {
   const source = String(req.query?.source || '').trim().toLowerCase();
   if (source === 'gmail-push') return handleGmailPush(req, res);
@@ -159,13 +172,13 @@ export default async function handler(req, res) {
     const signature = req.headers['stripe-signature'];
     event = stripe.webhooks.constructEvent(await readRawBody(req), signature, WEBHOOK_SECRET);
 
-    // Stripe can retry events. The record prevents repeat top-ups in normal retry scenarios.
+    // Stripe can retry events. The record prevents repeat top-ups and billing transitions.
     if (await kvGet(eventKey(event.id))) return res.status(200).json({ received: true, duplicate: true });
 
-      if (event.type === 'checkout.session.completed') {
-        const session = event.data.object;
-        await recordCheckoutCompletion({ id: String(session.client_reference_id || '') });
-        const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      await recordCheckoutCompletion({ id: String(session.client_reference_id || '') });
+      const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
       const checkoutPlan = session.metadata?.plan;
       const userKey = email ? `stellar:user:${email}` : '';
 
@@ -219,15 +232,18 @@ export default async function handler(req, res) {
           const plan = normalisePlan(checkoutPlan);
           const subscriptionPaid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
           if (plan && subscriptionPaid) {
-            await kvSet(userKey, {
+            const saved = await kvSet(userKey, {
               ...existing,
               plan,
-              planBilling: checkoutPlan.endsWith('-annual') ? 'annual' : 'monthly',
+              planBilling: subscriptionBilling(checkoutPlan),
               planCreditAnchorAt: Date.now(),
               stripeCustomerId: session.customer || existing.stripeCustomerId,
               stripeSubscriptionId: session.subscription || existing.stripeSubscriptionId,
+              stripeSubscriptionStatus: 'active',
+              billingPaymentFailedAt: null,
               updatedAt: Date.now(),
             });
+            if (!saved) throw new Error(`Could not persist subscription entitlement for ${session.id}`);
             await Promise.all([
               incrementConversionMetric('checkout-completed'),
               incrementConversionMetric('subscription-completed'),
@@ -242,7 +258,52 @@ export default async function handler(req, res) {
           }
         }
       }
+    } else if (event.type === 'customer.subscription.updated') {
+      const subscription = event.data.object;
+      const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
+      if (email) {
+        const userKey = `stellar:user:${email}`;
+        const existing = (await kvGet(userKey)) || {};
+        const status = String(subscription.status || '').toLowerCase();
+        const metadataPlan = normalisePlan(subscription.metadata?.plan);
+        const currentPlan = metadataPlan || normalisePlan(existing.plan) || 'free';
+        let next = {
+          ...existing,
+          stripeCustomerId: typeof subscription.customer === 'string' ? subscription.customer : existing.stripeCustomerId,
+          stripeSubscriptionId: subscription.id,
+          stripeSubscriptionStatus: status,
+          updatedAt: Date.now(),
+        };
+        if (subscriptionShouldRevoke(status)) {
+          next = {
+            ...next,
+            plan: 'free',
+            planBilling: null,
+            planCreditAnchorAt: null,
+          };
+        } else if (subscriptionHasAccess(status) && currentPlan !== 'free') {
+          next = {
+            ...next,
+            plan: currentPlan,
+            planBilling: metadataPlan ? subscriptionBilling(subscription.metadata?.plan) : (existing.planBilling || 'monthly'),
+          };
+        }
+        const saved = await kvSet(userKey, next);
+        if (!saved) throw new Error(`Could not sync subscription ${subscription.id}`);
+      }
     } else if (event.type === 'invoice.payment_failed') {
+      const invoice = event.data.object;
+      const email = await customerEmail(stripe, invoice.customer);
+      if (email) {
+        const userKey = `stellar:user:${email}`;
+        const existing = (await kvGet(userKey)) || {};
+        const saved = await kvSet(userKey, {
+          ...existing,
+          billingPaymentFailedAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+        if (!saved) throw new Error(`Could not persist invoice failure for ${invoice.id}`);
+      }
       await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI subscription invoice payment failed in Stripe.' });
     } else if (event.type === 'payout.failed') {
       await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI Stripe payout failed and needs owner attention.' });
@@ -250,24 +311,46 @@ export default async function handler(req, res) {
       const charge = event.data.object;
       const email = String(charge.metadata?.email || charge.billing_details?.email || '').toLowerCase().trim();
       if (charge.metadata?.plan === 'website-builder' && email) {
-        await kvSet(`stellar:website-builder:${email}`, {
+        const saved = await kvSet(`stellar:website-builder:${email}`, {
           status: 'refunded',
           chargeId: charge.id,
           amountRefunded: Number(charge.amount_refunded || 0),
           updatedAt: Date.now(),
         });
+        if (!saved) throw new Error(`Could not revoke website-builder entitlement for ${charge.id}`);
+      } else if (charge.metadata?.plan === 'topup' && email) {
+        const originalPence = Math.round(Number(charge.metadata?.amount || charge.amount || 0));
+        const refundedPence = Math.max(0, Math.round(Number(charge.amount_refunded || 0)));
+        if (originalPence >= TOPUP_MIN_PENCE && originalPence <= TOPUP_MAX_PENCE) {
+          const userKey = `stellar:user:${email}`;
+          const existing = (await kvGet(userKey)) || {};
+          const priorRefunded = Math.max(0, Number(existing.topupRefundedPenceByCharge?.[charge.id]) || 0);
+          const creditDelta = refundedTopupCreditDelta({
+            originalPence,
+            previousRefundedPence: priorRefunded,
+            currentRefundedPence: refundedPence,
+          });
+          const saved = await kvSet(userKey, {
+            ...existing,
+            walletPence: Math.max(0, Number(existing.walletPence) || 0) - creditDelta,
+            topupRefundedPenceByCharge: rememberRefundedCharge(existing.topupRefundedPenceByCharge, charge.id, refundedPence),
+            updatedAt: Date.now(),
+          });
+          if (!saved) throw new Error(`Could not reconcile top-up refund for ${charge.id}`);
+        }
       }
     } else if (event.type === 'charge.dispute.created') {
       const dispute = event.data.object;
       const charge = typeof dispute.charge === 'string' ? await stripe.charges.retrieve(dispute.charge) : dispute.charge;
       const email = String(charge?.metadata?.email || charge?.billing_details?.email || '').toLowerCase().trim();
       if (charge?.metadata?.plan === 'website-builder' && email) {
-        await kvSet(`stellar:website-builder:${email}`, {
+        const saved = await kvSet(`stellar:website-builder:${email}`, {
           status: 'disputed',
           chargeId: charge.id,
           disputeId: dispute.id,
           updatedAt: Date.now(),
         });
+        if (!saved) throw new Error(`Could not mark website-builder dispute for ${charge.id}`);
       }
       await escalateOwner({ category: 'fraud', severity: 'critical', summary: 'A new Stripe charge dispute was opened for Stellar AI.' });
     } else if (event.type === 'radar.early_fraud_warning.created') {
@@ -278,23 +361,24 @@ export default async function handler(req, res) {
       else await recordCheckoutExpiry({ id: String(session.client_reference_id) });
     } else if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object;
-      const stripe = new Stripe(STRIPE_SECRET);
-      const customer = typeof subscription.customer === 'string'
-        ? await stripe.customers.retrieve(subscription.customer)
-        : subscription.customer;
-      const email = !customer.deleted ? String(customer.email || '').toLowerCase().trim() : '';
-
+      const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
       if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
-        await kvSet(userKey, {
-          ...existing,
-          plan: 'free',
-          planBilling: null,
-          planCreditAnchorAt: null,
-          stripeSubscriptionId: null,
-          updatedAt: Date.now(),
-        });
+        const currentSubscriptionId = String(existing.stripeSubscriptionId || '').trim();
+        // Ignore deletion of an old duplicate subscription if a newer subscription is recorded.
+        if (!currentSubscriptionId || currentSubscriptionId === subscription.id) {
+          const saved = await kvSet(userKey, {
+            ...existing,
+            plan: 'free',
+            planBilling: null,
+            planCreditAnchorAt: null,
+            stripeSubscriptionId: null,
+            stripeSubscriptionStatus: 'canceled',
+            updatedAt: Date.now(),
+          });
+          if (!saved) throw new Error(`Could not revoke deleted subscription ${subscription.id}`);
+        }
       }
     }
 
