@@ -300,3 +300,118 @@ body,.app,.main{visibility:visible!important;opacity:1!important}
   .settings-row-meta{font-size:0!important}
   .settings-row-meta span{font-size:18px!important}
 }
+
+/* Responsive messaging hardening — phone, tablet, desktop, landscape */
+.chat,.chat-inner,.msg,.bubble,.composer-wrap,.composer,.composer textarea,.bar,.tools,.send-row{
+  min-width:0!important;
+}
+.chat{
+  scrollbar-gutter:stable both-edges;
+  padding-left:clamp(10px,2.2vw,24px)!important;
+  padding-right:clamp(10px,2.2vw,24px)!important;
+}
+.chat-inner,.composer{
+  width:min(100%,820px)!important;
+  max-width:820px!important;
+}
+.msg .bubble{
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  hyphens:auto;
+}
+.msg .bubble pre,.msg .bubble code,.msg .bubble table,.msg .bubble img,.msg .bubble video,.msg .bubble iframe{
+  max-width:100%!important;
+}
+.msg .bubble pre,.msg .bubble table{
+  overflow-x:auto!important;
+  -webkit-overflow-scrolling:touch;
+}
+.msg.user .bubble{
+  width:auto!important;
+  max-width:min(80%,680px)!important;
+}
+.msg.assistant .bubble{
+  width:100%!important;
+  max-width:100%!important;
+}
+.composer-wrap{
+  width:100%!important;
+  padding-left:clamp(8px,2vw,18px)!important;
+  padding-right:clamp(8px,2vw,18px)!important;
+  padding-bottom:max(12px,calc(8px + env(safe-area-inset-bottom)))!important;
+}
+.composer{
+  margin-inline:auto!important;
+}
+.composer textarea{
+  width:100%!important;
+  max-width:100%!important;
+  min-height:44px!important;
+  max-height:min(32dvh,240px)!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+}
+.composer .bar{
+  width:100%!important;
+  gap:8px!important;
+}
+.composer .tools,.composer .send-row{
+  min-width:0!important;
+}
+.composer-plus,#sendBtn,.composer-tool{
+  touch-action:manipulation!important;
+}
+
+@media (min-width:641px) and (max-width:1024px){
+  .chat-inner,.composer{width:min(100%,760px)!important;max-width:760px!important}
+  .msg.user .bubble{max-width:min(82%,620px)!important}
+  .composer textarea{font-size:16px!important;max-height:min(30dvh,220px)!important}
+}
+
+@media(max-width:640px){
+  .chat{padding-left:10px!important;padding-right:10px!important}
+  .chat-inner,.composer{width:100%!important;max-width:100%!important}
+  .msg{gap:4px!important}
+  .msg.user .bubble{max-width:92%!important;padding:10px 13px!important;border-radius:17px!important}
+  .msg.assistant .bubble{padding:6px 2px!important;line-height:1.58!important}
+  .meta{font-size:10px!important}
+  .composer-wrap{
+    padding-left:8px!important;
+    padding-right:8px!important;
+    padding-bottom:max(10px,calc(7px + env(safe-area-inset-bottom)))!important;
+  }
+  .composer{padding:7px 8px!important;border-radius:22px!important}
+  .composer textarea{
+    font-size:16px!important;
+    line-height:1.4!important;
+    min-height:44px!important;
+    max-height:min(30dvh,190px)!important;
+    padding:7px 6px!important;
+  }
+  .composer-plus,#sendBtn{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important}
+  .composer-tool:not(.composer-plus){min-height:44px!important}
+  #status{max-width:42vw!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+}
+
+@media(max-width:420px){
+  .chat{padding-left:8px!important;padding-right:8px!important}
+  .msg.user .bubble{max-width:94%!important}
+  .composer-wrap{padding-left:6px!important;padding-right:6px!important}
+  .composer{border-radius:20px!important}
+  .composer .bar{gap:5px!important}
+  #status{max-width:34vw!important}
+}
+
+@media(max-width:360px){
+  .msg.user .bubble{max-width:96%!important;padding-inline:11px!important}
+  .composer{padding-left:6px!important;padding-right:6px!important}
+  .composer textarea{padding-inline:4px!important}
+  #status{display:none!important}
+}
+
+@media(max-height:520px) and (orientation:landscape){
+  .home-welcome{padding-top:24px!important}
+  .chat{padding-top:8px!important}
+  .composer textarea{max-height:34dvh!important}
+  .composer-wrap{padding-bottom:max(6px,env(safe-area-inset-bottom))!important}
+}
