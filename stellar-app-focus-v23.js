@@ -344,3 +344,45 @@
   window.addEventListener('focus',polish);
   [300,900,1800,3500].forEach(delay=>setTimeout(polish,delay));
 })();
+
+/* Stellar settings spacing guard — re-applies stacked text rules every time Settings opens. */
+(()=>{
+  if(window.__stellarSettingsSpacingGuardV1)return;
+  window.__stellarSettingsSpacingGuardV1=true;
+  const css=`
+    .panel .account-title,.settings-card .account-title,.account-title{display:grid!important;gap:4px!important;min-width:0!important;line-height:1.2!important}
+    .panel .account-title strong,.settings-card .account-title strong,.account-title strong{display:block!important;margin:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.18!important}
+    .panel .account-title small,.settings-card .account-title small,.account-title small{display:block!important;margin:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.32!important;color:#a9b2c1!important}
+    .panel .settings-row,.settings-card .settings-row,.settings-row{align-items:center!important;gap:12px!important;min-height:58px!important;padding:12px!important}
+    .panel .settings-row .copy,.settings-card .settings-row .copy,.settings-row .copy{display:grid!important;gap:3px!important;min-width:0!important;flex:1 1 auto!important;line-height:1.2!important}
+    .panel .settings-row .copy strong,.settings-card .settings-row .copy strong,.settings-row .copy strong{display:block!important;margin:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.22!important}
+    .panel .settings-row .copy small,.settings-card .settings-row .copy small,.settings-row .copy small{display:block!important;margin:0!important;white-space:normal!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.35!important;color:#8f98a7!important}
+    @media(max-width:640px){.panel .settings-row .copy small,.settings-card .settings-row .copy small,.settings-row .copy small{display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important}.panel .account-title small,.settings-card .account-title small,.account-title small{max-width:calc(100vw - 132px)!important}}
+  `;
+  function inject(){
+    if(document.getElementById('stellar-settings-spacing-guard'))return;
+    const style=document.createElement('style');
+    style.id='stellar-settings-spacing-guard';
+    style.textContent=css;
+    document.head.appendChild(style);
+  }
+  function polish(){
+    inject();
+    document.querySelectorAll('.account-title,.settings-row .copy').forEach(el=>{
+      el.style.display='grid';
+      el.style.minWidth='0';
+    });
+    document.querySelectorAll('.account-title strong,.account-title small,.settings-row .copy strong,.settings-row .copy small').forEach(el=>{
+      el.style.display='block';
+      el.style.margin='0';
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',polish,{once:true});
+  else polish();
+  document.addEventListener('click',event=>{
+    if(event.target.closest?.('[data-open="settings"],#accountButton,#account-button,.settings-row'))setTimeout(polish,60);
+  });
+  new MutationObserver(polish).observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener('pageshow',polish);
+  [250,800,1600,3000].forEach(delay=>setTimeout(polish,delay));
+})();
