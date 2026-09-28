@@ -23,11 +23,11 @@ test('Plus is positioned as the main paid conversion plan', () => {
   assert.match(index, /MOST POPULAR/);
   assert.match(index, /Deeper review \+ multi-file work/);
   assert.match(index, /EVERYDAY PLAN/);
-  assert.match(index, /up to 500 Comet messages\/month/);
-  assert.match(index, /up to 1,000 Nova messages\/month/);
-  assert.match(index, /1,500 credits\/month/);
+  assert.match(index, /up to 1,500 Comet messages\/month/);
+  assert.match(index, /up to 2,500 Nova messages\/month/);
   assert.match(index, /5,000 credits\/month/);
-  assert.match(index, /20,000 credits\/month/);
+  assert.match(index, /15,000 credits\/month/);
+  assert.match(index, /50,000 credits\/month/);
   assert.match(app, /Plus £20 · Comet/);
   assert.match(index, /both accounts receive 100 bonus Stellar Credits/);
 });
