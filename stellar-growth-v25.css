@@ -332,3 +332,180 @@
   .public-home .faq-section details:nth-of-type(n+3){display:none!important}
   .public-home .final-cta{padding:22px 14px!important;margin-bottom:30px!important}
 }
+
+/* Stellar premium varied layout v30 — stop the landing page looking like repeated boxes. */
+
+/* Product section: three different editorial treatments instead of cloned cards. */
+.public-home .oa2-audience-grid,
+.public-home .oa2-audience-grid-simple{
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:10px!important;
+  align-items:stretch!important;
+}
+.public-home .oa2-audience-grid article,
+.public-home .oa2-audience-grid-simple article{
+  min-height:138px!important;
+  position:relative!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+.public-home .oa2-audience-grid article:nth-child(1),
+.public-home .oa2-audience-grid-simple article:nth-child(1){
+  grid-column:span 5!important;
+  border:0!important;
+  border-left:2px solid rgba(155,140,255,.7)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  padding:14px 18px!important;
+}
+.public-home .oa2-audience-grid article:nth-child(2),
+.public-home .oa2-audience-grid-simple article:nth-child(2){
+  grid-column:span 3!important;
+  border:0!important;
+  border-radius:22px 8px 22px 8px!important;
+  background:
+    radial-gradient(circle at 88% 10%,rgba(155,140,255,.16),transparent 42%),
+    rgba(255,255,255,.025)!important;
+  padding:15px!important;
+}
+.public-home .oa2-audience-grid article:nth-child(3),
+.public-home .oa2-audience-grid-simple article:nth-child(3){
+  grid-column:span 4!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:10px 24px 10px 24px!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(255,255,255,.012))!important;
+  padding:15px!important;
+}
+.public-home .oa2-audience-grid article:nth-child(3)::after,
+.public-home .oa2-audience-grid-simple article:nth-child(3)::after{
+  content:"";
+  position:absolute;
+  right:-24px;
+  bottom:-32px;
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  background:rgba(155,140,255,.08);
+  filter:blur(3px);
+  pointer-events:none;
+}
+
+/* Pricing: every tier has a different hierarchy instead of four identical boxes. */
+.public-home .plans{
+  align-items:stretch!important;
+  gap:10px!important;
+}
+.public-home .plan{
+  box-shadow:none!important;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease!important;
+}
+.public-home .plan:hover{transform:translateY(-2px)!important}
+
+.public-home .plan:nth-child(1){
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.public-home .plan:nth-child(2){
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.022)!important;
+}
+.public-home .plan:nth-child(3){
+  border:1px solid rgba(176,164,255,.34)!important;
+  border-radius:22px!important;
+  background:
+    radial-gradient(circle at 82% 0,rgba(155,140,255,.22),transparent 42%),
+    linear-gradient(180deg,rgba(130,112,255,.12),rgba(255,255,255,.025))!important;
+  transform:translateY(-5px)!important;
+}
+.public-home .plan:nth-child(3):hover{transform:translateY(-7px)!important}
+.public-home .plan:nth-child(3) .button{
+  background:#eeeaff!important;
+  color:#111218!important;
+  border-color:#eeeaff!important;
+}
+.public-home .plan:nth-child(4){
+  border:0!important;
+  border-radius:8px 24px 8px 24px!important;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.015) 52%,rgba(155,140,255,.06))!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.075)!important;
+}
+.public-home .plan:nth-child(4) .price strong{
+  background:linear-gradient(90deg,#fff,#bdb3ff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent!important;
+}
+
+/* Credits inside plans should read like a small stat, not another card. */
+.public-home .plan-value{
+  border:0!important;
+  border-left:2px solid rgba(155,140,255,.34)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  padding:4px 0 4px 8px!important;
+}
+
+/* FAQ becomes clean divider rows rather than stacked cards. */
+.public-home .faqs details{
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.075)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.public-home .faqs details:last-child{
+  border-bottom:1px solid rgba(255,255,255,.075)!important;
+}
+
+/* Final CTA is an editorial finish, not another rounded box. */
+.public-home .final-cta{
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.10)!important;
+  border-bottom:1px solid rgba(255,255,255,.06)!important;
+  border-radius:0!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(155,140,255,.10),transparent 52%)!important;
+  box-shadow:none!important;
+}
+
+@media(max-width:1000px){
+  .public-home .oa2-audience-grid,
+  .public-home .oa2-audience-grid-simple{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .public-home .oa2-audience-grid article:nth-child(n),
+  .public-home .oa2-audience-grid-simple article:nth-child(n){
+    grid-column:auto!important;
+  }
+}
+@media(max-width:760px){
+  .public-home .oa2-audience-grid,
+  .public-home .oa2-audience-grid-simple{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  .public-home .oa2-audience-grid article:nth-child(1),
+  .public-home .oa2-audience-grid-simple article:nth-child(1){
+    border-left-width:2px!important;
+    padding:12px 14px!important;
+  }
+  .public-home .oa2-audience-grid article:nth-child(2),
+  .public-home .oa2-audience-grid-simple article:nth-child(2){
+    border-radius:18px 7px 18px 7px!important;
+  }
+  .public-home .oa2-audience-grid article:nth-child(3),
+  .public-home .oa2-audience-grid-simple article:nth-child(3){
+    border-radius:8px 19px 8px 19px!important;
+  }
+  .public-home .plan:nth-child(3){
+    transform:none!important;
+  }
+  .public-home .plan:nth-child(3):hover{
+    transform:none!important;
+  }
+}
