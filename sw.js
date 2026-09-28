@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, app-load patching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-28-account-settings-v13';
+const SW_VERSION = 'stellar-sw-2026-09-28-home-plans-v14';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -9,6 +9,7 @@ const PRECACHE = [
   '/lib/assets/pwa/icon-192.png',
   '/lib/assets/pwa/icon-512.png',
   '/stellar-capabilities-guide.js',
+  '/lib/assets/homepage-plan-polish.js',
 ];
 
 self.addEventListener('install', (event) => {
@@ -83,14 +84,7 @@ function simpleWorkspaceLayer() {
   ];
 
   function textFor(el) {
-    return [
-      el.textContent,
-      el.getAttribute?.('href'),
-      el.getAttribute?.('aria-label'),
-      el.getAttribute?.('title'),
-      el.id,
-      el.className
-    ].filter(Boolean).join(' ').toLowerCase();
+    return [el.textContent, el.getAttribute?.('href'), el.getAttribute?.('aria-label'), el.getAttribute?.('title'), el.id, el.className].filter(Boolean).join(' ').toLowerCase();
   }
 
   function shouldHide(el) {
@@ -127,7 +121,6 @@ function simpleWorkspaceLayer() {
 
   function simplifyWorkspace() {
     document.body?.classList?.add('stellar-simple-workspace');
-
     document.querySelectorAll('.side a,.side button,.top a,.top button,.nav-link,.set-item').forEach((el) => {
       if (!shouldHide(el)) return;
       el.dataset.stellarSimpleHidden = 'true';
@@ -135,7 +128,6 @@ function simpleWorkspaceLayer() {
       el.setAttribute('aria-hidden', 'true');
       el.setAttribute('tabindex', '-1');
     });
-
     document.querySelectorAll('.side-section').forEach((section) => {
       const title = section.querySelector('.side-title')?.textContent || '';
       const links = Array.from(section.querySelectorAll('a,button'));
@@ -145,13 +137,11 @@ function simpleWorkspaceLayer() {
         section.dataset.stellarSimpleHidden = 'true';
       }
     });
-
     const welcomeCopy = document.querySelector('.welcome p,.home-welcome p,.space-home-subtitle');
     if (welcomeCopy && !welcomeCopy.dataset.stellarSimpleCopy) {
       welcomeCopy.dataset.stellarSimpleCopy = 'true';
       welcomeCopy.textContent = 'Ask Stellar anything. Plans, credits, settings and support are tucked away so the workspace stays clean.';
     }
-
     polishSettingsIdentity();
   }
 
@@ -183,11 +173,7 @@ function simpleWorkspaceLayer() {
     document.head.appendChild(style);
   }
 
-  function run() {
-    installStyle();
-    simplifyWorkspace();
-  }
-
+  function run() { installStyle(); simplifyWorkspace(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
   else run();
   window.addEventListener('pageshow', run);
@@ -204,12 +190,27 @@ async function patchAppNavigationResponse(request, response) {
   if (!response?.ok || response.type !== 'basic') return response;
   const type = response.headers.get('Content-Type') || '';
   if (!type.toLowerCase().includes('text/html')) return response;
-
   let html = await response.text();
   const eagerGoogle = '<script src="https://accounts.google.com/gsi/client" async defer></script>';
   if (html.includes(eagerGoogle)) html = html.replace(eagerGoogle, googleIdentityLazyLoader());
   if (!html.includes('stellar-simple-workspace-v1')) html = html.replace('</head>', `${simpleWorkspaceLayer()}\n</head>`);
+  const headers = new Headers(response.headers);
+  headers.set('Content-Type', 'text/html; charset=utf-8');
+  headers.set('Cache-Control', 'no-store');
+  return new Response(html, { status: response.status, statusText: response.statusText, headers });
+}
 
+async function patchHomeNavigationResponse(request, response) {
+  const url = new URL(request.url);
+  if (!/^\/(?:index\.html)?$/i.test(url.pathname)) return response;
+  if (!response?.ok || response.type !== 'basic') return response;
+  const type = response.headers.get('Content-Type') || '';
+  if (!type.toLowerCase().includes('text/html')) return response;
+  let html = await response.text();
+  if (!html.includes('/lib/assets/homepage-plan-polish.js')) {
+    const script = '<script src="/lib/assets/homepage-plan-polish.js?v=20260928-plans" defer></script>';
+    html = html.includes('</body>') ? html.replace('</body>', `${script}\n</body>`) : `${html}\n${script}`;
+  }
   const headers = new Headers(response.headers);
   headers.set('Content-Type', 'text/html; charset=utf-8');
   headers.set('Cache-Control', 'no-store');
@@ -219,14 +220,14 @@ async function patchAppNavigationResponse(request, response) {
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
-
   const url = new URL(request.url);
 
   if (request.mode === 'navigate') {
     event.respondWith((async () => {
       try {
         const response = await fetch(request, { cache: 'no-store' });
-        return await patchAppNavigationResponse(request, response);
+        const appPatched = await patchAppNavigationResponse(request, response);
+        return await patchHomeNavigationResponse(request, appPatched);
       } catch {
         return (await caches.match(OFFLINE_URL)) || new Response('Stellar AI is offline. Please try again when you reconnect.', {
           status: 503,
@@ -240,9 +241,6 @@ self.addEventListener('fetch', (event) => {
   const destination = request.destination;
   if (!['style', 'script', 'image', 'font', 'manifest'].includes(destination)) return;
 
-  // UI code and styles use stale-while-revalidate. Versioned assets render
-  // immediately from cache on repeat visits while a fresh copy is fetched in
-  // the background. This avoids slow button/UI startup on mobile connections.
   if (destination === 'script' || destination === 'style') {
     event.respondWith((async () => {
       const cache = await caches.open(STATIC_CACHE);
@@ -265,20 +263,14 @@ self.addEventListener('fetch', (event) => {
           }
           await cache.put(request, response.clone());
           return response;
-        } catch {
-          return null;
-        }
+        } catch { return null; }
       })();
-      if (cached) {
-        event.waitUntil(refresh);
-        return cached;
-      }
+      if (cached) { event.waitUntil(refresh); return cached; }
       return (await refresh) || Response.error();
     })());
     return;
   }
 
-  // Images, fonts and the manifest are stable assets, so cache-first is appropriate.
   event.respondWith((async () => {
     const cached = await caches.match(request);
     if (cached) return cached;
@@ -289,17 +281,13 @@ self.addEventListener('fetch', (event) => {
         await cache.put(request, response.clone());
       }
       return response;
-    } catch {
-      return cached || Response.error();
-    }
+    } catch { return cached || Response.error(); }
   })());
 });
 
 self.addEventListener('push', (event) => {
   let payload = {};
-  try { payload = event.data?.json?.() || {}; } catch {
-    payload = { body: event.data?.text?.() || '' };
-  }
+  try { payload = event.data?.json?.() || {}; } catch { payload = { body: event.data?.text?.() || '' }; }
   const title = String(payload.title || 'Jarvis is calling');
   const body = String(payload.body || payload.summary || 'Stellar AI needs your attention.');
   const callId = String(payload.callId || payload.id || '');
