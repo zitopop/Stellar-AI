@@ -240,3 +240,107 @@
   [4500,8500,13000].forEach(delay=>setTimeout(releaseIfStartupStuck,delay));
   window.StellarInteractionRecovery={sync,releaseIfStartupStuck};
 })();
+
+/* Stellar chat actions polish — labels pin, rename and delete safely without changing chat data. */
+(()=>{
+  if(window.__stellarChatActionsPolishV1)return;
+  window.__stellarChatActionsPolishV1=true;
+
+  const ACTION_COPY={
+    pin:{label:'Pin chat',short:'Pin',icon:'📌'},
+    rename:{label:'Rename chat',short:'Rename',icon:'✎'},
+    delete:{label:'Delete chat',short:'Delete',icon:'⌫'}
+  };
+
+  function status(message,type='warn'){
+    try{ if(typeof setStatus==='function'){setStatus(message,type);return;} }catch{}
+    const el=document.getElementById('status');
+    if(el){el.textContent=message;el.className='status '+type;}
+  }
+
+  function textFor(el){
+    return [el?.textContent,el?.getAttribute?.('aria-label'),el?.getAttribute?.('title'),el?.dataset?.action,el?.dataset?.chatAction,el?.className]
+      .filter(Boolean).join(' ').toLowerCase();
+  }
+
+  function detectAction(el){
+    const text=textFor(el);
+    if(/rename|edit title|edit chat|pencil|title/.test(text))return 'rename';
+    if(/delete|remove|trash|danger|erase|⌫|×/.test(text))return 'delete';
+    if(/unpin|pin|pinned|📌/.test(text))return 'pin';
+    return '';
+  }
+
+  function rowFor(el){
+    return el?.closest?.('.chat-history-item,[data-chat-row],.saved-chat-row,li');
+  }
+
+  function isPinned(row){
+    if(!row)return false;
+    try{
+      if(row.matches?.('[data-pinned="true"],[aria-pressed="true"].pinned,.pinned'))return true;
+    }catch{}
+    return /pinned|📌/.test(row.textContent||'')||!!row.querySelector?.('.pin-mark,[data-pin-state="pinned"],[aria-label*="Pinned"],[title*="Pinned"],[data-pinned="true"]');
+  }
+
+  function polishRow(row){
+    if(!row)return;
+    const pinned=isPinned(row);
+    row.classList.toggle('stellar-chat-pinned',pinned);
+    row.dataset.stellarPinned=pinned?'true':'false';
+    const main=row.querySelector('button:not(.stellar-chat-action),a:not(.stellar-chat-action),.chat-title,.chat-name,strong')||row;
+    if(main&&!main.getAttribute?.('title')){
+      const label=(main.textContent||row.textContent||'Chat').trim().replace(/\s+/g,' ').slice(0,90);
+      if(label)main.setAttribute?.('title',label);
+    }
+  }
+
+  function polishButton(btn){
+    const action=detectAction(btn);
+    if(!action)return;
+    const copy=ACTION_COPY[action];
+    btn.classList.add('stellar-chat-action');
+    btn.dataset.stellarChatAction=action;
+    btn.type='button';
+    btn.setAttribute('aria-label',copy.label);
+    btn.setAttribute('title',copy.label);
+    const row=rowFor(btn);
+    if(row)polishRow(row);
+    if(action==='delete'&&isPinned(row)){
+      btn.setAttribute('aria-disabled','true');
+      btn.classList.add('is-disabled');
+      btn.setAttribute('title','Unpin this chat before deleting');
+      btn.setAttribute('aria-label','Unpin this chat before deleting');
+    }else{
+      btn.removeAttribute('aria-disabled');
+      btn.classList.remove('is-disabled');
+    }
+  }
+
+  function polish(){
+    document.querySelectorAll('.chat-history-item,[data-chat-row],#saved-chat-list li,.saved-chat-list li').forEach(polishRow);
+    document.querySelectorAll('.chat-actions button,.chat-actions a,.chat-history-item button,.chat-history-item a,[data-chat-row] button,[data-chat-row] a').forEach(polishButton);
+    document.querySelectorAll('.chat-actions').forEach(actions=>{
+      actions.setAttribute('aria-label','Chat actions: pin, rename and delete');
+      actions.dataset.stellarPolished='true';
+    });
+  }
+
+  document.addEventListener('click',event=>{
+    const btn=event.target.closest?.('.stellar-chat-action[data-stellar-chat-action="delete"],.chat-actions button,.chat-actions a');
+    if(!btn)return;
+    if(detectAction(btn)!=='delete')return;
+    const row=rowFor(btn);
+    if(!isPinned(row))return;
+    event.preventDefault();
+    event.stopPropagation();
+    status('Pinned chats are protected. Unpin first before deleting.','warn');
+  },true);
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',polish,{once:true});
+  else polish();
+  new MutationObserver(polish).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+  window.addEventListener('pageshow',polish);
+  window.addEventListener('focus',polish);
+  [300,900,1800,3500].forEach(delay=>setTimeout(polish,delay));
+})();
