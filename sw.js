@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, app-load patching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-27-simple-workspace-v12';
+const SW_VERSION = 'stellar-sw-2026-09-28-account-settings-v13';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -101,6 +101,30 @@ function simpleWorkspaceLayer() {
     return looksBusy && !looksCore;
   }
 
+  function niceNameFromEmail(email) {
+    const raw = String(email || '').trim().toLowerCase();
+    if (!raw || !raw.includes('@')) return '';
+    if (raw === 'deadlyfox10@gmail.com') return 'Tobi';
+    const local = raw.split('@')[0].replace(/[._-]+/g, ' ').replace(/\d+/g, ' ').trim();
+    if (!local) return '';
+    return local.split(/\s+/).map((part) => part ? part[0].toUpperCase() + part.slice(1) : '').join(' ').slice(0, 38);
+  }
+
+  function polishSettingsIdentity() {
+    const card = document.querySelector('.account-card');
+    if (!card) return;
+    const nameEl = card.querySelector('.account-title strong');
+    const emailEl = card.querySelector('.account-title small');
+    const email = (emailEl?.textContent || '').trim();
+    const current = (nameEl?.textContent || '').trim();
+    const next = niceNameFromEmail(email);
+    if (nameEl && next && (!current || /^(account|owner|user|signed in)$/i.test(current))) {
+      nameEl.textContent = next;
+      nameEl.dataset.stellarNameFixed = 'true';
+    }
+    if (emailEl && email) emailEl.setAttribute('title', email);
+  }
+
   function simplifyWorkspace() {
     document.body?.classList?.add('stellar-simple-workspace');
 
@@ -127,6 +151,8 @@ function simpleWorkspaceLayer() {
       welcomeCopy.dataset.stellarSimpleCopy = 'true';
       welcomeCopy.textContent = 'Ask Stellar anything. Plans, credits, settings and support are tucked away so the workspace stays clean.';
     }
+
+    polishSettingsIdentity();
   }
 
   function installStyle() {
@@ -146,6 +172,12 @@ function simpleWorkspaceLayer() {
       'body.stellar-simple-workspace .welcome{padding-top:clamp(38px,9vh,92px)!important;}',
       'body.stellar-simple-workspace .welcome h1,body.stellar-simple-workspace .home-welcome h1{font-size:clamp(40px,7vw,72px)!important;max-width:850px!important;margin-inline:auto!important;}',
       'body.stellar-simple-workspace .composer-wrap{z-index:40!important;}',
+      'body.stellar-simple-workspace .account-title{display:grid!important;gap:3px!important;min-width:0!important;}',
+      'body.stellar-simple-workspace .account-title strong{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}',
+      'body.stellar-simple-workspace .account-title small{display:block!important;margin-top:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#b8bfcb!important;}',
+      'body.stellar-simple-workspace .settings-row .copy{display:grid!important;gap:3px!important;min-width:0!important;}',
+      'body.stellar-simple-workspace .settings-row .copy strong{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}',
+      'body.stellar-simple-workspace .settings-row .copy small{display:block!important;margin-top:0!important;white-space:normal!important;line-height:1.35!important;color:#aab2c2!important;}',
       '@media(max-width:780px){body.stellar-simple-workspace .top-actions .btn:not(.primary):not([id*="setting" i]):not([id*="account" i]){display:none!important;}body.stellar-simple-workspace .top-usage{max-width:140px!important;}body.stellar-simple-workspace .side{width:min(82vw,300px)!important;}}'
     ].join('\n');
     document.head.appendChild(style);
@@ -159,6 +191,7 @@ function simpleWorkspaceLayer() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
   else run();
   window.addEventListener('pageshow', run);
+  new MutationObserver(run).observe(document.documentElement, { childList: true, subtree: true });
   setTimeout(run, 500);
   setTimeout(run, 1800);
 })();
