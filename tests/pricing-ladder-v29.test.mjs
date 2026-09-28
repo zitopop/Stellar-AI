@@ -26,6 +26,7 @@ test('public pricing surfaces show the new conversion ladder', () => {
   const terms = read('terms.html');
   const llms = read('llms.txt');
   const guide = read('what-is-what.html');
+  const index = read('index.html');
   const homepageJs = read('lib/assets/homepage.js');
 
   for (const source of [plans, terms, llms, guide]) {
@@ -37,8 +38,9 @@ test('public pricing surfaces show the new conversion ladder', () => {
     assert.doesNotMatch(source, /20,000 credits\/(?:month|mo)|20,000 credits per month/);
   }
 
-  assert.match(homepageJs, /75 credits\/day/);
-  assert.match(homepageJs, /5,000 credits\/month/);
-  assert.match(homepageJs, /15,000 credits\/month/);
-  assert.match(homepageJs, /50,000 credits\/month/);
+  assert.match(index, /75 credits\/day/);
+  assert.match(index, /5,000 credits\/month/);
+  assert.match(index, /15,000 credits\/month/);
+  assert.match(index, /50,000 credits\/month/);
+  assert.doesNotMatch(homepageJs, /pricingReplacements/);
 });
