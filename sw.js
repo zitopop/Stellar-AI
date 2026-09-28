@@ -1,5 +1,5 @@
 // Stellar AI service worker — offline shell, safe static caching, app-load patching, and update signalling.
-const SW_VERSION = 'stellar-sw-2026-09-28-home-plans-v14';
+const SW_VERSION = 'stellar-sw-2026-09-28-home-plans-max-v15';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -72,16 +72,8 @@ function simpleWorkspaceLayer() {
   if (window.__stellarSimpleWorkspaceV1) return;
   window.__stellarSimpleWorkspaceV1 = true;
 
-  const KEEP_WORDS = [
-    'chat', 'new chat', 'continue', 'plans', 'plan', 'credits', 'credit',
-    'settings', 'account', 'support', 'help', 'billing', 'legal', 'terms'
-  ];
-  const BUSY_WORDS = [
-    'investor', 'operator', 'deploy', 'seo', 'blog', 'business', 'website audit',
-    'ai receptionist', 'email agent', 'growth', 'admin', 'owner', 'debug', 'guide',
-    'prompt', 'five m', 'fivem', 'roblox', 'shopify', 'broadcast', 'status center',
-    'toolkit', 'playbook', 'launch center', 'strategy', 'services'
-  ];
+  const KEEP_WORDS = ['chat','new chat','continue','plans','plan','credits','credit','settings','account','support','help','billing','legal','terms'];
+  const BUSY_WORDS = ['investor','operator','deploy','seo','blog','business','website audit','ai receptionist','email agent','growth','admin','owner','debug','guide','prompt','five m','fivem','roblox','shopify','broadcast','status center','toolkit','playbook','launch center','strategy','services'];
 
   function textFor(el) {
     return [el.textContent, el.getAttribute?.('href'), el.getAttribute?.('aria-label'), el.getAttribute?.('title'), el.id, el.className].filter(Boolean).join(' ').toLowerCase();
@@ -208,7 +200,7 @@ async function patchHomeNavigationResponse(request, response) {
   if (!type.toLowerCase().includes('text/html')) return response;
   let html = await response.text();
   if (!html.includes('/lib/assets/homepage-plan-polish.js')) {
-    const script = '<script src="/lib/assets/homepage-plan-polish.js?v=20260928-plans" defer></script>';
+    const script = '<script src="/lib/assets/homepage-plan-polish.js?v=20260928-plans-max" defer></script>';
     html = html.includes('</body>') ? html.replace('</body>', `${script}\n</body>`) : `${html}\n${script}`;
   }
   const headers = new Headers(response.headers);
