@@ -1,365 +1,144 @@
 (() => {
   'use strict';
 
-  if (window.__stellarCapabilitiesGuideV8) return;
-  window.__stellarCapabilitiesGuideV8 = true;
-
-  const PUBLIC_GUIDE_ITEMS = [
-    ['Chat', 'Ask Stellar to write, plan, explain, fix and organise daily work.'],
-    ['StellarX', 'Use StellarX for advanced guided tasks, bigger projects, website and business workflows with approval-first steps.'],
-    ['Website help', 'Improve landing pages, support pages, SEO copy, layout and calls to action.'],
-    ['Business help', 'Draft lead replies, follow-up messages, offers, sales copy and simple plans.'],
-    ['Credits', 'Free daily credits let users try the app. Paid plan credits and wallet top-ups keep serious users working.'],
-    ['Support', 'Find the right route for billing, refunds, account access, bugs, credits or rewards.'],
-    ['Settings', 'Control account, credits, plan, models, voice, privacy, plugins and support from one clean place.'],
-    ['Safety', 'Bigger actions are explained first so users know what happens before anything important runs.'],
-  ];
+  if (window.__stellarSideSettingsPolishV1) return;
+  window.__stellarSideSettingsPolishV1 = true;
 
   const SETTINGS_ITEMS = [
-    ['Account', 'Who you are', 'Your sign-in, email and saved workspace identity. Check this first if anything looks wrong.'],
-    ['Credits', 'Usage meter', 'Shows remaining AI usage. Free credits prove it works; monthly credits and top-ups keep work moving.'],
-    ['Plans', 'Upgrade path', 'Compare Free, Starter, Plus and Pro. Upgrade when you need more credits, stronger models or bigger tasks.'],
-    ['Models', 'Brain strength', 'Pick the AI level for the job. Faster models are for quick work; stronger models are for deep builds.'],
-    ['Voice', 'Talk to AI', 'Controls microphone, language and spoken replies. Use it when typing is slower than speaking.'],
-    ['Plugins', 'Connected apps', 'Connect tools only when needed. Important actions should stay reviewable before they run.'],
-    ['Privacy', 'Safety controls', 'Understand data, account safety and what is under your control. This section builds trust.'],
-    ['Support', 'Help route', 'Use this when billing, credits, account access, bugs or confusing settings need help.'],
+    ['Account', 'Who you are', 'Your sign-in, email and saved workspace identity.'],
+    ['Credits', 'Usage meter', 'Shows remaining AI usage, free credits, monthly credits and top-ups.'],
+    ['Plans', 'Money bit', 'Compare Free, Starter, Plus and Pro before upgrading.'],
+    ['Models', 'Brain strength', 'Pick faster or stronger AI depending on the job.'],
+    ['Voice', 'Talk to AI', 'Control microphone, language and spoken replies.'],
+    ['Plugins', 'Connected apps', 'Connect outside tools only when needed.'],
+    ['Privacy', 'Safety', 'Understand data, account safety and user controls.'],
+    ['Support', 'Help', 'Get help with billing, credits, bugs or account access.'],
   ];
 
-  const OWNER_GUIDE_ITEMS = [
-    ['Owner controls', 'Private owner/admin/staff settings for approvals, escalation routing and internal configuration.'],
-    ['Staff controls', 'Team-only operational views and private configuration stay hidden from normal users.'],
+  const SIDE_HELP = [
+    [/new|build|compose|start/i, ['New task', 'Start a fresh Stellar task.']],
+    [/home|chat|workspace/i, ['Home', 'Open the main AI workspace.']],
+    [/work|task|agent/i, ['Work', 'Turn fixes, website jobs and business work into clear tasks.']],
+    [/credit|usage|wallet/i, ['Credits', 'See usage, limits and top-ups.']],
+    [/plan|price|upgrade|billing/i, ['Plans', 'Compare plans and upgrades.']],
+    [/model/i, ['Models', 'Choose the AI strength.']],
+    [/voice|mic|call/i, ['Voice', 'Speak to Stellar.']],
+    [/file|download/i, ['Files', 'Open generated files.']],
+    [/setting|preference/i, ['Settings', 'Control account, credits, plans, voice, privacy and support.']],
+    [/support|help/i, ['Support', 'Get help.']],
   ];
 
-  const MODEL_PICKER_COPY = Object.freeze({
-    spark: { icon: '⚡', name: 'Spark', detail: 'Fast answers, short drafts and quick fixes', badge: 'Free' },
-    fabie: { icon: '⚡', name: 'Spark', detail: 'Fast answers, short drafts and quick fixes', badge: 'Free' },
-    star: { icon: '✦', name: 'Star', detail: 'Balanced everyday work and problem solving', badge: 'Default' },
-    smart: { icon: '✦', name: 'Star', detail: 'Balanced everyday work and problem solving', badge: 'Default' },
-    stellarx: { icon: '✧', name: 'StellarX', detail: 'Advanced guided tasks, bigger projects, website and business workflows', badge: 'Public' },
-    comet: { icon: '☄', name: 'Comet', detail: 'Deeper reasoning for bigger builds, reviews and planning', badge: 'Plus' },
-    nova: { icon: '✺', name: 'Nova', detail: 'Highest power for complex builds and long-form project work', badge: 'Pro' },
-    ultra: { icon: '✺', name: 'Nova', detail: 'Highest power for complex builds and long-form project work', badge: 'Pro' },
-  });
+  const TAB_LABELS = {
+    account:'Who you are', profile:'Who you are', credits:'Usage meter', plan:'Money bit', billing:'Money bit', models:'Brain strength', voice:'Talk to AI', plugins:'Connected apps', privacy:'Safety', support:'Help', preferences:'App feel', about:'Info'
+  };
 
-  function isAppPage() {
-    return /\/app(?:\.html)?\/?$/i.test(location.pathname) || Boolean(document.querySelector('.app'));
-  }
+  function isAppPage(){ return /\/app(?:\.html)?\/?$/i.test(location.pathname) || !!document.querySelector('.app'); }
+  function clean(value){ return String(value || '').replace(/\s+/g, ' ').trim(); }
 
-  function safeText(selector) {
-    try { return String(document.querySelector(selector)?.textContent || '').trim(); } catch (_) { return ''; }
-  }
-
-  function isPrivilegedViewer() {
-    const email = safeText('#acct-email,[data-account-email],.account-email').toLowerCase();
-    const body = document.body;
-    const html = document.documentElement;
-    return /deadlyfox10@gmail\.com/.test(email)
-      || body?.classList?.contains('owner')
-      || body?.classList?.contains('is-owner')
-      || body?.classList?.contains('admin')
-      || body?.classList?.contains('staff')
-      || body?.dataset?.owner === 'true'
-      || body?.dataset?.admin === 'true'
-      || body?.dataset?.staff === 'true'
-      || html?.dataset?.owner === 'true'
-      || html?.dataset?.admin === 'true'
-      || html?.dataset?.staff === 'true'
-      || document.querySelector('[data-owner-only]:not([hidden]),.owner-tools:not([hidden]),#provider-models:not([hidden])') !== null;
-  }
-
-  function addStyles() {
-    if (document.getElementById('stellar-capabilities-guide-style-v8')) return;
-    const style = document.createElement('style');
-    style.id = 'stellar-capabilities-guide-style-v8';
-    style.textContent = `
-      .stellar-capabilities-guide,.stellar-settings-explainer{
-        width:min(780px,100%);margin:14px auto 0;padding:14px;border:1px solid rgba(185,176,255,.16);border-radius:20px;
-        background:linear-gradient(180deg,rgba(185,176,255,.075),rgba(255,255,255,.022));box-shadow:0 18px 55px rgba(0,0,0,.18);
-      }
-      .stellar-capabilities-guide strong,.stellar-settings-explainer strong{display:block;color:#f6f7fb;font-size:14px;letter-spacing:-.02em;}
-      .stellar-capabilities-guide p,.stellar-settings-explainer p{margin:5px 0 12px;color:#aeb6c6;font-size:12px;line-height:1.5;}
-      .stellar-capabilities-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;}
-      .stellar-capability-card{min-width:0;padding:11px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(12,14,22,.68);}
-      .stellar-capability-card b{display:block;color:#f4f2ff;font-size:12px;margin-bottom:4px;}
-      .stellar-capability-card span{display:block;color:#929baa;font-size:11px;line-height:1.38;}
-      .stellar-capability-owner-card{border-color:rgba(242,216,121,.24);background:linear-gradient(180deg,rgba(242,216,121,.08),rgba(12,14,22,.68));}
-      .stellar-capability-owner-card b{color:#f7e4a1;}
-
-      #settings-modal .set-card,#settings-modal .settings-card{overflow:hidden!important;border-radius:28px!important;border:1px solid rgba(185,176,255,.18)!important;background:radial-gradient(760px 420px at 18% -10%,rgba(139,124,246,.18),transparent 65%),linear-gradient(145deg,rgba(16,18,30,.98),rgba(8,10,18,.98))!important;box-shadow:0 34px 120px rgba(0,0,0,.56),0 0 58px rgba(139,124,246,.11)!important;}
-      #settings-modal .set-head{min-height:92px!important;padding:24px clamp(18px,3vw,34px)!important;border-bottom:1px solid rgba(255,255,255,.075)!important;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))!important;}
-      #settings-modal .settings-title{color:#f7f7fb!important;font-size:clamp(21px,2.1vw,27px)!important;font-weight:860!important;letter-spacing:-.045em!important;}
-      #settings-modal .settings-subtitle{max-width:620px!important;margin-top:6px!important;color:#a7adbd!important;line-height:1.45!important;}
-      #settings-modal .modal-x{min-width:46px!important;min-height:46px!important;border-radius:15px!important;border:1px solid rgba(255,255,255,.10)!important;background:rgba(255,255,255,.045)!important;color:#eef1f7!important;}
-      #settings-modal .modal-x:hover,#settings-modal .modal-x:focus-visible{border-color:rgba(185,176,255,.34)!important;background:rgba(185,176,255,.12)!important;}
-      #settings-modal .set-tabs{gap:8px!important;padding:18px!important;}
-      #settings-modal .set-tab{min-height:48px!important;border-radius:15px!important;border:1px solid rgba(255,255,255,.055)!important;color:#aeb4c4!important;background:rgba(255,255,255,.025)!important;font-weight:760!important;position:relative!important;}
-      #settings-modal .set-tab:hover,#settings-modal .set-tab:focus-visible{color:#fff!important;border-color:rgba(185,176,255,.20)!important;background:rgba(185,176,255,.075)!important;}
-      #settings-modal .set-tab.active{color:#fff!important;border-color:rgba(185,176,255,.36)!important;background:linear-gradient(135deg,rgba(139,124,246,.26),rgba(255,255,255,.055))!important;box-shadow:0 12px 32px rgba(27,20,70,.25),inset 0 1px 0 rgba(255,255,255,.05)!important;}
-      #settings-modal .set-tab[data-plain-label]::after{content:attr(data-plain-label);display:block;margin-top:2px;color:#858da0;font-size:9px;font-weight:700;letter-spacing:0;text-transform:none;line-height:1.1;}
-      #settings-modal .set-tab.active[data-plain-label]::after{color:#d6d0ff;}
-      #settings-modal .set-panel{padding:clamp(16px,2.3vw,28px)!important;scrollbar-color:rgba(185,176,255,.22) transparent!important;}
-      #settings-modal .profile-head,#settings-modal .set-group,#settings-modal .set-collapsible{border-radius:18px!important;border:1px solid rgba(185,176,255,.14)!important;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.023))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;}
-      #settings-modal .set-label{margin:20px 2px 10px!important;color:#b7bed0!important;font-size:11px!important;font-weight:880!important;letter-spacing:.08em!important;text-transform:uppercase!important;}
-      #settings-modal .set-item{min-height:56px!important;padding:13px 15px!important;border-radius:14px!important;}
-      #settings-modal .set-item:hover{background:rgba(255,255,255,.035)!important;}
-      #settings-modal .set-key{color:#f2f4f8!important;font-weight:760!important;}
-      #settings-modal .set-val{color:#a5adbd!important;line-height:1.4!important;}
-      #settings-modal .seg-wrap,#settings-modal select,#settings-modal input,#settings-modal textarea{border-radius:13px!important;border-color:rgba(255,255,255,.10)!important;background:rgba(7,9,16,.62)!important;}
-
-      #settings-modal .stellar-settings-explainer{width:100%;margin:0 0 16px;background:linear-gradient(145deg,rgba(139,124,246,.16),rgba(255,255,255,.024));}
-      #settings-modal .stellar-settings-explainer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
-      #settings-modal .stellar-settings-explainer-kicker{display:inline-flex;min-height:28px;align-items:center;padding:0 10px;border:1px solid rgba(126,232,209,.22);border-radius:999px;background:rgba(126,232,209,.07);color:#cafff3;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;}
-      #settings-modal .stellar-settings-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
-      #settings-modal .stellar-settings-map-card{padding:12px;border:1px solid rgba(255,255,255,.085);border-radius:15px;background:rgba(8,10,18,.54);}
-      #settings-modal .stellar-settings-map-card b{display:flex;align-items:center;gap:7px;color:#f5f7fb;font-size:12.5px;}
-      #settings-modal .stellar-settings-map-card small{display:inline-flex;margin:6px 0 7px;min-height:22px;align-items:center;padding:0 7px;border-radius:999px;border:1px solid rgba(242,216,121,.22);background:rgba(242,216,121,.07);color:#f7e4a1;font-size:9px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;}
-      #settings-modal .stellar-settings-map-card span{display:block;color:#a1aabc;font-size:11px;line-height:1.42;}
-      #settings-modal .stellar-settings-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-      #settings-modal .stellar-settings-action{min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:0 11px;border:1px solid rgba(255,255,255,.10);border-radius:11px;background:rgba(255,255,255,.04);color:#f2f4f8;font-size:11px;font-weight:850;text-decoration:none;}
-      #settings-modal .stellar-settings-action.primary{background:#f3f0ff;color:#101218;border-color:#f3f0ff;}
-
-      #model-menu [data-model-choice],.model-menu [data-model-choice]{min-height:58px;}
-      #model-menu [data-model-choice="stellarx"],.model-menu [data-model-choice="stellarx"]{position:relative;border-color:rgba(185,176,255,.26)!important;background:linear-gradient(135deg,rgba(139,124,246,.14),rgba(255,255,255,.035))!important;}
-      #model-menu [data-model-choice="stellarx"] .model-symbol,.model-menu [data-model-choice="stellarx"] .model-symbol{color:#d9d2ff!important;filter:drop-shadow(0 0 12px rgba(185,176,255,.36));}
-      #model-menu [data-model-choice="stellarx"] .model-access,.model-menu [data-model-choice="stellarx"] .model-access{color:#d9d2ff!important;border-color:rgba(185,176,255,.22)!important;background:rgba(185,176,255,.08)!important;}
-      #model-menu [data-model-choice="nova"] .model-access,#model-menu [data-model-choice="ultra"] .model-access,.model-menu [data-model-choice="nova"] .model-access,.model-menu [data-model-choice="ultra"] .model-access{color:#f7e4a1!important;border-color:rgba(242,216,121,.24)!important;background:rgba(242,216,121,.08)!important;}
-      @media(max-width:640px){
-        #settings-modal{align-items:flex-end!important;padding:0!important;}
-        #settings-modal .set-card,#settings-modal .settings-card{width:100vw!important;height:min(90dvh,720px)!important;max-height:90dvh!important;border-radius:26px 26px 0 0!important;border-left:0!important;border-right:0!important;border-bottom:0!important;}
-        #settings-modal .set-head{min-height:82px!important;padding:18px 16px 14px!important;}
-        #settings-modal .settings-title{font-size:22px!important;}
-        #settings-modal .set-body{display:flex!important;flex-direction:column!important;min-height:0!important;}
-        #settings-modal .set-tabs{display:flex!important;gap:8px!important;overflow-x:auto!important;padding:10px 12px!important;border-right:0!important;border-bottom:1px solid rgba(255,255,255,.07)!important;scrollbar-width:none!important;}
-        #settings-modal .set-tabs::-webkit-scrollbar{display:none!important;}
-        #settings-modal .set-tab{flex:0 0 auto!important;min-width:max-content!important;min-height:46px!important;padding:0 14px!important;}
-        #settings-modal .set-panel{min-height:0!important;overflow:auto!important;padding:14px 12px calc(18px + env(safe-area-inset-bottom))!important;}
-        #settings-modal .stellar-settings-explainer-head{display:grid;}
-        #settings-modal .stellar-settings-map{grid-template-columns:1fr;}
-        #settings-modal .stellar-settings-actions{display:grid;}
-        #settings-modal .stellar-settings-action{width:100%;}
-        .stellar-capabilities-guide{padding:12px;border-radius:18px}.stellar-capabilities-grid{grid-template-columns:1fr}.stellar-capability-card{padding:10px}#model-menu [data-model-choice],.model-menu [data-model-choice]{min-height:64px!important}
-      }
+  function addStyles(){
+    if(document.getElementById('stellar-side-settings-polish-style-v1')) return;
+    const style=document.createElement('style');
+    style.id='stellar-side-settings-polish-style-v1';
+    style.textContent=`
+      #sidebar [data-sidebar-label],.sidebar [data-sidebar-label]{position:relative!important}
+      #sidebar [data-sidebar-label]::after,.sidebar [data-sidebar-label]::after{content:attr(data-sidebar-label);position:fixed;left:76px;z-index:6000;max-width:240px;display:none;padding:8px 10px;border:1px solid rgba(185,176,255,.22);border-radius:12px;background:rgba(12,14,22,.97);color:#eef1f8;font-size:11px;font-weight:800;line-height:1.35;box-shadow:0 16px 44px rgba(0,0,0,.38);pointer-events:none}
+      #sidebar [data-sidebar-label]:hover::after,#sidebar [data-sidebar-label]:focus-visible::after,.sidebar [data-sidebar-label]:hover::after,.sidebar [data-sidebar-label]:focus-visible::after{display:block}
+      #sidebar .stellar-side-mini,.sidebar .stellar-side-mini{display:block;margin-top:3px;color:#8f98ad;font-size:10px;font-weight:760;line-height:1.18;max-width:138px;white-space:normal}
+      #sidebar.collapsed .stellar-side-mini,.stellar-sidebar-compact #sidebar .stellar-side-mini{display:none!important}
+      #settings-modal .set-tab[data-plain-label]::after{content:attr(data-plain-label);display:block;margin-top:2px;color:#858da0;font-size:9px;font-weight:700;line-height:1.1;text-transform:none;letter-spacing:0}
+      #settings-modal .set-tab.active[data-plain-label]::after{color:#d6d0ff}
+      #settings-modal .stellar-settings-explainer{width:100%;margin:0 0 16px;padding:14px;border:1px solid rgba(185,176,255,.16);border-radius:20px;background:linear-gradient(145deg,rgba(139,124,246,.16),rgba(255,255,255,.024));box-shadow:0 18px 55px rgba(0,0,0,.18)}
+      #settings-modal .stellar-settings-explainer strong{display:block;color:#f6f7fb;font-size:15px;letter-spacing:-.02em}#settings-modal .stellar-settings-explainer p{margin:5px 0 12px;color:#aeb6c6;font-size:12px;line-height:1.5}
+      #settings-modal .stellar-settings-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#settings-modal .stellar-settings-card{padding:12px;border:1px solid rgba(255,255,255,.085);border-radius:15px;background:rgba(8,10,18,.54)}#settings-modal .stellar-settings-card b{display:block;color:#f5f7fb;font-size:12.5px}#settings-modal .stellar-settings-card small{display:inline-flex;margin:6px 0 7px;min-height:22px;align-items:center;padding:0 7px;border-radius:999px;border:1px solid rgba(242,216,121,.22);background:rgba(242,216,121,.07);color:#f7e4a1;font-size:9px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}#settings-modal .stellar-settings-card span{display:block;color:#a1aabc;font-size:11px;line-height:1.42}
+      #settings-modal .stellar-settings-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#settings-modal .stellar-settings-actions a{min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:0 11px;border:1px solid rgba(255,255,255,.10);border-radius:11px;background:rgba(255,255,255,.04);color:#f2f4f8;font-size:11px;font-weight:850;text-decoration:none}#settings-modal .stellar-settings-actions a:first-child{background:#f3f0ff;color:#101218;border-color:#f3f0ff}
+      @media(max-width:640px){#settings-modal .set-tab[data-plain-label]::after{display:none!important}#settings-modal .stellar-settings-map{grid-template-columns:1fr}}
     `;
     document.head.appendChild(style);
   }
 
-  function appendCards(grid, items, ownerOnly = false) {
-    items.forEach(([name, detail]) => {
-      const card = document.createElement('article');
-      card.className = ownerOnly ? 'stellar-capability-card stellar-capability-owner-card' : 'stellar-capability-card';
-      if (ownerOnly) card.dataset.ownerCapability = 'true';
-      const heading = document.createElement('b');
-      heading.textContent = name;
-      const copy = document.createElement('span');
-      copy.textContent = detail;
-      card.append(heading, copy);
+  function meaning(raw){
+    const text=clean(raw).replace(/^[+＋✦⌘\s]+/,'');
+    for(const [pattern,pair] of SIDE_HELP) if(pattern.test(text)) return pair;
+    return [text || 'Open', text ? `Open ${text}.` : 'Open this section.'];
+  }
+
+  function installSidebar(){
+    const sidebar=document.querySelector('#sidebar,.sidebar,[data-sidebar]');
+    if(!sidebar) return;
+    sidebar.querySelectorAll('a,button,[role="button"]').forEach((control)=>{
+      if(!(control instanceof HTMLElement)) return;
+      const raw=clean(control.getAttribute('aria-label') || control.getAttribute('title') || control.textContent);
+      const [name, detail]=meaning(raw);
+      const full=`${name} — ${detail}`;
+      control.dataset.sidebarLabel=full;
+      control.setAttribute('title', full);
+      if(!control.getAttribute('aria-label')) control.setAttribute('aria-label', full);
+      const hasVisibleText=clean(control.textContent).length > 1;
+      if(hasVisibleText && !control.querySelector('.stellar-side-mini')){
+        const mini=document.createElement('span');
+        mini.className='stellar-side-mini';
+        mini.textContent=detail;
+        control.appendChild(mini);
+      }
+    });
+  }
+
+  function installTabLabels(){
+    document.querySelectorAll('#settings-modal .set-tab,[data-settings-tab],.settings-tab').forEach((tab)=>{
+      const raw=clean(tab.dataset.tab || tab.getAttribute('aria-label') || tab.textContent);
+      const key=raw.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      const label=TAB_LABELS[key] || TAB_LABELS[raw.toLowerCase()] || 'Open section';
+      tab.dataset.plainLabel=label;
+      if(!tab.getAttribute('title')) tab.setAttribute('title', `${raw || 'Settings'} — ${label}`);
+      if(!tab.getAttribute('aria-label')) tab.setAttribute('aria-label', `${raw || 'Settings'} — ${label}`);
+    });
+  }
+
+  function settingsGuide(){
+    const node=document.createElement('section');
+    node.className='stellar-settings-explainer';
+    node.dataset.stellarSettingsExplainer='true';
+    node.setAttribute('aria-label','Settings explained');
+    node.innerHTML='<strong>Settings control room</strong><p>Settings should show what you have, what you can change, and what costs money.</p>';
+    const grid=document.createElement('div');
+    grid.className='stellar-settings-map';
+    SETTINGS_ITEMS.forEach(([name,label,detail])=>{
+      const card=document.createElement('article');
+      card.className='stellar-settings-card';
+      card.innerHTML=`<b>${name}</b><small>${label}</small><span>${detail}</span>`;
       grid.appendChild(card);
     });
+    const actions=document.createElement('div');
+    actions.className='stellar-settings-actions';
+    actions.innerHTML='<a href="/plans">Compare plans</a><a href="/settings-guide">Full guide</a><a href="/support">Get support</a>';
+    node.append(grid, actions);
+    return node;
   }
 
-  function guideNode(compact = false) {
-    const privileged = isPrivilegedViewer();
-    const section = document.createElement('section');
-    section.className = 'stellar-capabilities-guide';
-    section.dataset.stellarCapabilitiesGuide = 'true';
-    section.setAttribute('aria-label', 'What Stellar AI can do');
-    const title = document.createElement('strong');
-    title.textContent = compact ? 'What Stellar can do' : 'What Stellar AI can do for you';
-    const intro = document.createElement('p');
-    intro.textContent = compact
-      ? 'Use Stellar for chat, credits, support, business follow-up and clear approval steps.'
-      : 'Stellar is not just a blank chat box. It helps users understand what to ask, what to click and when bigger actions need approval.';
-    const grid = document.createElement('div');
-    grid.className = 'stellar-capabilities-grid';
-    appendCards(grid, PUBLIC_GUIDE_ITEMS, false);
-    if (privileged) appendCards(grid, OWNER_GUIDE_ITEMS, true);
-    section.append(title, intro, grid);
-    return section;
+  function installSettingsGuide(){
+    const modal=document.querySelector('#settings-modal,.settings-panel,[data-settings-panel]');
+    if(!modal) return;
+    const existing=modal.querySelector('[data-stellar-settings-explainer="true"]');
+    const next=settingsGuide();
+    if(existing) existing.replaceWith(next);
+    else (modal.querySelector('.set-panel:not([style*="display: none"]),.set-panel,.settings-card,.set-body') || modal).prepend(next);
+    installTabLabels();
   }
 
-  function settingsExplainerNode() {
-    const section = document.createElement('section');
-    section.className = 'stellar-settings-explainer';
-    section.dataset.stellarSettingsExplainer = 'true';
-    section.setAttribute('aria-label', 'Settings explained');
-
-    const head = document.createElement('div');
-    head.className = 'stellar-settings-explainer-head';
-    const copy = document.createElement('div');
-    const title = document.createElement('strong');
-    title.textContent = 'Settings control room';
-    const intro = document.createElement('p');
-    intro.textContent = 'Everything important is explained before users press it: account, credits, plan, models, voice, connected tools, privacy and support.';
-    copy.append(title, intro);
-    const badge = document.createElement('span');
-    badge.className = 'stellar-settings-explainer-kicker';
-    badge.textContent = 'What is what';
-    head.append(copy, badge);
-
-    const map = document.createElement('div');
-    map.className = 'stellar-settings-map';
-    SETTINGS_ITEMS.forEach(([name, label, detail], index) => {
-      const card = document.createElement('article');
-      card.className = 'stellar-settings-map-card';
-      const b = document.createElement('b');
-      b.textContent = `${index + 1}. ${name}`;
-      const small = document.createElement('small');
-      small.textContent = label;
-      const span = document.createElement('span');
-      span.textContent = detail;
-      card.append(b, small, span);
-      map.appendChild(card);
-    });
-
-    const actions = document.createElement('div');
-    actions.className = 'stellar-settings-actions';
-    actions.innerHTML = '<a class="stellar-settings-action primary" href="/settings-guide">Open full settings guide</a><a class="stellar-settings-action" href="/what-is-stellar-ai">What is Stellar AI?</a><a class="stellar-settings-action" href="/plans">Compare plans</a>';
-
-    section.append(head, map, actions);
-    return section;
-  }
-
-  function replaceGuide(existing, compact = false) {
-    const next = guideNode(compact);
-    existing.replaceWith(next);
-    return next;
-  }
-
-  function installHomeGuide() {
-    if (!isAppPage()) return;
-    const existing = document.querySelector('.chat-inner > [data-stellar-capabilities-guide="true"],.home-welcome > [data-stellar-capabilities-guide="true"],.welcome > [data-stellar-capabilities-guide="true"]');
-    if (existing) { replaceGuide(existing, false); return; }
-    const anchor = document.querySelector('.app .quality-strip,.app .home-welcome,.app .welcome,.chat-inner');
-    if (!anchor) return;
-    const guide = guideNode(false);
-    if (anchor.classList.contains('quality-strip')) anchor.insertAdjacentElement('afterend', guide);
-    else anchor.appendChild(guide);
-  }
-
-  function installSettingsGuide() {
-    const modal = document.querySelector('#settings-modal,.settings-panel,[data-settings-panel]');
-    if (!modal) return;
-    const oldCapabilities = modal.querySelector('[data-stellar-capabilities-guide="true"]');
-    if (oldCapabilities) oldCapabilities.remove();
-    const existing = modal.querySelector('[data-stellar-settings-explainer="true"]');
-    if (existing) existing.replaceWith(settingsExplainerNode());
-    else {
-      const panel = modal.querySelector('.set-panel:not([style*="display: none"]),.set-panel,.settings-card,.set-body') || modal;
-      panel.prepend(settingsExplainerNode());
-    }
-    const title = modal.querySelector('.settings-title');
-    if (title) title.textContent = 'Settings';
-    const subtitle = modal.querySelector('.settings-subtitle');
-    if (subtitle) subtitle.textContent = 'Control your account, credits, plans, models, voice, privacy, plugins and support. Each section explains what it changes.';
-    labelTabs(modal);
-  }
-
-  function labelTabs(modal) {
-    const labels = {
-      account:'Who you are', profile:'Who you are', plan:'Money bit', billing:'Money bit', credits:'Usage meter', 'credits-rewards':'Usage meter', models:'Brain strength', voice:'Talk to AI', plugins:'Connected apps', privacy:'Safety', support:'Help', preferences:'App feel', about:'Info'
-    };
-    modal.querySelectorAll('.set-tab,[data-tab]').forEach((tab) => {
-      const key = String(tab.dataset.tab || tab.getAttribute('data-tab') || tab.textContent || '').trim().toLowerCase();
-      const match = Object.entries(labels).find(([name]) => key.includes(name));
-      if (match && !tab.dataset.plainLabel) tab.dataset.plainLabel = match[1];
-    });
-  }
-
-  function modelMenu() {
-    return document.querySelector('#model-menu,.model-menu,[data-model-menu]');
-  }
-
-  function updateText(node, selector, value) {
-    const target = node.querySelector(selector);
-    if (target && target.textContent !== value) target.textContent = value;
-  }
-
-  function polishModelOption(option) {
-    const key = String(option?.dataset?.modelChoice || '').trim().toLowerCase();
-    const copy = MODEL_PICKER_COPY[key];
-    if (!copy) return;
-    option.dataset.publicModel = 'true';
-    option.setAttribute('aria-label', `${copy.name}: ${copy.detail}. ${copy.badge}.`);
-    updateText(option, '.model-symbol', copy.icon);
-    updateText(option, '.model-copy strong,strong', copy.name);
-    updateText(option, '.model-copy small,small', copy.detail);
-    updateText(option, '.model-access', copy.badge);
-  }
-
-  function polishModelPickerOptions() {
-    const menu = modelMenu();
-    if (!menu) return;
-    menu.querySelectorAll('[data-model-choice]').forEach(polishModelOption);
-  }
-
-  function refreshModelButtonLabel() {
-    const button = document.querySelector('#model-btn,.model-pill,[data-model-button]');
-    if (!button) return;
-    const strong = button.querySelector('strong');
-    if (strong) { strong.textContent = 'StellarX'; return; }
-    const label = Array.from(button.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && /spark|star|comet|nova|stellarx/i.test(node.textContent || ''));
-    if (label) label.textContent = ' StellarX ';
-    else button.setAttribute('aria-label', 'StellarX model selected');
-  }
-
-  function markStellarXSelected(menu, button) {
-    menu.querySelectorAll('[data-model-choice]').forEach((option) => option.setAttribute('aria-checked', option === button ? 'true' : 'false'));
-    button.classList.add('active', 'selected');
-    refreshModelButtonLabel();
-  }
-
-  function chooseStellarX(button) {
-    try { if (typeof window.setModel === 'function') window.setModel('Comet', 'StellarX advanced guided tasks'); } catch (_) {}
-    window.setTimeout(() => {
-      const menu = modelMenu();
-      const nextButton = button || menu?.querySelector('[data-model-choice="stellarx"]');
-      if (menu && nextButton) markStellarXSelected(menu, nextButton);
-    }, 0);
-  }
-
-  function stellarXModelOption() {
-    const button = document.createElement('button');
-    button.className = 'model-option stellarx-model-option';
-    button.type = 'button';
-    button.setAttribute('role', 'menuitemradio');
-    button.setAttribute('aria-checked', 'false');
-    button.dataset.modelChoice = 'stellarx';
-    button.dataset.publicModel = 'true';
-    button.innerHTML = '<span class="model-symbol">✧</span><span class="model-copy"><strong>StellarX</strong><small>Advanced guided tasks, bigger projects, website and business workflows</small></span><span class="model-access">Public</span>';
-    button.addEventListener('click', (event) => { event.preventDefault(); event.stopPropagation(); chooseStellarX(button); });
-    return button;
-  }
-
-  function installModelPickerOption() {
-    if (!isAppPage()) return;
-    const menu = modelMenu();
-    if (!menu) return;
-    const holder = menu.querySelector('.model-options') || menu;
-    if (!menu.querySelector('[data-model-choice="stellarx"]')) {
-      const option = stellarXModelOption();
-      const before = holder.querySelector('[data-model-choice="comet"],[data-model-choice="nova"],[data-model-choice="ultra"]');
-      if (before) before.insertAdjacentElement('beforebegin', option);
-      else holder.appendChild(option);
-    }
-    polishModelPickerOptions();
-  }
-
-  function install() {
-    if (!isAppPage()) return;
+  function install(){
+    if(!isAppPage()) return;
     addStyles();
-    installHomeGuide();
+    installSidebar();
     installSettingsGuide();
-    installModelPickerOption();
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', install, {once:true});
   else install();
 
-  let queued = false;
-  new MutationObserver(() => {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(() => { queued = false; install(); });
-  }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'data-owner', 'data-admin', 'data-staff'] });
+  let queued=false;
+  new MutationObserver(()=>{
+    if(queued) return;
+    queued=true;
+    requestAnimationFrame(()=>{ queued=false; install(); });
+  }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class','aria-label','title']});
 })();
