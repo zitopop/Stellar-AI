@@ -12,7 +12,7 @@ test('legacy space visual layer contains no fake mockup people', () => {
 });
 
 test('app home stays chat-first and exposes real reviewed Computer and Plugins entry points', () => {
-  assert.match(app, /What can I help with\?/);
+  assert.match(app, /Ask me anything/);
   assert.match(app, /function openComputerActionCard\(\)/);
   assert.match(app, />▣ StellarX<\/button>/);
   assert.match(app, /href="\/plugins">Plugins<\/a>/);
