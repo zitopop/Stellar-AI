@@ -13,7 +13,7 @@ test('landing CTA can open first-run welcome', () => {
 
 test('welcome entry opens the current actionable empty-chat composer', () => {
   assert.match(appHtml, /function welcomeHtml\(\)/);
-  assert.match(appHtml, /Type below\. Press ↑ to send\./);
+  assert.match(appHtml, /No sign-in required to try Stellar/);
   assert.match(appHtml, /id="prompt"/);
   assert.match(appHtml, /prompt\.focus\(\)/);
 });
