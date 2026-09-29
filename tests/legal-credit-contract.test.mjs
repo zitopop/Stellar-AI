@@ -1,12 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { getPlanDefinition } from '../lib/pricing.js';
 
 const terms = readFileSync(new URL('../terms.html', import.meta.url), 'utf8');
 const privacy = readFileSync(new URL('../privacy.html', import.meta.url), 'utf8');
+const fmt=n=>Number(n).toLocaleString('en-GB');
 
-test('terms explain the current Stellar Credits plan model', () => {
-  for (const text of ['75 credits per day, resetting at 00:00 UK time','5,000 credits per month','15,000 credits per month','50,000 credits per month']) assert.ok(terms.includes(text), text);
+test('terms explain the current Stellar Credits plan model from server-owned pricing', () => {
+  for (const id of ['free','starter','plus','pro']) {
+    const def=getPlanDefinition(id);
+    const period=def.creditPeriod==='day'?'day':'month';
+    assert.match(terms,new RegExp(fmt(def.includedCredits).replace(',', ',')+'(?: credits)?(?:\\/| per )'+period),id);
+  }
   assert.match(terms, /Spark 2 credits, Star 5 credits, Comet 10 credits, and Nova 20 credits/);
   assert.match(terms, /StellarX AI planning pass currently costs 20 credits/);
   assert.match(terms, /Included credits do not roll over beyond their stated reset period/);
@@ -24,7 +30,7 @@ test('terms explain welcome and referral promotional credits', () => {
   assert.match(terms, /100 promotional credits to the referred new account and 100 promotional credits to the referrer/);
 });
 
-test('terms no longer publish the retired request-hour allowance as customer plan value', () => {
+test('terms no longer publish a retired request-hour allowance or pound-value promo', () => {
   assert.doesNotMatch(terms, /hourly request allowances are 40, 120, 400, and 1,600/i);
   assert.doesNotMatch(terms, /£1 promotional credit/);
 });
