@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('workspace keeps the simple help question for empty chats', () => {
-  assert.match(app, /What can I help with\?/);
+  assert.match(app, /Ask me anything/);
 });
 
 test('signed-in greeting derives a bounded first name rather than rendering an email', () => {

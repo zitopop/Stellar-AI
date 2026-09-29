@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('home copy stays focused on one clear chat prompt', () => {
-  assert.match(app, /function welcomeHtml\(\)[\s\S]*?Type below\. Press ↑ to send\./);
+  assert.match(app, /function welcomeHtml\(\)[\s\S]*?Ask me anything/);
   assert.match(app, /placeholder="Message Stellar…"/);
   assert.match(app, /id="sendBtn"/);
 });

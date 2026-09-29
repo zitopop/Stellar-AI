@@ -21,7 +21,7 @@ test('workspace keeps mobile-safe controls and a visible bottom composer', () =>
 });
 
 test('workspace uses one premium clean shell without reintroducing legacy styles', () => {
-  assert.match(app, /What can I help with\?/);
+  assert.match(app, /Ask me anything/);
   assert.match(app, /\.panel\{width:min\(640px,100%\);max-height:88dvh/);
   assert.match(app, /\.composer\{/);
   assert.match(app, /data-stellar-clean-app="true"/);
