@@ -6,12 +6,12 @@ const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('paid plan cards translate credits into understandable value', () => {
-  assert.match(index, /5,000 credits\/month/);
+  assert.match(index, /1,000 credits\/month/);
   assert.match(index, /up to 1,000 Star messages\/month/);
-  assert.match(index, /Unlock Comet \+ 5,000 credits\/month/);
-  assert.match(index, /up to 1,500 Comet messages\/month/);
+  assert.match(index, /Unlock Comet \+ 1,000 credits\/month/);
+  assert.match(index, /up to 150 Comet messages\/month/);
   assert.match(index, /Unlock Nova \+ 20,000 credits\/month/);
-  assert.match(index, /up to 2,500 Nova messages\/month/);
+  assert.match(index, /up to 250 Nova messages\/month/);
 });
 
 test('plan comparison shows output limits and strongest-model usage', () => {
@@ -24,9 +24,9 @@ test('plan comparison shows output limits and strongest-model usage', () => {
 
 test('workspace communicates the current paid unlocks', () => {
   assert.match(app, /Starter · £8\/mo/);
-  assert.match(app, /5,000 credits\/month/);
+  assert.match(app, /1,000 credits\/month/);
   assert.match(app, /Plus · £20\/mo/);
-  assert.match(app, /15,000 credits\/month/);
+  assert.match(app, /11,000 credits\/month/);
   assert.match(app, /Pro · £75\/mo/);
-  assert.match(app, /50,000 credits\/month/);
+  assert.match(app, /5,000 credits\/month/);
 });

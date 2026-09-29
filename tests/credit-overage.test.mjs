@@ -21,10 +21,10 @@ function redisResult(result) {
 test('credit bundles and model costs are server-owned', () => {
   assert.equal(OVERAGE_REQUEST_COST_PENCE, 5);
   assert.deepEqual(MODEL_CREDIT_COSTS, { spark:2, star:5, comet:10, nova:20 });
-  assert.equal(getPlanDefinition('free').includedCredits, 75);
-  assert.equal(getPlanDefinition('starter').includedCredits, 5000);
-  assert.equal(getPlanDefinition('plus').includedCredits, 15000);
-  assert.equal(getPlanDefinition('pro').includedCredits, 50000);
+  assert.equal(getPlanDefinition('free').includedCredits, 10);
+  assert.equal(getPlanDefinition('starter').includedCredits, 1000);
+  assert.equal(getPlanDefinition('plus').includedCredits, 1500);
+  assert.equal(getPlanDefinition('pro').includedCredits, 5000);
   assert.ok(getPlanDefinition('free').includedCredits * 31 < getPlanDefinition('starter').includedCredits);
   assert.ok(getPlanDefinition('starter').includedCredits < getPlanDefinition('plus').includedCredits);
   assert.ok(getPlanDefinition('plus').includedCredits < getPlanDefinition('pro').includedCredits);
@@ -39,7 +39,7 @@ test('included request does not spend wallet credit', async () => {
 });
 
 test('request after allowance can spend exactly five pence when opted in', async () => {
-  redisResult([1, 75, 0, 5, 95]);
+  redisResult([1, 10, 0, 5, 95]);
   const result = await consumeUsage({ url: 'https://kv.test', token: 't', identity: 'email:a@test.com', plan: 'free', walletKey: 'stellar:user:a@test.com', allowCredit: true, now: 1_700_000_000_000 });
   assert.equal(result.allowed, true);
   assert.equal(result.chargedCreditPence, 5);

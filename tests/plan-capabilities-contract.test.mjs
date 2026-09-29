@@ -6,7 +6,7 @@ import { getPlanDefinition } from '../lib/pricing.js';
 const getPlan = await readFile(new URL('../api/get-plan.js', import.meta.url), 'utf8');
 
 test('pricing exposes current server-owned model capabilities per plan', () => {
-  assert.deepEqual(getPlanDefinition('free').models, ['spark', 'star']);
+  assert.deepEqual(getPlanDefinition('free').models, ['spark']);
   assert.deepEqual(getPlanDefinition('starter').models, ['spark', 'star']);
   assert.deepEqual(getPlanDefinition('plus').models, ['spark', 'star', 'comet']);
   assert.deepEqual(getPlanDefinition('pro').models, ['spark', 'star', 'comet', 'nova']);

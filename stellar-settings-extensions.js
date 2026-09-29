@@ -536,7 +536,7 @@
     const group = document.createElement('div');
     group.className = 'set-group stellar-rewards-group';
     group.innerHTML = `
-      <div class="set-item stellar-reward-row"><div class="set-key">Included credits</div><div class="set-val">Free 75/day (00:00 UK reset) · Starter 5,000/month · Plus 15,000/month · Pro 50,000/month</div></div>
+      <div class="set-item stellar-reward-row"><div class="set-key">Included credits</div><div class="set-val">Free 10/day (00:00 UK reset) · Starter 1,000/month · Plus 1,500/month · Pro 5,000/month</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Welcome bonus</div><div class="set-val">500 one-time credits for new accounts</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Streak idea</div><div class="set-val">Day ${streak.streak || 1} on this device · suggested server rewards: Day 2 +50, Day 3 +75, Day 7 +150</div></div>
       <div class="set-item stellar-reward-row"><div class="set-key">Top-ups</div><div class="set-val">£3, £5, £10, £25, £50+ with bigger bonuses only on bigger packs</div></div>
