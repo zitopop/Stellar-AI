@@ -4,11 +4,10 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('app home hero stays simple and explains the tools once', () => {
-  assert.match(app, /id="homeGreeting">What can I help with\?<\/h1>/);
-  assert.match(app, /id="welcome-copy" class="home-hint">Ask anything\. Use \+ for voice, images, StellarX or plugins\.<\/p>/);
-  assert.match(app, /\.app \.home-welcome>p\.home-hint\{display:block!important/);
+test('app home greeting stays simple and chat-first', () => {
+  assert.match(app, /function welcomeHtml\(\)\{return '<div class="welcome"><h1>Hi '/);
+  assert.match(app, /What can I help with\? Type below\. Press ↑ to send\./);
+  assert.match(app, /function displayName\(user\)/);
   assert.doesNotMatch(app, /class="home-actions"/);
-  assert.match(app, /function homeWelcomeMarkup\(\)/);
-  assert.match(app, /function updateGreeting\(\)/);
+  assert.doesNotMatch(app, /<div class="quick">/);
 });
