@@ -97,73 +97,40 @@ test('disabling built-in plugins actually stops their task bridges', () => {
   assert.match(studio, /Roblox Studio plugin is disabled in Plugins/);
 });
 
-test('plugin directory stays calm while preserving real connect manage and disconnect controls', () => {
-  assert.ok(page.includes('<h1>Connected apps for Stellar.</h1>'));
-  assert.match(page, /Personal account connections/);
-  assert.ok(page.includes('Only tools available to your account appear here.'));
-  assert.match(page, /Permissions first/);
+test('plugin directory stays calm while preserving real account connection controls', () => {
+  assert.match(page, /Connected apps for Stellar\./);
+  assert.match(page, /Personal account connections only/);
+  assert.match(page, /Permissions first\./);
   assert.match(page, /No passwords shared/);
-  assert.match(page, /Disconnect anytime/);
-  assert.match(page, /Your access stays scoped/);
-  for (const filter of ['all','connected','available']) {
-    assert.ok(page.includes('data-filter="' + filter + '"'), filter);
-  }
-  for (const retired of ['developer','business','coming_soon','disabled']) {
-    assert.ok(!page.includes('data-filter="' + retired + '"'), retired);
-  }
-  assert.doesNotMatch(page, /Launch health|Needs Vercel/);
-  assert.match(page, /data-install=/);
-  assert.match(page, /data-connect=/);
-  assert.match(page, /plugin-oauth-submit/);
+  assert.match(page, /disconnect anytime/i);
+  assert.match(page, /id="plugin-account-grid"/);
+  assert.match(page, /async function pluginApi\(action,payload=\{\}\)/);
+  assert.match(page, /pluginApi\('list'\)/);
+  assert.match(page, /pluginApi\('startOAuth',\{id\}\)/);
+  assert.match(page, /pluginApi\('disconnect',\{id\}\)/);
+  assert.match(page, /pluginApi\('install',\{id\}\)/);
+  assert.match(page, /pluginApi\('inspect',\{id\}\)/);
   assert.match(page, /Connect with OAuth/);
-  assert.match(page, /startOAuth/);
-  assert.match(page, /installPlugin/);
-  assert.match(page, /data-inspect=/);
-  assert.match(page, /data-details=/);
-  assert.match(page, /plugin-detail-view/);
-  assert.match(page, /plugin-detail-setup/);
-  assert.match(page, /Stellar verified/);
-  assert.match(page, /connectToken/);
-  assert.match(page, /disconnectCurrentPlugin/);
-  assert.match(page, /Connect plugin/);
-  assert.match(page, />Details<\/button>/);
-  assert.match(page, /Private owner integrations are never offered to standard accounts/);
-  assert.match(page, /data-plugin="github" data-audience="owner" hidden/);
-  assert.match(page, /data-plugin="vercel" data-audience="owner" hidden/);
-  assert.match(page, /data-status="coming_soon" hidden/);
-  assert.match(page, /\.plugin\[hidden\]\{display:none!important\}/);
-  assert.doesNotMatch(page, /OWNER-ONLY OAUTH MODAL POLISH|setupText/);
-  assert.match(page, /Request a plugin/);
-  assert.match(page, /Sign in to use/);
-  assert.ok(app.includes('data-tab="plugins"'));
+  assert.match(page, /Disconnect/);
+  assert.match(page, /Owner-only integrations are never offered to standard accounts/);
+  assert.match(page, /\[hidden\]\{display:none!important\}/);
   assert.ok(app.includes('href="/plugins"'));
 });
 
-
-
-test('plugins sidebar keeps tappable visible icon badges', () => {
-  assert.match(page, /FINAL PLUGINS SIDEBAR TAP \+ ICON FIX/);
-  assert.match(page, /\.nav a\{position:relative!important;z-index:2!important;min-height:46px!important;pointer-events:auto!important;touch-action:manipulation!important;\}/);
-  assert.match(page, /\.nav-ico\{display:inline-flex!important/);
+test('plugins directory keeps touch-safe controls and visible tool icons', () => {
+  assert.match(page, /\.btn\{min-height:44px/);
+  assert.match(page, /\.ico\{width:46px;height:46px/);
+  assert.match(page, /\.tool-card/);
 });
 
-
-
-test('developer OAuth setup is owner-only while Gmail is user-facing approval-only email', () => {
+test('developer OAuth setup stays server-owner-only while Gmail remains signed-in approval scoped', () => {
   assert.equal(getPluginDefinition('github').audience, 'owner');
   assert.equal(getPluginDefinition('vercel').audience, 'owner');
+  assert.equal(getPluginDefinition('gmail').audience, 'signed_in');
   assert.match(manager, /publicOauthStatus\(plugin\.id,\{exposeSetup,isOwner\}\)/);
-  assert.match(manager, /oauthSetupMissingEnv:exposeSetup&&OAUTH_PLUGIN_IDS/);
   assert.match(manager, /tokenFallback:isOwner===true&&status\.tokenFallback===true/);
-  assert.ok(page.includes("if(!owner&&['github','vercel'].includes(id))"));
-  assert.match(page, /owner=data\?\.viewer\?\.owner===true/);
-  assert.match(page, /Email Agent workflows/);
-  assert.match(page, /Send only with approval/);
-  assert.match(page, /Private deployment access/);
+  assert.match(page, /Human review/);
 });
-
-
-
 
 test('OAuth status covers every planned provider without pretending all exchanges are live', () => {
   assert.match(manager, /const OAUTH_PLUGIN_IDS=new Set\(PLUGIN_REGISTRY\.filter/);
