@@ -68,6 +68,15 @@ function planCapabilities(plan) {
     requestsPerHour: definition.requestsPerHour,
     maxTokens: definition.maxTokens,
     models: [...definition.models],
+    jarvisTier: String(definition.jarvisTier || 'none'),
+    jarvis: {
+      enabled: ['voice-vision','pro','owner'].includes(String(definition.jarvisTier || 'none')),
+      voice: ['voice-vision','pro','owner'].includes(String(definition.jarvisTier || 'none')),
+      vision: ['voice-vision','pro','owner'].includes(String(definition.jarvisTier || 'none')),
+      briefings: ['pro','owner'].includes(String(definition.jarvisTier || 'none')),
+      proactiveAlerts: ['pro','owner'].includes(String(definition.jarvisTier || 'none')),
+      ownerControls: String(definition.jarvisTier || 'none') === 'owner',
+    },
     canUseCredit: definition.id !== 'owner',
     overageRequestCostPence: OVERAGE_REQUEST_COST_PENCE,
   };
