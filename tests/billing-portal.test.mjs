@@ -20,13 +20,13 @@ test('portal allows payment invoice and cancellation self-service without plan s
   assert.match(endpoint, /subscription_update:\s*\{ enabled: false \}/);
 });
 
-test('app exposes billing management only through authenticated Stripe portal', () => {
+test('app exposes billing management only for a signed-in paid plan and validates Stripe host', () => {
   assert.match(endpoint, /stripe\.billingPortal\.sessions\.create/);
   assert.match(endpoint, /return_url: 'https:\/\/trystellarai\.com\/app'/);
-  assert.match(app, /id="set-billing-row"[^>]*onclick="openBillingPortal\(\)"[^>]*hidden/);
-  assert.match(app, /fetch\('\/api\/create-checkout'/);
+  assert.match(app, /const paid=\['starter','plus','pro'\]\.includes\(planState\.plan\)/);
+  assert.match(app, /id="set-billing-row"[^>]*data-action="open-billing"/);
+  assert.match(app, /async function openBillingPortal\(\)/);
   assert.match(app, /JSON\.stringify\(\{plan:'manage-billing'\}\)/);
   assert.match(app, /portalUrl\.hostname!=='billing\.stripe\.com'/);
-  assert.match(app, /billingState\.paid===true/);
   assert.match(app, /Card, invoices &amp; cancellation/);
 });
