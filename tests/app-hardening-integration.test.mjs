@@ -6,18 +6,18 @@ const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const auth = fs.readFileSync(new URL('../lib/auth.js', import.meta.url), 'utf8');
 const telemetry = fs.readFileSync(new URL('../lib/assets/telemetry.js', import.meta.url), 'utf8');
 
-test('workspace keeps signed-in state, server plan truth, and local chat persistence hooks', () => {
-  assert.match(app, /Store\.get\('selectedModel','star'\)/);
+test('workspace keeps signed-in state, server plan truth, and account-scoped local chat persistence', () => {
+  assert.match(app, /localStorage\.getItem\('stellar-selected-model'\)/);
   assert.match(app, /planState/);
   assert.match(app, /loadPlanTruth\(\)/);
-  assert.match(app, /\/api\/get-chats/);
+  assert.match(app, /stellar-chat-sessions:/);
   assert.match(app, /\/api\/get-plan/);
 });
 
-test('owner-only behaviour remains gated by auth code and hidden UI class', () => {
+test('owner-only behaviour remains gated by server-authenticated account truth', () => {
   assert.match(auth, /isOwnerEmail/);
-  assert.match(app, /owner-only/);
-  assert.match(app, /deadlyfox10@gmail\.com|@stellar\.ai/);
+  assert.match(app, /serverOwner=data\.owner===true\|\|account\.owner===true/);
+  assert.match(app, /if\(serverOwner\)/);
 });
 
 test('telemetry rescue layer keeps core app interactions recoverable', () => {
