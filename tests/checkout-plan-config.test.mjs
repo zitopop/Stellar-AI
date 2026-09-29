@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { subscriptionPriceForPlan } from '../api/create-checkout.js';
+import { LIVE_GBP_SUBSCRIPTION_PRICES, liveSubscriptionPriceForPlan, subscriptionPriceForPlan } from '../api/create-checkout.js';
 
 test('Starter monthly and annual checkout resolve their own canonical configured prices', () => {
   const env = {
@@ -76,4 +76,21 @@ test('missing Starter prices never fall through to Plus or Pro checkout', () => 
   assert.equal(subscriptionPriceForPlan('pro', env), 'price_pro_monthly');
   assert.equal(subscriptionPriceForPlan('plus-annual', env), '');
   assert.equal(subscriptionPriceForPlan('pro-annual', env), '');
+});
+
+
+test('production GBP checkout is pinned to the prices advertised on the live plans page', () => {
+  assert.deepEqual(LIVE_GBP_SUBSCRIPTION_PRICES, {
+    starter: 'price_1U8G7CF96AiVlq46BxkhSgQe',
+    'starter-annual': 'price_1U8G9PF96AiVlq46J3nJNCvb',
+    plus: 'price_1U52CPF96AiVlq46HVEhIOA1',
+    'plus-annual': 'price_1U8GR6F96AiVlq46mzzMacgd',
+    pro: 'price_1U52DaF96AiVlq46CHTs7IaY',
+    'pro-annual': 'price_1U8GSmF96AiVlq462eXffRzP',
+  });
+  for (const [plan, price] of Object.entries(LIVE_GBP_SUBSCRIPTION_PRICES)) {
+    assert.equal(liveSubscriptionPriceForPlan(plan, 'GBP'), price);
+  }
+  assert.equal(liveSubscriptionPriceForPlan('plus', 'USD'), '');
+  assert.equal(liveSubscriptionPriceForPlan('free', 'GBP'), '');
 });
