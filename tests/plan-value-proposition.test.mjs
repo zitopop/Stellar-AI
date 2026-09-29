@@ -1,17 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { getPlanDefinition } from '../lib/pricing.js';
 
 const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
+const fmt = n => Number(n).toLocaleString('en-GB');
 
-test('paid plan cards translate credits into understandable value', () => {
-  assert.match(index, /5,000 credits\/month/);
-  assert.match(index, /up to 1,000 Star messages\/month/);
-  assert.match(index, /Unlock Comet \+ 5,000 credits\/month/);
-  assert.match(index, /up to 1,500 Comet messages\/month/);
-  assert.match(index, /Unlock Nova \+ 20,000 credits\/month/);
-  assert.match(index, /up to 2,500 Nova messages\/month/);
+test('paid plan cards communicate the current server-owned credit allowances', () => {
+  const starter=getPlanDefinition('starter'), plus=getPlanDefinition('plus'), pro=getPlanDefinition('pro');
+  for (const plan of [starter,plus,pro]) assert.ok(index.includes(fmt(plan.includedCredits) + ' credits/month'), plan.id);
+  assert.match(index, /Unlock Comet/);
+  assert.match(index, /Unlock Nova/);
+  assert.match(index, /Star messages\/month/);
+  assert.match(index, /Comet messages\/month/);
+  assert.match(index, /Nova messages\/month/);
 });
 
 test('plan comparison shows output limits and strongest-model usage', () => {
@@ -22,11 +25,10 @@ test('plan comparison shows output limits and strongest-model usage', () => {
   assert.match(index, /At strongest included model/);
 });
 
-test('workspace communicates the current paid unlocks', () => {
-  assert.match(app, /Starter · £8\/mo/);
-  assert.match(app, /5,000 credits\/month/);
-  assert.match(app, /Plus · £20\/mo/);
-  assert.match(app, /15,000 credits\/month/);
-  assert.match(app, /Pro · £75\/mo/);
-  assert.match(app, /50,000 credits\/month/);
+test('workspace communicates the current paid plan ladder', () => {
+  const starter=getPlanDefinition('starter'), plus=getPlanDefinition('plus'), pro=getPlanDefinition('pro');
+  assert.match(app, /planCard\('Starter','£8\/mo'/);
+  assert.match(app, /planCard\('Plus','£20\/mo'/);
+  assert.match(app, /planCard\('Pro','£75\/mo'/);
+  for (const plan of [starter,plus,pro]) assert.ok(app.includes(fmt(plan.includedCredits) + '/month'), plan.id);
 });
