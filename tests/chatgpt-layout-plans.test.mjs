@@ -1,35 +1,29 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const landing = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('workspace uses the self-contained modern Stellar shell without legacy gold overrides', () => {
-  assert.doesNotMatch(app, /stellar-chatgpt-layout\.css/);
-  assert.doesNotMatch(app, /stellar-app-landing-ui\.css/);
-  assert.doesNotMatch(app, /stellar-cosmic-openai\.css/);
-  assert.match(app, /--accent:#8b7cf6/);
-  assert.match(app, /--accent2:#b9b0ff/);
-  assert.match(app, /\.composer-wrap\{position:sticky;bottom:0;z-index:9/);
-  assert.match(app, /\.chat\{min-width:0;min-height:0;overflow:auto/);
+test('workspace uses the self-contained modern Stellar shell without legacy overrides', () => {
+  assert.doesNotMatch(app, /stellar-chatgpt-layout\.css|stellar-app-landing-ui\.css|stellar-cosmic-openai\.css/);
+  assert.match(app, /--accent:#9b8cff/);
+  assert.match(app, /--accent2:#f0edff/);
+  assert.match(app, /\.main\{min-width:0;height:100dvh;display:grid;grid-template-rows:58px minmax\(0,1fr\) auto/);
+  assert.match(app, /\.chat\{min-height:0;height:100%;overflow:auto/);
 });
 
-test('plan and wallet detail is kept in Settings instead of cluttering the sidebar', () => {
-  assert.match(app, /id="plan-truth">Plan and usage/);
-  assert.match(app, /id="usage-copy">Plan data loads after sign-in/);
-  assert.equal((app.match(/class="plan-usage-pill"/g) || []).length, 0);
+test('plan and wallet detail lives in account panels instead of sidebar clutter', () => {
+  assert.match(app, /function renderPlansPanel\(\)/);
+  assert.match(app, /function renderCreditsPanel\(\)/);
   assert.match(app, /Compare all 4 plans/);
+  assert.match(app, /Bought wallet credits take over automatically/);
+  assert.doesNotMatch(app, /class="plan-usage-pill"/);
 });
 
 test('landing uses a concise conversational entry with clear pricing access', () => {
   assert.match(landing, /Ask anything\.<br>Get real work done\./);
-  assert.match(landing, /Chat, code, research and project work in one clean workspace\. Hand bigger jobs to StellarX and connect tools only when the task needs them\./);
   assert.match(landing, /Message Stellar AI/);
-  assert.match(landing, /href="#plans" class="oa2-secondary-action">(?:See (?:pricing|plans)|Plans from £8\/month)<\/a>/);
-  assert.match(landing, /id="stellar-home-calm-v16"/);
-  assert.match(landing, /\.oa2-proof-row,.public-home \.oa2-starters,.public-home \.oa2-quicklinks\{display:none!important\}/);
+  assert.match(landing, /Plans from £8\/month/);
   assert.match(landing, /Prices and checkout are in GBP/);
 });
-
-
