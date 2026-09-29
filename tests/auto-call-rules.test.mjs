@@ -28,7 +28,8 @@ test('auto-call policy defaults are safe and include new business triggers', () 
 test('owner escalation uses central policy and records cooldown before pending Twilio calls', () => {
   assert.match(broadcast, /OWNER_AUTO_CALL_CATEGORIES/);
   assert.match(broadcast, /normalizeOwnerCallPolicy/);
-  const dataLine = broadcast.indexOf('const data = await startOwnerCall');
+  const escalationLine = broadcast.indexOf("if (req.body?.action === 'escalateOwner')");
+  const dataLine = broadcast.indexOf('const data = await startOwnerCall', escalationLine);
   const lastLine = broadcast.indexOf('stellar:owner-call:last', dataLine);
   const twilioLine = broadcast.indexOf("data?.provider === 'twilio'", dataLine);
   assert.ok(dataLine > 0);
