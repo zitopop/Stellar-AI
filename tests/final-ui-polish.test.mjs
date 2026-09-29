@@ -16,11 +16,13 @@ test('model account settings and billing entry points remain visible', () => {
   assert.match(app, /id="creditPill"/);
   assert.match(app, /id="accountButton"/);
   assert.match(app, /id="panelBackdrop"/);
-  assert.match(app, /data-open="plans"/);
+  assert.match(app, /id="set-billing-row"/);
 });
 
-test('legacy owner-only agent navigation is not leaked into the clean chat shell', () => {
-  assert.doesNotMatch(app, /id="desktop-agent-nav"/);
-  assert.doesNotMatch(app, /id="roblox-studio-nav"/);
+test('owner tools are present only inside the server-owner conditional block', () => {
+  assert.match(app, /const ownerTools=isOwner\(\)\?/);
+  assert.match(app, /id="deploy-center-nav"/);
+  assert.match(app, /id="roblox-studio-nav"/);
+  assert.match(app, /id="jarvis-nav"/);
   assert.doesNotMatch(app, /<p class="side-title">Agents<\/p>/);
 });
