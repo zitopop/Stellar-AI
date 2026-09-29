@@ -12,10 +12,11 @@ test('workspace navigation and composer expose stable accessible names', () => {
 });
 
 test('interactive controls keep explicit button types and touch targets', () => {
-  assert.match(app, /id="newChatBtn"[^>]*type="button"/);
-  assert.match(app, /id="accountButton"[^>]*type="button"/);
-  assert.match(app, /id="closePanel"[^>]*type="button"[^>]*aria-label="Close"/);
+  assert.match(app, /<button class="btn primary" type="button" id="newChatBtn">/);
+  assert.match(app, /<button class="btn ghost" id="accountButton" type="button"/);
+  assert.match(app, /<button class="close" type="button" id="closePanel" aria-label="Close"/);
   assert.match(app, /\.btn,.nav\{min-height:44px/);
+  assert.match(app, /\.composer-tool\{width:44px;height:44px;min-height:44px/);
 });
 
 test('account and settings surfaces are mobile safe', () => {
