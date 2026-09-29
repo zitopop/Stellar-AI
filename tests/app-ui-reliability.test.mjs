@@ -17,10 +17,10 @@ test('credit balance is present in markup and updated from plan state', () => {
   assert.match(app, /function totalCredits\(\)/);
 });
 
-test('closed overlays cannot steal taps and major surfaces close each other', () => {
+test('closed overlays cannot steal taps and opening a panel closes the drawer', () => {
   assert.match(app, /\.drawer-backdrop\.open\{opacity:1;pointer-events:auto\}/);
   assert.match(app, /\.panel-backdrop\.open\{display:grid\}/);
-  assert.match(app, /function openPanel\(kind\)\{closeSide\(\)/);
+  assert.match(app, /function openPanel\(kind\)\{[\s\S]*?closeSide\(\);panelBackdrop\.classList\.add\('open'\)/);
   assert.match(app, /if\(e\.key==='Escape'\)\{closeSide\(\);closePanel\(\)\}/);
 });
 
