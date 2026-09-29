@@ -19,6 +19,7 @@ test('app exposes deliberate chat, plan, credit and account controls', () => {
   for (const text of ['New chat', 'Plans', 'Credits', 'Help']) assert.ok(app.includes(text), text);
   assert.match(app, /data-open="models"/);
   assert.match(app, /data-open="settings"/);
+  assert.match(app, /data-open="settings"[^>]*aria-label="Open Settings"[^>]*>Settings<\/button>/);
   assert.match(app, /id="topupAmount"/);
   assert.match(app, /function startCreditCheckout\(/);
   assert.match(app, /No chats yet\./);
