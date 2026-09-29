@@ -33,9 +33,10 @@ test('Email draft helper is discoverable from app settings and routing', () => {
   assert.ok(vercel.headers.some(route => route.source === '/email-agent' && route.headers?.some(h => h.key === 'Cache-Control' && h.value === 'private, no-store')));
 });
 
-test('Gmail connector is user-facing but sending remains approval scoped', () => {
+test('Gmail connector is user-facing while email sending remains a separate approval-only helper', () => {
   assert.equal(getPluginDefinition('gmail').audience, 'signed_in');
-  assert.match(plugins, /Email Agent workflows/);
-  assert.match(plugins, /Send only with approval/);
-  assert.ok(!plugins.includes("['github','vercel','gmail']"));
+  assert.match(plugins, /Connected apps for Stellar\./);
+  assert.match(plugins, /Human review/);
+  assert.match(email, /Draft only · you approve send/);
+  assert.ok(!email.includes('/api/gmail/send'));
 });
