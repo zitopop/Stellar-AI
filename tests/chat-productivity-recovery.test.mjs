@@ -9,7 +9,7 @@ test('assistant replies expose compact copy and latest-reply regenerate actions'
   assert.match(app, /data-message-action="regenerate"/);
   assert.match(app, /function regenerateAssistantResponse\(button\)/);
   assert.match(app, /Regenerate is available on the latest reply/);
-  assert.match(app, /addAssistantActions\(assistantBubble\.closest\('\.msg\.assistant'\),assistantBubble\)/);
+  assert.match(app, /addAssistantActions\(reply\.closest\('\.msg\.assistant'\),reply\)/);
 });
 
 test('current chat can be exported locally without a server upload', () => {
