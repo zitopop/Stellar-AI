@@ -5,14 +5,15 @@ import fs from 'node:fs';
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const chat = fs.readFileSync(new URL('../api/chat.js', import.meta.url), 'utf8');
 
-test('first send path still points at the chat API and renders assistant status', () => {
-  assert.match(app, /\/api\/chat/);
-  assert.match(app, /sendMessage/);
-  assert.match(app, /Thinking|thinking/i);
-  assert.match(app, /retry/i);
+test('first send path points at chat API and renders recoverable assistant status', () => {
+  assert.match(app, /fetch\('\/api\/chat'/);
+  assert.match(app, /async function sendMessage\(/);
+  assert.match(app, /Thinking…/);
+  assert.match(app, /Try again\./);
+  assert.match(app, /chat-send-error/);
 });
 
-test('server chat handler still validates message presence and records completed streams', () => {
+test('server chat handler validates message presence and records completed streams', () => {
   assert.match(chat, /hasLatestUserMessage/);
   assert.match(chat, /streamCompleted/);
   assert.match(chat, /consumeServerUsage/);
