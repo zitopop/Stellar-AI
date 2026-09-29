@@ -2,27 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const sw = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('app navigation receives a simple workspace layer that hides busy secondary pages', () => {
-  assert.match(sw, /stellar-simple-workspace-v1/);
-  assert.match(sw, /function simpleWorkspaceLayer\(\)/);
-  assert.match(sw, /BUSY_WORDS/);
-  assert.match(sw, /investor/);
-  assert.match(sw, /operator/);
-  assert.match(sw, /seo/);
-  assert.match(sw, /business/);
-  assert.match(sw, /dataset\.stellarSimpleHidden/);
-  assert.match(sw, /quick/);
-  assert.match(sw, /quality-strip/);
+test('app is a self-contained simple chat workspace rather than a service-worker-rewritten UI', () => {
+  assert.match(app, /<title>Stellar AI Chat<\/title>/);
+  assert.match(app, /data-stellar-clean-app="true"/);
+  assert.match(app, /id="chatForm"/);
+  assert.doesNotMatch(app, /Investor|SEO dashboard|Revenue Ops|operator dashboard/i);
+  assert.doesNotMatch(app, /<div class="quick">/);
 });
 
 test('simple workspace keeps core user paths visible', () => {
-  assert.match(sw, /KEEP_WORDS/);
-  assert.match(sw, /plans/);
-  assert.match(sw, /credits/);
-  assert.match(sw, /settings/);
-  assert.match(sw, /support/);
-  assert.match(sw, /legal/);
-  assert.match(sw, /billing/);
+  assert.match(app, /data-open="plans"/);
+  assert.match(app, /data-open="credits"/);
+  assert.match(app, /data-open="settings"/);
+  assert.match(app, /href="\/support">Help<\/a>/);
+  assert.match(app, /href="\/legal"/);
+  assert.match(app, /id="set-billing-row"/);
 });
