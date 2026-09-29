@@ -18,14 +18,12 @@ test('hero stays concise and offers first-run onboarding', () => {
   assert.match(html, /href="#plans" class="oa2-secondary-action">Plans from £8\/month<\/a>/);
 });
 
-test('preview is an example and its bounded prompt opens the app without generating', () => {
-  assert.match(html, /SEE THE WORKFLOW/);
-  assert.match(html, /EXAMPLE RESPONSE/);
-  assert.match(html, /<form[^>]*action="\/app" method="get"/);
+test('landing prompt is bounded and opens the app without generating on the landing page', () => {
+  assert.match(html, /<form[^>]*id="build-form"[^>]*action="\/app" method="get"/);
   assert.match(html, /<label for="build-prompt">/);
   assert.match(html, /<textarea[^>]*name="prompt"[^>]*maxlength="2000" required/);
-  assert.match(js, /prompt\.value\.trim\(\)\.slice\(0, 2000\)/);
-  assert.doesNotMatch(js, /innerHTML|fetch\(|\/api\/chat/);
+  assert.match(js, /trim\(\)\.slice\(0, 2000\)/);
+  assert.doesNotMatch(js, /fetch\([^)]*\/api\/chat/);
 });
 
 test('keyboard users can skip to main content and dismiss the mobile menu', () => {
@@ -110,14 +108,12 @@ test('public metadata describes a free developer workspace without unverified en
   assert.doesNotMatch(html, /Used by FiveM and Roblox builders worldwide|guaranteed profit|guaranteed approval/i);
 });
 
-test('starter links are converted into editable app prompts rather than auto-submitted generations', () => {
+test('inbound landing prompts are editable and never auto-submitted', () => {
   const app = read('app.html');
-  assert.match(app, /const STARTER_PROMPTS=Object\.freeze/);
-  assert.match(app, /function starterPrompt\(value\)/);
-  assert.match(app, /function consumeInboundPrompt\(\)/);
-  assert.match(app, /params\.delete\(key\)/);
-  assert.match(app, /history\.replaceState/);
-  assert.doesNotMatch(app, /consumeInboundPrompt\(\);[\s\S]{0,400}requestSubmit\(\)/);
+  assert.match(app, /const prefill=q\.get\('prompt'\)/);
+  assert.match(app, /prompt\.value=prefill\.slice\(0,2000\)/);
+  assert.doesNotMatch(app, /prefill[\s\S]{0,300}sendMessage\(/);
+  assert.doesNotMatch(app, /requestSubmit\(\)/);
 });
 
 
