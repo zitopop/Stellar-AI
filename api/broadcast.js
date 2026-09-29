@@ -56,6 +56,69 @@ async function sendOwnerFallbackEmail({ category, severity, summary }) {
   }
 }
 
+
+async function readOwnerKvJson(key) {
+  const kvUrl = process.env.KV_REST_API_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN;
+  if (!kvUrl || !kvToken) return null;
+  try {
+    const response = await fetch(`${kvUrl}/get/${encodeURIComponent(key)}`, {
+      headers: { Authorization: `Bearer ${kvToken}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!response.ok) return null;
+    const data = await response.json().catch(() => ({}));
+    if (!data?.result) return null;
+    if (typeof data.result === 'object') return data.result;
+    try { return JSON.parse(data.result); } catch { return data.result; }
+  } catch { return null; }
+}
+
+async function currentOwnerCallPolicy() {
+  const stored = await readOwnerKvJson('stellar:owner-call:policy');
+  return normalizeOwnerCallPolicy(stored && typeof stored === 'object' ? stored : {});
+}
+
+function poundsFromPence(value) {
+  return (Math.max(0, Number(value) || 0) / 100).toFixed(2);
+}
+
+async function buildJarvisOwnerBriefing({ authorization = '', bridgeToken = '' } = {}) {
+  const [healthResult, conversionResult, funnelResult, policy, latestAlert] = await Promise.all([
+    readOwnerCallHealth({ authorization, bridgeToken }).catch(() => ({ ready: false, provider: 'unknown' })),
+    readConversionMetrics(new Date()).catch(() => ({ ok: false, metrics: {} })),
+    readFunnelMetrics({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN }).catch(() => ({ ok: false })),
+    currentOwnerCallPolicy(),
+    readOwnerKvJson('stellar:owner-call:audit'),
+  ]);
+  const metrics = conversionResult?.metrics || {};
+  const funnelToday = funnelResult?.today || {};
+  const signups = Math.max(Number(funnelToday.signups) || 0, Number(metrics.signupSuccess) || 0);
+  const firstMessages = Math.max(0, Number(metrics.firstMessages) || 0);
+  const checkouts = Math.max(0, Number(metrics.checkoutCompleted) || 0);
+  const revenue = poundsFromPence(metrics.revenuePence);
+  const alertSummary = latestAlert && typeof latestAlert === 'object'
+    ? String(latestAlert.summary || '').replace(/\s+/g, ' ').trim().slice(0, 92)
+    : '';
+  const alertCategory = latestAlert && typeof latestAlert === 'object'
+    ? String(latestAlert.category || 'alert').trim().slice(0, 24)
+    : '';
+  const parts = [
+    'Jarvis briefing.',
+    healthResult?.ready ? `Phone systems ready via ${healthResult.provider || 'provider'}.` : 'Phone system needs attention.',
+    `Today: ${signups} signups, ${firstMessages} first messages, ${checkouts} completed checkouts, £${revenue} recorded revenue.`,
+    alertSummary ? `Latest urgent ${alertCategory}: ${alertSummary}.` : 'No urgent owner alert is currently recorded.',
+    `Automatic important-event calls are ${policy.enabled ? 'on' : 'off'} with a ${policy.cooldownMinutes}-minute cooldown.`,
+  ];
+  return {
+    briefing: parts.join(' ').replace(/\s+/g, ' ').trim().slice(0, 300),
+    health: healthResult,
+    policy,
+    metrics: { signups, firstMessages, checkouts, revenuePence: Math.max(0, Number(metrics.revenuePence) || 0) },
+    latestAlert: alertSummary ? { category: alertCategory, summary: alertSummary, at: Number(latestAlert.t || 0) || null } : null,
+  };
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -141,6 +204,59 @@ export default async function handler(req, res) {
     const policy=normalizeOwnerCallPolicy({enabled:req.body?.enabled!==false,cooldownMinutes:req.body?.cooldownMinutes,categories:req.body?.categories});
     const r=await fetch(`${kvUrl}/set/stellar:owner-call:policy/${encodeURIComponent(JSON.stringify(policy))}`,{headers:{Authorization:`Bearer ${kvToken}`}});
     if(!r.ok)return res.status(502).json({error:'Could not save call policy.'}); return res.status(200).json({ok:true,...policy});
+  }
+
+
+  if (action === 'jarvisBriefing') {
+    const authorization = String(req.headers.authorization || '');
+    const snapshot = await buildJarvisOwnerBriefing({ authorization, bridgeToken });
+    if (req.body?.call === false) return res.status(200).json({ ok: true, ...snapshot });
+    try {
+      const data = await startOwnerCall({
+        purpose: snapshot.briefing,
+        authorization,
+        bridgeToken,
+        metadata: { trigger: 'jarvis-briefing', briefing: true, metrics: snapshot.metrics, latestAlert: snapshot.latestAlert },
+      });
+      return res.status(200).json({
+        ok: true,
+        ...snapshot,
+        provider: data?.provider || null,
+        call_id: data?.call_id || null,
+        status: data?.status || 'started',
+        called: data?.provider === 'twilio' ? false : true,
+        pending: data?.provider === 'twilio',
+      });
+    } catch (error) {
+      console.warn('Jarvis briefing phone call unavailable; using in-app fallback', error?.provider || '', error?.message || error);
+      try {
+        const created = await createStellarCallSession({
+          category: 'owner-briefing',
+          severity: 'info',
+          summary: snapshot.briefing,
+          metadata: { trigger: 'jarvis-briefing-phone-fallback', phoneProvider: error?.provider || 'phone' },
+        });
+        const pushed = created?.ok ? await sendOwnerPushAlert({
+          category: 'owner-briefing',
+          severity: 'urgent',
+          summary: 'Jarvis briefing is ready. Tap to open Stellar.',
+          call: created.call || null,
+        }) : null;
+        if (created?.ok) return res.status(200).json({
+          ok: true,
+          ...snapshot,
+          provider: 'stellar-inapp',
+          phone_blocked: true,
+          fallback: pushed?.sent > 0 ? 'push_in_app_call' : 'in_app_call',
+          stellar_call: created.call || null,
+          push: pushed,
+          status: 'ringing',
+        });
+      } catch (fallbackError) {
+        console.error('Jarvis briefing in-app fallback failed', fallbackError?.message || fallbackError);
+      }
+      return res.status(502).json({ error: 'Jarvis could not start the briefing call.', ...snapshot });
+    }
   }
 
   if (req.body?.action === 'callHealth') {
