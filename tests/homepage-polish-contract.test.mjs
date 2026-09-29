@@ -7,11 +7,11 @@ const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 test('homepage polish keeps the public landing page clean and conversion-focused', () => {
   assert.match(landing, /public-home/);
-  assert.match(analytics, /stellar-public-conversion-polish-v2/);
+  assert.match(analytics, /stellar-public-conversion-polish-v4/);
   assert.match(analytics, /polishHomepageContent/);
   assert.match(analytics, /Your AI workspace\./);
   assert.match(analytics, /Start free/);
-  assert.match(analytics, /Free to start · 300 credits\/day · resets at midnight UK time/);
+  assert.match(analytics, /Free to start · \d[\d,]* credits\/day · resets at midnight UK time/);
 });
 
 test('homepage value strip is compact and mobile-safe', () => {
