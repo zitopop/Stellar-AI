@@ -24,6 +24,21 @@ function firstConfiguredPrice(env, ...keys) {
   return '';
 }
 
+export const LIVE_GBP_SUBSCRIPTION_PRICES = Object.freeze({
+  starter: 'price_1U8G7CF96AiVlq46BxkhSgQe',
+  'starter-annual': 'price_1U8G9PF96AiVlq46J3nJNCvb',
+  plus: 'price_1U52CPF96AiVlq46HVEhIOA1',
+  'plus-annual': 'price_1U8GR6F96AiVlq46mzzMacgd',
+  pro: 'price_1U52DaF96AiVlq46CHTs7IaY',
+  'pro-annual': 'price_1U8GSmF96AiVlq462eXffRzP',
+});
+
+export function liveSubscriptionPriceForPlan(plan, currency = 'GBP') {
+  const code = String(currency || 'GBP').trim().toUpperCase().replace(/[^A-Z]/g, '');
+  if (code !== 'GBP') return '';
+  return LIVE_GBP_SUBSCRIPTION_PRICES[plan] || '';
+}
+
 export function subscriptionPriceForPlan(plan, env = process.env, currency = 'GBP') {
   // Local prices remain supported for internal compatibility, but the live checkout handler
   // deliberately passes GBP so a customer's location cannot switch the billing currency.
@@ -241,7 +256,11 @@ export default async function handler(req, res) {
 
     // Price IDs are server-owned. Historic Plus aliases remain supported, but a
     // missing Starter ID must never silently charge a Plus or Pro price.
-    const price = subscriptionPriceForPlan(plan, process.env, currency);
+    // Production GBP checkout is pinned to the exact live Stripe prices advertised
+    // on /plans. Environment aliases remain a compatibility fallback for non-live
+    // deployments, but cannot silently switch a customer onto an old GBP price.
+    const price = liveSubscriptionPriceForPlan(plan, currency)
+      || subscriptionPriceForPlan(plan, process.env, currency);
     if (!price) return res.status(400).json({ error: missingPlanMessage(plan), code: 'PLAN_PRICE_NOT_CONFIGURED', country, currency });
 
     const attemptId = crypto.randomUUID();
