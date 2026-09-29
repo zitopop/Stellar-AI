@@ -8,7 +8,7 @@ test('workspace navigation and composer expose stable accessible names', () => {
   assert.match(app, /aria-label="Stellar navigation"/);
   assert.match(app, /<label class="hidden" for="prompt">Message Stellar<\/label>/);
   assert.match(app, /id="status" role="status" aria-live="polite"/);
-  assert.match(app, /id="sendBtn" type="submit" aria-label="Send"/);
+  assert.match(app, /id="sendBtn" type="submit" aria-label="Send message"/);
 });
 
 test('interactive controls keep explicit button types and touch targets', () => {
