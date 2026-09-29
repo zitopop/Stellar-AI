@@ -17,9 +17,8 @@ test('chat workspace has no giant decorative planet or one-pixel star dot', () =
   assert.doesNotMatch(smoothCss, /\.app \.main::before\{[^}]*radial-gradient\(circle at 30% 18%/);
 });
 
-test('chat rename uses a Stellar dialog instead of the browser prompt', () => {
+test('clean chat shell never invokes the browser prompt dialog', () => {
   const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-  assert.match(app, /id="stellar-rename-dialog-v1"/);
-  assert.match(app, /rename-chat-modal/);
+  assert.doesNotMatch(app, /\bwindow\.prompt\s*\(/);
   assert.doesNotMatch(app, /\bprompt\s*\(/);
 });
