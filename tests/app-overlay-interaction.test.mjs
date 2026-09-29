@@ -16,8 +16,8 @@ test('sidebar backdrop cannot stay clickable after close', () => {
   assert.match(app, /backdrop\.addEventListener\('click',closeSide\)/);
 });
 
-test('settings overlay closes on backdrop and Escape', () => {
-  assert.match(app, /function closePanel\(\)\{panelBackdrop\.classList\.remove\('open'\)\}/);
+test('settings overlay closes on backdrop and Escape while restoring focus', () => {
+  assert.match(app, /function closePanel\(\)\{panelBackdrop\.classList\.remove\('open'\);[\s\S]*?target\.focus/);
   assert.match(app, /panelBackdrop\.addEventListener\('click',e=>\{if\(e\.target===panelBackdrop\)closePanel\(\)\}\)/);
   assert.match(app, /if\(e\.key==='Escape'\)\{closeSide\(\);closePanel\(\)\}/);
 });
