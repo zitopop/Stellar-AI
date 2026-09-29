@@ -8,8 +8,8 @@ const plans = readFileSync(new URL('../plans.html', import.meta.url), 'utf8');
 
 test('landing uses the calmer product-first workspace treatment', () => {
   assert.match(landing, /stellar-openai-product-polish-v35/);
-  assert.match(landing, /One place to think,<br>build and get things done\./);
-  assert.match(landing, /Open Stellar AI/);
+  assert.match(landing, /Ask anything\.<br>Get real work done\./);
+  assert.match(landing, /Start free/);
   assert.match(landing, /href="\/app\?welcome=1">Chat<\/a>/);
   assert.match(landing, /@media\(max-width:430px\)/);
 });
