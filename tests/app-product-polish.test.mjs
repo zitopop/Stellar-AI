@@ -17,10 +17,10 @@ test('locked models stay in the workspace without silently activating', () => {
   assert.match(app, /data-open="plans"/);
 });
 
-test('a new draft typed while a reply is pending is not cleared in finally', () => {
-  assert.match(app, /prompt\.value='';setStatus\('Thinking…','warn'\)/);
+test('a new draft typed while a reply is pending is not cleared after generation', () => {
+  assert.match(app, /prompt\.value='';resizePrompt\(\);setGenerating\(true\);setStatus\('Thinking…','warn'\)/);
   assert.doesNotMatch(app, /finally\{[^}]*prompt\.value=''/);
-  assert.match(app, /finally\{busy=false;sendBtn\.disabled=false;prompt\.focus\(\)\}/);
+  assert.match(app, /finally\{currentGenerationController=null;setGenerating\(false\);/);
 });
 
 test('clean chat shell does not expose stale owner-only controls', () => {
