@@ -110,10 +110,7 @@ function googleSignInPatch() {
     if (document.getElementById('stellar-google-signin-style-v1')) return;
     const style = document.createElement('style');
     style.id = 'stellar-google-signin-style-v1';
-    style.textContent = `
-      .stellar-google-box{display:grid;gap:10px;margin:0 0 12px;padding:13px;border:1px solid rgba(255,255,255,.085);border-radius:16px;background:rgba(255,255,255,.028)}
-      .stellar-google-box strong{font-size:13px;color:#f6f7fb}.stellar-google-box small{display:block;color:#8f98a7;line-height:1.4}.stellar-google-render{min-height:42px;display:flex;align-items:center}.stellar-google-fallback{min-height:42px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:#fff;color:#111;font-weight:850;display:flex;align-items:center;justify-content:center;width:100%}
-    `;
+    style.textContent = "\n      .stellar-google-box{display:grid;gap:10px;margin:0 0 12px;padding:13px;border:1px solid rgba(255,255,255,.085);border-radius:16px;background:rgba(255,255,255,.028)}\n      .stellar-google-box strong{font-size:13px;color:#f6f7fb}.stellar-google-box small{display:block;color:#8f98a7;line-height:1.4}.stellar-google-render{min-height:42px;display:flex;align-items:center}.stellar-google-fallback{min-height:42px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:#fff;color:#111;font-weight:850;display:flex;align-items:center;justify-content:center;width:100%}";
     document.head.appendChild(style);
   }
 

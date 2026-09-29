@@ -6,15 +6,17 @@ const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
 const sw=readFileSync(new URL('../sw.js',import.meta.url),'utf8');
 
 test('app keeps phone controls tappable and inactive overlays inert',()=>{
-  assert.match(app,/stellar-interaction-recovery-v1/);
-  assert.match(app,/#backdrop:not\(\.open\)[^}]*pointer-events:none!important/);
-  assert.match(app,/#account-button\{display:inline-flex!important/);
-  assert.match(app,/home-welcome h1[^}]*white-space:normal!important/);
+  assert.match(app,/\.drawer-backdrop\{display:block;position:fixed;[\s\S]*?opacity:0;pointer-events:none\}/);
+  assert.match(app,/\.drawer-backdrop\.open\{opacity:1;pointer-events:auto\}/);
+  assert.match(app,/\.panel-backdrop\{position:fixed;[\s\S]*?display:none/);
+  assert.match(app,/\.panel-backdrop\.open\{display:grid\}/);
+  assert.match(app,/id="accountButton"[^>]*type="button"/);
 });
 
-test('app actively refreshes the service worker without cached navigation HTML',()=>{
-  assert.match(app,/stellar-app-update-guard-v1/);
-  assert.match(app,/serviceWorker\.register\('\/sw\.js',\{updateViaCache:'none'\}\)/);
+test('service worker fetches navigation HTML fresh before applying patches',()=>{
   assert.match(sw,/const SW_VERSION = 'stellar-sw-/);
+  assert.match(sw,/request\.mode === 'navigate'/);
   assert.match(sw,/fetch\(request, \{ cache: 'no-store' \}\)/);
+  assert.match(sw,/patchAppNavigationResponse/);
+  assert.match(sw,/patchHomeNavigationResponse/);
 });

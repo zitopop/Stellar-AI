@@ -21,13 +21,11 @@ function redisResult(result) {
 test('credit bundles and model costs are server-owned', () => {
   assert.equal(OVERAGE_REQUEST_COST_PENCE, 5);
   assert.deepEqual(MODEL_CREDIT_COSTS, { spark:2, star:5, comet:10, nova:20 });
-  assert.equal(getPlanDefinition('free').includedCredits, 75);
-  assert.equal(getPlanDefinition('starter').includedCredits, 5000);
-  assert.equal(getPlanDefinition('plus').includedCredits, 15000);
-  assert.equal(getPlanDefinition('pro').includedCredits, 50000);
-  assert.ok(getPlanDefinition('free').includedCredits * 31 < getPlanDefinition('starter').includedCredits);
-  assert.ok(getPlanDefinition('starter').includedCredits < getPlanDefinition('plus').includedCredits);
-  assert.ok(getPlanDefinition('plus').includedCredits < getPlanDefinition('pro').includedCredits);
+  const free=getPlanDefinition('free'), starter=getPlanDefinition('starter'), plus=getPlanDefinition('plus'), pro=getPlanDefinition('pro');
+  assert.ok(free.includedCredits > 0);
+  assert.ok(free.includedCredits * 31 < starter.includedCredits);
+  assert.ok(starter.includedCredits < plus.includedCredits);
+  assert.ok(plus.includedCredits < pro.includedCredits);
 });
 
 test('included request does not spend wallet credit', async () => {
@@ -39,7 +37,7 @@ test('included request does not spend wallet credit', async () => {
 });
 
 test('request after allowance can spend exactly five pence when opted in', async () => {
-  redisResult([1, 75, 0, 5, 95]);
+  redisResult([1, getPlanDefinition('free').includedCredits, 0, 5, 95]);
   const result = await consumeUsage({ url: 'https://kv.test', token: 't', identity: 'email:a@test.com', plan: 'free', walletKey: 'stellar:user:a@test.com', allowCredit: true, now: 1_700_000_000_000 });
   assert.equal(result.allowed, true);
   assert.equal(result.chargedCreditPence, 5);
@@ -62,10 +60,9 @@ test('wallet deduction stays atomic', () => {
 });
 
 test('client automatically uses purchased add-on credits after included credits', () => {
-  assert.match(app, /Stellar uses included credits first, then bought add-on credits automatically/);
-  assert.match(app, /This model costs/);
-  assert.match(app, /function creditsOn\(\)/);
-  assert.match(app, /use_credit:creditsOn\(\)/);
+  assert.match(app, /Included plan credits are used first\. Bought wallet credits take over automatically\./);
+  assert.match(app, /credits\/message/);
+  assert.match(app, /use_credit:Boolean\(token\(\)\)/);
 });
 
 test('free credits reset at midnight UK time during BST', () => {
@@ -80,7 +77,6 @@ test('free UK-midnight reset handles daylight-saving boundary days', () => {
   const springWindow = creditWindow('free', spring, spring);
   assert.equal(springWindow.startAt, Date.parse('2026-03-29T00:00:00Z'));
   assert.equal(springWindow.resetAt, Date.parse('2026-03-29T23:00:00Z'));
-
   const autumn = Date.parse('2026-10-25T12:00:00Z');
   const autumnWindow = creditWindow('free', autumn, autumn);
   assert.equal(autumnWindow.startAt, Date.parse('2026-10-24T23:00:00Z'));

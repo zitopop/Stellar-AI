@@ -6,18 +6,16 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-smooth-smart.css', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('space theme is applied to landing and app home without using fake mockup people', () => {
+test('legacy space visual layer contains no fake mockup people', () => {
   assert.match(css, /Stellar OpenAI-space theme v20260925/);
-  assert.match(css, /body\.public-home::after/);
-  assert.match(css, /\.app \.main::after/);
   assert.doesNotMatch(app + landing + css, /Alex Carter|alex@stellar\.ai/);
 });
 
-test('app home stays chat-first and exposes real Computer and Plugins entry points', () => {
+test('app home stays chat-first and exposes real reviewed Computer and Plugins entry points', () => {
   assert.match(app, /What can I help with\?/);
-  assert.match(app, /openComputerActionCard/);
-  assert.match(app, />▣ StellarX</);
-  assert.match(app, />◇ Plugins</);
-  assert.match(app, /space-home-subtitle,.app \.space-home-chips,.app \.space-home-cards\{display:none/);
+  assert.match(app, /function openComputerActionCard\(\)/);
+  assert.match(app, />▣ StellarX<\/button>/);
+  assert.match(app, /href="\/plugins">Plugins<\/a>/);
   assert.match(app, /Review computer action/);
+  assert.match(app, /Check the task before handing it to StellarX/);
 });

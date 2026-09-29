@@ -6,42 +6,32 @@ const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const auth = fs.readFileSync(new URL('../lib/auth.js', import.meta.url), 'utf8');
 const telemetry = fs.readFileSync(new URL('../lib/assets/telemetry.js', import.meta.url), 'utf8');
 
-test('workspace keeps signed-in state, server plan truth, and local chat persistence hooks', () => {
-  assert.match(app, /Store\.get\('selectedModel','star'\)/);
+test('workspace keeps signed-in state, server plan truth, and account-scoped local chat persistence', () => {
+  assert.match(app, /localStorage\.getItem\('stellar-selected-model'\)/);
   assert.match(app, /planState/);
   assert.match(app, /loadPlanTruth\(\)/);
-  assert.match(app, /\/api\/get-chats/);
+  assert.match(app, /stellar-chat-sessions:/);
   assert.match(app, /\/api\/get-plan/);
 });
 
-test('owner-only behaviour remains gated by auth code and hidden UI class', () => {
+test('owner-only behaviour remains gated by server-authenticated account truth', () => {
   assert.match(auth, /isOwnerEmail/);
-  assert.match(app, /owner-only/);
-  assert.match(app, /deadlyfox10@gmail\.com|@stellar\.ai/);
+  assert.match(app, /serverOwner=data\.owner===true\|\|account\.owner===true/);
+  assert.match(app, /function isOwner\(\)\{return serverOwner===true\}/);
+  assert.match(app, /const ownerTools=isOwner\(\)\?/);
 });
 
-test('telemetry rescue layer keeps core app interactions recoverable', () => {
+test('legacy telemetry rescue functions remain available but are disabled on the clean app', () => {
   assert.match(telemetry, /stellar-business-polish-v8/);
   assert.match(telemetry, /function safeGetStorage/);
-  assert.match(telemetry, /function closeDrawer/);
-  assert.match(telemetry, /rescueInteractionState/);
-  assert.match(telemetry, /billing help/);
-  assert.match(telemetry, /Pinned chats are protected/);
-  assert.match(telemetry, /📌/u);
+  assert.match(telemetry, /function rescueInteractionState/);
+  assert.match(telemetry, /const cleanApp = document\.body\?\.dataset\?\.stellarCleanApp === 'true'/);
+  assert.match(telemetry, /if \(!cleanApp\) \{/);
 });
 
-test('credits stay visible as a Manus-style sparkle token without exposing owner credit controls', () => {
-  assert.match(telemetry, /stellar-credit-pill/);
-  assert.match(telemetry, /ensureCreditIcon/);
-  assert.match(telemetry, /sparkle-token/);
-  assert.match(telemetry, /✦/u);
-  assert.match(telemetry, /included allowance plus wallet top-ups/);
+test('clean app owns its visible credit balance while telemetry never exposes owner credit controls', () => {
+  assert.match(app, /id="creditPill"/);
+  assert.match(app, /id="creditCount"/);
   assert.match(telemetry, /\[data-admin-credit\]/);
-});
-
-test('account settings show credits and mirror the visible credit value', () => {
-  assert.match(telemetry, /stellar-account-credit-card/);
-  assert.match(telemetry, /ensureAccountCreditCard/);
-  assert.match(telemetry, /data-account-credit-value/);
-  assert.match(telemetry, /Updates when your plan or wallet credits refresh/);
+  assert.match(telemetry, /owner-credit-panel/);
 });

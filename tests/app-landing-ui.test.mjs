@@ -11,14 +11,14 @@ test('app does not load retired global workspace override stylesheets', () => {
 });
 
 test('workspace uses the current purple neutral visual system', () => {
-  assert.match(app, /--accent:#8b7cf6/);
-  assert.match(app, /--accent2:#b9b0ff/);
-  assert.match(app, /background:radial-gradient/);
+  assert.match(app, /--accent:#9b8cff/);
+  assert.match(app, /--accent2:#f0edff/);
+  assert.match(app, /background:var\(--bg\)/);
   assert.doesNotMatch(app, /--stellar-gold|#D4AF37|#d4af37/);
 });
 
 test('visual shell keeps core controls present and shortcuts out of the empty state', () => {
-  for (const id of ['sidebar','chat','chatForm','prompt','sendBtn','model-pill']) {
+  for (const id of ['side','chat','chatForm','prompt','sendBtn','modelBtn']) {
     assert.ok(app.includes('id="' + id + '"'), 'missing #' + id);
   }
   assert.doesNotMatch(app, /<div class="quick">/);

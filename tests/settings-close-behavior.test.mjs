@@ -3,27 +3,25 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-const css = readFileSync(new URL('../stellar-settings-v22.css', import.meta.url), 'utf8');
 
 test('Settings closes from backdrop, Escape and explicit close button', () => {
-  assert.match(app, /id="settings-panel"[^>]*onclick="closeSettingsOnBackdrop\(event\)"/);
-  assert.match(app, /function closeSettingsOnBackdrop\(event\)\{if\(event\?\.target===event\?\.currentTarget\)closeSettings\(\)\}/);
-  assert.match(app, /class="settings-close-x"[^>]*onclick="closeSettings\(\)"/);
-  assert.match(app, /if\(e\.key==='Escape'\)[\s\S]*?closeSettings\(\)/);
+  assert.match(app, /id="panelBackdrop"/);
+  assert.match(app, /id="closePanel" aria-label="Close"/);
+  assert.match(app, /panelBackdrop\.addEventListener\('click',e=>\{if\(e\.target===panelBackdrop\)closePanel\(\)\}\)/);
+  assert.match(app, /document\.addEventListener\('keydown',e=>\{if\(e\.key==='Escape'\)\{closeSide\(\);closePanel\(\)\}\}\)/);
+  assert.match(app, /\$\('closePanel'\)\.addEventListener\('click',closePanel\)/);
 });
 
 test('Settings returns keyboard focus after dismissal', () => {
-  assert.match(app, /let settingsReturnFocus=null/);
-  assert.match(app, /settingsReturnFocus=document\.activeElement instanceof HTMLElement/);
-  assert.match(app, /panel\.querySelector\('\.settings-close-x'\)\?\.focus/);
+  assert.match(app, /panelReturnFocus=null/);
+  assert.match(app, /panelReturnFocus=document\.activeElement instanceof HTMLElement\?document\.activeElement:null/);
+  assert.match(app, /const target=panelReturnFocus;panelReturnFocus=null/);
   assert.match(app, /target&&document\.contains\(target\)/);
+  assert.match(app, /setTimeout\(\(\)=>target\.focus\(\),0\)/);
 });
 
-test('Settings close control is touch safe and visibly focusable', () => {
-  assert.match(app, /class="settings-close-x"[\s\S]*?class="settings-close-icon"/);
-  assert.match(app, /viewBox="0 0 24 24"/);
-  assert.match(css, /\.settings-close-x\{[\s\S]*?width:44px!important;[\s\S]*?height:44px!important/);
-  assert.match(css, /\.settings-close-icon\{[\s\S]*?width:19px!important/);
-  assert.match(css, /touch-action:manipulation!important/);
-  assert.match(css, /\.settings-close-x:focus-visible/);
+test('Settings close control is touch safe and receives focus when opened', () => {
+  assert.match(app, /\.close\{width:44px;height:44px/);
+  assert.match(app, /id="closePanel" aria-label="Close"/);
+  assert.match(app, /setTimeout\(\(\)=>\$\('closePanel'\)\?\.focus\(\),0\)/);
 });

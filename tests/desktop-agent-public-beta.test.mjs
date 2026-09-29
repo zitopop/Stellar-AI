@@ -1,4 +1,4 @@
-﻿import assert from 'node:assert/strict';
+import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const agent = readFileSync(new URL('../lib/desktop-agent-handler.js', import.meta.url), 'utf8');
@@ -30,8 +30,7 @@ assert.match(entry, /isSignedIn/);
 
 console.log('desktop-agent public beta safeguards: ok');
 
-assert.match(app, /id="desktop-agent-nav" class="settings-row signed-in-only"/);
-assert.doesNotMatch(app, /<p class="side-title">Agents<\/p>/);
-assert.match(app, /document\.querySelectorAll\('\.signed-in-only'\)/);
-assert.match(app, /id="roblox-studio-nav" class="settings-row owner-only"/);
-
+assert.match(app, /id="stellarx-btn">▣ StellarX<\/button>/);
+assert.match(app, /function openComputerActionCard\(\)/);
+assert.match(app, /Review computer action/);
+assert.match(app, /id="roblox-studio-nav" href="\/roblox-studio"/);

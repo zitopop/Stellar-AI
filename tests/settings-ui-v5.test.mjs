@@ -4,34 +4,33 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('Settings exposes the current account plugins voice plans billing and support routes', () => {
-  assert.match(app, /id="auth-settings-row"/);
+test('Settings exposes account, plugins, tools, plans, billing, legal and support paths', () => {
+  assert.match(app, /function renderSettingsPanel\(\)/);
   assert.match(app, /href="\/plugins"/);
-  assert.match(app, /href="\/jarvis"/);
-  assert.match(app, /href="\/plans"/);
+  assert.match(app, /id="email-agent-nav" href="\/email-agent"/);
+  assert.match(app, /href="\/desktop"/);
+  assert.match(app, /id="jarvis-nav" href="\/jarvis"/);
   assert.match(app, /id="set-billing-row"/);
-  assert.match(app, /href="\/support"/);
+  assert.match(app, /href="\/legal"/);
+  assert.match(app, /href="\/support">Help<\/a>/);
 });
 
 test('phone Settings is a full-width bounded bottom sheet', () => {
-  assert.match(app, /@media \(max-width: 520px\)[\s\S]*?\.settings-panel\{padding:0;display:none\}/);
-  assert.match(app, /\.settings-card\{width:100%;max-height:90dvh;margin:10dvh 0 0;border-radius:22px 22px 0 0/);
+  assert.match(app, /@media\(max-width:540px\)[\s\S]*?\.panel-backdrop\{align-items:end;padding:0\}/);
+  assert.match(app, /\.panel\{width:100%;max-height:91dvh;border-radius:24px 24px 0 0/);
   assert.match(app, /safe-area-inset-bottom/);
 });
 
 test('desktop Settings keeps internal scrolling and bounded width', () => {
-  assert.match(app, /\.settings-card\{width:min\(560px,100%\);max-height:86dvh;overflow:auto/);
+  assert.match(app, /\.panel\{width:min\(640px,100%\);max-height:88dvh;overflow:auto/);
 });
 
 test('settings rows retain touch-safe heights', () => {
-  assert.match(app, /\.settings-row\{[^}]*min-height:46px/);
+  assert.match(app, /\.row\{min-height:46px\}/);
 });
 
-test('Settings visually matches the calm chat workspace on desktop and phone', () => {
-  assert.match(app, /id="stellar-settings-chat-v20"/);
-  assert.match(app, /width:min\(620px,calc\(100% - 28px\)\)!important/);
-  assert.match(app, /background:rgba\(17,20,29,.96\)!important/);
-  assert.match(app, /\.settings-header\{[\s\S]*?position:sticky!important/);
-  assert.match(app, /@media\(max-width:640px\)[\s\S]*?max-height:90dvh!important/);
-  assert.match(app, /\.settings-close-footer\{display:none!important\}/);
+test('Settings visually matches the calm chat workspace', () => {
+  assert.match(app, /background:var\(--panel\)/);
+  assert.match(app, /\.panel-head\{position:sticky/);
+  assert.match(app, /\.panel-body\{padding:16px\}/);
 });

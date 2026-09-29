@@ -9,6 +9,7 @@ test('current dark theme keeps contrast tokens explicit', () => {
   assert.match(homepage, /--bg:/);
   assert.match(homepage, /--panel:/);
   assert.match(homepage, /--ink:/);
-  assert.match(app, /--bg:#080a11/);
+  assert.match(app, /--bg:#0b0c10/);
+  assert.match(app, /--panel:#12141c/);
   assert.match(app, /--text:#f7f8fb/);
 });

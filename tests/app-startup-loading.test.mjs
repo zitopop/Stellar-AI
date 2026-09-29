@@ -4,18 +4,17 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('startup account requests have a hard timeout', () => {
-  assert.match(app, /async function fetchStartup\(url,options=\{\},timeoutMs=8000\)/);
-  assert.match(app, /fetchStartup\('\/api\/auth',[\s\S]*?8000\)/);
-  assert.match(app, /fetchStartup\('\/api\/get-plan',[\s\S]*?8000\)/);
+test('startup initializes input helpers, refreshes saved session and then loads server plan truth', () => {
+  assert.match(app, /async function init\(\)\{initImageInput\(\);initVoiceInput\(\);syncConnectivity\(\);signedInUser=store\(\)\.user\|\|null;if\(token\(\)\)await refreshSession\(\);await loadPlanTruth\(\);await handlePaymentReturn\(\)/);
 });
 
-test('failed session refresh still resolves the loading UI', () => {
-  assert.match(app, /const refreshed=await refreshSessionBeforeExpiry/);
-  assert.match(app, /if\(!refreshed\)await loadPlanTruth\(\)/);
+test('failed session refresh falls back safely to signed-out state', () => {
+  assert.match(app, /if\(res\.status===401\)\{clearSession\(\);signedInUser=null;return false\}/);
+  assert.match(app, /catch\{\}return false/);
 });
 
-test('app renders a usable plan baseline before async account sync', () => {
-  assert.match(app, /initImageInput\(\);renderPlanTruth\(\);updateCreditUi\(\)/);
-  assert.match(app, /Account sync is taking longer than expected\. You can still use the app\./);
+test('app renders local chats and handles pending checkout intent during startup', () => {
+  assert.match(app, /await handlePaymentReturn\(\);loadSessions\(\)/);
+  assert.match(app, /applyJarvisEntry\(\);await handlePendingIntents\(\)/);
+  assert.match(app, /setStatus\('Ready','good'\);prompt\.focus\(\)/);
 });

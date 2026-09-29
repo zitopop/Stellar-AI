@@ -7,14 +7,14 @@ const jarvis = readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
 
 test('workspace exposes accessible browser voice input', () => {
   assert.match(app, /id="voice-input-btn"[^>]*aria-label="Start voice input"[^>]*aria-pressed="false"/);
-  assert.match(app, /onclick="toggleVoiceInput\(\)"/);
+  assert.match(app, /function initVoiceInput\(\)/);
   assert.match(app, /window\.SpeechRecognition\|\|window\.webkitSpeechRecognition/);
-  assert.match(app, /voiceRecognition\.lang='en-GB'/);
+  assert.match(app, /recognition\.lang=document\.documentElement\.lang\|\|'en-GB'/);
 });
 
 test('voice transcript is reviewed before explicit send', () => {
-  assert.match(app, /Voice input ready\. Review it, then press Send\./);
-  assert.doesNotMatch(app, /voiceRecognition\.onend[\s\S]{0,500}requestSubmit\(\)/);
+  assert.match(app, /Review it, then press Send/);
+  assert.doesNotMatch(app, /recognition\.onend[\s\S]{0,500}(?:requestSubmit|sendMessage)\(/);
 });
 
 test('Jarvis Voice orb routes into current app voice mode', () => {

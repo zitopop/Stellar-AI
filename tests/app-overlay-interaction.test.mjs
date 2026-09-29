@@ -4,25 +4,20 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('blocking overlays start hidden and inert', () => {
-  assert.match(app, /id="backdrop"[^>]*aria-hidden="true"[^>]*hidden inert/);
-  assert.match(app, /id="settings-panel"[^>]*aria-hidden="true"[^>]*hidden inert/);
-  assert.match(app, /\.drawer-backdrop\[hidden\][\s\S]*?pointer-events:none!important/);
+test('blocking overlays start visually inactive', () => {
+  assert.match(app, /id="backdrop" aria-hidden="true"/);
+  assert.match(app, /\.drawer-backdrop\{display:none\}/);
+  assert.match(app, /\.panel-backdrop\{position:fixed;[\s\S]*?display:none/);
 });
 
 test('sidebar backdrop cannot stay clickable after close', () => {
-  assert.match(app, /function closeResponsiveSidebar\(\)[\s\S]*?backdrop\.inert=true[\s\S]*?backdrop\.hidden=true/);
-  assert.match(app, /function openResponsiveSidebar\(\)[\s\S]*?backdrop\.hidden=false[\s\S]*?backdrop\.inert=false/);
+  assert.match(app, /function closeSide\(\)\{side\.classList\.remove\('open'\);backdrop\.classList\.remove\('open'\)\}/);
+  assert.match(app, /function openSide\(\)\{side\.classList\.add\('open'\);backdrop\.classList\.add\('open'\)\}/);
+  assert.match(app, /backdrop\.addEventListener\('click',closeSide\)/);
 });
 
-test('settings overlay is inert whenever closed', () => {
-  assert.match(app, /function closeSettings\(\)[\s\S]*?panel\.inert=true;panel\.hidden=true/);
-  assert.match(app, /function openSettings\(\)[\s\S]*?panel\.hidden=false;panel\.inert=false/);
-});
-
-test('startup clears orphaned overlays before attaching controls', () => {
-  const rescue = app.indexOf('resetTransientUiAfterPageRestore();');
-  const submit = app.indexOf("$('chatForm').addEventListener('submit'");
-  assert.ok(rescue >= 0 && submit > rescue);
-  assert.match(app, /side:not\(\.open\)\{pointer-events:none!important;visibility:hidden!important\}/);
+test('settings overlay closes on backdrop and Escape while restoring focus', () => {
+  assert.match(app, /function closePanel\(\)\{panelBackdrop\.classList\.remove\('open'\);[\s\S]*?target\.focus/);
+  assert.match(app, /panelBackdrop\.addEventListener\('click',e=>\{if\(e\.target===panelBackdrop\)closePanel\(\)\}\)/);
+  assert.match(app, /if\(e\.key==='Escape'\)\{closeSide\(\);closePanel\(\)\}/);
 });

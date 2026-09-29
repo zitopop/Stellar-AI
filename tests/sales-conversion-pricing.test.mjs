@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { getPlanDefinition } from '../lib/pricing.js';
 
 const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
+const fmt=n=>Number(n).toLocaleString('en-GB');
 
 test('homepage pricing stays concise and conversion-focused', () => {
   assert.match(index, /Start free\. Upgrade when Stellar becomes part of your day\./);
@@ -14,20 +16,19 @@ test('homepage pricing stays concise and conversion-focused', () => {
   assert.match(index, /class="plan-actions plan-actions-free"/);
   assert.match(index, /STELLAR CREDIT WALLET/);
   for (const pack of [300,500,1000,2500,5000,10000,20000]) assert.ok(index.includes('/app?credits=' + pack), String(pack));
-  assert.match(app, /function openCreditWallet\(amount=0\)/);
+  assert.match(app, /window\.openCreditWallet=/);
   assert.match(app, /stellar-pending-credit-pack/);
 });
 
-test('Plus is positioned as the main paid conversion plan', () => {
+test('Plus is positioned as the main paid conversion plan without stale allowance literals', () => {
   assert.match(index, /data-plan="plus"/);
   assert.match(index, /MOST POPULAR/);
   assert.match(index, /Deeper review \+ multi-file work/);
   assert.match(index, /EVERYDAY PLAN/);
-  assert.match(index, /up to 1,500 Comet messages\/month/);
-  assert.match(index, /up to 2,500 Nova messages\/month/);
-  assert.match(index, /5,000 credits\/month/);
-  assert.match(index, /15,000 credits\/month/);
-  assert.match(index, /50,000 credits\/month/);
-  assert.match(app, /Plus £20 · Comet/);
+  for (const id of ['starter','plus','pro']) {
+    const plan=getPlanDefinition(id);
+    assert.ok(index.includes(fmt(plan.includedCredits) + ' credits/month'), id);
+  }
+  assert.match(app, /planCard\('Plus','£20\/mo'/);
   assert.match(index, /both accounts receive 100 bonus Stellar Credits/);
 });

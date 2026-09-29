@@ -5,12 +5,10 @@ import test from 'node:test';
 const app = readFileSync('app.html', 'utf8');
 const page = readFileSync('deploy-center.html', 'utf8');
 const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
-const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 
-test('Deploy Center is owner-only in Settings and routed publicly without secrets', () => {
-  assert.match(app, /id="deploy-center-nav"/);
-  assert.match(app, /class="settings-row owner-only"/);
-  assert.match(app, /location\.href='\/deploy'/);
+test('Deploy Center is server-owner-gated in Settings and routed publicly without secrets', () => {
+  assert.match(app, /const ownerTools=isOwner\(\)\?/);
+  assert.match(app, /id="deploy-center-nav" href="\/deploy"/);
   assert.ok(vercel.rewrites.some((route) => route.source === '/deploy' && route.destination === '/deploy-center.html'));
 });
 

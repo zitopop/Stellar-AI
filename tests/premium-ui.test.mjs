@@ -1,31 +1,28 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('homepage keeps public visual layers while workspace stays self-contained', () => {
+test('homepage keeps public visual assets while workspace stays self-contained', () => {
   assert.match(index, /href="\/lib\/assets\/homepage\.css\?v=/);
-  assert.doesNotMatch(app, /stellar-chatgpt-layout\.css/);
-  assert.doesNotMatch(app, /stellar-app-landing-ui\.css/);
-  assert.doesNotMatch(app, /stellar-cosmic-openai\.css/);
-  assert.match(app, /--accent:#8b7cf6/);
-  assert.match(app, /radial-gradient/);
+  assert.doesNotMatch(app, /stellar-chatgpt-layout\.css|stellar-app-landing-ui\.css|stellar-cosmic-openai\.css/);
+  assert.match(app, /--accent:#9b8cff/);
+  assert.match(app, /background:#0b0c10/);
 });
 
 test('workspace keeps mobile-safe controls and a visible bottom composer', () => {
   assert.match(app, /touch-action:manipulation/);
   assert.match(app, /@media\(max-width:640px\)/);
-  assert.match(app, /@media\(max-width:420px\)/);
-  assert.match(app, /\.composer-wrap\{position:sticky;bottom:0;z-index:9/);
-  assert.match(app, /\.composer-tool\{min-height:36px/);
-  assert.match(app, /@media\(max-width:640px\)[\s\S]*?\.composer-tool\{min-height:44px\}/);
+  assert.match(app, /@media\(max-width:540px\)/);
+  assert.match(app, /grid-template-rows:58px minmax\(0,1fr\) auto/);
+  assert.match(app, /\.composer-tool\{width:44px;height:44px;min-height:44px/);
 });
 
-test('workspace uses the executive premium shell without reintroducing legacy styles', () => {
-  assert.match(app, /Executive workspace layer v12/);
+test('workspace uses one premium clean shell without reintroducing legacy styles', () => {
   assert.match(app, /What can I help with\?/);
-  assert.match(app, /\.settings-card\{/);
+  assert.match(app, /\.panel\{width:min\(640px,100%\);max-height:88dvh/);
   assert.match(app, /\.composer\{/);
+  assert.match(app, /data-stellar-clean-app="true"/);
 });

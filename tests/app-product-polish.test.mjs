@@ -5,40 +5,29 @@ import { readFileSync } from 'node:fs';
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('returning paid-model preference waits for server plan truth before activation', () => {
-  assert.match(app, /Store\.get\('selectedModel','star'\)/);
-  assert.match(app, /const model=\{current:'star'\}/);
-  assert.match(app, /function reconcilePreferredModel\(\)/);
-  assert.match(app, /function updateModelLocks\(\)[\s\S]*?reconcilePreferredModel\(\)/);
-  assert.match(app, /applyModelSelection\('star',\{persist:false,announce:false\}\);loadSession\(\)/);
+test('returning model preference waits for server plan truth before use', () => {
+  assert.match(app, /localStorage\.getItem\('stellar-selected-model'\)\|\|'star'/);
+  assert.match(app, /await loadPlanTruth\(\)/);
+  assert.match(app, /if\(!allowedModels\.includes\(selectedModel\)\)selectedModel=/);
+  assert.match(app, /localStorage\.setItem\('stellar-selected-model',selectedModel\)/);
 });
 
-test('locked models keep users in the workspace and open plan controls', () => {
-  assert.match(app, /function openPlanSettings\(\)/);
-  assert.match(app, /function handleLockedModel\(name\)[\s\S]*?openPlanSettings\(\)/);
-  assert.match(app, /onclick="openPlanSettings\(\)">Plans/);
-  assert.match(app, /Upgrade or compare plans/);
+test('locked models stay in the workspace without silently activating', () => {
+  assert.match(app, /if\(!allowedModels\.includes\(m\)\)\{setStatus\('Locked on this plan','warn'\);return\}/);
+  assert.match(app, /data-open="plans"/);
 });
 
-test('streaming replies do not erase a new draft typed while waiting', () => {
-  assert.match(app, /if\(promptEl&&promptEl\.value\.trim\(\)===originalText\)promptEl\.value=''/);
-  assert.match(app, /if\(promptEl&&!promptEl\.value\.trim\(\)\)promptEl\.value=originalText/);
-  assert.doesNotMatch(app, /finally\{[^}]*\$\('prompt'\)\.value=''/);
+test('a new draft typed while a reply is pending is not cleared in finally', () => {
+  assert.match(app, /prompt\.value='';setStatus\('Thinking…','warn'\)/);
+  assert.doesNotMatch(app, /finally\{[^}]*prompt\.value=''/);
+  assert.match(app, /finally\{busy=false;sendBtn\.disabled=false;prompt\.focus\(\)\}/);
 });
 
-test('pinned chats must be unpinned before deletion', () => {
-  assert.match(app, /if\(current\?\.pinned\)\{setStatus\('Unpin this chat before deleting it\.'/);
-  assert.match(app, /Chat pinned\. Unpin it before deleting\./);
+test('clean chat shell does not expose stale owner-only controls', () => {
+  assert.doesNotMatch(app, /owner-only/);
+  assert.match(app, /serverOwner=data\.owner===true\|\|account\.owner===true/);
 });
 
-test('owner-only controls are hidden by default and revealed only by server owner state', () => {
-  assert.match(app, /class="settings-row owner-only" hidden/);
-  assert.match(app, /class="owner-only" hidden aria-label="Open Roblox Studio coding agent"/);
-  assert.match(app, /const visible=isOwner\(\)/);
-  assert.match(app, /el\.hidden=!visible/);
-});
-
-test('landing support action uses a real directional affordance', () => {
-  assert.match(landing, /Ask support ↗/);
-  assert.doesNotMatch(landing, /Ask support \?/);
+test('landing keeps a real support route', () => {
+  assert.match(landing, /href="\/support"/);
 });

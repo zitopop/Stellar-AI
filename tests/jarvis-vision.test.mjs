@@ -6,9 +6,10 @@ const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const jarvis = fs.readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
 const vercel = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
 
-test('Jarvis stays private in the app while its routes remain available to the owner', () => {
-  assert.match(app, /<a class="settings-row owner-only" hidden data-settings-advanced href="\/jarvis">/);
-  assert.match(app, /<strong>Jarvis<\/strong><small>Private owner assistant, missions and calls<\/small>/);
+test('Jarvis stays private in the app while its routes remain available to verified owner state', () => {
+  assert.match(app, /const ownerTools=isOwner\(\)\?/);
+  assert.match(app, /id="jarvis-nav" href="\/jarvis"/);
+  assert.match(app, /Private owner command centre/);
 });
 
 test('Jarvis Vision has local camera hand controls plus pointer fallback', () => {

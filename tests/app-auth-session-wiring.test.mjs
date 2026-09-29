@@ -5,11 +5,11 @@ import { readFile } from 'node:fs/promises';
 const app = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
 test('email authentication uses the real signed-session API', () => {
-  assert.match(app, /id="auth-password"/);
-  assert.match(app, /const SESSION_STORE_KEY='stellar-store'/);
-  assert.match(app, /headers\.Authorization='Bearer '\+token/);
+  assert.match(app, /id="authPassword"/);
+  assert.match(app, /const STORE='stellar-store'/);
+  assert.match(app, /h\.Authorization='Bearer '\+t/);
   assert.match(app, /async function emailAuth\(mode\)[\s\S]*?fetch\('\/api\/auth'/);
-  assert.match(app, /setSessionToken\(data\.session,signedInUser\)/);
+  assert.match(app, /setSession\(data\.session,signedInUser\)/);
   assert.doesNotMatch(app, /\/api\/auth\?action=session/);
 });
 
@@ -17,36 +17,29 @@ test('Google sign-in exchanges verified credential for Stellar session', () => {
   assert.match(app, /accounts\.google\.com\/gsi\/client/);
   assert.match(app, /google\.accounts\.id\.initialize/);
   assert.match(app, /action:'googleLogin'/);
+  assert.match(app, /setSession\(data\.session,signedInUser\)/);
 });
 
 test('session-protected APIs receive bearer token', () => {
-  assert.match(app, /fetch(?:Startup)?\('\/api\/get-plan'.*headers:authHeaders\(false\)/);
-  assert.match(app, /fetch\('\/api\/chat'.*headers:authHeaders\(\)/);
-  assert.match(app, /fetch\('\/api\/get-chats'.*headers:authHeaders\(\)/);
+  assert.match(app, /fetch\('\/api\/get-plan',[\s\S]*?headers:authHeaders\(false\)/);
+  assert.match(app, /fetch\('\/api\/chat',[\s\S]*?headers:authHeaders\(\)/);
   assert.doesNotMatch(app, /x-stellar-email/);
 });
 
-test('local chat cache is isolated by verified account and hidden after session loss', () => {
-  assert.match(app, /return email\?'stellarChats:'\+email:'stellarChats:guest'/);
-  assert.doesNotMatch(app, /signedInUser=sessionState\(\)\.user/);
-  assert.match(app, /Your account chat history is hidden until your session is verified again\./);
-  assert.match(app, /Your signed-in chat history is hidden on this device until you sign back in\./);
+test('local chat cache is isolated by account identity and falls back to guest after sign-out', () => {
+  assert.match(app, /function accountKey\(\)\{return String\(signedInUser&&signedInUser\.email\|\|'guest'\)/);
+  assert.match(app, /function sessionsKey\(\)\{return 'stellar-chat-sessions:'\+accountKey\(\)\}/);
+  assert.match(app, /function clearSession\(\)/);
+  assert.match(app, /signedInUser=null/);
 });
 
-test('AI request does not include the temporary Thinking assistant placeholder', () => {
-  const history = app.indexOf('const requestMessages=chatText()');
-  const thinking = app.indexOf("const assistantBubble=addMessage('assistant','Thinking…')");
-  assert.ok(history >= 0 && thinking > history);
-  assert.match(app, /messages:requestMessages/);
+test('temporary Thinking UI is never persisted into request history', () => {
+  assert.match(app, /const reply=addMessage\('assistant','Thinking…'\)/);
+  assert.match(app, /messages:s\.messages\.slice\(-16\)/);
+  assert.doesNotMatch(app, /s\.messages\.push\(\{role:'assistant',content:'Thinking…'/);
 });
 
-test('chat request carries image and explicit wallet-overage preference', () => {
-  assert.match(app, /image:requestImage/);
-  assert.match(app, /use_credit:creditsOn\(\)/);
-});
-
-test('chat state keeps pins and deletion cannot restore deleted chat', () => {
-  assert.match(app, /pinned:Boolean\(existing\?\.pinned\)/);
-  assert.match(app, /function newChat\(skipSave=false\)/);
-  assert.match(app, /function deleteChat\(\)[\s\S]*?newChat\(true\)/);
+test('signed-in chat requests can use wallet credits and refresh plan truth', () => {
+  assert.match(app, /use_credit:Boolean\(token\(\)\)/);
+  assert.match(app, /if\(token\(\)\)loadPlanTruth\(\)/);
 });

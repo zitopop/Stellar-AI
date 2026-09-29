@@ -15,10 +15,10 @@ test('a paid top-up is applied once and retry cannot double-credit it', () => {
   assert.equal(retry.record.walletPence, 1350);
 });
 
-test('credit checkout uses Stripe-host validation and server-confirmed wallet refresh', () => {
-  assert.match(app, /startCreditCheckout\(\)/);
-  assert.match(app, /checkoutUrl\.hostname!=='checkout\.stripe\.com'/);
-  assert.match(app, /stellar-pending-topup/);
-  assert.match(app, /await loadPlanTruth\(\)/);
+test('credit checkout uses Stripe-host validation, keeps pending intent and refreshes server truth on return', () => {
+  assert.match(app, /async function startCreditCheckout\(amount\)/);
+  assert.match(app, /u\.hostname!=='checkout\.stripe\.com'/);
+  assert.match(app, /stellar-pending-credit-pack/);
+  assert.match(app, /async function handlePaymentReturn\(\)[\s\S]*?await loadPlanTruth\(\)/);
   assert.match(webhook, /applyTopupCheckout/);
 });

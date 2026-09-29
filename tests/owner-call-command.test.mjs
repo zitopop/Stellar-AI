@@ -6,13 +6,14 @@ const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
 const broadcast=readFileSync(new URL('../api/broadcast.js',import.meta.url),'utf8');
 const ownerCall=readFileSync(new URL('../lib/owner-call.js',import.meta.url),'utf8');
 
-test('Stellar exposes protected owner Jarvis call command',()=>{
-  assert.match(app,/function ownerCallCommand\(text\)/);
-  assert.match(app,/function triggerOwnerCall\(/);
-  assert.match(app,/ownerRequest\('\/api\/broadcast',\{action:'callOwner'/);
-  assert.match(app,/function checkOwnerCallHealth\(\)/);
-  assert.match(app,/id="owner-call-now"[^>]*owner-only/);
-  assert.match(app,/id="owner-call-health-btn"[^>]*owner-only/);
+test('Stellar exposes protected owner Jarvis call controls',()=>{
+  assert.match(app,/async function ownerCallCommand\(text\)/);
+  assert.match(app,/async function triggerOwnerCall\(/);
+  assert.match(app,/ownerRequest\('\/api\/broadcast',\{action:'callOwner',purpose:/);
+  assert.match(app,/async function checkOwnerCallHealth\(\)/);
+  assert.match(app,/id="owner-call-now"/);
+  assert.match(app,/id="owner-call-health-btn"/);
+  assert.match(app,/const ownerTools=isOwner\(\)\?/);
 });
 
 test('owner API handles call health verification and secure escalation',()=>{

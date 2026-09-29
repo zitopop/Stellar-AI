@@ -4,24 +4,27 @@ import { readFile } from 'node:fs/promises';
 
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
-test('account access uses welcoming, useful sign-in and signup copy', () => {
-  assert.match(appHtml, /Pick up where you left off — your chats and plan stay synced\./);
-  assert.match(appHtml, /Start free with 300 credits\/day, resetting at midnight UK time, then keep your chats and plan everywhere\./);
-  assert.match(appHtml, /Continue without signing in/);
+test('account access uses the current useful sign-in and signup copy', () => {
+  assert.match(appHtml, /Use Google, email or Discord\./);
+  assert.match(appHtml, /Continue with Google/);
+  assert.match(appHtml, /Fastest way to sign in\./);
+  assert.match(appHtml, /Create account/);
 });
 
-test('account access keeps all existing authentication actions', () => {
-  assert.match(appHtml, /id="g-signin-main"/);
+test('account access keeps all current authentication actions', () => {
+  assert.match(appHtml, /id="googleRender"/);
+  assert.match(appHtml, /id="googleFallback"/);
   assert.match(appHtml, /href="\/api\/discord-oauth"/);
-  assert.match(appHtml, /onclick="emailAuth\('login'\)"/);
-  assert.match(appHtml, /onclick="emailAuth\('signup'\)"/);
-  assert.match(appHtml, /onclick="dismissWelcome\(\)"/);
+  assert.match(appHtml, /data-action="email-login"/);
+  assert.match(appHtml, /data-action="email-signup"/);
+  assert.match(appHtml, /action:'googleLogin'/);
 });
 
-test('account access has a premium dark mobile-safe visual layer', () => {
-  assert.match(appHtml, /#welcome-modal\[hidden\]\{display:none!important\}/);
-  assert.match(appHtml, /#welcome-modal\{[\s\S]*?backdrop-filter:blur\(14px\)/);
-  assert.match(appHtml, /#welcome-modal \.welcome-card\{[\s\S]*?border-radius:24px !important/);
-  assert.match(appHtml, /#welcome-modal \.own-input\{[\s\S]*?background:#0d0f13!important/);
-  assert.match(appHtml, /@media\s*\(max-width:\s*520px\)\s*\{[\s\S]*?#welcome-modal \.welcome-card\{[\s\S]*?border-radius:24px 24px 0 0!important/);
+test('account access has a dark mobile-safe settings sheet', () => {
+  assert.match(appHtml, /\.google-box\{display:grid;gap:9px/);
+  assert.match(appHtml, /\.panel\{width:min\(640px,100%\);max-height:88dvh/);
+  assert.match(appHtml, /@media\(max-width:540px\)/);
+  assert.match(appHtml, /\.panel-backdrop\{align-items:end;padding:0\}/);
+  assert.match(appHtml, /\.panel\{width:100%;max-height:91dvh;border-radius:24px 24px 0 0/);
+  assert.match(appHtml, /safe-area-inset-bottom/);
 });

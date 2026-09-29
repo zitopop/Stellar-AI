@@ -11,18 +11,18 @@ test('landing CTA can open first-run welcome', () => {
   assert.match(landingHtml, /\/app\?welcome=1/);
 });
 
-test('welcome entry gives an actionable first-build message', () => {
-  assert.match(appHtml, /function applyWelcomeEntry\(\)/);
-  assert.match(appHtml, /What can I help with\?/);
-  assert.match(appHtml, /setGenerationStatus\('Ready','good'\)/);
-  assert.match(appHtml, /params\.delete\('welcome'\)/);
+test('welcome entry opens the current actionable empty-chat composer', () => {
+  assert.match(appHtml, /function welcomeHtml\(\)/);
+  assert.match(appHtml, /Type below\. Press ↑ to send\./);
+  assert.match(appHtml, /id="prompt"/);
+  assert.match(appHtml, /prompt\.focus\(\)/);
 });
 
-test('first signed-in users get one simple composer instruction per account', () => {
-  assert.match(appHtml, /stellar-first-signin-onboarding-v1-/);
-  assert.match(appHtml, /setGenerationStatus\('Ready','good'\)/);
-  assert.doesNotMatch(appHtml, /<strong>Type a request<\/strong> in the message box below\./);
-  assert.doesNotMatch(appHtml, /tap a starter below/);
+test('signed-in and guest users share the same simple chat-first onboarding', () => {
+  assert.match(appHtml, /signedInUser=store\(\)\.user\|\|null/);
+  assert.match(appHtml, /await loadPlanTruth\(\)/);
+  assert.match(appHtml, /loadSessions\(\)/);
+  assert.doesNotMatch(appHtml, /tap a starter below/i);
 });
 
 test('password and Google signups send onboarding email', () => {

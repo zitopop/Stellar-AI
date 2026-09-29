@@ -1,13 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { getPlanDefinition } from '../lib/pricing.js';
 
 const index = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 
 test('public pricing retains all four workspace plans', () => {
-  for (const plan of ['free','starter','plus','pro']) {
-    assert.match(index, new RegExp('data-plan="' + plan + '"'));
-  }
+  for (const plan of ['free','starter','plus','pro']) assert.match(index, new RegExp('data-plan="' + plan + '"'));
 });
 
 test('public pricing preserves current GBP monthly and annual prices', () => {
@@ -16,22 +15,21 @@ test('public pricing preserves current GBP monthly and annual prices', () => {
 });
 
 test('paid plan CTAs preserve upgrade intent into the app', () => {
-  assert.match(index, /href="\/app\?upgrade=starter"/);
-  assert.match(index, /href="\/app\?upgrade=plus"/);
-  assert.match(index, /href="\/app\?upgrade=pro"/);
-  assert.match(index, /href="\/app\?upgrade=starter-annual"/);
-  assert.match(index, /href="\/app\?upgrade=plus-annual"/);
-  assert.match(index, /href="\/app\?upgrade=pro-annual"/);
+  for (const plan of ['starter','plus','pro','starter-annual','plus-annual','pro-annual']) {
+    assert.ok(index.includes('href="/app?upgrade=' + plan + '"'), plan);
+  }
 });
 
-test('plan copy separates hourly allowance from wallet credit', () => {
+test('plan copy separates included allowance from wallet credit', () => {
   assert.match(index, /Wallet separate from allowance/);
+  assert.match(index, /Bought credits stay on your account until used/);
 });
 
-test('public model access keeps model guidance visible without mis-selling plan access', () => {
+test('public model access keeps guidance visible without hard-coding a stale free allowance', () => {
   for (const model of ['Spark','Star','Comet','Nova']) assert.match(index, new RegExp(model));
   assert.match(index, /Spark 2 · Star 5 · Comet 10 · Nova 20 credits per message/);
-  assert.match(index, /Free includes 300 credits per day, resetting at midnight UK time/);
+  const free = getPlanDefinition('free');
+  assert.ok(index.includes(free.includedCredits.toLocaleString('en-GB') + ' credits/day'));
   assert.doesNotMatch(index, /Spark, Star &amp; Comet/);
 });
 

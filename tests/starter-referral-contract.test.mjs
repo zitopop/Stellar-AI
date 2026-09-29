@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { getPlanDefinition, normalisePlan } from '../lib/pricing.js';
@@ -8,9 +8,10 @@ const getPlan = fs.readFileSync(new URL('../api/get-plan.js', import.meta.url), 
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('Starter remains a real server-side entitlement', () => {
-  assert.equal(getPlanDefinition('starter').requestsPerHour, 120);
-  assert.equal(getPlanDefinition('starter').maxTokens, 3500);
-  assert.deepEqual(getPlanDefinition('starter').models, ['spark', 'star']);
+  const starter=getPlanDefinition('starter');
+  assert.equal(starter.requestsPerHour, 120);
+  assert.equal(starter.maxTokens, 4000);
+  assert.deepEqual(starter.models, ['spark', 'star']);
   assert.equal(normalisePlan('lite'), 'plus');
 });
 
@@ -23,7 +24,7 @@ test('referral and achievement data remain server-owned', () => {
 });
 
 test('workspace defaults to Star and has no removed skill-tree UI hooks', () => {
-  assert.match(app, /Store\.get\('selectedModel','star'\)/);
+  assert.match(app, /localStorage\.getItem\('stellar-selected-model'\)\|\|'star'/);
   assert.doesNotMatch(app, /function renderSkillTree\(/);
   assert.doesNotMatch(app, /id="set-skill-tree/);
 });

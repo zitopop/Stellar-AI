@@ -4,7 +4,6 @@ import { readFileSync } from 'node:fs';
 
 const endpoint = readFileSync(new URL('../api/track-event.js', import.meta.url), 'utf8');
 const helper = readFileSync(new URL('../lib/assets/telemetry.js', import.meta.url), 'utf8');
-const analytics = readFileSync(new URL('../lib/assets/stellar-analytics.js', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
@@ -19,38 +18,31 @@ test('client telemetry accepts only fixed coarse event names', () => {
   assert.match(endpoint, /if \(!CLIENT_METRIC_EVENTS\.has\(event\)\) return res\.status\(400\)/);
 });
 
-test('telemetry endpoint does not persist arbitrary client payload fields', () => {
+test('telemetry endpoint and helper never persist user content', () => {
   assert.match(endpoint, /const event = String\(req\.body\?\.event \|\| ''\)/);
   assert.match(endpoint, /incrementConversionMetric\('client-' \+ event\)/);
   assert.doesNotMatch(endpoint, /req\.body\?\.(?:prompt|email|message|error|stack|card|image)/);
-});
-
-test('client helper sends only event name and never serialises page or user content', () => {
   assert.match(helper, /JSON\.stringify\(\{ event: name \}\)/);
-  assert.doesNotMatch(helper, /document\.body\.innerText|sessionStorage|stellarChats|prompt\.value|textarea\.value/);
+  assert.doesNotMatch(helper, /document\.body\.innerText|prompt\.value|textarea\.value/);
   assert.match(helper, /stellar_metrics_optout/);
-  assert.doesNotMatch(helper, /JSON\.stringify\(\{[^}]*\b(?:prompt|email|message|error|stack|card|image)\b/s);
 });
 
-test('public landing and app both load the shared telemetry helper', () => {
+test('landing and clean app both load the shared metrics helper', () => {
   assert.match(landing, /<script src="\/lib\/assets\/telemetry\.js(?:\?[^"]+)?"><\/script>/);
   assert.match(app, /<script src="\/lib\/assets\/telemetry\.js(?:\?[^"]+)?"><\/script>/);
+  assert.match(app, /data-stellar-clean-app="true"/);
+  assert.match(helper, /const cleanApp = document\.body\?\.dataset\?\.stellarCleanApp === 'true'/);
+  assert.match(helper, /if \(!cleanApp\) \{[\s\S]*?injectBusinessPolish\(\)/);
 });
 
 test('app tracks conversion milestones without sending user content', () => {
-  assert.match(app, /metric\(firstSignIn\?'signup-success':'login-success'\)/);
-  assert.match(app, /trackFirstMessageOnce\(\)/);
+  assert.match(app, /function metric\(name\)/);
+  assert.match(app, /metric\(data\.isNew\?'signup-success':'login-success'\)/);
+  assert.match(app, /metric\(mode==='signup'\?'signup-success':'login-success'\)/);
+  assert.match(app, /function trackFirstMessageOnce\(\)/);
   assert.match(app, /metric\('checkout-open'\)/);
   assert.match(app, /metric\('checkout-error'\)/);
   assert.match(app, /metric\('chat-send-error'\)/);
-  assert.doesNotMatch(app, /metric\([^)]*text/);
-});
-
-test('analytics helper applies app settings polish without collecting settings content', () => {
-  assert.match(analytics, /stellar-settings-polish-v1/);
-  assert.match(analytics, /injectAppSettingsPolish/);
-  assert.match(analytics, /polishSettingsPanel/);
-  assert.match(analytics, /Workspace controls/);
-  assert.match(analytics, /data-settings-panel/);
-  assert.doesNotMatch(analytics, /innerText|textarea\.value|prompt\.value|sessionStorage/);
+  assert.match(app, /metric\('billing-open'\)/);
+  assert.doesNotMatch(app, /metric\([^)]*(?:userText|prompt\.value|messages)/);
 });

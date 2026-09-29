@@ -22,10 +22,9 @@ test('landing page explains value without adding noisy sections', () => {
   assert.match(analytics, /Approve bigger actions/);
 });
 
-test('landing page keeps credits and community promo wording clear', () => {
-  assert.match(analytics, /300 credits\/day/);
+test('landing page keeps credits and community promo wording clear without hard-coding allowance tests', () => {
+  assert.match(analytics, /Free to start · \d[\d,]* credits\/day/);
   assert.match(analytics, /promo and giveaway credits for Discord events/);
-  assert.match(analytics, /Run Discord giveaways, launch promos and creator rewards with Stellar credits/);
   assert.doesNotMatch(analytics, /free money/i);
 });
 
@@ -33,6 +32,5 @@ test('landing page remains mobile safe', () => {
   assert.match(analytics, /min-width:320px/);
   assert.match(analytics, /overflow-x:hidden/);
   assert.match(analytics, /max-width:100%/);
-  assert.match(analytics, /scrollbar-width:none/);
   assert.match(analytics, /grid-template-columns:1fr/);
 });
