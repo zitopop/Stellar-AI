@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import test from 'node:test';
+const chat=readFileSync(new URL('../api/chat.js',import.meta.url),'utf8');
+const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
+const plans=readFileSync(new URL('../plans.html',import.meta.url),'utf8');
+test('Gaming AI is a public focused chat mode',()=>{assert.match(chat,/gaming:\s*\{ model: 'claude-sonnet-4-6'/);assert.doesNotMatch(chat,/OWNER_ONLY_ROLES[^\n]*gaming/);assert.match(chat,/STELLAR GAMING AI mode/)});
+test('app routes Gaming AI explicitly',()=>{assert.match(app,/href="\/app\?mode=gaming"/);assert.match(app,/CHAT_MODE==='gaming'/);assert.match(app,/role:CHAT_MODE==='gaming'\?'gaming':undefined/);assert.match(app,/FiveM, Roblox, Minecraft, Discord/)});
+test('plans keep four prices and sell Gaming AI',()=>{for(const price of ['\u00a30','\u00a38','\u00a320','\u00a375'])assert.ok(plans.includes(JSON.parse('"'+price+'"')));assert.match(plans,/Advanced Gaming AI project work/);assert.match(plans,/Maximum Gaming AI project capacity/)});
+const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('homepage makes Gaming AI a clear customer entry point',()=>{assert.match(home,/href="\/app\?mode=gaming"/);assert.match(home,/FiveM, Roblox, Minecraft and game-server projects with Gaming AI/);assert.match(home,/Gaming AI is included across the plan ladder/);assert.match(home,/Jarvis Voice \+ Vision/)});

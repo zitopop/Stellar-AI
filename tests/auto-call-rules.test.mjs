@@ -16,13 +16,15 @@ test('owner auto-call rules only fire for high-signal urgent categories', () => 
   assert.deepEqual(classifyOwnerAutoCall({ subject: 'Refund please' }).category, 'refund');
 });
 
-test('auto-call policy defaults are safe and include new business triggers', () => {
+test('auto-call policy defaults keep phone costs focused on critical owner events', () => {
   const policy = normalizeOwnerCallPolicy({ cooldownMinutes: 1, categories: ['payment', 'lead', 'bad'] });
   assert.equal(policy.cooldownMinutes, 15);
-  assert.ok(policy.categories.includes('payment'));
-  assert.ok(policy.categories.includes('lead'));
-  assert.ok(DEFAULT_OWNER_CALL_POLICY.categories.includes('refund'));
-  assert.ok(DEFAULT_OWNER_CALL_POLICY.categories.includes('lead'));
+  assert.deepEqual(policy.categories, ['payment', 'lead']);
+  assert.equal(DEFAULT_OWNER_CALL_POLICY.cooldownMinutes, 60);
+  assert.deepEqual(DEFAULT_OWNER_CALL_POLICY.categories, ['security', 'fraud', 'payment', 'service', 'approval']);
+  const migrated = normalizeOwnerCallPolicy({ cooldownMinutes: 15, categories: ['security','fraud','payment','refund','lead','customer','service','approval'] });
+  assert.equal(migrated.cooldownMinutes, 60);
+  assert.deepEqual(migrated.categories, DEFAULT_OWNER_CALL_POLICY.categories);
 });
 
 test('owner escalation uses central policy and records cooldown before pending Twilio calls', () => {
