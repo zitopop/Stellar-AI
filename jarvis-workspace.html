@@ -82,7 +82,7 @@
     stopSpeech();addMessage('user',text);messages.push({role:'user',content:text});$('prompt').value='';setBusy(true);setStatus('Thinking…','good');
     const bubble=addMessage('assistant','');let full='';
     try{
-      const response=await fetch('/api/chat',{method:'POST',headers:headers(),body:JSON.stringify({action:'chat',model:'star',selectedModel:'star',messages:messages.slice(-24),use_credit:true,client:{source:'jarvis-public'}})});
+      const response=await fetch('/api/chat',{method:'POST',headers:headers(),body:JSON.stringify({action:'chat',model:'star',selectedModel:'star',messages:messages.slice(-24),use_credit:false,client:{source:'jarvis-public'}})});
       if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===401){$('signin').classList.add('show');throw new Error(data.error||'Sign in to use Jarvis.')}throw new Error(data.error||'Jarvis could not answer that request.')}
       if(!response.body)throw new Error('Jarvis returned no response.');
       const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
