@@ -98,8 +98,8 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 });
 
 test('plugin directory stays calm while preserving real account connection controls', () => {
-  assert.match(page, /Connected apps for Stellar\./);
-  assert.match(page, /Personal account connections only/);
+  assert.match(page, /Your connected apps/);
+  assert.match(page, /A plugin is simply an app/);
   assert.match(page, /Permissions first\./);
   assert.match(page, /No passwords shared/);
   assert.match(page, /disconnect anytime/i);
@@ -110,7 +110,7 @@ test('plugin directory stays calm while preserving real account connection contr
   assert.match(page, /pluginApi\('disconnect',\{id\}\)/);
   assert.match(page, /pluginApi\('install',\{id\}\)/);
   assert.match(page, /pluginApi\('inspect',\{id\}\)/);
-  assert.match(page, /Connect with OAuth/);
+  assert.match(page, /pluginButton\('Connect','oauth'/);
   assert.match(page, /Disconnect/);
   assert.match(page, /Owner-only integrations are never offered to standard accounts/);
   assert.match(page, /\[hidden\]\{display:none!important\}/);
@@ -121,6 +121,9 @@ test('plugins directory keeps touch-safe controls and visible tool icons', () =>
   assert.match(page, /\.btn\{min-height:44px/);
   assert.match(page, /\.ico\{width:46px;height:46px/);
   assert.match(page, /\.tool-card/);
+  assert.match(page, /WORKS NOW/);
+  assert.match(page, /COMING LATER/);
+  assert.match(page, /What access does this need\?/);
 });
 
 test('developer OAuth setup stays server-owner-only while Gmail remains signed-in approval scoped', () => {
