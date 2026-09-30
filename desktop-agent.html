@@ -37,21 +37,21 @@ textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--line
 </head>
 <body class="codex-chat-ui">
 <div class="stellar-use-bar" id="stellarUseBar" hidden><span>StellarX PC Agent</span><small id="stellarUseMeta">StellarX is using your PC to help complete this task.</small><button id="stellarUseStop" type="button">Emergency Stop</button></div><div class="stellar-use-led" id="stellarUseLed" hidden><i aria-hidden="true"></i><em class="stellarx-side-label" id="stellarUseSideLabel" aria-hidden="true">StellarX is using your PC</em></div><div class="stellarx-online-side" id="stellarxOnlineSide" hidden aria-live="polite">StellarX PC Online</div>
-<header class="top"><div class="wrap topin"><a class="back" href="https://trystellarai.com/app">← App</a><div class="brand">Stellar AI · StellarX PC Agent <span class="small">PC Agent Beta</span></div><div class="pill" id="accountPill">Checking account access…</div></div></header>
+<header class="top"><div class="wrap topin"><a class="back" href="https://trystellarai.com/app">← Stellar AI</a><div class="brand">StellarX <span class="small">Work Agent Beta</span></div><div class="pill" id="accountPill">Checking account…</div></div></header>
 <div class="codex-shell">
 <aside class="codex-sidebar" aria-label="StellarX workspace navigation">
-<div class="codex-sidebar-brand">✦ StellarX <span>Code</span></div>
+<div class="codex-sidebar-brand">✦ StellarX <span>Work Agent</span></div>
 <button class="codex-new-task" id="codexNewTask" type="button">＋ New task</button>
 <div class="codex-sidebar-label">Workspace</div>
-<button class="codex-nav-btn active" type="button" data-target="taskComposer">⌁ Chat</button>
-<button class="codex-nav-btn" type="button" data-target="activity">◉ Activity</button>
-<button class="codex-nav-btn" type="button" data-target="safeguards" data-advanced="1">⌘ Computer & safety</button>
-<button class="codex-nav-btn" type="button" data-target="termsPanel" data-advanced="1">⋯ More</button>
-<div class="codex-side-note">StellarX can inspect first, ask for approval, make changes through your paired PC, and show the result here.</div>
+<button class="codex-nav-btn active" type="button" data-target="taskComposer">Task</button>
+<button class="codex-nav-btn" type="button" data-target="activity">Activity</button>
+<button class="codex-nav-btn" type="button" data-target="safeguards" data-advanced="1">Computer</button>
+<button class="codex-nav-btn" type="button" data-target="termsPanel" data-advanced="1">About</button>
+<div class="codex-side-note"><strong>Controlled by you.</strong><br>StellarX inspects first, asks before higher-impact actions, and keeps Emergency Stop available.</div>
 </aside>
 <main class="wrap codex-main">
-<section class="hero work-hero"><div><div class="eyebrow">Stellar Work Agent</div><h1>What should <span class="agent-name">StellarX</span> build?</h1><p class="lead">Describe a coding task naturally. StellarX can inspect your project, make a grounded plan, ask before risky actions, run approved work through your paired PC, and bring the result back here.</p><div class="chip-row" aria-label="Work Agent safeguards"><span class="chip">Per-account workspace</span><span class="chip">Inspect before edits</span><span class="chip">Approve write steps</span><span class="chip">Emergency stop</span></div><div class="agent-disclaimer">Stellar Work Agent is your app's controlled task agent. It is not OpenAI Codex, but it follows the same product idea: delegate a job, review the plan, and keep actions visible.</div></div>
-<div class="statusbox"><div class="statusrow"><span class="dot" id="statusDot"></span><strong id="statusText">Not paired</strong></div><div class="small" id="statusMeta">Connect your Windows PC to get started.</div><div class="pc-usage"><div class="pc-usage-head"><span>Computer usage</span><strong id="pcUsageLabel">Loading…</strong></div><div class="pc-usage-track" aria-hidden="true"><span class="pc-usage-fill" id="pcUsageFill"></span></div></div></div></section>
+<section class="hero work-hero"><div><div class="eyebrow">StellarX Work Agent</div><h1>Give <span class="agent-name">StellarX</span> a job.</h1><p class="lead">Describe the outcome you want. StellarX inspects the real project first, prepares a grounded plan, asks before higher-impact actions, and verifies the result.</p><div class="chip-row" aria-label="Work Agent safeguards"><span class="chip">Inspect first</span><span class="chip">Approval for actions</span><span class="chip">Scoped workspace</span><span class="chip">Emergency Stop</span></div><div class="agent-disclaimer">StellarX is a controlled work agent for your own projects and paired devices. You remain in control of permissions and approved actions.</div></div>
+<div class="statusbox"><div class="status-label">Computer connection</div><div class="statusrow"><span class="dot" id="statusDot"></span><strong id="statusText">Not paired</strong></div><div class="small" id="statusMeta">Connect your Windows PC to get started.</div><div class="pc-usage"><div class="pc-usage-head"><span>Computer usage</span><strong id="pcUsageLabel">Loading…</strong></div><div class="pc-usage-track" aria-hidden="true"><span class="pc-usage-fill" id="pcUsageFill"></span></div></div></div></section>
 
 <section class="card task-board" aria-labelledby="work-agent-title" style="margin-bottom:18px"><div><div class="eyebrow">Task command centre</div><h2 id="work-agent-title">How the Work Agent helps with tasks</h2><p>Use this like a focused task board instead of a normal chat. Stellar separates thinking, repository inspection, approved implementation and verification so you can see what it is doing.</p></div><div class="work-lanes" aria-label="Work Agent task stages"><article class="lane"><span>01 · Ask</span><b>Describe the result</b><p>Tell Stellar what you want fixed, built, researched or tested. Keep secrets out of the prompt.</p></article><article class="lane"><span>02 · Inspect</span><b>Read-only evidence first</b><p>Stellar checks files, folders, search results, git status and diffs before suggesting edits.</p></article><article class="lane"><span>03 · Approve</span><b>You control actions</b><p>Write, terminal and browser steps stay visible. Dangerous system paths and secrets remain blocked.</p></article><article class="lane"><span>04 · Verify</span><b>Review outputs</b><p>Results, test output and diffs come back to the page so you can decide the next move.</p></article></div><div class="scope-grid"><article class="scope-card"><span>Good for</span><p>Website fixes, UI cleanups, bug hunts, repo reviews, tests, docs and project tasks.</p></article><article class="scope-card"><span>Needs approval</span><p>File writes, terminal commands, URLs, mouse clicks and keyboard typing stay reviewable before they run.</p></article><article class="scope-card"><span>Not allowed</span><p>Passwords, API keys, payment details, system folders, browser secrets or disabling security tools.</p></article></div></section>
 
@@ -82,12 +82,14 @@ node agent.mjs pair YOUR_CODE
 <div class="small" id="safetyState" style="margin-top:10px">Safeguards loading…</div></div>
 </div></section>
 
-<section class="card" id="taskComposer" style="margin-top:18px"><h2>Message StellarX</h2><p>Describe a coding or project task naturally. Stellar inspects the repository first, then builds an implementation, test and diff-review plan. Write and terminal steps still require your approval.</p><div class="note"><strong>Credits:</strong> each StellarX AI planning pass costs 20 Stellar credits. Included credits are used first; bought add-on credits follow automatically. Approved local PC actions do not cost extra credits by themselves.</div>
-<textarea id="prompt" placeholder="Example: Look through my Stellar project, find why the settings panel is overflowing on mobile, fix the relevant CSS, and run the tests."></textarea><div class="codex-keyhint">Enter to build a plan · Shift + Enter for a new line</div>
-<div class="task-helper" aria-label="Example Work Agent tasks"><button class="btn" type="button" data-task="Inspect my repo, find the highest-risk UI bug, explain the cause, and propose a safe fix plan.">Find a UI bug</button><button class="btn" type="button" data-task="Review the current app for mobile layout issues, then suggest the smallest safe changes and tests.">Mobile layout review</button><button class="btn" type="button" data-task="Look through the project, identify failing tests or risky code, and build a step-by-step repair plan.">Repair plan</button></div>
-<div class="actions" style="margin-top:12px"><button class="btn primary" id="planBtn">Build coding plan</button><button class="btn" id="refreshBtn">Refresh PC status</button></div>
+<section class="card" id="taskComposer" style="margin-top:18px"><div class="task-head"><div><span class="task-kicker">New task</span><h2>What do you want done?</h2></div><span class="task-state" id="taskState">Ready</span></div><p>Describe the result, not every click. StellarX will inspect first, then show the plan and any actions that need your approval.</p>
+<div class="task-mode-row" aria-label="Task starters"><button class="task-mode" type="button" data-task="Review this project, identify the most important issue, explain the evidence, and propose the smallest safe fix."><strong>Review</strong><span>Find the important issue</span></button><button class="task-mode" type="button" data-task="Find the cause of this problem, inspect the relevant files, fix it with the smallest safe change, and verify the result."><strong>Fix</strong><span>Diagnose and repair</span></button><button class="task-mode" type="button" data-task="Build this feature cleanly in the existing project, reuse the current design system, keep the change focused, and verify it works."><strong>Build</strong><span>Create a focused feature</span></button><button class="task-mode" type="button" data-task="Inspect the current implementation, run the relevant checks, verify the important flows, and report any remaining risk."><strong>Verify</strong><span>Test the current state</span></button></div>
+<textarea id="prompt" placeholder="Example: Fix the mobile Settings layout, keep the current design, run the relevant tests, and show me what changed."></textarea><div class="codex-keyhint">Enter to prepare the task · Shift + Enter for a new line</div>
+<div class="task-progress" id="taskProgress" aria-label="Task progress"><span class="active" data-stage="ask">1 · Task</span><span data-stage="inspect">2 · Inspect</span><span data-stage="approve">3 · Approve</span><span data-stage="verify">4 · Verify</span></div>
+<div class="planning-note"><strong>Planning usage:</strong> StellarX planning uses part of your current Stellar allowance. Approved local PC actions do not separately use AI planning allowance by themselves.</div>
+<div class="actions task-actions" style="margin-top:12px"><button class="btn primary" id="planBtn">Prepare task</button><button class="btn" id="refreshBtn">Refresh PC</button></div>
 <div id="planSummary" style="margin-top:16px;font-weight:750"></div><div class="plan" id="plan"></div>
-<div class="actions" id="runActions" style="margin-top:14px" hidden><button class="btn primary" id="runBtn">Run selected actions</button></div></section>
+<div class="actions" id="runActions" style="margin-top:14px" hidden><button class="btn primary" id="runBtn">Run approved actions</button></div></section>
 
 <section class="card" id="activity" style="margin-top:18px"><h2>Activity</h2><p>Tasks and results from the paired PC appear here.</p><div class="log" id="log">PC Agent ready.</div></section>
 
@@ -100,9 +102,13 @@ node agent.mjs pair YOUR_CODE
 (()=>{
   const $=id=>document.getElementById(id);
   let token='',currentPlan=null,currentPrompt='',statusTimer=null;
+  function setStage(stage,label=''){
+    document.querySelectorAll('#taskProgress [data-stage]').forEach(el=>el.classList.toggle('active',el.dataset.stage===stage));
+    if($('taskState'))$('taskState').textContent=label||({ask:'Ready',inspect:'Inspecting',approve:'Review plan',verify:'Verifying'}[stage]||'Ready');
+  }
   try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
   const main=$('taskComposer')?.closest('.codex-main');
-  $('codexNewTask')?.addEventListener('click',()=>{const prompt=$('prompt');prompt.value='';prompt.focus();$('plan').innerHTML='';$('planSummary').textContent='';$('runActions').hidden=true;});
+  $('codexNewTask')?.addEventListener('click',()=>{const prompt=$('prompt');prompt.value='';prompt.focus();$('plan').innerHTML='';$('planSummary').textContent='';$('runActions').hidden=true;currentPlan=null;currentPrompt='';setStage('ask','Ready');});
   document.querySelectorAll('.codex-nav-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.codex-nav-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');if(btn.dataset.advanced==='1')main?.classList.add('show-advanced');$(btn.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'});}));
   const inboundTask=String(new URLSearchParams(location.search).get('task')||'').trim().slice(0,8000);
   if(inboundTask){$('prompt').value=inboundTask;history.replaceState(null,'',location.pathname);}
@@ -128,7 +134,7 @@ node agent.mjs pair YOUR_CODE
       $('statusDot').classList.toggle('online',!!d.online);
       $('statusText').textContent=!d.paired?'Not paired':d.online?'PC online':'PC paired · offline';
       $('statusMeta').textContent=!d.paired?'Create a pairing code to connect your Windows PC.':(d.hostname||'Windows PC')+' · last seen '+(d.lastSeen?new Date(d.lastSeen).toLocaleString():'never');
-      $('disconnectBtn').hidden=!d.paired;
+      $('disconnectBtn').hidden=!d.paired;$('pairBtn').hidden=!!d.paired;if(d.paired)$('pairCode').hidden=true;
       $('permRead').checked=d.policy?.read!==false;$('permWrite').checked=d.policy?.write!==false;$('permShell').checked=d.policy?.shell===true;$('permUrl').checked=d.policy?.openUrl!==false;$('permInput').checked=d.policy?.input===true;
       $('stopBtn').hidden=!!d.emergencyStopped;$('resumeBtn').hidden=!d.emergencyStopped;
       $('safetyState').textContent=d.emergencyStopped?'EMERGENCY STOP ACTIVE — no PC tasks can run.':'Safeguards active · shell '+(d.policy?.shell?'allowed':'blocked')+' · mouse/keyboard '+(d.policy?.input?'allowed with approval':'blocked')+'.';const usage=d.usage||{};$('pcUsageLabel').textContent=usage.unlimited?'Unlimited':String(Math.max(0,Number(usage.percent||0)))+'% used · '+String(Math.max(0,Number(usage.remaining||0)))+' left';$('pcUsageFill').style.width=usage.unlimited?'100%':String(Math.max(0,Math.min(100,Number(usage.percent||0))))+'%';updateUseBar(d);
@@ -143,7 +149,7 @@ node agent.mjs pair YOUR_CODE
     try{await api('disconnect');$('pairCode').hidden=true;log('PC disconnected.','warn');await status()}catch(e){log(e.message,'bad')}
   };
   $('refreshBtn').onclick=()=>status().catch(()=>{});
-  document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>{ $('prompt').value=button.dataset.task||''; $('prompt').focus(); }));
+  document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>{ $('prompt').value=button.dataset.task||''; $('prompt').focus();document.querySelectorAll('.task-mode').forEach(x=>x.classList.toggle('selected',x===button));setStage('ask','Task drafted'); }));
   $('savePolicyBtn').onclick=async()=>{
     try{
       const policy={read:$('permRead').checked,write:$('permWrite').checked,shell:$('permShell').checked,openUrl:$('permUrl').checked,input:$('permInput').checked};
@@ -167,6 +173,7 @@ node agent.mjs pair YOUR_CODE
   function renderPlan(plan){
     currentPlan=plan;$('plan').innerHTML='';
     const phase=plan?.phase==='implement'?'Implementation plan':'Inspection plan';
+    setStage(plan?.phase==='implement'?'approve':'inspect',plan?.phase==='implement'?'Review actions':'Inspection ready');
     $('planSummary').textContent=phase+' · '+(plan?.summary||'Review these actions:');
     (plan?.actions||[]).forEach((action,i)=>{
       const row=document.createElement('label');row.className='step';
@@ -182,12 +189,12 @@ node agent.mjs pair YOUR_CODE
   $('prompt').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('planBtn').click();}});
   $('planBtn').onclick=async()=>{
     const prompt=$('prompt').value.trim();if(!prompt)return;
-    currentPrompt=prompt;$('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Planning repository inspection…';$('runActions').hidden=true;
+    currentPrompt=prompt;$('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Preparing a grounded inspection plan…';$('runActions').hidden=true;setStage('inspect','Preparing plan');
     try{
       const r=await fetch('/api/desktop-agent?action=plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt})});
       const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build plan.');
       renderPlan(d.plan);log('Repository inspection plan created. Run the safe inspection steps to let Stellar ground the implementation in your actual code.','ok');
-    }catch(e){$('planSummary').textContent='';log(e.message,'bad')}finally{$('planBtn').disabled=false}
+    }catch(e){$('planSummary').textContent='';setStage('ask','Needs attention');log(e.message,'bad')}finally{$('planBtn').disabled=false}
   };
   async function waitTask(taskId,label){
     for(let i=0;i<90;i++){
@@ -211,7 +218,7 @@ node agent.mjs pair YOUR_CODE
     const selected=[...$('plan').querySelectorAll('input[type=checkbox]:checked')].map(x=>Number(x.dataset.index));
     if(!selected.length){log('Select at least one action.','warn');return}
     const state=await status().catch(()=>null);if(!state?.online){log('Start the Windows companion before running the plan.','warn');return}
-    $('runBtn').disabled=true;const observations=[];let allOk=true;
+    $('runBtn').disabled=true;setStage(planAtStart.phase==='inspect'?'inspect':'verify',planAtStart.phase==='inspect'?'Inspecting project':'Running approved work');const observations=[];let allOk=true;
     try{
       for(const i of selected){
         const action=planAtStart.actions[i];const label=(i+1)+'. '+action.type;
@@ -228,9 +235,10 @@ node agent.mjs pair YOUR_CODE
         const r=await fetch('/api/desktop-plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt:currentPrompt||$('prompt').value.trim(),observations:evidence})});
         const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build implementation plan.');
         renderPlan(d.plan);
+        setStage(d.plan?.phase==='implement'?'approve':'inspect',d.plan?.phase==='implement'?'Review actions':'More inspection needed');
         log(d.plan?.phase==='implement'?'Grounded implementation plan ready. Review and approve write/test steps.':'More repository inspection is needed before Stellar will edit.','ok');
       }
-    }catch(e){log(e.message,'bad')}finally{$('runBtn').disabled=false;status().catch(()=>{})}
+    }catch(e){setStage('ask','Needs attention');log(e.message,'bad')}finally{$('runBtn').disabled=false;if(allOk&&planAtStart.phase==='implement')setStage('verify','Work complete');status().catch(()=>{})}
   };
   verifyUser().then(status).then(()=>{statusTimer=setInterval(()=>status().catch(()=>{}),15000)}).catch(e=>log(e.message,'bad'));
   addEventListener('beforeunload',()=>statusTimer&&clearInterval(statusTimer));
