@@ -33,7 +33,7 @@ test('landing keeps plan and Jarvis value intact',()=>{
 
 
 test('landing ships only the customer-facing conversion journey',()=>{
-  const html=read('index.html');
+  const html=home;
   for(const stale of [
     'oa2-trust-path container',
     'oa2-business-first container',
