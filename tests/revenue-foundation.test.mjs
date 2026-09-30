@@ -28,7 +28,7 @@ test('usage panel has a contextual, non-blocking upgrade path',()=>{
 
 test('conversion endpoint accepts the new high-signal growth events',()=>{
   const api=read('api/track-event.js');
-  for(const event of ['usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked']){
+  for(const event of ['usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked','pricing-view','plan-free-selected','plan-starter-selected','plan-plus-selected','plan-pro-selected']){
     assert.match(api,new RegExp("'"+event+"'"));
   }
 });
@@ -39,4 +39,9 @@ test('revenue ops can read usage and business conversion intent',()=>{
   assert.match(metrics,/planPanelOpens/);
   assert.match(metrics,/usageUpgradeIntents/);
   assert.match(metrics,/businessServiceClicks/);
+  assert.match(metrics,/pricingViews/);
+  assert.match(metrics,/freePlanSelections/);
+  assert.match(metrics,/starterPlanSelections/);
+  assert.match(metrics,/plusPlanSelections/);
+  assert.match(metrics,/proPlanSelections/);
 });
