@@ -50,17 +50,19 @@
 (() => {
   const $ = id => document.getElementById(id);
   const messages = [];
-  let busy = false, recognition = null, speaking = false, accessChecked = false, jarvisEntitled = false;
+  function safeStorageGet(key,fallback=''){try{const value=localStorage.getItem(key);return value==null?fallback:value}catch{return fallback}}
+  function safeStorageSet(key,value){try{localStorage.setItem(key,value);return true}catch{return false}}
+  let busy = false, recognition = null, speaking = false, accessChecked = false, jarvisEntitled = false, micAvailable = false;
   let jarvisSource = 'jarvis-public';
-  let voiceOn = localStorage.getItem('stellarJarvisVoiceReplies') !== '0';
-  let handsFree = localStorage.getItem('stellarJarvisHandsFree') === '1';
+  let voiceOn = safeStorageGet('stellarJarvisVoiceReplies','1') !== '0';
+  let handsFree = safeStorageGet('stellarJarvisHandsFree','0') === '1';
 
   function sessionToken(){
-    try{return String(JSON.parse(localStorage.getItem('stellar-store')||'{}').session||'')}catch{return ''}
+    try{return String(JSON.parse(safeStorageGet('stellar-store','{}')||'{}').session||'')}catch{return ''}
   }
   function headers(){const h={'Content-Type':'application/json'};const token=sessionToken();if(token)h.Authorization='Bearer '+token;return h}
   function setStatus(text,kind=''){const el=$('status');el.textContent=text;el.className='status '+kind}
-  function setBusy(value){busy=value;const blocked=!jarvisEntitled||!accessChecked;$('send').disabled=value||blocked;$('mic').disabled=value||blocked;$('handsfree-toggle').disabled=blocked}
+  function setBusy(value){busy=value;const blocked=!jarvisEntitled||!accessChecked;$('send').disabled=value||blocked;$('mic').disabled=value||blocked||!micAvailable;$('handsfree-toggle').disabled=blocked||!micAvailable}
   function addMessage(role,text){
     $('hero').hidden=true;
     const row=document.createElement('div');row.className='msg '+role;
@@ -102,16 +104,16 @@
   }
   function setupMic(){
     const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!Recognition){$('mic').disabled=true;$('mic').textContent='Mic unavailable';return}
-    recognition=new Recognition();recognition.lang='en-GB';recognition.interimResults=true;recognition.continuous=false;
+    if(!Recognition){micAvailable=false;$('mic').disabled=true;$('handsfree-toggle').disabled=true;$('mic').textContent='Mic unavailable';$('handsfree-toggle').textContent='Hands-free unavailable';return}
+    micAvailable=true;recognition=new Recognition();recognition.lang='en-GB';recognition.interimResults=true;recognition.continuous=false;
     let finalText='';
     recognition.onstart=()=>{finalText='';$('mic').classList.add('listening');$('mic').setAttribute('aria-pressed','true');$('mic').textContent='Listening…';setStatus('Listening…','good')};
     recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}$('prompt').value=(finalText||interim).trim()};
-    recognition.onerror=e=>{if(e.error==='not-allowed'){handsFree=false;localStorage.setItem('stellarJarvisHandsFree','0');updateHandsFreeToggle();setStatus('Microphone permission was denied.','bad')}else setStatus('Voice input stopped.','bad')};
+    recognition.onerror=e=>{if(e.error==='not-allowed'){handsFree=false;safeStorageSet('stellarJarvisHandsFree','0');updateHandsFreeToggle();setStatus('Microphone permission was denied.','bad')}else setStatus('Voice input stopped.','bad')};
     recognition.onend=()=>{$('mic').classList.remove('listening');$('mic').setAttribute('aria-pressed','false');$('mic').textContent='🎙 Talk';const spoken=finalText.trim();finalText='';if(spoken)sendMessage(spoken);else if(!busy)setStatus('Ready.')};
     $('mic').addEventListener('click',()=>{if(speaking)stopSpeech();startListening()});
   }
-  function startListening(){if(!recognition||busy||speaking||!jarvisEntitled)return;try{recognition.start()}catch{try{recognition.stop()}catch{}}}
+  function startListening(){if(!micAvailable||!recognition||busy||speaking||!jarvisEntitled)return;try{recognition.start()}catch{try{recognition.stop()}catch{}}}
   function showAccess(message,href,label){$('access-copy').textContent=message;$('access-link').href=href;$('access-link').textContent=label;$('signin').classList.add('show')}
   async function syncJarvisAccess(){
     accessChecked=false;jarvisEntitled=false;setBusy(false);
@@ -132,8 +134,8 @@
   }
   $('composer').addEventListener('submit',e=>{e.preventDefault();sendMessage($('prompt').value)});
   $('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage($('prompt').value)}});
-  $('voice-toggle').addEventListener('click',()=>{voiceOn=!voiceOn;localStorage.setItem('stellarJarvisVoiceReplies',voiceOn?'1':'0');if(!voiceOn){handsFree=false;localStorage.setItem('stellarJarvisHandsFree','0');updateHandsFreeToggle();stopSpeech()}updateVoiceToggle()});
-  $('handsfree-toggle').addEventListener('click',()=>{if(!jarvisEntitled)return;handsFree=!handsFree;voiceOn=handsFree?true:voiceOn;localStorage.setItem('stellarJarvisHandsFree',handsFree?'1':'0');localStorage.setItem('stellarJarvisVoiceReplies',voiceOn?'1':'0');updateVoiceToggle();updateHandsFreeToggle();if(handsFree&&!busy&&!speaking)startListening()});
+  $('voice-toggle').addEventListener('click',()=>{voiceOn=!voiceOn;safeStorageSet('stellarJarvisVoiceReplies',voiceOn?'1':'0');if(!voiceOn){handsFree=false;safeStorageSet('stellarJarvisHandsFree','0');updateHandsFreeToggle();stopSpeech()}updateVoiceToggle()});
+  $('handsfree-toggle').addEventListener('click',()=>{if(!jarvisEntitled)return;handsFree=!handsFree;voiceOn=handsFree?true:voiceOn;safeStorageSet('stellarJarvisHandsFree',handsFree?'1':'0');safeStorageSet('stellarJarvisVoiceReplies',voiceOn?'1':'0');updateVoiceToggle();updateHandsFreeToggle();if(handsFree&&!busy&&!speaking)startListening()});
   $('stop-voice').addEventListener('click',stopSpeech);
   updateVoiceToggle();updateHandsFreeToggle();setupMic();syncJarvisAccess();
 })();
