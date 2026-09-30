@@ -123,7 +123,7 @@ test('plugins directory keeps touch-safe controls and visible tool icons', () =>
   assert.match(page, /\.tool-card/);
   assert.match(page, /WORKS NOW/);
   assert.match(page, /COMING LATER/);
-  assert.match(page, /What access does this need\?/);
+  assert.match(page, /Permissions/);
 });
 
 test('developer OAuth setup stays server-owner-only while Gmail remains signed-in approval scoped', () => {

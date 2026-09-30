@@ -22,7 +22,7 @@ test('StellarX Work Agent presents a focused task workspace with safeguards', ()
 
 test('StellarX Computer is discoverable from chat and accepts a reviewed task handoff', () => {
   assert.match(app, /function openComputerActionCard\(\)/);
-  assert.match(app, />▣ StellarX<\/button>/);
+  assert.match(app, />StellarX<\/button>/);
   assert.match(app, /'\/desktop\?task='\+encodeURIComponent\(task\)/);
   assert.match(page, /new URLSearchParams\(location\.search\)\.get\('task'\)/);
   assert.match(entry, /Open StellarX Work Agent/);

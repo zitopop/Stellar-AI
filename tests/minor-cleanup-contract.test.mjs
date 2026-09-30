@@ -12,7 +12,8 @@ test('current UI keeps a direct help route and support guidance visible', () => 
 });
 
 test('browser storage access is guarded with try-catch wrappers', () => {
-  assert.match(app, /function store\(\)\{try\{const v=JSON\.parse\(localStorage\.getItem/);
-  assert.match(app, /catch\{return \{\}\}/);
+  assert.match(app, /function safeStorageGet\(key,fallback=''\)\{try\{const value=localStorage\.getItem\(key\)/);
+  assert.match(app, /function safeStorageSet\(key,value\)\{try\{localStorage\.setItem\(key,value\)/);
+  assert.match(app, /function store\(\)\{const raw=safeStorageGet/);
   assert.match(app, /function loadSessions\(\)\{try\{/);
 });

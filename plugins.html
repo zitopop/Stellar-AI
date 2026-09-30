@@ -27,6 +27,9 @@
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.builtin-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){.wrap{width:calc(100% - 24px)}.nav{min-height:58px}.nav-actions a:not(.primary){display:none}.hero{padding:52px 0 28px}.hero h1{font-size:clamp(38px,12vw,54px)}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.btn{width:100%}.explain,.grid,.builtin-grid,.control-grid{grid-template-columns:1fr}.section-head{display:block}.section-head .right{display:block;margin-top:8px}.account-bar{align-items:flex-start;flex-direction:column}.tool-card{min-height:auto}.card-actions{display:grid;grid-template-columns:1fr}.coming{display:grid}.coming span{width:100%}}
 </style>
+<style id="stellar-plugins-polish-v36">
+.plugin-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:14px 0 18px}.plugin-search-wrap{position:relative;min-width:0}.plugin-search{width:100%;min-height:44px;border:1px solid var(--line2);border-radius:12px;background:#0f0f0f;color:#fff;padding:0 72px 0 13px;outline:0}.plugin-search:focus{border-color:rgba(155,140,255,.5)}.clear-search{position:absolute;right:6px;top:6px;min-height:32px;border:0;border-radius:999px;background:#242424;color:#bbb;padding:0 10px;font-size:11px;font-weight:800}.tool-count{color:#858585;font-size:11px;font-weight:800;white-space:nowrap}.plugin-meta,.plugin-permissions{display:flex;gap:6px;flex-wrap:wrap}.plugin-meta span,.plugin-permissions span{min-height:24px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid var(--line);border-radius:999px;color:#aaa;font-size:10px}.plugin-permissions span.high{color:#efc0c0}.browse-hidden{display:none!important}@media(max-width:680px){.plugin-toolbar{grid-template-columns:1fr}.tool-count{justify-self:start}}
+</style>
 <link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
 </head>
 <body>
@@ -36,7 +39,7 @@
   <div class="kicker">Apps & tools</div>
   <h1>Connect apps only when you need them.</h1>
   <p>A plugin is simply an app you give Stellar permission to use. Built-in tools work already. Connected apps need your approval first. Anything not live yet is clearly marked.</p>
-  <div class="hero-actions"><a class="btn primary" href="#connections">Manage connections</a><a class="btn" href="/app">Keep chatting</a></div>
+  <div class="hero-actions"><a class="btn primary" href="#connections">Your connections</a><a class="btn" href="#browse-tools">Browse tools</a><a class="btn" href="/app">Keep chatting</a></div>
 </section>
 
 <section class="explain" aria-label="How apps and tools work">
@@ -46,18 +49,19 @@
 </section>
 
 <section class="section" id="connections">
-  <div class="section-head"><div><h2>Your connected apps</h2><p>Sign in once, choose an app, then press <strong>Connect</strong>. You can disconnect it again here whenever you want.</p></div><span class="right" id="connection-count">0 connected</span></div>
+  <div class="section-head"><div><h2>Your connections</h2><p><strong>Connected apps for Stellar.</strong> Sign in once, choose an app, then press <strong>Connect</strong>. You can disconnect it again here whenever you want.</p></div><span class="right" id="connection-count">0 connected</span></div>
   <div id="plugin-account-status" class="notice"><strong>Sign in to manage apps</strong>Your connected apps will appear here.<br><a class="btn primary" href="/app?signin=1">Sign in</a></div>
   <div class="grid" id="plugin-account-grid" aria-live="polite"></div>
 </section>
 
-<section class="section">
-  <div class="section-head"><div><h2>Already built into Stellar</h2><p>These are normal Stellar features, not account connections. You can use them without setting up another service.</p></div><span class="right">No setup needed</span></div>
+<section class="section" id="browse-tools">
+  <div class="section-head"><div><h2>Browse tools</h2><p>Search the tools already built into Stellar. These do not need a separate account connection.</p></div><span class="right">No setup needed</span></div>
+  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="search" type="search" placeholder="Search tools…" aria-label="Search tools"><button class="clear-search" id="clear-search" type="button" hidden>Clear</button></div><span class="tool-count" id="tool-count" aria-live="polite">4 tools</span></div>
   <div class="builtin-grid">
-    <article class="builtin"><div class="ico">▣</div><h3>Files & documents</h3><p>Upload files and ask Stellar to explain, compare, summarise or rewrite them.</p><a href="/app?prompt=Help%20me%20work%20with%20a%20file%20or%20document.">Use in chat →</a></article>
-    <article class="builtin"><div class="ico">⌘</div><h3>Code & scripts</h3><p>Fix code, explain errors and work on FiveM, Roblox and web projects.</p><a href="/script-generator-hub">Open code tools →</a></article>
-    <article class="builtin"><div class="ico">↗</div><h3>Website work</h3><p>Improve pages, check layouts and prepare safer website changes.</p><a href="/app?prompt=Help%20me%20improve%20my%20website.">Ask Stellar →</a></article>
-    <article class="builtin"><div class="ico">▰</div><h3>StellarX</h3><p>Work on an approved computer or project with inspection and approval controls.</p><a href="/desktop">Open StellarX →</a></article>
+    <article class="builtin" data-browse-tool data-search="files documents upload pdf notes summarise rewrite compare"><div class="ico">▣</div><h3>Files & documents</h3><p>Upload files and ask Stellar to explain, compare, summarise or rewrite them.</p><a href="/app?prompt=Help%20me%20work%20with%20a%20file%20or%20document.">Use in chat →</a></article>
+    <article class="builtin" data-browse-tool data-search="code scripts fivem roblox web errors debugging"><div class="ico">⌘</div><h3>Code & scripts</h3><p>Fix code, explain errors and work on FiveM, Roblox and web projects.</p><a href="/script-generator-hub">Open code tools →</a></article>
+    <article class="builtin" data-browse-tool data-search="website pages layouts web design fixes"><div class="ico">↗</div><h3>Website work</h3><p>Improve pages, check layouts and prepare safer website changes.</p><a href="/app?prompt=Help%20me%20improve%20my%20website.">Ask Stellar →</a></article>
+    <article class="builtin" data-browse-tool data-search="stellarx desktop computer tasks automation files terminal"><div class="ico">▰</div><span class="status ready">Beta</span><h3>StellarX desktop tasks</h3><p>Work on an approved computer or project with inspection and approval controls.</p><a href="/desktop">Open StellarX</a></article>
   </div>
 </section>
 
@@ -81,6 +85,9 @@
 const connectionCount=document.getElementById('connection-count');
 const accountGrid=document.getElementById('plugin-account-grid');
 const accountStatus=document.getElementById('plugin-account-status');
+const search=document.getElementById('search'),clearSearch=document.getElementById('clear-search'),toolCount=document.getElementById('tool-count'),browseCards=[...document.querySelectorAll('[data-browse-tool]')];
+function applyToolSearch(){const q=String(search?.value||'').trim().toLowerCase();let shown=0;browseCards.forEach(card=>{const hay=(card.dataset.search+' '+card.textContent).toLowerCase();const visible=!q||hay.includes(q);card.classList.toggle('browse-hidden',!visible);if(visible)shown++});if(toolCount)toolCount.textContent=shown+' tool'+(shown===1?'':'s');if(clearSearch)clearSearch.hidden=!q}
+search?.addEventListener('input',applyToolSearch);clearSearch?.addEventListener('click',()=>{search.value='';search.focus();applyToolSearch()});applyToolSearch();
 
 function sessionToken(){try{const store=JSON.parse(localStorage.getItem('stellar-store')||'{}');return typeof store.session==='string'?store.session:''}catch{return ''}}
 async function pluginApi(action,payload={}){
@@ -124,19 +131,21 @@ function renderConnectedApps(data){
 
     const title=document.createElement('h3');title.textContent=String(plugin.name||plugin.id||'App');
     const desc=document.createElement('p');desc.textContent=String(plugin.description||'Connect this app to Stellar.');
+    const meta=document.createElement('div');meta.className='plugin-meta';const developer=document.createElement('span');developer.textContent=String(plugin.developer||'Stellar AI');meta.append(developer);if(plugin.verified){const verified=document.createElement('span');verified.textContent='Verified';meta.append(verified)}
+    const permissionChips=document.createElement('div');permissionChips.className='plugin-permissions';(Array.isArray(plugin.permissions)?plugin.permissions:[]).slice(0,3).forEach(permission=>{const chip=document.createElement('span');chip.textContent=String(permission.label||permission.id||'Permission');if(permission.risk==='high')chip.classList.add('high');permissionChips.append(chip)});
 
     const skills=document.createElement('div');skills.className='skills';
     (Array.isArray(plugin.skills)?plugin.skills:[]).slice(0,3).forEach(skill=>{const item=document.createElement('span');item.textContent=String(skill);skills.append(item)});
 
     const access=document.createElement('details');access.className='access';
-    const summary=document.createElement('summary');summary.textContent='What access does this need?';access.append(summary);
+    const summary=document.createElement('summary');summary.textContent='Permissions';access.append(summary);
     const accessList=document.createElement('div');accessList.className='access-list';
     (Array.isArray(plugin.permissions)?plugin.permissions:[]).slice(0,4).forEach(permission=>{const chip=document.createElement('span');chip.textContent=String(permission.label||permission.id||'Permission');if(permission.risk==='high')chip.classList.add('high');accessList.append(chip)});
     access.append(accessList);
 
     const actions=document.createElement('div');actions.className='card-actions';
     if(plugin.connected){
-      if(plugin.route){const open=document.createElement('a');open.className='btn primary';open.href=plugin.route;open.textContent='Open';actions.append(open)}
+      if(plugin.route&&plugin.enabled){const open=document.createElement('a');open.className='btn primary';open.href=plugin.route;open.textContent='Open';actions.append(open)}
       if(plugin.inspectable)actions.append(pluginButton('Check connection','inspect',plugin.id));
       actions.append(pluginButton('Disconnect','disconnect',plugin.id));
     }else if(plugin.oauthAvailable){
@@ -147,7 +156,7 @@ function renderConnectedApps(data){
       actions.append(pluginButton(plugin.enabled?'Enabled':'Turn on','install',plugin.id,true));
     }
 
-    card.append(top,title,desc,skills,access,actions);
+    card.append(top,title,desc,meta,permissionChips,skills,access,actions);
 
     if(!plugin.connected&&plugin.oauthStatus?.tokenFallback){
       const box=document.createElement('div');box.className='token-box';box.hidden=true;box.dataset.tokenBox=plugin.id;

@@ -30,7 +30,7 @@ assert.match(entry, /isSignedIn/);
 
 console.log('desktop-agent public beta safeguards: ok');
 
-assert.match(app, /id="stellarx-btn">▣ StellarX<\/button>/);
+assert.match(app, /id="stellarx-btn">StellarX<\/button>/);
 assert.match(app, /function openComputerActionCard\(\)/);
 assert.match(app, /Review computer action/);
 assert.match(app, /id="roblox-studio-nav" href="\/roblox-studio"/);

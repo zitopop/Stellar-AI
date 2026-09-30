@@ -24,7 +24,7 @@ test('referral and achievement data remain server-owned', () => {
 });
 
 test('workspace defaults to Star and has no removed skill-tree UI hooks', () => {
-  assert.match(app, /localStorage\.getItem\('stellar-selected-model'\)\|\|'star'/);
+  assert.match(app, /safeStorageGet\('stellar-selected-model','star'\)/);
   assert.doesNotMatch(app, /function renderSkillTree\(/);
   assert.doesNotMatch(app, /id="set-skill-tree/);
 });
