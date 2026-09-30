@@ -130,8 +130,7 @@ export default async function handler(req, res) {
   const action = String(req.body?.action || '');
   const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
   const suppliedBridgeToken = String(req.headers['x-call-bridge-token'] || '');
-  const internalOwnerCall = ['escalateOwner','callOwner','callHealth'].includes(action) && bridgeToken && suppliedBridgeToken === bridgeToken;
-  const internalEscalation = internalOwnerCall;
+  const internalEscalation = action === 'escalateOwner' && bridgeToken && suppliedBridgeToken === bridgeToken;
 
   let ownerSession = null;
   if (!internalEscalation) {
