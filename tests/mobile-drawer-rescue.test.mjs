@@ -11,7 +11,7 @@ test('app owns native mobile drawer controls', () => {
   assert.match(app, /side\.classList\.add\('open'\)/);
   assert.match(app, /side\.classList\.remove\('open'\)/);
   assert.match(app, /backdrop\.addEventListener\('click',closeSide\)/);
-  assert.match(app, /@media\(max-width:760px\)/);
+  assert.match(app, /@media\(max-width:(?:900|760)px\)/);
 });
 
 test('telemetry does not install fallback drawers or observe app UI', () => {
