@@ -6,7 +6,7 @@ import { memoryStore } from './helpers/jarvis-memory-store.mjs';
 const owner = 'tobi@trystellarai.com';
 const input = { requestId: 'a-request-1234567', objective: 'Research and draft a useful small FiveM product.', kind: 'everything', notify: { email: true, call: true } };
 function setup(overrides = {}) {
-  const store = memoryStore(), runs = [], notices = [];
+  const store = memoryStore(), runs = [], notices = [], escalations = [];
   const providers = {
     capabilities: () => ({ ai: true, search: true, email: true, phoneConfigured: true, scheduler: true }),
     research: async () => [{ title: 'Documentation', url: 'https://docs.fivem.net/', description: 'A source' }],
@@ -14,7 +14,8 @@ function setup(overrides = {}) {
     notifyOwner: async args => { notices.push(args); return { status: 'accepted', message: 'Accepted, not verified.' }; },
     ...overrides,
   };
-  return { store, runs, notices, providers, service: createMissionService({ store, providers }) };
+  const escalate = async args => { escalations.push(args); return { ok: true, called: true, reason: 'test' }; };
+  return { store, runs, notices, escalations, providers, service: createMissionService({ store, providers, escalate }) };
 }
 
 test('all workstreams execute and persist before owner notifications; repeated run does not spend or notify twice', async () => {
@@ -56,6 +57,23 @@ test('a failed specialist resumes without repeating saved work or sending an inc
   assert.equal(result.status, 'completed');
   assert.equal(calls.filter(x => x === 'customers').length, 1);
   assert.equal(calls.filter(x => x === 'products').length, 2);
+});
+
+test('blocked missions automatically escalate to the owner for help', async () => {
+  const { service, escalations } = setup({
+    generate: async args => {
+      if (args.role === 'operations') throw new MissionError('Owner approval needed before this action can continue.', 409);
+      return { text: 'Saved output' };
+    },
+  });
+  const m = await service.create(owner, { ...input, notify: { email: false, call: false } });
+  const result = await service.run(m.id, owner);
+  assert.equal(result.status, 'failed');
+  assert.equal(escalations.length, 1);
+  assert.equal(escalations[0].category, 'approval');
+  assert.equal(escalations[0].severity, 'urgent');
+  assert.match(escalations[0].summary, /Jarvis needs your help/);
+  assert.equal(escalations[0].metadata.trigger, 'jarvis-mission-blocked');
 });
 
 test('lease blocks concurrent work; cancellation stops subsequent specialists and notifications', async () => {
