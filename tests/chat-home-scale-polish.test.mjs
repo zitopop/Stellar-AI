@@ -12,10 +12,10 @@ test('chat polish keeps a wider readable conversation and composer', () => {
   assert.match(app, /min-height:64px/);
 });
 
-test('Gaming AI mode labels the chat clearly', () => {
-  assert.match(app, /document\.title='Stellar Gaming AI'/);
-  assert.match(app, /brand\.textContent='Gaming AI'/);
-  assert.match(app, /Ask Gaming AI about your server, script or error/);
+test('core chat stays a normal general assistant', () => {
+  assert.match(app, /const CHAT_MODE='general'/);
+  assert.match(app, /How can I help\?/);
+  assert.doesNotMatch(app, /document\.title='Stellar Gaming AI'/);
 });
 
 test('homepage gives pricing more space and keeps clear conversion actions', () => {
@@ -23,5 +23,5 @@ test('homepage gives pricing more space and keeps clear conversion actions', () 
   assert.match(home, /width:min\(1240px,calc\(100% - 36px\)\)/);
   assert.match(home, /\.plan\{padding:28px!important;min-height:500px!important/);
   assert.match(home, /\.oa2-hero-actions\{display:flex!important/);
-  assert.match(home, /href="\/app\?mode=gaming">Gaming AI<\/a>/);
+  assert.match(home, /href="\/app\?welcome=1">Chat<\/a>/);
 });
