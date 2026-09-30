@@ -3,27 +3,18 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const telemetry = readFileSync(new URL('../lib/assets/telemetry.js', import.meta.url), 'utf8');
+const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
-test('mobile drawer rescue reuses native controls before installing fallbacks', () => {
-  assert.match(telemetry, /function ensureMobileDrawerControls\(\)/);
-  assert.match(telemetry, /nativeOpen/);
-  assert.match(telemetry, /nativeClose/);
-  assert.match(telemetry, /injectedOpen\.forEach\(\(button\) => button\.remove\(\)\)/);
-  assert.match(telemetry, /injectedClose\.forEach\(\(button\) => button\.remove\(\)\)/);
-  assert.match(telemetry, /dataset\.stellarMobileMenu = 'true'/);
-  assert.match(telemetry, /className = 'drawer-backdrop'/);
+test('app owns native mobile drawer controls', () => {
+  assert.match(app, /function openSide\(\)/);
+  assert.match(app, /function closeSide\(\)/);
+  assert.match(app, /side\.classList\.add\('open'\)/);
+  assert.match(app, /side\.classList\.remove\('open'\)/);
+  assert.match(app, /backdrop\.addEventListener\('click',closeSide\)/);
+  assert.match(app, /@media\(max-width:(?:900|760)px\)/);
 });
 
-test('workspace polish does not observe the entire app body', () => {
-  assert.doesNotMatch(telemetry, /observe\(document\.body, \{ childList: true, subtree: true \}\)/);
-  assert.match(telemetry, /observe\(usage,/);
-  assert.match(telemetry, /attributeFilter: \['hidden', 'style', 'aria-hidden'\]/);
-});
-
-test('mobile drawer tap handling opens and closes reliably', () => {
-  assert.match(telemetry, /function openDrawer\(\)/);
-  assert.match(telemetry, /function closeDrawer\(\)/);
-  assert.match(telemetry, /document\.body\.classList\.add\('drawer-open'\)/);
-  assert.match(telemetry, /document\.body\.classList\.remove\('drawer-open'\)/);
-  assert.match(telemetry, /document\.addEventListener\('touchend', rescueInteractionState/);
+test('telemetry does not install fallback drawers or observe app UI', () => {
+  assert.doesNotMatch(telemetry, /ensureMobileDrawerControls|openDrawer|closeDrawer|MutationObserver|drawer-backdrop/);
+  assert.match(telemetry, /Product layout, pricing and account UI must remain owned by the page itself/);
 });
