@@ -34,7 +34,7 @@ Write-Host "Installed to: $InstallDir" -ForegroundColor Green
 Write-Host "Workspace:    $Workspace" -ForegroundColor Green
 Write-Host ""
 Write-Host "Next:"
-Write-Host "1. Open Stellar AI > PC Agent and create a pairing code."
+Write-Host "1. Open Stellar AI > StellarX and create a pairing code."
 Write-Host "2. Run: cd '$InstallDir'"
 Write-Host "3. Run: node agent.mjs pair YOUR_CODE"
 Write-Host "4. Run: .\start-stellar-agent.cmd"
