@@ -59,6 +59,37 @@ test('Jarvis voice webhook validates Twilio and supports guarded two-way speech'
   assert.match(provider,/api\/broadcast\?jarvisVoice=1/);
 });
 
+
+test('configured Twilio health check uses the validated provider config without throwing', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','KV_REST_API_URL','KV_REST_API_TOKEN'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
+  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  process.env.OWNER_PHONE = '+447700900123';
+  delete process.env.KV_REST_API_URL;
+  delete process.env.KV_REST_API_TOKEN;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('voice.twilio.com/v1/DialingPermissions/Countries/GB')) {
+      return Response.json({ low_risk_numbers_enabled: true });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const health = await readOwnerCallHealth({});
+    assert.equal(health.provider, 'twilio');
+    assert.equal(health.ready, true);
+    assert.equal(health.ownerNumberConfigured, true);
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
 test('partial Twilio config does not block the Retell bridge fallback', async () => {
   const originalFetch = globalThis.fetch;
   const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];
