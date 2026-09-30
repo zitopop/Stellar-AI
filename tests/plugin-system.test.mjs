@@ -92,7 +92,7 @@ test('shared API keeps plugin management within the existing serverless function
 
 test('disabling built-in plugins actually stops their task bridges', () => {
   assert.match(desktop, /isPluginEnabled\(a\.device\.email,'pc-agent'\)/);
-  assert.match(desktop, /PC Agent is disabled in Plugins/);
+  assert.match(desktop, /StellarX is disabled in Plugins/);
   assert.match(studio, /isPluginEnabled\(a\.device\.email,'roblox-studio'\)/);
   assert.match(studio, /Roblox Studio plugin is disabled in Plugins/);
 });
