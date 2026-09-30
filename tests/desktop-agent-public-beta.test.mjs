@@ -25,7 +25,7 @@ assert.match(planner, /consumeUsage/);
 assert.match(planner, /refundUsageCharge/);
 assert.match(page, /StellarX planning uses part of your current Stellar allowance/);
 assert.match(page, /verifyUser/);
-assert.match(page, /PC Agent Beta/);
+assert.match(page, /Work Agent Beta/);
 assert.match(entry, /isSignedIn/);
 
 console.log('desktop-agent public beta safeguards: ok');
