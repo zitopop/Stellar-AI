@@ -73,7 +73,7 @@ export function assertJarvisContract(){
   assert.match(jarvis,/Jarvis/i);
   assert.match(plans,/Jarvis Voice \+ Vision/);
   assert.match(plans,/Jarvis Pro briefings \+ proactive alerts/);
-  assert.match(plans,/StellarX PC control beta/);
+  assert.match(plans,/StellarX computer control beta/);
 }
 
 export function assertSiteContract(){
