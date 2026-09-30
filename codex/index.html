@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07080d">
-<title>Stellar Tasks · Voice Work Agent</title>
-<meta name="description" content="Stellar Tasks is a voice-first, Codex-style command centre for planning coding, PC-agent, website, business and support tasks with approval-first safeguards.">
+<title>Stellar Tasks · Work Agent</title>
+<meta name="description" content="Stellar Tasks is a voice-first work command centre for planning coding, PC-agent, website, business and support tasks with approval-first safeguards.">
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
 <style>
@@ -17,11 +17,11 @@
 <header class="top"><div class="wrap topin"><a class="back" href="/app">← App</a><div class="brand"><span class="mark">⌘</span><span>Stellar Tasks</span></div><div class="pill"><span class="dot"></span><span>Voice + tasks ready</span></div></div></header>
 <main class="wrap">
 <section class="hero">
-  <div class="hero-card"><div class="kicker">Voice Work Agent</div><h1>Talk the task. Stellar turns it into work.</h1><p class="lead">A Codex-style command centre for your own app: speak or type the job, choose what kind of work it is, get a safe plan, then open it in Stellar or connect your PC Agent for real workspace help.</p><div class="statusbar"><span class="chip good">Voice-first task capture</span><span class="chip">Plan before action</span><span class="chip">Approvals stay yours</span><span class="chip warn">Not OpenAI Codex</span></div></div>
+  <div class="hero-card"><div class="kicker">Voice Work Agent</div><h1>Talk the task. Stellar turns it into work.</h1><p class="lead">A structured command centre for Stellar work: speak or type the job, choose what kind of work it is, get a safe plan, then open it in Stellar or connect your PC Agent for real workspace help.</p><div class="statusbar"><span class="chip good">Voice-first task capture</span><span class="chip">Plan before action</span><span class="chip">Approvals stay yours</span><span class="chip warn">Stellar workflow</span></div></div>
   <div class="rail hero-card"><div class="rail-item"><span class="num">1</span><div><strong>Speak</strong><small>Say the task naturally, StellarX-style.</small></div></div><div class="rail-item"><span class="num">2</span><div><strong>Structure</strong><small>Turn it into scope, files, checks and risks.</small></div></div><div class="rail-item"><span class="num">3</span><div><strong>Approve</strong><small>Keep file, terminal and sending actions gated.</small></div></div><div class="rail-item"><span class="num">4</span><div><strong>Continue</strong><small>Open the task in Stellar or pair the PC Agent.</small></div></div></div>
 </section>
 <section class="grid">
-  <div class="card"><h2>New voice task</h2><p>Use this like a Work/Codex-style task intake. Do not paste passwords, API keys, cookies, payment details, or private customer data.</p>
+  <div class="card"><h2>New voice task</h2><p>Use this like a structured Work task intake. Do not paste passwords, API keys, cookies, payment details, or private customer data.</p>
     <div class="voice-card"><div><strong>Voice command</strong><small id="voiceStatus">Press Start voice and describe the outcome you want.</small></div><button class="btn primary" id="voiceBtn" type="button">Start voice</button></div>
     <textarea id="prompt" placeholder="Example: Make my Stellar homepage cleaner on mobile, inspect relevant files first, fix the smallest safe CSS, then show me checks."></textarea>
     <div class="mode-row">
@@ -32,7 +32,7 @@
       <button class="mode" data-mode="test"><span>Verify</span>Testing checklist and commands<small>Prove it works</small></button>
       <button class="mode" data-mode="business"><span>Business task</span>Sales, SEO, support, plans or copy<small>Answer-only by default</small></button>
     </div>
-    <div class="actions"><button class="btn primary" id="planBtn">Build task plan</button><button class="btn" id="answerBtn">Draft answer only</button><button class="btn good" id="openBtn">Open in Stellar</button><a class="btn" href="/desktop">Connect PC Agent</a></div>
+    <div class="actions"><button class="btn primary" id="planBtn">Build task plan</button><button class="btn" id="answerBtn">Draft answer only</button><button class="btn good" id="openBtn">Open in Stellar</button><a class="btn" href="/desktop">Open StellarX</a></div>
     <div class="notice">Code and PC/file modes should inspect first. Writes, URLs, terminal commands, customer replies and spending stay approval-based.</div>
     <div class="templates"><button class="template" data-template="Fix the Stellar app issue I describe. Inspect relevant files first, make the smallest safe change, then show verification steps.">Template: fix my app safely</button><button class="template" data-template="Use voice-style task mode. Help me plan the next best website, sales, SEO or support improvement for Stellar AI, with approvals before sending or changing anything.">Template: business growth task</button><button class="template" data-template="Review my project and find what is stopping users from buying plans or using the app smoothly. Give me priority fixes and checks.">Template: make it ready for users</button></div>
     <div id="summary" class="mini"></div><div class="plan" id="plan"><div class="empty">No plan yet.</div></div><div class="actions" id="runActions" hidden><button class="btn good" id="copyBtn">Copy task brief</button><button class="btn warn" id="clearBtn">Clear plan</button></div>
@@ -98,7 +98,7 @@
   function draftOnly(){
     const text=prompt.value.trim();
     if(!text){prompt.focus();log('Add a task first.','warn');return}
-    answer.textContent='Here is the safe task brief I would use:\n\nGoal: '+text+'\n\nMode: '+mode+'\n\nReview rules:\n- inspect before edits\n- no secrets\n- no sending/spending/calling without approval\n- report checks and risks\n\nNext: open this in Stellar or connect PC Agent if files are needed.';
+    answer.textContent='Here is the safe task brief I would use:\n\nGoal: '+text+'\n\nMode: '+mode+'\n\nReview rules:\n- inspect before edits\n- no secrets\n- no sending/spending/calling without approval\n- report checks and risks\n\nNext: open this in Stellar or open StellarX if project files or computer actions are needed.';
     log('Drafted answer-only task brief.','ok');
   }
   function openInStellar(){
