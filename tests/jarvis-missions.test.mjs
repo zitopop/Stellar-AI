@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createMissionService, createRedisMissionStore } from '../lib/jarvis-missions.js';
+import { createMissionService, createRedisMissionStore, MissionError } from '../lib/jarvis-missions.js';
 import { memoryStore } from './helpers/jarvis-memory-store.mjs';
 
 const owner = 'tobi@trystellarai.com';
