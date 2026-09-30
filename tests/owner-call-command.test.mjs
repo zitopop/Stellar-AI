@@ -24,7 +24,8 @@ test('owner API handles call health verification and secure escalation',()=>{
   assert.match(broadcast,/action === 'callHealth'/);
   assert.match(broadcast,/action === 'callOwner'/);
   assert.match(broadcast,/action === 'escalateOwner'/);
-  assert.match(broadcast,/internalEscalation/);
+  assert.match(broadcast,/const internalEscalation = action === 'escalateOwner'/);
+  assert.doesNotMatch(broadcast,/\['escalateOwner','callOwner','callHealth'\]/);
   assert.match(ownerCall,/ai-receptionist-live-chi\.vercel\.app\/api\/call-owner/);
   assert.match(broadcast,/requireSession\(req, res\)/);
   assert.match(broadcast,/isOwnerEmail\(session\.email\)/);
