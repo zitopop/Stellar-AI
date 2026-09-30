@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const jarvis = readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
+const voiceWorkspace = readFileSync(new URL('../jarvis-workspace.html', import.meta.url), 'utf8');
+const chatApi = readFileSync(new URL('../api/chat.js', import.meta.url), 'utf8');
 
 test('workspace exposes a focused Jarvis Voice and Vision route for verified owner state', () => {
   assert.match(app, /const ownerTools=isOwner\(\)\?/);
@@ -24,4 +26,21 @@ test('app reports protected owner-call health without client secrets', () => {
   assert.match(app, /ownerRequest\('\/api\/broadcast',\{action:'callHealth'\}\)/);
   assert.match(app, /data\?\.ready===true/);
   assert.doesNotMatch(app, /RETELL_API_KEY\s*=|CALL_BRIDGE_TOKEN\s*=/);
+});
+
+
+test('Jarvis chat uses a distinct original assistant persona with server-owned entitlement gates', () => {
+  assert.match(chatApi, /JARVIS_PUBLIC_CHAT_GUIDANCE/);
+  assert.match(chatApi, /JARVIS_OWNER_CHAT_GUIDANCE/);
+  assert.match(chatApi, /JARVIS_PLAN_REQUIRED/);
+  assert.match(chatApi, /Private Jarvis owner mode requires the verified owner account/);
+  assert.match(chatApi, /do not imitate any real actor or copyrighted character/);
+  assert.match(voiceWorkspace, /client:\{source:jarvisSource\}/);
+  assert.match(voiceWorkspace, /syncJarvisAccess/);
+  assert.match(voiceWorkspace, /stellarJarvisHandsFree/);
+});
+
+test('main app gives Jarvis a clean first-class entry point', () => {
+  assert.match(app, /href="\/jarvis" aria-label="Open Jarvis voice assistant"/);
+  assert.match(app, /Provider connected · test call not verified/);
 });
