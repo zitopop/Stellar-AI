@@ -381,7 +381,7 @@
   function buildCommandCentre(panel) {
     const streak = readStreak();
     const plan = safeText('#plan-name,#acct-plan,[data-plan-name]', 'Free / current plan');
-    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Usage ready');
+    const usage = safeText('#top-usage,.top-usage,#usagePill', 'Usage ready');
     const email = safeText('#acct-email,[data-account-email]', 'Signed-in account');
 
     const hero = document.createElement('div');
