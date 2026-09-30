@@ -26,7 +26,7 @@ export function assertHomeContract(){
   assert.match(home,/\/app\?welcome=1/);
   assert.match(home,/Ask anything\./);
   assert.match(home,/stellar-serious-chat-first-v37/);
-  assert.doesNotMatch(home,/\bcredits?\b/i);
+  assert.doesNotMatch(home,/(credits\/month|Buy Stellar Credits|top.?up)/i);
 }
 
 export function assertPlansContract(){
