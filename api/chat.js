@@ -921,8 +921,8 @@ export default async function handler(req, res) {
     };
     return res.status(429).json({
       error: useCredit === true
-        ? 'You do not have enough Stellar credits for this message. Add credits or wait for your included credits to refresh.'
-        : 'Your included Stellar credits are used. Buy add-on credits, upgrade, or wait for the refresh.',
+        ? 'You have reached your current usage allowance. Wait for it to reset or move to a plan with more capacity.'
+        : 'Your current usage allowance is used. Upgrade or wait for the allowance to refresh.',
       usage: publicUsage,
     });
   }
@@ -1032,7 +1032,7 @@ export default async function handler(req, res) {
           amountPence: creditChargedPence,
         });
       } catch (refundError) {
-        console.error('Could not refund Stellar credits after failed generation', refundError?.message || refundError);
+        console.error('Could not restore usage after failed generation', refundError?.message || refundError);
       }
     }
 
