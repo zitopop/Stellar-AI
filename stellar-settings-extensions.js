@@ -381,20 +381,20 @@
   function buildCommandCentre(panel) {
     const streak = readStreak();
     const plan = safeText('#plan-name,#acct-plan,[data-plan-name]', 'Free / current plan');
-    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Credits ready');
+    const usage = safeText('#top-usage,.top-usage,[data-credit-pill]', 'Usage ready');
     const email = safeText('#acct-email,[data-account-email]', 'Signed-in account');
 
     const hero = document.createElement('div');
     hero.className = 'stellar-command-hero';
-    hero.innerHTML = '<div class="stellar-command-kicker">Command centre</div><h3>Everything important in one clean place.</h3><p>Manage credits, plan, plugins, voice, privacy and support from one premium control room. Every card explains what it does so normal users are not guessing.</p>';
+    hero.innerHTML = '<div class="stellar-command-kicker">Command centre</div><h3>Everything important in one clean place.</h3><p>Manage usage, plan, plugins, voice, privacy and support from one premium control room. Every card explains what it does so normal users are not guessing.</p>';
     panel.appendChild(hero);
 
     const stats = document.createElement('div');
     stats.className = 'stellar-command-grid';
     stats.append(
       commandCard('Account', `${email} — your sign-in, saved chats and billing identity.`),
-      commandCard('Plan', `${plan} — controls model access, included credits and paid features.`),
-      commandCard('Credits', `${usage.replace(/^💳\s*/, '')} — monthly plan credits refresh; wallet top-ups stay separate.`),
+      commandCard('Plan', `${plan} — controls model access, included usage capacity and paid features.`),
+      commandCard('usage', `${usage.replace(/^💳\s*/, '')} — the usage allowance refreshes automatically.`),
       commandCard('Daily streak', `Day ${streak.streak || 1} on this device — return rewards can encourage daily use.`),
     );
     panel.appendChild(stats);
@@ -407,7 +407,7 @@
     const actions = document.createElement('div');
     actions.className = 'stellar-command-actions';
     actions.append(
-      commandAction('Credits & rewards', 'See monthly reset, welcome bonus, wallet top-ups and bonus logic.', () => openTab('credits-rewards')),
+      commandAction('Usage', 'See allowance, reset timing and plan capacity.', () => openTab('usage-rewards')),
       commandAction('Manage plan', 'Open upgrades, billing and plan options.', () => { if (!clickFirst(['[data-open-plans]', '#plans-btn', '[data-tab="plans"]'])) location.href = '/app?upgrade=1'; }),
       commandAction('Plugins', 'Connect Gmail, GitHub, PC Agent and other tools safely.', () => { location.href = '/plugins'; }),
       commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
@@ -421,9 +421,9 @@
     addHeading(panel, 'What is what?', 'Every setting is now its own separate line: name, what it does, and where to press.');
 
     appendLineMap(panel, [
-      ['Control', 'Main dashboard for your account, plan, credits and quick actions.', 'Settings > Control'],
+      ['Control', 'Main dashboard for your account, plan, usage and quick actions.', 'Settings > Control'],
       ['Account', 'Shows who is signed in, which email is active, and where saved chats/billing connect.', 'Account area'],
-      ['Credits', 'Shows monthly plan credits, wallet top-ups, welcome credits, bonuses and reset meaning.', 'Credits tab'],
+      ['usage', 'Shows plan allowance, reset timing and capacity.', 'usage tab'],
       ['Plan', 'Explains the user’s tier, billing, upgrade path and unlocked features.', 'Plan / upgrade'],
       ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Owner models stay hidden.', 'Model picker'],
       ['Voice', 'Mic, Jarvis/Ava voice, language, call-style controls and accessibility.', 'Voice tab'],
@@ -452,7 +452,7 @@
       ['Private owner models', 'Experimental/provider models for admin testing. Hide these from normal users.', 'Owner only'],
       ['StellarX / PC Agent', 'Pair your own computer, inspect files and approve edits or terminal actions.', 'Open PC Agent'],
       ['GitHub + Vercel', 'Check repo changes, deployments, build errors and live status from one workflow.', 'Dev tools'],
-      ['Revenue controls', 'Monitor plans, credits, checkout readiness, Stripe context and support issues.', 'Business ops'],
+      ['Revenue controls', 'Monitor plans, usage, checkout readiness, Stripe context and support issues.', 'Business ops'],
       ['Growth automations', 'SEO, lead follow-up and inbox workflows; keep sending approval-first.', 'Revenue bot farm'],
       ['Plugin testing', 'Try Gmail, GitHub, Vercel and future connectors before exposing them publicly.', 'Plugins'],
       ['Safety gate', 'High-impact actions need approval, clear logs and no hidden sending/deleting.', 'Approval-first'],
@@ -469,7 +469,7 @@
     actions.append(
       commandAction('Open plugins', 'Manage connected tools and see how to get each plugin.', () => { location.href = '/plugins'; }),
       commandAction('Open PC Agent', 'Pair or check your StellarX desktop workflow.', () => { location.href = '/desktop'; }),
-      commandAction('Credits setup', 'Review monthly plan credits, welcome bonus and top-up packs.', () => openTab('credits-rewards')),
+      commandAction('Usage setup', 'Review plan usage and reset timing.', () => openTab('usage-rewards')),
       commandAction('Trust checklist', 'Check public safety, privacy and support controls.', () => openTab('trust-checklist')),
     );
     panel.appendChild(actions);
@@ -529,23 +529,23 @@
     panel.appendChild(actions);
   }
 
-  function buildCreditsRewards(panel) {
+  function buildUsagePanel(panel) {
     const streak = readStreak();
-    addHeading(panel, 'Credits & rewards', 'Free credits reset daily at midnight UK time. Paid plan credits reset monthly. Wallet credits are bought top-ups and stay separate.');
+    addHeading(panel, 'Usage', 'Free usage reset daily at midnight UK time. Paid plan usage reset monthly. allowance usage are bought  and stay separate.');
 
     const group = document.createElement('div');
     group.className = 'set-group stellar-rewards-group';
     group.innerHTML = `
-      <div class="set-item stellar-reward-row"><div class="set-key">Included credits</div><div class="set-val">Free 75/day (00:00 UK reset) · Starter 5,000/month · Plus 15,000/month · Pro 50,000/month</div></div>
-      <div class="set-item stellar-reward-row"><div class="set-key">Welcome bonus</div><div class="set-val">500 one-time credits for new accounts</div></div>
+      <div class="set-item stellar-reward-row"><div class="set-key">Usage allowance</div><div class="set-val">Free daily · Starter standard monthly · Plus higher monthly · Pro highest monthly</div></div>
+      
       <div class="set-item stellar-reward-row"><div class="set-key">Streak idea</div><div class="set-val">Day ${streak.streak || 1} on this device · suggested server rewards: Day 2 +50, Day 3 +75, Day 7 +150</div></div>
-      <div class="set-item stellar-reward-row"><div class="set-key">Top-ups</div><div class="set-val">£3, £5, £10, £25, £50+ with bigger bonuses only on bigger packs</div></div>
+      
     `;
     panel.appendChild(group);
 
     const note = document.createElement('div');
     note.className = 'set-note stellar-pref-note';
-    note.textContent = 'Free credits reset daily at midnight UK time. Paid plan credits reset monthly. Bought wallet credits stay separate and do not reset.';
+    note.textContent = 'Free usage resets daily. Paid plan usage resets each billing cycle.';
     panel.appendChild(note);
   }
 
@@ -553,7 +553,7 @@
     addHeading(panel, 'Trust & safety', 'A premium AI workspace needs clear controls, safe approvals and no confusing owner-only tools for normal users.');
     appendLineMap(panel, [
       ['Account', 'Show email, sign-in state and sign-out clearly.', 'Account'],
-      ['Credits', 'Show included allowance, wallet balance and reset timing.', 'Credits'],
+      ['Usage', 'Show remaining allowance and reset timing.', 'Usage'],
       ['Plan', 'Show current plan, upgrade path and billing help.', 'Plan'],
       ['Models', 'Show only models the user can actually use. Hide owner/provider tools.', 'Models'],
       ['Voice', 'Explain Jarvis/Ava, mic access, language and call controls.', 'Voice'],
@@ -589,7 +589,7 @@
   }
 
   function registerRewards() {
-    return registerSection({ id: 'credits-rewards', label: 'Credits', icon: '💳', build: buildCreditsRewards });
+    return registerSection({ id: 'usage-rewards', label: 'Usage', icon: '◔', build: buildUsagePanel });
   }
 
   function registerTrustChecklist() {
