@@ -17,7 +17,7 @@ Account-scoped Windows companion for signed-in Stellar AI users.
 
 ## Install on Windows
 
-Run `install-windows.ps1` from PowerShell, then pair using the code created in the signed-in Stellar AI PC Agent page.
+Run `install-windows.ps1` from PowerShell, then pair using the code created in the signed-in StellarX Work Agent page.
 
 ## Commands
 
