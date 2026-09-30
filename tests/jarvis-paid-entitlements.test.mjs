@@ -40,8 +40,8 @@ test('app and pricing surfaces explain Plus and Pro Jarvis value', () => {
   assert.match(app, /Jarvis Pro briefings \+ alerts/);
   assert.match(plans, /Jarvis Voice \+ Vision/);
   assert.match(plans, /Jarvis Pro briefings \+ proactive alerts/);
-  assert.match(landing, /<td>Jarvis<\/td>/);
-  assert.match(landing, /Pro briefings \+ proactive alerts/);
+  assert.match(landing, /Jarvis Voice \+ Vision/);
+  assert.match(landing, /Jarvis Pro briefings \+ proactive alerts/);
 });
 
 test('owner phone and admin controls stay owner-only', () => {

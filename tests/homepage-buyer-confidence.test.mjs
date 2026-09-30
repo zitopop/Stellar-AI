@@ -5,24 +5,23 @@ import { readFileSync } from 'node:fs';
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const palette = readFileSync(new URL('../stellar-business-palette.css', import.meta.url), 'utf8');
 
-test('homepage has a buyer confidence path before pricing', () => {
-  assert.match(landing, /BUYER CONFIDENCE/);
-  assert.match(landing, /Know exactly what happens next\./);
-  assert.match(landing, /Stellar keeps every paid step clear/);
-  assert.match(landing, /Start with a specific job\./);
-  assert.match(landing, /See the scope before relying on it\./);
-  assert.match(landing, /Pay safely and keep support close\./);
-  assert.match(landing, /Checkout is handled by Stripe/);
-  assert.match(landing, /support stays on the Stellar site/);
-  assert.match(landing, /avoid fake guarantees about rankings, leads or revenue/);
-  assert.match(landing, /href="\/website-audit">See Website Mini Audit/);
-  assert.match(landing, /href="\/ai-receptionist">See AI Receptionist/);
+test('homepage keeps concise buyer confidence next to pricing', () => {
+  assert.match(landing, /STELLAR WORKSPACE PLANS/);
+  assert.match(landing, /No card for Free/);
+  assert.match(landing, /Secure Stripe checkout/);
+  assert.match(landing, /Cancel anytime/);
+  assert.match(landing, /Simple usage meter/);
+  assert.match(landing, /Start free\. Upgrade when Stellar becomes part of your day\./);
+  assert.match(landing, /href="\/support"/);
+  assert.doesNotMatch(landing, /BUYER CONFIDENCE/);
 });
 
-test('buyer confidence section is styled and mobile-safe', () => {
-  assert.match(palette, /Buyer confidence delivery section v1/);
-  assert.match(palette, /\.public-home \.oa2-delivery-grid/);
-  assert.match(palette, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)!important/);
-  assert.match(palette, /@media\(max-width:900px\)/);
-  assert.match(palette, /@media\(max-width:700px\)/);
+test('homepage pricing remains styled and mobile-safe', () => {
+  assert.match(palette, /pricing/i);
+  assert.match(landing, /class="plans"/);
+  assert.match(landing, /data-plan="free"/);
+  assert.match(landing, /data-plan="starter"/);
+  assert.match(landing, /data-plan="plus"/);
+  assert.match(landing, /data-plan="pro"/);
+  assert.match(landing, /@media\(max-width:560px\)/);
 });

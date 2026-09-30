@@ -30,3 +30,22 @@ test('landing keeps plan and Jarvis value intact',()=>{
   assert.match(home,/Jarvis Voice \+ Vision/);
   assert.match(home,/Jarvis Pro briefings \+ proactive alerts/);
 });
+
+
+test('landing ships only the customer-facing conversion journey',()=>{
+  const html=home;
+  for(const stale of [
+    'oa2-trust-path container',
+    'oa2-business-first container',
+    'oa2-delivery container',
+    'stellar-proof container',
+    'oa2-section container oa2-how',
+    'oa2-feature container',
+    'oa2-section container oa2-guides',
+    'oa2-section container oa2-business',
+    'stellar-growth-strip'
+  ]) assert.doesNotMatch(html,new RegExp('class="' + stale + '"'));
+  for(const stale of ['stellar-plan-table-wrap','oa2-plan-compare','pricing-foot']) assert.doesNotMatch(html,new RegExp('class="' + stale + '"'));
+  for(const live of ['oa2-hero container','oa2-audience container','oa2-preview container','section container pricing-section','section container faq-section','container final-cta'])
+    assert.match(html,new RegExp('class="' + live + '"'));
+});

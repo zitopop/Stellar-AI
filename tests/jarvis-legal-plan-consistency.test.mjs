@@ -12,7 +12,8 @@ test('Terms and plan surfaces match paid Jarvis entitlements', () => {
   assert.match(terms, /Jarvis Pro briefings and proactive alerts/);
   assert.match(terms, /Jarvis Computer module opens StellarX Work Agent/);
   assert.match(plans, /Jarvis Computer → StellarX computer control beta/);
-  assert.match(landing, /Voice \+ Vision \+ Computer entry to StellarX beta/);
+  assert.match(landing, /Jarvis Voice \+ Vision/);
+  assert.match(landing, /Jarvis Computer → StellarX PC control beta/);
 });
 
 test('legal policies explain Jarvis camera and connected PC data', () => {

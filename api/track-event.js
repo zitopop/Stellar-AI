@@ -27,6 +27,7 @@ const CLIENT_METRIC_EVENTS = new Set([
   'landing-view','app-view','app-open-cta','upgrade-intent','signup-success','login-success',
   'first-message-sent','chat-send-error','checkout-open','checkout-error','billing-open','client-error',
   'usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked',
+  'pricing-view','plan-free-selected','plan-starter-selected','plan-plus-selected','plan-pro-selected',
 ]);
 
 const clientWindows = new Map();
