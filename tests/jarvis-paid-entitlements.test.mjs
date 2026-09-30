@@ -50,3 +50,11 @@ test('owner phone and admin controls stay owner-only', () => {
   assert.match(app, /id="jarvis-briefings-nav"/);
   assert.match(jarvis, /data-owner-only="true"/);
 });
+
+
+test('paid Jarvis exposes secure Computer control through StellarX', () => {
+  assert.match(jarvis, /data-jarvis-computer="true"/);
+  assert.match(jarvis, /Open PC control/);
+  assert.match(jarvis, /location\.href='\/desktop\?from=jarvis'/);
+  assert.doesNotMatch(jarvis, /data-name="Computer" data-owner-only="true"/);
+});
