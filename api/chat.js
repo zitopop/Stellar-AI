@@ -252,6 +252,18 @@ const SMART_CONVERSATION_GUIDANCE = `SMART CONVERSATION
 - If the user corrects you, update the working interpretation immediately and do not repeat the same misunderstanding.
 - Keep conversational replies natural and direct. Match the user’s level of detail while preserving technical accuracy.`;
 
+const GENERAL_CHAT_GUIDANCE = `GENERAL CHAT QUALITY
+- Treat ordinary conversation as ordinary conversation. Do not turn a simple question into a software project, implementation plan, file tree, sales funnel, gaming mode, or specialist workflow unless the user actually asks for that.
+- Lead with the answer or useful action. Avoid generic preambles, repeated disclaimers, and unnecessary headings.
+- For explanations, make the core idea easy to understand first, then add detail only when it helps.
+- For writing requests, produce clean usable copy in the requested tone rather than explaining how to write it.
+- For recommendations, respect the user’s stated budget, preferences and constraints. Ask a follow-up only when a missing detail would materially change the recommendation.
+- For factual questions, distinguish known facts from uncertainty. If the answer depends on live or current information that is not present in supplied context, do not pretend it was checked.
+- For calculations or comparisons, give the result clearly and include only the amount of working needed to make the answer trustworthy.
+- For advice, be practical and specific. Give a sensible next step instead of ending with vague encouragement.
+- Keep the response proportional to the request: brief for simple questions, more structured for genuinely complex ones.
+- Never claim to have accessed an account, device, website, file, call, payment, message, deployment, or external tool unless verified evidence is present in the request context.`;
+
 const CODE_INTELLIGENCE_GUIDANCE = `CODE INTELLIGENCE\n- Treat coding requests like production engineering work, not autocomplete. Infer the intended architecture from the current conversation and supplied files before writing code.\n- Before generating code, silently build a requirement checklist covering requested behavior, existing interfaces, data flow, trust boundaries, persistence, failure states, and deployment/runtime constraints.\n- Prefer modifying the smallest correct surface instead of rewriting unrelated working code. Preserve public APIs, event names, database shapes, config keys, UI IDs, and framework conventions unless the user explicitly asks to change them.\n- When code is supplied, trace execution paths across files before proposing a fix. Check imports/exports, async control flow, state ownership, lifecycle ordering, null/error paths, race conditions, retries, idempotency, and cleanup.\n- For FiveM, keep money, inventory, rewards, permissions, cooldowns, ownership, and anti-exploit validation server-authoritative. Validate every networked input and never trust client-provided prices, identifiers, counts, or permissions.\n- For Roblox, keep sensitive state and rewards server-authoritative. Validate RemoteEvent/RemoteFunction arguments, ownership, ranges, rate limits, persistence semantics, and duplicate requests.\n- Do not invent framework exports, events, natives, package APIs, database columns, or config keys. When a version-sensitive API is uncertain, label the assumption and give a compatibility-safe alternative where possible.\n- Produce code that is internally consistent: every referenced function, event, variable, import, export, config key, SQL field, remote, and file must either be defined in the answer or explicitly identified as an existing dependency.\n- Self-review the proposed implementation before sending it. Check requirement coverage, syntax-level consistency, missing files, undefined names, client/server boundary mistakes, unsafe input handling, persistence errors, duplicate execution, and installation steps. Correct issues found during this review before presenting the answer.\n- For bug fixes, explain the root cause briefly, then provide the smallest complete patch and a concrete verification path. For new systems, provide the exact file tree, complete files, setup order, and observable success criteria.\n- Never claim a test, build, deployment, API call, game run, database migration, or live verification occurred unless there is direct evidence it did.\n- Keep answers efficient: spend detail on correctness, architecture, edge cases, and verification rather than filler.`;
 
 const UNCERTAINTY_RECOVERY_GUIDANCE = `UNCERTAINTY RECOVERY
@@ -318,6 +330,18 @@ const MODEL_TIER_BY_ID = {
 };
 
 const PLAN_LIMITS = PLAN_DEFINITIONS;
+
+const STELLAR_GENERAL_SYSTEM_PROMPT = `You are Stellar AI, a capable general-purpose AI assistant.
+
+Help with everyday questions, explanations, planning, writing, learning, business, recommendations, troubleshooting and practical decisions. Follow the user's actual request and keep the conversation natural.
+
+Answer directly. Be warm, clear and precise. Use headings or lists only when they improve readability. Do not force coding, file trees, gaming, business funnels, specialist modes or implementation structure onto ordinary conversation.
+
+Use relevant recent conversation context so short follow-ups make sense. Resolve obvious typos and shorthand when the meaning is clear. Do not ask the user to repeat information already present.
+
+Be honest about uncertainty and limitations. Never claim that an external action, live lookup, account change, call, payment, deployment, test or tool use happened unless the supplied context verifies it. If a question depends on current information that has not been provided, say that it may need a live check instead of inventing an up-to-date fact.
+
+For simple questions, be concise. For complex questions, reason carefully and give the useful conclusion, key rationale and practical next step without exposing private chain-of-thought.`;
 
 const STELLAR_SYSTEM_PROMPT = `You are Stellar AI, a capable general-purpose AI assistant. Help with everyday questions, explanations, planning, writing, learning, business, troubleshooting, software development, FiveM, Roblox and other practical work. Follow the user’s actual intent instead of steering every conversation toward coding.
 
@@ -671,6 +695,16 @@ function detectWorkflowMode(messages, platform = detectPlatform(messages)) {
   return 'general';
 }
 
+function detectRequestKind(messages, platform = detectPlatform(messages), workflowMode = detectWorkflowMode(messages, platform)) {
+  if (platform !== 'general') return 'technical';
+  if (workflowMode === 'audit' || workflowMode === 'roblox_build_pack' || workflowMode === 'fivem_resource') return 'technical';
+  const text = Array.isArray(messages)
+    ? messages.map((message) => typeof message?.content === 'string' ? message.content : '').join(' ').toLowerCase()
+    : '';
+  const technical = /\`\`\`|\b(?:code|coding|programming|programmer|developer|debug|bug|error|exception|stack trace|api|endpoint|database|sql|html|css|javascript|typescript|node(?:\.js)?|react|next(?:\.js)?|python|java|c\+\+|c#|php|ruby|golang|rust|git|github|vercel|supabase|function|class|variable|json|yaml|xml|regex|terminal|command line|cli|npm|package\.json|server|backend|frontend|deploy|deployment|website|web app|mobile app|app code|source code)\b|\.(?:js|mjs|cjs|ts|tsx|jsx|py|lua|html|css|json|sql|yml|yaml)\b/.test(text);
+  return technical ? 'technical' : 'general';
+}
+
 function normaliseSearchContext(searchContext) {
   if (typeof searchContext !== 'string') return '';
   return searchContext.slice(0, 40_000).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
@@ -681,9 +715,10 @@ function normaliseMemoryContext(memoryContext) {
   return memoryContext.slice(0, 18_000).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
 }
 
-function buildSystemPrompt(searchContext, platform = 'general', workflowMode = 'general', framework = 'unknown', role = '', memoryContext = '', plan = 'free') {
+function buildSystemPrompt(searchContext, platform = 'general', workflowMode = 'general', framework = 'unknown', role = '', memoryContext = '', plan = 'free', requestKind = 'general') {
   const cleanContext = normaliseSearchContext(searchContext);
   const cleanMemory = normaliseMemoryContext(memoryContext);
+  const technicalRequest = requestKind === 'technical' || platform !== 'general';
   const qualityGate = PLATFORM_GUIDANCE[platform] || PLATFORM_GUIDANCE.general;
   const workflowGate = WORKFLOW_GUIDANCE[workflowMode] || WORKFLOW_GUIDANCE.general;
   const frameworkGate = platform === 'fivem' || platform === 'mixed'
@@ -693,7 +728,10 @@ function buildSystemPrompt(searchContext, platform = 'general', workflowMode = '
   const planKey = String(plan || '').trim().toLowerCase() === 'owner' ? 'owner' : (normalisePlan(plan) || 'free');
   const planGate = PLAN_QUALITY_GUIDANCE[planKey] || PLAN_QUALITY_GUIDANCE.free;
   const structuredFallbackGate = ROLE_RESPONSE_SCHEMAS[role] ? STRUCTURED_FALLBACK_NOTICE : '';
-  const base = `${STELLAR_SYSTEM_PROMPT}\n\n${SMART_CONVERSATION_GUIDANCE}\n\n${CODE_INTELLIGENCE_GUIDANCE}\n\n${planGate}\n\n${qualityGate}\n\n${workflowGate}${frameworkGate ? `\n\n${frameworkGate}` : ''}${roleGate ? `\n\n${roleGate}` : ''}${structuredFallbackGate ? `\n\n${structuredFallbackGate}` : ''}`;
+  const specialistGate = workflowMode !== 'general' ? `\n\n${workflowGate}` : '';
+  const base = technicalRequest
+    ? `${STELLAR_SYSTEM_PROMPT}\n\n${SMART_CONVERSATION_GUIDANCE}\n\n${CODE_INTELLIGENCE_GUIDANCE}\n\n${planGate}\n\n${qualityGate}\n\n${workflowGate}${frameworkGate ? `\n\n${frameworkGate}` : ''}${roleGate ? `\n\n${roleGate}` : ''}${structuredFallbackGate ? `\n\n${structuredFallbackGate}` : ''}`
+    : `${STELLAR_GENERAL_SYSTEM_PROMPT}\n\n${SMART_CONVERSATION_GUIDANCE}\n\n${GENERAL_CHAT_GUIDANCE}${specialistGate}${roleGate ? `\n\n${roleGate}` : ''}${structuredFallbackGate ? `\n\n${structuredFallbackGate}` : ''}`;
   const memoryBlock = cleanMemory ? `\n\nCROSS-CHAT MEMORY\nThese are excerpts from this user's other saved Stellar chats. Use them as relevant background memory. Prefer newer explicit instructions if anything conflicts. Never turn an old plan or attempt into a claimed completion.\n\n${cleanMemory}` : '';
   if (!cleanContext) return base + memoryBlock;
 
@@ -864,6 +902,7 @@ export default async function handler(req, res) {
   const platform = detectPlatform(cleanMessages);
   const workflowMode = detectWorkflowMode(cleanMessages, platform);
   const framework = detectFramework(cleanMessages, platform);
+  const requestKind = detectRequestKind(cleanMessages, platform, workflowMode);
   if (exceedsRequestPayloadLimit(cleanMessages, imageAttachment.image)) {
     return res.status(400).json({ error: 'That message or image is too large. Send a smaller file or split it into parts.' });
   }
@@ -975,7 +1014,7 @@ export default async function handler(req, res) {
     const upstream = await createUpstreamStream({
       route,
       maxTokens: safeMaxTokens,
-      system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role, memoryContext, plan)
+      system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role, memoryContext, plan, requestKind)
         + (jarvisRequest ? `\n\n${plan === 'owner' ? JARVIS_OWNER_CHAT_GUIDANCE : JARVIS_PUBLIC_CHAT_GUIDANCE}` : '')
         + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
       messages: addImageToLastUserMessage(cleanMessages, imageAttachment.image),
@@ -1064,4 +1103,4 @@ export default async function handler(req, res) {
 }
 
 
-export { CODE_INTELLIGENCE_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
+export { CODE_INTELLIGENCE_GUIDANCE, GENERAL_CHAT_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectRequestKind, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
