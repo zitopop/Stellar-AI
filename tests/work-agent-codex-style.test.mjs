@@ -11,7 +11,7 @@ test('StellarX Work Agent presents a focused task workspace with safeguards', ()
   assert.match(page, /Inspect first/);
   assert.match(page, /Approval for actions/);
   assert.match(page, /Emergency Stop/);
-  assert.match(page, /Not allowed/);
+  assert.match(page, /Hard blocks always stay on/);
   assert.match(page, /passwords, API keys, payment details/i);
   assert.match(page, /id="taskProgress"/);
   assert.match(page, /Review/);
