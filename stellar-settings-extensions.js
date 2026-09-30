@@ -409,7 +409,7 @@
     actions.append(
       commandAction('Usage', 'See allowance, reset timing and plan capacity.', () => openTab('usage-rewards')),
       commandAction('Manage plan', 'Open upgrades, billing and plan options.', () => { if (!clickFirst(['[data-open-plans]', '#plans-btn', '[data-tab="plans"]'])) location.href = '/app?upgrade=1'; }),
-      commandAction('Plugins', 'Connect Gmail, GitHub, PC Agent and other tools safely.', () => { location.href = '/plugins'; }),
+      commandAction('Plugins', 'Connect Gmail, GitHub, StellarX and other tools safely.', () => { location.href = '/plugins'; }),
       commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
       commandAction('What is what?', 'Open the separate line-by-line Settings guide.', () => openTab('settings-guide')),
       commandAction(isOwnerViewer() ? 'Owner perks' : 'Owner tools', isOwnerViewer() ? 'Open private owner controls and business perks.' : 'Owner-only tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Owner perks only appear on the owner account.', 'warn'); }),
@@ -450,7 +450,7 @@
 
     appendLineMap(panel, [
       ['Private owner models', 'Experimental/provider models for admin testing. Hide these from normal users.', 'Owner only'],
-      ['StellarX / PC Agent', 'Pair your own computer, inspect files and approve edits or terminal actions.', 'Open PC Agent'],
+      ['StellarX / PC Agent', 'Pair your own computer, inspect files and approve edits or terminal actions.', 'Open StellarX'],
       ['GitHub + Vercel', 'Check repo changes, deployments, build errors and live status from one workflow.', 'Dev tools'],
       ['Revenue controls', 'Monitor plans, usage, checkout readiness, Stripe context and support issues.', 'Business ops'],
       ['Growth automations', 'SEO, lead follow-up and inbox workflows; keep sending approval-first.', 'Revenue bot farm'],
@@ -468,7 +468,7 @@
     actions.className = 'stellar-command-actions';
     actions.append(
       commandAction('Open plugins', 'Manage connected tools and see how to get each plugin.', () => { location.href = '/plugins'; }),
-      commandAction('Open PC Agent', 'Pair or check your StellarX desktop workflow.', () => { location.href = '/desktop'; }),
+      commandAction('Open StellarX', 'Open or check your StellarX desktop workflow.', () => { location.href = '/desktop'; }),
       commandAction('Usage setup', 'Review plan usage and reset timing.', () => openTab('usage-rewards')),
       commandAction('Trust checklist', 'Check public safety, privacy and support controls.', () => openTab('trust-checklist')),
     );
