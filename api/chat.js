@@ -233,6 +233,15 @@ const MAX_NORMALISED_MESSAGE_COUNT = 40;
 const MAX_NORMALISED_MESSAGE_CONTENT_LENGTH = 100_000;
 const BASE64_DATA_PATTERN = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
+const JARVIS_PUBLIC_CHAT_GUIDANCE = `JARVIS MODE
+You are Jarvis inside Stellar AI. Keep the full capability and honesty of Stellar, but speak with a calm, composed, precise British technical-assistant tone. This must be an original assistant persona: do not imitate any real actor or copyrighted character's exact voice, dialogue, catchphrases or mannerisms.
+Lead with the useful answer. Keep routine replies concise and speech-friendly, then give the next useful action. Be quietly confident, not theatrical. Do not call yourself a receptionist. Do not overuse "sir"; only use it when the user clearly prefers it, and never more than once in a reply.
+For voice-oriented replies, avoid giant headings, long preambles and dense markdown unless the user asks for detail. Distinguish verified facts, assumptions, attempts and completed actions. Never imply that a tool, account, device, call, payment, email or deployment was accessed or changed unless the system actually verified it.`;
+
+const JARVIS_OWNER_CHAT_GUIDANCE = `${JARVIS_PUBLIC_CHAT_GUIDANCE}
+OWNER MODE
+This request comes from a server-verified Stellar owner account. Act like a concise technical chief of staff: keep track of the objective, state what is working, what is blocked, what changed, and what decision or approval is needed next. Preserve owner privacy and never expose credentials or hidden account data. Treat live tool results as authoritative over static context. If a system is blocked, name the blocker plainly and give the smallest practical next step instead of pretending it worked.`;
+
 const SMART_CONVERSATION_GUIDANCE = `SMART CONVERSATION
 - Track the user’s current goal across follow-up messages. Resolve short references such as “it”, “that”, “make it better”, and corrections from the recent conversation instead of restarting from scratch when the referent is clear.
 - Before answering, silently check the newest request against the recent conversation, platform, framework, files, constraints, and previous decisions. Preserve compatible decisions unless the user changes them.
@@ -861,7 +870,19 @@ export default async function handler(req, res) {
   const session = readSession(req);
   const account = await getAccountFromServer(session?.email);
   const plan = account.plan;
-  const websiteBuilderRequest = String(client?.source || '').trim().toLowerCase() === 'business-builder';
+  const clientSource = String(client?.source || '').trim().toLowerCase().slice(0, 64);
+  const websiteBuilderRequest = clientSource === 'business-builder';
+  const jarvisPublicRequest = clientSource === 'jarvis-public';
+  const jarvisOwnerRequest = clientSource === 'jarvis-owner' || clientSource === 'stellar-call';
+  const jarvisRequest = jarvisPublicRequest || jarvisOwnerRequest;
+
+  if (jarvisPublicRequest && !['plus','pro','owner'].includes(plan)) {
+    if (!session?.email) return res.status(401).json({ error: 'Sign in with a Plus or Pro account to use Jarvis Voice.' });
+    return res.status(402).json({ error: 'Jarvis Voice is included with Plus and Pro.', code: 'JARVIS_PLAN_REQUIRED' });
+  }
+  if (jarvisOwnerRequest && plan !== 'owner') {
+    return res.status(403).json({ error: 'Private Jarvis owner mode requires the verified owner account.' });
+  }
 
   if (websiteBuilderRequest && plan !== 'owner') {
     if (!session?.email) {
@@ -953,7 +974,9 @@ export default async function handler(req, res) {
     const upstream = await createUpstreamStream({
       route,
       maxTokens: safeMaxTokens,
-      system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role, memoryContext, plan) + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
+      system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role, memoryContext, plan)
+        + (jarvisRequest ? `\n\n${plan === 'owner' ? JARVIS_OWNER_CHAT_GUIDANCE : JARVIS_PUBLIC_CHAT_GUIDANCE}` : '')
+        + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
       messages: addImageToLastUserMessage(cleanMessages, imageAttachment.image),
       responseFormat: ROLE_RESPONSE_SCHEMAS[route.role],
       signal: controller.signal,
