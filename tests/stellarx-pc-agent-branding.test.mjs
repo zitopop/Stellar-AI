@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const entry = await readFile(new URL('../stellar-desktop-agent-ui.js', import.meta.url), 'utf8');
 const desktop = await readFile(new URL('../desktop-agent.html', import.meta.url), 'utf8');
+const workspace = await readFile(new URL('../lib/assets/stellarx-chat-workspace.css', import.meta.url), 'utf8');
 
 test('StellarX PC Agent active-use banner is visible across app surfaces', () => {
   assert.match(entry, /StellarX PC Agent/);
@@ -19,7 +20,7 @@ test('Work Agent page uses StellarX live PC wording with calm active indicators'
   assert.ok(desktop.includes("'StellarX is '+activity"));
   assert.match(desktop, /using the keyboard/);
   assert.match(desktop, /using the mouse/);
-  assert.match(desktop, /\.stellar-use-led\{display:none!important\}/);
+  assert.match(workspace, /\.stellar-use-led\{display:none!important\}/);
   assert.match(desktop, /stellarx-side-label/);
 });
 
