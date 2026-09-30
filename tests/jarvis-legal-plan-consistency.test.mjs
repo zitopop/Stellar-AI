@@ -20,7 +20,7 @@ test('legal policies explain Jarvis camera and connected PC data', () => {
   const acceptable = read('acceptable-use.html');
   assert.match(privacy, /Jarvis camera and voice features/);
   assert.match(privacy, /hand-tracking implementation runs in the browser/);
-  assert.match(privacy, /Connected-tool and PC Agent information/);
+  assert.match(privacy, /Connected-tool and StellarX information/);
   assert.match(acceptable, /StellarX and connected computers/);
   assert.match(acceptable, /Jarvis Computer/);
   assert.match(acceptable, /Emergency Stop/);
