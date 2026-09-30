@@ -21,7 +21,8 @@ test('legal policies explain Jarvis camera and connected PC data', () => {
   assert.match(privacy, /Jarvis camera and voice features/);
   assert.match(privacy, /hand-tracking implementation runs in the browser/);
   assert.match(privacy, /Connected-tool and PC Agent information/);
-  assert.match(acceptable, /Jarvis Computer and connected computers/);
+  assert.match(acceptable, /StellarX and connected computers/);
+  assert.match(acceptable, /Jarvis Computer/);
   assert.match(acceptable, /Emergency Stop/);
 });
 
