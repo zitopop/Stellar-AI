@@ -1,7 +1,7 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
-import { ADDON_CREDITS_PER_PENCE, isPaidPlan, isValidTopupPence, topupBonusPence } from '../lib/pricing.js';
+import { isPaidPlan } from '../lib/pricing.js';
 import { kvGet } from '../lib/profile.js';
 import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
 
@@ -203,46 +203,7 @@ export default async function handler(req, res) {
     }
 
     if (plan === 'topup') {
-      const rawPence = amount ?? qty;
-      if (!isValidTopupPence(rawPence)) {
-        return res.status(400).json({ error: 'Top-up amount must be between £3 and £200 in 50p steps.' });
-      }
-      const pence = Number(rawPence);
-
-      const bonus = topupBonusPence(pence);
-      const baseCredits = pence * ADDON_CREDITS_PER_PENCE;
-      const bonusCredits = bonus * ADDON_CREDITS_PER_PENCE;
-      const totalCredits = baseCredits + bonusCredits;
-      const attemptId = crypto.randomUUID();
-      await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'topup' });
-      const checkout = await stripe.checkout.sessions.create({
-        mode: 'payment',
-        payment_method_types: ['card'],
-        ...checkoutCustomer,
-        line_items: [{
-          price_data: {
-            currency: 'gbp',
-            unit_amount: pence,
-            product_data: {
-              name: `Stellar AI Credits — ${totalCredits.toLocaleString('en-GB')} credits`,
-              description: bonusCredits
-                ? `${baseCredits.toLocaleString('en-GB')} base + ${bonusCredits.toLocaleString('en-GB')} bonus Stellar Credits. Used after included plan credits.`
-                : `${baseCredits.toLocaleString('en-GB')} Stellar Credits. Used after included plan credits.`,
-            },
-          },
-          quantity: 1,
-        }],
-        success_url: 'https://trystellarai.com/app?payment=success&plan=topup',
-        cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=topup&attempt=${encodeURIComponent(attemptId)}`,
-        after_expiration: { recovery: { enabled: true } },
-        client_reference_id: attemptId,
-        metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus), country, currency },
-        payment_intent_data: {
-          metadata: { email: sessionUser.email, plan: 'topup', amount: String(pence), bonus: String(bonus) },
-        },
-      });
-      await incrementConversionMetric('checkout-started');
-      return res.status(200).json({ url: checkout.url });
+      return res.status(410).json({ error: 'Usage top-ups are no longer sold. Choose a plan with the usage capacity you need.' });
     }
 
     // Never create a second recurring subscription for an account that already has one.
