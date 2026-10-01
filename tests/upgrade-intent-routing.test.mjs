@@ -23,6 +23,7 @@ test('workspace persists upgrade intent through sign-in and starts authenticated
 test('Google and email sign-in resume a saved plan intent; Discord keeps browser session storage intact', () => {
   assert.match(app, /handleGoogleCredential\(response\)[\s\S]*?await handlePendingIntents\(\)/);
   assert.match(app, /async function emailAuth\(mode\)[\s\S]*?await handlePendingIntents\(\)/);
-  assert.match(app, /href="\/api\/discord-oauth"/);
+  assert.match(app, /discordHref='\/api\/discord-oauth'/);
+  assert.match(app, /consumeDiscordOAuthReturn/);
   assert.match(app, /sessionStorage\.setItem\('stellar-pending-upgrade',p\)/);
 });
