@@ -264,3 +264,69 @@ test('cancelling a scheduled reminder marks it cancelled even if QStash cancella
   assert.equal(cancelled.qstashCancellation.reason, 'already-delivered-or-missing');
   assert.equal(requests.some(item => item.options.method === 'DELETE'), true);
 });
+
+
+test('without QStash, a reminder within 15 minutes dispatches immediately through the owner-call fallback', async () => {
+  const env = baseEnv();
+  delete env.QSTASH_TOKEN;
+  delete env.QSTASH_CURRENT_SIGNING_KEY;
+  delete env.QSTASH_NEXT_SIGNING_KEY;
+  const now = Date.parse('2026-10-01T18:00:00Z');
+  let dispatched = 0;
+  const service = createQStashReminderService({
+    env,
+    now: () => now,
+    immediateDispatch: async input => {
+      dispatched += 1;
+      assert.equal(input.category, 'approval');
+      assert.equal(input.severity, 'urgent');
+      assert.equal(input.metadata.trigger, 'short-reminder-immediate-fallback');
+      assert.equal(input.metadata.requestedRunAt, Date.parse('2026-10-01T18:10:00Z'));
+      return { ok: true, called: false, pending: true, provider: 'twilio', call_id: 'CAfixture', status: 'queued' };
+    },
+  });
+
+  const reminder = await service.schedule('owner@example.com', {
+    requestId: 'short-fallback-12345',
+    runAt: '2026-10-01T19:10:00+01:00',
+    category: 'approval',
+    severity: 'urgent',
+    summary: 'Short reminder should ring now when QStash is unavailable.',
+  });
+
+  assert.equal(dispatched, 1);
+  assert.equal(reminder.status, 'dispatched-immediate');
+  assert.equal(reminder.immediateFallback, true);
+  assert.equal(reminder.pending, true);
+  assert.equal(reminder.provider, 'twilio');
+  assert.equal(reminder.call_id, 'CAfixture');
+});
+
+test('without QStash, reminders beyond 15 minutes still fail instead of pretending an in-memory timer is durable', async () => {
+  const env = baseEnv();
+  delete env.QSTASH_TOKEN;
+  delete env.QSTASH_CURRENT_SIGNING_KEY;
+  delete env.QSTASH_NEXT_SIGNING_KEY;
+  const now = Date.parse('2026-10-01T18:00:00Z');
+  let dispatched = 0;
+  const service = createQStashReminderService({
+    env,
+    now: () => now,
+    immediateDispatch: async () => {
+      dispatched += 1;
+      return { ok: true };
+    },
+  });
+
+  await assert.rejects(
+    () => service.schedule('owner@example.com', {
+      requestId: 'long-fallback-12345',
+      runAt: '2026-10-01T19:16:00+01:00',
+      category: 'approval',
+      severity: 'urgent',
+      summary: 'This is too far away for the immediate fallback.',
+    }),
+    /only urgent reminders within 15 minutes/i,
+  );
+  assert.equal(dispatched, 0);
+});

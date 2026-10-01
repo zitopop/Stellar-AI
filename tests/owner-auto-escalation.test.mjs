@@ -53,3 +53,12 @@ test('QStash urgent reminders reuse existing broadcast and webhook functions',()
   assert.match(webhook,/upstash-signature/);
   assert.match(webhook,/readRawBody/);
 });
+
+
+test('short urgent reminders can call immediately when QStash is unavailable',()=>{
+  const broadcast=readFileSync(new URL('../api/broadcast.js',import.meta.url),'utf8');
+  assert.match(broadcast,/immediateDispatch/);
+  assert.match(broadcast,/short-reminder-immediate-fallback/);
+  assert.match(broadcast,/startOwnerCall/);
+  assert.match(broadcast,/provider: 'stellar-inapp'/);
+});
