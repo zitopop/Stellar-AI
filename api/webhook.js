@@ -11,6 +11,7 @@ import { incrementConversionMetric, recordCheckoutCompletion, recordCheckoutExpi
 import { escalateOwner } from '../lib/owner-escalation.js';
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { getGmailPushConfiguration, getGmailWatchStatus, processGmailPush, startGmailWatch } from '../lib/gmail-push.js';
+import { deliverQStashReminder, QStashReminderError } from '../lib/qstash-reminders.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -72,6 +73,26 @@ async function handleGmailPush(req, res) {
   } catch (error) {
     console.error('Gmail push processing failed', error?.message || error);
     return res.status(500).json({ error: 'Gmail notification could not be processed.' });
+  }
+}
+
+async function handleQStashReminder(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
+  const rawBody = (await readRawBody(req)).toString('utf8');
+  try {
+    const result = await deliverQStashReminder({
+      rawBody,
+      signature: req.headers['upstash-signature'],
+      upstashRegion: req.headers['upstash-region'],
+      dispatch: escalateOwner,
+    });
+    return res.status(200).json(result);
+  } catch (error) {
+    const status = error instanceof QStashReminderError ? error.status : 503;
+    if (status >= 500) console.error('QStash reminder delivery failed', error?.message || error);
+    return res.status(status).json({
+      error: status === 403 ? 'Invalid QStash signature.' : (error instanceof QStashReminderError ? error.message : 'Urgent reminder delivery is unavailable.'),
+    });
   }
 }
 
@@ -162,6 +183,7 @@ export default async function handler(req, res) {
   const source = String(req.query?.source || '').trim().toLowerCase();
   if (source === 'gmail-push') return handleGmailPush(req, res);
   if (source === 'gmail-watch') return handleGmailWatch(req, res);
+  if (source === 'qstash-reminder') return handleQStashReminder(req, res);
   if (req.method !== 'POST') return res.status(405).end();
   if (!STRIPE_SECRET || !WEBHOOK_SECRET) return res.status(500).json({ error: 'Stripe webhook is not configured.' });
   if (!KV_URL || !KV_TOKEN) return res.status(500).json({ error: 'Account storage is not configured.' });
