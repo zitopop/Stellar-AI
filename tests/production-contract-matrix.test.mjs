@@ -6,9 +6,9 @@ import { getPlanDefinition } from '../lib/pricing.js';
 const plans = ['free', 'starter', 'plus', 'pro', 'owner'];
 const aliases = {
   spark: ['spark', 'fabie', 'claude-haiku-4-5-20251001'],
-  star: ['star', 'smart', 'claude-sonnet-4-6'],
-  comet: ['comet', 'claude-opus-4-6'],
-  nova: ['nova', 'ultra', 'claude-opus-4-8'],
+  star: ['star', 'smart', 'claude-sonnet-5-5', 'claude-sonnet-4-6', 'gemini-3.8-flash'],
+  comet: ['comet', 'claude-opus-5-5', 'claude-opus-4-6', 'gpt-6.1-sol', 'grok-4.7'],
+  nova: ['nova', 'ultra', 'claude-fable-5-1'],
 };
 
 function expected(tier, plan) {
@@ -23,5 +23,12 @@ test('model resolver respects current server plan capabilities', () => {
     }
   }
   assert.equal(resolveModelTier('CLAUDE-OPUS-4-6', 'plus'), 'comet');
-  assert.equal(resolveModelTier('claude-opus-4-8', 'plus'), 'star');
+  assert.equal(resolveModelTier('claude-fable-5-1', 'plus'), 'star');
+  assert.ok(getPlanDefinition('starter').models.includes('gpt-6-luna'));
+  assert.ok(getPlanDefinition('plus').models.includes('gemini-3.8-flash'));
+  assert.ok(getPlanDefinition('plus').models.includes('claude-sonnet-5-5'));
+  assert.ok(getPlanDefinition('pro').models.includes('gpt-6.1-sol'));
+  assert.ok(getPlanDefinition('pro').models.includes('claude-opus-5-5'));
+  assert.ok(getPlanDefinition('pro').models.includes('claude-fable-5-1'));
+  assert.ok(getPlanDefinition('pro').models.includes('grok-4.7'));
 });
