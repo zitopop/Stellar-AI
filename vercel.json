@@ -1369,7 +1369,7 @@
   "crons": [
     {
       "path": "/api/desktop-agent?surface=jarvis&action=worker",
-      "schedule": "25 8 * * *"
+      "schedule": "* * * * *"
     },
     {
       "path": "/api/webhook?source=gmail-watch",
@@ -1381,6 +1381,9 @@
   "outputDirectory": ".",
   "functions": {
     "api/desktop-agent.js": {
+      "maxDuration": 300
+    },
+    "api/voice-stream.js": {
       "maxDuration": 300
     }
   },
