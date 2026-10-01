@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const endpoint = readFileSync(new URL('../api/track-event.js', import.meta.url), 'utf8');
+const endpoint = readFileSync(new URL('../api/get-plan.js', import.meta.url), 'utf8');
 const tracker = readFileSync(new URL('../lib/assets/stellar-analytics.js', import.meta.url), 'utf8');
 const pages = [
   'thank-you.html',
