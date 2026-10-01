@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
+import { getOwnerCallConfiguration, readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
 import { normalizePhoneNumber } from '../lib/phone-number.js';
 
 const provider=readFileSync(new URL('../lib/owner-call.js',import.meta.url),'utf8');
@@ -159,7 +159,7 @@ test('partial Twilio config does not block the Retell bridge fallback', async ()
 });
 
 
-test('UK owner numbers normalize to E.164 before Twilio dialing', async () => {
+test('UK number helper normalizes local input while Twilio dialing requires strict E.164 env values', async () => {
   assert.equal(normalizePhoneNumber('07700 900123'), '+447700900123');
   assert.equal(normalizePhoneNumber('7700 900123', { assumeNational: true }), '+447700900123');
   assert.equal(normalizePhoneNumber('0044 7700 900123'), '+447700900123');
@@ -172,7 +172,7 @@ test('UK owner numbers normalize to E.164 before Twilio dialing', async () => {
   process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
   process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
   process.env.TWILIO_FROM_NUMBER = '+15005550006';
-  process.env.OWNER_PHONE = '07700 900123';
+  process.env.OWNER_PHONE = '+447700900123';
   delete process.env.KV_REST_API_URL;
   delete process.env.KV_REST_API_TOKEN;
   delete process.env.TELNYX_API_KEY;
@@ -221,4 +221,127 @@ test('internal owner escalation auth no longer requires the Retell bridge token'
   assert.match(escalation, /CRON_SECRET/);
   assert.match(escalation, /x-owner-internal-token/);
   assert.match(broadcast, /x-owner-internal-token/);
+});
+
+
+test('Twilio accepts TWILIO_PHONE_NUMBER as an outbound-number alias and exposes strict E.164 health flags', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','TWILIO_PHONE_NUMBER','OWNER_PHONE','KV_REST_API_URL','KV_REST_API_TOKEN','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER','CALL_BRIDGE_TOKEN'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
+  delete process.env.TWILIO_FROM_NUMBER;
+  process.env.TWILIO_PHONE_NUMBER = '+15005550006';
+  process.env.OWNER_PHONE = '+447700900123';
+  delete process.env.KV_REST_API_URL;
+  delete process.env.KV_REST_API_TOKEN;
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  delete process.env.CALL_BRIDGE_TOKEN;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('voice.twilio.com/v1/DialingPermissions/Countries/GB')) {
+      return Response.json({ low_risk_numbers_enabled: true });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const config = getOwnerCallConfiguration();
+    assert.equal(config.twilioConfigured, true);
+    assert.equal(config.twilioFields.fromVariable, 'TWILIO_PHONE_NUMBER');
+    assert.equal(config.twilioFields.rawFromE164, true);
+    assert.equal(config.twilioFields.rawOwnerPhoneE164, true);
+    const health = await readOwnerCallHealth({});
+    assert.equal(health.ready, true);
+    assert.equal(health.twilioFields.fromVariable, 'TWILIO_PHONE_NUMBER');
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
+test('Twilio rejects a locally formatted OWNER_PHONE even when it could be normalized', () => {
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','TWILIO_PHONE_NUMBER','OWNER_PHONE'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
+  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  delete process.env.TWILIO_PHONE_NUMBER;
+  process.env.OWNER_PHONE = '07700 900123';
+  try {
+    const config = getOwnerCallConfiguration();
+    assert.equal(config.twilioConfigured, false);
+    assert.equal(config.twilioFields.ownerPhone, true);
+    assert.equal(config.twilioFields.rawOwnerPhoneE164, false);
+    assert.match(config.twilioMissing.join(' '), /strict E\.164/i);
+  } finally {
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
+test('Twilio API error code and HTTP status survive the owner-call fallback layer', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','TWILIO_PHONE_NUMBER','OWNER_PHONE','KV_REST_API_URL','KV_REST_API_TOKEN','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER','CALL_BRIDGE_TOKEN'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
+  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  delete process.env.TWILIO_PHONE_NUMBER;
+  process.env.OWNER_PHONE = '+447700900123';
+  delete process.env.KV_REST_API_URL;
+  delete process.env.KV_REST_API_TOKEN;
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  delete process.env.CALL_BRIDGE_TOKEN;
+
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('voice.twilio.com/v1/DialingPermissions/Countries/GB')) {
+      return Response.json({ low_risk_numbers_enabled: true });
+    }
+    if (String(url).includes('/Calls.json')) {
+      return Response.json({
+        code: 21210,
+        message: "'From' phone number not verified",
+        more_info: 'https://www.twilio.com/docs/api/errors/21210',
+        status: 400,
+      }, { status: 400 });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+
+  try {
+    await assert.rejects(
+      () => startOwnerCall({ purpose: 'Twilio error propagation fixture' }),
+      (error) => {
+        assert.equal(error.provider, 'twilio');
+        assert.equal(error.status, 400);
+        assert.equal(error.code, 21210);
+        assert.equal(error.twilio?.code, 21210);
+        assert.equal(error.twilio?.moreInfo, 'https://www.twilio.com/docs/api/errors/21210');
+        return true;
+      },
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
+test('owner-call source logs sanitized Twilio REST and terminal callback diagnostics', () => {
+  assert.match(provider, /Twilio Calls API rejected owner call/);
+  assert.match(provider, /Twilio owner call skipped before API submission/);
+  assert.match(provider, /moreInfo/);
+  assert.match(voice, /Twilio owner call terminal failure/);
+  assert.match(voice, /ErrorCode/);
+  assert.match(broadcast, /code: error\?\.code/);
 });
