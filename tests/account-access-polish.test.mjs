@@ -4,17 +4,22 @@ import { readFile } from 'node:fs/promises';
 
 const appHtml = await readFile(new URL('../app.html', import.meta.url), 'utf8');
 
-test('account access uses the current useful sign-in and signup copy', () => {
-  assert.match(appHtml, /Use Google, email or Discord\./);
-  assert.match(appHtml, /Continue with Google/);
-  assert.match(appHtml, /Fastest way to sign in\./);
+test('account access presents Discord first while retaining Google and email', () => {
+  assert.match(appHtml, /Use Discord, Google or email\./);
+  const discord = appHtml.indexOf('Continue with Discord');
+  const google = appHtml.indexOf('Continue with Google', discord);
+  assert.ok(discord >= 0);
+  assert.ok(google > discord);
+  assert.match(appHtml, /Primary one-click sign-in for FiveM and Roblox builders\./);
   assert.match(appHtml, /Create account/);
 });
 
 test('account access keeps all current authentication actions', () => {
   assert.match(appHtml, /id="googleRender"/);
   assert.match(appHtml, /id="googleFallback"/);
-  assert.match(appHtml, /href="\/api\/discord-oauth"/);
+  assert.match(appHtml, /discordHref='\/api\/discord-oauth'/);
+  assert.match(appHtml, /id="discordSignin"/);
+  assert.match(appHtml, /consumeDiscordOAuthReturn/);
   assert.match(appHtml, /data-action="email-login"/);
   assert.match(appHtml, /data-action="email-signup"/);
   assert.match(appHtml, /action:'googleLogin'/);
