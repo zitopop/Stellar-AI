@@ -31,18 +31,35 @@ function ownerUsage() {
   };
 }
 
+async function discordCommunityStats() {
+  try {
+    const response = await fetch('https://discord.com/api/v10/invites/e6uRAV9HGA?with_counts=true&with_expiration=true', {
+      headers: { 'User-Agent': 'StellarAI/2.0 (+https://trystellarai.com)' },
+    });
+    if (!response.ok) return { discordMembers: null, discordOnline: null };
+    const invite = await response.json();
+    return {
+      discordMembers: Math.max(0, Number(invite?.approximate_member_count) || 0) || null,
+      discordOnline: Math.max(0, Number(invite?.approximate_presence_count) || 0) || null,
+    };
+  } catch {
+    return { discordMembers: null, discordOnline: null };
+  }
+}
+
 async function publicStats(url, token) {
   const request = async (path) => {
     const response = await fetch(`${url}/${path}`, { headers: { Authorization: `Bearer ${token}` } });
     if (!response.ok) return 0;
     return Math.max(0, Number((await response.json()).result) || 0);
   };
-  const [scriptsGenerated, serversPowered, countriesReached] = await Promise.all([
+  const [scriptsGenerated, serversPowered, countriesReached, community] = await Promise.all([
     request(`get/${encodeURIComponent('stellar:stats:scripts-generated')}`),
     request(`scard/${encodeURIComponent('stellar:stats:active-builders')}`),
     request(`scard/${encodeURIComponent('stellar:stats:countries')}`),
+    discordCommunityStats(),
   ]);
-  return { scriptsGenerated, serversPowered, countriesReached, verified: true };
+  return { scriptsGenerated, serversPowered, countriesReached, ...community, verified: true };
 }
 
 function billingState({ plan, user, owner }) {

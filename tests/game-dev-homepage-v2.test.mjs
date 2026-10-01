@@ -46,6 +46,17 @@ test('homepage pricing reflects live server plan ceilings rather than stale mark
   assert.match(home,/1,600 requests\/hour ceiling \+ Nova[\s\S]*?Nova model access/);
 });
 
+test('homepage uses evidence-based developer trust signals instead of unverifiable security hype',()=>{
+  assert.match(home,/HTTPS encrypted in transit/);
+  assert.match(home,/Server-side secret handling/);
+  assert.match(home,/Free plan · no card required/);
+  assert.match(home,/https:\/\/discord\.gg\/e6uRAV9HGA/);
+  assert.match(home,/https:\/\/github\.com\/zitopop\/Stellar-AI/);
+  assert.match(home,/data-discord-members/);
+  assert.match(home,/Service online/);
+  assert.doesNotMatch(home,/256-bit API Encryption|Code Not Used For Training/);
+});
+
 test('390px mobile safeguards keep the CTA early and code scrolling inside the editor',()=>{
   assert.match(home,/@media\(max-width:390px\)[\s\S]*?\.public-home \.oa2-hero\{padding-top:42px!important;gap:30px!important\}/);
   assert.match(home,/@media\(max-width:390px\)[\s\S]*?\.public-home \.oa2-hero-actions\{margin-top:18px!important\}/);
