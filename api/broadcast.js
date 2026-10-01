@@ -209,7 +209,63 @@ export default async function handler(req, res) {
 
   if (action === 'scheduleUrgentReminder') {
     try {
-      const service = createQStashReminderService();
+      const authorization = String(req.headers.authorization || '');
+      const service = createQStashReminderService({
+        immediateDispatch: async ({ category, severity, summary, metadata }) => {
+          const purpose = `URGENT ${String(category || 'approval').toUpperCase()}: ${String(summary || '').slice(0, 300)}`;
+          try {
+            const data = await startOwnerCall({
+              purpose,
+              authorization,
+              bridgeToken,
+              metadata: { ...(metadata || {}), escalation: { category, severity, summary } },
+            });
+            return {
+              ok: true,
+              called: data?.provider === 'twilio' ? false : true,
+              pending: data?.provider === 'twilio',
+              provider: data?.provider || null,
+              call_id: data?.call_id || null,
+              status: data?.status || 'started',
+            };
+          } catch (error) {
+            console.warn('Short urgent reminder phone fallback failed; using Stellar in-app alert', error?.provider || '', error?.message || error);
+            try {
+              const created = await createStellarCallSession({
+                category,
+                severity,
+                summary,
+                metadata: {
+                  ...(metadata || {}),
+                  trigger: 'short-reminder-immediate-fallback',
+                  phoneProvider: error?.provider || 'phone',
+                  phoneStatus: error?.status || null,
+                },
+              });
+              if (created?.ok) {
+                const pushed = await sendOwnerPushAlert({
+                  category,
+                  severity,
+                  summary,
+                  reason: error?.message || 'phone-unavailable',
+                  call: created.call || null,
+                });
+                return {
+                  ok: true,
+                  called: false,
+                  pending: false,
+                  provider: 'stellar-inapp',
+                  fallback: pushed?.sent > 0 ? 'push_in_app_call' : 'in_app_call',
+                  status: 'ringing',
+                };
+              }
+            } catch (fallbackError) {
+              console.error('Short reminder in-app fallback failed', fallbackError?.message || fallbackError);
+            }
+            return { ok: false, called: false, reason: 'phone-unavailable' };
+          }
+        },
+      });
       const reminder = await service.schedule(ownerSession.email, req.body || {});
       return res.status(200).json({ ok: true, reminder });
     } catch (error) {
