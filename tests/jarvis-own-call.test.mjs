@@ -161,6 +161,7 @@ test('partial Twilio config does not block the Retell bridge fallback', async ()
 
 test('UK owner numbers normalize to E.164 before Twilio dialing', async () => {
   assert.equal(normalizePhoneNumber('07700 900123'), '+447700900123');
+  assert.equal(normalizePhoneNumber('7700 900123', { assumeNational: true }), '+447700900123');
   assert.equal(normalizePhoneNumber('0044 7700 900123'), '+447700900123');
   assert.equal(normalizePhoneNumber('+1 (500) 555-0006'), '+15005550006');
 
