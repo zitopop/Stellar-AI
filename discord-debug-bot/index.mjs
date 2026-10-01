@@ -102,7 +102,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const repairedCode = truncate(cleanForCodeBlock(payload.code), 3300);
     const summary = truncate(payload.summary || payload.answer || 'Repair generated.', 900);
     const description = repairedCode
-      ? ````${language}\n${repairedCode}\n`````
+      ? '```' + language + '\n' + repairedCode + '\n```'
       : truncate(cleanForCodeBlock(payload.answer || summary), 3800);
 
     const embed = new EmbedBuilder()

@@ -23,6 +23,7 @@ test('Discord bot uses slash commands, native fetch, cooldowns and safe output h
   assert.match(bot, /X-Stellar-Bot-Key/);
   assert.match(bot, /COOLDOWN_MS = 15_000/);
   assert.match(bot, /allowedMentions: \{ parse: \[\] \}/);
+  assert.ok(bot.includes("? '```' + language + '\\n' + repairedCode + '\\n```'"));
   assert.doesNotMatch(bot, /node-fetch|require\(/);
 });
 
