@@ -1,4 +1,5 @@
 // api/broadcast.js - owner-authorized email broadcast
+import { timingSafeEqual } from 'node:crypto';
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
@@ -128,9 +129,15 @@ export default async function handler(req, res) {
   if (String(req.query?.telnyxVoice || '') === '1') return handleTelnyxVoiceWebhook(req, res);
 
   const action = String(req.body?.action || '');
-  const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '');
-  const suppliedBridgeToken = String(req.headers['x-call-bridge-token'] || '');
-  const internalEscalation = action === 'escalateOwner' && bridgeToken && suppliedBridgeToken === bridgeToken;
+  const bridgeToken = String(process.env.CALL_BRIDGE_TOKEN || '').trim();
+  const internalToken = String(process.env.OWNER_INTERNAL_TOKEN || bridgeToken || process.env.CRON_SECRET || '').trim();
+  const suppliedInternalToken = String(req.headers['x-owner-internal-token'] || req.headers['x-call-bridge-token'] || '').trim();
+  const actualToken = Buffer.from(suppliedInternalToken);
+  const expectedToken = Buffer.from(internalToken);
+  const internalEscalation = action === 'escalateOwner'
+    && Boolean(internalToken)
+    && actualToken.length === expectedToken.length
+    && timingSafeEqual(actualToken, expectedToken);
 
   let ownerSession = null;
   if (!internalEscalation) {

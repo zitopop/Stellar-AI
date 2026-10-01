@@ -71,6 +71,8 @@ Owner call / Jarvis:
 - `TWILIO_AUTH_TOKEN`
 - `TWILIO_FROM_NUMBER` in `+1...` or valid E.164 format
 - `JARVIS_PUBLIC_URL=https://trystellarai.com`
+- `OPENAI_API_KEY` for bidirectional realtime owner calls
+- optional `OWNER_INTERNAL_TOKEN` for server-to-server escalations (falls back to `CALL_BRIDGE_TOKEN` or `CRON_SECRET`)
 
 Optional integrations:
 
@@ -108,6 +110,7 @@ Only for a full app/API host:
 - test mic permission and speech fallback
 - test Stripe checkout link opens
 - test owner call status
+- test one realtime owner call and confirm the Twilio media stream connects; on the current Vercel Hobby Fluid Compute limit the live WebSocket segment may run for up to 300 seconds; if it ends, Twilio falls back to speech mode
 - test support buttons
 
 ## 6. Rollback plan

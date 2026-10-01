@@ -470,6 +470,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/get-chats",
+      "destination": "/api/desktop-agent?surface=chats"
+    },
+    {
       "source": "/api/client-metric",
       "destination": "/api/track-event?mode=client-metric"
     },
@@ -479,7 +483,7 @@
     },
     {
       "source": "/api/save-chats",
-      "destination": "/api/get-chats"
+      "destination": "/api/desktop-agent?surface=chats"
     },
     {
       "source": "/api/plugins",
@@ -1381,6 +1385,9 @@
   "outputDirectory": ".",
   "functions": {
     "api/desktop-agent.js": {
+      "maxDuration": 300
+    },
+    "api/voice-stream.js": {
       "maxDuration": 300
     }
   },

@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
+import { normalizePhoneNumber } from '../lib/phone-number.js';
 
 const provider=readFileSync(new URL('../lib/owner-call.js',import.meta.url),'utf8');
 const voice=readFileSync(new URL('../lib/jarvis-voice.js',import.meta.url),'utf8');
 const broadcast=readFileSync(new URL('../api/broadcast.js',import.meta.url),'utf8');
+const mediaStream=readFileSync(new URL('../api/voice-stream.js',import.meta.url),'utf8');
 
 test('Jarvis can use a direct Twilio owner-call provider without exposing the owner number to clients',()=>{
   assert.match(provider,/TWILIO_ACCOUNT_SID/);
@@ -154,4 +156,69 @@ test('partial Twilio config does not block the Retell bridge fallback', async ()
       else process.env[key] = original[key];
     }
   }
+});
+
+
+test('UK owner numbers normalize to E.164 before Twilio dialing', async () => {
+  assert.equal(normalizePhoneNumber('07700 900123'), '+447700900123');
+  assert.equal(normalizePhoneNumber('7700 900123', { assumeNational: true }), '+447700900123');
+  assert.equal(normalizePhoneNumber('0044 7700 900123'), '+447700900123');
+  assert.equal(normalizePhoneNumber('+1 (500) 555-0006'), '+15005550006');
+
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','KV_REST_API_URL','KV_REST_API_TOKEN','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];
+  const original = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  let callBody = '';
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
+  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  process.env.OWNER_PHONE = '07700 900123';
+  delete process.env.KV_REST_API_URL;
+  delete process.env.KV_REST_API_TOKEN;
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  globalThis.fetch = async (url, options = {}) => {
+    if (String(url).includes('voice.twilio.com/v1/DialingPermissions/Countries/GB')) {
+      return Response.json({ low_risk_numbers_enabled: true });
+    }
+    if (String(url).includes('/Calls.json')) {
+      callBody = String(options.body || '');
+      return Response.json({ sid: 'CA' + '1'.repeat(32), status: 'queued' });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const call = await startOwnerCall({ purpose: 'E.164 regression test' });
+    assert.equal(call.provider, 'twilio');
+    const params = new URLSearchParams(callBody);
+    assert.equal(params.get('To'), '+447700900123');
+    assert.equal(params.get('From'), '+15005550006');
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
+test('outbound owner calls use a bidirectional 8 kHz mu-law media bridge when realtime voice is configured', () => {
+  assert.match(voice, /<Connect><Stream/);
+  assert.match(voice, /\/api\/voice-stream/);
+  assert.match(mediaStream, /audio\/x-mulaw/);
+  assert.match(mediaStream, /TWILIO_MEDIA_RATE = 8000/);
+  assert.match(mediaStream, /audio\/pcmu/);
+  assert.match(mediaStream, /session\.input_audio\.append/);
+  assert.match(mediaStream, /session\.output_audio\.delta/);
+  assert.match(mediaStream, /x-twilio-signature/);
+  assert.match(mediaStream, /timingSafeEqual/);
+});
+
+test('internal owner escalation auth no longer requires the Retell bridge token', () => {
+  const escalation=readFileSync(new URL('../lib/owner-escalation.js',import.meta.url),'utf8');
+  assert.match(escalation, /OWNER_INTERNAL_TOKEN/);
+  assert.match(escalation, /CRON_SECRET/);
+  assert.match(escalation, /x-owner-internal-token/);
+  assert.match(broadcast, /x-owner-internal-token/);
 });
