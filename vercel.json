@@ -470,6 +470,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/get-chats",
+      "destination": "/api/desktop-agent?surface=chats"
+    },
+    {
       "source": "/api/client-metric",
       "destination": "/api/track-event?mode=client-metric"
     },
@@ -479,7 +483,7 @@
     },
     {
       "source": "/api/save-chats",
-      "destination": "/api/get-chats"
+      "destination": "/api/desktop-agent?surface=chats"
     },
     {
       "source": "/api/plugins",
@@ -1374,10 +1378,6 @@
     {
       "path": "/api/webhook?source=gmail-watch",
       "schedule": "17 8 * * *"
-    },
-    {
-      "path": "/api/urgent-reminders",
-      "schedule": "* * * * *"
     }
   ],
   "ignoreCommand": "bash scripts/vercel-ignore-build.sh",
@@ -1388,7 +1388,7 @@
       "maxDuration": 300
     },
     "api/voice-stream.js": {
-      "maxDuration": 300
+      "maxDuration": 60
     }
   },
   "git": {
