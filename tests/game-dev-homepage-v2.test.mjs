@@ -7,14 +7,14 @@ const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
 const pricing=readFileSync(new URL('../lib/pricing.js',import.meta.url),'utf8');
 
 test('game developer hero uses focused generation and debugging conversion copy',()=>{
-  assert.match(home,/Build better game scripts\./);
-  assert.match(home,/Fix broken ones faster\./);
-  assert.match(home,/STELLAR AI FOR FIVEM \+ ROBLOX DEVELOPERS/);
-  assert.match(home,/Generate, debug and export QBCore, ESX, ox_lib and Roblox Luau/);
-  assert.match(home,/Start building free/);
-  assert.match(home,/href="\/app\?mode=debug" class="oa2-secondary-action">Paste broken code/);
+  assert.match(home,/Stellar AI V2 · Production workspace/);
+  assert.match(home,/Automated FiveM &amp; Roblox/);
+  assert.match(home,/Script Generation\./);
+  assert.match(home,/Build, debug and secure QBCore, ESX, ox_lib and Roblox Luau code/);
+  assert.match(home,/Start Free \(£1 Credit\)/);
+  assert.match(home,/href="#playground" class="oa2-secondary-action">View Live Editor Demo/);
   for(const framework of ['QBCore','ESX','ox_lib','Roblox Luau','ModuleScripts']) assert.match(home,new RegExp(framework.replace('_','_')));
-  assert.match(home,/Test changes on a development server or Studio place before production/);
+  assert.match(home,/AI-generated code still needs runtime testing and server-side validation before production deployment/);
 });
 
 test('homepage has tabbed script generator and error debugger with highlighted Lua and download demo',()=>{
@@ -24,6 +24,9 @@ test('homepage has tabbed script generator and error debugger with highlighted L
   assert.match(home,/data-dev-panel="debugger"/);
   assert.match(home,/class="syn-key"/);
   assert.match(home,/data-demo-download="generator">Download \.lua/);
+  assert.match(home,/server\/main\.lua/);
+  assert.match(home,/data-hero-copy>📋 Copy Code/);
+  assert.match(home,/data-hero-download>💾 Download \.lua/);
   assert.match(home,/new Blob\(\[code\.trim\(\)\+'\\n'\]/);
 });
 

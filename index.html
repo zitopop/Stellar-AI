@@ -38,14 +38,14 @@
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Stellar AI — AI chat, StellarX work agent, plugins and models">
+  <meta property="og:image:alt" content="Stellar AI developer workspace for FiveM and Roblox scripts">
   <meta property="og:url" content="https://trystellarai.com">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Stellar AI — FiveM & Roblox AI Coding Workspace">
   <meta name="twitter:description" content="Generate, debug and export QBCore, ESX, ox_lib and Roblox Luau scripts in one developer-focused workspace. Start free with no card.">
   <meta name="twitter:image" content="https://trystellarai.com/og-image.png?v=20260920-landing">
-  <meta name="twitter:image:alt" content="Stellar AI — AI chat, StellarX work agent, plugins and models">
+  <meta name="twitter:image:alt" content="Stellar AI developer workspace for FiveM and Roblox scripts">
   <link rel="canonical" href="https://trystellarai.com">
   <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/lib/assets/pwa/icon-192.png" sizes="192x192">
@@ -1280,6 +1280,24 @@ body.public-home::before{opacity:.36!important;background-size:56px 56px!importa
   .public-home .plan{padding:20px!important}
 }
 </style>
+<style id="stellar-developer-trust-v50">
+.public-home .dev-release-badge{gap:7px!important}
+.public-home .dev-status-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#6fe6ad;box-shadow:0 0 0 3px rgba(111,230,173,.08),0 0 14px rgba(111,230,173,.28);animation:stellar-status-pulse 2.2s ease-in-out infinite}
+.public-home .dev-status-dot.is-unverified{background:#d9b85d;box-shadow:0 0 0 3px rgba(217,184,93,.08)}
+@keyframes stellar-status-pulse{0%,100%{opacity:.72}50%{opacity:1;box-shadow:0 0 0 5px rgba(111,230,173,.04),0 0 18px rgba(111,230,173,.30)}}
+.public-home .oa2-primary-action{background:linear-gradient(135deg,#8a2be2 0%,#6946e8 50%,#00cde7 100%)!important;border-color:rgba(150,224,255,.24)!important;color:#fff!important;box-shadow:0 12px 34px rgba(75,45,170,.22),0 0 28px rgba(0,205,231,.08)!important}
+.public-home .oa2-primary-action:hover,.public-home .oa2-primary-action:focus-visible{background:linear-gradient(135deg,#9237eb 0%,#7252eb 50%,#08d5ef 100%)!important;box-shadow:0 16px 40px rgba(75,45,170,.28),0 0 34px rgba(0,205,231,.13)!important}
+.public-home .dev-runtime-note{max-width:620px;margin:12px 0 0;color:#606b7a;font-size:10px;line-height:1.55}
+.public-home .dev-proof-strip{width:min(1220px,calc(100% - 40px));padding:0 0 18px;margin-top:-30px}
+.public-home .dev-proof-grid{width:100%;margin:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.public-home .dev-proof-item{min-height:82px;padding:14px 15px;border-color:rgba(255,255,255,.08);background:rgba(10,12,18,.58);border-radius:14px;text-decoration:none}
+.public-home .dev-proof-item strong{font-size:12px;color:#eef2f7}.public-home .dev-proof-item small{font-size:10px}
+.public-home .hero-editor-title:last-child{min-height:24px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid rgba(255,255,255,.07);border-radius:6px;background:rgba(255,255,255,.025);color:#8791a0!important}
+@media(max-width:1020px){.public-home .dev-runtime-note{margin-left:auto;margin-right:auto;text-align:center}.public-home .dev-proof-strip{margin-top:-12px;width:min(860px,calc(100% - 32px))}}
+@media(max-width:700px){.public-home .dev-proof-grid{grid-template-columns:1fr 1fr}.public-home .dev-proof-strip{width:calc(100% - 24px);padding-bottom:8px}}
+@media(max-width:390px){.public-home .dev-proof-grid{grid-template-columns:1fr!important}.public-home .dev-proof-item{min-height:64px!important}}
+@media(prefers-reduced-motion:reduce){.public-home .dev-status-dot{animation:none}}
+</style>
 </head>
 <body class="stellar-public public-home">
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -1294,25 +1312,26 @@ body.public-home::before{opacity:.36!important;background-size:56px 56px!importa
   <main id="main-content" tabindex="-1">
     <section class="oa2-hero container" aria-labelledby="hero-title">
       <div class="dev-hero-copy">
-        <div class="dev-release-badge" role="note">STELLAR AI FOR FIVEM + ROBLOX DEVELOPERS</div>
-        <h1 id="hero-title">Build better game scripts.<br><span class="dev-hero-accent">Fix broken ones faster.</span></h1>
-        <p class="oa2-lead">Generate, debug and export QBCore, ESX, ox_lib and Roblox Luau from one focused AI workspace. Inspect the code, keep server-side validation in view and iterate without leaving the browser.</p>
-        <p class="dev-security-note">Generated code stays inspectable before you copy or download it. Test changes on a development server or Studio place before production.</p>
-        <div class="oa2-hero-actions"><a href="/app?welcome=1" class="oa2-primary-action">Start building free <span aria-hidden="true">↗</span></a><a href="/app?mode=debug" class="oa2-secondary-action">Paste broken code</a></div>
+        <div class="dev-release-badge" role="status" aria-live="polite"><span class="dev-status-dot" aria-hidden="true"></span><span data-hero-status>Stellar AI V2 · Production workspace</span></div>
+        <h1 id="hero-title">Automated FiveM &amp; Roblox<br><span class="dev-hero-accent">Script Generation.</span></h1>
+        <p class="oa2-lead">Build, debug and secure QBCore, ESX, ox_lib and Roblox Luau code from one focused workspace. Server-side validation guidance and type-safe Luau patterns stay visible while you work.</p>
+        <div class="oa2-hero-actions"><a href="/app?welcome=1" class="oa2-primary-action">Start Free (£1 Credit) <span aria-hidden="true">↗</span></a><a href="#playground" class="oa2-secondary-action">View Live Editor Demo</a></div>
+        <p class="dev-security-note">🔒 HTTPS encrypted in transit · 🛡️ Server-authoritative security guidance · ✓ Free requires no card</p>
         <div class="oa2-framework-checklist" aria-label="Supported developer frameworks"><span>QBCore</span><span>ESX</span><span>ox_lib</span><span>Roblox Luau</span><span>ModuleScripts</span></div>
         <div class="dev-trust-row" aria-label="Stellar AI trust signals">
-          <span>No card for Free</span>
           <span>Server-side secret handling</span>
           <a href="https://github.com/zitopop/Stellar-AI" target="_blank" rel="noopener noreferrer">Public GitHub ↗</a>
-          <a href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer">Developer Discord ↗</a>
-          <a href="/privacy">Privacy</a>
+          <a href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer">Official Stellar AI community ↗</a>
+          <a href="/privacy">Privacy policy</a>
+          <a href="/terms">Clear terms</a>
         </div>
+        <p class="dev-runtime-note">AI-generated code still needs runtime testing and server-side validation before production deployment.</p>
       </div>
       <div class="hero-editor" data-hero-editor aria-label="Interactive game script editor preview">
         <div class="hero-editor-top">
           <div class="hero-window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
-          <span class="hero-editor-title">server.lua</span>
-          <span class="hero-editor-title">STELLAR PREVIEW</span>
+          <span class="hero-editor-title">server/main.lua</span>
+          <span class="hero-editor-title">Lua</span>
         </div>
         <div class="hero-editor-tabs" role="tablist" aria-label="Framework preview">
           <button class="hero-editor-tab" type="button" role="tab" aria-selected="true" data-hero-framework="qbcore">QBCore</button>
@@ -1321,20 +1340,24 @@ body.public-home::before{opacity:.36!important;background-size:56px 56px!importa
           <button class="hero-editor-tab" type="button" role="tab" aria-selected="false" data-hero-framework="luau">Roblox Luau</button>
         </div>
         <div class="hero-editor-toolbar">
-          <span data-hero-file-label>server.lua · QBCore</span>
+          <span data-hero-file-label>server/main.lua · QBCore</span>
           <div class="hero-editor-actions"><button class="hero-code-action" type="button" data-hero-copy>📋 Copy Code</button><button class="hero-code-action" type="button" data-hero-download>💾 Download .lua</button></div>
         </div>
         <div class="hero-editor-body">
           <pre class="hero-editor-code" data-hero-code="qbcore"><code><span class="syn-key">local</span> <span class="syn-var">QBCore</span> = exports[<span class="syn-str">'qb-core'</span>]:GetCoreObject()
 
-RegisterNetEvent(<span class="syn-str">'stellar:reward'</span>, <span class="syn-key">function</span>(amount)
+QBCore.Functions.CreateUseableItem(<span class="syn-str">'lockpick'</span>, <span class="syn-key">function</span>(source, item)
   <span class="syn-key">local</span> src = source
   <span class="syn-key">local</span> Player = QBCore.Functions.GetPlayer(src)
   <span class="syn-key">if not</span> Player <span class="syn-key">then return end</span>
 
-  amount = tonumber(amount)
-  <span class="syn-key">if not</span> amount <span class="syn-key">or</span> amount &lt; <span class="syn-num">1</span> <span class="syn-key">or</span> amount &gt; <span class="syn-num">5</span> <span class="syn-key">then return end</span>
-  Player.Functions.AddItem(<span class="syn-str">'repairkit'</span>, amount)
+  <span class="syn-key">local</span> slot = tonumber(item <span class="syn-key">and</span> item.slot)
+  <span class="syn-key">if not</span> slot <span class="syn-key">then return end</span>
+
+  <span class="syn-key">local</span> stored = Player.Functions.GetItemBySlot(slot)
+  <span class="syn-key">if not</span> stored <span class="syn-key">or</span> stored.name ~= <span class="syn-str">'lockpick'</span> <span class="syn-key">then return end</span>
+
+  TriggerClientEvent(<span class="syn-str">'lockpick:client:openLockpick'</span>, src)
 <span class="syn-key">end</span>)</code></pre>
           <pre class="hero-editor-code" data-hero-code="esx" hidden><code><span class="syn-key">local</span> ESX = exports[<span class="syn-str">'es_extended'</span>]:getSharedObject()
 
@@ -1372,6 +1395,15 @@ TriggerServerEvent(<span class="syn-str">'stellar:complete'</span>)</code></pre>
 <span class="syn-key">return</span> awardCoins</code></pre>
           <span class="hero-editor-status">Inspect before use</span>
         </div>
+      </div>
+    </section>
+
+    <section class="dev-proof-strip container" aria-label="Verified Stellar AI product proof">
+      <div class="dev-proof-grid">
+        <article class="dev-proof-item"><strong>4 framework targets</strong><small>QBCore · ESX · ox_lib · Roblox Luau</small></article>
+        <article class="dev-proof-item"><strong>100 free credits/day</strong><small>£1 equivalent · no card required</small></article>
+        <a class="dev-proof-item" href="/status"><strong data-service-proof>Live service status</strong><small>Public reachability check ↗</small></a>
+        <a class="dev-proof-item" href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer"><strong data-discord-members>Join the developer Discord</strong><small data-discord-online>Official community · live count when available ↗</small></a>
       </div>
     </section>
 
@@ -1489,7 +1521,30 @@ Player.Functions.AddMoney(<span class="syn-str">'cash'</span>, reward)</code></p
 
     <section class="container final-cta"><p class="eyebrow">BUILD WITH STELLAR</p><h2>Bring the prompt, script or error log.<br><span>Leave with something you can inspect.</span></h2><div class="final-cta-actions"><a href="/app?welcome=1" class="button button-primary">Start building free <span aria-hidden="true">↗</span></a><a href="/app?mode=debug" class="button button-outline">Debug a script</a><a href="/plans" class="button button-outline">Compare plans</a></div><p class="hero-footnote">Free requires no card. Generated code should be tested in a development environment before production use.</p></section>
   </main>
-  <footer class="container footer"><div class="footer-top"><div><a class="brand" href="/"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg><span>Stellar<span class="brand-ai">AI</span></span></a><p>Chat, project work,<br>StellarX and connected tools.</p></div><div class="footer-links"><div><span>PRODUCT</span><a href="/app">Open app</a><a href="/models">Models</a><a href="/plugins">Plugins</a><a href="/install">Install app</a><a href="/plans">Workspace pricing</a></div><div><span>BUSINESS</span><a href="/business">Business overview</a><a href="/ai-receptionist">AI Receptionist</a><a href="/website-audit">Website Mini Audit</a><a href="/investors">Investors</a><a href="/affiliate">Creator & referrals</a><a href="/support">Support</a></div><div><span>MORE</span><a href="/blog">Guides</a><a href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer">Discord <span aria-hidden="true">↗</span></a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="/legal">Legal & policies</a></div></div></div><div class="footer-bottom"><span>© 2026 Stellar AI</span><span>Built for businesses, teams and builders. <i aria-hidden="true">✦</i></span></div></footer>
+  <footer class="container footer"><div class="footer-top"><div><a class="brand" href="/"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg><span>Stellar<span class="brand-ai">AI</span></span></a><p>Chat, project work,<br>StellarX and connected tools.</p></div><div class="footer-links"><div><span>PRODUCT</span><a href="/app">Open app</a><a href="/models">Models</a><a href="/plugins">Plugins</a><a href="/install">Install app</a><a href="/plans">Workspace pricing</a></div><div><span>BUSINESS</span><a href="/business">Business overview</a><a href="/ai-receptionist">AI Receptionist</a><a href="/website-audit">Website Mini Audit</a><a href="/investors">Investors</a><a href="/affiliate">Creator & referrals</a><a href="/support">Support</a></div><div><span>MORE</span><a href="/status">Status</a><a href="https://github.com/zitopop/Stellar-AI" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer">Discord <span aria-hidden="true">↗</span></a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="/legal">Legal & policies</a></div></div></div><div class="footer-bottom"><span>© 2026 Stellar AI</span><span>Built for businesses, teams and builders. <i aria-hidden="true">✦</i></span></div></footer>
+<script id="stellar-live-proof-v2">
+(()=>{'use strict';
+const heroStatus=document.querySelector('[data-hero-status]');
+const serviceProof=document.querySelector('[data-service-proof]');
+const members=document.querySelector('[data-discord-members]');
+const online=document.querySelector('[data-discord-online]');
+fetch('/api/get-plan?stats=public',{cache:'no-store'})
+  .then(response=>{if(!response.ok)throw new Error('status');return response.json()})
+  .then(data=>{
+    if(heroStatus)heroStatus.textContent='Stellar AI V2 · Production service online';
+    if(serviceProof)serviceProof.textContent='Service online';
+    const total=Math.max(0,Number(data?.discordMembers)||0);
+    const active=Math.max(0,Number(data?.discordOnline)||0);
+    if(total>0&&members)members.textContent=total.toLocaleString('en-GB')+' Discord members';
+    if(active>0&&online)online.textContent=active.toLocaleString('en-GB')+' online now · Official community ↗';
+  })
+  .catch(()=>{
+    if(heroStatus)heroStatus.textContent='Stellar AI V2 · Status check unavailable';
+    if(serviceProof)serviceProof.textContent='View service status';
+    document.querySelector('.dev-status-dot')?.classList.add('is-unverified');
+  });
+})();
+</script>
 <script id="stellar-hero-editor-v1">
 (()=>{'use strict';
 const root=document.querySelector('[data-hero-editor]');
@@ -1497,7 +1552,7 @@ if(!root)return;
 const tabs=[...root.querySelectorAll('[data-hero-framework]')];
 const codes=[...root.querySelectorAll('[data-hero-code]')];
 const label=root.querySelector('[data-hero-file-label]');
-const names={qbcore:'server.lua · QBCore',esx:'server.lua · ESX',oxlib:'client.lua · ox_lib',luau:'ModuleScript · Roblox Luau'};
+const names={qbcore:'server/main.lua · QBCore',esx:'server/main.lua · ESX',oxlib:'client/main.lua · ox_lib',luau:'ModuleScript · Roblox Luau'};
 function activeCode(){return codes.find(code=>!code.hidden)}
 function select(name){tabs.forEach(tab=>tab.setAttribute('aria-selected',tab.dataset.heroFramework===name?'true':'false'));codes.forEach(code=>{code.hidden=code.dataset.heroCode!==name});if(label)label.textContent=names[name]||'script.lua'}
 tabs.forEach(tab=>tab.addEventListener('click',()=>select(tab.dataset.heroFramework)));

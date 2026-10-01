@@ -28,3 +28,13 @@ test('public support identity is consistent',()=>{
   for(const source of [terms,support,privacy]) assert.match(source,/support@trystellarai\.com/);
   assert.doesNotMatch(terms,/deadlyfox10@gmail\.com/);
 });
+
+
+test('trust-first hero avoids invented benchmark and privacy claims',()=>{
+  for(const claim of ['HTTPS encrypted in transit','Server-authoritative security guidance','100 free credits/day','Live service status']) assert.match(home,new RegExp(claim));
+  assert.doesNotMatch(home,/99\.8%|<\s*3\.2s|1,000\+|256-Bit|Zero Code-Storage Training|Dedicated Instance/);
+});
+
+test('homepage links to a real static status surface',()=>{
+  assert.match(home,/href="\/status"/);
+});
