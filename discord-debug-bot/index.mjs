@@ -82,11 +82,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         'Content-Type': 'application/json',
         'X-Stellar-Bot-Key': bridgeKey,
       },
-      body: JSON.stringify({
-        code: inputCode,
-        discordUserId: userId,
-        discordGuildId: interaction.guildId || null,
-      }),
+      body: JSON.stringify({ code: inputCode }),
     });
 
     let payload = {};

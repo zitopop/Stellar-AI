@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
-const roots = ['api', 'lib', 'scripts'];
+const roots = ['api', 'lib', 'scripts', 'discord-debug-bot'];
 const rootFiles = ['currency.js', 'sw.js', 'stellar-growth-v1.js'];
 const files = [];
 
