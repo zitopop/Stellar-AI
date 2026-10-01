@@ -7,6 +7,8 @@ on:
       - 'api/webhook.js'
       - 'lib/owner-call.js'
       - 'lib/jarvis-voice.js'
+      - 'lib/qstash-reminders.js'
+      - 'tests/qstash-reminders.test.mjs'
       - 'tests/gmail-owner-call.test.mjs'
       - 'tests/jarvis-own-call.test.mjs'
       - 'tests/owner-call-command.test.mjs'
@@ -29,5 +31,6 @@ jobs:
           node --check lib/gmail-push.js
           node --check api/webhook.js
           node --check lib/owner-call.js
+          node --check lib/qstash-reminders.js
       - name: Focused regression tests
-        run: node --test tests/gmail-owner-call.test.mjs tests/jarvis-own-call.test.mjs tests/owner-call-command.test.mjs
+        run: node --test tests/gmail-owner-call.test.mjs tests/jarvis-own-call.test.mjs tests/owner-call-command.test.mjs tests/qstash-reminders.test.mjs

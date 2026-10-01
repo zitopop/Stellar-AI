@@ -9,6 +9,7 @@ import { DEFAULT_OWNER_CALL_POLICY, OWNER_AUTO_CALL_CATEGORIES, normalizeOwnerCa
 import { handleJarvisVoiceWebhook } from '../lib/jarvis-voice.js';
 import { getOwnerPushPublicKey, ownerPushConfigured, saveOwnerPushSubscription, sendOwnerPushAlert } from '../lib/owner-push.js';
 import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
+import { createQStashReminderService, QStashReminderError } from '../lib/qstash-reminders.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -196,6 +197,38 @@ export default async function handler(req, res) {
     return res.status(created.ok ? 200 : 503).json(created);
   }
 
+  if (action === 'urgentReminderStatus') {
+    try {
+      const service = createQStashReminderService();
+      return res.status(200).json({ ok: true, ...(await service.status(ownerSession.email)) });
+    } catch (error) {
+      const status = error instanceof QStashReminderError ? error.status : 503;
+      return res.status(status).json({ error: error instanceof QStashReminderError ? error.message : 'Urgent reminder status is unavailable.' });
+    }
+  }
+
+  if (action === 'scheduleUrgentReminder') {
+    try {
+      const service = createQStashReminderService();
+      const reminder = await service.schedule(ownerSession.email, req.body || {});
+      return res.status(200).json({ ok: true, reminder });
+    } catch (error) {
+      const status = error instanceof QStashReminderError ? error.status : 503;
+      return res.status(status).json({ error: error instanceof QStashReminderError ? error.message : 'Urgent reminder could not be scheduled.' });
+    }
+  }
+
+  if (action === 'cancelUrgentReminder') {
+    try {
+      const service = createQStashReminderService();
+      const reminder = await service.cancel(ownerSession.email, req.body?.reminderId);
+      return res.status(200).json({ ok: true, reminder });
+    } catch (error) {
+      const status = error instanceof QStashReminderError ? error.status : 503;
+      return res.status(status).json({ error: error instanceof QStashReminderError ? error.message : 'Urgent reminder could not be cancelled.' });
+    }
+  }
+
   if (req.body?.action === 'getCallPolicy') {
     const kvUrl = process.env.KV_REST_API_URL, kvToken = process.env.KV_REST_API_TOKEN;
     if (!kvUrl || !kvToken) return res.status(200).json({ ok:true, ...DEFAULT_OWNER_CALL_POLICY });
@@ -322,10 +355,12 @@ export default async function handler(req, res) {
       const pd=await pr.json().catch(()=>({})),ld=await lr.json().catch(()=>({}));
       if(pd?.result)policy=normalizeOwnerCallPolicy(JSON.parse(pd.result)); last=Number(ld?.result||0)||0;
     } catch(error) { console.error('Owner call policy lookup failed',error?.message||error); return res.status(200).json({ok:true,called:false,reason:'storage'}); }
-    if(policy.enabled===false||!policy.categories?.includes(category))return res.status(200).json({ok:true,called:false,reason:'policy'});
-    if(last&&Date.now()-last<policy.cooldownMinutes*60000)return res.status(200).json({ok:true,called:false,reason:'cooldown'});
-    const authorization = String(req.headers.authorization || '');
     const metadata = req.body?.metadata && typeof req.body.metadata === 'object' ? req.body.metadata : {};
+    const explicitlyScheduled = metadata?.trigger === 'qstash-scheduled-reminder'
+      && /^[a-f0-9]{40}$/.test(String(metadata?.reminderId || ''));
+    if(!explicitlyScheduled && (policy.enabled===false||!policy.categories?.includes(category)))return res.status(200).json({ok:true,called:false,reason:'policy'});
+    if(!explicitlyScheduled && last&&Date.now()-last<policy.cooldownMinutes*60000)return res.status(200).json({ok:true,called:false,reason:'cooldown'});
+    const authorization = String(req.headers.authorization || '');
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
     let stellarCall = null;
     try {
