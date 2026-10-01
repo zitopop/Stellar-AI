@@ -42,3 +42,14 @@ test('urgent owner escalation falls back to configured owner email when phone ca
   assert.match(broadcast,/fallback: 'email'/);
   assert.match(broadcast,/phone-unavailable/);
 });
+
+test('QStash urgent reminders reuse existing broadcast and webhook functions',()=>{
+  const broadcast=readFileSync(new URL('../api/broadcast.js',import.meta.url),'utf8');
+  assert.match(broadcast,/scheduleUrgentReminder/);
+  assert.match(broadcast,/cancelUrgentReminder/);
+  assert.match(broadcast,/urgentReminderStatus/);
+  assert.match(broadcast,/qstash-scheduled-reminder/);
+  assert.match(webhook,/source === 'qstash-reminder'/);
+  assert.match(webhook,/upstash-signature/);
+  assert.match(webhook,/readRawBody/);
+});
