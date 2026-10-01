@@ -110,7 +110,7 @@ Only for a full app/API host:
 - test mic permission and speech fallback
 - test Stripe checkout link opens
 - test owner call status
-- test one realtime owner call and confirm the Twilio media stream connects; on Vercel Hobby the live WebSocket segment is capped at 60 seconds and then falls back to Twilio speech mode
+- test one realtime owner call and confirm the Twilio media stream connects; on the current Vercel Hobby Fluid Compute limit the live WebSocket segment may run for up to 300 seconds; if it ends, Twilio falls back to speech mode
 - test support buttons
 
 ## 6. Rollback plan
