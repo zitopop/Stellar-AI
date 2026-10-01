@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import test from 'node:test';
+
+const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
+const pricing=readFileSync(new URL('../lib/pricing.js',import.meta.url),'utf8');
+
+test('game developer hero uses focused generation and debugging conversion copy',()=>{
+  assert.match(home,/Generate &amp; Debug Game Scripts in Seconds\./);
+  assert.match(home,/Production-ready QBCore, ESX, ox_lib, and Roblox Luau code with security-focused checks for common exploit patterns\./);
+  assert.match(home,/Try 3 Free Generations/);
+  assert.match(home,/href="\/app\?mode=debug" class="oa2-secondary-action">Debug Broken Code/);
+  for(const framework of ['QBCore','ESX','ox_lib','Roblox Luau']) assert.match(home,new RegExp(framework.replace('_','_')));
+  assert.match(home,/AI-generated code still needs runtime testing and server-side validation/);
+});
+
+test('homepage has tabbed script generator and error debugger with highlighted Lua and download demo',()=>{
+  assert.match(home,/data-dev-tab="generator">Script Generator/);
+  assert.match(home,/data-dev-tab="debugger">Error Debugger/);
+  assert.match(home,/data-dev-panel="generator"/);
+  assert.match(home,/data-dev-panel="debugger"/);
+  assert.match(home,/class="syn-key"/);
+  assert.match(home,/data-demo-download="generator">Download \.lua/);
+  assert.match(home,/new Blob\(\[code\.trim\(\)\+'\\n'\]/);
+});
+
+test('homepage compares generic AI with Stellar developer workflow',()=>{
+  assert.match(home,/Generic AI vs Stellar AI/);
+  for(const row of ['QBCore \/ ESX context','ox_lib workflows','Roblox Luau','Broken code \/ logs','Script export','Security review']) assert.match(home,new RegExp(row));
+});
+
+test('homepage pricing reflects live server plan ceilings rather than stale marketing numbers',()=>{
+  assert.match(pricing,/starter:[\s\S]*?requestsPerHour: 120/);
+  assert.match(pricing,/plus:[\s\S]*?requestsPerHour: 500/);
+  assert.match(pricing,/pro:[\s\S]*?requestsPerHour: 1800/);
+  assert.match(pricing,/free:[\s\S]*?includedCredits: 75/);
+  assert.match(home,/£8 Starter · 120 req\/hr/);
+  assert.match(home,/£20 Plus · 500 req\/hr/);
+  assert.match(home,/£75 Pro · 1,800 req\/hr · Nova/);
+  assert.match(home,/75-credit daily allowance/);
+});
+
+test('homepage debugger CTA opens app debugger mode',()=>{
+  assert.match(app,/q\.get\('mode'\)/);
+  assert.match(app,/setComposerMode\('debug',false\)/);
+});
