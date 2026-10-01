@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, clampTopupPence, isValidTopupPence, normalisePlan, topupBonusPence } from '../lib/pricing.js';
+import { PLAN_DEFINITIONS, TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, clampTopupPence, isValidTopupPence, normalisePlan, topupBonusPence } from '../lib/pricing.js';
 
 test('top-up bonus schedule matches the customer-facing offers', () => {
   assert.equal(topupBonusPence(300), 0);
@@ -36,4 +36,13 @@ test('annual and monthly prices normalize to the canonical plan access tier', ()
   assert.equal(normalisePlan('lite-annual'), 'plus');
   assert.equal(normalisePlan('pro-annual'), 'pro');
   assert.equal(normalisePlan('unknown'), null);
+});
+
+
+test('public plan entitlements match the conversion promises', () => {
+  assert.equal(PLAN_DEFINITIONS.free.includedCredits, 100);
+  assert.equal(PLAN_DEFINITIONS.starter.requestsPerHour, 120);
+  assert.equal(PLAN_DEFINITIONS.plus.requestsPerHour, 400);
+  assert.equal(PLAN_DEFINITIONS.pro.requestsPerHour, 1600);
+  assert.ok(PLAN_DEFINITIONS.pro.models.includes('nova'));
 });
