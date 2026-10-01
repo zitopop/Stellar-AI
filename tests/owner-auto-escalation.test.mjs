@@ -7,9 +7,9 @@ const webhook=readFileSync(new URL('../api/webhook.js',import.meta.url),'utf8');
 const chat=readFileSync(new URL('../api/chat.js',import.meta.url),'utf8');
 
 test('server escalation uses the protected Stellar endpoint',()=>{
-  assert.match(helper,/CALL_BRIDGE_TOKEN/);
+  assert.match(helper,/OWNER_INTERNAL_TOKEN/);
   assert.match(helper,/action: 'escalateOwner'/);
-  assert.match(helper,/x-call-bridge-token/);
+  assert.match(helper,/x-owner-internal-token/);
   assert.match(helper,/threshold = 3/);
   assert.match(helper,/windowSeconds = 300/);
 });
