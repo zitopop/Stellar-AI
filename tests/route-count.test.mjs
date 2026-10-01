@@ -7,8 +7,8 @@ const handlers = fs.readdirSync(new URL('../api/', import.meta.url)).filter((nam
 test('public API handlers stay explicit and include the analytics route', () => {
   assert.deepEqual(handlers, [
     'auth.js', 'broadcast.js', 'chat.js', 'create-checkout.js', 'desktop-agent.js',
-    'discord-oauth.js', 'get-plan.js', 'grant.js', 'search.js', 'track-event.js',
+    'discord-oauth.js', 'get-plan.js', 'grant.js', 'search.js',
     'voice-stream.js', 'webhook.js',
   ]);
-  assert.ok(handlers.length <= 12, 'Keep Vercel function count under control.');
+  assert.ok(handlers.length <= 11, 'Keep Vercel function count within Hobby deployment headroom.');
 });
