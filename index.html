@@ -1058,6 +1058,40 @@ body.public-home::before{content:"";position:fixed;inset:0;pointer-events:none;z
   .public-home .dev-trust-row{grid-template-columns:1fr!important}
 }
 </style>
+<style id="stellar-landing-v45">
+.public-home .stellar-comparison{border-top:1px solid rgba(255,255,255,.055)!important}
+.public-home .stellar-comparison-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px
+}
+.public-home .stellar-comparison-card{
+  min-height:220px;padding:24px;border:1px solid rgba(255,255,255,.08);border-radius:20px;
+  background:linear-gradient(180deg,rgba(17,20,29,.78),rgba(9,11,17,.9));
+  box-shadow:0 22px 70px rgba(0,0,0,.18)
+}
+.public-home .stellar-comparison-card span{
+  color:#9388ee;font:800 10px/1 "JetBrains Mono","Fira Code",monospace;letter-spacing:.11em
+}
+.public-home .stellar-comparison-card h3{
+  margin:42px 0 10px;color:#f4f6fa;font-size:21px;line-height:1.15;letter-spacing:-.035em
+}
+.public-home .stellar-comparison-card p{
+  margin:0;color:#9da7b5;font-size:13px;line-height:1.68
+}
+.public-home .stellar-comparison-cta{display:flex;justify-content:center;margin-top:18px}
+.public-home .stellar-comparison-cta a{
+  min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;
+  border:1px solid rgba(255,255,255,.10);border-radius:11px;background:rgba(255,255,255,.035);
+  color:#e9edf4;font-size:12px;font-weight:760
+}
+.public-home .stellar-comparison-cta a:hover{
+  border-color:rgba(142,238,255,.26);background:rgba(142,238,255,.055)
+}
+@media(max-width:900px){
+  .public-home .stellar-comparison-grid{grid-template-columns:1fr!important}
+  .public-home .stellar-comparison-card{min-height:0!important}
+  .public-home .stellar-comparison-card h3{margin-top:28px!important}
+}
+</style>
 </head>
 <body class="stellar-public public-home">
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -1153,17 +1187,6 @@ TriggerServerEvent(<span class="syn-str">'stellar:complete'</span>)</code></pre>
       </div>
     </section>
 
-    <section class="oa2-audience container" id="product-map" aria-labelledby="audience-title">
-      <div class="oa2-section-head">
-        <div><span class="oa2-tag">HOW STELLAR WORKS</span><h2 id="audience-title">Start simple. Go further when you need to.</h2><p class="oa2-section-copy">Use Stellar like a normal AI chat first. Bring in StellarX, plugins and deeper models only when the job calls for them.</p></div>
-      </div>
-      <div class="oa2-audience-grid oa2-audience-grid-simple">
-        <article><span>01 · CHAT</span><h3>Start with a conversation</h3><p>Ask questions, write, plan, learn, research and work through code in a fast, uncluttered chat.</p><a href="/app?welcome=1">Try the chat ↗</a></article>
-        <article id="stellarx-home"><span>02 · WORK</span><h3>Hand off the bigger job</h3><p>Use StellarX for longer tasks across code, files and approved computer actions, while important steps stay reviewable.</p><a href="/desktop">Explore StellarX ↗</a></article>
-        <article><span>03 · CONNECT</span><h3>Bring your tools with you</h3><p>Connect supported services and choose the right Stellar model for quick answers, deeper thinking or complex project work.</p><div class="oa2-card-links"><a href="/plugins">See plugins ↗</a><a href="/models">See models ↗</a></div></article>
-      </div>
-    </section>
-
     <section class="stellar-dev-playground" id="playground" aria-labelledby="playground-title">
       <div class="dev-section-head">
         <p class="eyebrow">LIVE WORKFLOW PREVIEW</p>
@@ -1204,36 +1227,30 @@ Player.Functions.AddMoney(<span class="syn-str">'cash'</span>, reward)</code></p
 
     <section class="stellar-comparison" id="comparison" aria-labelledby="comparison-title">
       <div class="dev-section-head">
-        <p class="eyebrow">DEVELOPER-FIRST WORKFLOW</p>
-        <h2 id="comparison-title">Less prompt setup. More useful output.</h2>
-        <p>Stellar keeps common FiveM and Roblox context, debugging paths and export actions close to the conversation instead of making you rebuild the workflow every time.</p>
+        <p class="eyebrow">WHY STELLAR</p>
+        <h2 id="comparison-title">Built around the work you actually do.</h2>
+        <p>Stellar keeps the useful developer context close to the chat, so you spend less time rebuilding prompts and more time inspecting the result.</p>
       </div>
-      <div class="comparison-wrap">
-        <table class="comparison-table">
-          <thead><tr><th>Capability</th><th>Typical chat workflow</th><th>Stellar AI</th></tr></thead>
-          <tbody>
-            <tr><td>QBCore / ESX context</td><td>Usually requires repeated framework explanation</td><td>Developer prompts are tailored for common FiveM framework patterns</td></tr>
-            <tr><td>ox_lib workflows</td><td>General Lua suggestions</td><td>Handles ox_lib-oriented Lua debugging and generation prompts</td></tr>
-            <tr><td>Roblox Luau</td><td>May treat Luau as standard Lua</td><td>Dedicated Luau-aware debugging and ModuleScript copy workflow</td></tr>
-            <tr><td>Broken code / logs</td><td>Paste into a normal chat</td><td>Dedicated “Paste Broken Code / Error Log” mode</td></tr>
-            <tr><td>Script export</td><td>Manual copy and file creation</td><td>One-click formatted .lua download and Luau copy controls</td></tr>
-            <tr><td>Security review</td><td>Depends on the prompt</td><td>Debug workflow asks for server validation and common exploit-pattern checks</td></tr>
-          </tbody>
-        </table>
+      <div class="stellar-comparison-grid">
+        <article class="stellar-comparison-card">
+          <span>01 · FRAMEWORK AWARE</span>
+          <h3>Start closer to your stack</h3>
+          <p>QBCore, ESX, ox_lib and Roblox Luau stay visible in the workflow, with examples shaped around common server and Studio patterns.</p>
+        </article>
+        <article class="stellar-comparison-card">
+          <span>02 · DEBUG FIRST</span>
+          <h3>Paste the error, not a long explanation</h3>
+          <p>Use the dedicated debugger for broken code and logs, then inspect the smallest useful fix before you move it into your project.</p>
+        </article>
+        <article class="stellar-comparison-card">
+          <span>03 · EXPORT READY</span>
+          <h3>Move from answer to file faster</h3>
+          <p>Copy formatted Luau or download a .lua file directly from the workflow instead of rebuilding the response by hand.</p>
+        </article>
       </div>
+      <div class="stellar-comparison-cta"><a href="/app?welcome=1">Open the developer workspace <span aria-hidden="true">↗</span></a></div>
     </section>
 
-<section class="stellar-revenue-path" aria-labelledby="stellar-business-outcomes">
-      <div class="container">
-        <div class="stellar-revenue-head"><p class="eyebrow">STELLAR FOR BUSINESS</p><h2 id="stellar-business-outcomes">Buy an outcome, not another confusing AI tool.</h2><p>Use the workspace yourself, or choose a scoped service when you want a concrete business job handled with clear pricing.</p></div>
-        <div class="stellar-revenue-grid">
-          <article class="stellar-revenue-card"><span class="tag">WEBSITE</span><h3>Website Mini Audit / Quick Fix</h3><div class="offer-price">£99 one-time</div><p>A focused review of public pages, contact routes and obvious trust or usability friction, with a prioritised fix list.</p><a href="/website-audit">See the £99 audit →</a></article>
-          <article class="stellar-revenue-card"><span class="tag">BUILD</span><h3>AI Business Website Package</h3><div class="offer-price">£99 one-time</div><p>Generate and refine a mobile-first one-page website from business facts, preview it and download the finished HTML.</p><a href="/business-builder">Build a business website →</a></article>
-          <article class="stellar-revenue-card featured"><span class="tag">RECURRING SERVICE</span><h3>AI Receptionist</h3><div class="offer-price">£150 setup + £49/month</div><p>Set up a receptionist flow from approved business information to answer routine questions and capture enquiries.</p><a href="/ai-receptionist">See receptionist setup →</a></article>
-        </div>
-        <p class="stellar-revenue-trust">Clear GBP pricing · secure Stripe checkout · business terms and refund information available before purchase · no guaranteed sales or ranking claims.</p>
-      </div>
-    </section>
 
     <section class="section container pricing-section" id="plans">
       <div class="section-heading center pricing-heading">
@@ -1260,8 +1277,8 @@ Player.Functions.AddMoney(<span class="syn-str">'cash'</span>, reward)</code></p
           <ul><li><span aria-hidden="true">✓</span><strong>Standard monthly usage</strong></li><li><span aria-hidden="true">✓</span>Spark + Star</li><li><span aria-hidden="true">✓</span>Longer answers and code</li><li><span aria-hidden="true">✓</span>More room for revisions and everyday projects</li></ul>
         </article>
         <article class="plan featured" data-plan="plus">
-          <div class="plan-topline"><span class="plan-badge">MOST POPULAR</span><span class="plan-fit">BEST FOR BUILDERS</span></div><h3>Plus</h3>
-          <p class="plan-desc"><strong>Best for:</strong> frequent builders shipping larger resources, multi-file projects and full game systems.</p>
+          <div class="plan-topline"><span class="plan-badge">MOST POPULAR</span><span class="plan-fit">FOR ACTIVE BUILDERS</span></div><h3>Plus</h3>
+          <p class="plan-desc"><strong>Best for:</strong> active FiveM and Roblox builders working through larger resources, multi-file projects and repeated debugging.</p>
           <div class="price"><strong>£20</strong><span> / month</span></div><p class="annual"><strong>£168/year</strong> · save £72</p>
           <p class="plan-value"><strong>400 requests/hour ceiling</strong><span>15,000 monthly credits, Comet access and room for full game systems.</span></p><p class="plan-limit">£20 Plus · 400 req/hr</p>
           <div class="plan-actions"><a href="/app?upgrade=plus" class="button button-primary" aria-label="Choose Plus monthly">Choose Plus · £20/mo <span aria-hidden="true">↗</span></a><a href="/app?upgrade=plus-annual" class="plan-yearly-link" aria-label="Get Plus annual for £168">Pay yearly · save 30%</a></div>

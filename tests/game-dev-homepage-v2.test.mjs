@@ -27,10 +27,10 @@ test('homepage has tabbed script generator and error debugger with highlighted L
   assert.match(home,/new Blob\(\[code\.trim\(\)\+'\\n'\]/);
 });
 
-test('homepage compares a typical chat workflow with Stellar developer workflow',()=>{
-  assert.match(home,/Less prompt setup\. More useful output\./);
-  assert.match(home,/Typical chat workflow/);
-  for(const row of ['QBCore \/ ESX context','ox_lib workflows','Roblox Luau','Broken code \/ logs','Script export','Security review']) assert.match(home,new RegExp(row));
+test('homepage explains the developer advantage with concise proof cards',()=>{
+  assert.match(home,/Built around the work you actually do\./);
+  for(const proof of ['FRAMEWORK AWARE','DEBUG FIRST','EXPORT READY','Open the developer workspace']) assert.match(home,new RegExp(proof));
+  assert.doesNotMatch(home,/Typical chat workflow|Generic AI vs Stellar AI/);
 });
 
 test('homepage pricing reflects live server plan ceilings rather than stale marketing numbers',()=>{
@@ -68,4 +68,10 @@ test('390px mobile safeguards keep the CTA early and code scrolling inside the e
 test('homepage debugger CTA opens app debugger mode',()=>{
   assert.match(app,/q\.get\('mode'\)/);
   assert.match(app,/setComposerMode\('debug',false\)/);
+});
+
+
+test('landing page removes hidden legacy product and business blocks from the DOM',()=>{
+  assert.doesNotMatch(home,/id="product-map"/);
+  assert.doesNotMatch(home,/class="stellar-revenue-path"/);
 });
