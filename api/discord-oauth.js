@@ -1,7 +1,7 @@
 // api/discord-oauth.js — Discord OAuth callback with signed Stellar session
 import crypto from 'crypto';
 import { createSession } from '../lib/auth.js';
-import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, validReferralCode } from '../lib/profile.js';
+import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, kvSet, validReferralCode } from '../lib/profile.js';
 import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js';
 
 function fragment(values) {
@@ -95,7 +95,7 @@ export default async function handler(req, res) {
     if (!existingAuth) {
       isNew = true;
       const now = Date.now();
-      const authRecord = { discord: true, discordId: profile.id, discordUsername: profile.username, createdAt: now };
+      const authRecord = { discord: true, discordId: profile.id, discordUsername: profile.username, discordDisplayName: profile.global_name || '', discordAvatar: profile.avatar || '', createdAt: now };
       user = { plan: 'free', walletPence: 500, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord', funnel: initialFunnelState(now) };
       await kvPipeline(kvUrl, kvToken, [
         ['SET', authKey, JSON.stringify(authRecord)],
@@ -103,6 +103,15 @@ export default async function handler(req, res) {
       ]);
     } else {
       user = await kvGet(kvUrl, kvToken, userKey) || { plan: 'free', createdAt: Date.now(), signInSource: 'discord' };
+      await kvSet(kvUrl, kvToken, authKey, {
+        ...existingAuth,
+        discord: true,
+        discordId: profile.id,
+        discordUsername: profile.username,
+        discordDisplayName: profile.global_name || '',
+        discordAvatar: profile.avatar || '',
+        discordUpdatedAt: Date.now(),
+      });
     }
 
     user = await ensureReferralProfile(kvUrl, kvToken, email, user);

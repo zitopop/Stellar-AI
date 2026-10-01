@@ -1,7 +1,9 @@
+import crypto from 'node:crypto';
 // api/get-plan.js — retrieves the signed-in user's plan, add-on credits, usage, referrals, achievements, and plan capabilities
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { recordCheckoutCancellation } from '../lib/conversion-metrics.js';
-import { achievementDefinitions, ensureReferralProfile, kvGet, unlockedAchievements } from '../lib/profile.js';
+import { achievementDefinitions, ensureReferralProfile, kvGet, kvPipeline, unlockedAchievements } from '../lib/profile.js';
+import { readApiKeySummary, regenerateApiKey } from '../lib/api-keys.js';
 import { MODEL_CREDIT_COSTS, OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, isPaidPlan, normalisePlan } from '../lib/pricing.js';
 import { getUsageSnapshot } from '../lib/usage.js';
 
@@ -11,8 +13,8 @@ function setCors(req, res) {
     || /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin)
     || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
   res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://trystellarai.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
   res.setHeader('Vary', 'Origin');
   res.setHeader('Cache-Control', 'no-store');
 }
@@ -104,14 +106,51 @@ function accountPlanTruth({ plan, owner, user, capabilities, usage, billing }) {
   };
 }
 
+function discordProfile(authRecord) {
+  const id = /^\d{5,32}$/.test(String(authRecord?.discordId || '')) ? String(authRecord.discordId) : '';
+  if (!authRecord?.discord || !id) return { connected: false };
+  const username = String(authRecord.discordUsername || '').slice(0, 100);
+  const displayName = String(authRecord.discordDisplayName || username || 'Discord user').slice(0, 100);
+  const avatarHash = /^[A-Za-z0-9_]{2,128}$/.test(String(authRecord.discordAvatar || '')) ? String(authRecord.discordAvatar) : '';
+  return {
+    connected: true,
+    id,
+    username,
+    displayName,
+    avatarUrl: avatarHash ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.png?size=128` : null,
+  };
+}
+
+async function allowApiKeyMutation(url, token, email) {
+  const bucket = Math.floor(Date.now() / 60_000);
+  const key = `stellar:api-key-rate:${crypto.createHash('sha256').update(String(email || '')).digest('hex').slice(0, 24)}:${bucket}`;
+  const result = await kvPipeline(url, token, [['INCR', key], ['EXPIRE', key, 120, 'NX']]);
+  return Math.max(0, Number(Array.isArray(result) ? result[0]?.result : 0) || 0) <= 3;
+}
+
+async function handleApiKeyRequest(req, res, url, token, session) {
+  if (req.method === 'GET') {
+    return res.status(200).json(await readApiKeySummary(url, token, session.email));
+  }
+  if (String(req.body?.action || '') !== 'regenerate') {
+    return res.status(400).json({ error: 'Unknown API key action.' });
+  }
+  if (!(await allowApiKeyMutation(url, token, session.email))) {
+    res.setHeader('Retry-After', '60');
+    return res.status(429).json({ error: 'Too many key changes. Wait a minute and try again.' });
+  }
+  const created = await regenerateApiKey(url, token, session.email);
+  return res.status(200).json({ ...created.summary, key: created.key });
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed.' });
+  if (!['GET','POST'].includes(req.method)) return res.status(405).json({ error: 'Method not allowed.' });
 
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
-  if (req.query?.stats === 'public') {
+  if (req.method === 'GET' && req.query?.stats === 'public') {
     if (!url || !token) return res.status(200).json({ scriptsGenerated: 0, serversPowered: 0, countriesReached: 0, verified: false });
     try {
       res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
@@ -123,17 +162,29 @@ export default async function handler(req, res) {
 
   const session = requireSession(req, res);
   if (!session) return;
+  if (!url || !token) return res.status(500).json({ error: 'Account storage is not configured.' });
+  if (String(req.query?.mode || '') === 'api-key') {
+    try {
+      return await handleApiKeyRequest(req, res, url, token, session);
+    } catch (error) {
+      console.error('API key management failed', error?.message || error);
+      return res.status(500).json({ error: 'Could not manage your API key right now.' });
+    }
+  }
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed.' });
 
   if (req.query?.event === 'checkout_cancelled') {
     const tracked = await recordCheckoutCancellation({ id: String(req.query?.attempt || ''), email: session.email });
     return res.status(200).json({ ok: true, tracked });
   }
 
-  if (!url || !token) return res.status(500).json({ error: 'Account storage is not configured.' });
-
   try {
     const owner = isOwnerEmail(session.email);
-    const stored = (await kvGet(url, token, `stellar:user:${session.email}`)) || { plan: 'free', walletPence: 0, createdAt: Date.now() };
+    const [storedValue, authRecord] = await Promise.all([
+      kvGet(url, token, `stellar:user:${session.email}`),
+      kvGet(url, token, `stellar:auth:${session.email}`),
+    ]);
+    const stored = storedValue || { plan: 'free', walletPence: 0, createdAt: Date.now() };
     const user = await ensureReferralProfile(url, token, session.email, stored);
     const plan = owner ? 'owner' : (normalisePlan(user.plan) || 'free');
     const creditAnchorAt = Math.max(0, Number(user.planCreditAnchorAt || user.createdAt || Date.now()) || Date.now());
@@ -183,6 +234,7 @@ export default async function handler(req, res) {
       achievements,
       achievementDefinitions: achievementDefinitions(),
       websiteBuilder,
+      discord: discordProfile(authRecord),
       updatedAt: user.updatedAt || null,
     });
   } catch (error) {
