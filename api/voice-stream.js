@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { createServer } from 'node:http';
 import WebSocket, { WebSocketServer } from 'ws';
 
-const PUBLIC_URL = String(process.env.JARVIS_PUBLIC_URL || 'https://trystellarai.com').replace(/\\/$/, '');
+const PUBLIC_URL = String(process.env.JARVIS_PUBLIC_URL || 'https://trystellarai.com').replace(/\/$/, '');
 const OPENAI_LIVE_URL = 'wss://api.openai.com/v1/live/sessions';
 const OPENAI_LIVE_MODEL = String(process.env.JARVIS_LIVE_MODEL || 'gpt-live-1').trim() || 'gpt-live-1';
 const OPENAI_LIVE_VOICE = String(process.env.JARVIS_LIVE_VOICE || 'marin').trim() || 'marin';
@@ -66,8 +66,8 @@ async function loadCallContext(contextId) {
 
 function liveInstructions(context) {
   const purpose = String(context?.purpose || 'Stellar AI has an owner alert ready for review.')
-    .replace(/[\\r\\n\\t]+/g, ' ')
-    .replace(/\\s+/g, ' ')
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 300);
   const ownerName = String(context?.ownerName || process.env.OWNER_NAME || 'the owner').trim().slice(0, 80);
@@ -190,7 +190,7 @@ const wss = new WebSocketServer({ noServer: true, maxPayload: 1024 * 1024, perMe
 
 server.on('upgrade', (req, socket, head) => {
   if (!validateTwilioStreamRequest(req)) {
-    socket.write('HTTP/1.1 403 Forbidden\\r\\nConnection: close\\r\\nContent-Length: 0\\r\\n\\r\\n');
+    socket.write('HTTP/1.1 403 Forbidden\r\nConnection: close\r\nContent-Length: 0\r\n\r\n');
     socket.destroy();
     return;
   }
