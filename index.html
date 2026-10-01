@@ -1291,7 +1291,7 @@ body.public-home::before{opacity:.36!important;background-size:56px 56px!importa
 .public-home .dev-proof-strip{width:min(1220px,calc(100% - 40px));padding:0 0 18px;margin-top:-30px}
 .public-home .dev-proof-grid{width:100%;margin:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
 .public-home .dev-proof-item{min-height:82px;padding:14px 15px;border-color:rgba(255,255,255,.08);background:rgba(10,12,18,.58);border-radius:14px;text-decoration:none}
-.public-home .dev-proof-item strong{font-size:12px;color:#eef2f7}.public-home .dev-proof-item small{font-size:10px}
+.public-home .dev-proof-item strong{display:flex;align-items:baseline;gap:7px;font-size:12px;color:#eef2f7}.public-home .dev-proof-item small{font-size:10px}.public-home .dev-proof-metric{font:750 22px/1 "DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.05em;color:#f7f9fc}
 .public-home .hero-editor-title:last-child{min-height:24px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid rgba(255,255,255,.07);border-radius:6px;background:rgba(255,255,255,.025);color:#8791a0!important}
 @media(max-width:1020px){.public-home .dev-runtime-note{margin-left:auto;margin-right:auto;text-align:center}.public-home .dev-proof-strip{margin-top:-12px;width:min(860px,calc(100% - 32px))}}
 @media(max-width:700px){.public-home .dev-proof-grid{grid-template-columns:1fr 1fr}.public-home .dev-proof-strip{width:calc(100% - 24px);padding-bottom:8px}}
@@ -1316,7 +1316,7 @@ body.public-home::before{opacity:.36!important;background-size:56px 56px!importa
         <h1 id="hero-title">Automated FiveM &amp; Roblox<br><span class="dev-hero-accent">Script Generation.</span></h1>
         <p class="oa2-lead">Build, debug and secure QBCore, ESX, ox_lib and Roblox Luau code from one focused workspace. Server-side validation guidance and type-safe Luau patterns stay visible while you work.</p>
         <div class="oa2-hero-actions"><a href="/app?welcome=1" class="oa2-primary-action">Start Free (£1 Credit) <span aria-hidden="true">↗</span></a><a href="#playground" class="oa2-secondary-action">View Live Editor Demo</a></div>
-        <p class="dev-security-note">🔒 HTTPS encrypted in transit · 🛡️ Server-authoritative security guidance · ✓ Free requires no card</p>
+        <p class="dev-security-note">🔒 HTTPS encrypted in transit · 🛡️ Server-authoritative validation guidance · ✓ Free requires no card</p>
         <div class="oa2-framework-checklist" aria-label="Supported developer frameworks"><span>QBCore</span><span>ESX</span><span>ox_lib</span><span>Roblox Luau</span><span>ModuleScripts</span></div>
         <div class="dev-trust-row" aria-label="Stellar AI trust signals">
           <span>Server-side secret handling</span>
@@ -1400,10 +1400,10 @@ TriggerServerEvent(<span class="syn-str">'stellar:complete'</span>)</code></pre>
 
     <section class="dev-proof-strip container" aria-label="Verified Stellar AI product proof">
       <div class="dev-proof-grid">
-        <article class="dev-proof-item"><strong>4 framework targets</strong><small>QBCore · ESX · ox_lib · Roblox Luau</small></article>
-        <article class="dev-proof-item"><strong>100 free credits/day</strong><small>£1 equivalent · no card required</small></article>
-        <a class="dev-proof-item" href="/status"><strong data-service-proof>Live service status</strong><small>Public reachability check ↗</small></a>
-        <a class="dev-proof-item" href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer"><strong data-discord-members>Join the developer Discord</strong><small data-discord-online>Official community · live count when available ↗</small></a>
+        <article class="dev-proof-item"><strong><span class="dev-proof-metric">4</span> framework targets</strong><small>QBCore · ESX · ox_lib · Roblox Luau</small></article>
+        <article class="dev-proof-item"><strong><span class="dev-proof-metric">100/day</span> free credits</strong><small>£1 equivalent · no card required</small></article>
+        <a class="dev-proof-item" href="/status"><strong><span class="dev-proof-metric" data-service-proof>Checking…</span> service</strong><small>Live public reachability check ↗</small></a>
+        <a class="dev-proof-item" href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer"><strong><span class="dev-proof-metric" data-discord-members>Live</span> community</strong><small data-discord-online>Official Discord · live count when available ↗</small></a>
       </div>
     </section>
 
@@ -1532,15 +1532,15 @@ fetch('/api/get-plan?stats=public',{cache:'no-store'})
   .then(response=>{if(!response.ok)throw new Error('status');return response.json()})
   .then(data=>{
     if(heroStatus)heroStatus.textContent='Stellar AI V2 · Production service online';
-    if(serviceProof)serviceProof.textContent='Service online';
+    if(serviceProof)serviceProof.textContent='Online';
     const total=Math.max(0,Number(data?.discordMembers)||0);
     const active=Math.max(0,Number(data?.discordOnline)||0);
-    if(total>0&&members)members.textContent=total.toLocaleString('en-GB')+' Discord members';
-    if(active>0&&online)online.textContent=active.toLocaleString('en-GB')+' online now · Official community ↗';
+    if(total>0&&members)members.textContent=total.toLocaleString('en-GB');
+    if(active>0&&online)online.textContent=active.toLocaleString('en-GB')+' online now · Official Discord ↗';
   })
   .catch(()=>{
     if(heroStatus)heroStatus.textContent='Stellar AI V2 · Status check unavailable';
-    if(serviceProof)serviceProof.textContent='View service status';
+    if(serviceProof)serviceProof.textContent='Status';
     document.querySelector('.dev-status-dot')?.classList.add('is-unverified');
   });
 })();
