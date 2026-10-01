@@ -7,13 +7,14 @@ const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
 const pricing=readFileSync(new URL('../lib/pricing.js',import.meta.url),'utf8');
 
 test('game developer hero uses focused generation and debugging conversion copy',()=>{
-  assert.match(home,/Generate &amp; Debug Game Scripts in Seconds\./);
-  assert.match(home,/⚡ V2 RELEASE: Full Support for QBCore, ESX, ox_lib &amp; Roblox Luau/);
-  assert.match(home,/Production-ready FiveM and Roblox code generated with built-in anti-exploit checks\. Stop wasting hours debugging F8 console or Roblox Output errors\./);
-  assert.match(home,/Try 3 Free Builds \(£1 Credit\)/);
-  assert.match(home,/href="\/app\?mode=debug" class="oa2-secondary-action">Debug Broken Script/);
+  assert.match(home,/Build better game scripts\./);
+  assert.match(home,/Fix broken ones faster\./);
+  assert.match(home,/STELLAR AI FOR FIVEM \+ ROBLOX DEVELOPERS/);
+  assert.match(home,/Generate, debug and export QBCore, ESX, ox_lib and Roblox Luau/);
+  assert.match(home,/Start building free/);
+  assert.match(home,/href="\/app\?mode=debug" class="oa2-secondary-action">Paste broken code/);
   for(const framework of ['QBCore','ESX','ox_lib','Roblox Luau','ModuleScripts']) assert.match(home,new RegExp(framework.replace('_','_')));
-  assert.match(home,/AI-generated code still needs runtime testing and server-side validation/);
+  assert.match(home,/Test changes on a development server or Studio place before production/);
 });
 
 test('homepage has tabbed script generator and error debugger with highlighted Lua and download demo',()=>{
@@ -26,8 +27,9 @@ test('homepage has tabbed script generator and error debugger with highlighted L
   assert.match(home,/new Blob\(\[code\.trim\(\)\+'\\n'\]/);
 });
 
-test('homepage compares generic AI with Stellar developer workflow',()=>{
-  assert.match(home,/Generic AI vs Stellar AI/);
+test('homepage compares a typical chat workflow with Stellar developer workflow',()=>{
+  assert.match(home,/Less prompt setup\. More useful output\./);
+  assert.match(home,/Typical chat workflow/);
   for(const row of ['QBCore \/ ESX context','ox_lib workflows','Roblox Luau','Broken code \/ logs','Script export','Security review']) assert.match(home,new RegExp(row));
 });
 
@@ -47,13 +49,12 @@ test('homepage pricing reflects live server plan ceilings rather than stale mark
 });
 
 test('homepage uses evidence-based developer trust signals instead of unverifiable security hype',()=>{
-  assert.match(home,/HTTPS encrypted in transit/);
   assert.match(home,/Server-side secret handling/);
-  assert.match(home,/Free plan · no card required/);
+  assert.match(home,/No card for Free/);
   assert.match(home,/https:\/\/discord\.gg\/e6uRAV9HGA/);
   assert.match(home,/https:\/\/github\.com\/zitopop\/Stellar-AI/);
-  assert.match(home,/data-discord-members/);
-  assert.match(home,/Service online/);
+  assert.doesNotMatch(home,/data-discord-members/);
+  assert.doesNotMatch(home,/Service online/);
   assert.doesNotMatch(home,/256-bit API Encryption|Code Not Used For Training/);
 });
 
