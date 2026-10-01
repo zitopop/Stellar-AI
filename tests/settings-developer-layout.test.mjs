@@ -10,7 +10,9 @@ const apiKeys = fs.readFileSync(new URL('../lib/api-keys.js', import.meta.url), 
 
 test('Settings uses the requested three-tab developer layout', () => {
   for (const label of ['General &amp; Stack','Discord &amp; API Keys','Subscription &amp; Billing']) assert.match(app, new RegExp(label));
-  assert.match(css, /grid-template-columns:220px minmax\(0,1fr\)/);
+  assert.match(css, /width:min\(820px,calc\(100vw - 32px\)\)/);
+  assert.match(css, /grid-template-columns:178px minmax\(0,1fr\)/);
+  assert.match(css, /min-height:44px/);
   assert.match(css, /background:[\s\S]*#090a0f!important/);
   assert.match(css, /@media\(max-width:700px\)[\s\S]*settings-dev-nav-tabs[\s\S]*overflow-x:auto/);
 });
@@ -41,4 +43,11 @@ test('billing pane shows live usage and a Plus or subscription CTA', () => {
   assert.match(app, /Upgrade to Plus \(£20\/mo\)/);
   assert.match(app, /Manage Subscription/);
   assert.match(css, /linear-gradient\(135deg,#8a2be2 0%,#6946e8 48%,#00cde7 100%\)/);
+});
+
+
+test('Settings stays compact on phone without shrinking touch targets', () => {
+  assert.match(css, /@media\(max-width:700px\)[\s\S]*max-height:86dvh/);
+  assert.match(css, /settings-dev-tab\{flex:0 0 auto;width:auto;min-height:44px/);
+  assert.match(css, /settings-dev-content\{padding:11px 12px/);
 });
