@@ -53,9 +53,10 @@ test('shared serious UI keeps the product restrained and functional',()=>{
   assert.match(css,/prefers-reduced-motion/);
 });
 
-test('homepage keeps the approved chat-first layer on top of the shared system',()=>{
+test('homepage keeps the shared system while layering the current developer glass UI on top',()=>{
   const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert.match(home,/stellar-serious-chat-first-v37/);
-  assert.match(home,/id="build-form"/);
+  assert.match(home,/stellar-linear-dark-v43/);
+  assert.match(home,/data-hero-editor/);
   assert.match(home,/id="plans"/);
 });
