@@ -6,7 +6,7 @@
 
   const STORAGE_KEY = 'stellar-ui-preferences-v1';
   const STREAK_KEY = 'stellar-daily-streak-v1';
-  const SUPPORT_EMAIL = 'deadlyfox10@gmail.com';
+  const SUPPORT_EMAIL = 'support@trystellarai.com';
   const DEFAULTS = Object.freeze({
     sidebarDensity: 'comfortable',
     codeWrap: true,
@@ -412,7 +412,7 @@
       commandAction('Plugins', 'Connect Gmail, GitHub, StellarX and other tools safely.', () => { location.href = '/plugins'; }),
       commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
       commandAction('What is what?', 'Open the separate line-by-line Settings guide.', () => openTab('settings-guide')),
-      commandAction(isOwnerViewer() ? 'Owner perks' : 'Owner tools', isOwnerViewer() ? 'Open private owner controls and business perks.' : 'Owner-only tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Owner perks only appear on the owner account.', 'warn'); }),
+      commandAction(isOwnerViewer() ? 'Private account' : 'Private tools', isOwnerViewer() ? 'Open private account controls and business tools.' : 'Private tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Private account only appear on the owner account.', 'warn'); }),
     );
     panel.appendChild(actions);
   }
@@ -425,13 +425,13 @@
       ['Account', 'Shows who is signed in, which email is active, and where saved chats/billing connect.', 'Account area'],
       ['usage', 'Shows plan allowance, reset timing and capacity.', 'usage tab'],
       ['Plan', 'Explains the user’s tier, billing, upgrade path and unlocked features.', 'Plan / upgrade'],
-      ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Owner models stay hidden.', 'Model picker'],
+      ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Private models stay hidden.', 'Model picker'],
       ['Voice', 'Mic, Jarvis/Ava voice, language, call-style controls and accessibility.', 'Voice tab'],
       ['Plugins', 'External tools like Gmail, GitHub, Vercel or PC Agent. High-impact actions should ask first.', 'Plugins page'],
       ['Devices / StellarX', 'Connected PC or desktop-agent features. Only use devices the user owns.', 'PC Agent'],
       ['Privacy', 'Data controls, legal pages, delete/export guidance and safety information.', 'Privacy page'],
       ['Support', 'Billing, refunds, account help and support email copy action.', 'Support action'],
-      ['Owner perks', 'Private admin/business controls for the owner only. Not for normal users.', 'Owner tab'],
+      ['Private account', 'Private admin/business controls. Not for normal users.', 'Private tab'],
     ]);
 
     const note = document.createElement('div');
@@ -441,7 +441,7 @@
   }
 
   function buildOwnerPerks(panel) {
-    addHeading(panel, 'Owner perks', 'Private controls for the account owner: business growth, deployments, agents, plugins and safer high-power tools.');
+    addHeading(panel, 'Private account', 'Private controls for the account owner: business growth, deployments, agents, plugins and safer high-power tools.');
 
     const hero = document.createElement('div');
     hero.className = 'stellar-command-hero';

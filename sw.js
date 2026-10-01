@@ -167,7 +167,7 @@ function simpleWorkspaceLayer() {
     ].join('\n');
     document.head.appendChild(style);
   }
-  function niceNameFromEmail(email){const raw=String(email||'').trim().toLowerCase();if(raw==='deadlyfox10@gmail.com')return'Tobi';if(!raw.includes('@'))return'';const local=raw.split('@')[0].replace(/[._-]+/g,' ').replace(/\d+/g,' ').trim();return local?local.split(/\s+/).map(p=>p?p[0].toUpperCase()+p.slice(1):'').join(' ').slice(0,38):''}
+  function niceNameFromEmail(email){const raw=String(email||'').trim().toLowerCase();if(!raw.includes('@'))return'';const local=raw.split('@')[0].replace(/[._-]+/g,' ').replace(/\d+/g,' ').trim();return local?local.split(/\s+/).map(p=>p?p[0].toUpperCase()+p.slice(1):'').join(' ').slice(0,38):''}
   function polishSettings(){const card=document.querySelector('.account-card');if(!card)return;const name=card.querySelector('.account-title strong');const email=card.querySelector('.account-title small');const fixed=niceNameFromEmail(email?.textContent);if(name&&fixed&&/^(account|owner|user|signed in)$/i.test(name.textContent.trim()))name.textContent=fixed;if(email)email.title=email.textContent.trim()}
   function run(){document.body?.classList?.add('stellar-simple-workspace');installStyle();polishSettings()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
