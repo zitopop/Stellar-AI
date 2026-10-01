@@ -3,14 +3,20 @@ import {
   EmbedBuilder,
   Events,
   GatewayIntentBits,
+  REST,
+  Routes,
+  SlashCommandBuilder,
 } from 'discord.js';
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const bridgeKey = process.env.STELLAR_DISCORD_BOT_KEY;
-const apiUrl = process.env.STELLAR_DEBUG_API_URL || 'https://trystellarai.com/api/chat?mode=discord-debug';
+const applicationId = process.env.DISCORD_APPLICATION_ID || '';
+const guildId = process.env.DISCORD_GUILD_ID || '';
+const apiUrl = process.env.STELLAR_DEBUG_API_URL || 'https://trystellarai.com/api/generate';
 
 if (!token) throw new Error('DISCORD_BOT_TOKEN is required.');
 if (!bridgeKey) throw new Error('STELLAR_DISCORD_BOT_KEY is required.');
+if (!applicationId) throw new Error('DISCORD_APPLICATION_ID is required.');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const cooldowns = new Map();
@@ -33,8 +39,41 @@ function getErrorMessage(payload, status) {
   return `Stellar AI request failed (${status}).`;
 }
 
-client.once(Events.ClientReady, (readyClient) => {
-  console.log(`Stellar /debug bot ready as ${readyClient.user.tag}`);
+async function registerDebugCommand() {
+  const command = new SlashCommandBuilder()
+    .setName('debug')
+    .setDescription('Fix a broken FiveM or Roblox Lua/Luau script with Stellar AI')
+    .addStringOption((option) => option
+      .setName('code')
+      .setDescription('Paste your broken script or F8/Output error log')
+      .setRequired(true)
+      .setMaxLength(6000))
+    .toJSON();
+
+  const rest = new REST({ version: '10' }).setToken(token);
+  const collectionRoute = guildId
+    ? Routes.applicationGuildCommands(applicationId, guildId)
+    : Routes.applicationCommands(applicationId);
+  const existing = await rest.get(collectionRoute);
+  const previous = Array.isArray(existing) ? existing.find((item) => item?.name === 'debug') : null;
+
+  if (previous?.id) {
+    const commandRoute = guildId
+      ? Routes.applicationGuildCommand(applicationId, guildId, previous.id)
+      : Routes.applicationCommand(applicationId, previous.id);
+    await rest.patch(commandRoute, { body: command });
+  } else {
+    await rest.post(collectionRoute, { body: command });
+  }
+}
+
+client.once(Events.ClientReady, async (readyClient) => {
+  try {
+    await registerDebugCommand();
+    console.log(`Stellar /debug bot ready as ${readyClient.user.tag}`);
+  } catch (error) {
+    console.error('Could not register /debug command:', error);
+  }
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -82,7 +121,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         'Content-Type': 'application/json',
         'X-Stellar-Bot-Key': bridgeKey,
       },
-      body: JSON.stringify({ code: inputCode }),
+      body: JSON.stringify({ prompt: 'Fix this error/script: ' + inputCode }),
     });
 
     let payload = {};
@@ -107,7 +146,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       .setURL('https://trystellarai.com/')
       .setDescription(description)
       .addFields({ name: 'What Stellar found', value: summary || 'A corrected version is shown above.' })
-      .setFooter({ text: 'Generated with Stellar AI · Start free at trystellarai.com' })
+      .setFooter({ text: 'Generated with Stellar AI ⚡ | Try 3 free builds at trystellarai.com' })
       .setTimestamp();
 
     await interaction.editReply({

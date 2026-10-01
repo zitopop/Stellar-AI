@@ -9,7 +9,7 @@ const pricing=readFileSync(new URL('../lib/pricing.js',import.meta.url),'utf8');
 test('game developer hero uses focused generation and debugging conversion copy',()=>{
   assert.match(home,/Generate &amp; Debug Game Scripts in Seconds\./);
   assert.match(home,/⚡ V2 RELEASE: Full Support for QBCore, ESX, ox_lib &amp; Roblox Luau/);
-  assert.match(home,/Production-ready QBCore, ESX, ox_lib, and Roblox Luau code generated with built-in anti-exploit protections\./);
+  assert.match(home,/Production-ready FiveM and Roblox code generated with built-in anti-exploit checks\. Stop wasting hours debugging F8 console or Roblox Output errors\./);
   assert.match(home,/Try 3 Free Builds \(£1 Credit\)/);
   assert.match(home,/href="\/app\?mode=debug" class="oa2-secondary-action">Debug Broken Script/);
   for(const framework of ['QBCore','ESX','ox_lib','Roblox Luau','ModuleScripts']) assert.match(home,new RegExp(framework.replace('_','_')));
