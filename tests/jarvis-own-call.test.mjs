@@ -159,7 +159,7 @@ test('partial Twilio config does not block the Retell bridge fallback', async ()
 });
 
 
-test('UK owner numbers normalize to E.164 before Twilio dialing', async () => {
+test('UK number helper normalizes local input while Twilio dialing requires strict E.164 env values', async () => {
   assert.equal(normalizePhoneNumber('07700 900123'), '+447700900123');
   assert.equal(normalizePhoneNumber('7700 900123', { assumeNational: true }), '+447700900123');
   assert.equal(normalizePhoneNumber('0044 7700 900123'), '+447700900123');
@@ -172,7 +172,7 @@ test('UK owner numbers normalize to E.164 before Twilio dialing', async () => {
   process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
   process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
   process.env.TWILIO_FROM_NUMBER = '+15005550006';
-  process.env.OWNER_PHONE = '07700 900123';
+  process.env.OWNER_PHONE = '+447700900123';
   delete process.env.KV_REST_API_URL;
   delete process.env.KV_REST_API_TOKEN;
   delete process.env.TELNYX_API_KEY;
