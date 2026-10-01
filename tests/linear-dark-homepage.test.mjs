@@ -47,3 +47,13 @@ test('Plus pricing card keeps the most-popular pill and receives a glowing featu
   assert.match(home,/\.public-home \.plan\.featured::before/);
   assert.match(home,/£20/);
 });
+
+
+test('premium landing polish uses a restrained visual system',()=>{
+  assert.match(home,/id="stellar-landing-v46"/);
+  assert.match(home,/background:#f1f2f4!important;color:#0b0c10!important/);
+  assert.match(home,/.public-home .hero-editor{[sS]*?border-radius:18px!important/);
+  assert.match(home,/.public-home .plan{[sS]*?background:#0f1218!important/);
+  assert.match(home,/.public-home .plan.featured::before{display:none!important}/);
+  assert.match(home,/animation:none!important/);
+});
