@@ -412,7 +412,7 @@
       commandAction('Plugins', 'Connect Gmail, GitHub, StellarX and other tools safely.', () => { location.href = '/plugins'; }),
       commandAction('Voice / Jarvis', 'Tune mic, spoken replies, voice style and language.', () => { if (!openTab('voice')) setStatus('Voice settings are not available on this screen yet.', 'warn'); }),
       commandAction('What is what?', 'Open the separate line-by-line Settings guide.', () => openTab('settings-guide')),
-      commandAction(isOwnerViewer() ? 'Private account' : 'Private tools', isOwnerViewer() ? 'Open private account controls and business tools.' : 'Private tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Private account only appear on the owner account.', 'warn'); }),
+      commandAction(isOwnerViewer() ? 'Private account' : 'Private tools', isOwnerViewer() ? 'Open private account controls and business tools.' : 'Private tools stay hidden from normal users.', () => { if (!openTab('owner-perks')) setStatus('Private tools only appear on the authorised private account.', 'warn'); }),
     );
     panel.appendChild(actions);
   }
@@ -445,11 +445,11 @@
 
     const hero = document.createElement('div');
     hero.className = 'stellar-command-hero';
-    hero.innerHTML = '<div class="stellar-command-kicker">Owner only</div><h3>Run Stellar like a business.</h3><p>These are admin perks for the owner account. Normal users should not see private models, provider tools, revenue controls or desktop-agent permissions.</p>';
+    hero.innerHTML = '<div class="stellar-command-kicker">Private access</div><h3>Run Stellar like a business.</h3><p>These are admin perks for the private account. Normal users should not see private models, provider tools, revenue controls or desktop-agent permissions.</p>';
     panel.appendChild(hero);
 
     appendLineMap(panel, [
-      ['Private owner models', 'Experimental/provider models for admin testing. Hide these from normal users.', 'Owner only'],
+      ['Private models', 'Experimental/provider models for admin testing. Hide these from normal users.', 'Private access'],
       ['StellarX / PC Agent', 'Pair your own computer, inspect files and approve edits or terminal actions.', 'Open StellarX'],
       ['GitHub + Vercel', 'Check repo changes, deployments, build errors and live status from one workflow.', 'Dev tools'],
       ['Revenue controls', 'Monitor plans, usage, checkout readiness, Stripe context and support issues.', 'Business ops'],
