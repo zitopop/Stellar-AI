@@ -7,6 +7,7 @@ import { OVERAGE_REQUEST_COST_PENCE, PLAN_DEFINITIONS, creditCostForModel, getPl
 import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
 import { consumeUsage, refundUsageCharge } from '../lib/usage.js';
 import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
+import { handleDiscordDebugRequest } from '../lib/discord-debug.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -415,7 +416,7 @@ function setCors(req, res) {
   const origin = req.headers.origin || '';
   res.setHeader('Access-Control-Allow-Origin', isAllowedOrigin(origin) ? origin : DOMAIN);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Stellar-Bot-Key');
   res.setHeader('Vary', 'Origin');
 }
 
@@ -888,6 +889,20 @@ async function createUpstreamStream({ route, maxTokens, system, messages, signal
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
+  if (String(req.query?.mode || '') === 'discord-debug') {
+    return handleDiscordDebugRequest(req, res, {
+      botKey: process.env.STELLAR_DISCORD_BOT_KEY || '',
+      providerReady: Boolean(ANTHROPIC_KEY || (FORGE_URL && FORGE_KEY)),
+      buildSystemPrompt,
+      createUpstreamStream,
+      detectFramework,
+      detectPlatform,
+      detectRequestKind,
+      detectWorkflowMode,
+      readUpstreamError: readAnthropicError,
+      resolveRoute,
+    });
+  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
   if (!ANTHROPIC_KEY && !(FORGE_URL && FORGE_KEY)) return res.status(500).json({ error: 'The AI service is not configured.' });
 

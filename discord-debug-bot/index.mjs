@@ -7,7 +7,7 @@ import {
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const bridgeKey = process.env.STELLAR_DISCORD_BOT_KEY;
-const apiUrl = process.env.STELLAR_DEBUG_API_URL || 'https://trystellarai.com/api/discord-debug';
+const apiUrl = process.env.STELLAR_DEBUG_API_URL || 'https://trystellarai.com/api/chat?mode=discord-debug';
 
 if (!token) throw new Error('DISCORD_BOT_TOKEN is required.');
 if (!bridgeKey) throw new Error('STELLAR_DISCORD_BOT_KEY is required.');
