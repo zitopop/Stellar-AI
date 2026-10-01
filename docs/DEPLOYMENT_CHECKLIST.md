@@ -74,6 +74,13 @@ Owner call / Jarvis:
 - `OPENAI_API_KEY` for bidirectional realtime owner calls
 - optional `OWNER_INTERNAL_TOKEN` for server-to-server escalations (falls back to `CALL_BRIDGE_TOKEN` or `CRON_SECRET`)
 
+Urgent reminder scheduling with Upstash QStash:
+
+- `QSTASH_TOKEN`
+- `QSTASH_CURRENT_SIGNING_KEY`
+- `QSTASH_NEXT_SIGNING_KEY`
+- optional `QSTASH_MAX_DELAY_DAYS` (defaults to `7`, matching the QStash Free delay limit; use a higher value only when the QStash plan supports it)
+
 Optional integrations:
 
 - Gmail OAuth variables
@@ -111,6 +118,7 @@ Only for a full app/API host:
 - test Stripe checkout link opens
 - test owner call status
 - test one realtime owner call and confirm the Twilio media stream connects; on the current Vercel Hobby Fluid Compute limit the live WebSocket segment may run for up to 300 seconds; if it ends, Twilio falls back to speech mode
+- with QStash configured, schedule an owner-only urgent reminder a few minutes ahead, confirm the signed `/api/webhook?source=qstash-reminder` delivery, then cancel a second future reminder and confirm it never dispatches
 - test support buttons
 
 ## 6. Rollback plan
@@ -135,3 +143,16 @@ Move in batches:
 5. smoke test
 6. then remove old duplicate
 
+
+
+## 8. QStash urgent reminder API
+
+The owner-authenticated `/api/broadcast` endpoint exposes three reminder actions without adding another Vercel function:
+
+- `urgentReminderStatus`
+- `scheduleUrgentReminder`
+- `cancelUrgentReminder`
+
+For scheduling, send a timezone-aware ISO `runAt`, a 12-80 character `requestId`, one supported urgent category, severity `urgent` or `critical`, and a short summary. The server stores private reminder details in Redis and gives QStash only the reminder id plus a nonce. QStash delivers to the existing Stripe/Gmail webhook function using `Upstash-Not-Before`.
+
+The callback verifies the QStash JWT signature against the exact public URL and raw request body before loading the reminder. A durable claim is written before any call attempt, so retried QStash deliveries do not create duplicate phone calls after an uncertain provider handoff.
