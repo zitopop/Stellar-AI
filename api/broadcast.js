@@ -355,10 +355,12 @@ export default async function handler(req, res) {
       const pd=await pr.json().catch(()=>({})),ld=await lr.json().catch(()=>({}));
       if(pd?.result)policy=normalizeOwnerCallPolicy(JSON.parse(pd.result)); last=Number(ld?.result||0)||0;
     } catch(error) { console.error('Owner call policy lookup failed',error?.message||error); return res.status(200).json({ok:true,called:false,reason:'storage'}); }
-    if(policy.enabled===false||!policy.categories?.includes(category))return res.status(200).json({ok:true,called:false,reason:'policy'});
-    if(last&&Date.now()-last<policy.cooldownMinutes*60000)return res.status(200).json({ok:true,called:false,reason:'cooldown'});
-    const authorization = String(req.headers.authorization || '');
     const metadata = req.body?.metadata && typeof req.body.metadata === 'object' ? req.body.metadata : {};
+    const explicitlyScheduled = metadata?.trigger === 'qstash-scheduled-reminder'
+      && /^[a-f0-9]{40}$/.test(String(metadata?.reminderId || ''));
+    if(!explicitlyScheduled && (policy.enabled===false||!policy.categories?.includes(category)))return res.status(200).json({ok:true,called:false,reason:'policy'});
+    if(!explicitlyScheduled && last&&Date.now()-last<policy.cooldownMinutes*60000)return res.status(200).json({ok:true,called:false,reason:'cooldown'});
+    const authorization = String(req.headers.authorization || '');
     const purpose = `URGENT ${category.toUpperCase()}: ${summary}`;
     let stellarCall = null;
     try {
