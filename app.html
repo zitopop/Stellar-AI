@@ -144,6 +144,307 @@ button[data-tooltip]:hover::after,button[data-tooltip]:focus-visible::after{opac
 @media(max-width:540px){.top{padding-inline:8px!important}.composer-wrap{padding-bottom:max(12px,calc(8px + env(safe-area-inset-bottom)))!important}.composer-main{padding:7px}.composer-note{font-size:9.5px}.composer-status{bottom:34px}.top-brand{display:none!important}}
 </style>
 <style id="stellar-usage-v1">.usage-card{display:grid;gap:12px!important}.usage-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.usage-head span{color:#c8c8c8;font-size:12px;font-weight:750}.usage-meter{height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.usage-meter span{display:block;height:100%;border-radius:inherit;background:#f4f4f4;transition:width .2s ease}</style><link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
+
+<style id="stellar-chatgpt-stellar-v2">
+/* Stellar AI focused chat workspace — familiar, calm and distinctly Stellar. */
+:root{
+  --stellar-workspace-bg:#212121;
+  --stellar-workspace-sidebar:#171717;
+  --stellar-workspace-surface:#2f2f2f;
+  --stellar-workspace-surface-hover:#383838;
+  --stellar-workspace-line:rgba(255,255,255,.10);
+  --stellar-workspace-muted:#a9a9ad;
+  --stellar-workspace-accent:#a78bfa;
+  --stellar-workspace-accent-soft:rgba(167,139,250,.14);
+  --max:768px;
+}
+html,body,.app{background:var(--stellar-workspace-bg)!important}
+.app{grid-template-columns:248px minmax(0,1fr)!important}
+.side{
+  padding:8px!important;
+  gap:4px!important;
+  background:var(--stellar-workspace-sidebar)!important;
+  border-right:0!important;
+}
+.brand{
+  min-height:44px!important;
+  padding:0 10px!important;
+  border-radius:10px!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  letter-spacing:-.02em!important;
+}
+.brand::before{
+  content:"✦";
+  display:inline-grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  margin-right:8px;
+  border-radius:7px;
+  background:var(--stellar-workspace-accent-soft);
+  color:#d9ccff;
+  font-size:12px;
+}
+#newChatBtn{
+  justify-content:flex-start!important;
+  min-height:42px!important;
+  margin-top:2px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:#f2f2f2!important;
+  font-weight:620!important;
+}
+#newChatBtn::before{content:"＋";font-size:18px;font-weight:400;color:#d8d8dc}
+#newChatBtn:hover,#newChatBtn:focus-visible{background:#242424!important;outline:0}
+.nav-title{
+  margin:14px 10px 4px!important;
+  color:#77777c!important;
+  font-size:10px!important;
+  font-weight:650!important;
+  letter-spacing:.04em!important;
+  text-transform:none!important;
+}
+.chat-list{gap:2px!important}
+.chat-item{
+  min-height:38px!important;
+  padding:7px 10px!important;
+  border:0!important;
+  border-radius:9px!important;
+  color:#d7d7da!important;
+}
+.chat-item:hover,.chat-item.active{background:#242424!important;border-color:transparent!important}
+.chat-title{font-size:12.5px!important;font-weight:560!important}
+.chat-meta{display:none!important}
+.empty-note{margin:4px 10px!important;color:#77777c!important;font-size:12px!important}
+.nav{
+  min-height:40px!important;
+  padding:0 10px!important;
+  border-radius:9px!important;
+  color:#aaaab0!important;
+  font-size:12.5px!important;
+  font-weight:560!important;
+}
+.nav:hover,.nav:focus-visible{background:#242424!important;color:#f1f1f2!important;outline:0}
+.side-account{
+  margin-top:auto!important;
+  padding-top:8px!important;
+  border-top:1px solid rgba(255,255,255,.06)!important;
+}
+.side-account .nav-title{margin-top:4px!important}
+
+.main{
+  grid-template-rows:52px minmax(0,1fr) auto!important;
+  background:var(--stellar-workspace-bg)!important;
+}
+.top{
+  height:52px!important;
+  padding:0 14px!important;
+  border:0!important;
+  background:rgba(33,33,33,.92)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+.top-brand{display:none!important}
+.top .model-chip{
+  min-height:40px!important;
+  padding:0 9px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#ececee!important;
+  font-size:13px!important;
+  font-weight:620!important;
+}
+.top .model-chip:hover,.top .model-chip:focus-visible{background:#2b2b2b!important;outline:0}
+#usagePill{
+  min-height:36px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#9f9fa5!important;
+}
+#accountButton{
+  min-height:38px!important;
+  padding:0 13px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:999px!important;
+  background:#2b2b2b!important;
+  color:#f2f2f2!important;
+  font-weight:620!important;
+}
+#accountButton:hover,#accountButton:focus-visible{background:#343434!important;outline:0}
+
+.chat{
+  padding:18px 16px 8px!important;
+  scrollbar-gutter:stable!important;
+}
+.chat-inner{
+  width:min(768px,100%)!important;
+  gap:24px!important;
+}
+.welcome{
+  padding:clamp(108px,24vh,210px) 0 22px!important;
+  text-align:center!important;
+}
+.welcome h1{
+  margin:0!important;
+  font-size:clamp(30px,4vw,36px)!important;
+  line-height:1.12!important;
+  letter-spacing:-.035em!important;
+  font-weight:620!important;
+  color:#f5f5f5!important;
+}
+.welcome p{
+  max-width:560px!important;
+  margin:12px auto 0!important;
+  color:#9d9da3!important;
+  font-size:14px!important;
+  line-height:1.6!important;
+}
+.msg{width:100%!important;max-width:100%!important;gap:7px!important}
+.msg.user{width:auto!important;max-width:min(680px,90%)!important}
+.user .bubble{
+  padding:10px 15px!important;
+  border-radius:20px!important;
+  background:#2f2f2f!important;
+  color:#f4f4f5!important;
+}
+.assistant .bubble{
+  padding:0 2px!important;
+  background:transparent!important;
+  color:#ececee!important;
+  font-size:15px!important;
+  line-height:1.72!important;
+}
+.message-actions{opacity:.58!important;transition:opacity .15s ease!important}
+.msg.assistant:hover .message-actions,.message-actions:focus-within{opacity:1!important}
+
+.composer-wrap{
+  padding:12px 16px max(15px,calc(10px + env(safe-area-inset-bottom)))!important;
+  background:linear-gradient(180deg,rgba(33,33,33,0),var(--stellar-workspace-bg) 32%)!important;
+}
+.composer{
+  width:min(768px,100%)!important;
+  margin:0 auto!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:26px!important;
+  background:var(--stellar-workspace-surface)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.16)!important;
+}
+.composer:focus-within{
+  border-color:rgba(167,139,250,.44)!important;
+  box-shadow:0 0 0 1px rgba(167,139,250,.14),0 10px 30px rgba(0,0,0,.20)!important;
+}
+.composer-main{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto auto!important;
+  align-items:end!important;
+  gap:4px!important;
+  padding:8px 9px!important;
+}
+textarea{
+  min-height:48px!important;
+  max-height:32dvh!important;
+  padding:10px 8px!important;
+  color:#f4f4f5!important;
+  -webkit-text-fill-color:#f4f4f5!important;
+  font-size:16px!important;
+}
+textarea::placeholder{color:#9a9aa0!important;opacity:1!important}
+.composer-tool,#sendBtn{
+  width:40px!important;
+  height:40px!important;
+  min-width:40px!important;
+  min-height:40px!important;
+  border-radius:999px!important;
+}
+.composer-tool{
+  border:0!important;
+  background:transparent!important;
+  color:#b8b8bd!important;
+}
+.composer-tool:hover,.composer-tool:focus-visible{background:#3a3a3a!important;color:#fff!important;outline:0}
+#sendBtn{
+  border:0!important;
+  background:#f4f4f5!important;
+  color:#191919!important;
+  box-shadow:none!important;
+}
+#sendBtn:hover,#sendBtn:focus-visible{background:#fff!important;outline:2px solid rgba(167,139,250,.42)!important;outline-offset:2px!important}
+#sendBtn:disabled{opacity:.42!important}
+.image-upload-status{padding:0 16px 9px!important;color:#aaaab0!important}
+.composer-status{
+  display:block!important;
+  width:min(768px,100%)!important;
+  min-height:16px!important;
+  margin:6px auto 0!important;
+  padding:0 5px!important;
+  color:#85858b!important;
+  font-size:10.5px!important;
+}
+.composer-note{
+  width:min(768px,100%)!important;
+  margin:2px auto 0!important;
+  color:#77777d!important;
+  text-align:center!important;
+  font-size:10px!important;
+}
+
+.panel-backdrop{background:rgba(0,0,0,.58)!important;backdrop-filter:blur(3px)!important}
+.panel{
+  width:min(720px,100%)!important;
+  max-height:88dvh!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:20px!important;
+  background:#252525!important;
+  box-shadow:0 24px 80px rgba(0,0,0,.42)!important;
+}
+.panel-head{
+  padding:17px 18px!important;
+  background:rgba(37,37,37,.95)!important;
+  border-bottom-color:rgba(255,255,255,.08)!important;
+}
+.panel h2{font-size:21px!important;font-weight:650!important;letter-spacing:-.025em!important}
+.panel-head p{color:#96969b!important;font-size:12px!important}
+.close{border-radius:10px!important;background:transparent!important}
+.close:hover,.close:focus-visible{background:#333!important;outline:0}
+
+@media(max-width:900px){
+  .app{grid-template-columns:1fr!important}
+  .side{width:min(300px,88vw)!important;box-shadow:20px 0 60px rgba(0,0,0,.38)!important}
+  .top{padding-inline:8px!important}
+  .mobile-menu{display:inline-flex!important;min-width:40px!important;width:40px!important;height:40px!important;padding:0!important;border:0!important;background:transparent!important}
+  .mobile-menu:hover,.mobile-menu:focus-visible{background:#2b2b2b!important;outline:0}
+  .chat,.composer-wrap{padding-inline:10px!important}
+}
+@media(max-width:540px){
+  .top{height:50px!important}
+  .main{grid-template-rows:50px minmax(0,1fr) auto!important}
+  .welcome{padding-top:clamp(72px,18vh,124px)!important;text-align:center!important}
+  .welcome h1{font-size:30px!important}
+  .welcome p{max-width:330px!important;font-size:13px!important}
+  .chat{padding-top:8px!important}
+  .composer-wrap{padding:8px 8px max(11px,calc(7px + env(safe-area-inset-bottom)))!important}
+  .composer{border-radius:22px!important}
+  .composer-main{padding:7px!important;gap:2px!important}
+  .composer-tool,#sendBtn{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important}
+  textarea{min-height:46px!important;padding-inline:5px!important}
+  .composer-status{padding-inline:2px!important}
+  .composer-note{font-size:9.5px!important}
+  .panel-backdrop{align-items:end!important;padding:0!important}
+  .panel{width:100%!important;max-height:90dvh!important;border-radius:22px 22px 0 0!important;border-bottom:0!important}
+}
+@media(max-width:360px){
+  .model-chip{max-width:38vw!important}
+  .actions{gap:2px!important}
+  #accountButton{padding-inline:10px!important}
+  .composer-main{grid-template-columns:40px minmax(0,1fr) 40px 40px!important}
+}
+</style>
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -173,7 +474,7 @@ button[data-tooltip]:hover::after,button[data-tooltip]:focus-visible::after{opac
       <div class="actions"><button class="btn ghost hidden" type="button" data-open="plans">Plans</button><button class="btn ghost" id="accountButton" type="button" data-open="settings">Sign in</button></div>
     </header>
     <section class="chat" id="chat"><div class="chat-inner" id="chatInner"></div></section>
-    <section class="composer-wrap"><form class="composer" id="chatForm" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."><input class="hidden" id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp"><div class="composer-main"><button class="composer-tool" id="image-upload-btn" type="button" aria-label="Attach an image" title="Add image" data-tooltip="Add image">＋</button><label class="hidden" for="prompt">Message Stellar</label><textarea id="prompt" maxlength="8000" placeholder="Ask anything" autocomplete="off" spellcheck="true"></textarea><button class="composer-tool" id="voice-input-btn" type="button" aria-label="Start voice input" aria-pressed="false" title="Voice" data-tooltip="Voice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg></button><button id="sendBtn" type="submit" aria-label="Send message" title="Send" data-tooltip="Send">↑</button></div><div class="image-upload-status" id="image-upload-status" role="status" aria-live="polite"></div></form><span class="status good composer-status" id="status" role="status" aria-live="polite">Ready</span><p class="composer-note">Stellar can make mistakes. Check important information.</p></section>
+    <section class="composer-wrap"><form class="composer" id="chatForm" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."><input class="hidden" id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp"><div class="composer-main"><button class="composer-tool" id="image-upload-btn" type="button" aria-label="Attach an image" title="Add image" data-tooltip="Add image">＋</button><label class="hidden" for="prompt">Message Stellar</label><textarea id="prompt" maxlength="8000" placeholder="Message Stellar AI" autocomplete="off" spellcheck="true"></textarea><button class="composer-tool" id="voice-input-btn" type="button" aria-label="Start voice input" aria-pressed="false" title="Voice" data-tooltip="Voice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg></button><button id="sendBtn" type="submit" aria-label="Send message" title="Send" data-tooltip="Send">↑</button></div><div class="image-upload-status" id="image-upload-status" role="status" aria-live="polite"></div></form><span class="status good composer-status" id="status" role="status" aria-live="polite">Ready</span><p class="composer-note">Stellar can make mistakes. Check important information.</p></section>
   </main>
 </div>
 <div class="panel-backdrop" id="panelBackdrop"><section class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle"><div class="panel-head"><div><h2 id="panelTitle">Settings</h2><p id="panelIntro">Keep it simple.</p></div><button class="close" type="button" id="closePanel" aria-label="Close">×</button></div><div class="panel-body" id="panelBody"></div></section></div>
@@ -187,7 +488,7 @@ function safeStorageGet(key,fallback=''){try{const value=localStorage.getItem(ke
 let sessions=[],activeId='',busy=false,signedInUser=null,serverOwner=false,uploadedImage=null,referralUrl='',panelReturnFocus=null,voiceRecognition=null,currentGenerationController=null,pendingComputerTask='',selectedModel=safeModel(safeStorageGet('stellar-selected-model','star')),allowedModels=['spark','star'],planState={plan:'free',name:'Free',limit:75,used:0,remaining:75,resetAt:null,costs:{...COSTS},jarvis:{enabled:false,voice:false,vision:false,briefings:false,proactiveAlerts:false,ownerControls:false}};
 function safeModel(v){v=String(v||'').toLowerCase();return MODELS[v]?v:'star'}function uid(){return 'c_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}function now(){return Date.now()}function escapeHtml(v){return String(v==null?'':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}function setStatus(t,k='good'){statusEl.textContent=String(t||'');statusEl.className='status '+k}function store(){const raw=safeStorageGet(STORE,'');if(raw){try{const v=JSON.parse(raw);if(v&&typeof v==='object'){volatileStore=v;return v}}catch{}}return volatileStore&&typeof volatileStore==='object'?volatileStore:{}}function token(){const t=store().session;return typeof t==='string'?t:''}function setSession(session,user){const s={...store(),session:String(session||''),user:user||store().user||null,owner:false};volatileStore=s;safeStorageSet(STORE,JSON.stringify(s))}function clearSession(){const s={...store(),session:'',user:null,owner:false};volatileStore=s;safeStorageSet(STORE,JSON.stringify(s))}function authHeaders(json=true){const h=json?{'content-type':'application/json'}:{};const t=token();if(t)h.Authorization='Bearer '+t;return h}function metric(name){try{return window.StellarTelemetry?.track?.(name)===true}catch{return false}}function closeSide(){side.classList.remove('open');backdrop.classList.remove('open')}function openSide(){side.classList.add('open');backdrop.classList.add('open')}function closePanel(){panelBackdrop.classList.remove('open');const target=panelReturnFocus;panelReturnFocus=null;if(target&&document.contains(target))setTimeout(()=>target.focus(),0)}function fmt(n){return Number.isFinite(n)?Math.round(n).toLocaleString('en-GB'):'∞'}function usagePercent(){if(serverOwner)return 100;const limit=Math.max(0,Number(planState.limit)||0);if(!limit)return 0;return Math.max(0,Math.min(100,Math.round((Math.max(0,Number(planState.remaining)||0)/limit)*100)))}function usageResetLabel(){if(serverOwner)return 'No usage limit';if(!planState.resetAt)return planState.plan==='free'?'Resets daily':'Resets monthly';const d=new Date(planState.resetAt);if(Number.isNaN(d.getTime()))return planState.plan==='free'?'Resets daily':'Resets monthly';return 'Resets '+d.toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}function displayName(user){const email=String(user&&user.email||'').trim();const raw=String(user&&(user.name||user.given_name)||'').replace(/[._-]+/g,' ').trim();let name=raw.split(/\s+/)[0]||'';if(!name&&email)name=email.split('@')[0].replace(/[._-]+/g,' ');if(email.toLowerCase()==='deadlyfox10@gmail.com')return 'Tobi';return name?name.replace(/\b\w/g,c=>c.toUpperCase()).slice(0,30):'there'}function isOwner(){return serverOwner===true}function accountKey(){return String(signedInUser&&signedInUser.email||'guest').toLowerCase()}function sessionsKey(){return 'stellar-chat-sessions:'+accountKey()}function defaultSession(){return{id:uid(),title:'New chat',messages:[],created:now(),updated:now()}}function sortSessions(){sessions.sort((a,b)=>(b.updated-a.updated))}function saveSessions(){sortSessions();safeStorageSet(sessionsKey(),JSON.stringify(sessions.slice(0,50)))}function loadSessions(){try{sessions=JSON.parse(safeStorageGet(sessionsKey(),'[]'));if(!Array.isArray(sessions))sessions=[]}catch{sessions=[]}if(!sessions.length)sessions=[defaultSession()];activeId=sessions[0].id;saveSessions();renderAll()}function activeSession(){let s=sessions.find(x=>x.id===activeId);if(!s){s=sessions[0]||defaultSession();activeId=s.id;if(!sessions.includes(s))sessions.push(s)}return s}function titleFrom(text){const t=String(text||'').trim().replace(/\s+/g,' ');return t?t.slice(0,44):'New chat'}function chatAge(ts){const d=Math.max(0,now()-Number(ts||now()));if(d<60000)return 'now';if(d<3600000)return Math.floor(d/60000)+'m';if(d<86400000)return Math.floor(d/3600000)+'h';return Math.floor(d/86400000)+'d'}
 function formatAssistantProse(src){const escaped=escapeHtml(src);const inline=escaped.replace(/\`([^\`\n]+)\`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');const lines=inline.split(/\r?\n/);let html='',list='';const closeList=()=>{if(list){html+='</'+list+'>';list=''}};for(const raw of lines){const line=raw.trimEnd();let m;if(!line.trim()){closeList();continue}if((m=line.match(/^[-*]\s+(.+)$/))){if(list!=='ul'){closeList();list='ul';html+='<ul>'}html+='<li>'+m[1]+'</li>';continue}if((m=line.match(/^\d+\.\s+(.+)$/))){if(list!=='ol'){closeList();list='ol';html+='<ol>'}html+='<li>'+m[1]+'</li>';continue}closeList();if((m=line.match(/^###\s+(.+)$/)))html+='<h4>'+m[1]+'</h4>';else if((m=line.match(/^##\s+(.+)$/)))html+='<h3>'+m[1]+'</h3>';else if((m=line.match(/^#\s+(.+)$/)))html+='<h2>'+m[1]+'</h2>';else html+='<p>'+line+'</p>'}closeList();return html}function assistantHtml(text){const src=String(text||'');const parts=src.split(/\`\`\`/);return parts.map((part,index)=>{if(index%2===0)return formatAssistantProse(part);let code=part,lang='';const nl=part.indexOf('\n');if(nl>=0){const first=part.slice(0,nl).trim();if(/^[a-z0-9+#._-]{1,24}$/i.test(first)){lang=first;code=part.slice(nl+1)}}return '<pre'+(lang?' data-language="'+escapeHtml(lang)+'"':'')+'><code>'+escapeHtml(code.replace(/^\n|\n$/g,''))+'</code></pre>'}).join('')}function renderAssistantBubble(bubble,text){if(!bubble)return;const value=String(text||'');if(value==='Thinking…'){bubble.textContent=value;return}bubble.innerHTML=assistantHtml(value)}
-function renderChatList(){sortSessions();chatList.innerHTML='';chatEmpty.classList.toggle('hidden',sessions.length>0);for(const s of sessions){const row=document.createElement('button');row.type='button';row.className='chat-item'+(s.id===activeId?' active':'');row.dataset.id=s.id;row.innerHTML='<span class="chat-title">'+escapeHtml(s.title||'New chat')+'</span><span class="chat-meta">'+escapeHtml(chatAge(s.updated))+'</span>';chatList.append(row)}}function welcomeHtml(){return '<div class="welcome"><h1>How can I help?</h1><p>Ask anything. Stellar can explain, write, research, plan, code and help you get everyday work done.</p></div>'}function renderMessages(){const s=activeSession();chatInner.innerHTML='';if(!s.messages.length){chatInner.innerHTML=welcomeHtml();return}for(const m of s.messages)addMessage(m.role,m.content,false)}function renderAll(){renderChatList();renderMessages();updateHeader()}function addAssistantActions(wrap,bubble){if(!wrap||!bubble||wrap.querySelector('.message-actions'))return;const actions=document.createElement('div');actions.className='message-actions';actions.innerHTML='<button class="message-action" type="button" data-message-action="copy">Copy</button><button class="message-action" type="button" data-message-action="regenerate">Regenerate</button>';wrap.append(actions)}function addMessage(role,text,scroll=true){const wrap=document.createElement('article');wrap.className='msg '+role;wrap.innerHTML='<div class="meta">'+(role==='user'?'You':'Stellar')+'</div><div class="bubble"></div>';const bubble=wrap.querySelector('.bubble');if(role==='assistant')renderAssistantBubble(bubble,text);else bubble.textContent=String(text||'');chatInner.append(wrap);if(role==='assistant'&&String(text||'')!=='Thinking…')addAssistantActions(wrap,bubble);if(scroll)wrap.scrollIntoView({block:'end'});return bubble}function updateHeader(){const usageText=serverOwner?'Unlimited':usagePercent()+'%';usageCount.textContent=usageText;if(usagePill)usagePill.setAttribute('aria-label',serverOwner?'Usage: unlimited':'Usage: '+usageText+' remaining');if(accountButton)accountButton.textContent=signedInUser?'Account':'Sign in';if(!allowedModels.includes(selectedModel))selectedModel=allowedModels.includes('star')?'star':(allowedModels[0]||'spark');safeStorageSet('stellar-selected-model',selectedModel);const modelName=MODELS[selectedModel];if(modelLabel)modelLabel.textContent=modelName;if(modelShort)modelShort.textContent=modelName;if(modelBtn)modelBtn.setAttribute('aria-label','Model: '+modelName)}
+function renderChatList(){sortSessions();chatList.innerHTML='';chatEmpty.classList.toggle('hidden',sessions.length>0);for(const s of sessions){const row=document.createElement('button');row.type='button';row.className='chat-item'+(s.id===activeId?' active':'');row.dataset.id=s.id;row.innerHTML='<span class="chat-title">'+escapeHtml(s.title||'New chat')+'</span><span class="chat-meta">'+escapeHtml(chatAge(s.updated))+'</span>';chatList.append(row)}}function welcomeHtml(){return '<div class="welcome"><h1>What can Stellar help you with?</h1><p>Ask anything, build something, research a question or hand off bigger work when you need to.</p></div>'}function renderMessages(){const s=activeSession();chatInner.innerHTML='';if(!s.messages.length){chatInner.innerHTML=welcomeHtml();return}for(const m of s.messages)addMessage(m.role,m.content,false)}function renderAll(){renderChatList();renderMessages();updateHeader()}function addAssistantActions(wrap,bubble){if(!wrap||!bubble||wrap.querySelector('.message-actions'))return;const actions=document.createElement('div');actions.className='message-actions';actions.innerHTML='<button class="message-action" type="button" data-message-action="copy">Copy</button><button class="message-action" type="button" data-message-action="regenerate">Regenerate</button>';wrap.append(actions)}function addMessage(role,text,scroll=true){const wrap=document.createElement('article');wrap.className='msg '+role;wrap.innerHTML='<div class="meta">'+(role==='user'?'You':'Stellar')+'</div><div class="bubble"></div>';const bubble=wrap.querySelector('.bubble');if(role==='assistant')renderAssistantBubble(bubble,text);else bubble.textContent=String(text||'');chatInner.append(wrap);if(role==='assistant'&&String(text||'')!=='Thinking…')addAssistantActions(wrap,bubble);if(scroll)wrap.scrollIntoView({block:'end'});return bubble}function updateHeader(){const usageText=serverOwner?'Unlimited':usagePercent()+'%';usageCount.textContent=usageText;if(usagePill)usagePill.setAttribute('aria-label',serverOwner?'Usage: unlimited':'Usage: '+usageText+' remaining');if(accountButton)accountButton.textContent=signedInUser?'Account':'Sign in';if(!allowedModels.includes(selectedModel))selectedModel=allowedModels.includes('star')?'star':(allowedModels[0]||'spark');safeStorageSet('stellar-selected-model',selectedModel);const modelName=MODELS[selectedModel];if(modelLabel)modelLabel.textContent=modelName;if(modelShort)modelShort.textContent=modelName;if(modelBtn)modelBtn.setAttribute('aria-label','Model: '+modelName)}
 chatList.addEventListener('click',e=>{const row=e.target.closest('.chat-item');if(!row)return;activeId=row.dataset.id;renderAll();closeSide()});function newChat(){const s=defaultSession();sessions.unshift(s);activeId=s.id;saveSessions();renderAll();closeSide();setStatus('Ready','good');prompt.focus()}$('newChatBtn').addEventListener('click',newChat);
 async function copyAssistantResponse(button){const wrap=button?.closest?.('.msg.assistant');const text=wrap?.querySelector?.('.bubble')?.textContent?.trim()||'';if(!text)return;try{await navigator.clipboard.writeText(text);button.textContent='Copied';setTimeout(()=>button.textContent='Copy',1200)}catch{setStatus('Could not copy reply','error')}}async function regenerateAssistantResponse(button){const s=activeSession();if(busy||!s.messages.length)return;const wrap=button?.closest?.('.msg.assistant');const all=[...chatInner.querySelectorAll('.msg.assistant')];if(wrap!==all.at(-1)){setStatus('Regenerate is available on the latest reply','warn');return}if(s.messages.at(-1)?.role==='assistant')s.messages.pop();const lastUser=s.messages.at(-1);if(!lastUser||lastUser.role!=='user'){setStatus('Nothing to regenerate','warn');return}s.messages.pop();saveSessions();renderMessages();await sendMessage(lastUser.content)}function openComputerActionCard(){const session=activeSession();const lastUser=[...(session?.messages||[])].reverse().find(message=>message?.role==='user');pendingComputerTask=String(prompt.value||lastUser?.content||'').trim().slice(0,2000);panelReturnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;closeSide();panelBackdrop.classList.add('open');panelTitle.textContent='Review computer action';panelIntro.textContent='Check the task before handing it to StellarX.';panelBody.innerHTML='<div class="card"><strong>Task</strong><small>'+escapeHtml(pendingComputerTask||'Open the StellarX Computer workspace without a prefilled task.')+'</small></div><div class="inline-actions"><button class="btn primary" type="button" data-action="launch-stellarx">Open StellarX Work Agent</button><button class="btn ghost" type="button" data-action="close-panel">Cancel</button></div>';setTimeout(()=>$('closePanel')?.focus(),0)}function launchComputerTask(){const task=pendingComputerTask;pendingComputerTask='';location.href=task?'/desktop?task='+encodeURIComponent(task):'/desktop'}
 function exportCurrentChat(){const s=activeSession();if(!s?.messages?.length){setStatus('Nothing to export','warn');return}const body=['# '+(s.title||'Stellar chat'),''].concat(s.messages.map(m=>'## '+(m.role==='user'?'You':'Stellar')+'\n\n'+m.content+'\n')).join('\n');const blob=new Blob([body],{type:'text/markdown;charset=utf-8'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=(s.title||'stellar-chat').replace(/[^a-z0-9-_]+/gi,'-').replace(/^-+|-+$/g,'').slice(0,60)+'.md';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);setStatus('Chat exported','good')}function syncConnectivity(){const online=navigator.onLine!==false;sendBtn.disabled=!online;if(!online)setStatus('Offline — messages will not send until you reconnect','warn');else if(!busy)setStatus('Back online.','good')}function initVoiceInput(){const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;if(!voiceButton)return;if(!Recognition){voiceButton.hidden=true;return}voiceButton.addEventListener('click',()=>{if(voiceRecognition){try{voiceRecognition.stop()}catch{}return}try{const recognition=new Recognition();voiceRecognition=recognition;recognition.interimResults=true;recognition.continuous=false;recognition.lang=document.documentElement.lang||'en-GB';let finalText='';voiceButton.setAttribute('aria-pressed','true');setStatus('Listening…','warn');recognition.onresult=event=>{let interim='';for(let i=event.resultIndex;i<event.results.length;i++){const text=String(event.results[i][0]?.transcript||'');if(event.results[i].isFinal)finalText+=text;else interim+=text}const heard=(finalText||interim).trim();if(heard)prompt.value=heard};recognition.onerror=event=>{const code=String(event.error||'');if(code==='not-allowed'||code==='service-not-allowed')setStatus('Microphone permission is blocked. Allow microphone access in your browser settings and try again.','error');else setStatus('Voice input could not start. Try again or type your message.','error')};recognition.onend=()=>{voiceRecognition=null;voiceButton.setAttribute('aria-pressed','false');if(prompt.value.trim())setStatus('Review it, then press Send','good');else setStatus('Ready','good');prompt.focus()};recognition.start()}catch{voiceRecognition=null;voiceButton.setAttribute('aria-pressed','false');setStatus('Voice input could not start. Try again or type your message.','error')}})}
