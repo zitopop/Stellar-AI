@@ -90,6 +90,41 @@ test('configured Twilio health check uses the validated provider config without 
   }
 });
 
+test('blocked UK Twilio health falls through to a ready Retell bridge', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
+  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  process.env.OWNER_PHONE = '+447700900123';
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('voice.twilio.com/v1/DialingPermissions/Countries/GB')) {
+      return Response.json({ low_risk_numbers_enabled: false });
+    }
+    if (String(url).includes('/api/call-owner')) {
+      return Response.json({ ready: true, retell: true, ownerNumber: true, outboundNumber: true, agent: true, configuredAgent: true, configuredNumber: true });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const health = await readOwnerCallHealth({ bridgeToken: 'fixture' });
+    assert.equal(health.ready, true);
+    assert.equal(health.provider, 'retell');
+    assert.equal(health.twilioBlocked, true);
+    assert.equal(health.fallbackFrom, 'twilio');
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
 test('partial Twilio config does not block the Retell bridge fallback', async () => {
   const originalFetch = globalThis.fetch;
   const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];
