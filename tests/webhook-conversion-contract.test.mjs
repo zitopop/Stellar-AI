@@ -7,7 +7,7 @@ const webhook = fs.readFileSync(new URL('../api/webhook.js', import.meta.url), '
 const metrics = fs.readFileSync(new URL('../lib/conversion-metrics.js', import.meta.url), 'utf8');
 const broadcast = fs.readFileSync(new URL('../api/broadcast.js', import.meta.url), 'utf8');
 const tracker = fs.readFileSync(new URL('../lib/assets/stellar-analytics.js', import.meta.url), 'utf8');
-const trackEvent = fs.readFileSync(new URL('../api/track-event.js', import.meta.url), 'utf8');
+const trackEvent = fs.readFileSync(new URL('../api/get-plan.js', import.meta.url), 'utf8');
 
 test('checkout and webhook still record conversion events server-side', () => {
   assert.match(checkout, /incrementConversionMetric\('checkout-started'\)/);
