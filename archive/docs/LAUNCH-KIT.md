@@ -107,7 +107,7 @@ Create two test accounts and validate the complete growth loop:
 - [ ] Starter monthly and annual price IDs are configured.
 - [ ] Server-side request limits are correct for Free, Starter, Plus and Pro.
 - [ ] Nova is Pro-only for non-owner accounts.
-- [ ] Owner access works only for `deadlyfox10@gmail.com` and `tobi@trystellarai.com`, plus any deliberately configured additional owners.
+- [ ] Private access identities are configured server-side and are not published in source.
 - [ ] Referral awards cannot be self-awarded or duplicated.
 - [ ] The landing, app, terms, README and sitemap show the same four plans.
 - [ ] The EnderDevelopment comparison and affiliate page are listed in the sitemap and linked from public navigation.
