@@ -229,7 +229,7 @@ export default async function handler(req, res) {
               status: data?.status || 'started',
             };
           } catch (error) {
-            console.warn('Short urgent reminder phone fallback failed; using Stellar in-app alert', error?.provider || '', error?.message || error);
+            console.warn('Short urgent reminder phone fallback failed; using Stellar in-app alert', JSON.stringify({ provider: error?.provider || 'unknown', httpStatus: error?.status || null, code: error?.code || error?.twilio?.code || null, message: String(error?.message || error).slice(0, 500), moreInfo: error?.twilio?.moreInfo || null }));
             try {
               const created = await createStellarCallSession({
                 category,
@@ -367,7 +367,7 @@ export default async function handler(req, res) {
       const data = await startOwnerCall({ purpose, authorization, bridgeToken });
       return res.status(200).json({ ok: true, provider: data.provider, call_id: data.call_id || null, status: data.status || 'started' });
     } catch (error) {
-      console.warn('Owner phone provider unavailable; using Stellar fallback', error?.provider || '', error?.message || error);
+      console.warn('Owner phone provider unavailable; using Stellar fallback', JSON.stringify({ provider: error?.provider || 'unknown', httpStatus: error?.status || null, code: error?.code || error?.twilio?.code || null, message: String(error?.message || error).slice(0, 500), moreInfo: error?.twilio?.moreInfo || null }));
       try {
         const created = await createStellarCallSession({
           category: 'owner-call',
@@ -442,7 +442,7 @@ export default async function handler(req, res) {
       }
       return res.status(200).json({ ok: true, called: true, provider: data?.provider || null, call_id: data?.call_id || null, status: data?.status || 'started', stellar_call: stellarCall });
     } catch (error) {
-      console.error('Urgent owner escalation failed', error?.provider || '', error?.message || error);
+      console.error('Urgent owner escalation failed', JSON.stringify({ provider: error?.provider || 'unknown', httpStatus: error?.status || null, code: error?.code || error?.twilio?.code || null, message: String(error?.message || error).slice(0, 500), moreInfo: error?.twilio?.moreInfo || null }));
       const pushed = await sendOwnerPushAlert({ category, severity, summary, reason: error?.message || 'phone-unavailable', call: stellarCall });
       if (pushed?.sent > 0) {
         const stamp = Date.now();
