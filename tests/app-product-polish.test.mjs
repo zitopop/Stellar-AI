@@ -18,7 +18,7 @@ test('locked models stay in the workspace without silently activating', () => {
 });
 
 test('a new draft typed while a reply is pending is not cleared after generation', () => {
-  assert.match(app, /prompt\.value='';resizePrompt\(\);setGenerating\(true\);setStatus\('Thinking…','warn'\)/);
+  assert.match(app, /prompt\.value='';resizePrompt\(\);setGenerating\(true\);setStatus\(activeMode==='debug'\?'Diagnosing…':'Thinking…','warn'\)/);
   assert.doesNotMatch(app, /finally\{[^}]*prompt\.value=''/);
   assert.match(app, /finally\{currentGenerationController=null;setGenerating\(false\);/);
 });
