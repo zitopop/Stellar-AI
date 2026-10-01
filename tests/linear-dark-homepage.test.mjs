@@ -10,6 +10,8 @@ test('homepage uses the dark slate glass theme with purple and cyan glow accents
   assert.match(home,/--stellar-cyan:#00f0ff/);
   assert.match(home,/border:1px solid rgba\(255,255,255,.08\)/);
   assert.match(home,/backdrop-filter:blur\(22px\)/);
+  assert.match(home,/dev-release-badge/);
+  assert.match(home,/background:linear-gradient\(180deg,rgba\(9,10,15,.94\),rgba\(9,10,15,.8\)\)/);
 });
 
 test('hero is split between conversion copy and an interactive framework code editor',()=>{
@@ -20,8 +22,9 @@ test('hero is split between conversion copy and an interactive framework code ed
     assert.match(home,new RegExp(`data-hero-code="${key}"`));
   }
   assert.match(home,/hero-window-dots/);
-  assert.match(home,/data-hero-copy>Copy Code/);
-  assert.match(home,/data-hero-download>Download \.lua/);
+  assert.match(home,/data-hero-copy>📋 Copy Code/);
+  assert.match(home,/data-hero-download>💾 Download \.lua/);
+  assert.match(home,/data-hero-framework="luau">Roblox Luau/);
   assert.match(home,/stellar-token-pulse/);
 });
 

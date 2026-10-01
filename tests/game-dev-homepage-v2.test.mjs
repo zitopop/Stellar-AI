@@ -8,10 +8,11 @@ const pricing=readFileSync(new URL('../lib/pricing.js',import.meta.url),'utf8');
 
 test('game developer hero uses focused generation and debugging conversion copy',()=>{
   assert.match(home,/Generate &amp; Debug Game Scripts in Seconds\./);
-  assert.match(home,/Production-ready QBCore, ESX, ox_lib, and Roblox Luau code with security-focused checks for common exploit patterns\./);
-  assert.match(home,/Try 3 Free Generations/);
-  assert.match(home,/href="\/app\?mode=debug" class="oa2-secondary-action">Debug Broken Code/);
-  for(const framework of ['QBCore','ESX','ox_lib','Roblox Luau']) assert.match(home,new RegExp(framework.replace('_','_')));
+  assert.match(home,/⚡ V2 RELEASE: Full Support for QBCore, ESX, ox_lib &amp; Roblox Luau/);
+  assert.match(home,/Production-ready FiveM and Roblox code generated with built-in anti-exploit checks\. Stop wasting hours debugging F8 console or Roblox Output errors\./);
+  assert.match(home,/Try 3 Free Builds/);
+  assert.match(home,/href="\/app\?mode=debug" class="oa2-secondary-action">Debug Broken Script/);
+  for(const framework of ['QBCore','ESX','ox_lib','Roblox Luau','ModuleScripts']) assert.match(home,new RegExp(framework.replace('_','_')));
   assert.match(home,/AI-generated code still needs runtime testing and server-side validation/);
 });
 
@@ -38,7 +39,10 @@ test('homepage pricing reflects live server plan ceilings rather than stale mark
   assert.match(home,/£8 Starter · 120 req\/hr/);
   assert.match(home,/£20 Plus · 500 req\/hr/);
   assert.match(home,/£75 Pro · 1,800 req\/hr · Nova/);
-  assert.match(home,/75-credit daily allowance/);
+  assert.match(home,/75 free credits\/day · no card required/);
+  assert.match(home,/120 requests\/hour ceiling[\s\S]*?longer scripts/);
+  assert.match(home,/500 requests\/hour ceiling[\s\S]*?full game systems/);
+  assert.match(home,/1,800 requests\/hour ceiling \+ Nova[\s\S]*?Nova model access/);
 });
 
 test('homepage debugger CTA opens app debugger mode',()=>{
