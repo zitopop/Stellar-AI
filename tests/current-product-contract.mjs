@@ -77,7 +77,7 @@ export function assertJarvisContract(){
 }
 
 export function assertSiteContract(){
-  const pages=["404.html","acceptable-use.html","affiliate.html","ai-receptionist-thank-you.html","app.html","blog.html","business-builder.html","business-terms.html","business-thank-you.html","cookies.html","deploy-center.html","desktop-agent.html","email-agent.html","index.html","install.html","investors.html","jarvis-owner.html","jarvis-workspace.html","jarvis.html","legal.html","models.html","offline.html","plans.html","plugins.html","privacy.html","refunds.html","roblox-studio.html","support.html","terms.html","thank-you.html","website-audit-thank-you.html","what-is-what.html"];
+  const pages=["404.html","acceptable-use.html","affiliate.html","ai-receptionist-thank-you.html","app.html","blog.html","business-builder.html","business-terms.html","business-thank-you.html","cookies.html","deploy-center.html","desktop-agent.html","email-agent.html","index.html","install.html","investors.html","private-workspace.html","jarvis-workspace.html","jarvis.html","legal.html","models.html","offline.html","plans.html","plugins.html","privacy.html","refunds.html","roblox-studio.html","support.html","terms.html","thank-you.html","website-audit-thank-you.html","what-is-what.html"];
   for(const page of pages){
     const html=read(page);
     assert.match(html,/\/lib\/assets\/stellar-serious-ui-v1\.css/,page);

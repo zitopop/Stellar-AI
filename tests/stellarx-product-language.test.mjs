@@ -15,7 +15,7 @@ test('StellarX customer surfaces use one Work Agent identity',()=>{
 });
 
 test('StellarX public copy avoids stale PC Agent labels',()=>{
-  for(const path of ['deploy-center.html','jarvis-owner.html','work/index.html','privacy.html']){
+  for(const path of ['deploy-center.html','private-workspace.html','work/index.html','privacy.html']){
     const source=read(path);
     assert.doesNotMatch(source,/>\s*PC Agent\s*</,path);
   }

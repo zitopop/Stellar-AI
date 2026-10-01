@@ -19,7 +19,7 @@ const pages=[
   'index.html',
   'install.html',
   'investors.html',
-  'jarvis-owner.html',
+  'private-workspace.html',
   'jarvis-workspace.html',
   'jarvis.html',
   'legal.html',
