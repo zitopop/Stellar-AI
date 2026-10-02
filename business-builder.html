@@ -348,7 +348,9 @@ async function copyHtml(){
 function download(){
   if(!currentHtml)return;
   const name=($('business-name').value||'business').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'business';
-  const blob=new Blob([currentHtml],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  const watermark='<!-- Generated with Stellar AI — https://trystellarai.com -->\n';
+  const html=currentHtml.startsWith(watermark)?currentHtml:watermark+currentHtml;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download=name+'-website.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   setStatus('Website file downloaded.','good');
 }
