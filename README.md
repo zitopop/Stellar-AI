@@ -75,7 +75,7 @@ See **[docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** for the full rule
 
 Customers see only **Stellar Fast, Stellar Core, Stellar Deep and Stellar Max**. Provider/model IDs are server-side implementation details and are not customer entitlements.
 
-Current internal routing uses a multi-provider setup: OpenAI GPT-6 models for selected planning/review/security work, Claude for implementation/testing and direct fallbacks, Gemini 3.8 Flash for research, and Grok 4.7 for gaming/agentic coding when the configured gateway supports them. General chat honours the Stellar tier the customer selected.
+Internal routing can use multiple configured AI providers and model versions depending on task, quality, reliability, safety, latency, cost and availability. General chat honours the Stellar tier the customer selected. Provider/model identifiers are implementation details, require valid provider credentials and permissions, and must not be presented as a customer entitlement or as evidence of sponsorship, endorsement or partnership.
 
 See **[docs/AI_MODEL_ROUTING.md](docs/AI_MODEL_ROUTING.md)** for current model IDs, legacy aliases, provider-source links, fallback rules, and credential requirements.
 
