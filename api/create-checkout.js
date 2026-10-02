@@ -140,16 +140,45 @@ async function confirmCompletedSubscription(stripe, kvUrl, kvToken, sessionUser,
     return { ok: false, status: 400, error: 'Checkout does not contain a valid Stellar subscription.' };
   }
 
+  // A completed Checkout Session can outlive the subscription it created.
+  // Always re-check the current Stripe subscription so an old success URL
+  // cannot restore access after cancellation or an expired trial.
+  const subscriptionId = typeof checkout.subscription === 'string'
+    ? checkout.subscription
+    : String(checkout?.subscription?.id || '').trim();
+  if (!/^sub_[A-Za-z0-9_]+$/.test(subscriptionId)) {
+    return { ok: false, status: 409, error: 'Subscription is not available yet.' };
+  }
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  if (!['active', 'trialing'].includes(String(subscription?.status || ''))) {
+    return { ok: false, status: 409, error: 'Subscription is not currently active.' };
+  }
+
+  const checkoutCustomerId = typeof checkout.customer === 'string'
+    ? checkout.customer
+    : String(checkout?.customer?.id || '').trim();
+  const subscriptionCustomerId = typeof subscription.customer === 'string'
+    ? subscription.customer
+    : String(subscription?.customer?.id || '').trim();
+  if (!checkoutCustomerId || subscriptionCustomerId !== checkoutCustomerId) {
+    return { ok: false, status: 409, error: 'Subscription customer does not match Checkout.' };
+  }
+
+  const expectedPrice = subscriptionPriceForPlan(rawPlan, process.env, 'GBP');
+  if (expectedPrice && !subscription.items?.data?.some((item) => item?.price?.id === expectedPrice)) {
+    return { ok: false, status: 409, error: 'Subscription price does not match the selected Stellar plan.' };
+  }
+
   const key = `stellar:user:${signedInEmail}`;
   const existing = (await kvGet(kvUrl, kvToken, key)) || {};
   await kvSet(kvUrl, kvToken, key, {
     ...existing,
     plan,
     planBilling: rawPlan.endsWith('-annual') ? 'annual' : 'monthly',
-    planCreditAnchorAt: Date.now(),
-    stripeCustomerId: typeof checkout.customer === 'string' ? checkout.customer : existing.stripeCustomerId,
-    stripeSubscriptionId: typeof checkout.subscription === 'string' ? checkout.subscription : existing.stripeSubscriptionId,
-    stripeSubscriptionStatus: 'active',
+    planCreditAnchorAt: Number(existing.planCreditAnchorAt) || Date.now(),
+    stripeCustomerId: checkoutCustomerId,
+    stripeSubscriptionId: subscriptionId,
+    stripeSubscriptionStatus: subscription.status,
     billingPaymentFailedAt: null,
     updatedAt: Date.now(),
   });
