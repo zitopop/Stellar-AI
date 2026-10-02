@@ -18,8 +18,10 @@ test('customer country is still retained for analytics metadata', () => {
 });
 
 
-test('Stripe Checkout stays card-safe until the production webhook accepts async payment lifecycle events', () => {
-  assert.equal((checkout.match(/payment_method_types:\s*\['card'\]/g)||[]).length, 2);
+test('Stripe Checkout enables cards, eligible wallets and Link without delayed bank methods', () => {
+  assert.equal((checkout.match(/payment_method_types:\s*\['card', 'link'\]/g)||[]).length, 2);
+  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*(?:bacs_debit|sepa_debit|us_bank_account|acss_debit)[^\]]*\]/);
+  assert.match(checkout, /checkoutIdempotencyKey\(sessionUser\.email, plan\)/);
   assert.match(checkout, /acquisition_source:\s*sourceName/);
   assert.match(checkout, /checkout-started-source-\$\{sourceName\}/);
 });
