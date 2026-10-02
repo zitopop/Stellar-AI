@@ -92,6 +92,41 @@ test('configured Twilio health check uses the validated provider config without 
   }
 });
 
+test('invalid Twilio credentials are not reported as ready', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER','CALL_BRIDGE_TOKEN'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'bad-token';
+  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  process.env.OWNER_PHONE = '+447700900123';
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  delete process.env.CALL_BRIDGE_TOKEN;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('voice.twilio.com/v1/DialingPermissions/Countries/GB')) {
+      return Response.json({ code: 20003, message: 'Authentication Error - No credentials provided' }, { status: 401 });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const health = await readOwnerCallHealth({});
+    assert.equal(health.provider, 'twilio');
+    assert.equal(health.ready, false);
+    assert.equal(health.twilioBlocked, true);
+    assert.equal(health.destinationPermission.httpStatus, 401);
+    assert.match(health.message, /authentication is invalid/i);
+    assert.deepEqual(health.missing, ['valid Twilio auth token']);
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
 test('blocked UK Twilio health falls through to a ready Retell bridge', async () => {
   const originalFetch = globalThis.fetch;
   const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];

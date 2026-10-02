@@ -15,6 +15,11 @@ test('public model branding stays Stellar-owned and provider-neutral', () => {
     assert.ok(models.includes(name));
   }
   assert.doesNotMatch(app, /GPT-6|Gemini 3\.8|Grok 4\.7|Claude (?:Haiku|Sonnet|Opus|Fable)/);
+  assert.doesNotMatch(app, /OpenAI · Anthropic · Google · xAI/);
+  assert.doesNotMatch(models, /<strong>(?:OpenAI|Anthropic · Claude|Google · Gemini|xAI · Grok)<\/strong>/);
+  assert.match(app, /star:\{icon:'C',[\s\S]*?plan:'Starter'/);
+  assert.match(models, /STARTER\+ · RECOMMENDED/);
+  assert.match(models, /Free includes Stellar Fast\. Starter adds Stellar Core/);
   assert.match(chat, /const PUBLIC_MODEL_INPUTS = new Set\(\[\s*'spark', 'star', 'comet', 'nova',\s*\]\);/);
 });
 
