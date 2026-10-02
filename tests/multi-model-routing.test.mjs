@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveModelTier, getModelCandidates } from '../api/chat.js';
+import { resolveModelTier, getModelCandidates, resolveRoute } from '../api/chat.js';
 
 test('current public model routing downgrades unavailable tiers safely', () => {
   assert.equal(resolveModelTier('spark', 'free'), 'spark');
@@ -26,4 +26,12 @@ test('current provider models map onto paid Stellar tiers', () => {
   assert.equal(resolveModelTier('claude-opus-5-5', 'pro'), 'comet');
   assert.equal(resolveModelTier('claude-fable-5-1', 'pro'), 'nova');
   assert.equal(resolveModelTier('grok-4.7', 'pro'), 'comet');
+});
+
+
+test('general chat honours the customer-selected Stellar tier', () => {
+  assert.equal(resolveRoute('spark', 'general', 'free').tier, 'spark');
+  assert.equal(resolveRoute('star', 'general', 'free').tier, 'star');
+  assert.equal(resolveRoute('comet', 'general', 'plus').tier, 'comet');
+  assert.equal(resolveRoute('nova', 'general', 'pro').tier, 'nova');
 });
