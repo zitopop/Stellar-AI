@@ -357,6 +357,16 @@ export default async function handler(req, res) {
               updatedAt: Date.now(),
             });
             if (!saved) throw new Error(`Could not persist Server Pass entitlement for ${session.id}`);
+            if (existingPass.guildId) {
+              const guildSaved = await kvSet(`stellar:server-pass-guild:${existingPass.guildId}`, {
+                email,
+                guildId: String(existingPass.guildId),
+                status: 'active',
+                stripeSubscriptionId: checkoutSubscriptionId || existingPass.stripeSubscriptionId || null,
+                updatedAt: Date.now(),
+              });
+              if (!guildSaved) throw new Error(`Could not sync Server Pass guild ${existingPass.guildId}`);
+            }
             await Promise.all([
               recordCheckoutCompletion({ id: String(session.client_reference_id || '') }),
               incrementConversionMetric('checkout-completed'),
@@ -453,6 +463,17 @@ export default async function handler(req, res) {
           updatedAt: Date.now(),
         });
         if (!saved) throw new Error(`Could not sync Server Pass subscription ${subscription.id}`);
+        if (existingPass.guildId) {
+          const guildSaved = await kvSet(`stellar:server-pass-guild:${existingPass.guildId}`, {
+            email,
+            guildId: String(existingPass.guildId),
+            status: hasAccess ? 'active' : 'inactive',
+            stripeSubscriptionId: subscription.id,
+            stripeSubscriptionStatus: status,
+            updatedAt: Date.now(),
+          });
+          if (!guildSaved) throw new Error(`Could not sync Server Pass guild billing ${existingPass.guildId}`);
+        }
       } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
@@ -609,6 +630,17 @@ export default async function handler(req, res) {
           updatedAt: Date.now(),
         });
         if (!saved) throw new Error(`Could not revoke Server Pass subscription ${subscription.id}`);
+        if (existingPass.guildId) {
+          const guildSaved = await kvSet(`stellar:server-pass-guild:${existingPass.guildId}`, {
+            email,
+            guildId: String(existingPass.guildId),
+            status: 'canceled',
+            stripeSubscriptionId: subscription.id,
+            stripeSubscriptionStatus: 'canceled',
+            updatedAt: Date.now(),
+          });
+          if (!guildSaved) throw new Error(`Could not revoke Server Pass guild ${existingPass.guildId}`);
+        }
       } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
