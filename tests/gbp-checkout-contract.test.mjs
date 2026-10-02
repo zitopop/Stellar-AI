@@ -18,8 +18,10 @@ test('customer country is still retained for analytics metadata', () => {
 });
 
 
-test('Stripe Checkout stays card-safe until the production webhook accepts async payment lifecycle events', () => {
-  assert.equal((checkout.match(/payment_method_types:\s*\['card'\]/g)||[]).length, 2);
+test('Stripe Checkout enables Link while eligible Apple Pay and Google Pay remain card-wallet presentations', () => {
+  assert.equal((checkout.match(/payment_method_types:\s*\['card',\s*'link'\]/g)||[]).length, 2);
+  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*'apple_pay'/);
+  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*'google_pay'/);
   assert.match(checkout, /acquisition_source:\s*sourceName/);
   assert.match(checkout, /checkout-started-source-\$\{sourceName\}/);
 });
