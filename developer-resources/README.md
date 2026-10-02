@@ -1,6 +1,6 @@
 # Stellar AI Developer Resources
 
-Small, inspectable examples for FiveM and Roblox developers. These examples are intentionally server-authoritative and avoid trusting client-supplied item names, reward amounts, or currency values.
+Small, inspectable examples for FiveM and Roblox developers. These examples are intentionally server-authoritative and avoid trusting client-supplied item names, reward amounts, or currency values. The code in this folder is available under the [MIT License](./LICENSE), so developers can reuse and adapt it.
 
 ## FiveM
 
