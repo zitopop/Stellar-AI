@@ -1,4 +1,5 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
+// Billing safety revision: keep card-only checkout until the live Stripe webhook endpoint can receive async-payment lifecycle events.
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
 import { isPaidPlan } from '../lib/pricing.js';
