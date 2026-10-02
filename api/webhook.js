@@ -522,7 +522,13 @@ export default async function handler(req, res) {
         });
         if (!saved) throw new Error(`Could not persist invoice failure for ${invoice.id}`);
       }
-      await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI subscription invoice payment failed in Stripe.' });
+      await escalateOwner({
+        category: 'payment',
+        severity: 'critical',
+        summary: invoiceHasAiReceptionist(invoice)
+          ? 'An AI Receptionist monthly invoice payment failed in Stripe.'
+          : 'A Stellar AI subscription invoice payment failed in Stripe.',
+      });
     } else if (event.type === 'payout.failed') {
       await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI Stripe payout failed and needs owner attention.' });
     } else if (event.type === 'charge.refunded') {
@@ -583,7 +589,16 @@ export default async function handler(req, res) {
       if (!subscriptionCustomerId) throw new Error(`Deleted Stripe subscription ${subscription.id} is missing a customer identifier`);
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
       if (!email) throw new Error(`Deleted Stripe subscription ${subscription.id} could not be mapped to a customer email`);
-      if (String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
+      if (subscriptionHasAiReceptionist(subscription)) {
+        await updateBusinessServiceBilling(email, {
+          status: 'canceled',
+          billingActive: false,
+          stripeCustomerId: subscriptionCustomerId,
+          stripeSubscriptionId: subscription.id,
+          subscriptionStatus: 'canceled',
+          canceledAt: Date.now(),
+        });
+      } else if (String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
         const key = `stellar:server-pass:${email}`;
         const existingPass = (await kvGet(key)) || {};
         const saved = await kvSet(key, {
