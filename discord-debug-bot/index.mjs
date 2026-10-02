@@ -465,6 +465,16 @@ client.once(Events.ClientReady, async (readyClient) => {
   } catch (error) {
     console.error('Could not register Stellar Discord commands:', error);
   }
+
+  if (guildId) {
+    try {
+      const homeGuild = readyClient.guilds.cache.get(guildId) || await readyClient.guilds.fetch(guildId);
+      const result = await buildGuildStructure(homeGuild);
+      console.log('Stellar Discord structure checked: ' + result.roles + ' roles, ' + result.categories + ' categories, ' + result.channels + ' channels.');
+    } catch (error) {
+      console.error('Could not auto-check the Stellar Discord structure:', error?.message || error);
+    }
+  }
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
