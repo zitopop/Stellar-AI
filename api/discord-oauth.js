@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { createSession } from '../lib/auth.js';
 import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, kvSet, validReferralCode } from '../lib/profile.js';
 import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js';
+import { ensureDiscordInteractionsBootstrap } from '../lib/discord-interactions.js';
 
 function fragment(values) {
   return new URLSearchParams(values).toString();
@@ -50,6 +51,12 @@ export default async function handler(req, res) {
 
   if (!code && !error) {
     if (!clientId) return res.status(500).json({ error: 'Discord is not configured.' });
+    try {
+      const bootstrap = await ensureDiscordInteractionsBootstrap();
+      if (!bootstrap?.ok && !bootstrap?.skipped) console.warn('Discord serverless bootstrap is not ready', bootstrap?.reason || bootstrap?.endpointError || 'unknown');
+    } catch (bootstrapError) {
+      console.warn('Discord serverless bootstrap failed', bootstrapError?.message || bootstrapError);
+    }
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,

@@ -82,3 +82,19 @@ For the £50/month Server Pass pilot, the preferred production path is now dynam
 `STELLAR_SERVER_PASS_GUILD_IDS` remains as a compatibility/manual fallback for already-verified guilds, not the primary activation workflow.
 
 Do not describe Server Pass as “unlimited” or “zero rate limits”.
+
+
+## Serverless fallback
+
+Stellar also exposes `/api/discord-interactions` on Vercel as a signed Discord Interaction Endpoint. Discord supports receiving slash commands over outgoing HTTPS interactions instead of requiring a permanent Gateway connection.
+
+The serverless path keeps core commands available when the T10/gateway machine is offline:
+- `/debug`
+- `/serverpass`
+- `/sync` (account/entitlement sync always; visual role sync when cloud bot credentials are available)
+- `/support` (private Discord ticket when cloud bot credentials are available, otherwise the web support route)
+- `/stellar-status`
+
+The endpoint validates Discord's Ed25519 signature before trusting guild/user/permission fields. Command registration uses the existing Discord OAuth application credentials. The OAuth start route performs an idempotent bootstrap attempt so the app can self-heal its command registration and Interaction Endpoint configuration without depending on the gateway host.
+
+The persistent gateway remains useful for richer official-community channel/role automation, but it is no longer intended to be a single point of failure for paid Server Pass debugging.
