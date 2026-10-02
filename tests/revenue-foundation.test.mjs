@@ -30,7 +30,7 @@ test('conversion endpoint accepts the new high-signal growth events',()=>{
   const api=read('api/get-plan.js');
   const vercel=JSON.parse(read('vercel.json'));
   assert.deepEqual(vercel.rewrites.find(item=>item.source==='/api/track-event'),{source:'/api/track-event',destination:'/api/get-plan?mode=track-event'});
-  for(const event of ['usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked','pricing-view','plan-free-selected','plan-starter-selected','plan-plus-selected','plan-pro-selected']){
+  for(const event of ['usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked','pricing-view','plan-free-selected','plan-starter-selected','plan-plus-selected','plan-pro-selected','preview-generated','preview-gate-opened','server-pass-selected']){
     assert.match(api,new RegExp("'"+event+"'"));
   }
 });
@@ -46,4 +46,15 @@ test('revenue ops can read usage and business conversion intent',()=>{
   assert.match(metrics,/starterPlanSelections/);
   assert.match(metrics,/plusPlanSelections/);
   assert.match(metrics,/proPlanSelections/);
+  assert.match(metrics,/previewGenerated/);
+  assert.match(metrics,/previewGateOpened/);
+  assert.match(metrics,/serverPassSelected/);
+});
+
+test('landing page surfaces Server Pass as a visible team offer',()=>{
+  const home=read('index.html');
+  assert.match(home,/stellar-team-offer/);
+  assert.match(home,/Buy Server Pass/);
+  assert.match(home,/£50/);
+  assert.match(home,/pricing-server-pass/);
 });
