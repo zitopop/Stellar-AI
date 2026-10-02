@@ -367,7 +367,15 @@ export default async function handler(req, res) {
       const data = await startOwnerCall({ purpose, authorization, bridgeToken });
       return res.status(200).json({ ok: true, provider: data.provider, call_id: data.call_id || null, status: data.status || 'started' });
     } catch (error) {
-      console.warn('Owner phone provider unavailable; using Stellar fallback', JSON.stringify({ provider: error?.provider || 'unknown', httpStatus: error?.status || null, code: error?.code || error?.twilio?.code || null, message: String(error?.message || error).slice(0, 500), moreInfo: error?.twilio?.moreInfo || null }));
+      const twilioAuthInvalid = Number(error?.twilio?.httpStatus) === 401
+        || Number(error?.twilio?.code) === 20003
+        || (error?.provider === 'twilio' && Number(error?.status) === 401)
+        || /auth(?:entication)?(?: token)?(?: is)? (?:invalid|failed|not valid)|authenticate/i.test(String(error?.message || ''));
+      const phoneIssue = twilioAuthInvalid ? 'twilio-auth-invalid' : 'phone-provider-unavailable';
+      const fallbackMessage = twilioAuthInvalid
+        ? 'Twilio login needs reconnecting · Stellar in-app call started.'
+        : 'Phone provider unavailable · Stellar in-app call started.';
+      console.warn('Owner phone provider unavailable; using Stellar fallback', JSON.stringify({ provider: error?.provider || 'unknown', httpStatus: error?.status || null, code: error?.code || error?.twilio?.code || null, phoneIssue, message: String(error?.message || error).slice(0, 500), moreInfo: error?.twilio?.moreInfo || null }));
       try {
         const created = await createStellarCallSession({
           category: 'owner-call',
@@ -386,12 +394,14 @@ export default async function handler(req, res) {
             ok: true,
             provider: 'stellar-inapp',
             phone_blocked: true,
+            phone_issue: phoneIssue,
             fallback: pushed?.sent > 0 ? 'push_in_app_call' : 'in_app_call',
             call_id: null,
             status: 'ringing',
             stellar_call: created.call || null,
             push: pushed,
-            message: pushed?.sent > 0 ? 'The phone provider blocked the outbound call, so Stellar sent a Jarvis push alert and opened the in-app call.' : 'The phone provider blocked the outbound call, so Stellar opened the in-app Jarvis call instead.',
+            message: fallbackMessage,
+            action_required: twilioAuthInvalid ? 'Replace TWILIO_AUTH_TOKEN with the current token for the configured TWILIO_ACCOUNT_SID, then redeploy.' : null,
           });
         }
       } catch (fallbackError) {
