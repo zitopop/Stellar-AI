@@ -4,6 +4,14 @@
 
 **Live site:** https://trystellarai.com
 
+## Free developer resources
+
+- [FiveM: secure QBCore reward event](developer-resources/fivem/secure-qbcore-reward)
+- [Roblox: secure RemoteEvent reward handler](developer-resources/roblox/secure-remoteevent-handler)
+- [Developer resources index](developer-resources/README.md)
+
+These are inspectable starter patterns, not claims of complete anti-cheat coverage. Use them as references and test them in a development environment.
+
 ## Quick start
 
 ```bash
