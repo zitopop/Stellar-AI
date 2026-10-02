@@ -7,8 +7,8 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const pages = {
   'thank-you.html': ['Payment received', 'Stripe receipt', '/app?payment=success', 'Billing support'],
   'business-thank-you.html': ['Stripe receipt', 'Send details', '/business'],
-  'ai-receptionist-thank-you.html': ['Stripe receipt', 'Send setup details', '/ai-receptionist'],
-  'website-audit-thank-you.html': ['Stripe receipt', 'Send audit details', '/website-audit'],
+  'ai-receptionist-thank-you.html': ['Stripe receipt', 'automatically creates a setup job', '/ai-receptionist'],
+  'website-audit-thank-you.html': ['Stripe receipt', 'automatically creates an audit job', '/website-audit'],
 };
 
 for (const [page, requiredText] of Object.entries(pages)) {
@@ -22,10 +22,10 @@ for (const [page, requiredText] of Object.entries(pages)) {
   });
 }
 
-test('business thank-you pages ask for fulfilment details instead of making fake guarantees', () => {
+test('business thank-you pages explain automatic fulfilment without making fake guarantees', () => {
   const receptionist = read('ai-receptionist-thank-you.html');
   const audit = read('website-audit-thank-you.html');
   assert.match(receptionist, /Business facts/);
-  assert.match(receptionist, /must never say/);
-  assert.match(audit, /no fake traffic or revenue promises/i);
+  assert.match(receptionist, /first configuration stays reviewable/i);
+  assert.match(audit, /no fake traffic or revenue promises/i);\n  assert.doesNotMatch(receptionist, /mailto:support@trystellarai\.com/i);\n  assert.doesNotMatch(audit, /mailto:support@trystellarai\.com/i);
 });
