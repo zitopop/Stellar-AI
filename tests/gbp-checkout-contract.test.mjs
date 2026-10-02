@@ -18,8 +18,10 @@ test('customer country is still retained for analytics metadata', () => {
 });
 
 
-test('Stripe Checkout stays on synchronous card-wallet and Link methods until async webhooks are enabled', () => {
-  assert.ok((checkout.match(/payment_method_types:\s*\['card', 'link'\]/g)||[]).length >= 3);
+test('Stripe Checkout stays on synchronous card methods with Link and phone collection disabled', () => {
+  assert.ok((checkout.match(/payment_method_types:\s*\['card'\]/g)||[]).length >= 3);
+  assert.ok((checkout.match(/phone_number_collection:\s*\{ enabled: false \}/g)||[]).length >= 3);
+  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*'link'/);
   assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*(?:bacs_debit|sepa_debit|us_bank_account|acss_debit)[^\]]*\]/);
   assert.match(checkout, /Temporary safety guard/);
   assert.match(checkout, /checkoutIdempotencyKey\(sessionUser\.email, plan\)/);

@@ -8,7 +8,7 @@ const palette = readFileSync(new URL('../stellar-business-palette.css', import.m
 test('homepage keeps concise buyer confidence next to pricing', () => {
   assert.match(landing, /STELLAR WORKSPACE PLANS/);
   assert.match(landing, /No card for Free/);
-  assert.match(landing, /Secure Stripe checkout/);
+  assert.match(landing, /Debit \/ credit card via Stripe/);
   assert.match(landing, /Cancel anytime/);
   assert.match(landing, /Simple usage meter/);
   assert.match(landing, /Start free\. Upgrade when Stellar becomes part of your day\./);

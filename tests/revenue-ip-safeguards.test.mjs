@@ -86,7 +86,8 @@ test('Server Pass has a real recurring checkout without overwriting personal pla
   assert.match(checkout, /plan === 'server-pass'/);
   assert.match(checkout, /unit_amount: 5000/);
   assert.match(checkout, /recurring: \{ interval: 'month', interval_count: 1 \}/);
-  assert.match(checkout, /payment_method_types: \['card', 'link'\]/);
+  assert.match(checkout, /payment_method_types: \['card'\]/);
+  assert.match(checkout, /phone_number_collection: \{ enabled: false \}/);
   assert.match(checkout, /server-pass\?payment=success&session_id=\{CHECKOUT_SESSION_ID\}/);
   assert.match(app, /'server-pass'/);
   assert.match(serverPass, /Buy Server Pass/);

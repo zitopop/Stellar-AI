@@ -266,8 +266,9 @@ export default async function handler(req, res) {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
         // Temporary safety guard: the live Stripe webhook is not yet subscribed to async Checkout events.
-        // Card includes eligible Apple Pay / Google Pay wallets; Link remains an explicit fast-pay option.
-        payment_method_types: ['card', 'link'],
+        // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
+        payment_method_types: ['card'],
+        phone_number_collection: { enabled: false },
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -318,7 +319,9 @@ export default async function handler(req, res) {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
         // Keep one-time fulfillment synchronous until async Checkout webhook delivery is enabled live.
-        payment_method_types: ['card', 'link'],
+        // Use the standard card flow and do not collect a phone number at Checkout.
+        payment_method_types: ['card'],
+        phone_number_collection: { enabled: false },
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -387,8 +390,9 @@ export default async function handler(req, res) {
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
       // Temporary safety guard: the live Stripe webhook is not yet subscribed to every async lifecycle event.
-      // Card includes eligible Apple Pay / Google Pay wallets; Link remains an explicit fast-pay option.
-      payment_method_types: ['card', 'link'],
+      // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
+      payment_method_types: ['card'],
+        phone_number_collection: { enabled: false },
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}&session_id={CHECKOUT_SESSION_ID}`,
