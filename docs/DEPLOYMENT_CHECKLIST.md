@@ -160,3 +160,5 @@ The owner-authenticated `/api/broadcast` endpoint exposes three reminder actions
 For scheduling, send a timezone-aware ISO `runAt`, a 12-80 character `requestId`, one supported urgent category, severity `urgent` or `critical`, and a short summary. The server stores private reminder details in Redis and gives QStash only the reminder id plus a nonce. QStash delivers to the existing Stripe/Gmail webhook function using `Upstash-Not-Before`.
 
 The callback verifies the QStash JWT signature against the exact public URL and raw request body before loading the reminder. A durable claim is written before any call attempt, so retried QStash deliveries do not create duplicate phone calls after an uncertain provider handoff.
+
+> After changing any production environment variable in Vercel, create a fresh production deployment so serverless functions receive the new value.
