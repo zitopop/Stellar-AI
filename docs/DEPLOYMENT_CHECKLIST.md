@@ -62,7 +62,11 @@ Core app/API:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
-- `OPENAI_API_KEY` or model provider key
+- `ANTHROPIC_API_KEY` for direct Claude fallback in the main chat.
+- `BUILT_IN_FORGE_API_URL` + `BUILT_IN_FORGE_API_KEY` for internal OpenAI/Gemini/Grok/Claude gateway routing when enabled.
+- `OPENAI_API_KEY` only for features that call OpenAI directly (for example realtime/voice/search code paths); it is not a browser key.
+
+Model-provider credentials must stay server-side. The customer-facing app exposes Stellar Fast/Core/Deep/Max rather than provider model IDs. See `docs/AI_MODEL_ROUTING.md` before changing model defaults or aliases.
 
 Owner call / Jarvis:
 
