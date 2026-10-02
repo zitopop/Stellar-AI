@@ -165,18 +165,18 @@ async function kvSet(key, value, seconds) {
 }
 
 async function kvSetNx(key, value, seconds = 300) {
-  if (!KV_URL || !KV_TOKEN) return false;
+  if (!KV_URL || !KV_TOKEN) return null;
   try {
     const response = await fetch(`${KV_URL}/pipeline`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
       body: JSON.stringify([['SET', key, JSON.stringify(value), 'EX', seconds, 'NX']]),
     });
-    if (!response.ok) return false;
+    if (!response.ok) return null;
     const results = await response.json();
     return results?.[0]?.result === 'OK';
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -240,7 +240,12 @@ export default async function handler(req, res) {
     // Claim the event atomically before processing so concurrent Stripe retries cannot
     // apply the same entitlement transition twice. Failed handlers release the claim.
     const eventClaim = await kvSetNx(eventKey(event.id), { state: 'processing', receivedAt: Date.now(), type: event.type }, 300);
-    if (!eventClaim) return res.status(200).json({ received: true, duplicate: true });
+    if (eventClaim === null) throw new Error(`Could not claim Stripe event ${event.id}`);
+    if (!eventClaim) {
+      const existingEvent = await kvGet(eventKey(event.id));
+      if (existingEvent?.state === 'completed') return res.status(200).json({ received: true, duplicate: true });
+      return res.status(409).json({ error: 'Stripe event is already processing; retry later.' });
+    }
     eventClaimed = true;
 
     if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
@@ -388,7 +393,7 @@ export default async function handler(req, res) {
         const saved = await kvSet(key, {
           ...existingPass,
           status: hasAccess ? (existingPass.guildId ? 'active' : 'pending_activation') : 'inactive',
-          stripeCustomerId: typeof subscription.customer === 'string' ? subscription.customer : existingPass.stripeCustomerId,
+          stripeCustomerId: subscriptionCustomerId || existingPass.stripeCustomerId,
           stripeSubscriptionId: subscription.id,
           stripeSubscriptionStatus: status,
           updatedAt: Date.now(),
@@ -402,7 +407,7 @@ export default async function handler(req, res) {
         const currentPlan = metadataPlan || normalisePlan(existing.plan) || 'free';
         let next = {
           ...existing,
-          stripeCustomerId: typeof subscription.customer === 'string' ? subscription.customer : existing.stripeCustomerId,
+          stripeCustomerId: subscriptionCustomerId || existing.stripeCustomerId,
           stripeSubscriptionId: subscription.id,
           stripeSubscriptionStatus: status,
           updatedAt: Date.now(),
