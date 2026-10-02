@@ -24,8 +24,8 @@ The Stripe webhook endpoint should deliver:
 
 ## Current safety guard
 
-Until the live Stripe connection has permission to add the asynchronous Checkout events above, Stellar Checkout is intentionally restricted to card payments. This prevents an asynchronous payment from succeeding at Stripe without the corresponding entitlement event reaching Stellar.
+As verified on 2 October 2026, the live Stripe endpoint at `https://trystellarai.com/api/webhook` is enabled but is not yet subscribed to every event in the list above. In particular, asynchronous Checkout success/failure and some subscription lifecycle events are still missing from the live endpoint configuration.
 
-Once the production webhook endpoint is confirmed to receive the async payment events, remove the temporary `payment_method_types: ['card']` guards from `api/create-checkout.js` and let Stripe dynamically choose eligible payment methods.
+Until those live endpoint subscriptions are complete, Stellar Checkout deliberately restricts sessions to `payment_method_types: ['card', 'link']`. Card Checkout can surface eligible Apple Pay / Google Pay wallets, while Link provides a fast saved-payment path. This guard avoids enabling delayed payment methods whose later success/failure events may not reach Stellar.
 
-Do not enable a broader payment-method set before the webhook subscription is verified.
+After the live endpoint is subscribed to the full event list and delivery is verified, remove this temporary allowlist and return to Stripe dynamic payment methods.
