@@ -29,7 +29,10 @@ test('Discord bot uses slash commands, native fetch, cooldowns and safe output h
   assert.match(bot, /interaction\.commandName !== 'debug'/);
   assert.match(bot, /fetch\(apiUrl/);
   assert.match(bot, /Fix this error\/script:/);
-  assert.match(bot, /Generated with Stellar AI ⚡ \| Try 3 free builds at trystellarai\.com/);
+  assert.match(bot, /Free \/debug includes 2 repairs\/day/);
+  assert.match(bot, /discordUserId: interaction\.user\.id/);
+  assert.match(bot, /discordGuildId: interaction\.guildId/);
+  assert.doesNotMatch(bot, /Try 3 free builds/);
   assert.match(bot, /X-Stellar-Bot-Key/);
   assert.match(bot, /COOLDOWN_MS = 15_000/);
   assert.match(bot, /allowedMentions: \{ parse: \[\] \}/);
