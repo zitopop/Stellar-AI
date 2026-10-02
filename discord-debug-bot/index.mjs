@@ -121,7 +121,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
         'Content-Type': 'application/json',
         'X-Stellar-Bot-Key': bridgeKey,
       },
-      body: JSON.stringify({ prompt: 'Fix this error/script: ' + inputCode }),
+      body: JSON.stringify({
+        prompt: 'Fix this error/script: ' + inputCode,
+        discordUserId: interaction.user.id,
+        discordGuildId: interaction.guildId || '',
+      }),
     });
 
     let payload = {};
@@ -146,7 +150,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       .setURL('https://trystellarai.com/')
       .setDescription(description)
       .addFields({ name: 'What Stellar found', value: summary || 'A corrected version is shown above.' })
-      .setFooter({ text: 'Generated with Stellar AI ⚡ | Try 3 free builds at trystellarai.com' })
+      .setFooter({ text: 'Generated with Stellar AI ⚡ | Free /debug includes 2 repairs/day · trystellarai.com' })
       .setTimestamp();
 
     await interaction.editReply({
