@@ -7,8 +7,8 @@ const plans = ['free', 'starter', 'plus', 'pro', 'owner'];
 const aliases = {
   spark: ['spark', 'fabie', 'claude-haiku-4-5-20251001'],
   star: ['star', 'smart', 'claude-sonnet-5-5', 'claude-sonnet-4-6', 'gemini-3.8-flash'],
-  comet: ['comet', 'claude-opus-5-5', 'claude-opus-4-6', 'gpt-6.1-sol', 'grok-4.7'],
-  nova: ['nova', 'ultra', 'claude-fable-5-1'],
+  comet: ['comet', 'claude-opus-5-5', 'claude-opus-4-6', 'gpt-6-sol', 'gpt-6.1-sol', 'grok-4.7'],
+  nova: ['nova', 'ultra', 'claude-fable-5-1', 'gpt-6-astra'],
 };
 
 function expected(tier, plan) {
