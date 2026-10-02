@@ -12,7 +12,7 @@ import { escalateOwner } from '../lib/owner-escalation.js';
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { getGmailPushConfiguration, getGmailWatchStatus, processGmailPush, startGmailWatch } from '../lib/gmail-push.js';
 import { deliverQStashReminder, QStashReminderError } from '../lib/qstash-reminders.js';
-import { applyBusinessCustomerUpdate, businessServiceFromCheckout, createBusinessFulfillmentJob, enqueueBusinessFulfillment, deliverBusinessFulfillment, getBusinessCustomerUpdateView, subscriptionHasAiReceptionist, invoiceHasAiReceptionist, updateBusinessServiceBilling } from '../lib/business-fulfillment.js';
+import { answerBusinessReceptionist, applyBusinessCustomerUpdate, businessServiceFromCheckout, createBusinessFulfillmentJob, enqueueBusinessFulfillment, deliverBusinessFulfillment, getBusinessCustomerUpdateView, getPublicBusinessReceptionist, recoverBusinessFulfillmentJobs, submitBusinessReceptionistEnquiry, subscriptionHasAiReceptionist, invoiceHasAiReceptionist, updateBusinessServiceBilling } from '../lib/business-fulfillment.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -146,6 +146,54 @@ async function handleBusinessCustomerUpdate(req, res) {
   }
 }
 
+async function handlePublicBusinessReceptionist(req, res) {
+  res.setHeader('Cache-Control', 'private, no-store');
+  const slug = String(req.query?.id || '').trim();
+  const requesterKey = String(req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'anonymous').split(',')[0].trim();
+  try {
+    if (req.method === 'GET') {
+      const view = await getPublicBusinessReceptionist(slug);
+      if (!view) return res.status(404).json({ error: 'This receptionist is not active.' });
+      return res.status(200).json(view);
+    }
+    if (req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const action = String(body?.action || 'chat').trim().toLowerCase();
+      if (action === 'chat') {
+        const result = await answerBusinessReceptionist({ slug, message: body?.message, requesterKey });
+        return res.status(result.status || (result.ok ? 200 : 400)).json(result);
+      }
+      if (action === 'enquiry') {
+        const result = await submitBusinessReceptionistEnquiry({
+          slug,
+          name: body?.name,
+          contact: body?.contact,
+          message: body?.message,
+          requesterKey,
+        });
+        return res.status(result.status || (result.ok ? 200 : 400)).json(result);
+      }
+      return res.status(400).json({ error: 'Unknown receptionist action.' });
+    }
+    res.setHeader('Allow', 'GET, POST');
+    return res.status(405).json({ error: 'Method not allowed.' });
+  } catch (error) {
+    console.error('Public business receptionist failed', error?.message || error);
+    return res.status(503).json({ error: 'The receptionist is temporarily unavailable. Please try again shortly.' });
+  }
+}
+
+async function handleBusinessRecovery(req, res) {
+  if (!['GET', 'POST'].includes(req.method)) return res.status(405).json({ error: 'Method not allowed.' });
+  if (!internalAuthorized(req)) return res.status(401).json({ error: 'Scheduler authorization required.' });
+  try {
+    return res.status(200).json({ ok: true, ...(await recoverBusinessFulfillmentJobs()) });
+  } catch (error) {
+    console.error('Business recovery sweep failed', error?.message || error);
+    return res.status(503).json({ error: 'Business recovery sweep failed.' });
+  }
+}
+
 async function handleGmailWatch(req, res) {
   if (!['GET', 'POST'].includes(req.method)) return res.status(405).json({ error: 'Method not allowed.' });
   const internal = internalAuthorized(req);
@@ -276,6 +324,8 @@ export default async function handler(req, res) {
   if (source === 'qstash-reminder') return handleQStashReminder(req, res);
   if (source === 'business-fulfillment') return handleBusinessFulfillment(req, res);
   if (source === 'business-customer-update') return handleBusinessCustomerUpdate(req, res);
+  if (source === 'business-receptionist') return handlePublicBusinessReceptionist(req, res);
+  if (source === 'business-recovery') return handleBusinessRecovery(req, res);
   if (req.method !== 'POST') return res.status(405).end();
   if (!STRIPE_SECRET || !WEBHOOK_SECRET) return res.status(500).json({ error: 'Stripe webhook is not configured.' });
   if (!KV_URL || !KV_TOKEN) return res.status(500).json({ error: 'Account storage is not configured.' });
@@ -313,7 +363,7 @@ export default async function handler(req, res) {
         const job = await createBusinessFulfillmentJob(session);
         if (job) {
           const queued = await enqueueBusinessFulfillment(job).catch((error) => ({ queued: false, reason: String(error?.message || error).slice(0, 120) }));
-          if (!queued?.queued) console.warn('Paid business order saved but background fulfilment was not queued', session.id, queued?.reason || 'unknown');
+          if (!queued?.queued) throw new Error('Paid business order was saved but automatic fulfilment could not be queued: ' + (queued?.reason || 'unknown'));
           await Promise.all([
             incrementConversionMetric('checkout-completed'),
             incrementConversionMetric('business-service-completed'),
@@ -327,6 +377,7 @@ export default async function handler(req, res) {
               stripeCustomerId: checkoutCustomerId || null,
               stripeSubscriptionId: checkoutSubscriptionId || null,
               subscriptionStatus: 'active',
+              billingActive: true,
             });
           }
         } else {

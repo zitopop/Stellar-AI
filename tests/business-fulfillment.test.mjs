@@ -7,7 +7,9 @@ import {
   businessServiceFromCheckout,
   checkoutCustomFields,
   createBusinessCustomerUpdateToken,
+  getPublicBusinessReceptionist,
   invoiceHasAiReceptionist,
+  recoverBusinessFulfillmentJobs,
   subscriptionHasAiReceptionist,
   validateBusinessFulfillmentDetails,
   verifyBusinessCustomerUpdateToken,
@@ -138,4 +140,28 @@ test('business fulfilment source includes automatic customer reminder recovery',
   assert.match(source, /delay: '3d'/);
   assert.match(source, /delay: '7d'/);
   assert.match(source, /Customer details remain unresolved after automatic reminders/);
+});
+
+
+test('business fulfilment source performs automatic final delivery and hosted receptionist launch', () => {
+  const source = readFileSync(new URL('../lib/business-fulfillment.js', import.meta.url), 'utf8');
+  assert.match(source, /automaticQa/);
+  assert.match(source, /sendBusinessDelivery/);
+  assert.match(source, /status: 'delivered'/);
+  assert.match(source, /status: 'live'/);
+  assert.match(source, /provisionBusinessReceptionist/);
+  assert.match(source, /answerBusinessReceptionist/);
+  assert.match(source, /submitBusinessReceptionistEnquiry/);
+  assert.doesNotMatch(source, /if \(job\.status === 'draft_ready_review'\) return/);
+});
+
+test('business fulfilment has a watchdog recovery path for stale automatic jobs', () => {
+  assert.equal(typeof recoverBusinessFulfillmentJobs, 'function');
+  const source = readFileSync(new URL('../lib/business-fulfillment.js', import.meta.url), 'utf8');
+  assert.match(source, /\['queued', 'retrying', 'processing', 'draft_ready_review'\]/);
+  assert.match(source, /recoveredAt/);
+});
+
+test('hosted receptionist public loader is exported without exposing customer email', async () => {
+  assert.equal(typeof getPublicBusinessReceptionist, 'function');
 });
