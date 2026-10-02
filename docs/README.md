@@ -7,6 +7,7 @@ Use this folder for internal project documentation. Runtime code, public pages a
 - [Project structure](PROJECT_STRUCTURE.md) — where every type of file belongs.
 - [Project index](PROJECT-INDEX.md) — map of the main product surfaces.
 - [Deployment checklist](DEPLOYMENT_CHECKLIST.md) — checks before a production release.
+- [AI model routing](AI_MODEL_ROUTING.md) — public Stellar tiers, internal provider IDs and fallback rules.
 - [Stellar Deploy](STELLAR_DEPLOY.md) — static backup/deployment notes.
 - [App UI maintenance](APP_UI_MAINTENANCE.md) — rules for safe app UI changes.
 - [Revenue operations](REVENUE-OPERATIONS-CHECKLIST.md) — operational checks.
