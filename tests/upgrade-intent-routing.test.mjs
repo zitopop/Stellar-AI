@@ -10,7 +10,7 @@ test('landing pricing preserves paid plan intent when opening workspace', () => 
 });
 
 test('workspace persists upgrade intent through sign-in and starts authenticated Stripe checkout', () => {
-  assert.match(app, /const UPGRADE_PLANS=new Set\(\['starter','plus','pro','starter-annual','plus-annual','pro-annual'\]\)/);
+  assert.match(app, /const UPGRADE_PLANS=new Set\(\['starter','plus','pro','starter-annual','plus-annual','pro-annual','server-pass'\]\)/);
   assert.match(app, /stellar-pending-upgrade/);
   assert.match(app, /function pendingUpgrade\(v=''\)/);
   assert.match(app, /async function handlePendingIntents\(\)/);
