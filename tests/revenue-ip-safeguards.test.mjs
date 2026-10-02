@@ -9,6 +9,8 @@ const chat = fs.readFileSync(new URL('../api/chat.js', import.meta.url), 'utf8')
 const terms = fs.readFileSync(new URL('../terms.html', import.meta.url), 'utf8');
 const acceptableUse = fs.readFileSync(new URL('../acceptable-use.html', import.meta.url), 'utf8');
 const plans = fs.readFileSync(new URL('../plans.html', import.meta.url), 'utf8');
+const serverPass = fs.readFileSync(new URL('../server-pass.html', import.meta.url), 'utf8');
+const webhook = fs.readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
 
 test('Stripe return-path access is verified before provisioning', () => {
   assert.match(checkout, /stripe\.checkout\.sessions\.retrieve\(id\)/);
@@ -72,4 +74,23 @@ test('legal text requires licence review and avoids guaranteeing originality', (
   assert.match(terms, /third-party names, trademarks and product marks belong to their respective owners/i);
   assert.match(acceptableUse, /generated output is not guaranteed to be unique, original or free of third-party rights/i);
   assert.match(acceptableUse, /attribution, copyright or licence notices/i);
+});
+
+
+test('Server Pass has a real recurring checkout without overwriting personal plan entitlements', () => {
+  assert.match(checkout, /plan === 'server-pass'/);
+  assert.match(checkout, /unit_amount: 5000/);
+  assert.match(checkout, /recurring: \{ interval: 'month', interval_count: 1 \}/);
+  assert.match(checkout, /payment_method_types: \['card', 'link'\]/);
+  assert.match(checkout, /server-pass\?payment=success&session_id=\{CHECKOUT_SESSION_ID\}/);
+  assert.match(app, /'server-pass'/);
+  assert.match(serverPass, /Buy Server Pass/);
+  assert.match(webhook, /stellar:server-pass:/);
+  assert.match(webhook, /pending_activation/);
+  assert.match(webhook, /subscription\.metadata\?\.plan \|\| ''\)\.toLowerCase\(\) === 'server-pass'/);
+});
+
+test('Terms explicitly avoid promising copyright or infringement clearance', () => {
+  assert.match(terms, /not guaranteed to be unique, original, non-infringing or suitable for a particular commercial use/i);
+  assert.match(terms, /check relevant third-party licences, platform rules and rights/i);
 });
