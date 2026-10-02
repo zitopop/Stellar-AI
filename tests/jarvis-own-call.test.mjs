@@ -159,7 +159,7 @@ test('partial Twilio config does not block the Retell bridge fallback', async ()
 });
 
 
-test('UK number helper normalizes local input while Twilio dialing requires strict E.164 env values', async () => {
+test('UK number helper normalizes local input before Twilio dialing', async () => {
   assert.equal(normalizePhoneNumber('07700 900123'), '+447700900123');
   assert.equal(normalizePhoneNumber('7700 900123', { assumeNational: true }), '+447700900123');
   assert.equal(normalizePhoneNumber('0044 7700 900123'), '+447700900123');
@@ -263,20 +263,22 @@ test('Twilio accepts TWILIO_PHONE_NUMBER as an outbound-number alias and exposes
   }
 });
 
-test('Twilio rejects a locally formatted OWNER_PHONE even when it could be normalized', () => {
+test('Twilio accepts formatted phone numbers after normalization', () => {
   const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','TWILIO_PHONE_NUMBER','OWNER_PHONE'];
   const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
   process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
   process.env.TWILIO_AUTH_TOKEN = 'fixture-token';
-  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  process.env.TWILIO_FROM_NUMBER = '+1 (500) 555-0006';
   delete process.env.TWILIO_PHONE_NUMBER;
   process.env.OWNER_PHONE = '07700 900123';
   try {
     const config = getOwnerCallConfiguration();
-    assert.equal(config.twilioConfigured, false);
+    assert.equal(config.twilioConfigured, true);
+    assert.equal(config.twilioFields.fromNumber, true);
     assert.equal(config.twilioFields.ownerPhone, true);
+    assert.equal(config.twilioFields.rawFromE164, false);
     assert.equal(config.twilioFields.rawOwnerPhoneE164, false);
-    assert.match(config.twilioMissing.join(' '), /strict E\.164/i);
+    assert.doesNotMatch(config.twilioMissing.join(' '), /OWNER_PHONE|outbound number/i);
   } finally {
     for (const key of keys) {
       if (original[key] === undefined) delete process.env[key];
