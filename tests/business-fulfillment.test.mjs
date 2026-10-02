@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   BUSINESS_SERVICES,
+  businessQueueDedupeId,
   businessServiceFromCheckout,
   checkoutCustomFields,
   createBusinessCustomerUpdateToken,
@@ -117,4 +119,23 @@ test('AI Receptionist validation asks for facts instead of inventing them', () =
     },
   });
   assert.equal(complete.ok, true);
+});
+
+
+test('business fulfilment queue generations prevent corrected jobs being deduplicated as the original', () => {
+  const base = { id: 'cs_test_queue', queueGeneration: 0 };
+  const corrected = { ...base, queueGeneration: 1 };
+  assert.equal(businessQueueDedupeId(base), 'stellar-business-cs_test_queue-0');
+  assert.equal(businessQueueDedupeId(corrected), 'stellar-business-cs_test_queue-1');
+  assert.notEqual(businessQueueDedupeId(base), businessQueueDedupeId(corrected));
+});
+
+test('business fulfilment source includes automatic customer reminder recovery', () => {
+  const source = readFileSync(new URL('../lib/business-fulfillment.js', import.meta.url), 'utf8');
+  assert.match(source, /stellar-business-customer-reminder/);
+  assert.match(source, /Upstash-Delay/);
+  assert.match(source, /delay: '1d'/);
+  assert.match(source, /delay: '3d'/);
+  assert.match(source, /delay: '7d'/);
+  assert.match(source, /Customer details remain unresolved after automatic reminders/);
 });
