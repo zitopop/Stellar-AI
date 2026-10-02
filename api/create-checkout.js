@@ -173,6 +173,8 @@ export default async function handler(req, res) {
       await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
+        // Temporary safety guard: production webhook permissions do not yet include async-payment lifecycle events.
+        payment_method_types: ['card'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -238,6 +240,8 @@ export default async function handler(req, res) {
     await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
+      // Temporary safety guard: production webhook permissions do not yet include async-payment lifecycle events.
+      payment_method_types: ['card'],
 
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
