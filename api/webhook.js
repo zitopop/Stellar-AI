@@ -164,8 +164,48 @@ async function kvSet(key, value, seconds) {
   }
 }
 
+async function kvSetNx(key, value, seconds = 300) {
+  if (!KV_URL || !KV_TOKEN) return false;
+  try {
+    const response = await fetch(`${KV_URL}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['SET', key, JSON.stringify(value), 'EX', seconds, 'NX']]),
+    });
+    if (!response.ok) return false;
+    const results = await response.json();
+    return results?.[0]?.result === 'OK';
+  } catch {
+    return false;
+  }
+}
+
+async function kvDelete(key) {
+  if (!KV_URL || !KV_TOKEN) return false;
+  try {
+    const response = await fetch(`${KV_URL}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['DEL', key]]),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 function eventKey(eventId) {
   return `stellar:stripe-event:${eventId}`;
+}
+
+function stripeObjectId(value, prefix) {
+  const id = typeof value === 'string' ? value : String(value?.id || '');
+  return id.startsWith(prefix) ? id : '';
+}
+
+function knownCheckoutPlan(value) {
+  const plan = String(value || '').trim().toLowerCase();
+  return ['website-builder', 'server-pass', 'topup'].includes(plan) || Boolean(normalisePlan(plan));
 }
 
 async function customerEmail(stripe, customer) {
@@ -191,23 +231,36 @@ export default async function handler(req, res) {
   if (!KV_URL || !KV_TOKEN) return res.status(500).json({ error: 'Account storage is not configured.' });
 
   let event;
+  let eventClaimed = false;
   try {
     const stripe = new Stripe(STRIPE_SECRET);
     const signature = req.headers['stripe-signature'];
     event = stripe.webhooks.constructEvent(await readRawBody(req), signature, WEBHOOK_SECRET);
 
-    // Stripe can retry events. The record prevents repeat top-ups and billing transitions.
-    if (await kvGet(eventKey(event.id))) return res.status(200).json({ received: true, duplicate: true });
+    // Claim the event atomically before processing so concurrent Stripe retries cannot
+    // apply the same entitlement transition twice. Failed handlers release the claim.
+    const eventClaim = await kvSetNx(eventKey(event.id), { state: 'processing', receivedAt: Date.now(), type: event.type }, 300);
+    if (!eventClaim) return res.status(200).json({ received: true, duplicate: true });
+    eventClaimed = true;
 
     if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
       const session = event.data.object;
       const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
-      const checkoutPlan = session.metadata?.plan;
+      const checkoutPlan = String(session.metadata?.plan || '').trim().toLowerCase();
       const sourceName = acquisitionSource(session.metadata?.acquisition_source);
       const userKey = email ? `stellar:user:${email}` : '';
+      const checkoutCustomerId = stripeObjectId(session.customer, 'cus_');
+      const checkoutSubscriptionId = stripeObjectId(session.subscription, 'sub_');
+      const isSubscriptionCheckout = checkoutPlan === 'server-pass' || Boolean(normalisePlan(checkoutPlan));
 
-      if (!email) {
-        console.error('Stripe checkout completed without an email', session.id);
+      if (!knownCheckoutPlan(checkoutPlan) && session.metadata?.app !== 'stellar-ai') {
+        console.info('Ignoring unrelated Stripe Checkout session', session.id);
+      } else if (!knownCheckoutPlan(checkoutPlan)) {
+        throw new Error(`Stripe Checkout session ${session.id} has missing or invalid Stellar plan metadata`);
+      } else if (!email) {
+        throw new Error(`Stripe Checkout session ${session.id} is missing a customer email`);
+      } else if (isSubscriptionCheckout && (!checkoutCustomerId || !checkoutSubscriptionId)) {
+        throw new Error(`Stripe subscription Checkout session ${session.id} is missing customer or subscription identifiers`);
       } else {
         const existing = (await kvGet(userKey)) || {};
 
@@ -247,8 +300,8 @@ export default async function handler(req, res) {
               ...existingPass,
               status: existingPass.guildId ? 'active' : 'pending_activation',
               checkoutSessionId: session.id,
-              stripeCustomerId: typeof session.customer === 'string' ? session.customer : existingPass.stripeCustomerId,
-              stripeSubscriptionId: typeof session.subscription === 'string' ? session.subscription : existingPass.stripeSubscriptionId,
+              stripeCustomerId: checkoutCustomerId || existingPass.stripeCustomerId,
+              stripeSubscriptionId: checkoutSubscriptionId || existingPass.stripeSubscriptionId,
               amountPence: 5000,
               billing: 'monthly',
               purchasedAt: Number(existingPass.purchasedAt) || Date.now(),
@@ -299,8 +352,8 @@ export default async function handler(req, res) {
               plan,
               planBilling: subscriptionBilling(checkoutPlan),
               planCreditAnchorAt: Date.now(),
-              stripeCustomerId: session.customer || existing.stripeCustomerId,
-              stripeSubscriptionId: session.subscription || existing.stripeSubscriptionId,
+              stripeCustomerId: checkoutCustomerId || existing.stripeCustomerId,
+              stripeSubscriptionId: checkoutSubscriptionId || existing.stripeSubscriptionId,
               stripeSubscriptionStatus: 'active',
               billingPaymentFailedAt: null,
               updatedAt: Date.now(),
@@ -323,8 +376,11 @@ export default async function handler(req, res) {
       }
     } else if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
       const subscription = event.data.object;
+      const subscriptionCustomerId = stripeObjectId(subscription.customer, 'cus_');
+      if (!subscriptionCustomerId) throw new Error(`Stripe subscription ${subscription.id} is missing a customer identifier`);
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
-      if (email && String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
+      if (!email) throw new Error(`Stripe subscription ${subscription.id} could not be mapped to a customer email`);
+      if ( String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
         const key = `stellar:server-pass:${email}`;
         const existingPass = (await kvGet(key)) || {};
         const status = String(subscription.status || '').toLowerCase();
@@ -451,8 +507,11 @@ export default async function handler(req, res) {
       else await recordCheckoutExpiry({ id: String(session.client_reference_id) });
     } else if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object;
+      const subscriptionCustomerId = stripeObjectId(subscription.customer, 'cus_');
+      if (!subscriptionCustomerId) throw new Error(`Deleted Stripe subscription ${subscription.id} is missing a customer identifier`);
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
-      if (email && String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
+      if (!email) throw new Error(`Deleted Stripe subscription ${subscription.id} could not be mapped to a customer email`);
+      if (String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
         const key = `stellar:server-pass:${email}`;
         const existingPass = (await kvGet(key)) || {};
         const saved = await kvSet(key, {
@@ -483,11 +542,15 @@ export default async function handler(req, res) {
       }
     }
 
-    const marked = await kvSet(eventKey(event.id), { receivedAt: Date.now(), type: event.type }, 60 * 60 * 24 * 30);
+    const marked = await kvSet(eventKey(event.id), { state: 'completed', receivedAt: Date.now(), completedAt: Date.now(), type: event.type }, 60 * 60 * 24 * 30);
     if (!marked) throw new Error(`Could not persist Stripe event marker ${event.id}`);
     return res.status(200).json({ received: true });
   } catch (error) {
     console.error('Stripe webhook failed', error?.message || error);
+    if (eventClaimed && event?.id) {
+      const released = await kvDelete(eventKey(event.id));
+      if (!released) console.error('Could not release failed Stripe event claim', event.id);
+    }
     if (event?.id) {
       escalateOwner({
         category: 'payment',
