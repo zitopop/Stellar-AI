@@ -43,7 +43,8 @@ test('cookie and acceptable-use pages match current product behaviour', () => {
   assert.match(cookies, /first-party product metrics/i);
   assert.match(acceptable, /StellarX and connected computers/);
   assert.match(acceptable, /Malware and harmful code/);
-  assert.match(acceptable, /credit balance does not create a right to unlimited concurrency/i);
+  assert.match(acceptable, /usage allowance does not create a right to unlimited concurrency/i);
+  assert.match(acceptable, /Generated output is not guaranteed to be unique, original or free of third-party rights/i);
 });
 
 test('business service pages put legal disclosure before final Stripe checkout', () => {
