@@ -265,8 +265,6 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'server-pass' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        // Apple Pay and Google Pay are surfaced through eligible card wallets; Link provides a fast saved-payment path.
-        payment_method_types: ['card', 'link'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -316,8 +314,6 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        // Cards also surface eligible Apple Pay / Google Pay; Link adds a fast saved-payment path without enabling delayed bank methods.
-        payment_method_types: ['card', 'link'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -335,6 +331,7 @@ export default async function handler(req, res) {
         after_expiration: { recovery: { enabled: true } },
         client_reference_id: attemptId,
         metadata: {
+          app: 'stellar-ai',
           email: sessionUser.email,
           plan: 'website-builder',
           amount: '9900',
@@ -344,6 +341,7 @@ export default async function handler(req, res) {
         },
         payment_intent_data: {
           metadata: {
+            app: 'stellar-ai',
             email: sessionUser.email,
             plan: 'website-builder',
             amount: '9900',
@@ -383,8 +381,6 @@ export default async function handler(req, res) {
     const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      // Cards also surface eligible Apple Pay / Google Pay; Link adds a fast saved-payment path without enabling delayed bank methods.
-      payment_method_types: ['card', 'link'],
 
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
