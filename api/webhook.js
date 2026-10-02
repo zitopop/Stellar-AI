@@ -293,7 +293,7 @@ export default async function handler(req, res) {
           }
         }
       }
-    } else if (event.type === 'customer.subscription.updated') {
+    } else if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
       const subscription = event.data.object;
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
       if (email) {
