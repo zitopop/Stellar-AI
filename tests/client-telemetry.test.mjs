@@ -22,9 +22,11 @@ test('client telemetry accepts only fixed coarse event names', () => {
 test('telemetry stays analytics-only and never persists user content', () => {
   assert.match(endpoint, /incrementConversionMetric\('client-' \+ event\)/);
   assert.doesNotMatch(endpoint, /req\.body\?\.(?:prompt|email|message|error|stack|card|image)/);
-  assert.match(helper, /JSON\.stringify\(\{ event: name \}\)/);
+  assert.match(helper, /JSON\.stringify\(\{ event: name, source: attributionSource\(\) \}\)/);
   assert.doesNotMatch(helper, /document\.body\.innerText|prompt\.value|textarea\.value/);
   assert.match(helper, /stellar_metrics_optout/);
+  assert.match(helper, /stellar_acquisition_source/);
+  assert.match(endpoint, /client-\$\{event\}-source-\$\{source\}/);
   assert.doesNotMatch(helper, /ensureCreditIcon|makePackLink|tidyLandingPage|openDrawer|closeDrawer|injectBusinessPolish/);
 });
 
