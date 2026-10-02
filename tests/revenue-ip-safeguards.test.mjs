@@ -86,7 +86,7 @@ test('Server Pass has a real recurring checkout without overwriting personal pla
   assert.match(checkout, /plan === 'server-pass'/);
   assert.match(checkout, /unit_amount: 5000/);
   assert.match(checkout, /recurring: \{ interval: 'month', interval_count: 1 \}/);
-  assert.match(checkout, /payment_method_types: \['card', 'link'\]/);
+  assert.doesNotMatch(checkout, /payment_method_types/);
   assert.match(checkout, /server-pass\?payment=success&session_id=\{CHECKOUT_SESSION_ID\}/);
   assert.match(app, /'server-pass'/);
   assert.match(serverPass, /Buy Server Pass/);
@@ -98,4 +98,35 @@ test('Server Pass has a real recurring checkout without overwriting personal pla
 test('Terms explicitly avoid promising copyright or infringement clearance', () => {
   assert.match(terms, /not guaranteed to be unique, original, non-infringing or suitable for a particular commercial use/i);
   assert.match(terms, /check relevant third-party licences, platform rules and rights/i);
+});
+
+
+test('plan entitlements enforce hourly limits and public model ladder server-side', () => {
+  assert.equal(PLAN_DEFINITIONS.free.requestsPerHour, 30);
+  assert.equal(PLAN_DEFINITIONS.starter.requestsPerHour, 120);
+  assert.equal(PLAN_DEFINITIONS.plus.requestsPerHour, 400);
+  assert.equal(PLAN_DEFINITIONS.pro.requestsPerHour, 1600);
+  assert.deepEqual(PLAN_DEFINITIONS.free.models, ['spark']);
+  assert.ok(PLAN_DEFINITIONS.plus.models.includes('comet'));
+  assert.ok(PLAN_DEFINITIONS.pro.models.includes('nova'));
+  assert.match(chat, /consumeHourlyRequest/);
+  assert.match(chat, /hourly_request_limit/);
+  assert.match(chat, /X-Stellar-RateLimit-Limit/);
+  assert.match(chat, /Math\.min\(Math\.floor\(requestedMaxTokens\), limits\.maxTokens\)/);
+});
+
+test('Stripe webhooks claim events atomically and release failed claims', () => {
+  assert.match(webhook, /\['SET', key, JSON\.stringify\(value\), 'EX', seconds, 'NX'\]/);
+  assert.match(webhook, /state: 'processing'/);
+  assert.match(webhook, /state: 'completed'/);
+  assert.match(webhook, /await kvDelete\(eventKey\(event\.id\)\)/);
+  assert.match(webhook, /missing customer or subscription identifiers/);
+});
+
+test('mobile workspace wraps code, keeps 44px actions, and surfaces rate-limit timeouts', () => {
+  assert.match(app, /\.code-export-button\{min-height:44px/);
+  assert.match(app, /white-space:pre-wrap!important/);
+  assert.match(app, /showToast\(message,'warn'\)/);
+  assert.match(app, /err\?\.code==='RATE_LIMITED'/);
+  assert.match(app, /err\?\.code==='GENERATION_TIMEOUT'/);
 });
