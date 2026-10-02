@@ -27,7 +27,9 @@ test('usage panel has a contextual, non-blocking upgrade path',()=>{
 });
 
 test('conversion endpoint accepts the new high-signal growth events',()=>{
-  const api=read('api/track-event.js');
+  const api=read('api/get-plan.js');
+  const vercel=JSON.parse(read('vercel.json'));
+  assert.deepEqual(vercel.rewrites.find(item=>item.source==='/api/track-event'),{source:'/api/track-event',destination:'/api/get-plan?mode=track-event'});
   for(const event of ['usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked','pricing-view','plan-free-selected','plan-starter-selected','plan-plus-selected','plan-pro-selected']){
     assert.match(api,new RegExp("'"+event+"'"));
   }

@@ -14,6 +14,8 @@ The bot does **not** hold Anthropic/Forge keys. It calls the private Stellar bri
 - `DISCORD_APPLICATION_ID`
 - One strong random `STELLAR_DISCORD_BOT_KEY` configured in both the bot host and the Stellar AI Vercel project
 - Optional `DISCORD_GUILD_ID` while testing
+- Existing `KV_REST_API_URL` and `KV_REST_API_TOKEN` on the Stellar web project for durable free-usage metering
+- Optional `STELLAR_SERVER_PASS_GUILD_IDS` on the Stellar web project: comma-separated Discord guild IDs for verified Server Pass pilot customers
 
 Only the `Guilds` gateway intent is used. Message Content is not required because users supply code through the slash-command option.
 
@@ -53,3 +55,12 @@ https://trystellarai.com/api/generate
 ```
 
 The `/api/generate` compatibility route rewrites to the existing private chat debug handler, so it does not add another Vercel function. The bridge rejects requests without the shared key, caps input at 6,000 characters, treats pasted code/logs as untrusted data, and uses Stellar's gaming/debug guidance before returning compact JSON for Discord.
+
+
+## Free usage and Server Pass
+
+The public Discord `/debug` path allows **2 repairs per Discord user per UTC day**. The bridge meters this server-side in KV; the Discord client cannot grant itself extra requests.
+
+For the £50/month Server Pass pilot, add only verified customer guild IDs to `STELLAR_SERVER_PASS_GUILD_IDS`. Requests from those guilds bypass the free daily counter, while the 6,000-character input cap, provider capacity, safety rules, cooldowns and other abuse controls remain active.
+
+Do not describe Server Pass as “unlimited” or “zero rate limits”.
