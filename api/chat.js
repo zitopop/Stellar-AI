@@ -39,9 +39,7 @@ const FORGE_MODELS = new Set([
 ]);
 
 const PUBLIC_MODEL_INPUTS = new Set([
-  'spark', 'fabie', 'star', 'smart', 'comet', 'nova', 'ultra',
-  'gpt-6-luna', 'gpt-6.1-sol', 'gemini-3.8-flash',
-  'claude-sonnet-5-5', 'claude-opus-5-5', 'claude-fable-5-1', 'grok-4.7',
+  'spark', 'star', 'comet', 'nova',
 ]);
 const OWNER_ONLY_ROLES = new Set(['planner', 'researcher', 'reviewer', 'security', 'tester']);
 
