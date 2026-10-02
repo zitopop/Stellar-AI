@@ -4,7 +4,7 @@ Use this brief as context for work on Stellar AI at https://trystellarai.com and
 
 FOUNDER AND PRODUCT
 
-Founder: Tobi Milne.
+Founder/operator identity: private; do not publish personal identity in public product copy, docs, logs or client payloads.
 Product: Stellar AI, an AI scripting workspace for FiveM and Roblox builders.
 Primary promise: help users describe a system in plain English, plan the implementation, produce complete destination-labelled files, explain the changes, and iterate on the next version.
 
