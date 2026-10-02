@@ -12,7 +12,7 @@ import { escalateOwner } from '../lib/owner-escalation.js';
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { getGmailPushConfiguration, getGmailWatchStatus, processGmailPush, startGmailWatch } from '../lib/gmail-push.js';
 import { deliverQStashReminder, QStashReminderError } from '../lib/qstash-reminders.js';
-import { businessServiceFromCheckout, createBusinessFulfillmentJob, enqueueBusinessFulfillment, deliverBusinessFulfillment, subscriptionHasAiReceptionist, invoiceHasAiReceptionist, updateBusinessServiceBilling } from '../lib/business-fulfillment.js';
+import { applyBusinessCustomerUpdate, businessServiceFromCheckout, createBusinessFulfillmentJob, enqueueBusinessFulfillment, deliverBusinessFulfillment, getBusinessCustomerUpdateView, subscriptionHasAiReceptionist, invoiceHasAiReceptionist, updateBusinessServiceBilling } from '../lib/business-fulfillment.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -108,12 +108,41 @@ async function handleBusinessFulfillment(req, res) {
       rawBody,
       signature: req.headers['upstash-signature'],
       upstashRegion: req.headers['upstash-region'],
+      upstashRetried: req.headers['upstash-retried'],
     });
-    return res.status(200).json({ ok: true, status: result?.status || result?.job?.status || 'processed', duplicate: result?.duplicate === true });
+    return res.status(200).json({ ok: result?.ok !== false, status: result?.status || result?.job?.status || 'processed', duplicate: result?.duplicate === true });
   } catch (error) {
     const status = Math.max(400, Math.min(503, Number(error?.status) || 503));
     if (status >= 500) console.error('Business fulfilment worker failed', error?.message || error);
     return res.status(status).json({ error: String(error?.message || 'Business fulfilment worker failed.').slice(0, 240) });
+  }
+}
+
+async function handleBusinessCustomerUpdate(req, res) {
+  res.setHeader('Cache-Control', 'private, no-store');
+  const jobId = String(req.query?.job || '').trim();
+  const token = String(req.query?.token || '').trim();
+  if (!/^cs_[A-Za-z0-9_]+$/.test(jobId) || !token) {
+    return res.status(400).json({ error: 'This business order update link is incomplete.' });
+  }
+
+  try {
+    if (req.method === 'GET') {
+      const view = await getBusinessCustomerUpdateView(jobId, token);
+      if (!view) return res.status(403).json({ error: 'This business order update link is invalid or has expired.' });
+      return res.status(200).json(view);
+    }
+    if (req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const result = await applyBusinessCustomerUpdate({ jobId, token, details: body?.details || {} });
+      if (!result.ok && result.status !== 422) return res.status(result.status || 400).json(result);
+      return res.status(result.status || 200).json(result);
+    }
+    res.setHeader('Allow', 'GET, POST');
+    return res.status(405).json({ error: 'Method not allowed.' });
+  } catch (error) {
+    console.error('Business customer update failed', error?.message || error);
+    return res.status(503).json({ error: 'Your update could not be saved right now. Please try again shortly.' });
   }
 }
 
@@ -246,6 +275,7 @@ export default async function handler(req, res) {
   if (source === 'gmail-watch') return handleGmailWatch(req, res);
   if (source === 'qstash-reminder') return handleQStashReminder(req, res);
   if (source === 'business-fulfillment') return handleBusinessFulfillment(req, res);
+  if (source === 'business-customer-update') return handleBusinessCustomerUpdate(req, res);
   if (req.method !== 'POST') return res.status(405).end();
   if (!STRIPE_SECRET || !WEBHOOK_SECRET) return res.status(500).json({ error: 'Stripe webhook is not configured.' });
   if (!KV_URL || !KV_TOKEN) return res.status(500).json({ error: 'Account storage is not configured.' });
