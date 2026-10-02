@@ -24,11 +24,8 @@ test('model resolver respects current server plan capabilities', () => {
   }
   assert.equal(resolveModelTier('CLAUDE-OPUS-4-6', 'plus'), 'comet');
   assert.equal(resolveModelTier('claude-fable-5-1', 'plus'), 'star');
-  assert.ok(getPlanDefinition('starter').models.includes('gpt-6-luna'));
-  assert.ok(getPlanDefinition('plus').models.includes('gemini-3.8-flash'));
-  assert.ok(getPlanDefinition('plus').models.includes('claude-sonnet-5-5'));
-  assert.ok(getPlanDefinition('pro').models.includes('gpt-6.1-sol'));
-  assert.ok(getPlanDefinition('pro').models.includes('claude-opus-5-5'));
-  assert.ok(getPlanDefinition('pro').models.includes('claude-fable-5-1'));
-  assert.ok(getPlanDefinition('pro').models.includes('grok-4.7'));
+  assert.deepEqual(getPlanDefinition('starter').models, ['spark', 'star']);
+  assert.deepEqual(getPlanDefinition('plus').models, ['spark', 'star', 'comet']);
+  assert.deepEqual(getPlanDefinition('pro').models, ['spark', 'star', 'comet', 'nova']);
+  assert.deepEqual(getPlanDefinition('owner').models, ['spark', 'star', 'comet', 'nova']);
 });
