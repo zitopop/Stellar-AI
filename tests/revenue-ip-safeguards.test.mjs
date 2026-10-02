@@ -26,6 +26,8 @@ test('Stripe return-path access is verified before provisioning', () => {
   assert.match(checkout, /subscriptionPriceForPlan\(rawPlan, process\.env, 'GBP'\)/);
   assert.match(checkout, /Number\(existing\.planCreditAnchorAt\) \|\| Date\.now\(\)/);
   assert.match(checkout, /session_id=\{CHECKOUT_SESSION_ID\}/);
+  assert.match(checkout, /metadata: \{ app: 'stellar-ai', email: sessionUser\.email, plan/);
+  assert.match(checkout, /liveSubscriptionPriceForPlan\(rawPlan, 'GBP'\) \|\| subscriptionPriceForPlan/);
   assert.match(app, /action:'confirm-checkout',sessionId/);
 });
 
