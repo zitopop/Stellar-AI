@@ -17,7 +17,7 @@ test('anonymous preview helpers constrain input and detect supported stacks', ()
   assert.equal(detectTarget('ESX xPlayer job').framework, 'ESX');
   assert.equal(detectTarget('ox_lib callback').framework, 'ox_lib');
   assert.equal(detectTarget('QBCore inventory job').framework, 'QBCore');
-  assert.equal(stripCodeFences('\\`\\`\\`lua\\nprint("ok")\\n\\`\\`\\`'), 'print("ok")');
+  assert.equal(stripCodeFences('\\`\\`\\`lua\\nprint("ok")\\n\\`\\`\\`'.replaceAll('\\\\`','`')), 'print("ok")');
 });
 
 test('homepage offers exactly one anonymous preview path before account gating', () => {
