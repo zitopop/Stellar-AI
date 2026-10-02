@@ -164,7 +164,7 @@ async function confirmCompletedSubscription(stripe, kvUrl, kvToken, sessionUser,
     return { ok: false, status: 409, error: 'Subscription customer does not match Checkout.' };
   }
 
-  const expectedPrice = subscriptionPriceForPlan(rawPlan, process.env, 'GBP');
+  const expectedPrice = liveSubscriptionPriceForPlan(rawPlan, 'GBP') || subscriptionPriceForPlan(rawPlan, process.env, 'GBP');
   if (expectedPrice && !subscription.items?.data?.some((item) => item?.price?.id === expectedPrice)) {
     return { ok: false, status: 409, error: 'Subscription price does not match the selected Stellar plan.' };
   }
@@ -392,7 +392,7 @@ export default async function handler(req, res) {
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       after_expiration: { recovery: { enabled: true } },
       client_reference_id: attemptId,
-      metadata: { email: sessionUser.email, plan, country, currency, acquisition_source: sourceName },
+      metadata: { app: 'stellar-ai', email: sessionUser.email, plan, country, currency, acquisition_source: sourceName },
       subscription_data: {
         metadata: { email: sessionUser.email, plan, app: 'stellar-ai', acquisition_source: sourceName },
       },
