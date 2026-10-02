@@ -553,7 +553,8 @@ function resolveRoute(requestedModel, requestedRole, plan) {
   const matchedRole = Object.hasOwn(ROUTING_ROLES, roleKey) ? ROUTING_ROLES[roleKey] : undefined;
   const role = matchedRole || ROUTING_ROLES.general;
   const resolvedRole = matchedRole ? roleKey : 'general';
-  const candidate = matchedRole || roleKey ? role.model : requested;
+  // General chat honours the customer's selected Stellar tier. Specialist roles may pin a task-specific internal model.
+  const candidate = resolvedRole === 'general' ? (requested || role.model) : role.model;
   if (FORGE_URL && FORGE_KEY && FORGE_MODELS.has(candidate)) {
     const limits = PLAN_LIMITS[normalizedPlan] || PLAN_LIMITS.free;
     const candidateModel = MODEL_MAP[candidate] || candidate;
@@ -1009,8 +1010,8 @@ export default async function handler(req, res) {
     if (!limits.models.includes(requestedTier)) {
       return res.status(402).json({
         error: requestedTier === 'nova'
-          ? 'Nova is included with Stellar Pro.'
-          : 'Comet is included with Stellar Plus and Pro.',
+          ? 'Stellar Max is included with Stellar Pro.'
+          : 'Stellar Deep is included with Stellar Plus and Pro.',
         code: 'PAYWALL_REQUIRED',
         reason: 'premium_model',
         requestedTier,
