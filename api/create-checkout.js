@@ -2,8 +2,8 @@
 // Checkout uses cards plus Link. Apple Pay and Google Pay ride on the card payment method when eligible; delayed-notification methods stay disabled.
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
-import { isPaidPlan } from '../lib/pricing.js';
-import { kvGet } from '../lib/profile.js';
+import { isPaidPlan, normalisePlan } from '../lib/pricing.js';
+import { kvGet, kvSet } from '../lib/profile.js';
 import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
 
 function setCors(req, res) {
@@ -110,6 +110,53 @@ function checkoutIdempotencyKey(email, plan, now = Date.now()) {
   return `stellar_checkout_${String(plan || 'unknown').replace(/[^a-z0-9_-]/gi, '_')}_${bucket}_${digest}`;
 }
 
+async function confirmCompletedSubscription(stripe, kvUrl, kvToken, sessionUser, sessionId) {
+  if (!kvUrl || !kvToken) return { ok: false, status: 503, error: 'Account storage is not configured.' };
+  const id = String(sessionId || '').trim();
+  if (!/^cs_[A-Za-z0-9_]+$/.test(id)) return { ok: false, status: 400, error: 'Invalid checkout session.' };
+
+  const checkout = await stripe.checkout.sessions.retrieve(id);
+  const checkoutEmail = String(
+    checkout?.metadata?.email
+      || checkout?.customer_details?.email
+      || checkout?.customer_email
+      || ''
+  ).toLowerCase().trim();
+  const signedInEmail = String(sessionUser?.email || '').toLowerCase().trim();
+
+  if (!signedInEmail || checkoutEmail !== signedInEmail) {
+    return { ok: false, status: 403, error: 'This checkout does not belong to the signed-in account.' };
+  }
+  if (checkout?.metadata?.app !== 'stellar-ai' || checkout?.mode !== 'subscription' || checkout?.status !== 'complete') {
+    return { ok: false, status: 409, error: 'Checkout is not complete yet.' };
+  }
+  if (!['paid', 'no_payment_required'].includes(String(checkout?.payment_status || ''))) {
+    return { ok: false, status: 409, error: 'Payment is still processing.' };
+  }
+
+  const rawPlan = String(checkout?.metadata?.plan || '').trim().toLowerCase();
+  const plan = normalisePlan(rawPlan);
+  if (!plan || !isPaidPlan(plan)) {
+    return { ok: false, status: 400, error: 'Checkout does not contain a valid Stellar subscription.' };
+  }
+
+  const key = `stellar:user:${signedInEmail}`;
+  const existing = (await kvGet(kvUrl, kvToken, key)) || {};
+  await kvSet(kvUrl, kvToken, key, {
+    ...existing,
+    plan,
+    planBilling: rawPlan.endsWith('-annual') ? 'annual' : 'monthly',
+    planCreditAnchorAt: Date.now(),
+    stripeCustomerId: typeof checkout.customer === 'string' ? checkout.customer : existing.stripeCustomerId,
+    stripeSubscriptionId: typeof checkout.subscription === 'string' ? checkout.subscription : existing.stripeSubscriptionId,
+    stripeSubscriptionStatus: 'active',
+    billingPaymentFailedAt: null,
+    updatedAt: Date.now(),
+  });
+
+  return { ok: true, status: 200, plan };
+}
+
 function missingPlanMessage(plan) {
   const messages = {
     starter: 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.',
@@ -129,13 +176,13 @@ export default async function handler(req, res) {
 
   const sessionUser = requireSession(req, res);
   if (!sessionUser) return;
-  const { plan, amount, qty, source, country: requestedCountry } = req.body || {};
+  const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = req.body || {};
   const sourceName = acquisitionSource(source);
   const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
   const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
   // GBP is the base price currency; eligible subscription checkouts use Stripe Adaptive Pricing for local presentment.
   const currency = 'GBP';
-  if (!plan) return res.status(400).json({ error: 'Choose a plan before continuing.' });
+  if (!plan && action !== 'confirm-checkout') return res.status(400).json({ error: 'Choose a plan before continuing.' });
 
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   if (!stripeSecret) return res.status(500).json({ error: 'Stripe is not configured.' });
@@ -148,6 +195,12 @@ export default async function handler(req, res) {
     const accountUser = kvUrl && kvToken
       ? await kvGet(kvUrl, kvToken, `stellar:user:${sessionUser.email}`)
       : null;
+
+    if (action === 'confirm-checkout') {
+      const confirmed = await confirmCompletedSubscription(stripe, kvUrl, kvToken, sessionUser, sessionId);
+      if (!confirmed.ok) return res.status(confirmed.status).json({ error: confirmed.error, code: 'CHECKOUT_NOT_READY' });
+      return res.status(200).json({ ok: true, plan: confirmed.plan });
+    }
     const existingCustomerId = String(accountUser?.stripeCustomerId || '').trim();
     const checkoutCustomer = /^cus_[A-Za-z0-9]+$/.test(existingCustomerId)
       ? { customer: existingCustomerId }
@@ -255,7 +308,7 @@ export default async function handler(req, res) {
 
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
-      success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
+      success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       after_expiration: { recovery: { enabled: true } },
       client_reference_id: attemptId,
