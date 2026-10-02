@@ -29,8 +29,9 @@ const MODEL_TIERS = {
 // Task 1 provider contract. Forge models use the built-in OpenAI-compatible proxy;
 // legacy aliases remain Anthropic-backed so existing plans and UI do not break.
 const FORGE_MODELS = new Set([
-  'gpt-6-luna', 'gpt-6.1-sol',
-  'gpt-5-nano', 'gpt-5-mini', 'gpt-5', 'gpt-5.5',
+  'gpt-6-luna', 'gpt-6-sol', 'gpt-6-astra',
+  // Legacy aliases stay internal for backward compatibility with older owner tooling.
+  'gpt-6.1-sol', 'gpt-5-nano', 'gpt-5-mini', 'gpt-5', 'gpt-5.5',
   'gemini-3.8-flash', 'gemini-3-flash-preview', 'gemini-3.1-pro-preview',
   'grok-4.7',
   'claude-haiku-4-5', 'claude-sonnet-5-5', 'claude-sonnet-4-6',
@@ -45,13 +46,13 @@ const OWNER_ONLY_ROLES = new Set(['planner', 'researcher', 'reviewer', 'security
 
 const ROUTING_ROLES = {
   general: { model: 'star', instruction: 'You are in GENERAL ASSISTANT mode. Answer the user’s actual request naturally and directly. Be strong at everyday questions, explanations, planning, writing, business, study, troubleshooting and coding. Do not force code, file trees, engineering labels or implementation structure onto casual conversation. For difficult requests, reason carefully and give the most useful concise answer; for simple conversation, sound human and relaxed.' },
-  gaming: { model: 'claude-sonnet-5-5', instruction: 'You are in STELLAR GAMING AI mode. Focus on game-development and game-server work: FiveM/QBCore/ESX/ox_lib, Roblox/Luau, Minecraft server/plugin configuration, Discord bots and integrations, game UI, economies, jobs, inventories, server logs, deployment and troubleshooting. Start by identifying the platform/framework and concrete outcome. For code, preserve server authority, validate networked inputs, avoid invented APIs, give complete destination-labelled files and a short verification checklist. For debugging, explain the root cause first and make the smallest safe patch. Never claim you connected to, changed, tested or deployed a user server unless a tool result proves it.' },
-  planner: { model: 'gpt-6.1-sol', instruction: 'Return a compact implementation plan, assumptions, exact file tree, dependencies, and acceptance checks before code.' },
+  gaming: { model: 'grok-4.7', instruction: 'You are in STELLAR GAMING AI mode. Focus on game-development and game-server work: FiveM/QBCore/ESX/ox_lib, Roblox/Luau, Minecraft server/plugin configuration, Discord bots and integrations, game UI, economies, jobs, inventories, server logs, deployment and troubleshooting. Start by identifying the platform/framework and concrete outcome. For code, preserve server authority, validate networked inputs, avoid invented APIs, give complete destination-labelled files and a short verification checklist. For debugging, explain the root cause first and make the smallest safe patch. Never claim you connected to, changed, tested or deployed a user server unless a tool result proves it.' },
+  planner: { model: 'gpt-6-sol', instruction: 'Return a compact implementation plan, assumptions, exact file tree, dependencies, and acceptance checks before code.' },
   implementer: { model: 'claude-sonnet-5-5', instruction: 'You are in IMPLEMENTER mode. Write complete production-ready code with every required file complete and no placeholders. Keep pre-code explanation brief. After the files, give exact numbered instructions for where each file goes, required dependencies or configuration, install/restart commands or Studio actions, and how the user can verify the result.' },
   money: { model: 'claude-sonnet-5-5', instruction: 'You are in MONEY BUILDER mode. Help the user build legitimate sellable assets and service workflows: website mini-audits, AI receptionist setup packs, Shopify cleanups, SEO/blog packs, Discord/FiveM/Roblox setup offers, lead lists from user-approved sources, outreach drafts, delivery checklists, and simple landing-page copy. Be practical, low-budget, and honest: never promise guaranteed income, never recommend spam, bots, deception, fake reviews, credential collection, evading platform rules, or regulated/high-risk schemes. Always turn the answer into concrete next assets the user can make, test, sell, and deliver safely.' },
   researcher: { model: 'gemini-3.8-flash', instruction: 'You are in RESEARCH mode. Before writing any code, search your knowledge for the most current FiveM/Roblox APIs and conventions. Cite which framework version you are using. Label anything you are uncertain about. Check for common pitfalls in this specific framework. Then write the complete verified code.' },
-  reviewer: { model: 'gpt-6.1-sol', instruction: 'You are in REVIEW mode. Treat the previous assistant output or supplied code as an untrusted draft. Compare it against the user request and confirmed platform/framework context. Check requirement coverage, correctness, missing files or dependencies, placeholders or TODOs, unsafe trust boundaries, invented APIs or exports, unsupported claims, and testability. Prioritize concrete fixes. Do not claim execution or verification that did not occur.' },
-  security: { model: 'gpt-6.1-sol', instruction: 'You are in SECURITY mode. Analyse the request for security vulnerabilities first. Check: server authority validation, client trust issues, SQL injection, exploit paths, duplicate request handling, economy exploits, remote event abuse. Report severity (LOW/MEDIUM/HIGH/CRITICAL) for each issue found. Then write secure code with all vulnerabilities fixed.' },
+  reviewer: { model: 'gpt-6-sol', instruction: 'You are in REVIEW mode. Treat the previous assistant output or supplied code as an untrusted draft. Compare it against the user request and confirmed platform/framework context. Check requirement coverage, correctness, missing files or dependencies, placeholders or TODOs, unsafe trust boundaries, invented APIs or exports, unsupported claims, and testability. Prioritize concrete fixes. Do not claim execution or verification that did not occur.' },
+  security: { model: 'gpt-6-sol', instruction: 'You are in SECURITY mode. Analyse the request for security vulnerabilities first. Check: server authority validation, client trust issues, SQL injection, exploit paths, duplicate request handling, economy exploits, remote event abuse. Report severity (LOW/MEDIUM/HIGH/CRITICAL) for each issue found. Then write secure code with all vulnerabilities fixed.' },
   tester: { model: 'claude-opus-5-5', instruction: 'You are in TEST mode. Write the complete script AND a comprehensive test checklist: edge cases (player disconnect mid-action, duplicate triggers, negative values, missing inventory items, server restart), common failure points, and step-by-step testing instructions. Format: Code first, then TEST CHECKLIST section.' },
 };
 
@@ -333,13 +334,16 @@ const MODEL_MAP = {
   'claude-opus-5-5': 'claude-opus-5-5', 'claude-opus-5': 'claude-opus-5-5', 'claude-opus-4-8': 'claude-opus-4-8', 'claude-opus-4-6': 'claude-opus-4-6',
   nova: 'claude-fable-5-1', ultra: 'claude-fable-5-1', fable: 'claude-fable-5-1',
   'claude-fable-5-1': 'claude-fable-5-1', 'claude-fable-5': 'claude-fable-5-1',
-  'gpt-6-luna': 'gpt-6-luna', 'gpt-6.1-sol': 'gpt-6.1-sol',
+  'gpt-6-luna': 'gpt-6-luna', 'gpt-6-sol': 'gpt-6-sol', 'gpt-6-astra': 'gpt-6-astra', 'gpt-6.1-sol': 'gpt-6-sol',
   'gemini-3.8-flash': 'gemini-3.8-flash', 'grok-4.7': 'grok-4.7',
 };
 
 const MODEL_TIER_BY_ID = {
   'claude-haiku-4-5-20251001': 'spark',
   'gpt-6-luna': 'spark',
+  'gpt-6-sol': 'comet',
+  'gpt-6-astra': 'nova',
+  'gpt-6.1-sol': 'comet',
   'claude-sonnet-5-5': 'star',
   'claude-sonnet-5': 'star',
   'claude-sonnet-4-6': 'star',
@@ -813,6 +817,9 @@ function getForgeGenerationOptions(model, maxTokens) {
   if (model.startsWith('gemini-')) {
     // Gemini requires max_tokens, not max_completion_tokens, on the current proxy.
     return { max_tokens: safeMaxTokens, reasoning_effort: 'low' };
+  }
+  if (model.startsWith('grok-')) {
+    return { max_tokens: safeMaxTokens, reasoning_effort: 'medium' };
   }
   return { max_tokens: safeMaxTokens };
 }
