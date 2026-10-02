@@ -16,7 +16,7 @@ test('workspace persists upgrade intent through sign-in and starts authenticated
   assert.match(app, /async function handlePendingIntents\(\)/);
   assert.match(app, /async function startPlanCheckout\(plan\)/);
   assert.match(app, /fetch\('\/api\/create-checkout'/);
-  assert.match(app, /body:JSON\.stringify\(\{plan\}\)/);
+  assert.match(app, /body:JSON\.stringify\(\{plan,source:acquisitionSource\(\)\}\)/);
   assert.match(app, /u\.hostname!=='checkout\.stripe\.com'/);
 });
 
