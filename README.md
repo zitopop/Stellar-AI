@@ -71,6 +71,16 @@ New work should normally go into a folder instead of creating another root file.
 
 See **[docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** for the full rules.
 
+## AI model architecture
+
+Customers see only **Stellar Fast, Stellar Core, Stellar Deep and Stellar Max**. Provider/model IDs are server-side implementation details and are not customer entitlements.
+
+Current internal routing uses a multi-provider setup: OpenAI GPT-6 models for selected planning/review/security work, Claude for implementation/testing and direct fallbacks, Gemini 3.8 Flash for research, and Grok 4.7 for gaming/agentic coding when the configured gateway supports them. General chat honours the Stellar tier the customer selected.
+
+See **[docs/AI_MODEL_ROUTING.md](docs/AI_MODEL_ROUTING.md)** for current model IDs, legacy aliases, provider-source links, fallback rules, and credential requirements.
+
+Never expose provider API keys in browser code, market a third-party model name as a Stellar-owned model, or imply provider sponsorship/endorsement without an actual agreement.
+
 ## Main product surfaces
 
 - `index.html` — public landing page.
