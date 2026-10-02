@@ -143,7 +143,7 @@ async function ensureTextChannel(guild, category, name, topic = '', permissionOv
   return channel;
 }
 
-async function buildGuildStructure(guild) {
+async function buildGuildStructure(guild, mode = 'community') {
   if (!botCan(guild, PermissionFlagsBits.ManageChannels) || !botCan(guild, PermissionFlagsBits.ManageRoles)) {
     throw new Error('The Stellar bot needs Manage Channels and Manage Roles before it can build the Discord structure.');
   }
@@ -166,6 +166,15 @@ async function buildGuildStructure(guild) {
     { id: supportRoleId, allow: [PermissionFlagsBits.SendMessages] },
     { id: botId, allow: [PermissionFlagsBits.SendMessages] },
   ];
+
+  if (mode === 'server-pass') {
+    const serverPass = await ensureCategory(guild, '🎮 STELLAR SERVER PASS');
+    await ensureTextChannel(guild, serverPass, 'stellar-debug', 'Use /debug for focused FiveM or Roblox errors. Never paste passwords, API keys, database credentials or payment details.');
+    await ensureTextChannel(guild, serverPass, 'server-pass', 'Use /serverpass to check or activate the paid guild entitlement. Use /sync to sync the linked Stellar plan role.', readOnlyOverwrites);
+    await ensureTextChannel(guild, serverPass, 'stellar-support', 'Use /support to open a private Stellar support ticket.', readOnlyOverwrites);
+    await ensureTextChannel(guild, serverPass, 'stellar-status', 'Use /stellar-status to check Stellar bot and web/API health.', readOnlyOverwrites);
+    return { roles: Object.keys(roles).length, categories: 1, channels: 4, mode: 'server-pass' };
+  }
 
   const start = await ensureCategory(guild, '👋 START HERE');
   await ensureTextChannel(guild, start, 'welcome', 'Welcome to Stellar AI. Start here, then use /sync to connect your Stellar plan role.', readOnlyOverwrites);
@@ -198,7 +207,7 @@ async function buildGuildStructure(guild) {
   await ensureTextChannel(guild, staff, 'server-pass-activations', 'Verified Server Pass activation log.', staffOverwrites);
   await ensureTextChannel(guild, staff, 'bot-errors', 'Bot errors without secrets or credentials.', staffOverwrites);
 
-  return { roles: Object.keys(roles).length, categories: 6, channels: 18 };
+  return { roles: Object.keys(roles).length, categories: 6, channels: 19, mode: 'community' };
 }
 
 async function logToGuild(guild, channelName, message) {
@@ -454,8 +463,11 @@ async function handleSetup(interaction) {
     return;
   }
   await interaction.deferReply({ ephemeral: true });
-  const result = await buildGuildStructure(interaction.guild);
-  await interaction.editReply('✅ Stellar Discord structure is ready: **' + result.roles + ' roles, ' + result.categories + ' categories, ' + result.channels + ' channels** checked/created. Existing matching channels were kept — nothing was deleted.');
+  const requestedMode = interaction.options.getString('mode');
+  const mode = requestedMode || (guildId && interaction.guildId === guildId ? 'community' : 'server-pass');
+  const result = await buildGuildStructure(interaction.guild, mode);
+  const label = result.mode === 'community' ? 'full community hub' : 'Server Pass setup';
+  await interaction.editReply('✅ Stellar **' + label + '** is ready: **' + result.roles + ' roles, ' + result.categories + ' categories, ' + result.channels + ' channels** checked/created. Existing matching channels were kept — nothing was deleted.');
 }
 
 client.once(Events.ClientReady, async (readyClient) => {
@@ -469,7 +481,7 @@ client.once(Events.ClientReady, async (readyClient) => {
   if (guildId) {
     try {
       const homeGuild = readyClient.guilds.cache.get(guildId) || await readyClient.guilds.fetch(guildId);
-      const result = await buildGuildStructure(homeGuild);
+      const result = await buildGuildStructure(homeGuild, 'community');
       console.log('Stellar Discord structure checked: ' + result.roles + ' roles, ' + result.categories + ' categories, ' + result.channels + ' channels.');
     } catch (error) {
       console.error('Could not auto-check the Stellar Discord structure:', error?.message || error);
