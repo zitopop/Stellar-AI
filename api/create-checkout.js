@@ -1,9 +1,9 @@
-// api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
-// Billing safety revision: keep card-only checkout until the live Stripe webhook endpoint can receive async-payment lifecycle events.
+// api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time purchases
+// Checkout keeps the form short, supports Link plus eligible card wallets, and reuses recent open sessions.
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
-import { isPaidPlan } from '../lib/pricing.js';
-import { kvGet } from '../lib/profile.js';
+import { isPaidPlan, normalisePlan } from '../lib/pricing.js';
+import { kvGet, kvSet } from '../lib/profile.js';
 import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
 
 function setCors(req, res) {
@@ -101,6 +101,91 @@ function acquisitionSource(value) {
   return ATTRIBUTION_SOURCES.has(source) ? source : 'direct';
 }
 
+
+function openCheckoutKey(email, plan) {
+  return `stellar:open-checkout:${String(email || '').toLowerCase().trim()}:${String(plan || '').toLowerCase().trim()}`;
+}
+
+async function reusableOpenCheckout(stripe, kvUrl, kvToken, email, plan) {
+  if (!kvUrl || !kvToken || !email || !plan) return null;
+  try {
+    const cached = await kvGet(kvUrl, kvToken, openCheckoutKey(email, plan));
+    const sessionId = String(cached?.sessionId || '').trim();
+    if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return null;
+    const checkout = await stripe.checkout.sessions.retrieve(sessionId);
+    if (checkout?.status === 'open' && checkout?.url && /^https:\/\/checkout\.stripe\.com\//i.test(checkout.url)) {
+      return checkout;
+    }
+  } catch (error) {
+    console.warn('Could not reuse open Stripe checkout', error?.message || error);
+  }
+  return null;
+}
+
+async function rememberOpenCheckout(kvUrl, kvToken, email, plan, checkout) {
+  if (!kvUrl || !kvToken || !email || !plan || !checkout?.id) return false;
+  try {
+    await kvSet(kvUrl, kvToken, openCheckoutKey(email, plan), {
+      sessionId: checkout.id,
+      createdAt: Date.now(),
+    }, 20 * 60);
+    return true;
+  } catch (error) {
+    console.warn('Could not cache open Stripe checkout', error?.message || error);
+    return false;
+  }
+}
+
+async function confirmCompletedSubscription(stripe, kvUrl, kvToken, sessionUser, sessionId) {
+  if (!kvUrl || !kvToken) {
+    return { ok: false, status: 503, error: 'Account storage is not configured.' };
+  }
+  const id = String(sessionId || '').trim();
+  if (!/^cs_[A-Za-z0-9_]+$/.test(id)) {
+    return { ok: false, status: 400, error: 'Invalid checkout session.' };
+  }
+
+  const checkout = await stripe.checkout.sessions.retrieve(id);
+  const checkoutEmail = String(
+    checkout?.metadata?.email
+      || checkout?.customer_details?.email
+      || checkout?.customer_email
+      || ''
+  ).toLowerCase().trim();
+  const signedInEmail = String(sessionUser?.email || '').toLowerCase().trim();
+
+  if (!signedInEmail || checkoutEmail !== signedInEmail) {
+    return { ok: false, status: 403, error: 'This checkout does not belong to the signed-in account.' };
+  }
+  if (checkout?.mode !== 'subscription' || checkout?.status !== 'complete') {
+    return { ok: false, status: 409, error: 'Checkout is not complete yet.' };
+  }
+  if (!['paid', 'no_payment_required'].includes(String(checkout?.payment_status || ''))) {
+    return { ok: false, status: 409, error: 'Payment is still processing.' };
+  }
+
+  const rawPlan = String(checkout?.metadata?.plan || '').trim().toLowerCase();
+  const plan = normalisePlan(rawPlan);
+  if (!plan || !isPaidPlan(plan)) {
+    return { ok: false, status: 400, error: 'Checkout does not contain a valid Stellar subscription.' };
+  }
+
+  const existing = (await kvGet(kvUrl, kvToken, `stellar:user:${signedInEmail}`)) || {};
+  await kvSet(kvUrl, kvToken, `stellar:user:${signedInEmail}`, {
+    ...existing,
+    plan,
+    planBilling: rawPlan.endsWith('-annual') ? 'annual' : 'monthly',
+    planCreditAnchorAt: Number(existing.planCreditAnchorAt) || Date.now(),
+    stripeCustomerId: typeof checkout.customer === 'string' ? checkout.customer : existing.stripeCustomerId,
+    stripeSubscriptionId: typeof checkout.subscription === 'string' ? checkout.subscription : existing.stripeSubscriptionId,
+    stripeSubscriptionStatus: 'active',
+    billingPaymentFailedAt: null,
+    updatedAt: Date.now(),
+  });
+
+  return { ok: true, status: 200, plan };
+}
+
 function missingPlanMessage(plan) {
   const messages = {
     starter: 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.',
@@ -120,13 +205,13 @@ export default async function handler(req, res) {
 
   const sessionUser = requireSession(req, res);
   if (!sessionUser) return;
-  const { plan, amount, qty, source, country: requestedCountry } = req.body || {};
+  const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = req.body || {};
   const sourceName = acquisitionSource(source);
   const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
   const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
   // GBP is the base price currency; eligible subscription checkouts use Stripe Adaptive Pricing for local presentment.
   const currency = 'GBP';
-  if (!plan) return res.status(400).json({ error: 'Choose a plan before continuing.' });
+  if (!plan && action !== 'confirm-checkout') return res.status(400).json({ error: 'Choose a plan before continuing.' });
 
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   if (!stripeSecret) return res.status(500).json({ error: 'Stripe is not configured.' });
@@ -139,6 +224,12 @@ export default async function handler(req, res) {
     const accountUser = kvUrl && kvToken
       ? await kvGet(kvUrl, kvToken, `stellar:user:${sessionUser.email}`)
       : null;
+
+    if (action === 'confirm-checkout') {
+      const confirmed = await confirmCompletedSubscription(stripe, kvUrl, kvToken, sessionUser, sessionId);
+      if (!confirmed.ok) return res.status(confirmed.status).json({ error: confirmed.error, code: 'CHECKOUT_NOT_READY' });
+      return res.status(200).json({ ok: true, plan: confirmed.plan });
+    }
     const existingCustomerId = String(accountUser?.stripeCustomerId || '').trim();
     const checkoutCustomer = /^cus_[A-Za-z0-9]+$/.test(existingCustomerId)
       ? { customer: existingCustomerId }
@@ -174,8 +265,9 @@ export default async function handler(req, res) {
       await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        // Temporary safety guard: production webhook permissions do not yet include async-payment lifecycle events.
-        payment_method_types: ['card'],
+        // Apple Pay and Google Pay surface automatically as eligible card wallets.
+        // Link is explicit so returning buyers can finish with minimal form entry.
+        payment_method_types: ['card', 'link'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -219,6 +311,15 @@ export default async function handler(req, res) {
       return res.status(410).json({ error: 'Usage top-ups are no longer sold. Choose a plan with the usage capacity you need.' });
     }
 
+    const reusable = await reusableOpenCheckout(stripe, kvUrl, kvToken, sessionUser.email, plan);
+    if (reusable) {
+      await Promise.all([
+        incrementConversionMetric('checkout-reused'),
+        incrementConversionMetric(`checkout-reused-source-${sourceName}`),
+      ]);
+      return res.status(200).json({ url: reusable.url, reused: true });
+    }
+
     // Never create a second recurring subscription for an account that already has one.
     const existingSubscriptionId = String(accountUser?.stripeSubscriptionId || '').trim();
     if (isPaidPlan(accountUser?.plan) && /^sub_[A-Za-z0-9]+$/.test(existingSubscriptionId)) {
@@ -241,12 +342,13 @@ export default async function handler(req, res) {
     await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      // Temporary safety guard: production webhook permissions do not yet include async-payment lifecycle events.
-      payment_method_types: ['card'],
+      // Apple Pay and Google Pay surface automatically as eligible card wallets.
+      // Link is explicit so returning buyers can finish with minimal form entry.
+      payment_method_types: ['card', 'link'],
 
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
-      success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
+      success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       after_expiration: { recovery: { enabled: true } },
       client_reference_id: attemptId,
@@ -257,11 +359,12 @@ export default async function handler(req, res) {
       adaptive_pricing: { enabled: true },
     });
 
+    await rememberOpenCheckout(kvUrl, kvToken, sessionUser.email, plan, checkout);
     await Promise.all([
       incrementConversionMetric('checkout-started'),
       incrementConversionMetric(`checkout-started-source-${sourceName}`),
     ]);
-    return res.status(200).json({ url: checkout.url });
+    return res.status(200).json({ url: checkout.url, reused: false });
   } catch (error) {
     console.error('Stripe checkout error', error?.message || error);
     const message = String(error?.message || '');
