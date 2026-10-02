@@ -20,6 +20,8 @@ test('anthropic candidate fallbacks remain configured for each visible tier', ()
 
 test('current provider models map onto paid Stellar tiers', () => {
   assert.equal(resolveModelTier('gpt-6-luna', 'starter'), 'spark');
+  assert.equal(resolveModelTier('gpt-6-sol', 'plus'), 'comet');
+  assert.equal(resolveModelTier('gpt-6-astra', 'pro'), 'nova');
   assert.equal(resolveModelTier('gpt-6.1-sol', 'plus'), 'comet');
   assert.equal(resolveModelTier('gemini-3.8-flash', 'plus'), 'star');
   assert.equal(resolveModelTier('claude-sonnet-5-5', 'plus'), 'star');
