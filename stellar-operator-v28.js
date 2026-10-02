@@ -69,7 +69,7 @@
   }
 
   function labelForModel(key){
-    return {spark:'Spark',star:'Star',comet:'Comet',nova:'Nova'}[key]||'Star';
+    return {spark:'Stellar Fast',star:'Stellar Core',comet:'Stellar Deep',nova:'Stellar Max'}[key]||'Stellar Core';
   }
 
   function currentModelKey(){
