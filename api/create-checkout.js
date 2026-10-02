@@ -265,6 +265,9 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'server-pass' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
+        // Temporary safety guard: the live Stripe webhook is not yet subscribed to async Checkout events.
+        // Card includes eligible Apple Pay / Google Pay wallets; Link remains an explicit fast-pay option.
+        payment_method_types: ['card', 'link'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -314,6 +317,8 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
+        // Keep one-time fulfillment synchronous until async Checkout webhook delivery is enabled live.
+        payment_method_types: ['card', 'link'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
