@@ -96,7 +96,7 @@ export default async function handler(req, res) {
       isNew = true;
       const now = Date.now();
       const authRecord = { discord: true, discordId: profile.id, discordUsername: profile.username, discordDisplayName: profile.global_name || '', discordAvatar: profile.avatar || '', createdAt: now };
-      user = { plan: 'free', walletPence: 500, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord', funnel: initialFunnelState(now) };
+      user = { plan: 'free', walletPence: 100, welcomeCreditGiven: true, welcomeCreditAt: now, createdAt: now, signInSource: 'discord', funnel: initialFunnelState(now) };
       await kvPipeline(kvUrl, kvToken, [
         ['SET', authKey, JSON.stringify(authRecord)],
         ['SET', userKey, JSON.stringify(user)],
