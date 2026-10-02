@@ -27,6 +27,9 @@
 </main>
 <script>
 const $=id=>document.getElementById(id);const SUPPORT_EMAIL='support@trystellarai.com';
+function safeStorageGet(key,fallback=''){try{const value=window.localStorage.getItem(key);return value==null?fallback:value}catch{return fallback}}
+function safeStorageLength(){try{return window.localStorage.length}catch{return 0}}
+function safeStorageKey(index){try{return window.localStorage.key(index)||''}catch{return ''}}
 function setNotice(text,kind=''){const n=$('notice');n.textContent=text;n.className='notice '+kind}
 function oneRecipient(value){const raw=String(value||'').trim();if(!raw)return '';if(/[;,\n]/.test(raw))return '';return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)?raw:''}
 function refreshPreview(){const to=$('to').value.trim()||'recipient@example.com';const subject=$('subject').value.trim()||'(no subject)';const body=$('body').value.trim()||'Write the email body here.';$('preview').textContent='To: '+to+'\nSubject: '+subject+'\n\n'+body}
@@ -34,13 +37,13 @@ function readJson(value){try{return JSON.parse(value||'{}')||{}}catch{return {}}
 function clean(value){return String(value||'').replace(/\s+/g,' ').trim()}
 function friendlyName(account){const email=clean(account?.email||account?.user?.email);const name=clean(account?.name||account?.displayName||account?.user?.name||account?.user?.displayName);if(name&&name!==email)return name;if(email)return email.split('@')[0];return ''}
 function findStoredAccount(){
- const store=readJson(localStorage.getItem('stellar-store'));
+ const store=readJson(safeStorageGet('stellar-store'));
  const picks=[store.user,store.account,store.sessionUser,store.signedInUser,store.profile,store.session,store];
  for(const item of picks){if(item&&typeof item==='object'&&(item.email||item.name||item.user?.email))return item}
- for(let i=0;i<localStorage.length;i+=1){const key=localStorage.key(i)||'';if(!/stellar|session|user|account/i.test(key))continue;const item=readJson(localStorage.getItem(key));if(item&&typeof item==='object'&&(item.email||item.name||item.user?.email))return item}
+ for(let i=0;i<safeStorageLength();i+=1){const key=safeStorageKey(i)||'';if(!/stellar|session|user|account/i.test(key))continue;const item=readJson(safeStorageGet(key));if(item&&typeof item==='object'&&(item.email||item.name||item.user?.email))return item}
  return null;
 }
-function sessionToken(){const store=readJson(localStorage.getItem('stellar-store'));return clean(store.session||store.sessionToken||store.token||localStorage.getItem('stellar-session')||localStorage.getItem('stellar_session'))}
+function sessionToken(){const store=readJson(safeStorageGet('stellar-store'));return clean(store.session||store.sessionToken||store.token||safeStorageGet('stellar-session')||safeStorageGet('stellar_session'))}
 function setAccountPill(account,checking=false){const el=$('account-pill');if(!el)return;const email=clean(account?.email||account?.user?.email);const name=friendlyName(account);if(name||email){el.textContent=(name?`Signed in: ${name}`:'Signed in')+(email&&email!==name?` · ${email}`:'');el.title=email||name;return}el.textContent=checking?'Checking account…':'Account not detected';}
 async function refreshAccountPill(){const stored=findStoredAccount();setAccountPill(stored,true);const token=sessionToken();if(!token)return;try{const res=await fetch('/api/auth',{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+token,'x-stellar-session':token},body:JSON.stringify({action:'refreshSession'})});const data=await res.json().catch(()=>({}));if(res.ok&&data){setAccountPill({email:data.email||data.user?.email,name:data.name||data.user?.name||data.displayName});}}catch{}}
 function fillTemplate(type){
