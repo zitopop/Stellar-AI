@@ -4,10 +4,10 @@
   window.__stellarOrbitV5Safe = true;
 
   const TIERS = Object.freeze({
-    fabie: { name:'Spark', mode:'Fast', symbol:'✦', desc:'Quick drafts, small fixes and lightweight work.', power:1 },
-    smart: { name:'Star', mode:'Balanced', symbol:'★', desc:'Recommended for most Roblox and FiveM builds.', power:2, recommended:true },
-    comet: { name:'Comet', mode:'Deep', symbol:'☄', desc:'Architecture, debugging and larger multi-file systems.', power:3 },
-    ultra: { name:'Nova', mode:'Max', symbol:'✺', desc:'Highest-capability Stellar tier for difficult project work.', power:4, pro:true }
+    fabie: { name:'Stellar Fast', mode:'Fast', symbol:'✦', desc:'Quick drafts, small fixes and lightweight work.', power:1 },
+    smart: { name:'Stellar Core', mode:'Balanced', symbol:'★', desc:'Recommended for most Roblox and FiveM builds.', power:2, recommended:true },
+    comet: { name:'Stellar Deep', mode:'Deep', symbol:'☄', desc:'Architecture, debugging and larger multi-file systems.', power:3 },
+    ultra: { name:'Stellar Max', mode:'Max', symbol:'✺', desc:'Highest-capability Stellar tier for difficult project work.', power:4, pro:true }
   });
 
   const state = { selected:'smart', syncing:false };
@@ -209,7 +209,7 @@
       <span class="stellar-space-orbit" aria-hidden="true">✦</span>
       <span class="stellar-space-copy">
         <span class="stellar-space-kicker">Stellar Orbit · Model power</span>
-        <span class="stellar-space-model" data-stellar-model>Star · Balanced</span>
+        <span class="stellar-space-model" data-stellar-model>Stellar Core · Balanced</span>
       </span>
       <span class="stellar-space-depth" data-stellar-depth>Balanced</span>
       <span class="stellar-power-meter" data-stellar-power-meter aria-hidden="true"><span></span><span></span><span></span><span></span></span>`;
@@ -231,7 +231,7 @@
       <div class="stellar-orbit-primary-grid">
         <button type="button" class="stellar-orbit-primary-btn" data-orbit-open-model>
           <span class="stellar-orbit-primary-icon" aria-hidden="true">✦</span>
-          <span class="stellar-orbit-primary-copy"><strong>Models</strong><span data-stellar-side-model>Star · Balanced</span></span>
+          <span class="stellar-orbit-primary-copy"><strong>Models</strong><span data-stellar-side-model>Stellar Core · Balanced</span></span>
           <span class="stellar-orbit-primary-meta" data-stellar-power-label>Balanced power</span>
         </button>
         <button type="button" class="stellar-orbit-primary-btn" data-orbit-open-files>
@@ -303,7 +303,7 @@
     actions.innerHTML = `
       <button type="button" class="stellar-top-model" data-stellar-top-picker aria-label="Change Stellar model power" title="Change model power">
         <span class="stellar-top-model-star" aria-hidden="true">★</span>
-        <span data-stellar-top-model>Star · Balanced</span>
+        <span data-stellar-top-model>Stellar Core · Balanced</span>
       </button>
       <button type="button" class="stellar-top-settings" data-stellar-top-settings aria-label="Open Settings" title="Settings">⚙</button>`;
 
@@ -369,7 +369,7 @@
         </div>
         <div class="stellar-settings-model-card">
           <span class="stellar-settings-model-icon" aria-hidden="true">★</span>
-          <span><small>Current model</small><strong data-stellar-settings-model>Star · Balanced</strong></span>
+          <span><small>Current model</small><strong data-stellar-settings-model>Stellar Core · Balanced</strong></span>
           <button type="button" data-orbit-models>Change</button>
         </div>
       </div>
