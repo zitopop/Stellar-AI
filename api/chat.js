@@ -5,7 +5,7 @@ import { isIP } from 'node:net';
 import { isOwnerEmail, readSession } from '../lib/auth.js';
 import { OVERAGE_REQUEST_COST_PENCE, PLAN_DEFINITIONS, creditCostForModel, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
 import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
-import { consumeUsage, refundUsageCharge } from '../lib/usage.js';
+import { consumeHourlyRequest, consumeUsage, refundUsageCharge } from '../lib/usage.js';
 import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
 import { handleDiscordDebugRequest } from '../lib/discord-debug.js';
 
@@ -495,6 +495,13 @@ function applyUsageHeaders(res, usage) {
   res.setHeader('X-Stellar-Plan', usage.plan);
   res.setHeader('X-Stellar-AddOn-Credits-Charged', String(usage.addOnCreditsCharged || 0));
   if (Number.isFinite(Number(usage.walletPence))) res.setHeader('X-Stellar-AddOn-Credits', String(usage.walletPence));
+}
+
+function applyRateLimitHeaders(res, rate) {
+  if (!rate) return;
+  if (rate.limit !== null && rate.limit !== undefined) res.setHeader('X-Stellar-RateLimit-Limit', String(rate.limit));
+  if (rate.remaining !== null && rate.remaining !== undefined) res.setHeader('X-Stellar-RateLimit-Remaining', String(rate.remaining));
+  if (rate.resetAt) res.setHeader('X-Stellar-RateLimit-Reset', String(rate.resetAt));
 }
 
 function walletKeyForSession(session) {
@@ -1031,6 +1038,40 @@ export default async function handler(req, res) {
   const billableTier = route.billingTier || route.tier || route.fallbackTier || resolveModelTier(model, plan);
   const messageCreditCost = creditCostForModel(billableTier);
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);
+  let hourlyRate;
+  try {
+    hourlyRate = await consumeHourlyRequest({
+      url: KV_URL,
+      token: KV_TOKEN,
+      identity: usageIdentity(session, ip),
+      plan,
+    });
+    applyRateLimitHeaders(res, hourlyRate);
+  } catch (error) {
+    console.error('Hourly rate enforcement failed', error?.message || error);
+    await recordRepeatedServiceFailure({
+      key: 'hourly-rate-enforcement',
+      summary: 'Stellar hourly rate enforcement failed repeatedly and is blocking customer requests.',
+    });
+    return res.status(503).json({ error: 'Rate-limit checks are temporarily unavailable. Please try again shortly.' });
+  }
+  if (!hourlyRate.allowed) {
+    const retryAfter = Math.max(1, Number(hourlyRate.retryAfterSec) || 1);
+    res.setHeader('Retry-After', String(retryAfter));
+    return res.status(429).json({
+      error: `Your ${limits.name} hourly request limit has been reached. Try again after the hourly window resets.`,
+      code: 'RATE_LIMITED',
+      reason: 'hourly_request_limit',
+      retryAfterSec: retryAfter,
+      rateLimit: {
+        limit: hourlyRate.limit,
+        used: hourlyRate.used,
+        remaining: hourlyRate.remaining,
+        resetAt: hourlyRate.resetAt,
+      },
+    });
+  }
+
   let usage;
   try {
     usage = await consumeServerUsage(session, ip, plan, useCredit === true, messageCreditCost, account.creditAnchorAt);
@@ -1087,7 +1128,8 @@ export default async function handler(req, res) {
   const includedCreditsCharged = Math.max(0, Number(usage.includedCreditsCharged) || 0);
   let streamCompleted = false;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 95_000);
+  const generationTimeoutMs = Math.max(30_000, Math.min(Number(limits.generationTimeoutMs) || 95_000, 150_000));
+  const timeout = setTimeout(() => controller.abort(), generationTimeoutMs);
   const abortOnDisconnect = () => {
     if (!res.writableEnded) controller.abort();
   };
@@ -1158,10 +1200,14 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     if (!res.headersSent) {
-      const message = error?.name === 'AbortError'
-        ? 'The AI request timed out. Please try again with a shorter request.'
-        : 'Could not connect to the AI service. Please try again.';
-      return res.status(502).json({ error: message });
+      if (error?.name === 'AbortError') {
+        return res.status(504).json({
+          error: 'The generation timed out before the upstream model completed. Try again or shorten the request.',
+          code: 'GENERATION_TIMEOUT',
+          reason: 'upstream_timeout',
+        });
+      }
+      return res.status(502).json({ error: 'Could not connect to the AI service. Please try again.' });
     }
     if (!res.writableEnded) res.end();
   } finally {
@@ -1186,4 +1232,4 @@ export default async function handler(req, res) {
 }
 
 
-export { CODE_INTELLIGENCE_GUIDANCE, IP_SAFETY_GUIDANCE, GENERAL_CHAT_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectRequestKind, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, canonicalProviderModel, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
+export { CODE_INTELLIGENCE_GUIDANCE, IP_SAFETY_GUIDANCE, GENERAL_CHAT_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyRateLimitHeaders, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectRequestKind, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, canonicalProviderModel, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
