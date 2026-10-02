@@ -18,6 +18,11 @@ test('Stripe return-path access is verified before provisioning', () => {
   assert.match(checkout, /checkout\?\.mode !== 'subscription'/);
   assert.match(checkout, /checkout\?\.status !== 'complete'/);
   assert.match(checkout, /\['paid', 'no_payment_required'\]/);
+  assert.match(checkout, /stripe\.subscriptions\.retrieve\(subscriptionId\)/);
+  assert.match(checkout, /\['active', 'trialing'\]/);
+  assert.match(checkout, /subscriptionCustomerId !== checkoutCustomerId/);
+  assert.match(checkout, /subscriptionPriceForPlan\(rawPlan, process\.env, 'GBP'\)/);
+  assert.match(checkout, /Number\(existing\.planCreditAnchorAt\) \|\| Date\.now\(\)/);
   assert.match(checkout, /session_id=\{CHECKOUT_SESSION_ID\}/);
   assert.match(app, /action:'confirm-checkout',sessionId/);
 });
