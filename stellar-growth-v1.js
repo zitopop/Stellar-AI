@@ -4,10 +4,10 @@
   window.__stellarGrowthV1 = true;
 
   const LEVELS = [
-    { key:'fabie',  name:'Spark', mode:'Fast',     icon:'✦', hint:'Quick answers and small fixes' },
-    { key:'smart',  name:'Star',  mode:'Balanced', icon:'★', hint:'Best default for most builds', recommended:true },
-    { key:'comet',  name:'Comet', mode:'Deep',     icon:'☄', hint:'More depth for hard debugging' },
-    { key:'ultra',  name:'Nova',  mode:'Max',      icon:'✺', hint:'Maximum Stellar effort', pro:true }
+    { key:'fabie',  name:'Stellar Fast', mode:'Fast',     icon:'✦', hint:'Quick answers and small fixes' },
+    { key:'smart',  name:'Stellar Core',  mode:'Balanced', icon:'★', hint:'Best default for most builds', recommended:true },
+    { key:'comet',  name:'Stellar Deep', mode:'Deep',     icon:'☄', hint:'More depth for hard debugging' },
+    { key:'ultra',  name:'Stellar Max',  mode:'Max',      icon:'✺', hint:'Maximum Stellar effort', pro:true }
   ];
   const PROJECTS_KEY = 'stellar_orbit_projects_v1';
   const ACTIVE_PROJECT_KEY = 'stellar_orbit_active_project_v1';
@@ -70,7 +70,7 @@
       </div>
       <div class="stellar-reasoning-summary" aria-live="polite">
         <span data-growth-current-icon>★</span>
-        <div><strong data-growth-current-name>Star · Balanced</strong><small data-growth-current-hint>Best default for most builds</small></div>
+        <div><strong data-growth-current-name>Stellar Core · Balanced</strong><small data-growth-current-hint>Best default for most builds</small></div>
       </div>
       <p class="stellar-reasoning-note">Like a reasoning control: higher power gives difficult Roblox and FiveM work more effort. These are Stellar tiers, not OpenAI models.</p>`;
 
@@ -290,7 +290,7 @@
       <div class="stellar-usage-grid">
         <div class="stellar-usage-stat"><small>PLAN</small><strong data-growth-plan>Free</strong><span>Current workspace access</span></div>
         <div class="stellar-usage-stat"><small>REQUESTS</small><strong data-growth-requests>—</strong><span data-growth-reset>Reset timing</span></div>
-        <div class="stellar-usage-stat"><small>MODEL POWER</small><strong data-growth-usage-model>Star · Balanced</strong><span>Current selection</span></div>
+        <div class="stellar-usage-stat"><small>MODEL POWER</small><strong data-growth-usage-model>Stellar Core · Balanced</strong><span>Current selection</span></div>
       </div>
       <div class="stellar-usage-models" aria-label="Stellar power availability">
         ${LEVELS.map(level => `<span data-usage-tier="${level.key}"><b>${level.icon}</b><strong>${level.mode}</strong><small>${level.name}${level.pro ? ' · Pro' : ''}</small></span>`).join('')}
