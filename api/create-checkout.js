@@ -179,8 +179,8 @@ export default async function handler(req, res) {
     }
 
     if (plan === 'website-builder') {
-      const attemptId = crypto.randomUUID();
-      await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
+      const attemptId = checkoutIdempotencyKey(sessionUser.email, 'website-builder');
+      const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
         // Cards also surface eligible Apple Pay / Google Pay; Link adds a fast saved-payment path without enabling delayed bank methods.
@@ -217,7 +217,7 @@ export default async function handler(req, res) {
           },
         },
       }, { idempotencyKey: checkoutIdempotencyKey(sessionUser.email, 'website-builder') });
-      await Promise.all([
+      if (newAttempt) await Promise.all([
         incrementConversionMetric('checkout-started'),
         incrementConversionMetric(`checkout-started-source-${sourceName}`),
       ]);
@@ -246,8 +246,8 @@ export default async function handler(req, res) {
       || subscriptionPriceForPlan(plan, process.env, currency);
     if (!price) return res.status(400).json({ error: missingPlanMessage(plan), code: 'PLAN_PRICE_NOT_CONFIGURED', country, currency });
 
-    const attemptId = crypto.randomUUID();
-    await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
+    const attemptId = checkoutIdempotencyKey(sessionUser.email, plan);
+    const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
       // Cards also surface eligible Apple Pay / Google Pay; Link adds a fast saved-payment path without enabling delayed bank methods.
@@ -266,7 +266,7 @@ export default async function handler(req, res) {
       adaptive_pricing: { enabled: true },
     }, { idempotencyKey: checkoutIdempotencyKey(sessionUser.email, plan) });
 
-    await Promise.all([
+    if (newAttempt) await Promise.all([
       incrementConversionMetric('checkout-started'),
       incrementConversionMetric(`checkout-started-source-${sourceName}`),
     ]);
