@@ -329,32 +329,29 @@ const MODEL_MAP = {
   spark: 'claude-haiku-4-5-20251001', fabie: 'claude-haiku-4-5-20251001', haiku: 'claude-haiku-4-5-20251001',
   'claude-haiku-4-5': 'claude-haiku-4-5-20251001', 'claude-haiku-4-5-20251001': 'claude-haiku-4-5-20251001',
   star: 'claude-sonnet-5-5', smart: 'claude-sonnet-5-5', sonnet: 'claude-sonnet-5-5',
-  'claude-sonnet-5-5': 'claude-sonnet-5-5', 'claude-sonnet-5': 'claude-sonnet-5', 'claude-sonnet-4-6': 'claude-sonnet-4-6',
+  'claude-sonnet-5-5': 'claude-sonnet-5-5', 'claude-sonnet-5': 'claude-sonnet-5-5', 'claude-sonnet-4-6': 'claude-sonnet-5-5',
   comet: 'claude-opus-5-5', opus: 'claude-opus-5-5',
-  'claude-opus-5-5': 'claude-opus-5-5', 'claude-opus-5': 'claude-opus-5-5', 'claude-opus-4-8': 'claude-opus-4-8', 'claude-opus-4-6': 'claude-opus-4-6',
+  'claude-opus-5-5': 'claude-opus-5-5', 'claude-opus-5': 'claude-opus-5-5', 'claude-opus-4-8': 'claude-opus-5-5', 'claude-opus-4-6': 'claude-opus-5-5',
   nova: 'claude-fable-5-1', ultra: 'claude-fable-5-1', fable: 'claude-fable-5-1',
   'claude-fable-5-1': 'claude-fable-5-1', 'claude-fable-5': 'claude-fable-5-1',
-  'gpt-6-luna': 'gpt-6-luna', 'gpt-6-sol': 'gpt-6-sol', 'gpt-6-astra': 'gpt-6-astra', 'gpt-6.1-sol': 'gpt-6-sol',
-  'gemini-3.8-flash': 'gemini-3.8-flash', 'grok-4.7': 'grok-4.7',
-};
+  'gpt-6-luna': 'gpt-6-luna', 'gpt-6-sol': 'gpt-6-sol', 'gpt-6-astra': 'gpt-6-astra',
+  'gpt-6.1-sol': 'gpt-6-sol', 'gpt-5.5': 'gpt-6-sol', 'gpt-5': 'gpt-6-sol',
+  'gpt-5-mini': 'gpt-6-luna', 'gpt-5-nano': 'gpt-6-luna',
+  'gemini-3.8-flash': 'gemini-3.8-flash', 'gemini-3-flash-preview': 'gemini-3.8-flash', 'gemini-3.1-pro-preview': 'gemini-3.8-flash',
+  'grok-4.7': 'grok-4.7',
+}
 
 const MODEL_TIER_BY_ID = {
   'claude-haiku-4-5-20251001': 'spark',
   'gpt-6-luna': 'spark',
-  'gpt-6-sol': 'comet',
-  'gpt-6-astra': 'nova',
-  'gpt-6.1-sol': 'comet',
   'claude-sonnet-5-5': 'star',
-  'claude-sonnet-5': 'star',
-  'claude-sonnet-4-6': 'star',
   'gemini-3.8-flash': 'star',
   'claude-opus-5-5': 'comet',
-  'claude-opus-4-8': 'comet',
-  'claude-opus-4-6': 'comet',
-  'gpt-6.1-sol': 'comet',
+  'gpt-6-sol': 'comet',
   'grok-4.7': 'comet',
   'claude-fable-5-1': 'nova',
-};
+  'gpt-6-astra': 'nova',
+}
 
 const PLAN_LIMITS = PLAN_DEFINITIONS;
 
@@ -570,7 +567,7 @@ function resolveRoute(requestedModel, requestedRole, plan) {
     }
     return {
       provider: 'forge',
-      model: candidate,
+      model: candidateModel,
       billingTier: candidateTier,
       fallbackTier: candidateTier,
       role: resolvedRole,
