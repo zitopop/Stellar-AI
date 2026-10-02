@@ -27,7 +27,7 @@
       <h1>Put Stellar inside your dev Discord.</h1>
       <p class="lead">For FiveM servers, Roblox studios and small development teams that want shared script debugging without sending every developer through a separate support workflow.</p>
       <div class="actions"><a class="btn primary" href="/app?upgrade=server-pass&source=server-pass">Buy Server Pass — £50/month</a><a class="btn" href="/app?welcome=1">Try Stellar free first</a></div>
-      <p class="note">Checkout uses debit/credit card through Stripe. No phone number is required by Stellar Checkout. Guild activation is verified after payment so the correct Discord server is enabled safely. Team activation email: <a href="mailto:deadlyfox@icloud.com?subject=Server%20Pass%20activation">deadlyfox@icloud.com</a>.</p>
+      <p class="note">Checkout uses debit/credit card through Stripe. No phone number is required by Stellar Checkout. After payment, connect Discord to the Stellar account that bought Server Pass, then run <code>/serverpass</code> inside the Discord server you manage. Stellar verifies the paid account and guild before activation.</p>
     </div>
     <aside class="price-card" aria-label="Server Pass pilot">
       <span class="tag">PILOT ACCESS</span>
@@ -48,16 +48,16 @@
     <div class="grid">
       <article class="card"><span>01 · DEBUG</span><h3>Paste the real error</h3><p>Use the existing Discord <code>/debug</code> flow for F8 logs, Lua/Luau errors and focused broken-script excerpts.</p></article>
       <article class="card"><span>02 · VALIDATE</span><h3>Keep server authority visible</h3><p>Relevant fixes are prompted to validate networked inputs and avoid trusting client-provided money, inventory, permissions or ownership.</p></article>
-      <article class="card"><span>03 · ONBOARD</span><h3>Activate the correct guild</h3><p>Server owners provide the Discord server ID during onboarding so access is granted to the intended community rather than a public shared key.</p></article>
+      <article class="card"><span>03 · ONBOARD</span><h3>Activate the correct guild</h3><p>Connect Discord to the paid Stellar account, then activate from inside the server. The bot checks server-management permission and the paid Server Pass before binding the guild.</p></article>
     </div>
   </section>
 
   <section class="wrap section">
     <div class="section-head"><p class="eyebrow">ONBOARDING</p><h2>Four steps from request to active server.</h2></div>
     <div class="steps">
-      <article class="step"><b>1. Request</b><p>Send the server/studio name, framework and Discord guild ID.</p></article>
-      <article class="step"><b>2. Verify</b><p>Confirm the requester controls or develops for that server.</p></article>
-      <article class="step"><b>3. Activate</b><p>Add the guild to the Server Pass allowlist and verify the bot connection.</p></article>
+      <article class="step"><b>1. Buy</b><p>Purchase Server Pass on the Stellar account that will own the guild entitlement.</p></article>
+      <article class="step"><b>2. Connect</b><p>Connect that Stellar account to Discord once using the secure Discord sign-in flow.</p></article>
+      <article class="step"><b>3. Activate</b><p>Run <code>/serverpass</code> in the Discord server you manage. Stellar verifies the purchase and your server permission before activation.</p></article>
       <article class="step"><b>4. Test</b><p>Run one real staging error through <code>/debug</code> before relying on it in production work.</p></article>
     </div>
   </section>
@@ -71,7 +71,7 @@
     </div>
   </section>
 
-  <section class="wrap final"><h2>Want Stellar in your server’s dev workflow?</h2><p>Buy the Server Pass, then send your Discord guild ID during onboarding so access is activated for the correct server or studio.</p><div class="actions" style="justify-content:center"><a class="btn primary" href="/app?upgrade=server-pass&source=server-pass">Buy Server Pass</a><a class="btn" href="/privacy">Privacy</a><a class="btn" href="/terms">Terms</a></div></section>
+  <section class="wrap final"><h2>Want Stellar in your server’s dev workflow?</h2><p>Buy Server Pass, connect Discord to the paid Stellar account, then activate the guild from inside Discord with <code>/serverpass</code>. No manual guild-ID email is required for the normal activation path.</p><div class="actions" style="justify-content:center"><a class="btn primary" href="/app?upgrade=server-pass&source=server-pass">Buy Server Pass</a><a class="btn" href="/privacy">Privacy</a><a class="btn" href="/terms">Terms</a></div></section>
 </main><script>
 (() => {
   const q = new URLSearchParams(location.search);
@@ -81,7 +81,7 @@
   box.className = 'wrap';
   box.style.cssText = 'margin-top:18px;padding:14px 16px;border:1px solid rgba(156,236,243,.22);border-radius:14px;background:rgba(156,236,243,.06);color:#dfe8ef';
   if (payment === 'success') {
-    box.innerHTML = '<strong>Payment received.</strong> Your Server Pass is pending guild activation. Email <a href="mailto:deadlyfox@icloud.com?subject=Server%20Pass%20activation">deadlyfox@icloud.com</a> with the Discord guild ID and server/studio name.';
+    box.innerHTML = '<strong>Payment received.</strong> Your Server Pass is ready for Discord activation. Connect Discord to this Stellar account, then run <code>/serverpass</code> inside the server you manage.';
   } else if (payment === 'cancelled') {
     box.textContent = 'Checkout cancelled. Nothing was charged.';
   } else return;
