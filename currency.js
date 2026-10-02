@@ -583,25 +583,25 @@
     const configs = {
       fabie: {
         icon: '⚡',
-        name: 'Spark',
+        name: 'Stellar Fast',
         badge: 'FAST',
         description: 'Quick drafts, small fixes and lightweight work'
       },
       smart: {
         icon: '✦',
-        name: 'Star',
+        name: 'Stellar Core',
         badge: 'RECOMMENDED',
         description: 'Best balance for most FiveM and Roblox builds'
       },
       comet: {
         icon: '☄',
-        name: 'Comet',
+        name: 'Stellar Deep',
         badge: 'DEEP',
         description: 'Architecture, debugging and larger systems'
       },
       ultra: {
         icon: '◆',
-        name: 'Nova',
+        name: 'Stellar Max',
         badge: 'PRO',
         description: 'Maximum Stellar quality for difficult project work'
       }
@@ -831,8 +831,8 @@
       fallback.setAttribute('aria-controls', 'model-menu');
       fallback.setAttribute('aria-haspopup', 'menu');
       fallback.setAttribute('aria-expanded', 'false');
-      fallback.setAttribute('aria-label', 'Choose AI mode. Current: Star');
-      fallback.innerHTML = '<span aria-hidden="true">✦</span><span class="composer-mode-name">Star</span><span aria-hidden="true" class="composer-mode-caret">▾</span>';
+      fallback.setAttribute('aria-label', 'Choose AI mode. Current: Stellar Core');
+      fallback.innerHTML = '<span aria-hidden="true">✦</span><span class="composer-mode-name">Stellar Core</span><span aria-hidden="true" class="composer-mode-caret">▾</span>';
       fallback.addEventListener('click', (event) => {
         if (typeof window.toggleModelMenu === 'function') {
           window.toggleModelMenu(event);
@@ -849,10 +849,10 @@
         const selected = menu?.querySelector('[data-model-choice][aria-checked="true"]');
         const label = selected?.querySelector('.font-black')?.childNodes?.[0]?.textContent?.replace(/[✨⭐☄️🚀]/g, '').trim()
           || selected?.textContent?.replace(/✓|PRO|·.*$/g, '').replace(/[✨⭐☄️🚀]/g, '').trim()
-          || 'Star';
+          || 'Stellar Core';
         const name = fallback.querySelector('.composer-mode-name');
-        if (name) name.textContent = label || 'Star';
-        fallback.setAttribute('aria-label', 'Choose AI mode. Current: ' + (label || 'Star'));
+        if (name) name.textContent = label || 'Stellar Core';
+        fallback.setAttribute('aria-label', 'Choose AI mode. Current: ' + (label || 'Stellar Core'));
       };
       syncSelected();
       if (menu && menu.dataset.stellarModelSync !== 'true') {
