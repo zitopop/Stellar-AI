@@ -425,7 +425,7 @@
       ['Account', 'Shows who is signed in, which email is active, and where saved chats/billing connect.', 'Account area'],
       ['usage', 'Shows plan allowance, reset timing and capacity.', 'usage tab'],
       ['Plan', 'Explains the user’s tier, billing, upgrade path and unlocked features.', 'Plan / upgrade'],
-      ['Models', 'Spark is quick, Star is default, Comet is deeper, Nova is Pro-level. Private models stay hidden.', 'Model picker'],
+      ['Models', 'Stellar Fast is quick, Stellar Core is the default, Stellar Deep handles harder work, and Stellar Max is the highest public tier. Provider models stay private.', 'Model picker'],
       ['Voice', 'Mic, Jarvis/Ava voice, language, call-style controls and accessibility.', 'Voice tab'],
       ['Plugins', 'External tools like Gmail, GitHub, Vercel or PC Agent. High-impact actions should ask first.', 'Plugins page'],
       ['Devices / StellarX', 'Connected PC or desktop-agent features. Only use devices the user owns.', 'PC Agent'],
