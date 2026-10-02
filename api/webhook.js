@@ -17,6 +17,8 @@ const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
+const ATTRIBUTION_SOURCES = new Set(['direct','github','cfx','builtbybit','google','discord','other']);
+function acquisitionSource(value) { const source = String(value || '').trim().toLowerCase(); return ATTRIBUTION_SOURCES.has(source) ? source : 'direct'; }
 
 export const config = { api: { bodyParser: false } };
 
@@ -202,6 +204,7 @@ export default async function handler(req, res) {
       await recordCheckoutCompletion({ id: String(session.client_reference_id || '') });
       const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
       const checkoutPlan = session.metadata?.plan;
+      const sourceName = acquisitionSource(session.metadata?.acquisition_source);
       const userKey = email ? `stellar:user:${email}` : '';
 
       if (!email) {
@@ -246,6 +249,7 @@ export default async function handler(req, res) {
             if (!saved) throw new Error(`Could not persist top-up for ${session.id}`);
             await Promise.all([
               incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric(`checkout-completed-source-${sourceName}`),
               incrementConversionMetric('topup-completed'),
               incrementConversionMetric('revenue-pence', Number(session.amount_total || amount)),
             ]);
@@ -268,6 +272,7 @@ export default async function handler(req, res) {
             if (!saved) throw new Error(`Could not persist subscription entitlement for ${session.id}`);
             await Promise.all([
               incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric(`checkout-completed-source-${sourceName}`),
               incrementConversionMetric('subscription-completed'),
               incrementConversionMetric('revenue-pence', Number(session.amount_total || 0)),
               recordFirstUpgrade(KV_URL, KV_TOKEN, email),
