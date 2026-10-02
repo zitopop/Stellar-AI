@@ -251,6 +251,18 @@
     .notice p{margin:0;color:var(--muted)}
     .notice strong{color:#d4fff5}
 
+    .providers{margin:0 0 70px}
+    .providers-head{max-width:720px;margin:0 0 18px}
+    .providers-head .eyebrow{text-align:left}
+    .providers-head h2{margin:8px 0 7px;font-size:30px;letter-spacing:-.04em}
+    .providers-head p{margin:0;color:var(--muted)}
+    .provider-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .provider-card{min-height:154px;padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.018)}
+    .provider-card small{display:block;margin-bottom:8px;color:#8f879c;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .provider-card strong{display:block;font-size:18px;letter-spacing:-.025em}
+    .provider-card p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.55}
+    .provider-note{margin:14px 0 0;color:#7f7888;font-size:11px;line-height:1.55}
+
     .final{
       margin-bottom:72px;
       padding:40px;
@@ -273,7 +285,7 @@
     }
 
     @media(max-width:980px){
-      .ladder{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .ladder,.provider-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .card{min-height:320px}
     }
 
@@ -436,6 +448,21 @@
     <section class="notice">
       <h2>These are Stellar model tiers.</h2>
       <p><strong>Stellar Fast, Stellar Core, Stellar Deep and Stellar Max are Stellar capability-tier names.</strong> They are not third-party model names. Stellar can route a tier across configured model providers or versions for quality, reliability, safety, latency, cost and availability; buying a plan does not promise access to a named third-party model. Third-party company, product and model names remain the property of their respective owners, and any internal compatibility with those services does not imply sponsorship, endorsement or partnership with Stellar AI. Free and Starter include Stellar Fast and Stellar Core, Plus adds Stellar Deep, and Pro adds Stellar Max.</p>
+    </section>
+
+    <section class="providers" aria-labelledby="provider-network-title">
+      <div class="providers-head">
+        <div class="eyebrow">Provider network</div>
+        <h2 id="provider-network-title">Stellar can route across leading AI providers.</h2>
+        <p>You choose the Stellar capability tier. Stellar chooses an eligible backend route based on the task, configured access, reliability and availability.</p>
+      </div>
+      <div class="provider-grid">
+        <article class="provider-card"><small>Provider</small><strong>OpenAI</strong><p>GPT-family models can support selected planning, review, security and other compatible internal routes.</p></article>
+        <article class="provider-card"><small>Provider</small><strong>Anthropic · Claude</strong><p>Claude models support implementation, testing, general reasoning and direct fallback routes.</p></article>
+        <article class="provider-card"><small>Provider</small><strong>Google · Gemini</strong><p>Gemini models can support research-oriented internal routes when configured and available.</p></article>
+        <article class="provider-card"><small>Provider</small><strong>xAI · Grok</strong><p>Grok models can support gaming, coding and agentic internal routes when configured and available.</p></article>
+      </div>
+      <p class="provider-note">Provider names are shown for transparency. Exact models and routing can change. These companies do not sponsor, endorse or partner with Stellar AI unless explicitly stated otherwise.</p>
     </section>
 
     <section class="final">
