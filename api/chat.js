@@ -559,8 +559,8 @@ function resolveRoute(requestedModel, requestedRole, plan) {
     const candidateModel = MODEL_MAP[candidate] || candidate;
     const candidateTier = MODEL_TIER_BY_ID[candidateModel] || 'star';
     const ownerRole = OWNER_ONLY_ROLES.has(resolvedRole);
-    const explicitlyAllowed = limits.models.includes(candidate);
-    if (!ownerRole && !explicitlyAllowed) {
+    const tierAllowed = limits.models.includes(candidateTier);
+    if (!ownerRole && !tierAllowed) {
       return { provider: 'anthropic', tier: resolveModelTier(candidate, normalizedPlan), role: resolvedRole, instruction: role.instruction };
     }
     return {
@@ -1001,6 +1001,23 @@ export default async function handler(req, res) {
   }
 
   const limits = getPlanDefinition(plan);
+  const requestedModelKey = normaliseRoutingInput(model);
+  if (plan !== 'owner' && requestedModelKey && PUBLIC_MODEL_INPUTS.has(requestedModelKey)) {
+    const mappedModel = MODEL_MAP[requestedModelKey] || requestedModelKey;
+    const requestedTier = MODEL_TIER_BY_ID[mappedModel]
+      || (['spark','star','comet','nova'].includes(requestedModelKey) ? requestedModelKey : 'star');
+    if (!limits.models.includes(requestedTier)) {
+      return res.status(402).json({
+        error: requestedTier === 'nova'
+          ? 'Nova is included with Stellar Pro.'
+          : 'Comet is included with Stellar Plus and Pro.',
+        code: 'PAYWALL_REQUIRED',
+        reason: 'premium_model',
+        requestedTier,
+        recommendedPlan: requestedTier === 'nova' ? 'pro' : 'plus',
+      });
+    }
+  }
   const route = resolveRoute(model, role, plan);
   const billableTier = route.billingTier || route.tier || route.fallbackTier || resolveModelTier(model, plan);
   const messageCreditCost = creditCostForModel(billableTier);
@@ -1028,6 +1045,15 @@ export default async function handler(req, res) {
       creditCost: usage.creditCost,
       addOnCredits: Number.isFinite(Number(usage.walletPence)) ? Number(usage.walletPence) : null,
     };
+    if (plan === 'free') {
+      return res.status(402).json({
+        error: 'Your free allowance is used. Upgrade to keep building now.',
+        code: 'PAYWALL_REQUIRED',
+        reason: 'free_allowance_exhausted',
+        recommendedPlan: 'plus',
+        usage: publicUsage,
+      });
+    }
     return res.status(429).json({
       error: useCredit === true
         ? 'You have reached your current usage allowance. Wait for it to reset or move to a plan with more capacity.'
