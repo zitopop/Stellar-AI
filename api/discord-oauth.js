@@ -114,6 +114,14 @@ export default async function handler(req, res) {
       });
     }
 
+    // Maintain a server-side reverse link so the Discord bot can sync plan roles
+    // without exposing the Stellar account email back to Discord.
+    await kvSet(kvUrl, kvToken, `stellar:discord-user:${profile.id}`, {
+      email,
+      discordId: String(profile.id || ''),
+      updatedAt: Date.now(),
+    });
+
     user = await ensureReferralProfile(kvUrl, kvToken, email, user);
     const referralCode = readState(state);
     if (isNew && referralCode) {
