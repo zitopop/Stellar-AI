@@ -6,7 +6,7 @@ import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js
 import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';
-const WELCOME_CREDITS = 500;
+const WELCOME_CREDITS = 100;
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
