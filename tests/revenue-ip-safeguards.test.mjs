@@ -38,6 +38,9 @@ test('moment-of-value paywalls are enforced on the server and handled in the app
   assert.match(chat, /return res\.status\(402\)/);
   assert.match(app, /err\?\.code==='PAYWALL_REQUIRED'/);
   assert.match(app, /openPanel\('plans'\)/);
+  assert.match(app, /upgrade-from-multifile-download/);
+  assert.match(app, /downloadableCount>1/);
+  assert.match(app, /Full multi-file downloads are included with Starter, Plus or Pro/);
 });
 
 test('customer capability surfaces expose Stellar tier names only', () => {
