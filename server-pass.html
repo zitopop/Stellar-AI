@@ -19,15 +19,15 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Stellar AI Server Pass pilot","provider":{"@type":"Organization","name":"Stellar AI","url":"https://trystellarai.com"},"areaServed":"Worldwide","offers":{"@type":"Offer","price":"50","priceCurrency":"GBP","description":"Monthly Server Pass pilot, activated after onboarding."}}</script>
 </head>
 <body>
-<header class="top"><nav class="wrap nav" aria-label="Primary"><a class="brand" href="/">✦ Stellar AI</a><div class="links"><a class="btn" href="/#playground">Playground</a><a class="btn" href="/#plans">Plans</a><a class="btn primary" href="mailto:support@trystellarai.com?subject=Server%20Pass%20pilot">Request Server Pass</a></div></nav></header>
+<header class="top"><nav class="wrap nav" aria-label="Primary"><a class="brand" href="/">✦ Stellar AI</a><div class="links"><a class="btn" href="/#playground">Playground</a><a class="btn" href="/#plans">Plans</a><a class="btn primary" href="/app?upgrade=server-pass&source=server-pass">Buy Server Pass</a></div></nav></header>
 <main>
   <section class="wrap hero">
     <div>
       <p class="eyebrow">SERVER PASS · B2B PILOT</p>
       <h1>Put Stellar inside your dev Discord.</h1>
       <p class="lead">For FiveM servers, Roblox studios and small development teams that want shared script debugging without sending every developer through a separate support workflow.</p>
-      <div class="actions"><a class="btn primary" href="mailto:support@trystellarai.com?subject=Server%20Pass%20pilot&body=Server%20or%20studio%20name%3A%0ADiscord%20server%20ID%3A%0AFramework%3A%20QBCore%2FESX%2Fox_lib%2FRoblox%20Luau%0ATeam%20size%3A">Request the £50/month pilot</a><a class="btn" href="/app?welcome=1">Try Stellar free first</a></div>
-      <p class="note">Pilot onboarding is manual so the correct Discord guild can be activated safely. No claim of unlimited provider capacity: abuse protection and reasonable technical limits still apply.</p>
+      <div class="actions"><a class="btn primary" href="/app?upgrade=server-pass&source=server-pass">Buy Server Pass — £50/month</a><a class="btn" href="/app?welcome=1">Try Stellar free first</a></div>
+      <p class="note">Checkout is immediate. Guild activation is verified after payment so the correct Discord server is enabled safely. Provider capacity, safety controls and reasonable abuse limits still apply.</p>
     </div>
     <aside class="price-card" aria-label="Server Pass pilot">
       <span class="tag">PILOT ACCESS</span>
@@ -71,8 +71,26 @@
     </div>
   </section>
 
-  <section class="wrap final"><h2>Want Stellar in your server’s dev workflow?</h2><p>Request the Server Pass pilot and include your Discord guild ID so onboarding can be checked properly.</p><div class="actions" style="justify-content:center"><a class="btn primary" href="mailto:support@trystellarai.com?subject=Server%20Pass%20pilot">Request Server Pass</a><a class="btn" href="/privacy">Privacy</a><a class="btn" href="/terms">Terms</a></div></section>
-</main>
+  <section class="wrap final"><h2>Want Stellar in your server’s dev workflow?</h2><p>Buy the Server Pass, then send your Discord guild ID during onboarding so access is activated for the correct server or studio.</p><div class="actions" style="justify-content:center"><a class="btn primary" href="/app?upgrade=server-pass&source=server-pass">Buy Server Pass</a><a class="btn" href="/privacy">Privacy</a><a class="btn" href="/terms">Terms</a></div></section>
+</main><script>
+(() => {
+  const q = new URLSearchParams(location.search);
+  const payment = String(q.get('payment') || '').toLowerCase();
+  if (!payment) return;
+  const box = document.createElement('div');
+  box.className = 'wrap';
+  box.style.cssText = 'margin-top:18px;padding:14px 16px;border:1px solid rgba(156,236,243,.22);border-radius:14px;background:rgba(156,236,243,.06);color:#dfe8ef';
+  if (payment === 'success') {
+    box.innerHTML = '<strong>Payment received.</strong> Your Server Pass is pending guild activation. Email <a href="mailto:support@trystellarai.com?subject=Server%20Pass%20activation">support@trystellarai.com</a> with the Discord guild ID and server/studio name.';
+  } else if (payment === 'cancelled') {
+    box.textContent = 'Checkout cancelled. Nothing was charged.';
+  } else return;
+  document.querySelector('main')?.prepend(box);
+  q.delete('payment'); q.delete('session_id'); q.delete('attempt');
+  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : ''));
+})();
+</script>
+
 <footer class="wrap footer">© 2026 Stellar AI · FiveM & Roblox developer workspace · <a href="/">trystellarai.com</a></footer>
 </body>
 </html>

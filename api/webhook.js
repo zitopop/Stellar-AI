@@ -235,6 +235,34 @@ export default async function handler(req, res) {
               incrementConversionMetric('revenue-pence', 9900),
             ]);
           }
+        } else if (checkoutPlan === 'server-pass') {
+          const paid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required' || event.type === 'checkout.session.async_payment_succeeded';
+          const amountMatches = Number(session.amount_total) === 5000 && Number(session.metadata?.amount || 0) === 5000;
+          if (!paid) {
+            console.info('Stripe Server Pass checkout is awaiting payment', session.id);
+          } else {
+            if (!amountMatches) throw new Error(`Invalid completed Server Pass session ${session.id}`);
+            const existingPass = (await kvGet(`stellar:server-pass:${email}`)) || {};
+            const saved = await kvSet(`stellar:server-pass:${email}`, {
+              ...existingPass,
+              status: existingPass.guildId ? 'active' : 'pending_activation',
+              checkoutSessionId: session.id,
+              stripeCustomerId: typeof session.customer === 'string' ? session.customer : existingPass.stripeCustomerId,
+              stripeSubscriptionId: typeof session.subscription === 'string' ? session.subscription : existingPass.stripeSubscriptionId,
+              amountPence: 5000,
+              billing: 'monthly',
+              purchasedAt: Number(existingPass.purchasedAt) || Date.now(),
+              updatedAt: Date.now(),
+            });
+            if (!saved) throw new Error(`Could not persist Server Pass entitlement for ${session.id}`);
+            await Promise.all([
+              recordCheckoutCompletion({ id: String(session.client_reference_id || '') }),
+              incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric(`checkout-completed-source-${sourceName}`),
+              incrementConversionMetric('server-pass-completed'),
+              incrementConversionMetric('revenue-pence', 5000),
+            ]);
+          }
         } else if (checkoutPlan === 'topup') {
           const amount = Math.round(Number(session.metadata?.amount || session.metadata?.qty || 0));
           const paid = session.payment_status === 'paid' || event.type === 'checkout.session.async_payment_succeeded';
@@ -296,7 +324,21 @@ export default async function handler(req, res) {
     } else if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
       const subscription = event.data.object;
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
-      if (email) {
+      if (email && String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
+        const key = `stellar:server-pass:${email}`;
+        const existingPass = (await kvGet(key)) || {};
+        const status = String(subscription.status || '').toLowerCase();
+        const hasAccess = subscriptionHasAccess(status);
+        const saved = await kvSet(key, {
+          ...existingPass,
+          status: hasAccess ? (existingPass.guildId ? 'active' : 'pending_activation') : 'inactive',
+          stripeCustomerId: typeof subscription.customer === 'string' ? subscription.customer : existingPass.stripeCustomerId,
+          stripeSubscriptionId: subscription.id,
+          stripeSubscriptionStatus: status,
+          updatedAt: Date.now(),
+        });
+        if (!saved) throw new Error(`Could not sync Server Pass subscription ${subscription.id}`);
+      } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
         const status = String(subscription.status || '').toLowerCase();
@@ -410,7 +452,18 @@ export default async function handler(req, res) {
     } else if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object;
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
-      if (email) {
+      if (email && String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
+        const key = `stellar:server-pass:${email}`;
+        const existingPass = (await kvGet(key)) || {};
+        const saved = await kvSet(key, {
+          ...existingPass,
+          status: 'canceled',
+          stripeSubscriptionId: subscription.id,
+          stripeSubscriptionStatus: 'canceled',
+          updatedAt: Date.now(),
+        });
+        if (!saved) throw new Error(`Could not revoke Server Pass subscription ${subscription.id}`);
+      } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
         const currentSubscriptionId = String(existing.stripeSubscriptionId || '').trim();

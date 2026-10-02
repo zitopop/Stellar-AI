@@ -14,12 +14,12 @@ test('live checkout is GBP-only regardless of customer country', () => {
 
 test('customer country is still retained for analytics metadata', () => {
   assert.match(checkout, /x-vercel-ip-country/);
-  assert.match(checkout, /metadata:\s*\{\s*email:\s*sessionUser\.email,\s*plan,\s*country,\s*currency,\s*acquisition_source:\s*sourceName\s*\}/);
+  assert.match(checkout, /metadata:\s*\{\s*app:\s*'stellar-ai',\s*email:\s*sessionUser\.email,\s*plan,\s*country,\s*currency,\s*acquisition_source:\s*sourceName\s*\}/);
 });
 
 
 test('Stripe Checkout enables cards, eligible wallets and Link without delayed bank methods', () => {
-  assert.equal((checkout.match(/payment_method_types:\s*\['card', 'link'\]/g)||[]).length, 2);
+  assert.ok((checkout.match(/payment_method_types:\s*\['card', 'link'\]/g)||[]).length >= 3);
   assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*(?:bacs_debit|sepa_debit|us_bank_account|acss_debit)[^\]]*\]/);
   assert.match(checkout, /checkoutIdempotencyKey\(sessionUser\.email, plan\)/);
   assert.match(checkout, /acquisition_source:\s*sourceName/);

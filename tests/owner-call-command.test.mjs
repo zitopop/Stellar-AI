@@ -16,7 +16,8 @@ test('Stellar exposes protected owner Jarvis call controls',()=>{
   assert.match(app,/async function checkOwnerCallHealth\(\)/);
   assert.match(app,/id="owner-call-now"/);
   assert.match(app,/id="owner-call-health-btn"/);
-  assert.match(app,/const ownerTools=isOwner\(\)\?/);
+  assert.match(app,/function settingsOwnerTools\(\)/);
+  assert.match(app,/if\(!isOwner\(\)\)return'';/);
 });
 
 test('owner API handles call health verification and secure escalation',()=>{
