@@ -1,5 +1,5 @@
 // api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
-// Billing safety revision: keep card-only checkout until the live Stripe webhook endpoint can receive async-payment lifecycle events.
+// Checkout uses cards plus Link. Apple Pay and Google Pay ride on the card payment method when eligible; delayed-notification methods stay disabled.
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
 import { isPaidPlan } from '../lib/pricing.js';
@@ -101,6 +101,15 @@ function acquisitionSource(value) {
   return ATTRIBUTION_SOURCES.has(source) ? source : 'direct';
 }
 
+function checkoutIdempotencyKey(email, plan, now = Date.now()) {
+  const bucket = Math.floor(Number(now || Date.now()) / (10 * 60 * 1000));
+  const digest = crypto.createHash('sha256')
+    .update(String(email || '').trim().toLowerCase())
+    .digest('hex')
+    .slice(0, 24);
+  return `stellar_checkout_${String(plan || 'unknown').replace(/[^a-z0-9_-]/gi, '_')}_${bucket}_${digest}`;
+}
+
 function missingPlanMessage(plan) {
   const messages = {
     starter: 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.',
@@ -174,8 +183,8 @@ export default async function handler(req, res) {
       await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        // Temporary safety guard: production webhook permissions do not yet include async-payment lifecycle events.
-        payment_method_types: ['card'],
+        // Cards also surface eligible Apple Pay / Google Pay; Link adds a fast saved-payment path without enabling delayed bank methods.
+        payment_method_types: ['card', 'link'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -207,7 +216,7 @@ export default async function handler(req, res) {
             amount: '9900',
           },
         },
-      });
+      }, { idempotencyKey: checkoutIdempotencyKey(sessionUser.email, 'website-builder') });
       await Promise.all([
         incrementConversionMetric('checkout-started'),
         incrementConversionMetric(`checkout-started-source-${sourceName}`),
@@ -241,8 +250,8 @@ export default async function handler(req, res) {
     await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      // Temporary safety guard: production webhook permissions do not yet include async-payment lifecycle events.
-      payment_method_types: ['card'],
+      // Cards also surface eligible Apple Pay / Google Pay; Link adds a fast saved-payment path without enabling delayed bank methods.
+      payment_method_types: ['card', 'link'],
 
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
@@ -255,7 +264,7 @@ export default async function handler(req, res) {
         metadata: { email: sessionUser.email, plan, app: 'stellar-ai', acquisition_source: sourceName },
       },
       adaptive_pricing: { enabled: true },
-    });
+    }, { idempotencyKey: checkoutIdempotencyKey(sessionUser.email, plan) });
 
     await Promise.all([
       incrementConversionMetric('checkout-started'),
