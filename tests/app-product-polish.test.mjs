@@ -12,8 +12,9 @@ test('returning model preference waits for server plan truth before use', () => 
   assert.match(app, /safeStorageSet\('stellar-selected-model',selectedModel\)/);
 });
 
-test('locked models stay in the workspace without silently activating', () => {
-  assert.match(app, /if\(!allowedModels\.includes\(m\)\)\{setStatus\('Locked on this plan','warn'\);return\}/);
+test('locked models stay inactive and open the paid-plan surface at the value moment', () => {
+  assert.match(app, /if\(!allowedModels\.includes\(m\)\)\{metric\('upgrade-intent'\);openPanel\('plans'\);/);
+  assert.match(app, /Instant access after checkout/);
   assert.match(app, /data-open="plans"/);
 });
 
