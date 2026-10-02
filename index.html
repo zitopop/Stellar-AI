@@ -59,7 +59,7 @@
   <link rel="stylesheet" href="/lib/assets/stellar-cosmic-openai.css?v=20260923-openai-space">
   <link rel="stylesheet" href="/lib/assets/stellar-smooth-smart.css?v=20260925">
 <link rel="stylesheet" href="/stellar-business-palette.css?v=12">
-  <script src="/lib/assets/homepage.js?v=20260919" defer></script>
+  <script src="/lib/assets/homepage.js?v=20261002-anon-preview" defer></script>
 <link rel="stylesheet" href="/lib/assets/stellar-refinements.css?v=20260924">
 <style id="stellar-home-calm-v16">
 /* Calm conversion-first homepage: hero → capabilities → preview → pricing → FAQ → CTA. */
@@ -1299,6 +1299,29 @@ body.public-home::before{opacity:.36!important;background-size:56px 56px!importa
 @media(max-width:390px){.public-home .dev-proof-grid{grid-template-columns:1fr!important}.public-home .dev-proof-item{min-height:64px!important}}
 @media(prefers-reduced-motion:reduce){.public-home .dev-status-dot{animation:none}}
 </style>
+
+<style id="stellar-anonymous-preview-v1">
+.public-home .anonymous-preview-form{width:min(760px,100%);margin:24px auto 0;padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:rgba(14,16,23,.88);text-align:left;box-shadow:0 18px 56px rgba(0,0,0,.22)}
+.public-home .anonymous-preview-form label{display:grid;gap:4px;padding:2px 4px 11px}
+.public-home .anonymous-preview-form label strong{font-size:14px;color:#f5f7fb}
+.public-home .anonymous-preview-form label span{font-size:11.5px;line-height:1.5;color:#8e97a6}
+.public-home .anonymous-preview-input{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end}
+.public-home .anonymous-preview-input textarea{width:100%;min-height:82px;max-height:180px;resize:vertical;padding:12px 13px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:#0b0d12;color:#f1f3f7;font:500 14px/1.5 Manrope,system-ui,sans-serif;outline:none}
+.public-home .anonymous-preview-input textarea:focus{border-color:rgba(159,150,255,.45);box-shadow:0 0 0 3px rgba(139,124,246,.10)}
+.public-home .anonymous-preview-input button,.public-home .anonymous-preview-result-head button{min-height:44px;padding:0 15px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:#f4f4f5;color:#111318;font-weight:800;cursor:pointer}
+.public-home .anonymous-preview-input button:disabled{opacity:.58;cursor:wait}
+.public-home .anonymous-preview-status{margin:9px 4px 0;color:#798392;font-size:10.5px;line-height:1.5}
+.public-home .anonymous-preview-status[data-state="error"]{color:#f0a7a7}
+.public-home .anonymous-preview-status[data-state="gated"]{color:#b9b2ff}
+.public-home .anonymous-preview-result{width:min(760px,100%);margin:12px auto 0;border:1px solid rgba(139,124,246,.22);border-radius:18px;background:#090c11;overflow:hidden;text-align:left}
+.public-home .anonymous-preview-result[hidden]{display:none!important}
+.public-home .anonymous-preview-result-head{min-height:46px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid rgba(255,255,255,.07);background:#10131a}
+.public-home .anonymous-preview-result-head span{color:#9aa3b1;font:700 10px/1.3 "DM Mono",monospace;letter-spacing:.06em}
+.public-home .anonymous-preview-result-head button{min-height:34px;padding-inline:11px;border-color:rgba(159,150,255,.22);background:#171a27;color:#ebe7ff;font-size:10px}
+.public-home .anonymous-preview-result pre{margin:0;max-height:430px;overflow:auto;padding:18px;color:#d2d8e2;font:500 12px/1.7 "JetBrains Mono","Fira Code",monospace;white-space:pre}
+.public-home .anonymous-preview-result>p{margin:0;padding:0 14px 13px;color:#717b89;font-size:10px;line-height:1.5}
+@media(max-width:700px){.public-home .anonymous-preview-input{grid-template-columns:1fr}.public-home .anonymous-preview-input button{width:100%}.public-home .anonymous-preview-form{padding:11px}.public-home .anonymous-preview-result pre{max-height:360px;font-size:11px}}
+</style>
 </head>
 <body class="stellar-public public-home">
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -1316,6 +1339,19 @@ body.public-home::before{opacity:.36!important;background-size:56px 56px!importa
         <div class="dev-release-badge" role="status" aria-live="polite"><span class="dev-status-dot" aria-hidden="true"></span><span data-hero-status>Stellar AI v2.4 · Checking production service</span></div>
         <h1 id="hero-title">Automated FiveM &amp; Roblox<br><span class="dev-hero-accent">Script Generation.</span></h1>
         <p class="oa2-lead">Build, debug and secure QBCore, ESX, ox_lib and Roblox Luau code from one focused workspace. Anti-exploit validation is injected by default for relevant game-development prompts, with framework-aware guidance you can inspect before use.</p>
+        <form class="anonymous-preview-form" id="anonymous-preview-form" novalidate>
+          <label for="anonymous-preview-prompt"><strong>Try one real script before signing up</strong><span>Describe a FiveM or Roblox script. Your first code preview is anonymous.</span></label>
+          <div class="anonymous-preview-input">
+            <textarea id="anonymous-preview-prompt" rows="3" maxlength="800" spellcheck="true" placeholder="Build a secure QBCore evidence locker with server-side validation"></textarea>
+            <button id="anonymous-preview-submit" type="submit">Generate free preview</button>
+          </div>
+          <p id="anonymous-preview-status" class="anonymous-preview-status" role="status" aria-live="polite">One anonymous preview. Downloading files or generating again asks you to create a free account.</p>
+        </form>
+        <section class="anonymous-preview-result" id="anonymous-preview-result" aria-label="Generated anonymous script preview" hidden>
+          <div class="anonymous-preview-result-head"><span id="anonymous-preview-meta">Game script · preview only</span><button id="anonymous-preview-download" type="button">Download files ↗</button></div>
+          <pre><code id="anonymous-preview-code"></code></pre>
+          <p>Preview only. Review and test generated code in a development environment before production use.</p>
+        </section>
         <div class="oa2-hero-actions"><a href="/app?welcome=1" class="oa2-primary-action">Start building free <span aria-hidden="true">↗</span></a><a href="#playground" class="oa2-secondary-action">View Live Editor Demo</a></div>
         <p class="dev-security-note">🔒 HTTPS in transit · 🔐 Server-side secret handling · 🛡️ Anti-exploit validation on by default for relevant game-dev prompts</p>
         <div class="oa2-framework-checklist" aria-label="Supported developer frameworks"><span>QBCore</span><span>ESX</span><span>ox_lib</span><span>Roblox Luau</span><span>ModuleScripts</span></div>
@@ -1554,24 +1590,28 @@ const tabs=[...root.querySelectorAll('[data-hero-framework]')];
 const codes=[...root.querySelectorAll('[data-hero-code]')];
 const label=root.querySelector('[data-hero-file-label]');
 const names={qbcore:'server/main.lua · QBCore',esx:'server/main.lua · ESX',oxlib:'client/main.lua · ox_lib',luau:'ModuleScript · Roblox Luau'};
+const STELLAR_LUA_WATERMARK='-- Generated with Stellar AI — https://trystellarai.com\n';
+function stellarLuaWatermark(value){const text=String(value||'');return text.startsWith(STELLAR_LUA_WATERMARK)?text:STELLAR_LUA_WATERMARK+text}
 function activeCode(){return codes.find(code=>!code.hidden)}
 function select(name){tabs.forEach(tab=>tab.setAttribute('aria-selected',tab.dataset.heroFramework===name?'true':'false'));codes.forEach(code=>{code.hidden=code.dataset.heroCode!==name});if(label)label.textContent=names[name]||'script.lua'}
 tabs.forEach(tab=>tab.addEventListener('click',()=>select(tab.dataset.heroFramework)));
 root.querySelector('[data-hero-copy]')?.addEventListener('click',async event=>{const text=activeCode()?.textContent?.trim()||'';if(!text)return;try{await navigator.clipboard.writeText(text);const button=event.currentTarget,old=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=old,1200)}catch{}});
-root.querySelector('[data-hero-download]')?.addEventListener('click',()=>{const code=activeCode(),text=code?.textContent?.trim()||'';if(!text)return;const mode=code.dataset.heroCode,blob=new Blob([text+'\n'],{type:'text/plain;charset=utf-8'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=mode==='luau'?'stellar-modulescript.lua':'stellar-'+mode+'.lua';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000)});
+root.querySelector('[data-hero-download]')?.addEventListener('click',()=>{const code=activeCode(),text=code?.textContent?.trim()||'';if(!text)return;const mode=code.dataset.heroCode,blob=new Blob([text+'\n'].map(stellarLuaWatermark),{type:'text/plain;charset=utf-8'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=mode==='luau'?'stellar-modulescript.lua':'stellar-'+mode+'.lua';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000)});
 })();
 </script>
 <script id="stellar-dev-playground-v1">
 (()=>{'use strict';
 const root=document.querySelector('[data-dev-playground]');
 if(!root)return;
+const STELLAR_LUA_WATERMARK='-- Generated with Stellar AI — https://trystellarai.com\n';
+function stellarLuaWatermark(value){const text=String(value||'');return text.startsWith(STELLAR_LUA_WATERMARK)?text:STELLAR_LUA_WATERMARK+text}
 const tabs=[...root.querySelectorAll('[data-dev-tab]')],panels=[...root.querySelectorAll('[data-dev-panel]')];
 function select(name){tabs.forEach(tab=>tab.setAttribute('aria-selected',tab.dataset.devTab===name?'true':'false'));panels.forEach(panel=>{panel.hidden=panel.dataset.devPanel!==name})}
 tabs.forEach(tab=>tab.addEventListener('click',()=>select(tab.dataset.devTab)));
 root.querySelectorAll('[data-demo-download]').forEach(button=>button.addEventListener('click',()=>{
   const panel=button.closest('[data-dev-panel]'),code=panel?.querySelector('code')?.textContent||'';
   if(!code.trim())return;
-  const blob=new Blob([code.trim()+'\n'],{type:'text/plain;charset=utf-8'}),link=document.createElement('a');
+  const blob=new Blob([code.trim()+'\n'].map(stellarLuaWatermark),{type:'text/plain;charset=utf-8'}),link=document.createElement('a');
   link.href=URL.createObjectURL(blob);link.download=button.dataset.demoDownload==='debugger'?'stellar-fixed-script.lua':'stellar-qbcore-script.lua';
   document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 }));
