@@ -4,7 +4,7 @@ import { canonicalProviderModel, resolveModelTier, getModelCandidates, resolveRo
 
 test('current public model routing downgrades unavailable tiers safely', () => {
   assert.equal(resolveModelTier('spark', 'free'), 'spark');
-  assert.equal(resolveModelTier('comet', 'free'), 'star');
+  assert.equal(resolveModelTier('comet', 'free'), 'spark');
   assert.equal(resolveModelTier('comet', 'plus'), 'comet');
   assert.equal(resolveModelTier('nova', 'pro'), 'nova');
   assert.equal(resolveModelTier('nova', 'starter'), 'star');
@@ -33,7 +33,7 @@ test('current provider models map onto paid Stellar tiers', () => {
 
 test('general chat honours the customer-selected Stellar tier', () => {
   assert.equal(resolveRoute('spark', 'general', 'free').tier, 'spark');
-  assert.equal(resolveRoute('star', 'general', 'free').tier, 'star');
+  assert.equal(resolveRoute('star', 'general', 'free').tier, 'spark');
   assert.equal(resolveRoute('comet', 'general', 'plus').tier, 'comet');
   assert.equal(resolveRoute('nova', 'general', 'pro').tier, 'nova');
 });
