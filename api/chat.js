@@ -20,9 +20,9 @@ const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 // premium tier has a confirmed legacy fallback so a model-access change never
 // turns into a spinner or failed customer request.
 const MODEL_TIERS = {
-  spark: { primary: 'claude-haiku-4-5-20251001', fallback: 'claude-sonnet-4-6' },
-  star: { primary: 'claude-sonnet-5-5', fallback: 'claude-sonnet-5' },
-  comet: { primary: 'claude-opus-5-5', fallback: 'claude-opus-4-8' },
+  spark: { primary: 'claude-haiku-4-5-20251001', fallback: 'claude-sonnet-5-5' },
+  star: { primary: 'claude-sonnet-5-5', fallback: 'claude-haiku-4-5-20251001' },
+  comet: { primary: 'claude-opus-5-5', fallback: 'claude-sonnet-5-5' },
   nova: { primary: 'claude-fable-5-1', fallback: 'claude-opus-5-5' },
 };
 
