@@ -530,10 +530,15 @@ function normaliseRoutingInput(value) {
     : '';
 }
 
+function canonicalProviderModel(value) {
+  const key = normaliseRoutingInput(value);
+  return MODEL_MAP[key] || key;
+}
+
 function resolveModelTier(requestedModel, plan) {
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
   const requested = normaliseRoutingInput(requestedModel);
-  const model = MODEL_MAP[requested] || 'claude-sonnet-4-6';
+  const model = canonicalProviderModel(requested) || 'claude-sonnet-5-5';
   const tier = MODEL_TIER_BY_ID[model] || 'star';
   return limits.models.includes(tier) ? tier : limits.models.includes('star') ? 'star' : limits.models[0];
 }
@@ -557,7 +562,7 @@ function resolveRoute(requestedModel, requestedRole, plan) {
   const candidate = resolvedRole === 'general' ? (requested || role.model) : role.model;
   if (FORGE_URL && FORGE_KEY && FORGE_MODELS.has(candidate)) {
     const limits = PLAN_LIMITS[normalizedPlan] || PLAN_LIMITS.free;
-    const candidateModel = MODEL_MAP[candidate] || candidate;
+    const candidateModel = canonicalProviderModel(candidate) || candidate;
     const candidateTier = MODEL_TIER_BY_ID[candidateModel] || 'star';
     const ownerRole = OWNER_ONLY_ROLES.has(resolvedRole);
     const tierAllowed = limits.models.includes(candidateTier);
@@ -1181,4 +1186,4 @@ export default async function handler(req, res) {
 }
 
 
-export { CODE_INTELLIGENCE_GUIDANCE, IP_SAFETY_GUIDANCE, GENERAL_CHAT_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectRequestKind, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
+export { CODE_INTELLIGENCE_GUIDANCE, IP_SAFETY_GUIDANCE, GENERAL_CHAT_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectRequestKind, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, canonicalProviderModel, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
