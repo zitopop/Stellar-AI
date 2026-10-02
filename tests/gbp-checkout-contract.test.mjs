@@ -14,5 +14,12 @@ test('live checkout is GBP-only regardless of customer country', () => {
 
 test('customer country is still retained for analytics metadata', () => {
   assert.match(checkout, /x-vercel-ip-country/);
-  assert.match(checkout, /metadata:\s*\{\s*email:\s*sessionUser\.email,\s*plan,\s*country,\s*currency\s*\}/);
+  assert.match(checkout, /metadata:\s*\{\s*email:\s*sessionUser\.email,\s*plan,\s*country,\s*currency,\s*acquisition_source:\s*sourceName\s*\}/);
+});
+
+
+test('Stripe Checkout uses dynamic eligible payment methods and carries coarse acquisition attribution', () => {
+  assert.doesNotMatch(checkout, /payment_method_types/);
+  assert.match(checkout, /acquisition_source:\s*sourceName/);
+  assert.match(checkout, /checkout-started-source-\$\{sourceName\}/);
 });
