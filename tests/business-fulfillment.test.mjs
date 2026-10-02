@@ -4,8 +4,11 @@ import {
   BUSINESS_SERVICES,
   businessServiceFromCheckout,
   checkoutCustomFields,
+  createBusinessCustomerUpdateToken,
   invoiceHasAiReceptionist,
   subscriptionHasAiReceptionist,
+  validateBusinessFulfillmentDetails,
+  verifyBusinessCustomerUpdateToken,
 } from '../lib/business-fulfillment.js';
 
 test('live business payment links map to the correct fulfilment service', () => {
@@ -67,4 +70,51 @@ test('AI Receptionist invoice detection stays separate from Stellar plan invoice
   assert.equal(invoiceHasAiReceptionist({
     lines: { data: [{ price: { id: 'price_stellar_plus' } }] },
   }), false);
+});
+
+
+test('business correction links are signed and expire', () => {
+  const env = { BUSINESS_UPDATE_SECRET: 'fixture-secret' };
+  const job = { id: 'cs_test_123', customerEmail: 'buyer@example.com' };
+  const issuedAt = 1_800_000_000_000;
+  const token = createBusinessCustomerUpdateToken(job, { env, now: () => issuedAt });
+  assert.ok(token.includes('.'));
+  assert.equal(verifyBusinessCustomerUpdateToken(token, job, { env, now: () => issuedAt + 1000 }), true);
+  assert.equal(verifyBusinessCustomerUpdateToken(token, { ...job, customerEmail: 'other@example.com' }, { env, now: () => issuedAt + 1000 }), false);
+  assert.equal(verifyBusinessCustomerUpdateToken(token + 'tampered', job, { env, now: () => issuedAt + 1000 }), false);
+  assert.equal(verifyBusinessCustomerUpdateToken(token, job, { env, now: () => issuedAt + (15 * 24 * 60 * 60 * 1000) }), false);
+});
+
+test('website audit validation catches missing or malformed customer inputs', () => {
+  const missing = validateBusinessFulfillmentDetails({
+    service: 'website_mini_audit',
+    details: { website: '', mainIssue: 'help' },
+  });
+  assert.equal(missing.ok, false);
+  assert.deepEqual(missing.issues.map((issue) => issue.field).sort(), ['mainIssue','website']);
+
+  const complete = validateBusinessFulfillmentDetails({
+    service: 'website_mini_audit',
+    details: { website: 'https://example.com', mainIssue: 'The mobile pricing page is hard to understand.' },
+  });
+  assert.equal(complete.ok, true);
+});
+
+test('AI Receptionist validation asks for facts instead of inventing them', () => {
+  const missing = validateBusinessFulfillmentDetails({
+    service: 'ai_receptionist',
+    details: { website: 'not a url', businessFacts: 'Open', customDomain: '' },
+  });
+  assert.equal(missing.ok, false);
+  assert.deepEqual(missing.issues.map((issue) => issue.field).sort(), ['businessFacts','customDomain','website']);
+
+  const complete = validateBusinessFulfillmentDetails({
+    service: 'ai_receptionist',
+    details: {
+      website: 'https://example.com',
+      businessFacts: 'We repair cars Monday to Friday and bookings are made by phone.',
+      customDomain: 'included-stellar-url',
+    },
+  });
+  assert.equal(complete.ok, true);
 });
