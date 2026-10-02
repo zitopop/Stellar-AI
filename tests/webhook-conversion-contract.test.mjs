@@ -15,6 +15,8 @@ test('checkout and webhook still record conversion events server-side', () => {
   assert.match(webhook, /checkout\.session\.async_payment_succeeded/);
   assert.match(webhook, /checkout\.session\.async_payment_failed/);
   assert.match(webhook, /checkout\.session\.expired/);
+  assert.match(webhook, /customer\.subscription\.created/);
+  assert.match(webhook, /customer\.subscription\.updated/);
   assert.match(webhook, /invoice\.paid/);
   assert.match(webhook, /invoice\.payment_failed/);
   assert.match(webhook, /recordCheckoutExpiry/);
