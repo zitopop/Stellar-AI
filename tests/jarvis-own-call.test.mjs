@@ -127,6 +127,46 @@ test('invalid Twilio credentials are not reported as ready', async () => {
   }
 });
 
+test('invalid Twilio credentials short-circuit before the Calls API and fall back to Retell', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  process.env.TWILIO_ACCOUNT_SID = 'AC' + '0'.repeat(32);
+  process.env.TWILIO_AUTH_TOKEN = 'bad-token';
+  process.env.TWILIO_FROM_NUMBER = '+15005550006';
+  process.env.OWNER_PHONE = '+447700900123';
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  let twilioCallsApiHit = false;
+  globalThis.fetch = async (url) => {
+    const value = String(url);
+    if (value.includes('voice.twilio.com/v1/DialingPermissions/Countries/GB')) {
+      return Response.json({ code: 20003, message: 'Authentication Error - No credentials provided' }, { status: 401 });
+    }
+    if (value.includes('api.twilio.com/2010-04-01/Accounts/')) {
+      twilioCallsApiHit = true;
+      throw new Error('Twilio Calls API should not be reached when auth preflight fails.');
+    }
+    if (value.includes('/api/call-owner')) {
+      return Response.json({ call_id: 'call_fixture', status: 'started' });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const call = await startOwnerCall({ purpose: 'Regression test', bridgeToken: 'fixture' });
+    assert.equal(call.provider, 'retell');
+    assert.equal(call.call_id, 'call_fixture');
+    assert.equal(twilioCallsApiHit, false);
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
 test('blocked UK Twilio health falls through to a ready Retell bridge', async () => {
   const originalFetch = globalThis.fetch;
   const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','OWNER_PHONE','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER'];
