@@ -1,8 +1,18 @@
 # Stellar AI Discord /debug bot
 
-A small Discord gateway bot that exposes one slash command:
+A Discord gateway bot for the Stellar community and Server Pass workflow.
 
-`/debug code:<broken FiveM Lua, Roblox Luau, or error log>`
+Commands:
+
+- `/debug code:<broken FiveM Lua, Roblox Luau, or error log>` — focused script repair.
+- `/sync` — sync the linked Stellar plan role (Free / Starter / Plus / Pro) and Server Pass role.
+- `/serverpass` — check or activate a paid Server Pass for the current guild.
+- `/support` — create a private support ticket.
+- `/ticket-close` — lock a resolved ticket while keeping its support history.
+- `/stellar-status` — check bot and Stellar web/API health.
+- `/stellar-setup` — administrator-only, non-destructive setup for recommended roles/categories/channels.
+
+When `DISCORD_GUILD_ID` is set, the bot also checks the official guild structure on startup. It creates missing matching roles/channels but does not delete existing ones.
 
 The bot does **not** hold Anthropic/Forge keys. It calls the private Stellar bridge at `/api/generate` with a shared server-side key.
 
@@ -17,7 +27,7 @@ The bot does **not** hold Anthropic/Forge keys. It calls the private Stellar bri
 - Existing `KV_REST_API_URL` and `KV_REST_API_TOKEN` on the Stellar web project for durable free-usage metering
 - Optional `STELLAR_SERVER_PASS_GUILD_IDS` on the Stellar web project: comma-separated Discord guild IDs for verified Server Pass pilot customers
 
-Only the `Guilds` gateway intent is used. Message Content is not required because users supply code through the slash-command option.
+Only the `Guilds` gateway intent is used. Message Content is not required because users supply code and support text through slash-command options. For full setup, role sync and tickets, the bot role needs **Manage Roles** and **Manage Channels**. Keep the bot role above the Stellar plan/support roles it manages. `/stellar-setup` itself is restricted to Discord administrators.
 
 ## Install
 
@@ -61,6 +71,14 @@ The `/api/generate` compatibility route rewrites to the existing private chat de
 
 The public Discord `/debug` path allows **2 repairs per Discord user per UTC day**. The bridge meters this server-side in KV; the Discord client cannot grant itself extra requests.
 
-For the £50/month Server Pass pilot, add only verified customer guild IDs to `STELLAR_SERVER_PASS_GUILD_IDS`. Requests from those guilds bypass the free daily counter, while the 6,000-character input cap, provider capacity, safety rules, cooldowns and other abuse controls remain active.
+For the £50/month Server Pass pilot, the preferred production path is now dynamic:
+
+1. The buyer connects Discord to the Stellar account that owns the paid Server Pass.
+2. A server owner/admin runs `/serverpass action:Activate this server`.
+3. The private bridge verifies the linked paid account and stores the guild entitlement in KV.
+4. `/debug` checks that durable guild entitlement automatically.
+5. Stripe subscription updates/cancellation update the guild entitlement so canceled access stops cleanly.
+
+`STELLAR_SERVER_PASS_GUILD_IDS` remains as a compatibility/manual fallback for already-verified guilds, not the primary activation workflow.
 
 Do not describe Server Pass as “unlimited” or “zero rate limits”.
