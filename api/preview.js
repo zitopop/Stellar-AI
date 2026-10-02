@@ -178,7 +178,7 @@ async function generateWithForge(prompt, target, signal) {
 
 async function generateWithAnthropic(prompt, target, signal) {
   if (!ANTHROPIC_KEY) return null;
-  const candidates = ['claude-haiku-4-5-20251001', 'claude-sonnet-4-6'];
+  const candidates = ['claude-haiku-4-5-20251001', 'claude-sonnet-5-5'];
   for (const model of candidates) {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
