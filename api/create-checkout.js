@@ -260,6 +260,57 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: portal.url });
     }
 
+    if (plan === 'server-pass') {
+      const attemptId = checkoutIdempotencyKey(sessionUser.email, 'server-pass');
+      const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'server-pass' });
+      const checkout = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        // Apple Pay and Google Pay are surfaced through eligible card wallets; Link provides a fast saved-payment path.
+        payment_method_types: ['card', 'link'],
+        ...checkoutCustomer,
+        line_items: [{
+          price_data: {
+            currency: 'gbp',
+            unit_amount: 5000,
+            recurring: { interval: 'month', interval_count: 1 },
+            product_data: {
+              name: 'Stellar AI Server Pass',
+              description: 'Team access for one verified FiveM server or Roblox studio, including shared Discord debugging and priority developer support. Provider capacity, safety and abuse controls still apply.',
+            },
+          },
+          quantity: 1,
+        }],
+        success_url: 'https://trystellarai.com/server-pass?payment=success&session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: `https://trystellarai.com/server-pass?payment=cancelled&attempt=${encodeURIComponent(attemptId)}`,
+        after_expiration: { recovery: { enabled: true } },
+        client_reference_id: attemptId,
+        metadata: {
+          app: 'stellar-ai',
+          email: sessionUser.email,
+          plan: 'server-pass',
+          amount: '5000',
+          country,
+          currency,
+          acquisition_source: sourceName,
+        },
+        subscription_data: {
+          metadata: {
+            app: 'stellar-ai',
+            email: sessionUser.email,
+            plan: 'server-pass',
+            acquisition_source: sourceName,
+          },
+        },
+        adaptive_pricing: { enabled: true },
+      }, { idempotencyKey: checkoutIdempotencyKey(sessionUser.email, 'server-pass') });
+      if (newAttempt) await Promise.all([
+        incrementConversionMetric('checkout-started'),
+        incrementConversionMetric(`checkout-started-source-${sourceName}`),
+        incrementConversionMetric('server-pass-checkout-started'),
+      ]);
+      return res.status(200).json({ url: checkout.url });
+    }
+
     if (plan === 'website-builder') {
       const attemptId = checkoutIdempotencyKey(sessionUser.email, 'website-builder');
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
