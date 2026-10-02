@@ -17,6 +17,8 @@ const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
+const ATTRIBUTION_SOURCES = new Set(['direct','github','cfx','builtbybit','google','discord','other']);
+function acquisitionSource(value) { const source = String(value || '').trim().toLowerCase(); return ATTRIBUTION_SOURCES.has(source) ? source : 'direct'; }
 
 export const config = { api: { bodyParser: false } };
 
@@ -197,11 +199,11 @@ export default async function handler(req, res) {
     // Stripe can retry events. The record prevents repeat top-ups and billing transitions.
     if (await kvGet(eventKey(event.id))) return res.status(200).json({ received: true, duplicate: true });
 
-    if (event.type === 'checkout.session.completed') {
+    if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
       const session = event.data.object;
-      await recordCheckoutCompletion({ id: String(session.client_reference_id || '') });
       const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
       const checkoutPlan = session.metadata?.plan;
+      const sourceName = acquisitionSource(session.metadata?.acquisition_source);
       const userKey = email ? `stellar:user:${email}` : '';
 
       if (!email) {
@@ -211,48 +213,58 @@ export default async function handler(req, res) {
 
         if (checkoutPlan === 'website-builder') {
           const amount = Math.round(Number(session.metadata?.amount || 0));
-          const paid = session.payment_status === 'paid';
+          const paid = session.payment_status === 'paid' || event.type === 'checkout.session.async_payment_succeeded';
           const amountMatches = Number(session.amount_total) === 9900 && amount === 9900;
-          if (!paid || !amountMatches) {
-            throw new Error(`Invalid completed website-builder session ${session.id}`);
+          if (!paid) {
+            console.info('Stripe website-builder checkout is awaiting payment', session.id);
+          } else {
+            if (!amountMatches) throw new Error(`Invalid completed website-builder session ${session.id}`);
+            const saved = await kvSet(`stellar:website-builder:${email}`, {
+              status: 'active',
+              checkoutSessionId: session.id,
+              paymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : '',
+              amountPence: 9900,
+              purchasedAt: Date.now(),
+            });
+            if (!saved) throw new Error(`Could not persist website-builder entitlement for ${session.id}`);
+            await Promise.all([
+              recordCheckoutCompletion({ id: String(session.client_reference_id || '') }),
+              incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric(`checkout-completed-source-${sourceName}`),
+              incrementConversionMetric('website-builder-completed'),
+              incrementConversionMetric('revenue-pence', 9900),
+            ]);
           }
-          const saved = await kvSet(`stellar:website-builder:${email}`, {
-            status: 'active',
-            checkoutSessionId: session.id,
-            paymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : '',
-            amountPence: 9900,
-            purchasedAt: Date.now(),
-          });
-          if (!saved) throw new Error(`Could not persist website-builder entitlement for ${session.id}`);
-          await Promise.all([
-            incrementConversionMetric('checkout-completed'),
-            incrementConversionMetric('website-builder-completed'),
-            incrementConversionMetric('revenue-pence', 9900),
-          ]);
         } else if (checkoutPlan === 'topup') {
           const amount = Math.round(Number(session.metadata?.amount || session.metadata?.qty || 0));
-          const paid = session.payment_status === 'paid';
+          const paid = session.payment_status === 'paid' || event.type === 'checkout.session.async_payment_succeeded';
           const amountMatches = Number(session.amount_total) === amount;
-          if (!paid || !amountMatches || amount < TOPUP_MIN_PENCE || amount > TOPUP_MAX_PENCE || amount % 50 !== 0) {
-            throw new Error(`Invalid completed top-up session ${session.id}`);
-          }
-          const result = applyTopupCheckout(existing, {
-            sessionId: session.id,
-            amountPence: amount,
-            customerId: typeof session.customer === 'string' ? session.customer : '',
-          });
-          if (result.applied) {
-            const saved = await kvSet(userKey, result.record);
-            if (!saved) throw new Error(`Could not persist top-up for ${session.id}`);
-            await Promise.all([
-              incrementConversionMetric('checkout-completed'),
-              incrementConversionMetric('topup-completed'),
-              incrementConversionMetric('revenue-pence', Number(session.amount_total || amount)),
-            ]);
+          if (!paid) {
+            console.info('Stripe top-up checkout is awaiting payment', session.id);
+          } else {
+            if (!amountMatches || amount < TOPUP_MIN_PENCE || amount > TOPUP_MAX_PENCE || amount % 50 !== 0) {
+              throw new Error(`Invalid completed top-up session ${session.id}`);
+            }
+            const result = applyTopupCheckout(existing, {
+              sessionId: session.id,
+              amountPence: amount,
+              customerId: typeof session.customer === 'string' ? session.customer : '',
+            });
+            if (result.applied) {
+              const saved = await kvSet(userKey, result.record);
+              if (!saved) throw new Error(`Could not persist top-up for ${session.id}`);
+              await Promise.all([
+                recordCheckoutCompletion({ id: String(session.client_reference_id || '') }),
+                incrementConversionMetric('checkout-completed'),
+                incrementConversionMetric(`checkout-completed-source-${sourceName}`),
+                incrementConversionMetric('topup-completed'),
+                incrementConversionMetric('revenue-pence', Number(session.amount_total || amount)),
+              ]);
+            }
           }
         } else {
           const plan = normalisePlan(checkoutPlan);
-          const subscriptionPaid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
+          const subscriptionPaid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required' || event.type === 'checkout.session.async_payment_succeeded';
           if (plan && subscriptionPaid) {
             const saved = await kvSet(userKey, {
               ...existing,
@@ -267,7 +279,9 @@ export default async function handler(req, res) {
             });
             if (!saved) throw new Error(`Could not persist subscription entitlement for ${session.id}`);
             await Promise.all([
+              recordCheckoutCompletion({ id: String(session.client_reference_id || '') }),
               incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric(`checkout-completed-source-${sourceName}`),
               incrementConversionMetric('subscription-completed'),
               incrementConversionMetric('revenue-pence', Number(session.amount_total || 0)),
               recordFirstUpgrade(KV_URL, KV_TOKEN, email),
@@ -275,12 +289,11 @@ export default async function handler(req, res) {
           } else if (!plan) {
             console.error('Stripe checkout completed with an unknown plan', checkoutPlan, session.id);
           } else {
-            console.error('Stripe subscription checkout completed without a paid status', session.payment_status, session.id);
-            throw new Error('Subscription checkout was not paid.');
+            console.info('Stripe subscription checkout is awaiting payment', session.payment_status, session.id);
           }
         }
       }
-    } else if (event.type === 'customer.subscription.updated') {
+    } else if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
       const subscription = event.data.object;
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
       if (email) {
@@ -312,6 +325,19 @@ export default async function handler(req, res) {
         }
         const saved = await kvSet(userKey, next);
         if (!saved) throw new Error(`Could not sync subscription ${subscription.id}`);
+      }
+    } else if (event.type === 'invoice.paid') {
+      const invoice = event.data.object;
+      const email = await customerEmail(stripe, invoice.customer);
+      if (email) {
+        const userKey = `stellar:user:${email}`;
+        const existing = (await kvGet(userKey)) || {};
+        const saved = await kvSet(userKey, {
+          ...existing,
+          billingPaymentFailedAt: null,
+          updatedAt: Date.now(),
+        });
+        if (!saved) throw new Error(`Could not clear invoice failure state for ${invoice.id}`);
       }
     } else if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object;
@@ -377,7 +403,7 @@ export default async function handler(req, res) {
       await escalateOwner({ category: 'fraud', severity: 'critical', summary: 'A new Stripe charge dispute was opened for Stellar AI.' });
     } else if (event.type === 'radar.early_fraud_warning.created') {
       await escalateOwner({ category: 'fraud', severity: 'urgent', summary: 'Stripe Radar created an early fraud warning for Stellar AI.' });
-    } else if (event.type === 'checkout.session.expired') {
+    } else if (event.type === 'checkout.session.expired' || event.type === 'checkout.session.async_payment_failed') {
       const session = event.data.object;
       if (!session.client_reference_id) await incrementConversionMetric('checkout-cancelled-or-expired');
       else await recordCheckoutExpiry({ id: String(session.client_reference_id) });

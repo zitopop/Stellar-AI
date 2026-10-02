@@ -24,7 +24,7 @@ test('conversion metric writes and reads use aggregate KV records', async (t) =>
   globalThis.fetch = async (url, options = {}) => {
     calls.push({ url, options });
     if (String(options.body).includes('GET')) {
-      const values=[7,3,1,2,1,4500,100,60,42,8,5,12,25,2,6,1,3,4,9,11,4,6,30,4,8,12,3];
+      const values=[7,3,1,2,1,4500,100,60,42,8,5,12,25,2,6,1,3,4,9,11,4,6,30,4,8,12,3,...Array(28).fill(1)];
       return { ok: true, json: async () => values.map(result=>({result:String(result)})) };
     }
     return response();
@@ -41,6 +41,15 @@ test('conversion metric writes and reads use aggregate KV records', async (t) =>
     checkoutOpens: 6, checkoutErrors: 1, billingOpens: 3, clientErrors: 4,
     usagePanelOpens: 9, planPanelOpens: 11, usageUpgradeIntents: 4, businessServiceClicks: 6,
     pricingViews: 30, freePlanSelections: 4, starterPlanSelections: 8, plusPlanSelections: 12, proPlanSelections: 3,
+    acquisition: {
+      direct: { landingViews: 1, upgradeIntents: 1, checkoutStarted: 1, checkoutCompleted: 1 },
+      github: { landingViews: 1, upgradeIntents: 1, checkoutStarted: 1, checkoutCompleted: 1 },
+      cfx: { landingViews: 1, upgradeIntents: 1, checkoutStarted: 1, checkoutCompleted: 1 },
+      builtbybit: { landingViews: 1, upgradeIntents: 1, checkoutStarted: 1, checkoutCompleted: 1 },
+      google: { landingViews: 1, upgradeIntents: 1, checkoutStarted: 1, checkoutCompleted: 1 },
+      discord: { landingViews: 1, upgradeIntents: 1, checkoutStarted: 1, checkoutCompleted: 1 },
+      other: { landingViews: 1, upgradeIntents: 1, checkoutStarted: 1, checkoutCompleted: 1 },
+    },
   });
   assert.match(String(calls[0].options.body), /checkout-started/);
 });
@@ -67,7 +76,7 @@ test('the owner-only metrics action returns aggregate totals and rejects non-own
   process.env.KV_REST_API_TOKEN = 'token';
   process.env.AUTH_SESSION_SECRET = 'test-secret';
   process.env.OWNER_EMAILS = 'owner@example.com';
-  globalThis.fetch = async () => ({ ok: true, json: async () => Array.from({length:27},(_,i)=>({ result: i===5 ? '2000' : '1' })) });
+  globalThis.fetch = async () => ({ ok: true, json: async () => Array.from({length:55},(_,i)=>({ result: i===5 ? '2000' : '1' })) });
 
   const { createSession } = await import('../lib/auth.js');
   const { default: handler } = await import(`../api/broadcast.js?owner=${Date.now()}`);

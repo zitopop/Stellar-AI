@@ -49,6 +49,7 @@ const CLIENT_METRIC_EVENTS = new Set([
 ]);
 
 const clientWindows = new Map();
+const ATTRIBUTION_SOURCES = new Set(['direct','github','cfx','builtbybit','google','discord','other']);
 const CLIENT_WINDOW_MS = 60_000;
 const CLIENT_MAX_PER_WINDOW = 40;
 
@@ -75,7 +76,12 @@ async function handleClientMetric(req, res) {
   if (!CLIENT_METRIC_EVENTS.has(event)) return res.status(400).json({ error: 'Unknown metric.' });
   if (!allowClientMetric(event)) return res.status(204).end();
 
-  await incrementConversionMetric('client-' + event);
+  const sourceValue = String(req.body?.source || '').trim().toLowerCase();
+  const source = ATTRIBUTION_SOURCES.has(sourceValue) ? sourceValue : 'direct';
+  await Promise.all([
+    incrementConversionMetric('client-' + event),
+    incrementConversionMetric(`client-${event}-source-${source}`),
+  ]);
   if (event === 'client-error' || event === 'chat-send-error' || event === 'checkout-error') {
     console.warn('stellar_client_signal', { event });
   }

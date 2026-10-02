@@ -94,6 +94,12 @@ async function resolvePortalConfiguration(stripe) {
   return created.id;
 }
 
+const ATTRIBUTION_SOURCES = new Set(['direct','github','cfx','builtbybit','google','discord','other']);
+function acquisitionSource(value) {
+  const source = String(value || '').trim().toLowerCase();
+  return ATTRIBUTION_SOURCES.has(source) ? source : 'direct';
+}
+
 function missingPlanMessage(plan) {
   const messages = {
     starter: 'Starter monthly checkout is not configured yet. Add the Starter monthly Stripe price ID, then redeploy.',
@@ -113,7 +119,8 @@ export default async function handler(req, res) {
 
   const sessionUser = requireSession(req, res);
   if (!sessionUser) return;
-  const { plan, amount, qty, country: requestedCountry } = req.body || {};
+  const { plan, amount, qty, source, country: requestedCountry } = req.body || {};
+  const sourceName = acquisitionSource(source);
   const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
   const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
   // GBP is the base price currency; eligible subscription checkouts use Stripe Adaptive Pricing for local presentment.
@@ -166,7 +173,6 @@ export default async function handler(req, res) {
       await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        payment_method_types: ['card'],
         ...checkoutCustomer,
         line_items: [{
           price_data: {
@@ -189,6 +195,7 @@ export default async function handler(req, res) {
           amount: '9900',
           country,
           currency,
+          acquisition_source: sourceName,
         },
         payment_intent_data: {
           metadata: {
@@ -198,7 +205,10 @@ export default async function handler(req, res) {
           },
         },
       });
-      await incrementConversionMetric('checkout-started');
+      await Promise.all([
+        incrementConversionMetric('checkout-started'),
+        incrementConversionMetric(`checkout-started-source-${sourceName}`),
+      ]);
       return res.status(200).json({ url: checkout.url });
     }
 
@@ -228,21 +238,24 @@ export default async function handler(req, res) {
     await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      payment_method_types: ['card'],
+
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}`,
       cancel_url: `https://trystellarai.com/app?payment=cancelled&plan=${encodeURIComponent(plan)}&attempt=${encodeURIComponent(attemptId)}`,
       after_expiration: { recovery: { enabled: true } },
       client_reference_id: attemptId,
-      metadata: { email: sessionUser.email, plan, country, currency },
+      metadata: { email: sessionUser.email, plan, country, currency, acquisition_source: sourceName },
       subscription_data: {
-        metadata: { email: sessionUser.email, plan, app: 'stellar-ai' },
+        metadata: { email: sessionUser.email, plan, app: 'stellar-ai', acquisition_source: sourceName },
       },
       adaptive_pricing: { enabled: true },
     });
 
-    await incrementConversionMetric('checkout-started');
+    await Promise.all([
+      incrementConversionMetric('checkout-started'),
+      incrementConversionMetric(`checkout-started-source-${sourceName}`),
+    ]);
     return res.status(200).json({ url: checkout.url });
   } catch (error) {
     console.error('Stripe checkout error', error?.message || error);
