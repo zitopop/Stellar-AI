@@ -37,3 +37,10 @@ test('general chat honours the customer-selected Stellar tier', () => {
   assert.equal(resolveRoute('comet', 'general', 'plus').tier, 'comet');
   assert.equal(resolveRoute('nova', 'general', 'pro').tier, 'nova');
 });
+
+test('legacy provider aliases canonicalize before gateway use', () => {
+  assert.equal(resolveRoute('gpt-6.1-sol', '', 'owner').model, 'gpt-6-sol');
+  assert.equal(resolveRoute('gpt-5-mini', '', 'owner').model, 'gpt-6-luna');
+  assert.equal(resolveRoute('gemini-3-flash-preview', '', 'owner').model, 'gemini-3.8-flash');
+  assert.equal(resolveRoute('claude-opus-4-7', '', 'owner').model, 'claude-opus-5-5');
+});
