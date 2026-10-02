@@ -10,9 +10,9 @@ Commands:
 - `/support` — create a private support ticket.
 - `/ticket-close` — lock a resolved ticket while keeping its support history.
 - `/stellar-status` — check bot and Stellar web/API health.
-- `/stellar-setup` — administrator-only, non-destructive setup for recommended roles/categories/channels.
+- `/stellar-setup` — administrator-only, non-destructive setup. Use **Server Pass only** for normal FiveM/Roblox/customer guilds, or **Full community hub** for the official Stellar Discord.
 
-When `DISCORD_GUILD_ID` is set, the bot also checks the official guild structure on startup. It creates missing matching roles/channels but does not delete existing ones.
+When `DISCORD_GUILD_ID` is set, the bot treats that guild as the official Stellar community and checks the full community structure on startup. Other guilds default to the compact **Server Pass only** setup when an administrator runs `/stellar-setup`, so customer servers are not cluttered with Stellar community channels. Existing matching roles/channels are kept; setup does not delete them.
 
 The bot does **not** hold Anthropic/Forge keys. It calls the private Stellar bridge at `/api/generate` with a shared server-side key.
 
