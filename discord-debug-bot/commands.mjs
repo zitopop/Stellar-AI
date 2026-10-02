@@ -39,7 +39,15 @@ export const commandBuilders = [
     .setDescription('Check the Stellar bot and web service status'),
   new SlashCommandBuilder()
     .setName('stellar-setup')
-    .setDescription('Create the recommended Stellar roles and channel structure')
+    .setDescription('Create a safe Stellar Discord structure without deleting existing channels')
+    .addStringOption((option) => option
+      .setName('mode')
+      .setDescription('Choose a full Stellar community hub or a smaller Server Pass setup')
+      .setRequired(false)
+      .addChoices(
+        { name: 'Server Pass only', value: 'server-pass' },
+        { name: 'Full community hub', value: 'community' },
+      ))
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 ];
 
