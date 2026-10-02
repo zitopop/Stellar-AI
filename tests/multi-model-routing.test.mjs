@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveModelTier, getModelCandidates, resolveRoute } from '../api/chat.js';
+import { canonicalProviderModel, resolveModelTier, getModelCandidates, resolveRoute } from '../api/chat.js';
 
 test('current public model routing downgrades unavailable tiers safely', () => {
   assert.equal(resolveModelTier('spark', 'free'), 'spark');
@@ -39,8 +39,8 @@ test('general chat honours the customer-selected Stellar tier', () => {
 });
 
 test('legacy provider aliases canonicalize before gateway use', () => {
-  assert.equal(resolveRoute('gpt-6.1-sol', '', 'owner').model, 'gpt-6-sol');
-  assert.equal(resolveRoute('gpt-5-mini', '', 'owner').model, 'gpt-6-luna');
-  assert.equal(resolveRoute('gemini-3-flash-preview', '', 'owner').model, 'gemini-3.8-flash');
-  assert.equal(resolveRoute('claude-opus-4-7', '', 'owner').model, 'claude-opus-5-5');
+  assert.equal(canonicalProviderModel('gpt-6.1-sol'), 'gpt-6-sol');
+  assert.equal(canonicalProviderModel('gpt-5-mini'), 'gpt-6-luna');
+  assert.equal(canonicalProviderModel('gemini-3-flash-preview'), 'gemini-3.8-flash');
+  assert.equal(canonicalProviderModel('claude-opus-4-7'), 'claude-opus-5-5');
 });
