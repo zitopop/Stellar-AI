@@ -18,8 +18,8 @@ test('customer country is still retained for analytics metadata', () => {
 });
 
 
-test('Stripe Checkout uses dynamic eligible payment methods and carries coarse acquisition attribution', () => {
-  assert.doesNotMatch(checkout, /payment_method_types/);
+test('Stripe Checkout stays card-safe until the production webhook accepts async payment lifecycle events', () => {
+  assert.equal((checkout.match(/payment_method_types:\s*\['card'\]/g)||[]).length, 2);
   assert.match(checkout, /acquisition_source:\s*sourceName/);
   assert.match(checkout, /checkout-started-source-\$\{sourceName\}/);
 });
