@@ -158,10 +158,19 @@ test('business fulfilment source performs automatic final delivery and hosted re
 test('business fulfilment has a watchdog recovery path for stale automatic jobs', () => {
   assert.equal(typeof recoverBusinessFulfillmentJobs, 'function');
   const source = readFileSync(new URL('../lib/business-fulfillment.js', import.meta.url), 'utf8');
-  assert.match(source, /\['queued', 'retrying', 'processing', 'draft_ready_review'\]/);
+  assert.match(source, /\['queued', 'retrying', 'processing', 'qa_processing', 'draft_ready_review'\]/);
   assert.match(source, /recoveredAt/);
 });
 
 test('hosted receptionist public loader is exported without exposing customer email', async () => {
   assert.equal(typeof getPublicBusinessReceptionist, 'function');
+});
+
+
+test('failed invoices are not treated as an immediate owner emergency while Stripe can still recover them', () => {
+  const webhook = readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
+  assert.match(webhook, /status: finalRevoke \? 'inactive' : 'payment_retrying'/);
+  assert.match(webhook, /billingActive: !finalRevoke/);
+  assert.match(webhook, /subscriptionShouldRevoke\(invoiceSubscriptionStatus\)/);
+  assert.match(webhook, /leaving normal provider retry\/dunning to continue automatically/);
 });

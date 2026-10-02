@@ -26,8 +26,11 @@ test('repeated AI service failures feed the owner escalation system',()=>{
   assert.match(chat,/usage-enforcement/);
   assert.match(chat,/ai-upstream-/);
 });
-test('high-signal Stripe business incidents can reach owner escalation',()=>{
+test('high-signal Stripe incidents escalate while recoverable invoice failures stay on provider dunning',()=>{
   assert.match(webhook,/invoice\.payment_failed/);
+  assert.match(webhook,/const finalRevoke = Boolean\(invoiceSubscriptionStatus && subscriptionShouldRevoke\(invoiceSubscriptionStatus\)\)/);
+  assert.match(webhook,/if \(finalRevoke\)/);
+  assert.match(webhook,/leaving normal provider retry\/dunning to continue automatically/);
   assert.match(webhook,/payout\.failed/);
   assert.match(webhook,/charge\.dispute\.created/);
   assert.match(webhook,/radar\.early_fraud_warning\.created/);

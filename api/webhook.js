@@ -608,29 +608,55 @@ export default async function handler(req, res) {
     } else if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object;
       const email = await customerEmail(stripe, invoice.customer);
+      const invoiceSubscriptionId = stripeObjectId(invoice.subscription, 'sub_')
+        || stripeObjectId(invoice.parent?.subscription_details?.subscription, 'sub_');
+      let invoiceSubscriptionStatus = '';
+      if (invoiceSubscriptionId) {
+        try {
+          const subscription = await stripe.subscriptions.retrieve(invoiceSubscriptionId);
+          invoiceSubscriptionStatus = String(subscription?.status || '').trim().toLowerCase();
+        } catch (statusError) {
+          console.warn('Could not inspect failed invoice subscription status', invoice.id, statusError?.message || statusError);
+        }
+      }
+      const finalRevoke = Boolean(invoiceSubscriptionStatus && subscriptionShouldRevoke(invoiceSubscriptionStatus));
+
       if (email && invoiceHasAiReceptionist(invoice)) {
         await updateBusinessServiceBilling(email, {
-          status: 'payment_failed',
-          billingActive: false,
+          status: finalRevoke ? 'inactive' : 'payment_retrying',
+          billingActive: !finalRevoke,
           billingPaymentFailedAt: Date.now(),
+          subscriptionStatus: invoiceSubscriptionStatus || null,
         });
       } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
-        const saved = await kvSet(userKey, {
+        const next = {
           ...existing,
           billingPaymentFailedAt: Date.now(),
+          stripeSubscriptionStatus: invoiceSubscriptionStatus || existing.stripeSubscriptionStatus || null,
           updatedAt: Date.now(),
-        });
+        };
+        if (finalRevoke) {
+          next.plan = 'free';
+          next.planBilling = null;
+          next.planCreditAnchorAt = null;
+        }
+        const saved = await kvSet(userKey, next);
         if (!saved) throw new Error(`Could not persist invoice failure for ${invoice.id}`);
       }
-      await escalateOwner({
-        category: 'payment',
-        severity: 'critical',
-        summary: invoiceHasAiReceptionist(invoice)
-          ? 'An AI Receptionist monthly invoice payment failed in Stripe.'
-          : 'A Stellar AI subscription invoice payment failed in Stripe.',
-      });
+
+      if (finalRevoke) {
+        await escalateOwner({
+          category: 'payment',
+          severity: 'urgent',
+          summary: invoiceHasAiReceptionist(invoice)
+            ? 'AI Receptionist billing reached a final non-paying subscription state after Stripe recovery attempts.'
+            : 'A Stellar AI subscription reached a final non-paying state after Stripe recovery attempts.',
+        });
+      } else {
+        console.info('Stripe invoice payment failed; leaving normal provider retry/dunning to continue automatically', invoice.id);
+      }
     } else if (event.type === 'payout.failed') {
       await escalateOwner({ category: 'payment', severity: 'critical', summary: 'A Stellar AI Stripe payout failed and needs owner attention.' });
     } else if (event.type === 'charge.refunded') {
