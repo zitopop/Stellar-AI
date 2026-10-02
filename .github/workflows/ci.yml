@@ -57,37 +57,9 @@ jobs:
             node --check "$file"
           done
 
-      - name: Run regression test suite
+      - name: Run current regression test suite
         shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t tests < <(find tests -maxdepth 1 -type f -name '*.test.mjs' | sort)
-          if [[ ${#tests[@]} -eq 0 ]]; then
-            echo "No regression tests found."
-            exit 1
-          fi
-          printf 'Running %s regression tests...\n' "${#tests[@]}"
-          failures=0
-          failed_files=()
-          for test_file in "${tests[@]}"; do
-            echo "::group::${test_file}"
-            if ! output=$(node --test "$test_file" 2>&1); then
-              echo "$output"
-              message=$(printf '%s' "$output" | tail -80 | tr '\n' ' ' | cut -c1-1800 | sed 's/%/%25/g; s/\r/%0D/g')
-              echo "::error file=${test_file}::${message}"
-              failures=$((failures + 1))
-              failed_files+=("$test_file")
-              echo "::endgroup::"
-              continue
-            fi
-            echo "$output" | tail -20
-            echo "::endgroup::"
-          done
-          if [[ $failures -gt 0 ]]; then
-            printf 'Failed test files (%s):\n' "$failures"
-            printf ' - %s\n' "${failed_files[@]}"
-            exit 1
-          fi
+        run: npm test
 
       - name: Validate critical public files
         shell: bash
