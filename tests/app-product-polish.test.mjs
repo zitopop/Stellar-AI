@@ -6,7 +6,7 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 test('returning model preference waits for server plan truth before use', () => {
-  assert.match(app, /safeStorageGet\('stellar-selected-model','star'\)/);
+  assert.match(app, /safeStorageGet\('stellar-selected-model','spark'\)/);
   assert.match(app, /await loadPlanTruth\(\)/);
   assert.match(app, /if\(!allowedModels\.includes\(selectedModel\)\)selectedModel=/);
   assert.match(app, /safeStorageSet\('stellar-selected-model',selectedModel\)/);
