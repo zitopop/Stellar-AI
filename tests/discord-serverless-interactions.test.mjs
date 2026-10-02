@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const endpoint = readFileSync(new URL('../api/discord-interactions.js', import.meta.url), 'utf8');
+const endpoint = readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
 const helper = readFileSync(new URL('../lib/discord-interactions.js', import.meta.url), 'utf8');
 const oauth = readFileSync(new URL('../api/discord-oauth.js', import.meta.url), 'utf8');
 
 test('Discord serverless endpoint verifies signatures before processing commands', () => {
   assert.match(endpoint, /bodyParser: false/);
+  assert.match(endpoint, /source === 'discord-interactions'/);
   assert.match(endpoint, /x-signature-ed25519/);
   assert.match(endpoint, /x-signature-timestamp/);
   assert.match(endpoint, /verifyDiscordInteraction/);

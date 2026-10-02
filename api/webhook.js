@@ -13,6 +13,7 @@ import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { getGmailPushConfiguration, getGmailWatchStatus, processGmailPush, startGmailWatch } from '../lib/gmail-push.js';
 import { deliverQStashReminder, QStashReminderError } from '../lib/qstash-reminders.js';
 import { answerBusinessReceptionist, applyBusinessCustomerUpdate, businessServiceFromCheckout, createBusinessFulfillmentJob, enqueueBusinessFulfillment, deliverBusinessFulfillment, getBusinessCustomerUpdateView, getPublicBusinessReceptionist, recoverBusinessFulfillmentJobs, submitBusinessReceptionistEnquiry, subscriptionHasAiReceptionist, invoiceHasAiReceptionist, updateBusinessServiceBilling } from '../lib/business-fulfillment.js';
+import { EPHEMERAL, processDiscordInteraction, verifyDiscordInteraction } from '../lib/discord-interactions.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -99,6 +100,45 @@ async function handleQStashReminder(req, res) {
   }
 }
 
+
+async function handleDiscordInteractions(req, res) {
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      ok: true,
+      mode: 'discord-serverless-interactions',
+      endpoint: '/api/webhook?source=discord-interactions',
+      oauthConfigured: Boolean(process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET),
+      bridgeConfigured: Boolean(process.env.STELLAR_DISCORD_BOT_KEY),
+      botRoleManagementConfigured: Boolean(process.env.DISCORD_BOT_TOKEN),
+    });
+  }
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'GET, POST');
+    return res.status(405).json({ error: 'Method not allowed.' });
+  }
+
+  const rawBody = (await readRawBody(req)).toString('utf8');
+  const signature = Array.isArray(req.headers['x-signature-ed25519']) ? req.headers['x-signature-ed25519'][0] : req.headers['x-signature-ed25519'];
+  const timestamp = Array.isArray(req.headers['x-signature-timestamp']) ? req.headers['x-signature-timestamp'][0] : req.headers['x-signature-timestamp'];
+  if (!(await verifyDiscordInteraction({ rawBody, signature, timestamp }))) {
+    return res.status(401).json({ error: 'Invalid Discord interaction signature.' });
+  }
+
+  let interaction;
+  try {
+    interaction = JSON.parse(rawBody);
+  } catch {
+    return res.status(400).json({ error: 'Invalid interaction payload.' });
+  }
+
+  if (interaction?.type === 1) return res.status(200).json({ type: 1 });
+  if (interaction?.type !== 2) return res.status(200).json({ type: 4, data: { content: 'Unsupported interaction.', flags: EPHEMERAL } });
+
+  res.status(200).json({ type: 5, data: { flags: EPHEMERAL } });
+  await processDiscordInteraction(interaction).catch((error) => {
+    console.error('Discord serverless interaction failed', error?.message || error);
+  });
+}
 
 async function handleBusinessFulfillment(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
@@ -322,6 +362,7 @@ export default async function handler(req, res) {
   if (source === 'gmail-push') return handleGmailPush(req, res);
   if (source === 'gmail-watch') return handleGmailWatch(req, res);
   if (source === 'qstash-reminder') return handleQStashReminder(req, res);
+  if (source === 'discord-interactions') return handleDiscordInteractions(req, res);
   if (source === 'business-fulfillment') return handleBusinessFulfillment(req, res);
   if (source === 'business-customer-update') return handleBusinessCustomerUpdate(req, res);
   if (source === 'business-receptionist') return handlePublicBusinessReceptionist(req, res);

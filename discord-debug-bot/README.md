@@ -86,7 +86,7 @@ Do not describe Server Pass as “unlimited” or “zero rate limits”.
 
 ## Serverless fallback
 
-Stellar also exposes `/api/discord-interactions` on Vercel as a signed Discord Interaction Endpoint. Discord supports receiving slash commands over outgoing HTTPS interactions instead of requiring a permanent Gateway connection.
+Stellar also exposes `/api/webhook?source=discord-interactions` on Vercel as a signed Discord Interaction Endpoint. Discord supports receiving slash commands over outgoing HTTPS interactions instead of requiring a permanent Gateway connection.
 
 The serverless path keeps core commands available when the T10/gateway machine is offline:
 - `/debug`
