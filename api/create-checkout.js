@@ -386,7 +386,9 @@ export default async function handler(req, res) {
     const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-
+      // Temporary safety guard: the live Stripe webhook is not yet subscribed to every async lifecycle event.
+      // Card includes eligible Apple Pay / Google Pay wallets; Link remains an explicit fast-pay option.
+      payment_method_types: ['card', 'link'],
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}&session_id={CHECKOUT_SESSION_ID}`,
