@@ -50,7 +50,19 @@ test('Discord bot exposes debug, plan sync, Server Pass, support, status, and se
   assert.match(bot, /handleTicketClose/);
   assert.match(bot, /handleStatus/);
   assert.match(bot, /handleSetup/);
+  assert.ok(commands.includes("value: 'server-pass'"));
+  assert.ok(commands.includes("value: 'community'"));
 });
+
+test('customer Discord setup stays compact while the official guild gets the full hub', () => {
+  assert.match(bot, /mode === 'server-pass'/);
+  assert.match(bot, /🎮 STELLAR SERVER PASS/);
+  assert.match(bot, /channels: 4, mode: 'server-pass'/);
+  assert.match(bot, /channels: 19, mode: 'community'/);
+  assert.match(bot, /interaction\.guildId === guildId \? 'community' : 'server-pass'/);
+  assert.match(bot, /buildGuildStructure\(homeGuild, 'community'\)/);
+});
+
 
 test('Discord bot applies safe roles, private tickets and non-destructive setup', () => {
   for (const role of ['Stellar Free','Stellar Starter','Stellar Plus','Stellar Pro','Server Pass','Stellar Support']) {
