@@ -12,6 +12,7 @@ import { escalateOwner } from '../lib/owner-escalation.js';
 import { isOwnerEmail, requireSession } from '../lib/auth.js';
 import { getGmailPushConfiguration, getGmailWatchStatus, processGmailPush, startGmailWatch } from '../lib/gmail-push.js';
 import { deliverQStashReminder, QStashReminderError } from '../lib/qstash-reminders.js';
+import { businessServiceFromCheckout, createBusinessFulfillmentJob, enqueueBusinessFulfillment, deliverBusinessFulfillment, subscriptionHasAiReceptionist, invoiceHasAiReceptionist, updateBusinessServiceBilling } from '../lib/business-fulfillment.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -95,6 +96,24 @@ async function handleQStashReminder(req, res) {
     return res.status(status).json({
       error: status === 403 ? 'Invalid QStash signature.' : (error instanceof QStashReminderError ? error.message : 'Urgent reminder delivery is unavailable.'),
     });
+  }
+}
+
+
+async function handleBusinessFulfillment(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
+  const rawBody = (await readRawBody(req)).toString('utf8');
+  try {
+    const result = await deliverBusinessFulfillment({
+      rawBody,
+      signature: req.headers['upstash-signature'],
+      upstashRegion: req.headers['upstash-region'],
+    });
+    return res.status(200).json({ ok: true, status: result?.status || result?.job?.status || 'processed', duplicate: result?.duplicate === true });
+  } catch (error) {
+    const status = Math.max(400, Math.min(503, Number(error?.status) || 503));
+    if (status >= 500) console.error('Business fulfilment worker failed', error?.message || error);
+    return res.status(status).json({ error: String(error?.message || 'Business fulfilment worker failed.').slice(0, 240) });
   }
 }
 
@@ -226,6 +245,7 @@ export default async function handler(req, res) {
   if (source === 'gmail-push') return handleGmailPush(req, res);
   if (source === 'gmail-watch') return handleGmailWatch(req, res);
   if (source === 'qstash-reminder') return handleQStashReminder(req, res);
+  if (source === 'business-fulfillment') return handleBusinessFulfillment(req, res);
   if (req.method !== 'POST') return res.status(405).end();
   if (!STRIPE_SECRET || !WEBHOOK_SECRET) return res.status(500).json({ error: 'Stripe webhook is not configured.' });
   if (!KV_URL || !KV_TOKEN) return res.status(500).json({ error: 'Account storage is not configured.' });
@@ -252,13 +272,37 @@ export default async function handler(req, res) {
       const session = event.data.object;
       const email = String(session.metadata?.email || session.customer_details?.email || session.customer_email || '').toLowerCase().trim();
       const checkoutPlan = String(session.metadata?.plan || '').trim().toLowerCase();
+      const businessService = businessServiceFromCheckout(session);
       const sourceName = acquisitionSource(session.metadata?.acquisition_source);
       const userKey = email ? `stellar:user:${email}` : '';
       const checkoutCustomerId = stripeObjectId(session.customer, 'cus_');
       const checkoutSubscriptionId = stripeObjectId(session.subscription, 'sub_');
       const isSubscriptionCheckout = checkoutPlan === 'server-pass' || Boolean(normalisePlan(checkoutPlan));
 
-      if (!knownCheckoutPlan(checkoutPlan) && session.metadata?.app !== 'stellar-ai') {
+      if (businessService) {
+        const job = await createBusinessFulfillmentJob(session);
+        if (job) {
+          const queued = await enqueueBusinessFulfillment(job).catch((error) => ({ queued: false, reason: String(error?.message || error).slice(0, 120) }));
+          if (!queued?.queued) console.warn('Paid business order saved but background fulfilment was not queued', session.id, queued?.reason || 'unknown');
+          await Promise.all([
+            incrementConversionMetric('checkout-completed'),
+            incrementConversionMetric('business-service-completed'),
+            incrementConversionMetric(`business-service-${businessService}-completed`),
+            incrementConversionMetric('revenue-pence', Number(session.amount_total || 0)),
+          ]);
+          if (businessService === 'ai_receptionist') {
+            await updateBusinessServiceBilling(email, {
+              status: 'setup_queued',
+              checkoutSessionId: session.id,
+              stripeCustomerId: checkoutCustomerId || null,
+              stripeSubscriptionId: checkoutSubscriptionId || null,
+              subscriptionStatus: 'active',
+            });
+          }
+        } else {
+          console.info('Stripe business checkout is awaiting payment', businessService, session.id);
+        }
+      } else if (!knownCheckoutPlan(checkoutPlan) && session.metadata?.app !== 'stellar-ai') {
         console.info('Ignoring unrelated Stripe Checkout session', session.id);
       } else if (!knownCheckoutPlan(checkoutPlan)) {
         throw new Error(`Stripe Checkout session ${session.id} has missing or invalid Stellar plan metadata`);
@@ -385,7 +429,17 @@ export default async function handler(req, res) {
       if (!subscriptionCustomerId) throw new Error(`Stripe subscription ${subscription.id} is missing a customer identifier`);
       const email = String(subscription.metadata?.email || '').toLowerCase().trim() || await customerEmail(stripe, subscription.customer);
       if (!email) throw new Error(`Stripe subscription ${subscription.id} could not be mapped to a customer email`);
-      if ( String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
+      if (subscriptionHasAiReceptionist(subscription)) {
+        const status = String(subscription.status || '').toLowerCase();
+        const hasAccess = subscriptionHasAccess(status);
+        await updateBusinessServiceBilling(email, {
+          status: hasAccess ? 'active' : 'inactive',
+          stripeCustomerId: subscriptionCustomerId,
+          stripeSubscriptionId: subscription.id,
+          subscriptionStatus: status,
+          billingActive: hasAccess,
+        });
+      } else if ( String(subscription.metadata?.plan || '').toLowerCase() === 'server-pass') {
         const key = `stellar:server-pass:${email}`;
         const existingPass = (await kvGet(key)) || {};
         const status = String(subscription.status || '').toLowerCase();
@@ -432,7 +486,14 @@ export default async function handler(req, res) {
     } else if (event.type === 'invoice.paid') {
       const invoice = event.data.object;
       const email = await customerEmail(stripe, invoice.customer);
-      if (email) {
+      if (email && invoiceHasAiReceptionist(invoice)) {
+        await updateBusinessServiceBilling(email, {
+          status: 'active',
+          billingActive: true,
+          billingPaymentFailedAt: null,
+          lastInvoicePaidAt: Date.now(),
+        });
+      } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
         const saved = await kvSet(userKey, {
@@ -445,7 +506,13 @@ export default async function handler(req, res) {
     } else if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object;
       const email = await customerEmail(stripe, invoice.customer);
-      if (email) {
+      if (email && invoiceHasAiReceptionist(invoice)) {
+        await updateBusinessServiceBilling(email, {
+          status: 'payment_failed',
+          billingActive: false,
+          billingPaymentFailedAt: Date.now(),
+        });
+      } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
         const saved = await kvSet(userKey, {
