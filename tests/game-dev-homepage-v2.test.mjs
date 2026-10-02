@@ -7,11 +7,11 @@ const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
 const pricing=readFileSync(new URL('../lib/pricing.js',import.meta.url),'utf8');
 
 test('game developer hero uses focused generation and debugging conversion copy',()=>{
-  assert.match(home,/Stellar AI V2 · Production workspace/);
+  assert.match(home,/Stellar AI v2\.4 · Checking production service/);
   assert.match(home,/Automated FiveM &amp; Roblox/);
   assert.match(home,/Script Generation\./);
   assert.match(home,/Build, debug and secure QBCore, ESX, ox_lib and Roblox Luau code/);
-  assert.match(home,/Start Free \(£1 Credit\)/);
+  assert.match(home,/Start building free/);
   assert.match(home,/href="#playground" class="oa2-secondary-action">View Live Editor Demo/);
   for(const framework of ['QBCore','ESX','ox_lib','Roblox Luau','ModuleScripts']) assert.match(home,new RegExp(framework.replace('_','_')));
   assert.match(home,/AI-generated code still needs runtime testing and server-side validation before production deployment/);
@@ -44,7 +44,7 @@ test('homepage pricing reflects live server plan ceilings rather than stale mark
   assert.match(home,/£8 Starter · 120 req\/hr/);
   assert.match(home,/£20 Plus · 400 req\/hr/);
   assert.match(home,/£75 Pro · 1,600 req\/hr · Nova/);
-  assert.match(home,/£1 free credit · no card required/);
+  assert.match(home,/Daily free allowance · no card required/);
   assert.match(home,/100 credits refresh each day/);
   assert.match(home,/120 requests\/hour ceiling[\s\S]*?longer scripts/);
   assert.match(home,/400 requests\/hour ceiling[\s\S]*?full game systems/);
