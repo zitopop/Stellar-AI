@@ -199,7 +199,7 @@
       status.dataset.idle='true';
     }
     const usage=$('top-usage');
-    if(usage&&/loading/i.test(usage.textContent||''))usage.textContent=isSignedIn()?'Credits ready':'Free credits';
+    if(usage&&/loading/i.test(usage.textContent||''))usage.textContent=isSignedIn()?'Usage ready':'Free usage';
   }
 
   function sync(){
