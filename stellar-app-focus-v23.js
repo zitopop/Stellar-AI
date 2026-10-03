@@ -302,9 +302,10 @@
     btn.classList.add('stellar-chat-action');
     btn.dataset.stellarChatAction=action;
     btn.type='button';
-    btn.setAttribute('aria-label',copy.label);
-    btn.setAttribute('title',copy.label);
     const row=rowFor(btn);
+    const label=action==='pin'&&isPinned(row)?'Unpin chat':copy.label;
+    btn.setAttribute('aria-label',label);
+    btn.setAttribute('title',label);
     if(row)polishRow(row);
     if(action==='delete'&&isPinned(row)){
       btn.setAttribute('aria-disabled','true');
