@@ -12,7 +12,7 @@ function setCors(req, res) {
     || /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin)
     || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
   res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://trystellarai.com');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Vary', 'Origin');
 }
@@ -201,10 +201,12 @@ function missingPlanMessage(plan) {
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
+  if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
-  const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = req.body || {};
+  const input = req.method === 'GET' ? (req.query || {}) : (req.body || {});
+  const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = input;
   const publicBusinessCheckout = plan === 'website-audit' || plan === 'ai-receptionist';
+  if (req.method === 'GET' && !publicBusinessCheckout) return res.status(405).json({ error: 'GET checkout is only available for public business services.' });
   const sessionUser = publicBusinessCheckout ? null : requireSession(req, res);
   if (!publicBusinessCheckout && !sessionUser) return;
   const sourceName = acquisitionSource(source);
@@ -270,6 +272,7 @@ export default async function handler(req, res) {
         incrementConversionMetric('business-service-checkout-started'),
         incrementConversionMetric('business-service-website_mini_audit-checkout-started'),
       ]);
+      if (req.method === 'GET') return res.redirect(303, checkout.url);
       return res.status(200).json({ url: checkout.url });
     }
 
@@ -339,6 +342,7 @@ export default async function handler(req, res) {
         incrementConversionMetric('business-service-checkout-started'),
         incrementConversionMetric('business-service-ai_receptionist-checkout-started'),
       ]);
+      if (req.method === 'GET') return res.redirect(303, checkout.url);
       return res.status(200).json({ url: checkout.url });
     }
 
