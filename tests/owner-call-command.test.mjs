@@ -11,6 +11,8 @@ test('Stellar exposes protected owner Jarvis call controls',()=>{
   assert.match(app,/ring\|phone/);
   assert.match(app,/give\\s\+me\\s\+a\\s\+call/);
   assert.match(app,/Jarvis is ringing your phone/);
+  assert.match(app,/if\(await ownerCallCommand\(userText\)\)\{/);
+  assert.ok(app.indexOf("if(await ownerCallCommand(userText))") < app.indexOf("fetch('/api/chat'"));
   assert.match(app,/async function triggerOwnerCall\(/);
   assert.match(app,/ownerRequest\('\/api\/broadcast',\{action:'callOwner',purpose:/);
   assert.match(app,/async function checkOwnerCallHealth\(\)/);
