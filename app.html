@@ -797,5 +797,6 @@ function selectModel(m){m=safeModel(m);if(!allowedModels.includes(m)){metric('up
 async function init(){initImageInput();initVoiceInput();syncConnectivity();consumeAuthError();consumeDiscordOAuthReturn();signedInUser=store().user||signedInUser||null;if(token())await refreshSession();await loadPlanTruth();await handlePaymentReturn();await loadSessions();setComposerMode(composerMode,false);const q=new URLSearchParams(location.search);if(String(q.get('mode')||'').toLowerCase()==='debug')setComposerMode('debug',false);const prefill=q.get('prompt');if(prefill){prompt.value=prefill.slice(0,2000);resizePrompt();setStatus('Ready','good')}applyJarvisEntry();await handlePendingIntents();if(previewAuthGateRequested&&!signedInUser){openPanel('settings');setStatus('Create a free account to download the preview or generate another.','warn')}else if(!String(statusEl.textContent||'').includes('Discord'))setStatus('Ready','good');prompt.focus()}init();
 })();
 </script>
+<script src="/lib/assets/stellar-call.js"></script>
 </body>
 </html>
