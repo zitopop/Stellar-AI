@@ -26,6 +26,55 @@ test('Jarvis can use a direct Twilio owner-call provider without exposing the ow
   assert.doesNotMatch(provider,/07477|0477|160856/);
 });
 
+
+test('direct Retell fallback can add GB permission and place the owner call automatically', async () => {
+  const originalFetch = globalThis.fetch;
+  const keys = ['TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','TWILIO_PHONE_NUMBER','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER','RETELL_API_KEY','RETELL_FROM_NUMBER','RETELL_PHONE_NUMBER','RETELL_AGENT_ID','RETELL_OUTBOUND_AGENT_ID','OWNER_PHONE'];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  delete process.env.TWILIO_ACCOUNT_SID;
+  delete process.env.TWILIO_AUTH_TOKEN;
+  delete process.env.TWILIO_FROM_NUMBER;
+  delete process.env.TWILIO_PHONE_NUMBER;
+  delete process.env.TELNYX_API_KEY;
+  delete process.env.TELNYX_CONNECTION_ID;
+  delete process.env.TELNYX_FROM_NUMBER;
+  process.env.RETELL_API_KEY = 'fixture-retell-key';
+  process.env.RETELL_FROM_NUMBER = '+15005550006';
+  process.env.OWNER_PHONE = '+447700900123';
+  let patchedCountries = null;
+  let createBody = null;
+  globalThis.fetch = async (url, options = {}) => {
+    const value = String(url);
+    if (value.includes('/get-phone-number/')) {
+      return Response.json({ allowed_outbound_country_list: ['US'] });
+    }
+    if (value.includes('/update-phone-number/')) {
+      patchedCountries = JSON.parse(String(options.body || '{}')).allowed_outbound_country_list;
+      return Response.json({ allowed_outbound_country_list: patchedCountries });
+    }
+    if (value.includes('/v2/create-phone-call')) {
+      createBody = JSON.parse(String(options.body || '{}'));
+      return Response.json({ call_id: 'call_direct_retell', call_status: 'registered' });
+    }
+    throw new Error('Unexpected fetch: ' + url);
+  };
+  try {
+    const call = await startOwnerCall({ purpose: 'Automatic UK Retell repair test' });
+    assert.equal(call.provider, 'retell-direct');
+    assert.equal(call.call_id, 'call_direct_retell');
+    assert.equal(call.permissionRepaired, true);
+    assert.deepEqual(patchedCountries, ['US', 'GB']);
+    assert.equal(createBody.from_number, '+15005550006');
+    assert.equal(createBody.to_number, '+447700900123');
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});
+
 test('direct Twilio failure keeps the existing Retell bridge as a fallback',()=>{
   assert.match(provider,/startTwilioOwnerCall/);
   assert.match(provider,/startBridgeOwnerCall/);
