@@ -27,5 +27,7 @@ test('business thank-you pages explain automatic fulfilment without making fake 
   const audit = read('website-audit-thank-you.html');
   assert.match(receptionist, /Business facts/);
   assert.match(receptionist, /first configuration stays reviewable/i);
-  assert.match(audit, /no fake traffic or revenue promises/i);\n  assert.doesNotMatch(receptionist, /mailto:support@trystellarai\.com/i);\n  assert.doesNotMatch(audit, /mailto:support@trystellarai\.com/i);
+  assert.match(audit, /no fake traffic or revenue promises/i);
+  assert.doesNotMatch(receptionist, /mailto:support@trystellarai\.com/i);
+  assert.doesNotMatch(audit, /mailto:support@trystellarai\.com/i);
 });
