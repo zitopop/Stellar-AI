@@ -1,0 +1,69 @@
+name: Growth Engine CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'api/create-checkout.js'
+      - 'api/get-plan.js'
+      - 'api/webhook.js'
+      - 'app.html'
+      - 'lib/assets/telemetry.js'
+      - 'lib/conversion-metrics.js'
+      - 'developer-resources/**'
+      - 'growth-assets/**'
+      - 'tests/client-telemetry.test.mjs'
+      - 'tests/gbp-checkout-contract.test.mjs'
+      - 'tests/upgrade-intent-routing.test.mjs'
+      - 'tests/webhook-conversion-contract.test.mjs'
+      - 'tests/conversion-metrics.behavior.test.mjs'
+      - 'tests/growth-report-owner.test.mjs'
+      - '.github/workflows/growth-engine-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'api/create-checkout.js'
+      - 'api/get-plan.js'
+      - 'api/webhook.js'
+      - 'app.html'
+      - 'lib/assets/telemetry.js'
+      - 'lib/conversion-metrics.js'
+      - 'developer-resources/**'
+      - 'growth-assets/**'
+      - 'tests/client-telemetry.test.mjs'
+      - 'tests/gbp-checkout-contract.test.mjs'
+      - 'tests/upgrade-intent-routing.test.mjs'
+      - 'tests/webhook-conversion-contract.test.mjs'
+      - 'tests/conversion-metrics.behavior.test.mjs'
+      - 'tests/growth-report-owner.test.mjs'
+      - '.github/workflows/growth-engine-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  growth-engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Syntax check revenue-critical modules
+        run: |
+          node --check api/create-checkout.js
+          node --check api/get-plan.js
+          node --check api/webhook.js
+          node --check lib/assets/telemetry.js
+          node --check lib/conversion-metrics.js
+      - name: Run focused growth and billing contracts
+        run: |
+          node --test tests/client-telemetry.test.mjs
+          node --test tests/gbp-checkout-contract.test.mjs
+          node --test tests/upgrade-intent-routing.test.mjs
+          node --test tests/webhook-conversion-contract.test.mjs
+          node --test tests/conversion-metrics.behavior.test.mjs
+          node --test tests/growth-report-owner.test.mjs
