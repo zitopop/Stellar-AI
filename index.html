@@ -2116,6 +2116,40 @@ end)</code></pre>
           <span>Test generated code in a development environment before production use.</span>
         </div>
       </section>
+
+      <section class="stellar-debug-proof stellar-debug-proof-roblox" aria-labelledby="roblox-debug-proof-title">
+        <div class="stellar-debug-proof-head">
+          <span class="eyebrow">ROBLOX LUAU EXAMPLE</span>
+          <h3 id="roblox-debug-proof-title">Same idea, on Roblox: trust the server, not the client.</h3>
+          <p>A common RemoteEvent mistake, shown before and after. The safer version validates the request and keeps important values server-authoritative.</p>
+        </div>
+        <div class="stellar-debug-proof-grid">
+          <article class="stellar-debug-proof-card is-before">
+            <span>BEFORE · CLIENT-CONTROLLED PURCHASE</span>
+            <pre><code>PurchaseEvent.OnServerEvent:Connect(function(player, price)
+  player.leaderstats.Coins.Value -= price
+  giveItem(player)
+end)</code></pre>
+            <p><strong>Problem:</strong> the client supplies <code>price</code>, so an exploiter can send a fake value.</p>
+          </article>
+          <article class="stellar-debug-proof-card is-after">
+            <span>AFTER · SERVER-AUTHORIZED PURCHASE</span>
+            <pre><code>PurchaseEvent.OnServerEvent:Connect(function(player)
+  local price = 500
+  local coins = player.leaderstats.Coins
+
+  if coins.Value &lt; price then return end
+  coins.Value -= price
+  giveItem(player)
+end)</code></pre>
+            <p><strong>Fix:</strong> the server owns the price and checks the balance before granting the item.</p>
+          </article>
+        </div>
+        <div class="stellar-debug-proof-cta">
+          <a class="button button-primary" href="/app?mode=debug&amp;prompt=Help%20me%20debug%20a%20Roblox%20Luau%20script">Debug Roblox Luau →</a>
+          <span>Use Studio testing and server-side validation before publishing.</span>
+        </div>
+      </section>
       <div class="clean-pricing-link"><a href="/plans">See full plan comparison →</a></div>
       <aside class="stellar-team-offer" aria-label="Stellar Server Pass for teams">
         <div class="stellar-team-offer-copy"><span>FOR SERVER OWNERS &amp; DEV TEAMS</span><h3>One shared debugging lane for the team.</h3><p>Server Pass activates one verified Discord server for shared debugging and onboarding. Keep individual plans for personal work; use Server Pass when the whole team needs access.</p></div>
