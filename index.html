@@ -137,6 +137,13 @@
   .public-home .oa2-preview-shell{grid-template-columns:1fr!important}
 }
 </style>
+<style id="stellar-debug-proof-v1">
+.public-home .stellar-debug-proof{margin:26px 0 18px;padding:24px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(17,20,29,.94),rgba(11,13,19,.98))}
+.public-home .stellar-debug-proof-head{max-width:760px;margin-bottom:18px}.public-home .stellar-debug-proof-head h3{margin:7px 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.05;letter-spacing:-.045em}.public-home .stellar-debug-proof-head p{margin:0;color:#aeb7c5;line-height:1.65}
+.public-home .stellar-debug-proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.public-home .stellar-debug-proof-card{padding:18px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:#0f1219}.public-home .stellar-debug-proof-card>span{display:block;margin-bottom:12px;color:#9f96ff;font:800 10px/1 'DM Mono',monospace;letter-spacing:.1em}.public-home .stellar-debug-proof-card pre{margin:0 0 12px;overflow:auto;padding:15px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:#0a0c11;color:#eef2f7;font:12px/1.6 'JetBrains Mono',monospace}.public-home .stellar-debug-proof-card p{margin:0;color:#aeb6c3;font-size:13px;line-height:1.6}.public-home .stellar-debug-proof-card code{font-family:'JetBrains Mono',monospace}
+.public-home .stellar-debug-proof-cta{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px}.public-home .stellar-debug-proof-cta span{color:#858e9d;font-size:11px;line-height:1.5;text-align:right}
+@media(max-width:760px){.public-home .stellar-debug-proof{padding:18px}.public-home .stellar-debug-proof-grid{grid-template-columns:1fr}.public-home .stellar-debug-proof-cta{align-items:stretch;flex-direction:column}.public-home .stellar-debug-proof-cta .button{width:100%}.public-home .stellar-debug-proof-cta span{text-align:left}}
+</style>
 <style>
 .public-home .oa2-sales-ladder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 18px}.public-home .oa2-sales-ladder article{padding:18px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:linear-gradient(180deg,rgba(21,24,35,.9),rgba(12,14,20,.92))}.public-home .oa2-sales-ladder span{display:inline-flex;margin-bottom:14px;color:#9f96ff;font:800 10px/1 'DM Mono',monospace;letter-spacing:.12em}.public-home .oa2-sales-ladder strong{display:block;color:#f7f8fb;font-size:17px;margin-bottom:7px}.public-home .oa2-sales-ladder p{margin:0;color:#a9b2c1;font-size:13px;line-height:1.62}.public-home .oa2-plan-compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}.public-home .oa2-plan-compare div{padding:16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(14,17,25,.82)}.public-home .oa2-plan-compare strong{display:block;color:#f7f8fb;margin-bottom:6px}.public-home .oa2-plan-compare span{color:#aab3c2;font-size:13px;line-height:1.55}.public-home .plan.featured{box-shadow:0 0 0 1px rgba(139,124,246,.35),0 34px 120px rgba(139,124,246,.14)!important}.public-home .plan-desc strong{color:#fff}.public-home .pricing-heading p{max-width:720px!important}@media(max-width:900px){.public-home .oa2-sales-ladder,.public-home .oa2-plan-compare{grid-template-columns:1fr}}
 </style>
@@ -2076,6 +2083,39 @@ Player.Functions.AddMoney(<span class="syn-str">'cash'</span>, reward)</code></p
           <ul><li><span aria-hidden="true">✓</span><strong>Highest monthly usage</strong></li><li><span aria-hidden="true">✓</span><strong>Stellar Max + Stellar Deep</strong></li><li><span aria-hidden="true">✓</span><strong>Jarvis Pro briefings + proactive alerts</strong></li><li><span aria-hidden="true">✓</span><strong>StellarX computer-control beta</strong></li><li><span aria-hidden="true">✓</span>Maximum response depth</li><li><span aria-hidden="true">✓</span>Highest-capacity project work</li></ul>
         </article>
       </div>
+      <section class="stellar-debug-proof" aria-labelledby="debug-proof-title">
+        <div class="stellar-debug-proof-head">
+          <span class="eyebrow">REAL DEBUGGING EXAMPLE</span>
+          <h3 id="debug-proof-title">See what “saves time” actually means.</h3>
+          <p>A small QBCore bug, shown before and after. The point is not magic — it is getting to a safer, reviewable fix faster.</p>
+        </div>
+        <div class="stellar-debug-proof-grid">
+          <article class="stellar-debug-proof-card is-before">
+            <span>BEFORE · BUGGY SERVER EVENT</span>
+            <pre><code>RegisterNetEvent('job:pay', function(reward)
+  local Player = QBCore.Functions.GetPlayer(source)
+  Player.Functions.AddMoney('cash', reward)
+end)</code></pre>
+            <p><strong>Problem:</strong> the client controls <code>reward</code>, so a modified client can request any payout.</p>
+          </article>
+          <article class="stellar-debug-proof-card is-after">
+            <span>AFTER · SERVER-AUTHORITATIVE FIX</span>
+            <pre><code>RegisterNetEvent('job:pay', function()
+  local src = source
+  local Player = QBCore.Functions.GetPlayer(src)
+  if not Player then return end
+
+  local reward = 250
+  Player.Functions.AddMoney('cash', reward)
+end)</code></pre>
+            <p><strong>Fix:</strong> the payout is decided server-side and the player object is validated before use.</p>
+          </article>
+        </div>
+        <div class="stellar-debug-proof-cta">
+          <a class="button button-primary" href="/app?mode=debug">Paste your broken script →</a>
+          <span>Test generated code in a development environment before production use.</span>
+        </div>
+      </section>
       <div class="clean-pricing-link"><a href="/plans">See full plan comparison →</a></div>
       <aside class="stellar-team-offer" aria-label="Stellar Server Pass for teams">
         <div class="stellar-team-offer-copy"><span>FOR SERVER OWNERS &amp; DEV TEAMS</span><h3>One shared debugging lane for the team.</h3><p>Server Pass activates one verified Discord server for shared debugging and onboarding. Keep individual plans for personal work; use Server Pass when the whole team needs access.</p></div>
