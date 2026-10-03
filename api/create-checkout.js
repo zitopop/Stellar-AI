@@ -224,7 +224,7 @@ export default async function handler(req, res) {
     if (plan === 'website-audit') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        payment_method_types: ['card', 'link'],
+        payment_method_types: ['card'],
         billing_address_collection: 'auto',
         customer_creation: 'always',
         name_collection: { business: { enabled: true, optional: false } },
@@ -276,7 +276,7 @@ export default async function handler(req, res) {
     if (plan === 'ai-receptionist') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        payment_method_types: ['card', 'link'],
+        payment_method_types: ['card'],
         billing_address_collection: 'auto',
         name_collection: { business: { enabled: true, optional: false } },
         custom_fields: [
