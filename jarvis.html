@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070816"><title>Jarvis Vision | Stellar AI</title><meta name="description" content="A camera-powered, gesture-controlled Jarvis workspace for Stellar AI.">
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{color-scheme:dark;--bg:#050611;--panel:rgba(13,15,36,.72);--line:rgba(212,175,55,.3);--ink:#f8f0db;--muted:#a79db9;--gold:#d4af37;--pink:#f4d676;--mint:#8fe8cf}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,a{font:inherit}.shell{position:relative;width:100%;height:100dvh;isolation:isolate;background:radial-gradient(circle at 50% 10%,rgba(212,175,55,.2),transparent 34rem),linear-gradient(180deg,#090b22,#050611 72%)}#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:.24;filter:saturate(.8) contrast(1.05);z-index:-3}.veil{position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at center,transparent 0 30%,rgba(5,6,17,.45) 70%,rgba(5,6,17,.9) 100%),linear-gradient(rgba(212,175,55,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,.055) 1px,transparent 1px);background-size:auto,52px 52px,52px 52px}.top{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;padding:14px max(14px,env(safe-area-inset-right)) 14px max(14px,env(safe-area-inset-left));background:linear-gradient(180deg,rgba(5,6,17,.92),rgba(5,6,17,.2));backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:9px;margin-right:auto;color:#fff;text-decoration:none;font-weight:900}.brand i{display:grid;width:34px;height:34px;place-items:center;border:1px solid var(--line);border-radius:11px;background:rgba(212,175,55,.14);font-style:normal}.pill{min-height:42px;padding:0 13px;border:1px solid var(--line);border-radius:12px;color:#e9e0f7;background:rgba(19,18,44,.72);cursor:pointer}.pill[aria-pressed="true"]{border-color:#e6c767;background:rgba(212,175,55,.22);color:#fff}.pill.primary{background:linear-gradient(90deg,#d4af37,#7b2cf1);border-color:transparent;color:white;font-weight:850}.hud{position:absolute;top:76px;left:50%;z-index:12;transform:translateX(-50%);text-align:center;pointer-events:none}.hud h1{margin:0;font-size:clamp(32px,5vw,58px);letter-spacing:-.055em;background:linear-gradient(90deg,#d4af37,#f4d676);-webkit-background-clip:text;color:transparent}.hud p{margin:8px 0 0;color:#b8aec7;font-size:13px}.status{display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:7px 10px;border:1px solid rgba(143,232,207,.22);border-radius:999px;background:rgba(10,25,28,.35);color:#b9efe2;font-size:11px}.status b{width:7px;height:7px;border-radius:50%;background:#8fe8cf;box-shadow:0 0 16px #8fe8cf}.deck{position:absolute;inset:150px 18px 88px;z-index:10;transform-origin:center;transition:transform .12s linear}.orb{position:absolute;width:clamp(128px,14vw,190px);aspect-ratio:1;border:1px solid rgba(212,175,55,.35);border-radius:50%;display:grid;place-items:center;padding:18px;text-align:center;color:white;background:radial-gradient(circle at 45% 35%,rgba(212,175,55,.20),rgba(212,175,55,.16) 42%,rgba(8,10,28,.82) 72%);box-shadow:inset 0 0 40px rgba(212,175,55,.10),0 18px 60px rgba(0,0,0,.28);cursor:grab;user-select:none;touch-action:none}.orb.drag{cursor:grabbing;border-color:#f4d676;box-shadow:0 0 0 2px rgba(212,175,55,.16),0 0 50px rgba(212,175,55,.32)}.orb strong{display:block;font-size:16px}.orb small{display:block;margin-top:5px;color:#afa5c2;font-size:10px;line-height:1.4}.orb .ico{font-size:28px;margin-bottom:7px}.o1{left:5%;top:8%}.o2{left:27%;top:40%}.o3{left:44%;top:10%}.o4{right:24%;top:44%}.o5{right:4%;top:9%}.o6{right:6%;bottom:2%}.o7{left:7%;bottom:0}.cursor{position:fixed;z-index:100;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 18px #e6c767;pointer-events:none;display:none}.cursor.pinch{width:14px;height:14px;margin:-7px 0 0 -7px;background:#fff}.legend{position:absolute;left:14px;right:14px;bottom:max(14px,env(safe-area-inset-bottom));z-index:25;display:flex;justify-content:center;flex-wrap:wrap;gap:7px;pointer-events:none}.legend span{padding:7px 9px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(10,10,24,.72);color:#a9a1b8;font-size:10px}.toast{position:fixed;left:50%;bottom:74px;z-index:120;transform:translate(-50%,20px);opacity:0;padding:10px 13px;border:1px solid var(--line);border-radius:11px;background:#141428;color:#fff;font-size:12px;transition:.18s}.toast.show{transform:translate(-50%,0);opacity:1}.effects .orb{box-shadow:0 0 48px rgba(212,175,55,.22),inset 0 0 40px rgba(239,85,244,.12)}@media(max-width:760px){.top{gap:6px;flex-wrap:wrap}.brand{width:100%}.pill{min-height:38px;padding:0 10px;font-size:11px}.hud{top:126px}.hud p{display:none}.deck{inset:205px 10px 82px}.orb{width:112px;padding:10px}.orb strong{font-size:13px}.orb small{display:none}.o1{left:1%;top:2%}.o2{left:34%;top:24%}.o3{right:1%;left:auto;top:3%}.o4{left:2%;top:52%;right:auto}.o5{left:35%;top:61%;right:auto}.o6{right:1%;top:50%;bottom:auto}.o7{left:36%;bottom:0}.legend{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}.legend span{white-space:nowrap}}
+</style>
+<style id="stellar-jarvis-premium-v2">
+  :root{
+    --jarvis-card:rgba(17,18,27,.86);
+    --jarvis-card-hover:rgba(22,23,34,.96);
+    --jarvis-line:rgba(188,164,232,.15);
+    --jarvis-line-strong:rgba(188,164,232,.28);
+    --jarvis-gold:#a98adf;
+    --jarvis-text:#f2eff6;
+    --jarvis-muted:#8f8998;
+  }
+
+  .shell{
+    background:
+      radial-gradient(circle at 50% 22%,rgba(212,175,55,.12),transparent 29rem),
+      radial-gradient(circle at 50% 72%,rgba(91,65,170,.06),transparent 35rem),
+      #080910!important;
+  }
+
+  .veil{
+    background:
+      radial-gradient(circle at 50% 45%,transparent 0 25%,rgba(8,9,16,.18) 65%,rgba(8,9,16,.55) 100%),
+      linear-gradient(rgba(123,92,196,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(123,92,196,.035) 1px,transparent 1px)!important;
+    background-size:auto,64px 64px,64px 64px!important;
+  }
+
+  .top{
+    min-height:66px!important;
+    padding:12px 14px!important;
+    gap:8px!important;
+    border-bottom:1px solid rgba(255,255,255,.045)!important;
+    background:rgba(8,9,16,.78)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+
+  .brand{
+    gap:10px!important;
+    font-size:13px!important;
+    font-weight:760!important;
+    letter-spacing:-.015em!important;
+  }
+
+  .brand i{
+    width:34px!important;
+    height:34px!important;
+    border:1px solid rgba(212,175,55,.16)!important;
+    border-radius:10px!important;
+    background:rgba(212,175,55,.08)!important;
+    color:#ccbaf0!important;
+    box-shadow:none!important;
+  }
+
+  .pill{
+    min-height:38px!important;
+    height:38px!important;
+    padding:0 12px!important;
+    border:1px solid rgba(255,255,255,.075)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.025)!important;
+    color:#aaa4b3!important;
+    font-size:10.5px!important;
+    font-weight:680!important;
+    box-shadow:none!important;
+  }
+
+  .pill:hover,
+  .pill:focus-visible{
+    border-color:rgba(212,175,55,.20)!important;
+    background:rgba(212,175,55,.06)!important;
+    color:#eee9f4!important;
+    outline:none!important;
+  }
+
+  .pill.primary{
+    border-color:rgba(212,175,55,.24)!important;
+    background:rgba(212,175,55,.13)!important;
+    color:#e9e0fb!important;
+  }
+
+  .pill[aria-pressed="true"]{
+    border-color:rgba(212,175,55,.34)!important;
+    background:rgba(212,175,55,.14)!important;
+    color:#fff!important;
+  }
+
+  .hud{
+    top:92px!important;
+    width:min(760px,calc(100% - 32px))!important;
+  }
+
+  .hud-kicker{
+    margin-bottom:8px!important;
+    color:#777080!important;
+    font-size:9px!important;
+    font-weight:750!important;
+    letter-spacing:.12em!important;
+    text-transform:uppercase!important;
+  }
+
+  .hud h1{
+    margin:0!important;
+    color:#f2eff6!important;
+    background:none!important;
+    -webkit-text-fill-color:currentColor!important;
+    font-size:clamp(30px,3.7vw,48px)!important;
+    font-weight:730!important;
+    line-height:1.02!important;
+    letter-spacing:-.052em!important;
+  }
+
+  .hud p{
+    max-width:560px!important;
+    margin:10px auto 0!important;
+    color:#8f8998!important;
+    font-size:11.5px!important;
+    line-height:1.55!important;
+  }
+
+  .status{
+    min-height:30px!important;
+    margin-top:12px!important;
+    padding:0 10px!important;
+    border:1px solid rgba(112,220,195,.13)!important;
+    background:rgba(112,220,195,.035)!important;
+    color:#a8d8cc!important;
+    font-size:9px!important;
+    font-weight:600!important;
+  }
+
+  .status b{
+    width:6px!important;
+    height:6px!important;
+    background:#70dcc3!important;
+    box-shadow:0 0 10px rgba(112,220,195,.38)!important;
+  }
+
+  .deck{
+    inset:198px 7vw 76px!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+    align-items:stretch!important;
+    transform-origin:center!important;
+  }
+
+  .orb{
+    position:relative!important;
+    inset:auto!important;
+    width:auto!important;
+    min-width:0!important;
+    height:auto!important;
+    aspect-ratio:auto!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:20px 16px!important;
+    border:1px solid var(--jarvis-line)!important;
+    border-radius:18px!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.026),rgba(255,255,255,.012))!important;
+    color:var(--jarvis-text)!important;
+    box-shadow:0 16px 42px rgba(0,0,0,.18)!important;
+    cursor:grab!important;
+    user-select:none!important;
+    touch-action:none!important;
+    transform:none!important;
+    transition:border-color .15s ease,background .15s ease,transform .15s ease!important;
+  }
+
+  .orb::after{
+    content:'Drag or double-click'!important;
+    position:absolute!important;
+    top:10px!important;
+    right:10px!important;
+    color:#5f5968!important;
+    font-size:7px!important;
+    font-weight:680!important;
+    letter-spacing:.05em!important;
+    text-transform:uppercase!important;
+  }
+
+  .orb:hover,
+  .orb:focus-visible{
+    border-color:var(--jarvis-line-strong)!important;
+    background:var(--jarvis-card-hover)!important;
+    transform:translateY(-2px)!important;
+    outline:none!important;
+  }
+
+  .orb.drag{
+    z-index:40!important;
+    border-color:rgba(196,166,245,.42)!important;
+    background:rgba(30,26,43,.96)!important;
+    box-shadow:0 20px 54px rgba(0,0,0,.32)!important;
+    transform:scale(1.015)!important;
+  }
+
+  .orb>div{
+    width:100%!important;
+    max-width:190px!important;
+  }
+
+  .orb .ico{
+    width:38px!important;
+    height:38px!important;
+    margin:0 auto 12px!important;
+    display:grid!important;
+    place-items:center!important;
+    border:1px solid rgba(212,175,55,.13)!important;
+    border-radius:11px!important;
+    background:rgba(212,175,55,.07)!important;
+    color:#c4b2e9!important;
+    font-size:18px!important;
+  }
+
+  .orb strong{
+    color:#f1edf5!important;
+    font-size:13px!important;
+    font-weight:720!important;
+    letter-spacing:-.015em!important;
+  }
+
+  .orb small{
+    min-height:42px!important;
+    margin-top:6px!important;
+    color:#8e8797!important;
+    font-size:9.5px!important;
+    line-height:1.45!important;
+  }
+
+  .orb-meta{
+    display:inline-flex!important;
+    align-items:center!important;
+    min-height:24px!important;
+    margin-top:10px!important;
+    padding:0 8px!important;
+    border:1px solid rgba(112,220,195,.10)!important;
+    border-radius:999px!important;
+    background:rgba(112,220,195,.03)!important;
+    color:#8fcbbb!important;
+    font-size:7.5px!important;
+    font-weight:700!important;
+    letter-spacing:.03em!important;
+  }
+
+  .orb-meta-warn{
+    border-color:rgba(242,201,121,.10)!important;
+    background:rgba(242,201,121,.025)!important;
+    color:#b7a57e!important;
+  }
+
+  .orb-featured{
+    grid-column:2 / span 2!important;
+    grid-row:1!important;
+    border-color:rgba(212,175,55,.23)!important;
+    background:
+      radial-gradient(circle at 50% 25%,rgba(212,175,55,.10),transparent 50%),
+      linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.014))!important;
+  }
+
+  .o1{grid-column:1!important;grid-row:1!important}
+  .o3{grid-column:2 / span 2!important;grid-row:1!important}
+  .o5{grid-column:4!important;grid-row:1!important}
+  .o7{grid-column:1!important;grid-row:2!important}
+  .o2{grid-column:2!important;grid-row:2!important}
+  .o4{grid-column:3!important;grid-row:2!important}
+  .o6{grid-column:4!important;grid-row:2!important}
+
+  .legend{
+    bottom:max(12px,env(safe-area-inset-bottom))!important;
+    gap:5px!important;
+  }
+
+  .legend span{
+    min-height:28px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    padding:0 8px!important;
+    border:1px solid rgba(255,255,255,.055)!important;
+    background:rgba(13,14,21,.82)!important;
+    color:#77717f!important;
+    font-size:8px!important;
+  }
+
+  .toast{
+    bottom:58px!important;
+    padding:9px 12px!important;
+    border:1px solid rgba(212,175,55,.14)!important;
+    border-radius:9px!important;
+    background:#15151c!important;
+    color:#ded8e6!important;
+    font-size:10px!important;
+  }
+
+  #cam{
+    opacity:.16!important;
+    filter:saturate(.65) contrast(1.02) brightness(.72)!important;
+  }
+
+  .effects .orb{
+    box-shadow:0 18px 48px rgba(95,60,160,.18)!important;
+  }
+
+  @media(max-width:980px){
+    .deck{
+      inset:205px 18px 72px!important;
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      grid-template-rows:auto!important;
+      gap:9px!important;
+      overflow:auto!important;
+      padding-bottom:12px!important;
+    }
+
+    .orb,
+    .orb-featured,
+    .o1,.o2,.o3,.o4,.o5,.o6,.o7{
+      grid-column:auto!important;
+      grid-row:auto!important;
+      min-height:150px!important;
+    }
+
+    .orb-featured{
+      grid-column:1 / -1!important;
+    }
+
+    .legend{
+      display:none!important;
+    }
+  }
+
+  @media(max-width:640px){
+    html,body{
+      overflow:auto!important;
+    }
+
+    .shell{
+      min-height:100dvh!important;
+      height:auto!important;
+      overflow:auto!important;
+    }
+
+    .top{
+      position:sticky!important;
+      flex-wrap:wrap!important;
+      padding:10px!important;
+    }
+
+    .brand{
+      width:auto!important;
+      flex:1 1 auto!important;
+    }
+
+    .pill{
+      min-height:40px!important;
+      height:40px!important;
+      padding:0 10px!important;
+      font-size:10px!important;
+    }
+
+    #cameraBtn{
+      order:2!important;
+    }
+
+    .hud{
+      position:relative!important;
+      top:auto!important;
+      left:auto!important;
+      width:auto!important;
+      margin:26px 16px 18px!important;
+      transform:none!important;
+    }
+
+    .hud h1{
+      font-size:32px!important;
+    }
+
+    .hud p{
+      display:block!important;
+      font-size:10.5px!important;
+    }
+
+    .deck{
+      position:relative!important;
+      inset:auto!important;
+      display:grid!important;
+      grid-template-columns:1fr!important;
+      gap:8px!important;
+      margin:0 10px 24px!important;
+      padding:0!important;
+      overflow:visible!important;
+      transform:none!important;
+    }
+
+    .orb,
+    .orb-featured,
+    .o1,.o2,.o3,.o4,.o5,.o6,.o7{
+      grid-column:auto!important;
+      grid-row:auto!important;
+      min-height:126px!important;
+      padding:14px!important;
+      border-radius:15px!important;
+      touch-action:manipulation!important;
+      cursor:pointer!important;
+    }
+
+    .orb::after{
+      content:'Double-tap to open'!important;
+      top:9px!important;
+      right:9px!important;
+    }
+
+    .orb>div{
+      max-width:260px!important;
+    }
+
+    .orb small{
+      min-height:0!important;
+    }
+
+    .legend{
+      display:none!important;
+    }
+  }
+</style>
+
+<style id="stellar-jarvis-owner-privacy-v3">
+  /* Private Jarvis controls are hidden until server-verified Owner access. */
+  .orb[data-owner-only="true"]{
+    display:none!important;
+  }
+
+  .shell.owner-verified .orb[data-owner-only="true"]{
+    display:flex!important;
+  }
+
+  .shell:not(.owner-verified) .deck{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:minmax(180px,1fr)!important;
+    inset:225px 8vw 110px!important;
+  }
+
+  .shell:not(.owner-verified) .o1{grid-column:1!important;grid-row:1!important}
+  .shell:not(.owner-verified) .o2{grid-column:2!important;grid-row:1!important}
+  .shell:not(.owner-verified) .o5{grid-column:3!important;grid-row:1!important}
+  .shell:not(.owner-verified) .o7{grid-column:4!important;grid-row:1!important}
+
+  @media(max-width:980px){
+    .shell:not(.owner-verified) .deck{
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      grid-template-rows:auto!important;
+      inset:205px 18px 72px!important;
+    }
+    .shell:not(.owner-verified) .o1,
+    .shell:not(.owner-verified) .o2,
+    .shell:not(.owner-verified) .o5,
+    .shell:not(.owner-verified) .o7{
+      grid-column:auto!important;
+      grid-row:auto!important;
+    }
+  }
+
+  @media(max-width:640px){
+    .shell:not(.owner-verified) .deck{
+      grid-template-columns:1fr!important;
+      inset:auto!important;
+    }
+  }
+</style>
+  <link rel="stylesheet" href="/stellar-business-palette.css?v=1">
+<style id="stellar-jarvis-entitlement-v1">
+.jarvis-lock{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:#080910;color:#f3f0f7}.jarvis-lock[hidden]{display:none}.jarvis-lock-card{width:min(520px,100%);padding:26px;border:1px solid rgba(255,255,255,.09);border-radius:22px;background:#13141c;text-align:center}.jarvis-lock-card h1{margin:0;font-size:32px;letter-spacing:-.045em}.jarvis-lock-card p{color:#9b95a4;line-height:1.6}.jarvis-lock-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}.jarvis-lock-actions a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;border:1px solid rgba(255,255,255,.1);border-radius:999px;color:#eee;text-decoration:none}.jarvis-lock-actions .primary{background:#f2f2f2;color:#111}.jarvis-pro-badge{display:none}.shell.jarvis-pro .jarvis-pro-badge{display:inline-flex}
+</style>
+<style id="stellar-jarvis-computer-bridge-v1">
+.shell:not(.owner-verified) .deck{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.shell:not(.owner-verified) .o1{grid-column:1!important}
+.shell:not(.owner-verified) .o2{grid-column:2!important}
+.shell:not(.owner-verified) .o3{grid-column:3!important;display:flex!important}
+.shell:not(.owner-verified) .o5{grid-column:4!important}
+.shell:not(.owner-verified) .o7{grid-column:5!important}
+@media(max-width:980px){.shell:not(.owner-verified) .deck{grid-template-columns:repeat(2,minmax(0,1fr))!important}.shell:not(.owner-verified) .o1,.shell:not(.owner-verified) .o2,.shell:not(.owner-verified) .o3,.shell:not(.owner-verified) .o5,.shell:not(.owner-verified) .o7{grid-column:auto!important}}
+@media(max-width:640px){.shell:not(.owner-verified) .deck{grid-template-columns:1fr!important}}
+</style>
+<link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
+</head><body><div class="jarvis-lock" id="jarvis-lock"><div class="jarvis-lock-card"><h1>Jarvis is a paid Stellar feature.</h1><p id="jarvis-lock-copy">Sign in with a Plus or Pro account. Plus unlocks Voice + Vision; Pro adds briefings and proactive alerts.</p><div class="jarvis-lock-actions"><a href="/app?signin=1">Sign in</a><a class="primary" href="/plans">See plans</a></div></div></div><div class="shell" id="shell" aria-hidden="true"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">Jarvis Vision workspace</div><h1>Control Stellar with your hands.</h1><p>Enable the camera, pinch a module to move it, or use mouse and touch normally.</p><div class="status"><b></b><span id="statusText">Ready · camera off</span></div><span class="status jarvis-pro-badge">Jarvis Pro · briefings + alerts enabled</span></section><main class="deck" id="deck" aria-label="Jarvis gesture workspace"><article class="orb o1" data-name="AI Chat" tabindex="0" role="button" aria-label="AI Chat. Double-click or press Enter to open"><div><div class="ico">✦</div><strong>AI Chat</strong><small>Return to Stellar and continue your conversation</small><span class="orb-meta">Open chat</span></div></article><article class="orb o2" data-name="Voice" tabindex="0" role="button" aria-label="Voice. Double-click or press Enter to open"><div><div class="ico">◉</div><strong>Voice</strong><small>Live conversation and private voice tools</small><span class="orb-meta">Start voice</span></div></article><article class="orb o3 orb-featured" data-name="Computer" data-jarvis-computer="true" tabindex="0" role="button" aria-label="Open Jarvis computer control"><div><div class="ico">⌘</div><strong>Computer</strong><small>Open StellarX to inspect files, edit approved work, run approved terminal steps, browse, and optionally use mouse + keyboard.</small><span class="orb-meta">Open PC control</span></div></article><article class="orb o4" data-name="Email" data-owner-only="true" aria-hidden="true" tabindex="0" role="button" aria-label="Email integration status"><div><div class="ico">✉</div><strong>Email</strong><small>Inbox context through authorised integrations</small><span class="orb-meta orb-meta-warn">Authorised connector</span></div></article><article class="orb o5" data-name="Projects" tabindex="0" role="button" aria-label="Projects. Double-click or press Enter to open"><div><div class="ico">▣</div><strong>Projects</strong><small>Open project files and generated work</small><span class="orb-meta">Open projects</span></div></article><article class="orb o6" data-name="Agents" data-owner-only="true" aria-hidden="true" tabindex="0" role="button" aria-label="AI Agents. Double-click or press Enter to open"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist roles for research, review, testing and security</small><span class="orb-meta">Choose an agent</span></div></article><article class="orb o7" data-name="Vision" tabindex="0" role="button" aria-label="Vision status"><div><div class="ico">◌</div><strong>Vision</strong><small>Camera stays in-browser; hand tracking runs locally after model download</small><span class="orb-meta">Start vision</span></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch + move · drag</span><span>✌ Peace · reset</span><span>🤏🤏 Two hands · zoom</span><span>J · narration</span><span>F · effects</span><span>Mouse + touch supported</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
+<script type="module">
+const q=s=>document.querySelector(s), deck=q('#deck'), cursor=q('#cursor'), statusText=q('#statusText'), toast=q('#toast'), cam=q('#cam');
+let jarvisAccess={enabled:false,voice:false,vision:false,briefings:false,proactiveAlerts:false,ownerControls:false};async function syncJarvisOwnerAccess(){
+  const shell=q('#shell');
+  if(!shell)return;
+  shell.classList.remove('owner-verified','jarvis-pro');
+  document.querySelectorAll('[data-owner-only="true"]').forEach(el=>el.setAttribute('aria-hidden','true'));
+  let token='';
+  try{
+    const state=JSON.parse(localStorage.getItem('stellar-store')||'{}');
+    token=String(state?.session||'');
+  }catch{}
+  if(!token){document.getElementById('jarvis-lock')?.removeAttribute('hidden');shell.setAttribute('aria-hidden','true');return;}
+  try{
+    const response=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data?.error||'Could not verify Jarvis access');
+    jarvisAccess=data?.capabilities?.jarvis&&typeof data.capabilities.jarvis==='object'?data.capabilities.jarvis:{enabled:false};
+    const lock=document.getElementById('jarvis-lock');
+    if(!jarvisAccess.enabled){lock?.removeAttribute('hidden');shell.setAttribute('aria-hidden','true');const copy=document.getElementById('jarvis-lock-copy');if(copy)copy.textContent='Your current plan does not include Jarvis. Upgrade to Plus for Voice + Vision, or Pro for briefings and proactive alerts.';return;}
+    lock?.setAttribute('hidden','');shell.setAttribute('aria-hidden','false');
+    if(jarvisAccess.briefings) shell.classList.add('jarvis-pro');
+    if(data?.owner===true&&jarvisAccess.ownerControls===true){
+      shell.classList.add('owner-verified');
+      document.querySelectorAll('[data-owner-only="true"]').forEach(el=>el.setAttribute('aria-hidden','false'));
+    }
+  }catch{}
+}let handLandmarker=null,stream=null,running=false,lastVideo=-1,drag=null,offset={x:0,y:0},pinched=false,lastPeace=0,jarvis=false,effects=false,deckScale=1,lastTwoHandDistance=0;const initial=[...document.querySelectorAll('.orb')].map(el=>({el,left:el.style.left,top:el.style.top,transform:el.style.transform}));
+function say(t){if(!jarvis||!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.95;u.pitch=.92;speechSynthesis.speak(u)}function note(t){toast.textContent=t;toast.classList.add('show');clearTimeout(note.t);note.t=setTimeout(()=>toast.classList.remove('show'),1700)}function resetDeck(){deckScale=1;deck.style.transform='scale(1)';document.querySelectorAll('.orb').forEach(el=>{el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('transform');el.classList.remove('drag')});drag=null;note('Workspace reset');say('Workspace reset.')}
+function hit(x,y){return document.elementsFromPoint(x,y).find(el=>el.classList?.contains('orb'))||null}function beginDrag(x,y){const el=hit(x,y);if(!el)return;const r=el.getBoundingClientRect();drag=el;offset.x=x-r.left;offset.y=y-r.top;el.classList.add('drag');say(`${el.dataset.name} selected`)}function moveDrag(x,y){if(!drag)return;const pr=deck.getBoundingClientRect();const r=drag.getBoundingClientRect();drag.style.left=`${Math.max(0,Math.min(pr.width-r.width,x-pr.left-offset.x))}px`;drag.style.top=`${Math.max(0,Math.min(pr.height-r.height,y-pr.top-offset.y))}px`;drag.style.right='auto';drag.style.bottom='auto'}function endDrag(){drag?.classList.remove('drag');drag=null}
+function pointer(x,y,isPinch){cursor.style.display='block';cursor.style.left=x+'px';cursor.style.top=y+'px';cursor.classList.toggle('pinch',isPinch);if(isPinch&&!pinched)beginDrag(x,y);if(isPinch)moveDrag(x,y);if(!isPinch&&pinched)endDrag();pinched=isPinch}function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}function extended(lm,tip,pip){return lm[tip].y<lm[pip].y}function peace(lm){return extended(lm,8,6)&&extended(lm,12,10)&&!extended(lm,16,14)&&!extended(lm,20,18)}
+async function enableCamera(){try{statusText.textContent='Loading hand model…';const vision=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/+esm');const files=await vision.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm');handLandmarker=await vision.HandLandmarker.createFromOptions(files,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',delegate:'GPU'},runningMode:'VIDEO',numHands:2,minHandDetectionConfidence:.55,minTrackingConfidence:.55});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false});cam.srcObject=stream;await cam.play();running=true;q('#cameraBtn').textContent='Camera on';q('#cameraBtn').disabled=true;statusText.textContent='Vision online · hand tracking local';loop();note('Jarvis Vision online')}catch(e){console.error(e);statusText.textContent='Camera unavailable · mouse/touch fallback ready';note('Camera or hand model could not start')}}
+function loop(){if(!running)return;const now=performance.now();if(cam.currentTime!==lastVideo&&handLandmarker){lastVideo=cam.currentTime;const r=handLandmarker.detectForVideo(cam,now), hands=r.landmarks||[];if(hands.length){const lm=hands[0],p=lm[8],thumb=lm[4],x=(1-p.x)*innerWidth,y=p.y*innerHeight,isPinch=dist(p,thumb)<.055;pointer(x,y,isPinch);if(peace(lm)&&Date.now()-lastPeace>1200){lastPeace=Date.now();resetDeck()}if(hands.length>1){const a=hands[0][8],b=hands[1][8],pa=hands[0][4],pb=hands[1][4];if(dist(a,pa)<.06&&dist(b,pb)<.06){const d=dist(a,b);if(lastTwoHandDistance){deckScale=Math.max(.75,Math.min(1.35,deckScale+(d-lastTwoHandDistance)*1.4));deck.style.transform=`scale(${deckScale})`}lastTwoHandDistance=d}else lastTwoHandDistance=0}else lastTwoHandDistance=0}else{cursor.style.display='none';if(pinched){pinched=false;endDrag()}}}requestAnimationFrame(loop)}
+q('#cameraBtn').addEventListener('click',enableCamera);q('#jarvisBtn').addEventListener('click',e=>{jarvis=!jarvis;e.currentTarget.setAttribute('aria-pressed',jarvis);note(jarvis?'Jarvis narration on':'Jarvis narration off');say('Jarvis mode online.')});q('#effectsBtn').addEventListener('click',e=>{effects=!effects;e.currentTarget.setAttribute('aria-pressed',effects);q('#shell').classList.toggle('effects',effects);note(effects?'Effects on':'Effects off')});q('#resetBtn').addEventListener('click',resetDeck);document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='j')q('#jarvisBtn').click();if(e.key.toLowerCase()==='f')q('#effectsBtn').click();if(e.key==='Escape')resetDeck()});
+function activateOrb(el){
+  const name=el?.dataset?.name||'';
+  if(name==='AI Chat'){location.href='/app?jarvis=chat';return}
+  if(name==='Voice'){location.href='/app?jarvis=voice';return}
+  if(name==='Projects'){location.href='/jarvis';return}
+  if(name==='Agents'){location.href='/jarvis';return}
+  if(name==='Vision'){
+    if(running){note('Vision is online · hand tracking is local');say('Vision is online.');return}
+    enableCamera();
+    return
+  }
+  if(name==='Computer'){
+    note('Opening secure computer control');
+    say('Opening secure computer control.');
+    location.href='/desktop?from=jarvis';
+    return
+  }
+  if(name==='Email'){
+    note('Connect an authorised email integration before inbox access can start');
+    say('Email access needs an authorised connector.');
+    return
+  }
+}
+document.querySelectorAll('.orb').forEach(el=>{
+  el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);drag=el;const r=el.getBoundingClientRect();offset={x:e.clientX-r.left,y:e.clientY-r.top};el.classList.add('drag')});
+  el.addEventListener('pointermove',e=>{if(drag===el)moveDrag(e.clientX,e.clientY)});
+  el.addEventListener('pointerup',()=>endDrag());
+  el.addEventListener('dblclick',()=>activateOrb(el));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activateOrb(el)}});
+});
+syncJarvisOwnerAccess();
+window.addEventListener('focus',syncJarvisOwnerAccess);
+window.addEventListener('beforeunload',()=>stream?.getTracks().forEach(t=>t.stop()));
+</script></body></html>

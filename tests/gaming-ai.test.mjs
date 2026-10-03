@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import test from 'node:test';
+const chat=readFileSync(new URL('../api/chat.js',import.meta.url),'utf8');
+const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
+const plans=readFileSync(new URL('../plans.html',import.meta.url),'utf8');
+test('Gaming AI is a public focused chat mode',()=>{assert.match(chat,/gaming:\s*\{ model: 'claude-sonnet-4-6'/);assert.doesNotMatch(chat,/OWNER_ONLY_ROLES[^\n]*gaming/);assert.match(chat,/STELLAR GAMING AI mode/)});
+test('core app is a normal general chatbot',()=>{assert.doesNotMatch(app,/href="\/app\?mode=gaming"/);assert.match(app,/const CHAT_MODE='general'/);assert.match(app,/role:'general'/);assert.match(app,/How can I help\?/)});
+test('plans keep four prices and sell the general assistant',()=>{for(const price of ['\u00a30','\u00a38','\u00a320','\u00a375'])assert.ok(plans.includes(JSON.parse('"'+price+'"')));assert.match(plans,/General AI chat, writing, coding and troubleshooting/);assert.match(plans,/Maximum Stellar project capacity/)});
+const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('homepage makes normal chat the primary entry point',()=>{assert.doesNotMatch(home,/href="\/app\?mode=gaming"/);assert.match(home,/Start chatting/);assert.match(home,/Chat naturally about anything/);assert.match(home,/Jarvis Voice \+ Vision/)});

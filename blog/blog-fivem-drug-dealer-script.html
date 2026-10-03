@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stellar AI">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/site-polish.css">
+<link rel="apple-touch-icon" sizes="57x57" href="/lib/assets/pwa/icon-57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/lib/assets/pwa/icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/lib/assets/pwa/icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/lib/assets/pwa/icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/lib/assets/pwa/icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/lib/assets/pwa/icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/lib/assets/pwa/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/lib/assets/pwa/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/lib/assets/pwa/icon-512.png">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone-landscape.png" media="(orientation: landscape) and (max-width: 600px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad.png" media="(orientation: portrait) and (min-width: 601px)">
+<link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-ipad-landscape.png" media="(orientation: landscape) and (min-width: 601px)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FiveM Drug Dealer Script — Design, Safety, and Implementation Guide — Stellar AI</title>
+  <meta name="description" content="A practical, server-authoritative guide to building a secure, modular FiveM drug dealer script with QBCore/ESX integration, qb-target/ox_lib support, anti-cheat validation, and deployment checklist.">
+  <meta name="keywords" content="FiveM drug dealer script, QBCore drug script, ESX drug script, qb-target, ox_lib, server-side validation, anti-cheat, fxmanifest, FiveM tutorial">
+  <meta property="og:title" content="FiveM Drug Dealer Script — Design, Safety, and Implementation Guide">
+  <meta property="og:description" content="A practical, server-authoritative guide to building a secure, modular FiveM drug dealer script with QBCore/ESX integration, qb-target/ox_lib support, anti-cheat validation, and deployment checklist.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://trystellarai.com/blog/fivem-drug-dealer-script">
+  <style>:root{--bg:#09090b;--surface:#111114;--border:rgba(255,255,255,.11);--text:#f4f4f5;--muted:#a1a1aa;--green:#61e6bf}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}a{color:inherit}nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px max(20px,5vw);background:rgba(9,9,11,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}.logo{font-weight:900;text-decoration:none}.logo span{color:var(--green)}.cta{padding:10px 17px;border-radius:999px;background:var(--green);color:#061c16;text-decoration:none;font-weight:800;font-size:13px}.wrap{max-width:860px;margin:auto;padding:72px 24px 96px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.meta{color:var(--muted);font-size:13px;margin:14px 0 32px}h1{max-width:780px;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.06em;margin:12px 0 18px}h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.04em;line-height:1.15;margin:56px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:#d4d4d8;font-size:16px}ul{padding-left:22px}.intro{font-size:19px;color:#e4e4e7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:42px}.tip,.cta-box{padding:22px;border-radius:16px;border:1px solid rgba(97,230,191,.28);background:rgba(97,230,191,.07);margin:28px 0}.tip strong{color:var(--green)}pre{padding:18px;overflow:auto;border-radius:13px;background:#0d1715;border:1px solid rgba(97,230,191,.22);color:#c9f9e8}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--green)}td{color:#d4d4d8}.cta-box{text-align:center;background:linear-gradient(145deg,rgba(97,230,191,.13),rgba(255,255,255,.03))}.cta-box h2{margin-top:0}.cta-box a{display:inline-block;background:var(--green);color:#061c16;padding:12px 22px;border-radius:999px;font-weight:800;text-decoration:none}.refs{border-top:1px solid var(--border);margin-top:56px;padding-top:24px}.refs a{color:var(--green)}footer{padding:24px max(20px,5vw);border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:640px){.wrap{padding:50px 17px 70px}p,li{font-size:15px}table{display:block;overflow:auto;white-space:nowrap}}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "FiveM Drug Dealer Script — Design, Safety, and Implementation Guide — Stellar AI", "description": "A practical, server-authoritative guide to building a secure, modular FiveM drug dealer script with QBCore/ESX integration, qb-target/ox_lib support, anti-cheat validation, and deployment checklist.", "mainEntityOfPage": "https://trystellarai.com/blog/fivem-drug-dealer-script", "url": "https://trystellarai.com/blog/fivem-drug-dealer-script", "author": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "publisher": {"@type": "Organization", "name": "Stellar AI", "url": "https://trystellarai.com"}, "wordCount": 952}</script>
+  <link rel="stylesheet" href="/stellar-business-palette.css?v=1">
+</head>
+<body>
+<nav><a class="logo" href="/">✦ Stellar <span>AI</span></a><a class="cta" href="/app">Try Stellar free →</a></nav>
+<main class="wrap">
+  <div class="eyebrow">FiveM development • QBCore • Server-first scripting</div>
+  <h1>FiveM Drug Dealer Script — Design, Safety, and Implementation Guide</h1>
+  <div class="meta">Updated September 2026 · 8 min read · Stellar AI</div>
+  <p class="intro">This guide walks through designing and shipping a robust FiveM drug dealer script. Focus is on server authority, safe item/cash handling, target integration, and anti-exploit validation. Use the patterns below to build a maintainable, audit-ready resource.</p>
+  <h2>Overview</h2>
+<p>Drug dealer mechanics are common in RP servers: players procure or produce illicit items and sell them to NPC dealers for cash. Because in-game illicit economies affect balance and invite exploits, the canonical rule is: trust nothing from the client. All checks that affect player inventory, cash, or police notifications must be authoritative on the server.</p>
+
+<h2>Design principles</h2>
+<ul>
+  <li><strong>Server authority:</strong> validate items, quantities, and payments server-side.</li>
+  <li><strong>Modular integration:</strong> keep qb-target / ox_lib / radial menus as optional adapters.</li>
+  <li><strong>Config-driven behavior:</strong> store prices, locations, cooldowns, and police odds in a config file.</li>
+  <li><strong>Anti-exploit:</strong> rate-limits, ownership checks, and persistent logs for suspicious activity.</li>
+</ul>
+
+<h2>Assumptions and framework choices</h2>
+<p>This guide uses QBCore as the primary example because it's popular in FiveM RP communities. Where appropriate I'll note ESX alternatives. If your server uses ox_lib utilities or qb-target, the code shows how to add optional exports without hard dependencies.</p>
+
+<h2>High-level implementation plan</h2>
+<ol>
+  <li>Create a small resource with fxmanifest.lua, config.lua, client.lua and server.lua.</li>
+  <li>Define dealer locations and a server-side sell event that validates items and pays the player.</li>
+  <li>Support target interaction (qb-target) and a fallback keypress interaction.</li>
+  <li>Add anti-exploit controls: cooldowns, item ownership checks, and server logging.</li>
+  <li>Test with an admin account and run simulated abuse cases (rapid sell, forged item reports).</li>
+</ol>
+
+<h2>Key server-side rules</h2>
+<ul>
+  <li>Never accept client-provided item amounts or prices without server-side verification.</li>
+  <li>Use framework inventory functions (QBCore.Functions.GetPlayer, QBCore.Functions.RemoveItem, AddMoney) rather than direct DB writes.</li>
+  <li>Keep payment and police notifications atomic: only notify police after successful item removal and payment.</li>
+</ul>
+
+<h2>Example files (complete minimal resource)</h2>
+<p>Below are destination-labelled files for a minimal QBCore resource. Adjust names, folder location, and exports to match your server's conventions.</p>
+
+<pre><code>-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'Simple drug dealer script (QBCore)'
+version '1.0.0'
+
+server_script 'server.lua'
+client_script 'client.lua'
+shared_script 'config.lua'
+</code></pre>
+
+<pre><code>-- config.lua
+Config = {}
+Config.Dealers = {
+  {name = 'Downtown Dealer', coords = vector3( -1486.1, -378.2, 40.16 ), sell_item = 'weed', price = 200, policeChance = 0.05},
+}
+Config.SellCooldown = 5 -- seconds per player per dealer
+</code></pre>
+
+<pre><code>-- server.lua (QBCore example)
+local QBCore = exports['qb-core']:GetCoreObject()
+local lastSell = {}
+
+RegisterNetEvent('drugdealer:server:sell', function(dealerIndex)
+  local src = source
+  local xPlayer = QBCore.Functions.GetPlayer(src)
+  if not xPlayer then return end
+
+  local dealer = Config.Dealers[dealerIndex]
+  if not dealer then return end
+
+  -- rate limit
+  lastSell[src] = lastSell[src] or {}
+  if lastSell[src][dealerIndex] and (os.time() - lastSell[src][dealerIndex]) < Config.SellCooldown then
+    TriggerClientEvent('QBCore:Notify', src, 'You must wait before selling again', 'error')
+    return
+  end
+
+  -- check inventory server-side
+  local item = xPlayer.Functions.GetItemByName(dealer.sell_item)
+  if not item or item.amount < 1 then
+    TriggerClientEvent('QBCore:Notify', src, 'You have nothing to sell', 'error')
+    return
+  end
+
+  -- remove item and give money atomically
+  local removed = xPlayer.Functions.RemoveItem(dealer.sell_item, 1)
+  if not removed then
+    TriggerClientEvent('QBCore:Notify', src, 'Failed to remove item', 'error')
+    return
+  end
+
+  xPlayer.Functions.AddMoney('cash', dealer.price, 'sold-drugs')
+  lastSell[src][dealerIndex] = os.time()
+  TriggerClientEvent('QBCore:Notify', src, 'Sold 1 '..dealer.sell_item..' for $'..dealer.price, 'success')
+
+  -- optional police alert with validated chance
+  if math.random() < dealer.policeChance then
+    TriggerEvent('police:server:sendAlert', {x = dealer.coords.x, y = dealer.coords.y, z = dealer.coords.z, message = 'Suspicious deal'})
+  end
+end)
+</code></pre>
+
+<pre><code>-- client.lua (target integration example)
+local QBCore = exports['qb-core']:GetCoreObject()
+
+Citizen.CreateThread(function()
+  for i, d in ipairs(Config.Dealers) do
+    if exports['qb-target'] then
+      exports['qb-target']:AddBoxZone('dealer_'..i, d.coords, 1.2, 1.2, {name = 'dealer_'..i, heading = 0, debugPoly = false}, {
+        options = {{type = 'client', event = 'drugdealer:client:openMenu', icon = 'fas fa-user-secret', label = 'Talk to dealer', dealerIndex = i}},
+        distance = 2.5
+      })
+    end
+  end
+end)
+
+RegisterNetEvent('drugdealer:client:openMenu', function(data)
+  -- fallback: directly call server event
+  TriggerServerEvent('drugdealer:server:sell', data.dealerIndex)
+end)
+</code></pre>
+
+<h2>Security and anti-exploit measures</h2>
+<ul>
+  <li>Rate-limit sells per-player per-dealer to prevent rapid-grinding.</li>
+  <li>Perform all inventory checks and removes on the server using framework APIs.</li>
+  <li>Log unusual patterns to a secure server log: high-frequency sells, negative balances, or failed item removals.</li>
+  <li>Don’t trust client-sent dealerIndex blindly — validate index exists in Config.Dealers.</li>
+</ul>
+
+<h2>ESX differences</h2>
+<p>For ESX, replace QBCore.Functions.GetPlayer and inventory calls with ESX.GetPlayerFromId and xPlayer.getInventoryItem / xPlayer.removeInventoryItem. Also use ESX.ShowNotification on the client where appropriate. Keep the server authority rule unchanged.</p>
+
+<h2>Testing and validation</h2>
+<p>Local testing should include:</p>
+<ol>
+  <li>Sell flow with correct item and without item.</li>
+  <li>Rapid sell attempts to validate cooldown behavior.</li>
+  <li>Simulated packet tampering: call the server event with invalid dealerIndex or spoofed player IDs (as server owner) to ensure checks block it.</li>
+</ol>
+
+<h2>Deployment checklist</h2>
+<table>
+  <thead>
+    <tr><th>Task</th><th>Why</th><th>Done?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Use framework APIs for inventory/cash</td><td>Server authority</td><td> </td></tr>
+    <tr><td>Add cooldowns & rate-limits</td><td>Prevent rapid abuse</td><td> </td></tr>
+    <tr><td>Validate dealerIndex & item existence</td><td>Prevent null deref / exploits</td><td> </td></tr>
+    <tr><td>Log suspicious events</td><td>Audit & ban support</td><td> </td></tr>
+    <tr><td>Test with ESX/QBCore and qb-target/ox_lib</td><td>Compatibility</td><td> </td></tr>
+  </tbody>
+</table>
+
+<h2>Next steps and resources</h2>
+<p>To iterate quickly, consider using a planning workspace that produces destination-labelled files and installs quickly. If you want a guided generator to produce full resource files, try the Stellar AI app to prototype variations and generate complete file sets: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>. When you're iterating on police notification logic or balancing payout rates, keep the configuration external so you can tweak values without changing logic.</p>
+
+<p>For community guides and deeper patterns (hooking into evidence systems, laundering mechanics, or vendor cooldown persistence), read articles and collections from the Stellar blog for recommended patterns: <a href="https://trystellarai.com/blog">https://trystellarai.com/blog</a>. You can also open the Stellar AI app to prototype alternate dealer behaviors and test multiple configurations quickly: <a href="https://trystellarai.com/app">https://trystellarai.com/app</a>.</p>
+
+<h2>Closing notes</h2>
+<p>Keep social features (informing players, leaving hints) client-side only as UI, and keep all economic changes server-side. If you later add production chains (grow -> process -> sell), maintain the same atomic, validated operations at each step. That contract—server trust, client UI—keeps your server balanced and more resistant to exploits.</p>
+
+  <div class="cta-box"><h2>Turn the brief into a working build</h2><p>Describe your framework, dependencies, files and expected behaviour. Stellar AI can help you plan a reviewable starting point and iterate on the next version.</p><a href="https://trystellarai.com/app">Build with Stellar AI →</a></div>
+  <section class="refs" id="references"><h2>References</h2><div><h3>References</h3><ul><li><a href="https://docs.fivem.net/">FiveM Documentation</a></li><li><a href="https://docs.qbcore.org/">QBCore Documentation</a></li><li><a href="https://github.com/overextended/ox_core">ox_core / ox_lib (GitHub)</a></li></ul></div></section>
+</main>
+<footer><span>© Stellar AI · FiveM and Roblox scripting workspace</span><a href="/blog">More build guides →</a></footer>
+</body>
+</html>

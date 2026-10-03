@@ -1,0 +1,414 @@
+# Stellar AI — 400-task progress tracker
+
+> This tracker counts implementation tasks, not time. A task becomes complete only after its code or documentation is finished and the relevant tests/checks pass.
+
+| Task | Status | Scope | Evidence | Checkpoint |
+|---:|:---:|---|---|---|
+| 1 | ✅ Complete | Multi-AI provider contract, role routing, plan gating, and Anthropic-compatible SSE envelope | `tests/multi-model-routing.test.mjs`; 20 Stellar AI tests pass | `f68195f` |
+| 2 | ✅ Complete | Retryable built-in-provider failure falls back once to the existing Anthropic tier | `tests/multi-model-routing.test.mjs`; 21 Stellar AI tests pass | `b9085b5` |
+| 3 | ✅ Complete | Roblox, FiveM, mixed, and general platform-aware quality gates | `tests/multi-model-routing.test.mjs`; 24 Stellar AI tests pass | `7023cac` |
+| 4 | ✅ Complete | Roblox Build Pack, FiveM resource, audit, and general workflow-mode contracts | `tests/multi-model-routing.test.mjs`; full suite 27 tests pass | `063b459` |
+| 5 | ✅ Complete | QBCore, ESX, ox_lib, standalone, and conflicting-framework safety context | `tests/multi-model-routing.test.mjs`; full suite 30 tests pass | `c714b87` |
+| 6 | ✅ Complete | Mobile plans-modal dynamic scrolling, overscroll containment, and safe-area padding | `app.html`; 30 tests, phone/tablet screenshots, static smoke checks | `e6c8fe6` |
+| 7 | ✅ Complete | Provider-specific GPT, Claude, Gemini, and unknown-model token/reasoning contract | `tests/multi-model-routing.test.mjs`; full suite 34 tests pass | `2060de9` |
+| 8 | ✅ Complete | Planner, implementer, researcher, security, and tester output contracts | `tests/multi-model-routing.test.mjs`; full suite 36 tests pass | `f3ffa6f` |
+| 9 | ✅ Complete | Truthful specialist-role descriptions aligned to deployed research, security, and tester contracts | `app.html`; full suite 36 tests, phone/tablet captures, static smoke checks | `4ecdf6c` |
+| 10 | ✅ Complete | Strict security JSON Schema response contract for Forge-routed reviews | `tests/multi-model-routing.test.mjs`; full suite 37 tests pass | `3a8bb0d` |
+| 11 | ✅ Complete | Strict planner and tester JSON Schema response contracts | `tests/multi-model-routing.test.mjs`; full suite 38 tests pass | `b1ff6d6` |
+| 12 | ✅ Complete | Strict researcher JSON Schema with claim-level provenance and uncertainty fields | `tests/multi-model-routing.test.mjs`; full suite 39 tests pass | `e86cb32` |
+| 13 | ✅ Complete | Strict implementer JSON Schema for complete destination-labelled file bundles | `tests/multi-model-routing.test.mjs`; full suite 40 tests pass | `7b47803` |
+| 14 | ✅ Complete | Wire-level forwarding test for all role schemas and stream compatibility | `tests/multi-model-routing.test.mjs`; full suite 41 tests pass | `7212e8d` |
+| 15 | ✅ Complete | Fallback test preserving FiveM QBCore role, platform, workflow, and framework guidance | `tests/multi-model-routing.test.mjs`; full suite 42 tests pass | `08c3ce6` |
+| 16 | ✅ Complete | Mixed Roblox/FiveM isolation and conservative framework ambiguity regression coverage | `tests/multi-model-routing.test.mjs`; full suite 43 tests pass | `e6fd77d` |
+| 17 | ✅ Complete | Structured-output fallback transparency notice and regression coverage | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 44 tests pass | `68e3708` |
+| 18 | ✅ Complete | Retryable Forge network-error normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 45 tests pass | `a07007e` |
+| 19 | ✅ Complete | AbortError propagation without fallback request | `tests/multi-model-routing.test.mjs`; full suite 46 tests pass | `518ddc7` |
+| 20 | ✅ Complete | Malformed Forge JSON normalization with existing Anthropic fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 47 tests pass | `febcb15` |
+| 21 | ✅ Complete | Anthropic candidate retry after non-abort network error | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 48 tests pass | `cf173d5` |
+| 22 | ✅ Complete | Direct Anthropic AbortError propagation without trying another candidate | `tests/multi-model-routing.test.mjs`; full suite 49 tests pass | `559164f` |
+| 23 | ✅ Complete | Terminal Anthropic failure returns retryable 503 after all candidates fail | `tests/multi-model-routing.test.mjs`; full suite 50 tests pass | `dfc85c3` |
+| 24 | ✅ Complete | Direct Anthropic 404 fallback preserves the configured candidate stream | `tests/multi-model-routing.test.mjs`; full suite 51 tests pass | `9ea039e` |
+| 25 | ✅ Complete | Caller AbortSignal forwarded unchanged to Anthropic fetch | `tests/multi-model-routing.test.mjs`; full suite 52 tests pass | `810c531` |
+| 26 | ✅ Complete | Caller AbortSignal forwarded unchanged to Forge fetch | `tests/multi-model-routing.test.mjs`; full suite 53 tests pass; included in green production deployment `c27fc10` | `1864dd0` |
+| 27 | ✅ Complete | Forge 200 response without a usable completion falls back to the existing Anthropic stream | `tests/multi-model-routing.test.mjs`; full suite 54 tests pass; green Vercel deployment | `6cd0d73` |
+| 28 | ✅ Complete | Whitespace-only Forge completion is normalized to retryable empty-output failure and falls back to Anthropic | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 55 tests pass; green Vercel deployment | `2a69944` |
+| 29 | ✅ Complete | Forge-to-Anthropic fallback preserves the complete specialist system prompt unchanged | `tests/multi-model-routing.test.mjs`; full suite 56 tests pass; green Vercel deployment | `4793027` |
+| 30 | ✅ Complete | Successful Anthropic response without a stream body retries the configured candidate fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 57 tests pass; green Vercel deployment | `d8add6b` |
+| 31 | ✅ Complete | Transient Anthropic upstream statuses retry the configured candidate fallback | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 58 tests pass; green Vercel deployment | `2228470` |
+| 32 | ✅ Complete | Permanent Anthropic authorization errors return unchanged without a fallback candidate request | `tests/multi-model-routing.test.mjs`; full suite 59 tests pass; green Vercel deployment | `fa4053d` |
+| 33 | ✅ Complete | Anthropic candidate 400 response advances to the configured fallback stream | `tests/multi-model-routing.test.mjs`; full suite 60 tests pass; green Vercel deployment | `5e0cde9` |
+| 34 | ✅ Complete | Non-finite Forge token inputs normalize to a valid safe minimum | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 61 tests pass; green Vercel deployment | `1a66ccb` |
+| 35 | ✅ Complete | Recognised specialist role input normalizes before applying its model, contract, and schema | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 62 tests pass; green Vercel deployment | `fe03380` |
+| 36 | ✅ Complete | Unknown specialist role input safely defaults to the complete implementer route and schema | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 63 tests pass; green Vercel deployment | `315f245` |
+| 37 | ✅ Complete | No-role routes preserve the requested model while retaining the implementer contract | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 64 tests pass; green Vercel deployment | `da66a6a` |
+| 38 | ✅ Complete | Inherited object-property names cannot select specialist routing roles | `api/chat.js`; `tests/multi-model-routing.test.mjs`; full suite 65 tests pass; green Vercel deployment | `8000e4f` |
+| 39 | ✅ Complete | Saved-tool favorite controls reach a 44px mobile touch target while desktop density remains unchanged | `index.html`; full suite 65 tests pass; live CSS rule and green Vercel deployment verified | `aefdb03` |
+| 40 | ✅ Complete | Mobile recording control reaches a 44px touch target without changing recording behavior | `app.html`; full suite 65 tests pass; live CSS rule and green Vercel deployment verified | `4013df8` |
+| 41 | ✅ Complete | CDN cache policy for public HTML routes only; API, auth, payments, secrets, and checkout routes remain unchanged | Full suite 65 tests pass; HTML/config checks pass; Vercel deployment `b8832c9` READY; live `x-vercel-cache: HIT` verified | `b8832c9` |
+| 42 | ✅ Complete | Message normalization filters blank or malformed records before retaining the newest 40 valid entries | `api/chat.js`; focused suite 51 tests and full suite 66 tests pass; Vercel deployment `0d1c906` READY | `0d1c906` |
+| 43 | ✅ Complete | Image attachments allow only bounded PNG, JPEG, GIF, or WebP base64 payloads before provider request construction | `api/chat.js`; focused suite 52 tests and full suite 67 tests pass; Vercel deployment `8d8dce4` READY | `8d8dce4` |
+| 44 | ✅ Complete | Chat-history normalization scans only the latest 400 raw records before retaining the newest 40 valid messages | `api/chat.js`; focused suite 53 tests and full suite 68 tests pass; Vercel deployment `0d4fe89` READY | `0d4fe89` |
+| 45 | ✅ Complete | Image attachment validation rejects structurally invalid base64 padding or length before provider payload construction | `api/chat.js`; focused suite 53 tests and full suite 68 tests pass; Vercel deployment `b248fa5` READY | `b248fa5` |
+| 46 | ✅ Complete | Forge multipart completions emit only string text parts; unusable content triggers the existing fallback instead of leaking object text | `api/chat.js`; focused suite 54 tests and full suite 69 tests pass; Vercel deployment `7d482fe` READY | `7d482fe` |
+| 47 | ✅ Complete | Regression coverage confirms ordered Forge multipart text streams normally and does not invoke fallback | `tests/multi-model-routing.test.mjs`; focused suite 55 tests and full suite 70 tests pass; Vercel deployment `e3488f2` READY | `e3488f2` |
+| 48 | ✅ Complete | Regression coverage confirms a non-text Forge single content object triggers fallback instead of user-visible object text | `tests/multi-model-routing.test.mjs`; focused suite 56 tests and full suite 71 tests pass; Vercel deployment `aa4d6e0` READY | `aa4d6e0` |
+| 49 | ✅ Complete | Workspace exposes a validated PNG, JPEG, GIF, or WebP image picker with preview, removal, and mobile touch-safe control | `app.html`; upload contract test and full suite 72 tests pass; Vercel deployment `9e855e3` READY | `9e855e3` |
+| 50 | ✅ Complete | Combined normalized chat text and attached image data are bounded before routing or provider payload construction | `api/chat.js`; focused suite 57 tests and full suite 73 tests pass; Vercel deployment `91f45e6` READY | `91f45e6` |
+| 51 | ✅ Complete | Supported clipboard images enter the existing validated workspace preview and removal flow without intercepting ordinary text paste | `app.html`; attachment contract and full suite 73 tests pass; Vercel deployment `6fa5f55` READY; live in-memory clipboard check verified | `6fa5f55` |
+| 52 | ✅ Complete | An unusable clipboard image item now falls through to the existing text-paste path instead of swallowing pasted content | `app.html`; attachment contract and full suite 73 tests pass; Vercel deployment `076e492` READY; live source and native long-text paste path verified | `076e492` |
+| 53 | ✅ Complete | Forwarded client identity is bounded and normalized before chat rate-limit key construction, preventing blank or oversized proxy values from producing unstable keys | `api/chat.js`; focused suite 58 tests and full suite 74 tests pass; Vercel deployment `57ad63a` READY | `57ad63a` |
+| 54 | ✅ Complete | Only valid IPv4 or IPv6 identities reach chat rate-limit key construction; malformed values, ports, and control characters use the shared unknown key | `api/chat.js`; focused suite 59 tests and full suite 75 tests pass; Vercel deployment `39bc2b9` READY | `39bc2b9` |
+| 55 | ✅ Complete | Untrusted search context is bounded before processing and stripped of non-text control characters before system-prompt construction | `api/chat.js`; focused suite 60 tests and full suite 76 tests pass; Vercel deployment `67af968` READY | `67af968` |
+| 56 | ✅ Complete | Individual chat-message content is capped before trimming and normalization, preserving recent valid messages while bounding per-record work | `api/chat.js`; focused suite 61 tests and full suite 77 tests pass; Vercel deployment `1e5c8d3` READY | `1e5c8d3` |
+| 57 | ✅ Complete | Supported image files can be dropped onto the workspace composer through the existing validation, preview, removal, and sending path without intercepting text-only drops | `app.html`; attachment contract and full suite 77 tests pass; Vercel deployment `347cac4` READY; live drop preview verified | `347cac4` |
+| 58 | ✅ Complete | Latest workspace image action wins: stale FileReader completions cannot overwrite a newer selection or a removed attachment | `app.html`; attachment contract and full suite 77 tests pass; Vercel deployment `596efa2` READY | `596efa2` |
+| 59 | ✅ Complete | Image payloads without a valid user message are rejected rather than silently omitted from provider input | `api/chat.js`; focused suite 62 tests and full suite 78 tests pass; Vercel deployment `38e982a` READY | `38e982a` |
+| 60 | ✅ Complete | Image attachments must align with the latest normalized user turn and cannot be associated with stale history | `api/chat.js`; focused suite 63 tests and full suite 79 tests pass; Vercel deployment `09e94af` READY | `09e94af` |
+| 61 | ✅ Complete | Image attachments must have decoded PNG, JPEG, GIF, or WebP signatures that match their declared media type before provider payload construction | `api/chat.js`; focused suite 64 tests and full suite 80 tests pass; Vercel deployment `e88c652` READY | `e88c652` |
+| 62 | ✅ Complete | Image data is serialized as a provider-format image part only on the final user payload entry, leaving earlier turns and source history unchanged | `api/chat.js`; focused suite 65 tests and full suite 81 tests pass; Vercel deployment `e77eca6` READY | `e77eca6` |
+| 63 | ✅ Complete | Image attachments require essential PNG, JPEG, GIF, or WebP container structure and reject header-only or truncated payloads before provider routing | `api/chat.js`; focused suite 66 tests and full suite 82 tests pass; Vercel deployment `5b17e5a` READY | `5b17e5a` |
+| 64 | ✅ Complete | Image attachments reject malformed primary PNG, JPEG, GIF, or WebP structures that otherwise pass simple signature and trailer checks | `api/chat.js`; focused suite 67 tests and full suite 83 tests pass; Vercel deployment `0b195e5` READY | `0b195e5` |
+| 65 | ✅ Complete | Client-provided model and role strings are limited to 128 normalized characters and non-string values safely default before chat route resolution | `api/chat.js`; focused suite 68 tests and full suite 84 tests pass; Vercel deployment `2b7335b` READY | `2b7335b` |
+| 66 | ✅ Complete | Handler-level regression coverage proves the existing chat timeout and disconnect listener are cleaned up after streamed success and upstream error paths | `tests/multi-model-routing.test.mjs`; focused suite 70 tests and full suite 86 tests pass; Vercel deployment `36c6219` READY | `36c6219` |
+| 67 | ✅ Complete | Workspace composer preserves IME composition, keeps Enter-to-send and Shift+Enter newline behavior, and exposes an accessible keyboard-use label | `app.html`; static UI contract and full suite 87 tests pass; exact Vercel deployment `1c7de33` READY; live DOM verified | `1c7de33` |
+| 68 | ✅ Complete | Workspace composer displays a concise Enter-to-send and Shift+Enter hint on desktop, with readable theme styling and a narrow-screen hide rule to protect mobile controls | `app.html`; attachment contract and full suite 88 tests pass; exact Vercel deployment `e9bd5c3` READY; live DOM text, geometry, and mobile CSS rule verified | `e9bd5c3` |
+| 69 | ✅ Complete | Workspace chat exposes polite, atomic live status text for thinking, completion, stop, and failure states without changing provider behavior | `app.html`; static UI contract and full suite 89 tests pass; Vercel deployment `9460654` READY | `9460654` |
+| 70 | ✅ Complete | Workspace chat exposes aria-busy while a generation is active and clears it on command, image, normal, stopped, and failed completion paths | `app.html`; static UI contract and full suite 90 tests pass; Vercel deployment `0e08c70` READY | `0e08c70` |
+| 71 | ✅ Complete | Workspace send control exposes accurate accessible names for sending and stopping a generation throughout the existing lifecycle | `app.html`; static UI contract and full suite 91 tests pass; Vercel deployment `8845c48` READY; live initial control label verified | `8845c48` |
+| 72 | ✅ Complete | Workspace returns keyboard focus to the composer after local command or image-request completion, only when focus remains on the send control | `app.html`; static UI contract and full suite 92 tests pass; Vercel deployment `b0b0682` READY; live workspace load verified | `b0b0682` |
+| 73 | ✅ Complete | Workspace stop action expands to a touch-safe 88px width only while generating, keeping its visible label readable on narrow screens | `app.html`; static UI contract and full suite 93 tests pass; Vercel deployment `e017ece` READY; live workspace load verified | `e017ece` |
+| 74 | ✅ Complete | Workspace restores composer focus after normal, stopped, or failed generation cleanup only when the send control remains focused | `app.html`; static UI contract and full suite 94 tests pass; Vercel deployment `af88761` READY; live workspace load verified | `af88761` |
+| 75 | ✅ Complete | Workspace announces “Stopping generation” immediately through the existing live status region before aborting an active request | `app.html`; static UI contract and full suite 95 tests pass; Vercel deployment `1875fa8` READY; live workspace load verified | `1875fa8` |
+| 76 | ✅ Complete | Mobile navigation control exposes an explicit open/close label and synchronized aria-expanded state while preserving the existing sidebar behavior | `app.html`; static UI contract and full suite 96 tests pass; Vercel deployment `8483d82` READY; live control label verified | `8483d82` |
+| 77 | ✅ Complete | Workspace drawer close control exposes an explicit Close workspace label while preserving the existing toggle behavior | `app.html`; static UI contract and full suite 97 tests pass; Vercel deployment `aa6778e` READY; live workspace load verified | `aa6778e` |
+| 78 | ✅ Complete | Workspace Files control exposes a synchronized aria-expanded state and aria-controls relationship for the existing drawer | `app.html`; static UI contract and full suite 98 tests pass; Vercel deployment `34f86eb` READY; live workspace load verified | `34f86eb` |
+| 79 | ✅ Complete | Keyboard users can close an open workspace drawer with Escape and return focus to the existing Files control | `app.html`; static UI contract and full suite 99 tests pass; Vercel deployment `443fa2d` READY; live workspace load verified | `443fa2d` |
+| 80 | ✅ Complete | Sign-in modal exposes an explicit labelled modal-dialog role with a stable Account access title | `app.html`; static UI contract and full suite 100 tests pass; Vercel deployment `b318e90` READY; live dialog title verified | `b318e90` |
+| 81 | ✅ Complete | Sign-in dialog moves focus to its email field when opened and returns focus to its trigger after explicit dismissal | `app.html`; static UI contract and full suite 101 tests pass; Vercel deployment `ed15260` READY; live workspace load verified | `ed15260` |
+| 82 | ✅ Complete | Escape closes the open sign-in dialog through its existing dismissal path and restores focus to the triggering control | `app.html`; static UI contract and full suite 102 tests pass; Vercel deployment `9464675` READY; live Escape and focus-return behavior verified | `9464675` |
+| 83 | ✅ Complete | Plans, usage, and settings cards expose explicit labelled modal-dialog semantics without changing existing behavior | `app.html`; static UI contract and full suite 103 tests pass; Vercel deployment `ed117b9` READY; live DOM semantics verified | `ed117b9` |
+| 84 | ✅ Complete | Plans, usage, and settings close controls expose specific accessible names without changing existing behavior | `app.html`; static UI contract and full suite 104 tests pass; Vercel deployment `409c9b8` READY; live DOM labels verified | `409c9b8` |
+| 85 | ✅ Complete | Escape dismisses an open plans, usage, or settings dialog through its existing close path without overriding earlier handlers | `app.html`; static UI contract and full suite 105 tests pass; Vercel deployment `c51fd39` READY; live plans Escape behavior verified | `c51fd39` |
+| 86 | ✅ Complete | Plans, usage, and settings dialogs focus their close control when opened and restore focus to the initiating control on dismissal | `app.html`; static UI contract and full suite 106 tests pass; Vercel deployment `12d66ca` READY; live plans focus lifecycle verified | `12d66ca` |
+| 87 | ✅ Complete | Sign-in and sign-up email and password fields expose explicit accessible names while preserving browser autofill metadata | `app.html`; static UI contract and full suite 107 tests pass; Vercel deployment `7a26b07` READY; live sign-in field labels verified | `7a26b07` |
+| 88 | ✅ Complete | Switching sign-in and sign-up pages moves focus to the active page’s email field without changing authentication behavior | `app.html`; static UI contract and full suite 108 tests pass; Vercel deployment `33f8980` READY; live focus switching verified | `33f8980` |
+| 89 | ✅ Complete | Tab and Shift+Tab focus loops remain within the open sign-in dialog without changing sign-in behavior | `app.html`; static UI contract and full suite 109 tests pass; Vercel deployment `ef28609` READY; live focus-loop behavior verified | `ef28609` |
+| 90 | ✅ Complete | Tab and Shift+Tab focus loops remain within the open plans, usage, or settings dialog without changing modal behavior | `app.html`; static UI contract and full suite 110 tests pass; Vercel deployment `ab68234` READY; live plans focus-loop behavior verified | `ab68234` |
+| 91 | ✅ Complete | Sign-in and sign-up feedback regions announce status politely and atomically | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 92 | ✅ Complete | Pasted-content removal and owner-tools close controls expose specific accessible names | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 93 | ✅ Complete | Owner-tools card exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 94 | ✅ Complete | Owner-tools settings entry is keyboard-operable without changing owner actions | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 95 | ✅ Complete | Owner-tools dialog moves focus to close control and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 96 | ✅ Complete | Escape dismisses the open owner-tools dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 97 | ✅ Complete | Tab and Shift+Tab stay within the open owner-tools dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 98 | ✅ Complete | Usage-limit modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 99 | ✅ Complete | Usage-limit dialog focuses its first action and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 100 | ✅ Complete | Escape dismisses the open usage-limit dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 101 | ✅ Complete | Credit top-up modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 102 | ✅ Complete | Credit top-up dialog focuses its first pack and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 103 | ✅ Complete | Escape dismisses the open credit top-up dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 104 | ✅ Complete | Tab and Shift+Tab stay within the open credit top-up dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 105 | ✅ Complete | Redeem-code modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 106 | ✅ Complete | Redeem-code dialog focuses its field and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 107 | ✅ Complete | Escape dismisses the open redeem-code dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 108 | ✅ Complete | Tab and Shift+Tab stay within the open redeem-code dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 109 | ✅ Complete | Purchase-confirmation modal exposes explicit labelled modal-dialog semantics | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 110 | ✅ Complete | Purchase-confirmation dialog focuses Continue and restores the triggering control on dismissal | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 111 | ✅ Complete | Escape dismisses the open purchase-confirmation dialog through its existing close path | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 112 | ✅ Complete | Tab and Shift+Tab stay within the open purchase-confirmation dialog | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 113 | ✅ Complete | Post-purchase confetti canvas is hidden from assistive technologies as decorative content | `app.html`; full suite 134 tests pass; Vercel deployment `0e2634d` success | `0e2634d` |
+| 114 | ✅ Complete | Workspace model choices expose clear accessible descriptions aligned to Spark, Star, Comet, and Nova routing tiers | `app.html`; full suite 135 tests pass; Vercel deployment `914160d` success | `914160d` |
+| 115 | ✅ Complete | Workspace model selector exposes synchronized menu disclosure state while preserving routing and plan gates | `app.html`; full suite 136 tests pass; Vercel deployment `bac8dd8` success | `bac8dd8` |
+| 116 | ✅ Complete | Escape closes the open workspace model menu and restores focus to the selector trigger | `app.html`; full suite 137 tests pass; Vercel deployment `e1716bb` success | `e1716bb` |
+| 117 | ✅ Complete | Tab and Shift+Tab wrap within the open workspace model menu, excluding hidden or disabled choices | `app.html`; full suite 138 tests pass; Vercel deployment `748882e` success | `748882e` |
+| 118 | ✅ Complete | Keyboard-triggered model-menu opening moves focus to the first visible available choice while pointer opening remains unchanged | `app.html`; full suite 139 tests pass; Vercel deployment `4bb3ae1` success | `4bb3ae1` |
+| 119 | ✅ Complete | ArrowDown and ArrowUp move focus through visible enabled model-menu choices with wrapping | `app.html`; full suite 140 tests pass; Vercel deployment `b07c844` success | `b07c844` |
+| 120 | ✅ Complete | Model choices expose synchronized menu-radio selection state, while the plan action remains a menu item | `app.html`; full suite 141 tests pass; Vercel deployment `56fd574` success | `56fd574` |
+| 121 | ✅ Complete | Mobile model menu is scrollable and overscroll-contained within its bounded viewport, keeping all choices reachable | `app.html`; full suite 142 tests pass; Vercel deployment `3fd1a80` success | `3fd1a80` |
+| 122 | ✅ Complete | Permitted model selection refreshes the visible checks and radio-menu selected state immediately | `app.html`; full suite 143 tests pass; Vercel deployment `f4cf7a0` success | `f4cf7a0` |
+| 123 | ✅ Complete | Primary landing-page hero CTA explicitly states that the first script can be generated free while retaining the existing workspace destination | `index.html`; full suite 144 tests pass; Vercel deployment `3607ecc` success | `3607ecc` |
+| 124 | ✅ Complete | Keyboard visitors can skip landing-page navigation and focus the main content through a visible-on-focus skip link | `index.html`; full suite 145 tests pass; Vercel deployment `fa6d442` success | `fa6d442` |
+| 125 | ✅ Complete | The visible mobile landing-header theme control has a reliable 44px minimum touch target | `index.html`; full suite 146 tests pass; Vercel deployment `161edbf` success | `161edbf` |
+| 126 | ✅ Complete | Landing-page favorite-tool controls expose their unsaved pressed state before the existing renderer restores saved state | `index.html`; full suite 147 tests pass; Vercel deployment `f51b7ce` success | `f51b7ce` |
+| 127 | ✅ Complete | The landing-page feature-search result count announces existing filter updates politely to assistive technology | `index.html`; full suite 148 tests pass; Vercel deployment `e1f4d14` success | `e1f4d14` |
+| 128 | ✅ Complete | Every landing-page FAQ disclosure button is linked to its labelled answer region while preserving existing one-at-a-time behavior | `index.html`; full suite 149 tests pass; Vercel deployment `8a0920a` success | `8a0920a` |
+| 129 | ✅ Complete | Landing-page FAQ answer regions expose accessibility visibility that matches their existing open and closed state | `index.html`; full suite 150 tests pass; Vercel deployment `3b3268e` success | `3b3268e` |
+| 130 | ✅ Complete | The landing-page saved-tool count announces existing local favorite updates politely to assistive technology | `index.html`; full suite 151 tests pass; Vercel deployment `0385ac0` success | `0385ac0` |
+| 131 | ✅ Complete | Decorative landing-page FAQ plus icons are hidden from assistive technology while retaining their existing visual state treatment | `index.html`; full suite 152 tests pass; Vercel deployment `e6a7d64` success | `e6a7d64` |
+| 132 | ✅ Complete | Landing-page FAQ structured data includes additional answers already visible in the public FAQ, without changing the canonical page meaning | `index.html`; full suite 153 tests pass; Vercel deployment `142e107` success | `142e107` |
+| 133 | ✅ Complete | Workspace generation status remains announced by one authoritative live region while the duplicate visual thinking bubble is decorative | `app.html`; full suite 154 tests pass; Vercel deployment `1f1a351` success | `1f1a351` |
+| 134 | ✅ Complete | The existing workspace chat conversation region has a stable accessible name while preserving busy and scrolling behavior | `app.html`; full suite 155 tests pass; Vercel deployment `cf40560` success | `cf40560` |
+| 135 | ✅ Complete | The existing workspace message composer is exposed as a named form landmark without changing keyboard or send controls | `app.html`; full suite 156 tests pass; Vercel deployment `e2f11a3` success | `e2f11a3` |
+| 136 | ✅ Complete | The workspace pasted-content summary announces its existing feedback politely while retaining the visual remove control | `app.html`; full suite 157 tests pass; Vercel deployment `3dfe7db` success | `3dfe7db` |
+| 137 | ✅ Complete | The existing workspace sidebar is exposed as named navigation without changing its chat, account, or utility controls | `app.html`; full suite 158 tests pass; Vercel deployment `4721d8e` success | `4721d8e` |
+| 138 | ✅ Complete | The existing workspace chat search control has an explicit accessible name without changing filter behavior | `app.html`; full suite 159 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 139 | ✅ Complete | Existing workspace chat-history heading and list have an explicit accessible relationship without changing chat behavior | `app.html`; full suite 160 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 140 | ✅ Complete | The landing workspace preview is exposed as one concise labelled visual while visible hero content and CTA behavior remain unchanged | `index.html`; full suite 161 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 141 | ✅ Complete | The narrow-phone landing workspace preview omits its unreadably compact decorative sidebar while preserving hero conversion paths | `index.html`; full suite 162 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 142 | ✅ Complete | Workspace chat-history entries are keyboard-operable through separate chat-open and options controls without nested interactions | `app.html`; full suite 163 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 143 | ✅ Complete | Existing chat Options popup exposes accurate menu semantics, trigger state, keyboard navigation, and focus return | `app.html`; full suite 164 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 144 | ✅ Complete | Public landing plan actions have explicit plan-oriented accessible labels without changing prices or destinations | `index.html`; full suite 165 tests pass; Vercel deployment `be7a2ad` success | `be7a2ad` |
+| 145 | ✅ Complete | Workspace model chooser supports Home and End focus navigation across visible choices without changing selection, routing, or plan gates | `app.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
+| 146 | ✅ Complete | Specialist workspace model choices have concise explicit accessible names that state their output focus | `app.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
+| 147 | ✅ Complete | Final public free-generation call to action has an explicit accessible name without changing its destination or offer | `index.html`; full suite 173 tests pass; Vercel deployment `aae13ce` success | `aae13ce` |
+| 148 | ✅ Complete | Workspace recording control synchronizes its pressed state and accessible name with its existing recording mode without changing recording behavior or privacy handling | `app.html`; full suite 174 tests pass; Vercel deployment `2460d7f` success | `2460d7f` |
+| 149 | ✅ Complete | Workspace model chooser returns focus to its visible trigger after selection, avoiding focus remaining on a hidden menu choice | `app.html`; full suite 175 tests pass; Vercel deployment `9a53c2b` success | `9a53c2b` |
+| 150 | ✅ Complete | Settings theme and text-size segmented controls synchronize their pressed states with the saved appearance choice without changing preference behavior | `app.html`; full suite 176 tests pass; Vercel deployment `f29e7af` success | `f29e7af` |
+| 151 | ✅ Complete | Sidebar theme control synchronizes its pressed state and next-theme action label with the saved workspace theme | `app.html`; full suite 177 tests pass; Vercel deployment `b716653` success | `b716653` |
+| 152 | ✅ Complete | Sidebar and Settings → About Terms destinations use native links while retaining their `/terms.html` destination, mobile layout, and accessible controls | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
+| 153 | ✅ Complete | Workspace uses a clean deep-dark premium conversation layout with a 760px chat column, right user bubbles, ✦ assistant identity, compact sidebar, pill composer, and responsive mobile presentation | `app.html`; full suite 180 tests pass; Vercel deployment `5ea916c` success | `5ea916c` |
+| 154 | ✅ Complete | Landing quick-start cards hand off a whitelisted editable starter prompt to the workspace without auto-submitting, persisting it, or changing offers, accounts, or payments | `index.html`, `app.html`; full suite 182 tests pass; desktop and 375px guest-path checks; Vercel deployment `d533b06` success | `d533b06` |
+| 155 | ✅ Complete | A first-run guest continuation returns focus to an already-ready landing starter composer, while explicit welcome-dialog launches still restore their original trigger | `app.html`; full suite 183 tests pass; desktop focus and 375px guest-path checks; Vercel deployment `1c294e3` success | `1c294e3` |
+| 156 | ✅ Complete | Existing quick-start paths include one concise contextual route to the existing FiveM and Roblox Guides hub without changing offers or destination behavior | `index.html`; full suite 185 tests pass; responsive source and active-worktree checks; Vercel deployment `f34b3c1` success | `f34b3c1` |
+| 157 | ✅ Complete | Existing quick-start cards use readable light-theme surfaces and foregrounds while preserving starter links, saved-tool actions, and feature search behavior | `index.html`; full suite 185 tests pass; active-worktree light-theme computed-style check; Vercel deployment `f34b3c1` success | `f34b3c1` |
+| 158 | ✅ Complete | Existing saved-tool star actions use a consistent 44px touch target without changing favorite state, starter routes, or feature-search behavior | `index.html`; full suite 186 tests pass; active-source geometry shows no starter-link overlap; Vercel deployment `60b2d17` success | `60b2d17` |
+| 159 | ✅ Complete | The offscreen mobile workspace sidebar synchronizes `aria-hidden` while closed and stays exposed when opened or on desktop | `app.html`; full suite 187 tests pass; focused mobile-state contract; Vercel deployment `dca7cc0` success | `dca7cc0` |
+| 160 | ✅ Complete | The existing redeem-code input has an explicit accessible name while preserving redemption flow and dialog keyboard behavior | `app.html`; full suite 188 tests pass; focused redeem-field contract; Vercel deployment `27db994` success | `27db994` |
+| 161 | ✅ Complete | The existing sidebar toggle synchronizes expanded state and action label across desktop collapse and mobile drawer modes | `app.html`; full suite 189 tests pass; focused navigation-state contract; Vercel deployment `23cfd6b` success | `23cfd6b` |
+| 162 | ✅ Complete | Landing FAQ and FAQ structured data explain that FiveM event-driven scripts still need server-side validation, without exploit-proof claims | `index.html`; full suite 190 tests pass; focused FAQ contract; Vercel deployment `61c9a3a` success | `61c9a3a` |
+| 163 | ✅ Complete | Approved “Before you test” guidance beside the FiveM Police starter, naming file review, dependency verification, private testing, and returning with errors | `index.html`, `tests/landing-cta.test.mjs`; full suite 191 tests pass; exact READY Vercel deployment for `571bff4` verified | `571bff4` |
+| 164 | ✅ Complete | Existing chat-history options buttons use 44 × 44px touch targets while preserving their Chat options trigger, menu semantics, and keyboard behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 192 tests pass; exact READY Vercel deployment for `c222cda` verified | `c222cda` |
+| 165 | ✅ Complete | Dynamically generated Pin, Rename, and Delete chat-menu actions explicitly use non-submit buttons while preserving labels, menu roles, keyboard navigation, and focus restoration | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 193 tests pass; exact READY Vercel deployment for `bde6e4e` verified | `bde6e4e` |
+| 166 | ✅ Complete | Existing “See all plans” model-menu action explicitly uses a non-submit button while preserving its menu role, plan gating, dialog behavior, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 194 tests pass; exact READY Vercel deployment for `260b9d2` verified | `260b9d2` |
+| 167 | ✅ Complete | Existing New Chat sidebar control explicitly uses a non-submit button while preserving its newChat action, navigation placement, focus behavior, and visible copy | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 195 tests pass; exact READY Vercel deployment for `55d3bf7` verified | `55d3bf7` |
+| 168 | ✅ Complete | Existing signed-out Sign in sidebar control explicitly uses a non-submit button while preserving its openWelcome flow, focus behavior, navigation placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 196 tests pass; exact READY Vercel deployment for `f0ca635` verified | `f0ca635` |
+| 169 | ✅ Complete | Existing signed-in Sign out sidebar control explicitly uses a non-submit button while preserving its signOut action, account behavior, title, placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 197 tests pass; exact READY Vercel deployment for `d4f89cf` verified | `d4f89cf` |
+| 170 | ✅ Complete | Existing Credit sidebar control explicitly uses a non-submit button while preserving its openUsage action, usage panel behavior, placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 198 tests pass; exact READY Vercel deployment for `3157d8d` verified | `3157d8d` |
+| 171 | ✅ Complete | Existing Plans sidebar control explicitly uses a non-submit button while preserving its openPlans action, plans dialog behavior, placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 199 tests pass; exact READY Vercel deployment for `6c06d41` verified | `6c06d41` |
+| 172 | ✅ Complete | Existing Theme sidebar control explicitly uses a non-submit button while preserving toggleDarkMode, aria-pressed synchronization, theme behavior, placement, and visible copy | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 200 tests pass; exact READY Vercel deployment for `db819df` verified | `db819df` |
+| 173 | ✅ Complete | Existing Settings sidebar control explicitly uses a non-submit button while preserving its openSettings action, settings dialog behavior, placement, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 201 tests pass; exact READY Vercel deployment for `a373308` verified | `a373308` |
+| 174 | ✅ Complete | Existing model chooser selection buttons explicitly use non-submit buttons while preserving model selection, plan gating, menuitemradio roles, and aria-checked synchronization | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 202 tests pass; exact READY Vercel deployment for `da90537` verified | `da90537` |
+| 175 | ✅ Complete | Existing paste-removal and Send composer controls explicitly use non-submit buttons while preserving clearPaste, stopOrSend, labels, keyboard handling, and chat behavior | `app.html`, `tests/app-image-upload.test.mjs`, `tests/workspace-accessibility.test.mjs`; full suite 203 tests pass; exact READY Vercel deployment for `07a4e47` verified | `07a4e47` |
+| 176 | ✅ Complete | Existing composer Credit and Files controls explicitly use non-submit buttons while preserving openUsage, toggleWorkspace, labels, file behavior, and usage behavior | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 204 tests pass; exact READY Vercel deployment for `20d71f0` verified | `20d71f0` |
+| 177 | ✅ Complete | Existing model-menu trigger explicitly uses a non-submit button while preserving toggleModelMenu, menu accessibility attributes, model selection, and visible copy | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 205 tests pass; exact READY Vercel deployment for `27e88b6` verified | `27e88b6` |
+| 178 | ✅ Complete | Existing Settings tab controls explicitly use non-submit buttons while preserving setTab behavior, selected-state synchronization, keyboard navigation, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 206 tests pass; exact READY Vercel deployment for `31bce9d` verified | `31bce9d` |
+| 179 | ✅ Complete | Existing Dark and Light appearance controls explicitly use non-submit buttons while preserving setMode, refreshSettings, aria-pressed synchronization, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 207 tests pass; exact READY Vercel production deployment for `a7d5263` verified | `a7d5263` |
+| 180 | ✅ Complete | Existing Small, Normal, and Large text-size controls explicitly use non-submit buttons while preserving setTextSize, aria-pressed synchronization, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 208 tests pass; exact READY Vercel production deployment for `166983a` verified | `166983a` |
+| 181 | ✅ Complete | Existing workspace suggestion chips explicitly use non-submit buttons while preserving useSuggestion actions, visible labels, and responsive layout | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 209 tests pass; exact READY Vercel production deployment for `1000e28` verified | `1000e28` |
+| 182 | ✅ Complete | Existing landing-page FAQ disclosure controls explicitly use non-submit buttons while preserving their answers, ARIA state synchronization, and visible copy | `index.html`, `tests/landing-cta.test.mjs`; full suite 210 tests pass; exact READY Vercel production deployment for `a29f520` verified | `a29f520` |
+| 183 | ✅ Complete | Added a keyboard-accessible mobile landing navigation toggle with unchanged How it works, Pricing, Roblox worlds, and Guides destinations | `index.html`, `tests/landing-cta.test.mjs`; full suite 211 tests pass; exact READY Vercel production deployment for `786a724` verified | `786a724` |
+| 184 | ✅ Complete | Reduced the measured whitespace between the landing-page hero grid and framework rail from 66px to 28px on desktop while preserving the mobile 42px override | `index.html`, `tests/landing-cta.test.mjs`; full suite 212 tests pass; exact READY Vercel production deployment for `082aecb` verified | `082aecb` |
+| 185 | ✅ Complete | Existing top-up amount packs, purchase action, and cancel control explicitly use non-submit buttons while preserving credit values, handlers, and visible labels | `app.html`, `tests/workspace-accessibility.test.mjs`; full suite 213 tests pass; exact READY Vercel production deployment for `934d5be` verified | `934d5be` |
+| 186 | ✅ Complete | Fixed landing-page hash navigation so Plans, Roblox worlds, and How it works links reveal their animated content and apply a sticky-header-safe scroll offset | `index.html`, `tests/landing-cta.test.mjs`; full suite 214 tests pass; exact READY Vercel production deployment for `9a83304` verified | `9a83304` |
+| 187 | ✅ Complete | Added truthful plan-selection guidance, clarified Free/Plus/Pro use cases, and replaced the unsupported “Most popular” badge without changing prices or payment logic | `index.html`, `tests/landing-cta.test.mjs`; full suite 215 tests pass; exact READY Vercel production deployment for `18b174e` verified | `18b174e` |
+| 188 | ✅ Complete | Kept the Roblox games and communities section visible without scroll-reveal delay and added a clear directory for Stellar Strike, Stellar Simulator, StellarHQ, and zitos gang using approved URLs | `index.html`, `tests/landing-cta.test.mjs`; full suite 216 tests pass; exact READY Vercel production deployment for `a16a3ba` verified | `a16a3ba` |
+| 189 | ✅ Complete | Added explicit accessible labels to the Stellar Strike, Stellar Simulator, StellarHQ, and zitos gang links while preserving approved URLs and new-tab behavior | `index.html`, `tests/landing-cta.test.mjs`; full suite 217 tests pass; exact READY Vercel production deployment for `ec88cb1` verified | `ec88cb1` |
+| 190 | ✅ Complete | Reduced the confirmed desktop hero-to-framework whitespace while preserving the mobile 42px framework override and all four quick-start cards | `index.html`, `tests/landing-cta.test.mjs`; full suite 218 tests pass; exact READY Vercel production deployment for `d0e6aa7` verified | `d0e6aa7` |
+| 191 | ✅ Complete | Tightened repeated landing section spacing, pricing wrapper spacing, and final CTA spacing while preserving mobile readability and all useful content | `index.html`, `tests/landing-cta.test.mjs`; full suite 219 tests pass; exact READY Vercel production deployment for `888d941` verified | `888d941` |
+| 192 | ✅ Complete | Added a visible, truthful Why Stellar comparison that explains its FiveM and Roblox workflow focus without unsupported outcomes | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `b29c004` |
+| 193 | ✅ Complete | Exposed direct Why Stellar, Pricing, and Terms destinations in the landing navigation without changing protected flows | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `6692888` |
+| 194 | ✅ Complete | Expanded the public FiveM, Roblox, and workflow capability map with review-and-test boundaries | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `ce57926` |
+| 195 | ✅ Complete | Added a compact hero build-path rail that hands visitors to truthful FiveM, Roblox, repair, and capabilities routes | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `3084092` |
+| 196 | ✅ Complete | Kept introductory landing content visible when animation setup is delayed while preserving existing motion preferences | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `0ea5a91` |
+| 197 | ✅ Complete | Kept all Free, Plus, and Pro descriptions and fit statements readable in the light theme without changing prices or entitlements | `index.html`, `tests/landing-cta.test.mjs`; exact READY Vercel production deployment verified | `9593e69` |
+| 198 | ✅ Complete | Removed the unavailable public Jarvis presentation, navigation, plan wording, and demo references without changing prices or entitlements | `index.html`, `tests/landing-cta.test.mjs`; release included in the latest READY production deployment | `14bf25c` |
+| 199 | ✅ Complete | Refined the approved landing flow with a direct hero, immediate quick starts, a four-step Describe → Generate → Test → Improve workflow, clear capability and plan guidance, and a test-oriented final CTA | `index.html`, `tests/landing-cta.test.mjs`; full suite 229/229 passes, whitespace validation passes, and Vercel production deployment `dpl_2YFAgqgBWQEEYqpPuNsg5chpcmj2` is READY with a 200 smoke check | `22837c7` |
+| 200 | ✅ Complete | Simplified public quick starts to four direct Police, Heist, Fix, and Roblox card routes by removing the redundant feature search, favourite controls, saved-tool state, and related unused browser logic while preserving starter hand-offs and accessibility | `index.html`, `tests/landing-cta.test.mjs`; full suite 229/229 passes, whitespace validation passes, Vercel production deployment `6wMkX7Us1fQWjgEvT5sRqUXUTxU1` is READY, and cache-busted `trystellarai.com` verification confirmed the four-card experience | `2eed7d0` |
+| 201 | ✅ Complete | Corrected the remaining repository-owned legacy Plus/Pro pricing, added truthful directory-ready software metadata and framework compatibility copy, introduced a dismissible every-third-message Free upgrade reminder, refreshed the unsent improvement email, and applied a flat minimal public/workspace visual layer without changing checkout or server enforcement | `LAUNCH-KIT.md`, `index.html`, `app.html`, `broadcast-template.html`, `tests/public-release-contract.test.mjs`; full suite 234/234 passes, whitespace validation passes, and Vercel production deployment `29b5d12` is READY with cache-busted live-domain verification | `744ada8`, `29b5d12` |
+| 202 | ✅ Complete | Published two original long-form guides for “QBCore police job script free” and “Roblox tapping simulator script,” covering server authority, dependencies, RemoteEvents, DataStores, private testing, and official reference links without claiming a deploy-ready script or guaranteed outcome | `blog-qbcore-police-job-script-free.html`, `blog-roblox-tapping-simulator-script.html`, `blog.html`, `sitemap.xml`, `tests/public-release-contract.test.mjs`; full suite 235/235 passes, whitespace validation passes, final canonical/static routes were verified live after Vercel deployment `99d4d50` reached READY | `c8a6a21`, `99d4d50` |
+| 203 | ✅ Complete | Added direct regression coverage proving the public Nova/`ultra` alias resolves to Star for Free, Lite, and Plus while Pro and owner plans retain Nova access; no model-routing behavior, entitlements, checkout, or protected server logic changed | `tests/multi-model-routing.test.mjs`; full suite 236/236 passes, whitespace validation passes, and Vercel production deployment `dpl_FthiacCZtowYnH6zJCVm19FDHtBB` is READY for commit `1faf55d` | `1faf55d` |
+| 204 | ✅ Complete | Added direct regression coverage proving the `ultra` alias cannot obtain Nova through empty, whitespace-suffixed, unknown, `null`, or `undefined` plan labels; each safely falls back to Star without changing routing behavior or plan enforcement | `tests/multi-model-routing.test.mjs`; full suite 237/237 passes, whitespace validation passes, and Vercel production deployment `dpl_EtQcvJFxUAnFgu5SqTtXNaRjX2cJ` is READY for commit `ff52c99` | `ff52c99` |
+| 205 | ✅ Complete | Added route-level regression coverage proving a direct public `ultra` request reaches the Anthropic Star tier for Free, Lite, and Plus, and only reaches Nova for Pro and owner plans; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 238/238 passes, whitespace validation passes, and Vercel production deployment `dpl_45gnhqQvTc7mCEnecKGnQP45aXnX` is READY for commit `7de28d5` | `7de28d5` |
+| 206 | ✅ Complete | Added direct tier- and route-level regression coverage proving the canonical Nova identifier `claude-opus-4-8` falls back to Star on Free, Lite, and Plus and is available only to Pro and owner plans; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 239/239 passes, whitespace validation passes, and Vercel production deployment `dpl_7vzCChaRcCxrJ31sCQ89zce9zbQR` is READY for commit `0eacc71` | `0eacc71` |
+| 207 | ✅ Complete | Added comprehensive regression coverage proving every recognised Nova alias (`nova`, `ultra`, `fable`, `claude-fable-5`, and `claude-opus-4-8`) falls back to Star on Free and Plus and resolves to Nova only for Pro; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 240/240 passes, whitespace validation passes, and Vercel production deployment `dpl_Hjrcms7Q5tfvwBezwY9rdj68NGKo` is READY for commit `8b4b241` | `8b4b241` |
+| 208 | ✅ Complete | Added regression coverage proving case- and whitespace-normalized Nova inputs (` ULTRA `, `NoVa`, and `ClAuDe-OpUs-4-8`) retain their Star fallback on Free and Plus and resolve to Nova only on Pro; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 241/241 passes, whitespace validation passes, and Vercel production deployment `dpl_BRa9VTq8HNRGWFXfktZxVbKmLUPd` is READY for commit `f0eacbb` | `f0eacbb` |
+| 209 | ✅ Complete | Added route-level regression coverage proving unknown model input safely resolves to Anthropic Star on Free, Lite, Plus, Pro, and owner plans, never Nova; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 242/242 passes, whitespace validation passes, and Vercel production deployment `dpl_FUedhRjkfvuw9jb7iMvgoipg1ddX` is READY for commit `d17b720` | `d17b720` |
+| 210 | ✅ Complete | Added route-level regression coverage proving malformed model values (`null`, `undefined`, objects, arrays, and numbers) safely resolve to Anthropic Star and cannot select Nova even on Pro; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 243/243 passes, whitespace validation passes, and Vercel production deployment `dpl_38mDDRL88ZEjueAjcdA7DTZTSJLx` is READY for commit `d63d70c` | `d63d70c` |
+| 211 | ✅ Complete | Added route-level regression coverage proving oversized model strings are bounded and safely resolve to Anthropic Star rather than Nova even on Pro; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 244/244 passes, whitespace validation passes, and Vercel production deployment `dpl_Gp4PY3UwPbHKUuLzhoKmkfCUntMG` is READY for commit `987230f` | `987230f` |
+| 212 | ✅ Complete | Added route-level regression coverage proving every recognised Nova alias (`nova`, `ultra`, `fable`, `claude-fable-5`, and `claude-opus-4-8`) routes to Anthropic Star on Free and Plus and routes to Nova only on Pro; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 245/245 passes, whitespace validation passes, and Vercel production deployment `dpl_GovFFTFumCoNGRymGL2UDyJvTy9w` is READY for commit `23373d5` | `23373d5` |
+| 213 | ✅ Complete | Added regression coverage preserving concrete primary-and-fallback Anthropic candidate chains for Spark, Star, Comet, and Nova, so a provider failure retains a defined fallback route; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 246/246 passes, whitespace validation passes, and Vercel production deployment `dpl_F1qWJ2jgWt1wjNF8pptmAnCK2iB9` is READY for commit `0c6f4c7` | `0c6f4c7` |
+| 214 | ✅ Complete | Added regression coverage proving unsupported, `null`, and `undefined` candidate-tier lookups use the safe Star primary-and-fallback chain rather than an undefined or premium path; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 247/247 passes, whitespace validation passes, and Vercel production deployment `dpl_CDuCe1rBqa6b3VV5vsMu1E8M94F1` is READY for commit `025decf` | `025decf` |
+| 215 | ✅ Complete | Added regression coverage proving candidate arrays are independently allocated, so caller-side mutation cannot affect a later Star routing request; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 248/248 passes, whitespace validation passes, and Vercel production deployment `dpl_3jYezv1ckYvLEwCX2zCStH2jPkMq` is READY for commit `dc3302b` | `dc3302b` |
+| 216 | ✅ Complete | Added route-level regression coverage proving every recognised Nova alias (`nova`, `ultra`, `fable`, `claude-fable-5`, and `claude-opus-4-8`) remains available as Anthropic Nova to the authorised owner plan; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 249/249 passes, whitespace validation passes, and Vercel production deployment `dpl_926zJ2GMcNmGXQjg1FFL3fsbKHTo` is READY for commit `b8c03d1` | `b8c03d1` |
+| 217 | ✅ Complete | Added regression coverage proving every supported specialist role keeps Free and Plus `ultra` requests off Nova while preserving its selected role; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 250/250 passes, whitespace validation passes, and Vercel production deployment `dpl_DETCyLqp6wnu3idGczeYfGEATQ7T` is READY for commit `c995bb6` | `c995bb6` |
+| 218 | ✅ Complete | Added regression coverage proving unknown role labels retain the safe implementer Forge default (`claude-sonnet-4-6`) and Star fallback for Free and Plus `ultra` requests, rather than selecting Nova; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 251/251 passes, whitespace validation passes, and Vercel production deployment `dpl_8AvVS4JNY7QRiFJY69BjcSMaNzKi` is READY for commit `2c8381c` | `2c8381c` |
+| 219 | ✅ Complete | Added regression coverage proving malformed role values (`null`, `undefined`, objects, arrays, and numbers) preserve the selected `ultra` model’s safe Star fallback for Free and Plus rather than selecting Nova; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 252/252 passes, whitespace validation passes, and Vercel production deployment `dpl_2iVjtCHbPM1KQKHUz2bjt6S1GgSA` is READY for commit `0f3f8f6` | `0f3f8f6` |
+| 220 | ✅ Complete | Added regression coverage proving casing- and whitespace-normalized premium specialist-role labels (` SECURITY ` and `TeStEr`) still resolve to the safe Star fallback for Free and Plus, never Nova; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 253/253 passes, whitespace validation passes, and Vercel production deployment `dpl_7KiL4PXTMUc9aWimsunA2ivpvx9N` is READY for commit `fdec181` | `fdec181` |
+| 221 | ✅ Complete | Added regression coverage proving Pro retains both premium specialist Forge routes: security uses `gpt-5` and tester uses `claude-opus-4-7`, each with the Star fallback tier; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 254/254 passes, whitespace validation passes, and Vercel production deployment `dpl_51GCmFXGXmtUYxMuHNAzWCN1sUi5` is READY for commit `74cdf42` | `74cdf42` |
+| 222 | ✅ Complete | Added regression coverage proving both premium specialist routes (security and tester) use the safe Anthropic Star fallback for the legacy Lite plan, never Nova; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 255/255 passes, whitespace validation passes, and Vercel production deployment `dpl_JDCpigiU4vWJJCDF1exL32oTMkZf` is READY for commit `d22df66` | `d22df66` |
+| 223 | ✅ Complete | Added regression coverage proving the owner plan retains both premium specialist Forge routes: security uses `gpt-5` and tester uses `claude-opus-4-7`, each with the Star fallback tier; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 256/256 passes, whitespace validation passes, and Vercel production deployment `dpl_4RvX1ySZAFaRAEGGWc3Wo4JtV89h` is READY for commit `283cf9c` | `283cf9c` |
+| 224 | ✅ Complete | Added regression coverage proving every permitted public Spark, Star, and Comet alias remains available to both Free and Plus users; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 257/257 passes, whitespace validation passes, and Vercel production deployment `dpl_H9NcA8nHWuAHZUJRUH398H6HWkQH` is READY for commit `cf08c32` | `cf08c32` |
+| 225 | ✅ Complete | Added regression coverage proving every permitted public Spark, Star, and Comet alias remains available to the legacy Lite plan; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 258/258 passes, whitespace validation passes, and Vercel production deployment `dpl_3WLSuRXnYW9YQiVt6hGwiwa6ADZ7` is READY for commit `ab2fddc` | `ab2fddc` |
+| 226 | ✅ Complete | Added regression coverage proving every supported legacy and canonical Spark, Star, Comet, and Nova alias remains available to both Pro and owner plans; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 259/259 passes, whitespace validation passes, and Vercel production deployment `dpl_CAkgYx5S4aDEb3qXsRL65sKkbb5k` is READY for commit `4a6c617` | `4a6c617` |
+| 227 | ✅ Complete | Added route-level regression coverage proving each supported alias retains its established Anthropic tier or direct Forge route on both Pro and owner plans; no routing or protected server behavior changed | `tests/multi-model-routing.test.mjs`; full suite 260/260 passes, whitespace validation passes, and Vercel production deployment `dpl_7ofWU3NGUJQ7ZsQMjB5k4JjTJ1tD` is READY for commit `5fd11c4` | `5fd11c4` |
+| 228 | ☐ Pending | Next approved implementation task | — | — |
+| 229 | ☐ Pending | Next approved implementation task | — | — |
+| 230 | ☐ Pending | Next approved implementation task | — | — |
+| 231 | ☐ Pending | Next approved implementation task | — | — |
+| 232 | ☐ Pending | Next approved implementation task | — | — |
+| 233 | ☐ Pending | Next approved implementation task | — | — |
+| 234 | ☐ Pending | Next approved implementation task | — | — |
+| 235 | ☐ Pending | Next approved implementation task | — | — |
+| 236 | ☐ Pending | Next approved implementation task | — | — |
+| 237 | ☐ Pending | Next approved implementation task | — | — |
+| 238 | ☐ Pending | Next approved implementation task | — | — |
+| 239 | ☐ Pending | Next approved implementation task | — | — |
+| 240 | ☐ Pending | Next approved implementation task | — | — |
+| 241 | ☐ Pending | Next approved implementation task | — | — |
+| 242 | ☐ Pending | Next approved implementation task | — | — |
+| 243 | ☐ Pending | Next approved implementation task | — | — |
+| 244 | ☐ Pending | Next approved implementation task | — | — |
+| 245 | ☐ Pending | Next approved implementation task | — | — |
+| 246 | ☐ Pending | Next approved implementation task | — | — |
+| 247 | ☐ Pending | Next approved implementation task | — | — |
+| 248 | ☐ Pending | Next approved implementation task | — | — |
+| 249 | ☐ Pending | Next approved implementation task | — | — |
+| 250 | ☐ Pending | Next approved implementation task | — | — |
+| 251 | ☐ Pending | Next approved implementation task | — | — |
+| 252 | ☐ Pending | Next approved implementation task | — | — |
+| 253 | ☐ Pending | Next approved implementation task | — | — |
+| 254 | ☐ Pending | Next approved implementation task | — | — |
+| 255 | ☐ Pending | Next approved implementation task | — | — |
+| 256 | ☐ Pending | Next approved implementation task | — | — |
+| 257 | ☐ Pending | Next approved implementation task | — | — |
+| 258 | ☐ Pending | Next approved implementation task | — | — |
+| 259 | ☐ Pending | Next approved implementation task | — | — |
+| 260 | ☐ Pending | Next approved implementation task | — | — |
+| 261 | ☐ Pending | Next approved implementation task | — | — |
+| 262 | ☐ Pending | Next approved implementation task | — | — |
+| 263 | ☐ Pending | Next approved implementation task | — | — |
+| 264 | ☐ Pending | Next approved implementation task | — | — |
+| 265 | ☐ Pending | Next approved implementation task | — | — |
+| 266 | ☐ Pending | Next approved implementation task | — | — |
+| 267 | ☐ Pending | Next approved implementation task | — | — |
+| 268 | ☐ Pending | Next approved implementation task | — | — |
+| 269 | ☐ Pending | Next approved implementation task | — | — |
+| 270 | ☐ Pending | Next approved implementation task | — | — |
+| 271 | ☐ Pending | Next approved implementation task | — | — |
+| 272 | ☐ Pending | Next approved implementation task | — | — |
+| 273 | ☐ Pending | Next approved implementation task | — | — |
+| 274 | ☐ Pending | Next approved implementation task | — | — |
+| 275 | ☐ Pending | Next approved implementation task | — | — |
+| 276 | ☐ Pending | Next approved implementation task | — | — |
+| 277 | ☐ Pending | Next approved implementation task | — | — |
+| 278 | ☐ Pending | Next approved implementation task | — | — |
+| 279 | ☐ Pending | Next approved implementation task | — | — |
+| 280 | ☐ Pending | Next approved implementation task | — | — |
+| 281 | ☐ Pending | Next approved implementation task | — | — |
+| 282 | ☐ Pending | Next approved implementation task | — | — |
+| 283 | ☐ Pending | Next approved implementation task | — | — |
+| 284 | ☐ Pending | Next approved implementation task | — | — |
+| 285 | ☐ Pending | Next approved implementation task | — | — |
+| 286 | ☐ Pending | Next approved implementation task | — | — |
+| 287 | ☐ Pending | Next approved implementation task | — | — |
+| 288 | ☐ Pending | Next approved implementation task | — | — |
+| 289 | ☐ Pending | Next approved implementation task | — | — |
+| 290 | ☐ Pending | Next approved implementation task | — | — |
+| 291 | ☐ Pending | Next approved implementation task | — | — |
+| 292 | ☐ Pending | Next approved implementation task | — | — |
+| 293 | ☐ Pending | Next approved implementation task | — | — |
+| 294 | ☐ Pending | Next approved implementation task | — | — |
+| 295 | ☐ Pending | Next approved implementation task | — | — |
+| 296 | ☐ Pending | Next approved implementation task | — | — |
+| 297 | ☐ Pending | Next approved implementation task | — | — |
+| 298 | ☐ Pending | Next approved implementation task | — | — |
+| 299 | ☐ Pending | Next approved implementation task | — | — |
+| 300 | ☐ Pending | Next approved implementation task | — | — |
+| 301 | ☐ Pending | Next approved implementation task | — | — |
+| 302 | ☐ Pending | Next approved implementation task | — | — |
+| 303 | ☐ Pending | Next approved implementation task | — | — |
+| 304 | ☐ Pending | Next approved implementation task | — | — |
+| 305 | ☐ Pending | Next approved implementation task | — | — |
+| 306 | ☐ Pending | Next approved implementation task | — | — |
+| 307 | ☐ Pending | Next approved implementation task | — | — |
+| 308 | ☐ Pending | Next approved implementation task | — | — |
+| 309 | ☐ Pending | Next approved implementation task | — | — |
+| 310 | ☐ Pending | Next approved implementation task | — | — |
+| 311 | ☐ Pending | Next approved implementation task | — | — |
+| 312 | ☐ Pending | Next approved implementation task | — | — |
+| 313 | ☐ Pending | Next approved implementation task | — | — |
+| 314 | ☐ Pending | Next approved implementation task | — | — |
+| 315 | ☐ Pending | Next approved implementation task | — | — |
+| 316 | ☐ Pending | Next approved implementation task | — | — |
+| 317 | ☐ Pending | Next approved implementation task | — | — |
+| 318 | ☐ Pending | Next approved implementation task | — | — |
+| 319 | ☐ Pending | Next approved implementation task | — | — |
+| 320 | ☐ Pending | Next approved implementation task | — | — |
+| 321 | ☐ Pending | Next approved implementation task | — | — |
+| 322 | ☐ Pending | Next approved implementation task | — | — |
+| 323 | ☐ Pending | Next approved implementation task | — | — |
+| 324 | ☐ Pending | Next approved implementation task | — | — |
+| 325 | ☐ Pending | Next approved implementation task | — | — |
+| 326 | ☐ Pending | Next approved implementation task | — | — |
+| 327 | ☐ Pending | Next approved implementation task | — | — |
+| 328 | ☐ Pending | Next approved implementation task | — | — |
+| 329 | ☐ Pending | Next approved implementation task | — | — |
+| 330 | ☐ Pending | Next approved implementation task | — | — |
+| 331 | ☐ Pending | Next approved implementation task | — | — |
+| 332 | ☐ Pending | Next approved implementation task | — | — |
+| 333 | ☐ Pending | Next approved implementation task | — | — |
+| 334 | ☐ Pending | Next approved implementation task | — | — |
+| 335 | ☐ Pending | Next approved implementation task | — | — |
+| 336 | ☐ Pending | Next approved implementation task | — | — |
+| 337 | ☐ Pending | Next approved implementation task | — | — |
+| 338 | ☐ Pending | Next approved implementation task | — | — |
+| 339 | ☐ Pending | Next approved implementation task | — | — |
+| 340 | ☐ Pending | Next approved implementation task | — | — |
+| 341 | ☐ Pending | Next approved implementation task | — | — |
+| 342 | ☐ Pending | Next approved implementation task | — | — |
+| 343 | ☐ Pending | Next approved implementation task | — | — |
+| 344 | ☐ Pending | Next approved implementation task | — | — |
+| 345 | ☐ Pending | Next approved implementation task | — | — |
+| 346 | ☐ Pending | Next approved implementation task | — | — |
+| 347 | ☐ Pending | Next approved implementation task | — | — |
+| 348 | ☐ Pending | Next approved implementation task | — | — |
+| 349 | ☐ Pending | Next approved implementation task | — | — |
+| 350 | ☐ Pending | Next approved implementation task | — | — |
+| 351 | ☐ Pending | Next approved implementation task | — | — |
+| 352 | ☐ Pending | Next approved implementation task | — | — |
+| 353 | ☐ Pending | Next approved implementation task | — | — |
+| 354 | ☐ Pending | Next approved implementation task | — | — |
+| 355 | ☐ Pending | Next approved implementation task | — | — |
+| 356 | ☐ Pending | Next approved implementation task | — | — |
+| 357 | ☐ Pending | Next approved implementation task | — | — |
+| 358 | ☐ Pending | Next approved implementation task | — | — |
+| 359 | ☐ Pending | Next approved implementation task | — | — |
+| 360 | ☐ Pending | Next approved implementation task | — | — |
+| 361 | ☐ Pending | Next approved implementation task | — | — |
+| 362 | ☐ Pending | Next approved implementation task | — | — |
+| 363 | ☐ Pending | Next approved implementation task | — | — |
+| 364 | ☐ Pending | Next approved implementation task | — | — |
+| 365 | ☐ Pending | Next approved implementation task | — | — |
+| 366 | ☐ Pending | Next approved implementation task | — | — |
+| 367 | ☐ Pending | Next approved implementation task | — | — |
+| 368 | ☐ Pending | Next approved implementation task | — | — |
+| 369 | ☐ Pending | Next approved implementation task | — | — |
+| 370 | ☐ Pending | Next approved implementation task | — | — |
+| 371 | ☐ Pending | Next approved implementation task | — | — |
+| 372 | ☐ Pending | Next approved implementation task | — | — |
+| 373 | ☐ Pending | Next approved implementation task | — | — |
+| 374 | ☐ Pending | Next approved implementation task | — | — |
+| 375 | ☐ Pending | Next approved implementation task | — | — |
+| 376 | ☐ Pending | Next approved implementation task | — | — |
+| 377 | ☐ Pending | Next approved implementation task | — | — |
+| 378 | ☐ Pending | Next approved implementation task | — | — |
+| 379 | ☐ Pending | Next approved implementation task | — | — |
+| 380 | ☐ Pending | Next approved implementation task | — | — |
+| 381 | ☐ Pending | Next approved implementation task | — | — |
+| 382 | ☐ Pending | Next approved implementation task | — | — |
+| 383 | ☐ Pending | Next approved implementation task | — | — |
+| 384 | ☐ Pending | Next approved implementation task | — | — |
+| 385 | ☐ Pending | Next approved implementation task | — | — |
+| 386 | ☐ Pending | Next approved implementation task | — | — |
+| 387 | ☐ Pending | Next approved implementation task | — | — |
+| 388 | ☐ Pending | Next approved implementation task | — | — |
+| 389 | ☐ Pending | Next approved implementation task | — | — |
+| 390 | ☐ Pending | Next approved implementation task | — | — |
+| 391 | ☐ Pending | Next approved implementation task | — | — |
+| 392 | ☐ Pending | Next approved implementation task | — | — |
+| 393 | ☐ Pending | Next approved implementation task | — | — |
+| 394 | ☐ Pending | Next approved implementation task | — | — |
+| 395 | ☐ Pending | Next approved implementation task | — | — |
+| 396 | ☐ Pending | Next approved implementation task | — | — |
+| 397 | ☐ Pending | Next approved implementation task | — | — |
+| 398 | ☐ Pending | Next approved implementation task | — | — |
+| 399 | ☐ Pending | Next approved implementation task | — | — |
+| 400 | ☐ Pending | Next approved implementation task | — | — |
+
+## Current count
+
+**191 / 400 implementation tasks complete.** The counter must not be increased because of planning, waiting, or unverified claims.
+
+## Protected boundary
+
+Auth, payments, secrets, package files, Vercel configuration, database code, and unrelated API/server behavior remain protected unless a later task names an explicit approved change.

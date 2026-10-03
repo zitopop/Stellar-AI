@@ -1,0 +1,299 @@
+/* Stellar Orbit v5 — full gold workspace system based on the approved Stellar reference.
+   Presentation only: chat, auth, billing, model routing and data logic remain authoritative in app.html. */
+:root{
+  --orbit-bg:#090a16;--orbit-bg-2:#0e1120;--orbit-panel:#111426;--orbit-panel-2:#171a30;
+  --orbit-panel-soft:#0d1020;--orbit-line:rgba(172,139,255,.18);--orbit-line-strong:rgba(188,153,255,.42);
+  --orbit-text:#f8f6ff;--orbit-muted:#aaa6c6;--orbit-dim:#74708e;--orbit-gold:#d4af37;--orbit-gold-soft:#d4af37;
+  --orbit-pink:#ec4899;--orbit-blue:#60a5fa;--orbit-mint:#34d399;--orbit-gold:#f59e0b;
+  --orbit-glow:rgba(168,85,247,.28);--orbit-radius:18px;--orbit-radius-sm:12px;
+}
+
+body.stellar-orbit-v3:not(.light){
+  color:var(--orbit-text)!important;
+  background:
+    radial-gradient(circle at 76% 10%,rgba(212,175,55,.18),transparent 28rem),
+    radial-gradient(circle at 48% 36%,rgba(168,85,247,.08),transparent 30rem),
+    radial-gradient(circle at 24% 94%,rgba(96,165,250,.06),transparent 26rem),
+    linear-gradient(180deg,#090a16 0%,#090a14 50%,#070811 100%)!important;
+}
+body.stellar-orbit-v3:not(.light) #main-col,
+body.stellar-orbit-v3:not(.light) #chat,
+body.stellar-orbit-v3:not(.light) .input-area.glass{background:transparent!important}
+
+/* Main shell */
+body.stellar-orbit-v3 #main-col{position:relative;min-width:0;overflow:hidden}
+body.stellar-orbit-v3 #main-col::before{
+  content:"";position:absolute;inset:56px 0 auto 0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(168,85,247,.3),transparent)
+}
+body.stellar-orbit-v3 #main-col::after{
+  content:"";position:absolute;inset:56px 0 auto 0;height:240px;pointer-events:none;opacity:.6;
+  background:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,.13),transparent 68%)
+}
+
+/* gold top bar like the approved reference */
+body.stellar-orbit-v3:not(.light) .topbar.glass{
+  min-height:58px!important;padding:0 18px!important;border-bottom:1px solid rgba(219,194,255,.20)!important;
+  background:linear-gradient(90deg,#6d20d9 0%,#7c22e5 38%,#6220c9 70%,#4f179d 100%)!important;
+  box-shadow:0 8px 28px rgba(31,9,61,.32)!important;backdrop-filter:blur(18px) saturate(140%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(140%)!important;position:relative;z-index:90
+}
+body.stellar-orbit-v3:not(.light) .topbar.glass::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.08),rgba(255,255,255,.34),rgba(255,255,255,.08))
+}
+body.stellar-orbit-v3:not(.light) .topbar button,
+body.stellar-orbit-v3:not(.light) .topbar a{color:#fff!important}
+body.stellar-orbit-v3:not(.light) #model-btn{
+  min-height:38px!important;padding:0 13px!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:999px!important;
+  color:#fff!important;background:rgba(255,255,255,.10)!important;box-shadow:inset 0 1px rgba(255,255,255,.10)!important
+}
+body.stellar-orbit-v3:not(.light) #model-btn:hover,
+body.stellar-orbit-v3:not(.light) #model-btn[aria-expanded="true"]{background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.38)!important}
+
+/* Sidebar */
+body.stellar-orbit-v3 #sidebar{width:264px!important}
+body.stellar-orbit-v3:not(.light) #sidebar{
+  isolation:isolate;position:relative;overflow:hidden;border-right:1px solid rgba(166,138,236,.16)!important;
+  background:linear-gradient(180deg,#0c0e1c 0%,#090b16 56%,#080912 100%)!important;
+  box-shadow:18px 0 50px rgba(0,0,0,.24)!important
+}
+body.stellar-orbit-v3:not(.light) #sidebar::before{
+  content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(circle,rgba(255,255,255,.50) 0 1px,transparent 1.2px),radial-gradient(circle,rgba(168,85,247,.70) 0 1px,transparent 1.2px);
+  background-size:54px 54px,87px 87px;background-position:10px 9px,38px 26px;mask-image:linear-gradient(to bottom,#000 0 36%,transparent 80%)
+}
+body.stellar-orbit-v3:not(.light) #sidebar::after{
+  content:"";position:absolute;width:210px;height:210px;left:-120px;top:40px;z-index:-1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%)
+}
+body.stellar-orbit-v3 .sidebar-brand-row{position:relative;z-index:3;margin-bottom:14px!important}
+body.stellar-orbit-v3:not(.light) .brand-star{
+  width:38px!important;height:38px!important;border:1px solid rgba(204,183,255,.34)!important;border-radius:12px!important;
+  color:#fff!important;background:linear-gradient(145deg,#d4af37,#d4af37 58%,#4f46e5)!important;box-shadow:0 8px 26px rgba(212,175,55,.30)!important
+}
+body.stellar-orbit-v3:not(.light) .brand-grad{color:#fff!important;background:none!important;-webkit-text-fill-color:currentColor!important;font-weight:900!important}
+
+body.stellar-orbit-v3:not(.light) .side-new{
+  position:relative;z-index:3;min-height:44px!important;border:1px solid rgba(199,167,255,.24)!important;border-radius:11px!important;
+  color:#fff!important;background:linear-gradient(90deg,rgba(111,45,210,.92),rgba(88,36,170,.90))!important;
+  box-shadow:0 8px 24px rgba(89,33,171,.22)!important
+}
+body.stellar-orbit-v3:not(.light) .side-new:hover{filter:brightness(1.08);border-color:rgba(219,196,255,.42)!important}
+body.stellar-orbit-v3:not(.light) #search{
+  min-height:40px!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:11px!important;color:#f6f4ff!important;
+  background:rgba(255,255,255,.035)!important
+}
+body.stellar-orbit-v3:not(.light) #search::placeholder{color:#7f7b94!important}
+body.stellar-orbit-v3:not(.light) #search:focus{border-color:rgba(168,85,247,.48)!important;background:rgba(168,85,247,.07)!important}
+
+body.stellar-orbit-v3:not(.light) .side-act,
+body.stellar-orbit-v3:not(.light) .sidebar-item{
+  border-radius:10px!important;color:#aaa6ba!important;transition:background .16s ease,color .16s ease,border-color .16s ease!important
+}
+body.stellar-orbit-v3:not(.light) .side-act:hover,
+body.stellar-orbit-v3:not(.light) .sidebar-item:hover{color:#fff!important;background:rgba(168,85,247,.075)!important}
+body.stellar-orbit-v3:not(.light) .sidebar-item.active{
+  color:#fff!important;border-left-color:#d4af37!important;background:linear-gradient(90deg,rgba(212,175,55,.30),rgba(212,175,55,.08))!important
+}
+body.stellar-orbit-v3 .chats-label{color:#79758d!important;letter-spacing:.10em!important;text-transform:uppercase;font-size:10px!important}
+body.stellar-orbit-v3:not(.light) .acct-box,
+body.stellar-orbit-v3:not(.light) .side-foot{border-color:rgba(255,255,255,.07)!important;background:rgba(255,255,255,.018)!important;border-radius:14px!important}
+
+/* Orbit/power card */
+.stellar-space-strip{
+  position:relative;z-index:3;display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;
+  min-height:64px;margin:0 0 12px;padding:10px 11px;border:1px solid rgba(180,145,255,.18);border-radius:14px;color:inherit;text-align:left;
+  background:linear-gradient(135deg,rgba(212,175,55,.17),rgba(168,85,247,.055));overflow:hidden
+}
+.stellar-space-strip:hover{border-color:rgba(190,154,255,.36);background:linear-gradient(135deg,rgba(212,175,55,.23),rgba(168,85,247,.08))}
+.stellar-space-orbit{display:grid;width:36px;height:36px;place-items:center;border:1px solid rgba(208,187,255,.25);border-radius:50%;color:#eadfff;background:#0b0d18;font-size:15px}
+.stellar-space-kicker{display:block;color:#8a839c;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.stellar-space-model{display:block;margin-top:2px;color:#f7f3ff;font-size:11px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stellar-space-depth{padding:5px 7px;border:1px solid rgba(255,255,255,.08);border-radius:999px;color:#aaa5b9;background:rgba(255,255,255,.035);font-size:7px;font-weight:900;text-transform:uppercase}
+.stellar-power-meter{grid-column:2/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:-2px}
+.stellar-power-meter span{height:3px;border-radius:99px;background:rgba(255,255,255,.08)}
+.stellar-power-meter span.is-on:nth-child(1){background:#34d399}.stellar-power-meter span.is-on:nth-child(2){background:#d4af37}.stellar-power-meter span.is-on:nth-child(3){background:#60a5fa}.stellar-power-meter span.is-on:nth-child(4){background:#f59e0b}
+
+/* Secondary sidebar shortcuts */
+.stellar-orbit-primary{position:relative;z-index:3;margin:-2px 0 12px}.stellar-orbit-rail-label{margin:0 4px 6px;color:#777287;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.stellar-orbit-primary-grid{display:grid;gap:4px}.stellar-orbit-primary-btn,.stellar-orbit-primary-link{display:grid;grid-template-columns:27px minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;min-height:39px;padding:6px 8px;border:1px solid transparent;border-radius:10px;color:#aaa6b7!important;text-decoration:none!important;background:transparent;text-align:left}
+.stellar-orbit-primary-btn:hover,.stellar-orbit-primary-link:hover{color:#fff!important;border-color:rgba(168,85,247,.16);background:rgba(168,85,247,.075)}
+.stellar-orbit-primary-icon{display:grid;width:27px;height:27px;place-items:center;border:1px solid rgba(255,255,255,.07);border-radius:8px;color:#d7c8ff;background:rgba(168,85,247,.07);font-size:12px}.stellar-orbit-primary-copy strong{display:block;color:inherit;font-size:10px;font-weight:850}.stellar-orbit-primary-copy span{display:block;margin-top:1px;color:#716d7f;font-size:8px}.stellar-orbit-primary-meta{color:#7a7488;font-size:7px;font-weight:900;text-transform:uppercase}
+
+/* Welcome/home area */
+body.stellar-orbit-v3:not(.light) .greet-wrap{
+  width:min(1040px,100%)!important;margin:0 auto!important;padding:72px 28px 38px!important;text-align:center!important;opacity:1!important;position:relative;z-index:2
+}
+body.stellar-orbit-v3:not(.light) .greet-wrap::before{
+  content:"✦  Stellar AI";display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 14px;margin-bottom:22px;
+  border:1px solid rgba(168,85,247,.38);border-radius:999px;color:#cfb8ff;font-size:12px;font-weight:800;letter-spacing:.02em;
+  background:rgba(212,175,55,.09);box-shadow:0 0 26px rgba(212,175,55,.10)
+}
+body.stellar-orbit-v3:not(.light) .greet-wrap h1,
+body.stellar-orbit-v3:not(.light) .greet-wrap .welcome-title{
+  margin:0!important;font-size:clamp(32px,4vw,54px)!important;line-height:1.02!important;letter-spacing:-.045em!important;font-weight:900!important;
+  color:#fff!important;background:linear-gradient(90deg,#d4af37,#c056f2 52%,#ec4899)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important
+}
+body.stellar-orbit-v3:not(.light) .greet-wrap .welcome-sub{margin-top:10px!important;color:#aaa6c6!important;font-size:clamp(17px,2vw,26px)!important;line-height:1.3!important}
+body.stellar-orbit-v3:not(.light) .greet-wrap img,
+body.stellar-orbit-v3:not(.light) .greet-wrap video,
+body.stellar-orbit-v3:not(.light) .greet-wrap canvas,
+body.stellar-orbit-v3:not(.light) .greet-wrap .welcome-visual,
+body.stellar-orbit-v3:not(.light) .greet-wrap .hero-media{display:none!important}
+body.stellar-orbit-v3:not(.light) .welcome-starters-label{margin-top:30px!important;margin-bottom:10px!important;color:#85809a!important;font-size:10px!important;font-weight:900!important;letter-spacing:.13em!important;text-transform:uppercase!important}
+
+body.stellar-orbit-v3:not(.light) #suggestion-chips{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;width:100%!important;margin:0 auto!important
+}
+body.stellar-orbit-v3:not(.light) .sug-chip{
+  min-height:108px!important;padding:16px!important;border:1px solid rgba(158,138,214,.17)!important;border-radius:16px!important;color:#f2effa!important;
+  background:linear-gradient(180deg,rgba(20,23,42,.92),rgba(14,17,32,.96))!important;box-shadow:inset 0 1px rgba(255,255,255,.02)!important;text-align:left!important;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease!important
+}
+body.stellar-orbit-v3:not(.light) .sug-chip:hover{transform:translateY(-2px)!important;border-color:rgba(168,85,247,.44)!important;background:linear-gradient(180deg,rgba(31,26,55,.98),rgba(18,19,37,.98))!important;box-shadow:0 14px 35px rgba(37,15,73,.18)!important}
+body.stellar-orbit-v3:not(.light) .home-guides-link{display:inline-flex!important;align-items:center!important;justify-content:center!important;margin-top:16px!important;color:#a995d7!important;text-decoration:none!important;font-weight:700!important}
+body.stellar-orbit-v3:not(.light) .home-guides-link:hover{color:#d6c5ff!important}
+
+/* Chat messages */
+body.stellar-orbit-v3:not(.light) .message{max-width:min(900px,92%)!important;margin-left:auto!important;margin-right:auto!important}
+body.stellar-orbit-v3:not(.light) .message.msg-user .msg-content{
+  padding:12px 15px!important;border:1px solid rgba(180,145,255,.22)!important;border-radius:18px 18px 6px 18px!important;
+  color:#f9f7ff!important;background:linear-gradient(135deg,rgba(92,39,165,.72),rgba(55,34,102,.78))!important
+}
+body.stellar-orbit-v3:not(.light) .message.msg-assistant .msg-content{color:#ece9f6!important}
+body.stellar-orbit-v3:not(.light) pre{border:1px solid rgba(168,85,247,.16)!important;border-radius:13px!important;background:#090b14!important}
+
+/* Composer */
+body.stellar-orbit-v3:not(.light) .input-area.glass{padding:12px 18px 18px!important;position:relative;z-index:40}
+body.stellar-orbit-v3:not(.light) .input-area.glass>div,
+body.stellar-orbit-v3:not(.light) .composer,
+body.stellar-orbit-v3:not(.light) .composer-shell{
+  border-color:rgba(168,85,247,.44)!important;border-radius:24px!important;background:rgba(15,17,32,.92)!important;
+  box-shadow:0 0 0 1px rgba(168,85,247,.06),0 18px 55px rgba(0,0,0,.34),0 0 30px rgba(212,175,55,.07)!important;
+  backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important
+}
+body.stellar-orbit-v3:not(.light) textarea{color:#f6f3ff!important}
+body.stellar-orbit-v3:not(.light) textarea::placeholder{color:#77738e!important}
+body.stellar-orbit-v3:not(.light) .ws-toggle,
+body.stellar-orbit-v3:not(.light) .input-area button:not(.primary-btn){border-radius:999px!important;color:#d3cde0!important;background:rgba(255,255,255,.025)!important}
+body.stellar-orbit-v3:not(.light) .ws-toggle:hover,
+body.stellar-orbit-v3:not(.light) .input-area button:not(.primary-btn):hover{color:#fff!important;background:rgba(168,85,247,.10)!important}
+body.stellar-orbit-v3:not(.light) .primary-btn,
+body.stellar-orbit-v3:not(.light) #send-btn{
+  width:44px!important;height:44px!important;min-width:44px!important;border-radius:50%!important;border:0!important;color:#fff!important;
+  background:linear-gradient(145deg,#b340ff,#d4af37)!important;box-shadow:0 8px 24px rgba(212,175,55,.36)!important
+}
+body.stellar-orbit-v3:not(.light) .primary-btn:hover,
+body.stellar-orbit-v3:not(.light) #send-btn:hover{transform:translateY(-1px)!important;filter:brightness(1.08)!important}
+
+/* Model menu */
+body.stellar-orbit-v3:not(.light) #model-menu{
+  width:min(370px,calc(100vw - 24px))!important;padding:10px!important;border:1px solid rgba(185,151,255,.25)!important;border-radius:18px!important;
+  background:radial-gradient(circle at 92% 0%,rgba(168,85,247,.15),transparent 13rem),rgba(10,12,24,.985)!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.58)!important;backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important
+}
+body.stellar-orbit-v3:not(.light) #model-menu .model-menu-heading{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:12px!important;padding:6px 7px 9px!important;color:#aaa6bc!important}
+body.stellar-orbit-v3:not(.light) #model-menu [data-model-choice]{border-radius:12px!important;color:#c9c4d6!important;background:transparent!important;border:1px solid transparent!important}
+body.stellar-orbit-v3:not(.light) #model-menu [data-model-choice]:hover{color:#fff!important;background:rgba(168,85,247,.085)!important;border-color:rgba(168,85,247,.15)!important}
+body.stellar-orbit-v3:not(.light) #model-menu [data-model-choice][aria-checked="true"]{color:#fff!important;border-color:rgba(168,85,247,.38)!important;background:linear-gradient(90deg,rgba(212,175,55,.28),rgba(168,85,247,.10))!important}
+
+/* Settings / plans / modals */
+body.stellar-orbit-v3:not(.light) .set-card,
+body.stellar-orbit-v3:not(.light) #plans-modal>div,
+body.stellar-orbit-v3:not(.light) #usage-modal>div,
+body.stellar-orbit-v3:not(.light) #welcome-modal>div{
+  border:1px solid rgba(174,142,255,.20)!important;border-radius:22px!important;background:linear-gradient(180deg,#111426,#0c0f1d)!important;
+  box-shadow:0 30px 100px rgba(0,0,0,.58)!important
+}
+body.stellar-orbit-v3:not(.light) .set-tab.active{color:#fff!important;background:linear-gradient(90deg,rgba(212,175,55,.32),rgba(168,85,247,.12))!important;border-color:rgba(168,85,247,.28)!important}
+body.stellar-orbit-v3:not(.light) .seg.on{color:#fff!important;background:#d4af37!important;border-color:#9f67ef!important}
+body.stellar-orbit-v3:not(.light) .plan-card{border-color:rgba(177,147,255,.18)!important;background:linear-gradient(180deg,rgba(21,24,45,.96),rgba(14,16,30,.98))!important;border-radius:18px!important}
+body.stellar-orbit-v3:not(.light) .plan-card:hover{border-color:rgba(168,85,247,.40)!important}
+
+/* Focus */
+body.stellar-orbit-v3 :focus-visible{outline:2px solid rgba(196,166,255,.92)!important;outline-offset:2px!important}
+
+/* Responsive */
+@media(max-width:1100px){body.stellar-orbit-v3:not(.light) #suggestion-chips{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){
+  body.stellar-orbit-v3 #sidebar{width:min(86vw,300px)!important}
+  body.stellar-orbit-v3:not(.light) .topbar.glass{min-height:54px!important;padding:0 10px!important}
+  body.stellar-orbit-v3:not(.light) .greet-wrap{padding:36px 14px 26px!important}
+  body.stellar-orbit-v3:not(.light) .greet-wrap::before{margin-bottom:14px;min-height:30px;font-size:11px}
+  body.stellar-orbit-v3:not(.light) .greet-wrap h1,body.stellar-orbit-v3:not(.light) .greet-wrap .welcome-title{font-size:34px!important}
+  body.stellar-orbit-v3:not(.light) .greet-wrap .welcome-sub{font-size:17px!important}
+  body.stellar-orbit-v3:not(.light) #suggestion-chips{grid-template-columns:1fr!important;gap:8px!important}
+  body.stellar-orbit-v3:not(.light) .sug-chip{min-height:72px!important;padding:13px!important}
+  body.stellar-orbit-v3:not(.light) .input-area.glass{padding:8px 8px max(10px,env(safe-area-inset-bottom))!important}
+}
+
+@media(prefers-reduced-motion:reduce){body.stellar-orbit-v3 *,body.stellar-orbit-v3 *::before,body.stellar-orbit-v3 *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Home starfield + LED sidebar polish */
+body.stellar-orbit-v3:not(.light) #main-col{
+  background-color:#070812!important;
+  background-image:
+    radial-gradient(circle at 14% 18%,rgba(255,255,255,.96) 0 1px,transparent 1.45px),
+    radial-gradient(circle at 71% 28%,rgba(207,190,255,.88) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 42% 73%,rgba(132,177,255,.72) 0 1.2px,transparent 1.65px),
+    radial-gradient(circle at 83% 82%,rgba(255,255,255,.72) 0 .8px,transparent 1.25px),
+    radial-gradient(ellipse at 52% 16%,rgba(212,175,55,.14),transparent 38rem),
+    linear-gradient(180deg,#080916 0%,#070812 100%)!important;
+  background-size:118px 118px,171px 171px,223px 223px,281px 281px,100% 100%,100% 100%!important;
+  background-position:5px 8px,41px 24px,82px 61px,17px 103px,0 0,0 0!important;
+}
+body.stellar-orbit-v3:not(.light) #chat{background:transparent!important}
+body.stellar-orbit-v3:not(.light) .greet-wrap{filter:drop-shadow(0 18px 60px rgba(0,0,0,.18))}
+body.stellar-orbit-v3:not(.light) .sug-chip{
+  background:linear-gradient(180deg,rgba(20,23,42,.78),rgba(12,14,28,.82))!important;
+  backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important
+}
+body.stellar-orbit-v3:not(.light) #sidebar::before{opacity:.62}
+body.stellar-orbit-v3:not(.light) .side-new{
+  border-color:rgba(197,163,255,.48)!important;
+  box-shadow:0 0 0 1px rgba(168,85,247,.12),0 0 22px rgba(212,175,55,.28),inset 0 0 20px rgba(255,255,255,.045)!important
+}
+body.stellar-orbit-v3:not(.light) .side-new:hover{
+  box-shadow:0 0 0 1px rgba(206,178,255,.24),0 0 30px rgba(168,85,247,.42),inset 0 0 22px rgba(255,255,255,.07)!important
+}
+body.stellar-orbit-v3:not(.light) .side-act,
+body.stellar-orbit-v3:not(.light) .sidebar-item,
+body.stellar-orbit-v3:not(.light) .stellar-orbit-primary-btn,
+body.stellar-orbit-v3:not(.light) .stellar-orbit-primary-link{
+  border:1px solid rgba(169,139,244,.08)!important;
+  box-shadow:inset 3px 0 0 rgba(168,85,247,.10)!important
+}
+body.stellar-orbit-v3:not(.light) .side-act:hover,
+body.stellar-orbit-v3:not(.light) .sidebar-item:hover,
+body.stellar-orbit-v3:not(.light) .stellar-orbit-primary-btn:hover,
+body.stellar-orbit-v3:not(.light) .stellar-orbit-primary-link:hover{
+  border-color:rgba(188,154,255,.30)!important;
+  background:linear-gradient(90deg,rgba(212,175,55,.17),rgba(168,85,247,.055))!important;
+  box-shadow:inset 3px 0 0 #d4af37,0 0 18px rgba(212,175,55,.18)!important
+}
+body.stellar-orbit-v3:not(.light) .sidebar-item.active{
+  border-color:rgba(197,166,255,.36)!important;
+  box-shadow:inset 3px 0 0 #f4d676,0 0 22px rgba(168,85,247,.24)!important
+}
+body.stellar-orbit-v3:not(.light) .stellar-orbit-primary-icon{
+  border-color:rgba(200,174,255,.24)!important;
+  background:rgba(212,175,55,.16)!important;
+  box-shadow:0 0 14px rgba(168,85,247,.16),inset 0 0 12px rgba(192,132,252,.08)!important
+}
+body.stellar-orbit-v3:not(.light) .stellar-orbit-primary-btn:hover .stellar-orbit-primary-icon,
+body.stellar-orbit-v3:not(.light) .stellar-orbit-primary-link:hover .stellar-orbit-primary-icon{
+  color:#fff!important;border-color:rgba(221,203,255,.52)!important;
+  box-shadow:0 0 20px rgba(192,132,252,.36),inset 0 0 14px rgba(192,132,252,.14)!important
+}
+@media(max-width:760px){
+  body.stellar-orbit-v3:not(.light) #main-col{background-size:96px 96px,147px 147px,197px 197px,251px 251px,100% 100%,100% 100%!important}
+}
+/* Stellar exact business palette final layer */
+:root{--stellar-black:#050505;--stellar-bg:#050505;--stellar-panel:#101010;--stellar-text:#F7F3EA;--stellar-muted:#B8B0A0;--stellar-gold:#D4AF37;--stellar-gold-2:#F2D675;--stellar-line:rgba(212,175,55,.28);--accent:#D4AF37;--accent-rgb:212,175,55;color-scheme:dark;}
+body{background:#050505!important;color:#F7F3EA!important;}
+h1,h2,h3,.brand span,.hero h1 span,.greet-hi,.greet-hi-accent{color:#D4AF37!important;-webkit-text-fill-color:#D4AF37!important;background:none!important;text-shadow:none!important;}
+p,li,small,.muted,.hero-lead,.welcome-sub{color:#B8B0A0!important;}
+button,.btn,.cta-btn,.nav-cta,.side-new,.primary,.primary-btn{background:#D4AF37!important;color:#050505!important;border-color:rgba(212,175,55,.32)!important;box-shadow:none!important;}
+.card,.panel,.glass,.modal,.plan-card,.plugin-card,.support-card,.set-card,#sidebar,.topbar,.input-area>.flex{background:#101010!important;color:#F7F3EA!important;border-color:rgba(212,175,55,.28)!important;box-shadow:none!important;}
+/* End Stellar exact business palette final layer */
