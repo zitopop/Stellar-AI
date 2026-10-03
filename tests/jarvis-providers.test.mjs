@@ -33,3 +33,34 @@ test('provider results remain grounded, bounded and owner notifications narrowly
     await assert.rejects(research('Find sources'), error => !error.message.includes('sensitive'));
   } finally { globalThis.fetch = originalFetch; for (const name of names) { if (original[name] === undefined) delete process.env[name]; else process.env[name] = original[name]; } }
 });
+
+
+test('call notifications use provider failover instead of readiness gating', async () => {
+  const originalFetch = globalThis.fetch;
+  const names = ['CALL_BRIDGE_TOKEN','TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_FROM_NUMBER','TWILIO_PHONE_NUMBER','TELNYX_API_KEY','TELNYX_CONNECTION_ID','TELNYX_FROM_NUMBER','JARVIS_PHONE_NUMBER','OWNER_PHONE'];
+  const original = Object.fromEntries(names.map(name => [name, process.env[name]]));
+  for (const name of names) delete process.env[name];
+  process.env.CALL_BRIDGE_TOKEN = 'test-value';
+  const requests = [];
+  try {
+    globalThis.fetch = async (url, options = {}) => {
+      requests.push({ url: String(url), options });
+      return Response.json({ call_id: 'call_fixture', status: 'started' });
+    };
+    const result = await notifyOwner({
+      channel: 'call',
+      ownerEmail: 'tobi@trystellarai.com',
+      mission: { id: 'call-test', status: 'completed', title: 'Direct owner call', summary: 'The result is ready.' },
+    });
+    assert.equal(result.status, 'accepted');
+    assert.equal(requests.length, 1);
+    assert.match(requests[0].url, /\/api\/call-owner$/);
+    assert.ok(!Object.hasOwn(JSON.parse(requests[0].options.body || '{}'), 'action'));
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const name of names) {
+      if (original[name] === undefined) delete process.env[name];
+      else process.env[name] = original[name];
+    }
+  }
+});
