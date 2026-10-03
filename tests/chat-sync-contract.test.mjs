@@ -9,7 +9,7 @@ test('signed-in chat sync preserves assistant messages and pins', () => {
       title: 'Website fixes',
       pinned: true,
       messages: [
-        { role: 'user', content: 'fix my app', t: 100 },
+        { role: 'user', content: 'fix my app', t: 100, mode: 'debug' },
         { role: 'assistant', content: 'Fixed the layout.', t: 200 },
         { role: 'ai', content: 'Saved to GitHub.', t: 300 },
       ],
@@ -20,6 +20,7 @@ test('signed-in chat sync preserves assistant messages and pins', () => {
   assert.equal(chats[0].name, 'Website fixes');
   assert.equal(chats[0].pinned, true);
   assert.deepEqual(chats[0].messages.map((message) => message.role), ['user', 'assistant', 'assistant']);
+  assert.equal(chats[0].messages[0].mode, 'debug');
 });
 
 test('signed-in chat sync strips unsafe ids and caps stored history', () => {
