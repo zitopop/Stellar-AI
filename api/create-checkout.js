@@ -1,5 +1,5 @@
-// api/create-checkout.js — signed-in Stripe Checkout for subscriptions and one-time credit top-ups
-// Checkout uses cards plus Link. Apple Pay and Google Pay ride on the card payment method when eligible; delayed-notification methods stay disabled.
+// api/create-checkout.js — Stripe Checkout for Stellar subscriptions and public business services
+// Customer-facing prices and fulfilment metadata are server-owned; never trust browser amounts.
 import crypto from 'crypto';
 import { requireSession } from '../lib/auth.js';
 import { isPaidPlan, normalisePlan } from '../lib/pricing.js';
@@ -203,9 +203,10 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
-  const sessionUser = requireSession(req, res);
-  if (!sessionUser) return;
   const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = req.body || {};
+  const publicBusinessCheckout = plan === 'website-audit' || plan === 'ai-receptionist';
+  const sessionUser = publicBusinessCheckout ? null : requireSession(req, res);
+  if (!publicBusinessCheckout && !sessionUser) return;
   const sourceName = acquisitionSource(source);
   const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
   const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
@@ -219,6 +220,128 @@ export default async function handler(req, res) {
   try {
     const Stripe = (await import('stripe')).default;
     const stripe = new Stripe(stripeSecret);
+
+    if (plan === 'website-audit') {
+      const checkout = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['card', 'link'],
+        billing_address_collection: 'auto',
+        customer_creation: 'always',
+        name_collection: { business: { enabled: true, optional: false } },
+        custom_fields: [
+          {
+            key: 'website',
+            label: { type: 'custom', custom: 'Business website URL' },
+            type: 'text',
+            optional: false,
+            text: { minimum_length: 4, maximum_length: 200 },
+          },
+          {
+            key: 'mainissue',
+            label: { type: 'custom', custom: 'Main website issue to fix' },
+            type: 'text',
+            optional: false,
+            text: { minimum_length: 3, maximum_length: 200 },
+          },
+        ],
+        line_items: [{
+          price_data: {
+            currency: 'gbp',
+            unit_amount: 9900,
+            product_data: {
+              name: 'Stellar AI Website Mini Audit / Quick Fix',
+              description: 'One-time focused review of a small-business website with a prioritised fix plan.',
+            },
+          },
+          quantity: 1,
+        }],
+        success_url: 'https://trystellarai.com/website-audit-thank-you.html?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'https://trystellarai.com/website-audit?checkout=cancelled#buy',
+        after_expiration: { recovery: { enabled: true } },
+        metadata: {
+          app: 'stellar-ai',
+          service: 'website_mini_audit',
+          stage: 'live',
+          acquisition_source: sourceName,
+        },
+      }, { idempotencyKey: 'stellar_business_audit_' + crypto.randomUUID() });
+      await Promise.all([
+        incrementConversionMetric('checkout-started'),
+        incrementConversionMetric('business-service-checkout-started'),
+        incrementConversionMetric('business-service-website_mini_audit-checkout-started'),
+      ]);
+      return res.status(200).json({ url: checkout.url });
+    }
+
+    if (plan === 'ai-receptionist') {
+      const checkout = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        payment_method_types: ['card', 'link'],
+        billing_address_collection: 'auto',
+        name_collection: { business: { enabled: true, optional: false } },
+        custom_fields: [
+          {
+            key: 'website',
+            label: { type: 'custom', custom: 'Business website or social page' },
+            type: 'text',
+            optional: true,
+            text: { maximum_length: 200 },
+          },
+          {
+            key: 'businessfacts',
+            label: { type: 'custom', custom: 'Services, hours, prices + booking link' },
+            type: 'text',
+            optional: false,
+            text: { maximum_length: 255 },
+          },
+          {
+            key: 'customdomain',
+            label: { type: 'custom', custom: 'Domain option' },
+            type: 'dropdown',
+            optional: false,
+            dropdown: {
+              options: [
+                { label: 'Use included receptionist URL', value: 'no' },
+                { label: 'Use my existing domain (DNS needed)', value: 'existing' },
+              ],
+            },
+          },
+        ],
+        custom_text: {
+          submit: {
+            message: '£150 setup + £49/month. Standard receptionist URL included. Existing-domain setup requires authorised DNS access. By paying, you agree to the Stellar AI Business Services Terms and acknowledge the Privacy Notice and Refund & Cancellation Policy on trystellarai.com.',
+          },
+        },
+        line_items: [
+          { price: 'price_1UDYQ0F96AiVlq46EFGlhAYv', quantity: 1 },
+          { price: 'price_1UDYQ6F96AiVlq46IwLxBzvQ', quantity: 1 },
+        ],
+        success_url: 'https://trystellarai.com/ai-receptionist-thank-you.html?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'https://trystellarai.com/ai-receptionist?checkout=cancelled#buy',
+        after_expiration: { recovery: { enabled: true } },
+        metadata: {
+          app: 'stellar-ai',
+          service: 'ai_receptionist',
+          stage: 'live',
+          acquisition_source: sourceName,
+        },
+        subscription_data: {
+          metadata: {
+            app: 'stellar-ai',
+            service: 'ai_receptionist',
+            stage: 'live',
+            acquisition_source: sourceName,
+          },
+        },
+      }, { idempotencyKey: 'stellar_business_receptionist_' + crypto.randomUUID() });
+      await Promise.all([
+        incrementConversionMetric('checkout-started'),
+        incrementConversionMetric('business-service-checkout-started'),
+        incrementConversionMetric('business-service-ai_receptionist-checkout-started'),
+      ]);
+      return res.status(200).json({ url: checkout.url });
+    }
+
     const kvUrl = process.env.KV_REST_API_URL;
     const kvToken = process.env.KV_REST_API_TOKEN;
     const accountUser = kvUrl && kvToken
