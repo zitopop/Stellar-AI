@@ -14,7 +14,7 @@ test('failed session refresh falls back safely to signed-out state', () => {
 });
 
 test('app renders local chats and handles pending checkout intent during startup', () => {
-  assert.match(app, /await handlePaymentReturn\(\);loadSessions\(\)/);
+  assert.match(app, /await handlePaymentReturn\(\);await loadSessions\(\)/);
   assert.match(app, /applyJarvisEntry\(\);await handlePendingIntents\(\)/);
   assert.match(app, /if\(!String\(statusEl\.textContent\|\|''\)\.includes\('Discord'\)\)setStatus\('Ready','good'\);prompt\.focus\(\)/);
 });
