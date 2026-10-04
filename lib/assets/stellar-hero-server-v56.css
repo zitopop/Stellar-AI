@@ -1,0 +1,321 @@
+/* Stellar AI premium server hero v56
+   Adds a restrained 3D server environment behind the existing conversion-first hero.
+   Decorative only: no content or CTA is hidden behind the scene. */
+
+.public-home .oa2-hero{
+  position:relative!important;
+  overflow:visible!important;
+  perspective:1200px!important;
+  isolation:isolate!important;
+}
+
+.public-home .oa2-hero>.dev-hero-copy,
+.public-home .oa2-hero>.hero-editor{
+  position:relative!important;
+  z-index:3!important;
+}
+
+.public-home .premium-server-scene{
+  --hero-scroll:0;
+  --hero-x:0;
+  --hero-y:0;
+  position:absolute;
+  inset:-34px -6% -46px -6%;
+  z-index:-1;
+  overflow:hidden;
+  pointer-events:none;
+  border-radius:42px;
+  opacity:.96;
+  transform-style:preserve-3d;
+  contain:layout paint;
+}
+
+.public-home .premium-server-scene::before{
+  content:"";
+  position:absolute;
+  inset:7% 0 6%;
+  background:
+    radial-gradient(ellipse at 76% 42%,rgba(132,112,255,.16),transparent 35%),
+    radial-gradient(ellipse at 62% 65%,rgba(70,209,255,.06),transparent 28%),
+    linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,0) 32%);
+  filter:blur(2px);
+}
+
+.public-home .premium-server-scene::after{
+  content:"";
+  position:absolute;
+  left:5%;
+  right:5%;
+  bottom:5%;
+  height:35%;
+  background:
+    linear-gradient(90deg,transparent,rgba(255,255,255,.055),transparent),
+    linear-gradient(180deg,rgba(255,255,255,.015),transparent 54%);
+  border-top:1px solid rgba(255,255,255,.055);
+  transform:perspective(700px) rotateX(68deg) translateY(42px);
+  transform-origin:center bottom;
+  opacity:.7;
+}
+
+.public-home .server-glass-frame{
+  position:absolute;
+  right:2.5%;
+  top:6%;
+  width:54%;
+  height:86%;
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:32px;
+  background:linear-gradient(145deg,rgba(255,255,255,.024),rgba(255,255,255,0) 42%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 38px 110px rgba(0,0,0,.23);
+  transform:
+    translate3d(calc(var(--hero-x) * 5px),calc((var(--hero-y) * 4px) + (var(--hero-scroll) * -12px)),0)
+    rotateY(calc(var(--hero-x) * -1.4deg));
+  transition:transform .18s ease-out;
+}
+
+.public-home .server-rack{
+  position:absolute;
+  width:128px;
+  height:300px;
+  padding:13px 10px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:14px;
+  background:
+    linear-gradient(110deg,rgba(255,255,255,.07),rgba(255,255,255,.012) 22%,rgba(255,255,255,.018) 70%),
+    rgba(12,13,17,.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset -18px 0 28px rgba(0,0,0,.26),
+    0 34px 80px rgba(0,0,0,.38);
+  transform-style:preserve-3d;
+  backdrop-filter:blur(12px);
+}
+
+.public-home .server-rack::before{
+  content:"";
+  position:absolute;
+  inset:11px;
+  border-radius:9px;
+  background:
+    repeating-linear-gradient(180deg,
+      rgba(255,255,255,.085) 0 1px,
+      rgba(255,255,255,.014) 1px 18px,
+      transparent 18px 21px);
+  border:1px solid rgba(255,255,255,.055);
+}
+
+.public-home .server-rack::after{
+  content:"";
+  position:absolute;
+  top:12px;
+  right:-10px;
+  width:10px;
+  height:calc(100% - 24px);
+  border-radius:0 8px 8px 0;
+  background:linear-gradient(180deg,rgba(107,91,210,.17),rgba(15,16,21,.85));
+  transform:skewY(-34deg);
+  transform-origin:left top;
+  opacity:.72;
+}
+
+.public-home .server-rack-a{
+  right:25%;
+  top:16%;
+  transform:
+    translate3d(calc(var(--hero-x) * 9px),calc((var(--hero-y) * 7px) + (var(--hero-scroll) * -18px)),35px)
+    rotateY(-14deg)
+    rotateX(1deg);
+}
+
+.public-home .server-rack-b{
+  right:8%;
+  top:24%;
+  width:116px;
+  height:272px;
+  opacity:.72;
+  transform:
+    translate3d(calc(var(--hero-x) * 5px),calc((var(--hero-y) * 4px) + (var(--hero-scroll) * -10px)),-50px)
+    rotateY(-18deg);
+}
+
+.public-home .server-rack-c{
+  right:43%;
+  top:31%;
+  width:100px;
+  height:238px;
+  opacity:.42;
+  filter:blur(.15px);
+  transform:
+    translate3d(calc(var(--hero-x) * 3px),calc((var(--hero-y) * 3px) + (var(--hero-scroll) * -7px)),-110px)
+    rotateY(-10deg);
+}
+
+.public-home .server-led{
+  position:absolute;
+  z-index:2;
+  left:21px;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#a79cff;
+  box-shadow:0 0 8px rgba(167,156,255,.72);
+  animation:stellar-server-led 3.8s ease-in-out infinite;
+}
+
+.public-home .server-led:nth-child(1){top:30px}
+.public-home .server-led:nth-child(2){top:73px;animation-delay:.9s;background:#62d8ff;box-shadow:0 0 8px rgba(98,216,255,.62)}
+.public-home .server-led:nth-child(3){top:117px;animation-delay:1.8s}
+.public-home .server-led:nth-child(4){top:180px;animation-delay:2.6s;background:#62d8ff;box-shadow:0 0 8px rgba(98,216,255,.52)}
+
+.public-home .server-light-sweep{
+  position:absolute;
+  z-index:1;
+  top:-15%;
+  left:52%;
+  width:1px;
+  height:125%;
+  background:linear-gradient(180deg,transparent,rgba(196,190,255,.3),transparent);
+  box-shadow:0 0 34px rgba(154,139,255,.18);
+  transform:rotate(18deg);
+  opacity:.32;
+  animation:stellar-server-sweep 9s ease-in-out infinite;
+}
+
+.public-home #hero-title{
+  position:relative!important;
+  z-index:2!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.02),0 28px 80px rgba(0,0,0,.30)!important;
+}
+
+.public-home #hero-title span{
+  background:linear-gradient(108deg,#f2f1f7 0%,#d8d4ff 45%,#a99cff 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+}
+
+.public-home .oa2-primary-action{
+  min-height:48px!important;
+  padding-inline:19px!important;
+  background:#f5f5f6!important;
+  color:#0b0b0d!important;
+  border-color:#f5f5f6!important;
+  box-shadow:0 10px 34px rgba(0,0,0,.26)!important;
+}
+
+.public-home .oa2-primary-action:hover{
+  background:#fff!important;
+  border-color:#fff!important;
+  transform:translateY(-2px)!important;
+  box-shadow:0 15px 44px rgba(0,0,0,.32)!important;
+}
+
+.public-home .oa2-secondary-action{
+  background:rgba(18,18,20,.72)!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+.public-home .hero-editor{
+  position:relative!important;
+  background:rgba(12,12,15,.86)!important;
+  backdrop-filter:blur(18px) saturate(115%)!important;
+  box-shadow:
+    0 38px 110px rgba(0,0,0,.48),
+    0 0 0 1px rgba(255,255,255,.018) inset!important;
+}
+
+.public-home .hero-editor::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  border-radius:inherit;
+  background:linear-gradient(135deg,rgba(255,255,255,.035),transparent 24%,transparent 78%,rgba(134,116,255,.035));
+  pointer-events:none;
+}
+
+.public-home .hero-editor>*{
+  position:relative;
+  z-index:1;
+}
+
+.public-home .anonymous-preview-input{
+  background:rgba(18,18,21,.82)!important;
+  backdrop-filter:blur(14px)!important;
+}
+
+.public-home .hero-trust-line{
+  position:relative!important;
+  z-index:3!important;
+}
+
+@keyframes stellar-server-led{
+  0%,100%{opacity:.28;transform:scale(.92)}
+  42%{opacity:1;transform:scale(1.15)}
+  58%{opacity:.68;transform:scale(1)}
+}
+
+@keyframes stellar-server-sweep{
+  0%,100%{opacity:.12;transform:translateX(-18px) rotate(18deg)}
+  50%{opacity:.38;transform:translateX(54px) rotate(18deg)}
+}
+
+@media(max-width:980px){
+  .public-home .premium-server-scene{
+    inset:0 -3% -20px;
+    opacity:.64;
+  }
+  .public-home .server-glass-frame{
+    right:8%;
+    top:43%;
+    width:84%;
+    height:52%;
+  }
+  .public-home .server-rack-a{right:29%;top:52%;opacity:.42}
+  .public-home .server-rack-b{right:12%;top:57%;opacity:.28}
+  .public-home .server-rack-c{right:52%;top:60%;opacity:.18}
+  .public-home .oa2-hero>.dev-hero-copy{
+    padding:18px 12px 0!important;
+  }
+}
+
+@media(max-width:700px){
+  .public-home .premium-server-scene{
+    inset:0 -18px -10px;
+    opacity:.38;
+  }
+  .public-home .server-glass-frame{
+    left:5%;
+    right:5%;
+    width:auto;
+    top:49%;
+    height:43%;
+  }
+  .public-home .server-rack{
+    width:82px;
+    height:188px;
+  }
+  .public-home .server-rack-a{right:27%;top:60%}
+  .public-home .server-rack-b{right:8%;top:63%;width:72px;height:168px}
+  .public-home .server-rack-c{display:none}
+  .public-home #hero-title{
+    text-shadow:0 18px 52px rgba(0,0,0,.35)!important;
+  }
+  .public-home .oa2-primary-action{
+    min-height:50px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .public-home .premium-server-scene,
+  .public-home .server-glass-frame,
+  .public-home .server-rack{
+    transform:none!important;
+    transition:none!important;
+  }
+  .public-home .server-led,
+  .public-home .server-light-sweep{
+    animation:none!important;
+  }
+}
