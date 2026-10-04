@@ -519,7 +519,7 @@ export default async function handler(req, res) {
           },
           quantity: 1,
         }],
-        success_url: 'https://trystellarai.com/business-builder?payment=success',
+        success_url: 'https://trystellarai.com/business-builder?payment=success&session_id={CHECKOUT_SESSION_ID}',
         cancel_url: `https://trystellarai.com/business-builder?payment=cancelled&attempt=${encodeURIComponent(attemptId)}`,
         after_expiration: { recovery: { enabled: true } },
         client_reference_id: attemptId,
