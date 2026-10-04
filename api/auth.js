@@ -184,6 +184,10 @@ async function handleWelcomeResend(req, res, url, token) {
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method === 'GET' && String(req.query?.mode || '') === 'session-health') {
+    const ready = sessionSigningConfigured();
+    return res.status(ready ? 200 : 503).json({ ok: ready, ready, service: 'session-signing' });
+  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
   if (req.body?.action === 'sessionHealth') {
