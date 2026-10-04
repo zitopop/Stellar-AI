@@ -360,7 +360,11 @@ export default async function handler(req, res) {
       if (!confirmed.ok) return res.status(confirmed.status).json({ error: confirmed.error, code: 'CHECKOUT_NOT_READY' });
       return res.status(200).json({ ok: true, plan: confirmed.plan });
     }
-    const existingCustomerId = String(accountUser?.stripeCustomerId || '').trim();
+    const accountCustomerId = String(accountUser?.stripeCustomerId || '').trim();
+    const serverPassCheckoutCustomerId = String(serverPassUser?.stripeCustomerId || '').trim();
+    const existingCustomerId = /^cus_[A-Za-z0-9]+$/.test(accountCustomerId)
+      ? accountCustomerId
+      : serverPassCheckoutCustomerId;
     const checkoutCustomer = /^cus_[A-Za-z0-9]+$/.test(existingCustomerId)
       ? { customer: existingCustomerId }
       : { customer_email: sessionUser.email };
