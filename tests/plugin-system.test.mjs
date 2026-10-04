@@ -112,7 +112,7 @@ test('plugin directory stays calm while preserving real account connection contr
   assert.match(page, /pluginApi\('inspect',\{id\}\)/);
   assert.match(page, /pluginButton\('Connect','oauth'/);
   assert.match(page, /Disconnect/);
-  assert.match(page, /Owner-only integrations are never offered to standard accounts/);
+  assert.match(page, /Restricted integrations are not offered to standard accounts/);
   assert.match(page, /\[hidden\]\{display:none!important\}/);
   assert.ok(app.includes('href="/plugins"'));
 });
