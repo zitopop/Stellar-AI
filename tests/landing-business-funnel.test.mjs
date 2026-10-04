@@ -42,8 +42,10 @@ test('business service pages share the same sales funnel entry points', () => {
   assert.match(builder, /href="\/app\?tool=sales"/);
 });
 
-test('business funnel does not add unsupported guaranteed-results copy', () => {
-  for (const source of [home,business,audit,receptionist,builder]) {
-    assert.doesNotMatch(source, /guaranteed revenue|guaranteed leads|guaranteed rankings/i);
-  }
+test('business funnel keeps clear no-guarantee safeguards', () => {
+  assert.match(home, /Business results are not guaranteed/);
+  assert.match(business, /Do you guarantee more leads, rankings or revenue\?/);
+  assert.match(audit, /no guaranteed rankings, leads or revenue/i);
+  assert.match(receptionist, /should not invent discounts, availability, prices, refunds, contractual terms/i);
+  assert.match(builder, /AI can make mistakes, so review the preview before using it commercially/);
 });
