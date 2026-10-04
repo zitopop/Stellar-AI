@@ -10,9 +10,9 @@ const resource = readFileSync(new URL('../resources/qbcore-secure-webhook-logger
 const resourceConfig = readFileSync(new URL('../resources/qbcore-secure-webhook-logger/config.lua', import.meta.url), 'utf8');
 const sitemap = readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8');
 
-test('Server Pass is discoverable and described as a bounded pilot', () => {
+test('Server Pass is discoverable and described as a bounded team add-on', () => {
   assert.match(homepage, /href="\/server-pass"/);
-  assert.match(plans, /Server Pass pilot/);
+  assert.match(plans, /Server Pass is a separate team add-on/);
   assert.match(serverPass, /£50\/month/);
   assert.match(serverPass, /two repairs per day|2 repairs per day/);
   assert.match(serverPass, /abuse controls/i);
