@@ -11,7 +11,7 @@ Use product proof, not inflated claims.
 - Relevant game-development prompts can auto-inject server-authoritative anti-exploit guidance.
 - The public workspace can generate/debug code that developers inspect before use.
 - Free Discord `/debug` includes 2 repairs per Discord user per UTC day.
-- The £50/month Server Pass pilot can activate one verified Discord guild so it bypasses the free daily Discord counter.
+- The £50/month Server Pass team add-on can activate one verified Discord guild so it bypasses the free daily Discord counter.
 - Provider capacity, safety controls, input-size limits and abuse protection continue to apply.
 - Free web access requires no card.
 
@@ -33,7 +33,7 @@ I saw [specific project/server detail]. If your developers regularly lose time t
 
 Stellar AI supports QBCore, ESX, ox_lib and Roblox Luau generation/debugging. Relevant game-development prompts can include server-authoritative validation guidance, and the result stays visible for your developer to inspect before it is used.
 
-The **Server Pass pilot is £50/month** for one verified Discord guild. It gives the activated server shared `/debug` access without the normal free two-repairs-per-day counter. Provider capacity and abuse controls still apply.
+The **Server Pass team add-on is £50/month** for one verified Discord guild. It gives the activated server shared `/debug` access without the normal free two-repairs-per-day counter. Provider capacity and abuse controls still apply.
 
 If that fits your team, I can send the onboarding page:
 https://trystellarai.com/server-pass
@@ -141,7 +141,7 @@ Until then, use the existing creator/referral page for transparent sharing rathe
 - Turn one real, reproducible error pattern into a short video each week.
 - Use Search Console and conversion metrics to identify which developer problem pages already get impressions.
 - Contact server/studio owners individually with a specific observed use case; avoid bulk unsolicited spam.
-- Measure landing → app open → first successful generation → checkout or Server Pass enquiry, then improve the weakest step.
+- Measure landing → app open → first successful generation → checkout or Server Pass purchase, then improve the weakest step.
 
 Primary product: https://trystellarai.com
 Server Pass: https://trystellarai.com/server-pass
