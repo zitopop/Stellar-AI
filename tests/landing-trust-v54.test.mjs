@@ -9,12 +9,12 @@ test('landing leads with a specific FiveM and Roblox value proposition', () => {
   assert.match(home, /BUILT FOR FIVEM \+ ROBLOX DEVELOPERS/);
   assert.match(home, /Generate &amp; debug<br><span>FiveM \+ Roblox code\.<\/span>/);
   assert.match(home, /QBCore, ESX, ox_lib and Roblox Luau/);
-  assert.match(home, /See real code demo/);
+  assert.match(home, /See code demo/);
 });
 
 test('hero makes pricing and buyer protections visible without a second click', () => {
   assert.match(home, /Free · no card/);
-  assert.match(home, /Starter from £8\/mo/);
+  assert.match(home, /Starter £8\/mo/);
   assert.match(home, /Secure Stripe checkout/);
   assert.match(home, /href="\/refunds">Refund policy/);
   assert.match(home, /Daily allowance · up to 30 requests\/hour/);
