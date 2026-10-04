@@ -36,9 +36,9 @@ test('AI receptionist has live checkout and no invented-facts promise',()=>{
 
 test('business routes are public and indexed',()=>{
   const routes=new Map(vercel.rewrites.map(x=>[x.source,x.destination]));
-  assert.equal(routes.get('/business'),'/services/business.html');
-  assert.equal(routes.get('/website-audit'),'/services/website-audit.html');
-  assert.equal(routes.get('/ai-receptionist'),'/services/ai-receptionist.html');
+  assert.equal(routes.get('/business'),'/services/business');
+  assert.equal(routes.get('/website-audit'),'/services/website-audit');
+  assert.equal(routes.get('/ai-receptionist'),'/services/ai-receptionist');
   for(const route of ['/business','/website-audit','/ai-receptionist']) assert.ok(sitemap.includes('https://trystellarai.com'+route));
 });
 
