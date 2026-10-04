@@ -27,7 +27,8 @@ test('offline state prevents accidental sends and recovers visibly', () => {
   assert.match(app, /Back online\./);
 });
 
-test('command-k focuses the composer without adding another modal', () => {
+test('command-k opens conversation search', () => {
   assert.match(app, /\(e\.ctrlKey\|\|e\.metaKey\).*e\.key\.toLowerCase\(\)==='k'/);
-  assert.match(app, /\$\('prompt'\)\?\.focus\(\)/);
+  assert.match(app, /openPanel\('search'\)/);
+  assert.match(app, /function renderSearchPanel\(\)/);
 });

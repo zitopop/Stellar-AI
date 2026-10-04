@@ -12,7 +12,9 @@ test('dashboard exposes a dedicated broken-code and error-log debug mode',()=>{
   assert.match(app,/QBCore\/ESX\/ox_lib/);
   assert.match(app,/Roblox Luau/);
   assert.match(app,/client:\{source:'stellar-clean-chat-v2',intent:activeMode==='debug'\?'debug-code':'general'\}/);
-  assert.match(app,/s\.messages\.push\(\{role:'user',content:userText,mode:activeMode\}\)/);
+  assert.match(app,/s\.messages\.push\(\{role:'user',content:displayContent,originalContent:userText,mode:activeMode/);
+  assert.match(app,/attachmentText:requestTextFile\?\.content\|\|''/);
+  assert.match(app,/webSearchContext:searchContext/);
 });
 
 test('generated Lua and Luau blocks have one-click export controls',()=>{
