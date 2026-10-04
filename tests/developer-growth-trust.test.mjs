@@ -24,7 +24,7 @@ test('developer trust copy avoids unsupported privacy and validation claims', ()
   for (const source of [homepage, plans, serverPass, llms]) {
     assert.doesNotMatch(source, /zero code[- ]storage|never retain(?:s|ed)? code|never sent to model providers/i);
   }
-  assert.match(homepage, /Anti-exploit validation is injected by default/);
+  assert.match(homepage, /Generated code should be tested in a development environment before production use/);
   assert.match(llms, /Do not claim zero code retention/);
 });
 
