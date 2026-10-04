@@ -27,7 +27,7 @@ test('homepage offers exactly one anonymous preview path before account gating',
   assert.match(homepageRuntime, /fetch\('\/api\/preview'/);
   assert.match(homepageRuntime, /stellar-anonymous-preview-used-v1/);
   assert.match(homepageRuntime, /auth.*preview/);
-  assert.match(homepageRuntime, /Create a free account to generate again/);
+  assert.match(homepageRuntime, /Preview used · open the full chat to continue\./);
 });
 
 test('preview endpoint is server-only, capped and fails closed without usage storage', () => {
