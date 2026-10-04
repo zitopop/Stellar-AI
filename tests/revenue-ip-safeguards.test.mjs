@@ -131,3 +131,13 @@ test('mobile workspace wraps code, keeps 44px actions, and surfaces rate-limit t
   assert.match(app, /err\?\.code==='RATE_LIMITED'/);
   assert.match(app, /err\?\.code==='GENERATION_TIMEOUT'/);
 });
+
+
+test('Server Pass renewal failures stay isolated from personal plan billing', () => {
+  assert.match(webhook, /invoiceSubscriptionPlan === 'server-pass'/);
+  assert.match(webhook, /stellar:server-pass:\$\{email\}/);
+  assert.match(webhook, /Could not persist Server Pass invoice failure/);
+  assert.match(webhook, /status: finalRevoke \? 'inactive' : \(existingPass\.guildId \? 'active' : 'pending_activation'\)/);
+  assert.match(checkout, /serverPassUser\?\.checkoutSessionId/);
+  assert.match(checkout, /A paid Stellar plan or Server Pass is required to manage subscription billing/);
+});
