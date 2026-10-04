@@ -4,17 +4,18 @@ import { readFileSync } from 'node:fs';
 
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('homepage keeps one chat-first primary action and secondary business navigation', () => {
-  assert.match(home, /<h1 id="hero-title">What can I help with\?<\/h1>/);
-  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Open full chat<\/a>/);
+test('homepage provides one free primary hero action and clear business navigation', () => {
+  const hero=home.match(/<section class="oa2-hero[\s\S]*?<\/section>/)?.[0]||'';
+  assert.equal((hero.match(/class="button button-primary"/g)||[]).length,1);
+  assert.match(hero,/href="\/app\?welcome=1"/);
   assert.doesNotMatch(home, /class="stellar-hero-paths"/);
-  assert.match(home, /href="\/business">For Business<\/a>/);
+  assert.match(home, /href="\/business">For business<\/a>/i);
 });
 
-test('homepage keeps the compact product map while hiding duplicate marketing sections', () => {
+test('homepage keeps the product map with visible product and business sections', () => {
   assert.match(home, /class="home-whats-what"/);
   assert.match(home, /Know what each part is for\./);
-  assert.match(home, /main#main-content>section:not\(\.oa2-hero\):not\(\.home-whats-what\)\{display:none!important\}/);
+  assert.match(home,/id="showcase"/);
   assert.match(home, /id="business"/);
 });
 

@@ -21,13 +21,13 @@ export function assertAppContract(){
 
 export function assertHomeContract(){
   const home=read('index.html');
-  assert.match(home,/id="build-form"/);
+  assert.match(home,/id="anonymous-preview-form"/);
   assert.match(home,/id="plans"/);
   assert.match(home,/\/app\?welcome=1/);
-  assert.match(home,/Build faster\./);
-  assert.match(home,/More than a blank chat box\./);
+  assert.equal((home.match(/<h1\b/g)||[]).length,1);
+  assert.match(home,/id="showcase"/);
   assert.match(home,/Stellar for Business/i);
-  assert.match(home,/stellar-serious-chat-first-v37/);
+  assert.match(home,/homepage-premium\.css/);
   assert.doesNotMatch(home,/(credits\/month|Buy Stellar Credits|top.?up)/i);
 }
 

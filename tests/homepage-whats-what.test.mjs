@@ -14,21 +14,22 @@ test('homepage explains the main product areas once, in plain language', () => {
   assert.match(home, /href="\/what-is-what">See the full what's-what guide/);
 });
 
-test('homepage header has one link for each destination with no duplicate plan navigation', () => {
+test('homepage has distinct desktop and mobile navigation without duplicate destinations in either', () => {
   const header = home.match(/<header class="site-header">[\s\S]*?<\/header>/)?.[0] || '';
-  const plans = header.match(/href="\/plans">Plans<\/a>/g) || [];
-  const business = header.match(/href="\/business">For Business<\/a>/g) || [];
-  const signIn = header.match(/href="\/app\?signin=1">Sign in<\/a>/g) || [];
-  assert.equal(plans.length, 1);
-  assert.equal(business.length, 1);
-  assert.equal(signIn.length, 1);
-  assert.doesNotMatch(header, /id="mobile-nav"|id="nav-toggle"|class="nav-links"/);
+  const menus = [...header.matchAll(/<nav\b[^>]*>([\s\S]*?)<\/nav>/g)];
+  assert.equal(menus.length,2);
+  for (const [,menu] of menus) {
+    const destinations=[...menu.matchAll(/href="([^"]+)"/g)].map(match=>match[1]);
+    assert.equal(destinations.length,new Set(destinations).size);
+    for(const required of ['#plans','/business','/app?signin=1']) assert.ok(destinations.includes(required));
+  }
+  assert.match(header,/aria-controls="mobile-nav"/);
+  assert.match(header,/id="mobile-nav"[^>]*hidden/);
 });
 
-test('hero avoids repeating the brand and only the compact whats-what section stays visible beneath chat', () => {
-  assert.match(home, /data-hero-status>AI workspace<\/span>/);
-  assert.match(home, /main#main-content>section:not\(\.oa2-hero\):not\(\.home-whats-what\)\{display:none!important\}/);
+test('the product map accompanies the visible workspace and business sections', () => {
+  assert.equal((home.match(/id="hero-title"/g)||[]).length,1);
   assert.match(home, /id="business"/);
   assert.match(home, /home-whats-what-grid/);
-  assert.match(home, /@media\(max-width:700px\)[\s\S]*home-whats-what-grid\{grid-template-columns:1fr\}/);
+  assert.equal((home.match(/class="home-whats-what"/g)||[]).length,1);
 });
