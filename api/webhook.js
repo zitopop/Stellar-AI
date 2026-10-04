@@ -357,6 +357,11 @@ function subscriptionBilling(plan) {
   return String(plan || '').toLowerCase().endsWith('-annual') ? 'annual' : 'monthly';
 }
 
+function invoiceSubscriptionId(invoice) {
+  return stripeObjectId(invoice?.subscription, 'sub_')
+    || stripeObjectId(invoice?.parent?.subscription_details?.subscription, 'sub_');
+}
+
 export default async function handler(req, res) {
   const source = String(req.query?.source || '').trim().toLowerCase();
   if (source === 'gmail-push') return handleGmailPush(req, res);
@@ -629,6 +634,18 @@ export default async function handler(req, res) {
     } else if (event.type === 'invoice.paid') {
       const invoice = event.data.object;
       const email = await customerEmail(stripe, invoice.customer);
+      const paidSubscriptionId = invoiceSubscriptionId(invoice);
+      let paidSubscriptionPlan = '';
+      let paidSubscriptionStatus = '';
+      if (paidSubscriptionId) {
+        try {
+          const subscription = await stripe.subscriptions.retrieve(paidSubscriptionId);
+          paidSubscriptionPlan = String(subscription?.metadata?.plan || '').trim().toLowerCase();
+          paidSubscriptionStatus = String(subscription?.status || '').trim().toLowerCase();
+        } catch (statusError) {
+          console.warn('Could not inspect paid invoice subscription status', invoice.id, statusError?.message || statusError);
+        }
+      }
       if (email && invoiceHasAiReceptionist(invoice)) {
         await updateBusinessServiceBilling(email, {
           status: 'active',
@@ -636,6 +653,30 @@ export default async function handler(req, res) {
           billingPaymentFailedAt: null,
           lastInvoicePaidAt: Date.now(),
         });
+      } else if (email && paidSubscriptionPlan === 'server-pass') {
+        const key = `stellar:server-pass:${email}`;
+        const existingPass = (await kvGet(key)) || {};
+        const saved = await kvSet(key, {
+          ...existingPass,
+          status: existingPass.guildId ? 'active' : 'pending_activation',
+          stripeSubscriptionId: paidSubscriptionId || existingPass.stripeSubscriptionId,
+          stripeSubscriptionStatus: paidSubscriptionStatus || existingPass.stripeSubscriptionStatus || 'active',
+          billingPaymentFailedAt: null,
+          lastInvoicePaidAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+        if (!saved) throw new Error(`Could not restore Server Pass billing for ${invoice.id}`);
+        if (existingPass.guildId) {
+          const guildSaved = await kvSet(`stellar:server-pass-guild:${existingPass.guildId}`, {
+            email,
+            guildId: String(existingPass.guildId),
+            status: 'active',
+            stripeSubscriptionId: paidSubscriptionId || existingPass.stripeSubscriptionId || null,
+            stripeSubscriptionStatus: paidSubscriptionStatus || existingPass.stripeSubscriptionStatus || 'active',
+            updatedAt: Date.now(),
+          });
+          if (!guildSaved) throw new Error(`Could not restore Server Pass guild billing for ${invoice.id}`);
+        }
       } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
@@ -649,13 +690,14 @@ export default async function handler(req, res) {
     } else if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object;
       const email = await customerEmail(stripe, invoice.customer);
-      const invoiceSubscriptionId = stripeObjectId(invoice.subscription, 'sub_')
-        || stripeObjectId(invoice.parent?.subscription_details?.subscription, 'sub_');
+      const failedSubscriptionId = invoiceSubscriptionId(invoice);
       let invoiceSubscriptionStatus = '';
-      if (invoiceSubscriptionId) {
+      let invoiceSubscriptionPlan = '';
+      if (failedSubscriptionId) {
         try {
-          const subscription = await stripe.subscriptions.retrieve(invoiceSubscriptionId);
+          const subscription = await stripe.subscriptions.retrieve(failedSubscriptionId);
           invoiceSubscriptionStatus = String(subscription?.status || '').trim().toLowerCase();
+          invoiceSubscriptionPlan = String(subscription?.metadata?.plan || '').trim().toLowerCase();
         } catch (statusError) {
           console.warn('Could not inspect failed invoice subscription status', invoice.id, statusError?.message || statusError);
         }
@@ -669,6 +711,29 @@ export default async function handler(req, res) {
           billingPaymentFailedAt: Date.now(),
           subscriptionStatus: invoiceSubscriptionStatus || null,
         });
+      } else if (email && invoiceSubscriptionPlan === 'server-pass') {
+        const key = `stellar:server-pass:${email}`;
+        const existingPass = (await kvGet(key)) || {};
+        const saved = await kvSet(key, {
+          ...existingPass,
+          status: finalRevoke ? 'inactive' : (existingPass.guildId ? 'active' : 'pending_activation'),
+          stripeSubscriptionId: failedSubscriptionId || existingPass.stripeSubscriptionId,
+          stripeSubscriptionStatus: invoiceSubscriptionStatus || existingPass.stripeSubscriptionStatus || null,
+          billingPaymentFailedAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+        if (!saved) throw new Error(`Could not persist Server Pass invoice failure for ${invoice.id}`);
+        if (existingPass.guildId) {
+          const guildSaved = await kvSet(`stellar:server-pass-guild:${existingPass.guildId}`, {
+            email,
+            guildId: String(existingPass.guildId),
+            status: finalRevoke ? 'inactive' : 'active',
+            stripeSubscriptionId: failedSubscriptionId || existingPass.stripeSubscriptionId || null,
+            stripeSubscriptionStatus: invoiceSubscriptionStatus || existingPass.stripeSubscriptionStatus || null,
+            updatedAt: Date.now(),
+          });
+          if (!guildSaved) throw new Error(`Could not persist Server Pass guild invoice failure for ${invoice.id}`);
+        }
       } else if (email) {
         const userKey = `stellar:user:${email}`;
         const existing = (await kvGet(userKey)) || {};
@@ -693,7 +758,9 @@ export default async function handler(req, res) {
           severity: 'urgent',
           summary: invoiceHasAiReceptionist(invoice)
             ? 'AI Receptionist billing reached a final non-paying subscription state after Stripe recovery attempts.'
-            : 'A Stellar AI subscription reached a final non-paying state after Stripe recovery attempts.',
+            : invoiceSubscriptionPlan === 'server-pass'
+              ? 'A Server Pass subscription reached a final non-paying state after Stripe recovery attempts.'
+              : 'A Stellar AI subscription reached a final non-paying state after Stripe recovery attempts.',
         });
       } else {
         console.info('Stripe invoice payment failed; leaving normal provider retry/dunning to continue automatically', invoice.id);
