@@ -15,7 +15,9 @@ test('landing page keeps the current chat-first hero contract', () => {
 test('landing keeps the developer preview and product sections behind the chat-first entry', () => {
   assert.match(home, /data-hero-editor/);
   assert.match(home, /id="playground"/);
-  assert.match(home, /id="comparison"/);\n  assert.match(home, /id="showcase"/);\n  assert.match(home, /id="business"/);
+  assert.match(home, /id="comparison"/);
+  assert.match(home, /id="showcase"/);
+  assert.match(home, /id="business"/);
   assert.match(home, /id="trust"/);
   assert.match(home, /id="plans"/);
   assert.match(home, /faq-section/);
