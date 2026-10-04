@@ -21,13 +21,14 @@ test('assistant pending state uses an accessible animated thinking cue', () => {
 
 test('empty workspace stays chat-first while explaining the core actions', () => {
   assert.match(app, /What can I help with\?/);
-  assert.match(app, /Ask anything, attach an image, or switch to Debug when code is broken/);
+  assert.match(app, /Ask anything, attach a file or image, search the web when needed, or switch to Debug for broken code/);
   assert.doesNotMatch(app, /quick-start-card|suggested-prompt-grid/);
 });
 
-test('paid customers do not see a misleading upgrade label in the sidebar', () => {
+test('sidebar keeps plan navigation neutral instead of constantly upselling', () => {
   assert.match(app, /id="side-plan-button"/);
-  assert.match(app, /sidePlanButton\.textContent=signedInUser&&paid\?'Plans':'Upgrade plan'/);
+  assert.match(app, /sidePlanButton\.textContent='Plans'/);
+  assert.doesNotMatch(app, /sidePlanButton\.textContent=.*Upgrade plan/);
 });
 
 test('new chat polish preserves paid-customer billing portal routing', () => {
