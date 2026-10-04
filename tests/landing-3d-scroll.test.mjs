@@ -5,11 +5,11 @@ import { readFileSync } from 'node:fs';
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 test('landing page keeps the current chat-first hero contract', () => {
-  assert.match(home, /homepage-chat-first-2026-10-04/);
-  assert.match(home, /<h1 id="hero-title">One workspace\.<br><span>From idea to finished work\.<\/span><\/h1>/);
+  assert.match(home, /homepage-money-first-chat-2026-10-04/);
+  assert.match(home, /<h1 id="hero-title">What can I help with\\?<\\/h1>/);
   assert.match(home, /placeholder="Message Stellar AI"/);
   assert.match(home, /Free to try · no card required/);
-  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Start free/);
+  assert.match(home, /href="\\/app\\?welcome=1" class="oa2-primary-action">Open full chat/);
 });
 
 test('landing keeps the developer preview and product sections behind the chat-first entry', () => {
