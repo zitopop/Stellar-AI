@@ -25,9 +25,9 @@ test('homepage header has one link for each destination with no duplicate plan n
   assert.doesNotMatch(header, /id="mobile-nav"|id="nav-toggle"|class="nav-links"/);
 });
 
-test('hero avoids repeating the brand and legacy landing sections stay hidden', () => {
+test('hero avoids repeating the brand and only the compact whats-what section stays visible beneath chat', () => {
   assert.match(home, /data-hero-status>AI workspace<\/span>/);
-  assert.match(home, /main#main-content>section:not\(\.oa2-hero\)\{display:none!important\}/);
+  assert.match(home, /main#main-content>section:not\(\.oa2-hero\):not\(\.home-whats-what\)\{display:none!important\}/);
   assert.match(home, /id="business"/);
   assert.match(home, /home-whats-what-grid/);
   assert.match(home, /@media\(max-width:700px\)[\s\S]*home-whats-what-grid\{grid-template-columns:1fr\}/);
