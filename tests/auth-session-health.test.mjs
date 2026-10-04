@@ -8,6 +8,7 @@ const authLib = readFileSync(new URL('../lib/auth.js', import.meta.url), 'utf8')
 test('auth exposes a safe session signing readiness check', () => {
   assert.match(authLib, /export function sessionSigningConfigured\(\)/);
   assert.match(authApi, /action === 'sessionHealth'/);
+  assert.match(authApi, /req\.method === 'GET' && String\(req\.query\?\.mode \|\| ''\) === 'session-health'/);
   assert.match(authApi, /service: 'session-signing'/);
   assert.match(authApi, /status\(ready \? 200 : 503\)/);
 });
