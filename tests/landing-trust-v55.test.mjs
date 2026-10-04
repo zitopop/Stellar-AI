@@ -39,3 +39,17 @@ test('v55 styling stays compact and responsive', () => {
   assert.match(css, /@media\(max-width:700px\)/);
   assert.match(css, /prefers-reduced-motion:reduce/);
 });
+
+
+test('v55 keeps navigation and final CTA developer-focused', () => {
+  const header = home.match(/<header class="site-header">[\s\S]*?<\/header>/)?.[0] || '';
+  const finalCta = home.match(/<section class="container final-cta">[\s\S]*?<\/section>/)?.[0] || '';
+  assert.match(header, /href="\/blog">Guides<\/a>/);
+  assert.match(home, /Real product preview · inspect before use/);
+  assert.match(finalCta, /Try one message\./);
+  assert.match(finalCta, /Try Stellar free/);
+  assert.match(finalCta, /Compare plans/);
+  assert.doesNotMatch(finalCta, /Explore Business AI/);
+  assert.doesNotMatch(home, /href="\/investors">Investors<\/a>/);
+  assert.doesNotMatch(home, /href="\/affiliate">Creator & referrals<\/a>/);
+});
