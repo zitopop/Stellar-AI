@@ -81,6 +81,13 @@ test('plugin manager is account-scoped and only enables token plugins after conn
   assert.match(manager, /exposeSetup=isOwner===true/);
 });
 
+test('Google and GitHub OAuth callbacks stay pinned to the canonical production origin', () => {
+  assert.match(manager, /const CANONICAL_PUBLIC_ORIGIN='https:\/\/trystellarai\.com'/);
+  assert.match(manager, /return CANONICAL_PUBLIC_ORIGIN/);
+  assert.match(manager, /const redirectUri=publicOrigin\(req\)\+'\/api\/plugin-oauth-callback'/);
+  assert.doesNotMatch(manager, /vercel\.app\$\/i);
+});
+
 test('shared API keeps plugin management within the existing serverless function budget', () => {
   assert.match(api, /surface==='plugins'/);
   assert.match(api, /pluginManagerHandler/);
