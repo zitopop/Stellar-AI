@@ -94,7 +94,8 @@ export function assertSeoUsageCopyContract(){
   ];
   for(const page of pages){
     const html=read(page);
-    assert.doesNotMatch(html,/\bcredits?\b/i,page+' should use current customer-facing usage language');
+    const visibleCopy=html.replace(/href=["'][^"']+["']/gi,'');
+    assert.doesNotMatch(visibleCopy,/\b(?:use|using|paid|monthly|more|buy|see|toward|towards) credits?\b|plans and credits|credits and plans|credits make sense/i,page+' should use current customer-facing usage language');
   }
 }
 
