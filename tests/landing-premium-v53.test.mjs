@@ -35,7 +35,7 @@ test('business bridge prioritizes three paid offers and keeps secondary workflow
 
 test('landing pricing presents monthly choices first', () => {
   assert.match(css, /\.public-home \.plan \.annual,[\s\S]*\.plan-yearly-link[\s\S]*display:none!important/);
-  assert.match(home, /Full annual pricing and team options are available on the Plans page/);
+  assert.match(home, /Paid plans add more usage and deeper Stellar capability when you actually need it/);
   assert.match(home, /MOST POPULAR/);
 });
 
