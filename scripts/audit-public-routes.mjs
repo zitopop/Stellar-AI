@@ -84,6 +84,27 @@ function routeExists(route) {
 }
 
 const errors = [];
+
+// Guard against a Vercel regression where public /folder routes exist as
+// /folder/index.html in the repo but silently fall through to 404 in production.
+const vercelConfig = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+const vercelRewrites = new Map((vercelConfig.rewrites || []).map((rule) => [rule.source, rule.destination]));
+const sitemapFiles = ['sitemap.xml', 'sitemap-revenue.xml'].filter(exists);
+for (const sitemapFile of sitemapFiles) {
+  const xml = fs.readFileSync(path.join(root, sitemapFile), 'utf8');
+  for (const match of xml.matchAll(/<loc>https:\/\/trystellarai\.com([^<]*)<\/loc>/g)) {
+    const route = (match[1] || '/').replace(/\/$/, '') || '/';
+    if (route === '/') continue;
+    const relative = route.replace(/^\//, '');
+    const directorySource = `${relative}/index.html`;
+    if (exists(directorySource)) {
+      const expectedDestination = `/${directorySource}`;
+      if (vercelRewrites.get(route) !== expectedDestination) {
+        errors.push(`${sitemapFile} exposes ${route}, but vercel.json does not rewrite it to ${expectedDestination}`);
+      }
+    }
+  }
+}
 for (const [route, file] of expectedCleanRoutes) {
   if (!exists(file)) errors.push(`Expected clean route ${route} is missing source file ${file}`);
 }
