@@ -4,9 +4,10 @@ import { readFileSync } from 'node:fs';
 
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('homepage keeps one chat-first primary action and secondary business navigation', () => {
-  assert.match(home, /<h1 id="hero-title">What can I help with\?<\/h1>/);
-  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Open full chat<\/a>/);
+test('homepage keeps one clear primary action and secondary business navigation', () => {
+  assert.match(home, /<h1 id="hero-title">Build\. Debug\.<br><span>Get work done\.<\/span><\/h1>/);
+  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Start free/);
+  assert.match(home, /href="#playground" class="oa2-secondary-action">See developer demo<\/a>/);
   assert.doesNotMatch(home, /class="stellar-hero-paths"/);
   assert.match(home, /href="\/business">For Business<\/a>/);
 });
