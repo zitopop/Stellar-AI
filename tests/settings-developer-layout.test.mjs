@@ -8,8 +8,8 @@ const getPlan = fs.readFileSync(new URL('../api/get-plan.js', import.meta.url), 
 const oauth = fs.readFileSync(new URL('../api/discord-oauth.js', import.meta.url), 'utf8');
 const apiKeys = fs.readFileSync(new URL('../lib/api-keys.js', import.meta.url), 'utf8');
 
-test('Settings uses the requested three-tab developer layout', () => {
-  for (const label of ['General &amp; Stack','Reports','Discord &amp; API Keys','Subscription &amp; Billing']) assert.match(app, new RegExp(label));
+test('Settings uses four simple product sections', () => {
+  for (const label of ['General','Models &amp; Tools','Billing','Account']) assert.match(app, new RegExp('>'+label+'<'));
   assert.match(css, /width:min\(820px,calc\(100vw - 32px\)\)/);
   assert.match(css, /grid-template-columns:178px minmax\(0,1fr\)/);
   assert.match(css, /min-height:44px/);
@@ -39,7 +39,7 @@ test('Discord profile and customer API key management remain server-owned', () =
 
 test('billing pane shows live usage and a Plus or subscription CTA', () => {
   assert.match(app, /settings-usage-track/);
-  assert.match(app, /credits remaining/);
+  assert.match(app, /usage remaining/);
   assert.match(app, /Upgrade to Plus \(£20\/mo\)/);
   assert.match(app, /Manage Subscription/);
   assert.match(css, /linear-gradient\(135deg,#8a2be2 0%,#6946e8 48%,#00cde7 100%\)/);
@@ -53,10 +53,10 @@ test('Settings stays compact on phone without shrinking touch targets', () => {
 });
 
 
-test('Reports tab uses real server-backed usage and clearly labels local activity', () => {
-  assert.match(app, /data-settings-tab="reports">Reports/);
+test('Account tab uses real server-backed usage and clearly labels local activity', () => {
+  assert.match(app, /data-settings-tab="reports">Account/);
   assert.match(app, /data-settings-pane="reports"/);
-  assert.match(app, /Credits remaining/);
+  assert.match(app, /Allowance remaining/);
   assert.match(app, /Scripts generated/);
   assert.match(app, /Saved chats/);
   assert.match(app, /This device only/);
