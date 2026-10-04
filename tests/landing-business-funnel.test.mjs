@@ -11,8 +11,8 @@ const builder = readFileSync(new URL('../business-builder.html', import.meta.url
 test('main landing page exposes a clear For Business route without replacing developer positioning', () => {
   assert.match(home, /href="\/business">For Business/);
   assert.match(home, /id="business"/);
-  assert.match(home, /STELLAR FOR BUSINESS/);
-  assert.match(home, /Not just for developers/);
+  assert.match(home, /SEPARATE BUSINESS TOOLS/);
+  assert.match(home, /Running a business too\? Stellar has a separate toolkit\./);
   assert.match(home, /Generate & Debug FiveM and Roblox Scripts/);
 });
 
