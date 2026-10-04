@@ -3,5 +3,138 @@
   "framework": null,
   "buildCommand": "echo Static deploy - no framework build",
   "outputDirectory": ".",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/business",
+      "destination": "/services/business.html"
+    },
+    {
+      "source": "/website-audit",
+      "destination": "/services/website-audit.html"
+    },
+    {
+      "source": "/ai-receptionist",
+      "destination": "/services/ai-receptionist.html"
+    },
+    {
+      "source": "/business-builder",
+      "destination": "/business-builder.html"
+    },
+    {
+      "source": "/status",
+      "destination": "/status.html"
+    },
+    {
+      "source": "/install",
+      "destination": "/install.html"
+    },
+    {
+      "source": "/plugins",
+      "destination": "/plugins.html"
+    },
+    {
+      "source": "/roblox-studio",
+      "destination": "/roblox-studio.html"
+    },
+    {
+      "source": "/jarvis",
+      "destination": "/jarvis-workspace.html"
+    },
+    {
+      "source": "/jarvis/vision",
+      "destination": "/jarvis.html"
+    },
+    {
+      "source": "/deploy",
+      "destination": "/deploy-center.html"
+    },
+    {
+      "source": "/email-agent",
+      "destination": "/email-agent.html"
+    },
+    {
+      "source": "/api/track-event",
+      "destination": "/api/get-plan?mode=track-event"
+    },
+    {
+      "source": "/api/generate",
+      "destination": "/api/chat?mode=discord-debug"
+    },
+    {
+      "source": "/api/plugins",
+      "destination": "/api/desktop-agent?surface=plugins"
+    },
+    {
+      "source": "/api/plugin-oauth-callback",
+      "destination": "/api/desktop-agent?surface=plugins&action=oauthCallback"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/business-builder.html",
+      "destination": "/business-builder",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self), geolocation=(), payment=()"
+        }
+      ]
+    },
+    {
+      "source": "/plugins",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/roblox-studio",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/email-agent",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/deploy",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/jarvis",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    }
+  ]
 }
