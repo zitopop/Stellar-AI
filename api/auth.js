@@ -1,6 +1,6 @@
 // api/auth.js — email/password and verified Google sign-in for Stellar AI
 import crypto from 'crypto';
-import { createSession, readSession } from '../lib/auth.js';
+import { createSession, readSession, sessionSigningConfigured } from '../lib/auth.js';
 import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, kvSet } from '../lib/profile.js';
 import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js';
 import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
@@ -186,6 +186,11 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
 
+  if (req.body?.action === 'sessionHealth') {
+    const ready = sessionSigningConfigured();
+    return res.status(ready ? 200 : 503).json({ ok: ready, ready, service: 'session-signing' });
+  }
+
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return res.status(500).json({ error: 'Account storage is not configured.' });
@@ -276,7 +281,11 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail) });
   } catch (error) {
-    console.error('Authentication error', error?.message || error);
-    return res.status(500).json({ error: error?.message || 'Could not reach the account service. Try again.' });
+    const message = String(error?.message || error || '');
+    console.error('Authentication error', message);
+    if (/AUTH_SESSION_SECRET is not configured/i.test(message)) {
+      return res.status(503).json({ error: 'Secure sign-in is temporarily unavailable. Try again shortly.', code: 'AUTH_SESSION_UNAVAILABLE' });
+    }
+    return res.status(500).json({ error: message || 'Could not reach the account service. Try again.' });
   }
 }
