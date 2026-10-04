@@ -42,7 +42,7 @@ test('website builder returns a checkout session and verifies it before waiting 
 
 test('Server Pass checkout return reports activation readiness instead of a vague success message', () => {
   const html = read('server-pass.html');
-  assert.match(html, /data\.purchaseStatus/);
+  assert.match(html, /dataset\.purchaseStatus/);
   assert.match(html, /stellar-purchase-status-v1\.js/);
   assert.match(html, /Confirming your Server Pass/);
 });
