@@ -26,6 +26,9 @@ test('landing keeps the developer preview and product sections in source behind 
 test('landing remains responsive and motion-accessible without heavy animation dependencies', () => {
   assert.match(home, /prefers-reduced-motion:reduce|prefers-reduced-motion: reduce/);
   assert.match(home, /@media\(max-width:390px\)/);
+  assert.match(home, /premium-server-scene/);
+  assert.match(home, /stellar-hero-server-v56\.css/);
+  assert.match(home, /stellar-hero-server-v56\.js/);
   assert.doesNotMatch(home, /three\.js|gsap|ScrollTrigger/i);
 });
 
