@@ -61,14 +61,14 @@ test('customer capability surfaces expose Stellar tier names only', () => {
   assert.doesNotMatch(browserCosts, /gpt-|claude-|gemini-|grok-/i);
 });
 
-test('paid self-serve plans show checkout reassurance but Free and Server Pass pilot do not', () => {
+test('paid self-serve plans show checkout reassurance but Free and Server Pass do not', () => {
   assert.match(app, /Instant access • Cancel anytime/);
   assert.match(plans, /Choose Plus[\s\S]{0,300}Instant access • Cancel anytime/);
 
   const freeSegment = plans.slice(plans.indexOf('<h2>Free</h2>'), plans.indexOf('<h2>Starter</h2>'));
   assert.doesNotMatch(freeSegment, /checkout-trust/);
 
-  const serverStart = plans.indexOf('<strong>Server Pass pilot<\/strong>');
+  const serverStart = plans.indexOf('<strong>Server Pass<\/strong>');
   const serverEnd = plans.indexOf('<\/article>', serverStart);
   assert.ok(serverStart >= 0 && serverEnd > serverStart);
   assert.doesNotMatch(plans.slice(serverStart, serverEnd), /checkout-trust/);
