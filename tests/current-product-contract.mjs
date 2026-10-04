@@ -65,6 +65,10 @@ export function assertSupportContract(){
   assert.match(support,/Support/i);
   assert.match(support,/Billing|account|privacy/i);
   assert.match(support,/usage/i);
+  assert.doesNotMatch(support,/>Owner tools</i);
+  assert.doesNotMatch(support,/owner perks/i);
+  const plugins=read('plugins.html');
+  assert.doesNotMatch(plugins,/Owner-only integrations/i);
 }
 
 export function assertJarvisContract(){
