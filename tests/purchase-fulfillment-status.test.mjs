@@ -5,7 +5,10 @@ import { readFileSync } from 'node:fs';
 const read = (name) => readFileSync(new URL('../' + name, import.meta.url), 'utf8');
 
 test('purchase status endpoint verifies Stripe and exposes only safe fulfilment state', () => {
-  const source = read('api/create-checkout.js');
+  const full = read('api/create-checkout.js');
+  const start = full.indexOf('async function purchaseStatusPayload');
+  const end = full.indexOf('export default async function handler');
+  const source = full.slice(start, end);
   assert.match(source, /checkout\.sessions\.retrieve\(sessionId\)/);
   assert.match(source, /loadBusinessFulfillmentJob/);
   assert.match(source, /website-builder/);
@@ -26,7 +29,7 @@ test('business thank-you pages show live verified fulfilment status', () => {
     assert.match(html, /Stripe receipt/);
   }
   const widget = read('lib/assets/stellar-purchase-status-v1.js');
-  assert.match(widget, /\/api\/purchase-status\?session_id=/);
+  assert.match(widget, /\/api\/create-checkout\?action=purchase-status&session_id=/);
   assert.match(widget, /You do not need to pay again/);
   assert.match(widget, /history\.replaceState/);
 });
@@ -35,7 +38,7 @@ test('website builder returns a checkout session and verifies it before waiting 
   const checkout = read('api/create-checkout.js');
   const builder = read('business-builder.html');
   assert.match(checkout, /business-builder\?payment=success&session_id=\{CHECKOUT_SESSION_ID\}/);
-  assert.match(builder, /\/api\/purchase-status\?session_id=/);
+  assert.match(builder, /\/api\/create-checkout\?action=purchase-status&session_id=/);
   assert.match(builder, /do not buy again/i);
   assert.match(builder, /\/api\/get-plan/);
 });
