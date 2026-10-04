@@ -1,0 +1,509 @@
+/* Stellar AI — clean premium presentation layer
+   Purpose: remove the old galaxy treatment and keep the product calm, legible and conversion-first. */
+
+:root{
+  --premium-bg:#0a0a0b;
+  --premium-surface:#101012;
+  --premium-surface-2:#151518;
+  --premium-line:rgba(255,255,255,.09);
+  --premium-line-strong:rgba(255,255,255,.15);
+  --premium-text:#f7f7f8;
+  --premium-muted:#a0a0aa;
+  --premium-faint:#74747e;
+  --premium-accent:#8f7cff;
+  --premium-accent-soft:rgba(143,124,255,.12);
+  --premium-radius:20px;
+  --premium-shadow:0 24px 80px rgba(0,0,0,.28);
+}
+
+html:has(body.public-home)::before,
+html:has(body.public-home)::after,
+body.public-home::after,
+body.public-home .oa2-hero::before{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+
+body.public-home{
+  background:var(--premium-bg)!important;
+  color:var(--premium-text)!important;
+  font-family:Manrope,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  text-rendering:optimizeLegibility;
+}
+
+body.public-home *{
+  text-shadow:none!important;
+}
+
+body.public-home .site-header{
+  border-bottom:1px solid var(--premium-line)!important;
+  background:rgba(10,10,11,.88)!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+
+body.public-home .nav{
+  min-height:64px!important;
+}
+
+body.public-home .brand,
+body.public-home .brand svg,
+body.public-home .mark{
+  filter:none!important;
+  text-shadow:none!important;
+}
+
+body.public-home .nav-links a,
+body.public-home .nav-login{
+  color:#9898a2!important;
+  font-size:12px!important;
+  font-weight:650!important;
+}
+
+body.public-home .nav-links a:hover,
+body.public-home .nav-login:hover{
+  color:#fff!important;
+}
+
+body.public-home .button,
+body.public-home .btn,
+body.public-home .oa2-primary-action,
+body.public-home .oa2-secondary-action,
+body.public-home .button-primary,
+body.public-home .button-outline{
+  min-height:44px!important;
+  border-radius:12px!important;
+  font-weight:760!important;
+  letter-spacing:-.01em!important;
+  box-shadow:none!important;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease,transform .16s ease!important;
+}
+
+body.public-home .button-primary,
+body.public-home .btn.primary,
+body.public-home .oa2-primary-action,
+body.public-home .plan .button-primary{
+  border:1px solid #f3f3f4!important;
+  background:#f3f3f4!important;
+  color:#111114!important;
+  -webkit-text-fill-color:#111114!important;
+}
+
+body.public-home .button-primary:hover,
+body.public-home .btn.primary:hover,
+body.public-home .oa2-primary-action:hover{
+  border-color:#fff!important;
+  background:#fff!important;
+  filter:none!important;
+  transform:translateY(-1px)!important;
+}
+
+body.public-home .button-outline,
+body.public-home .button-quiet,
+body.public-home .btn:not(.primary),
+body.public-home .oa2-secondary-action{
+  border:1px solid var(--premium-line)!important;
+  background:#111113!important;
+  color:#ececf0!important;
+  -webkit-text-fill-color:#ececf0!important;
+}
+
+body.public-home .button-outline:hover,
+body.public-home .button-quiet:hover,
+body.public-home .btn:not(.primary):hover,
+body.public-home .oa2-secondary-action:hover{
+  border-color:var(--premium-line-strong)!important;
+  background:#17171a!important;
+  transform:translateY(-1px)!important;
+}
+
+body.public-home .oa2-hero{
+  width:min(1040px,calc(100% - 32px))!important;
+  min-height:auto!important;
+  padding:clamp(92px,12vw,156px) 0 clamp(78px,9vw,116px)!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+
+body.public-home .oa2-wordmark{
+  margin-inline:auto!important;
+  width:max-content!important;
+  padding:7px 10px!important;
+  border:1px solid rgba(143,124,255,.18)!important;
+  border-radius:999px!important;
+  background:rgba(143,124,255,.07)!important;
+  color:#a99cff!important;
+  -webkit-text-fill-color:#a99cff!important;
+  font:800 10px/1 "DM Mono",monospace!important;
+  letter-spacing:.13em!important;
+}
+
+body.public-home #hero-title,
+body.public-home .oa2-hero h1{
+  max-width:930px!important;
+  margin:20px auto 0!important;
+  color:#f8f8f9!important;
+  -webkit-text-fill-color:#f8f8f9!important;
+  font-size:clamp(52px,7.4vw,88px)!important;
+  font-weight:680!important;
+  line-height:.98!important;
+  letter-spacing:-.065em!important;
+  text-wrap:balance!important;
+}
+
+body.public-home .oa2-lead{
+  max-width:690px!important;
+  margin:24px auto 0!important;
+  color:#aaaab4!important;
+  font-size:clamp(16px,1.7vw,19px)!important;
+  line-height:1.65!important;
+}
+
+body.public-home .oa2-hero-proof{
+  margin-top:20px!important;
+  gap:8px!important;
+}
+
+body.public-home .oa2-hero-proof span,
+body.public-home .oa2-framework-checklist span,
+body.public-home .pricing-trust span{
+  min-height:34px!important;
+  padding:0 11px!important;
+  border:1px solid rgba(255,255,255,.075)!important;
+  border-radius:999px!important;
+  background:#101012!important;
+  color:#a9a9b2!important;
+  font-size:11px!important;
+  font-weight:650!important;
+}
+
+body.public-home .oa2-framework-checklist span::before{
+  color:#9e91ff!important;
+}
+
+body.public-home .oa2-composer,
+body.public-home .composer,
+body.public-home .build-form{
+  max-width:780px!important;
+  border:1px solid var(--premium-line-strong)!important;
+  border-radius:18px!important;
+  background:#111113!important;
+  box-shadow:var(--premium-shadow)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+body.public-home .oa2-composer:focus-within,
+body.public-home .composer:focus-within{
+  border-color:rgba(143,124,255,.42)!important;
+  box-shadow:0 0 0 3px rgba(143,124,255,.08),var(--premium-shadow)!important;
+}
+
+body.public-home .oa2-preview,
+body.public-home .oa2-audience,
+body.public-home .pricing-section,
+body.public-home .faq-section,
+body.public-home .final-cta{
+  padding-top:clamp(72px,9vw,112px)!important;
+  padding-bottom:clamp(72px,9vw,112px)!important;
+}
+
+body.public-home .oa2-section-head h2,
+body.public-home .pricing-heading h2,
+body.public-home .faq-section h2,
+body.public-home .final-cta h2{
+  color:#f5f5f6!important;
+  font-size:clamp(38px,5.2vw,64px)!important;
+  font-weight:680!important;
+  line-height:1.02!important;
+  letter-spacing:-.055em!important;
+  text-wrap:balance!important;
+}
+
+body.public-home .oa2-section-copy,
+body.public-home .oa2-section-head p,
+body.public-home .pricing-heading p,
+body.public-home .faq-section p,
+body.public-home .final-cta p{
+  color:#9898a3!important;
+  line-height:1.7!important;
+}
+
+body.public-home .oa2-preview-shell,
+body.public-home .stellar-debug-proof,
+body.public-home .oa2-audience-grid article,
+body.public-home .plan,
+body.public-home .legacy-pack,
+body.public-home .credit-wallet,
+body.public-home .faq-item,
+body.public-home details,
+body.public-home .final-cta{
+  border:1px solid var(--premium-line)!important;
+  border-radius:var(--premium-radius)!important;
+  background:var(--premium-surface)!important;
+  box-shadow:none!important;
+}
+
+body.public-home .oa2-preview-shell{
+  padding:10px!important;
+  overflow:hidden!important;
+}
+
+body.public-home .oa2-preview-prompt,
+body.public-home .oa2-preview-response,
+body.public-home .stellar-debug-proof-card{
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:14px!important;
+  background:#0c0c0e!important;
+}
+
+body.public-home pre,
+body.public-home code{
+  font-family:"JetBrains Mono","DM Mono",ui-monospace,SFMono-Regular,Consolas,monospace!important;
+}
+
+body.public-home pre{
+  border-color:rgba(255,255,255,.075)!important;
+  background:#09090b!important;
+}
+
+body.public-home .oa2-audience-grid{
+  gap:12px!important;
+}
+
+body.public-home .oa2-audience-grid article{
+  min-height:210px!important;
+  padding:24px!important;
+  transition:border-color .16s ease,background-color .16s ease,transform .16s ease!important;
+}
+
+body.public-home .oa2-audience-grid article:hover{
+  border-color:rgba(255,255,255,.15)!important;
+  background:#131316!important;
+  transform:translateY(-2px)!important;
+}
+
+body.public-home .plans{
+  gap:14px!important;
+}
+
+body.public-home .plan{
+  padding:24px 22px!important;
+  transition:border-color .16s ease,transform .16s ease!important;
+}
+
+body.public-home .plan:hover{
+  border-color:rgba(255,255,255,.15)!important;
+  transform:translateY(-2px)!important;
+  box-shadow:none!important;
+}
+
+body.public-home .plan.featured,
+body.public-home .plans .plan[data-plan="plus"]{
+  border-color:rgba(143,124,255,.42)!important;
+  background:linear-gradient(180deg,rgba(143,124,255,.075),#101012 28%)!important;
+  box-shadow:0 0 0 1px rgba(143,124,255,.05)!important;
+}
+
+body.public-home .popular-pill,
+body.public-home .plan-badge,
+body.public-home .plan.featured .plan-fit{
+  border-color:rgba(143,124,255,.24)!important;
+  background:var(--premium-accent-soft)!important;
+  color:#b9b0ff!important;
+}
+
+body.public-home .plan .price strong{
+  color:#fff!important;
+  font-size:clamp(40px,4.5vw,54px)!important;
+  letter-spacing:-.055em!important;
+}
+
+body.public-home .plan-value,
+body.public-home .oa2-plan-compare div,
+body.public-home .legacy-pack-packs a{
+  border:1px solid rgba(255,255,255,.07)!important;
+  background:#0d0d0f!important;
+  box-shadow:none!important;
+}
+
+body.public-home .faq-item,
+body.public-home details{
+  overflow:hidden!important;
+}
+
+body.public-home .faq-item:hover,
+body.public-home details:hover{
+  border-color:rgba(255,255,255,.14)!important;
+}
+
+body.public-home .final-cta{
+  padding-inline:clamp(24px,5vw,56px)!important;
+  text-align:center!important;
+}
+
+body.public-home footer{
+  border-top:1px solid var(--premium-line)!important;
+  background:#09090a!important;
+}
+
+@media(max-width:760px){
+  body.public-home .site-header .nav{
+    min-height:60px!important;
+    padding-inline:12px!important;
+  }
+  body.public-home .oa2-hero{
+    width:calc(100% - 24px)!important;
+    padding:72px 0 76px!important;
+  }
+  body.public-home #hero-title,
+  body.public-home .oa2-hero h1{
+    font-size:clamp(42px,12vw,58px)!important;
+    line-height:1!important;
+    letter-spacing:-.055em!important;
+  }
+  body.public-home .oa2-lead{
+    font-size:15px!important;
+    line-height:1.6!important;
+  }
+  body.public-home .oa2-composer,
+  body.public-home .composer,
+  body.public-home .build-form{
+    border-radius:16px!important;
+  }
+  body.public-home .oa2-hero-actions{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    width:100%!important;
+  }
+  body.public-home .oa2-hero-actions a,
+  body.public-home .oa2-hero-actions button{
+    width:100%!important;
+  }
+  body.public-home .oa2-preview,
+  body.public-home .oa2-audience,
+  body.public-home .pricing-section,
+  body.public-home .faq-section,
+  body.public-home .final-cta{
+    width:calc(100% - 24px)!important;
+  }
+  body.public-home .plan,
+  body.public-home .oa2-audience-grid article{
+    padding:20px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.public-home *,
+  body.public-home *::before,
+  body.public-home *::after{
+    scroll-behavior:auto!important;
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+  }
+}
+
+/* Plans page uses the same visual system without leaking styles into unrelated pages. */
+body.plans-page{
+  --bg:var(--premium-bg);
+  --line:var(--premium-line);
+  --text:var(--premium-text);
+  --muted:var(--premium-muted);
+  --accent:var(--premium-accent);
+  margin:0!important;
+  background:var(--premium-bg)!important;
+  color:var(--premium-text)!important;
+  font-family:Manrope,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+
+body.plans-page .top{
+  border-bottom:1px solid var(--premium-line)!important;
+  background:rgba(10,10,11,.9)!important;
+  box-shadow:none!important;
+}
+
+body.plans-page .hero{
+  padding:84px 0 44px!important;
+}
+
+body.plans-page .hero h1{
+  max-width:850px!important;
+  font-size:clamp(44px,6.4vw,74px)!important;
+  font-weight:680!important;
+  line-height:1!important;
+  letter-spacing:-.06em!important;
+}
+
+body.plans-page .lead{
+  max-width:680px!important;
+  color:#a1a1ab!important;
+  line-height:1.7!important;
+}
+
+body.plans-page .trust span,
+body.plans-page .model-pill,
+body.plans-page .checkout-trust{
+  border-color:rgba(255,255,255,.08)!important;
+  background:#111113!important;
+  color:#a8a8b1!important;
+  box-shadow:none!important;
+}
+
+body.plans-page .plan,
+body.plans-page .compare,
+body.plans-page .faq,
+body.plans-page .team{
+  border-color:var(--premium-line)!important;
+  background:var(--premium-surface)!important;
+  box-shadow:none!important;
+}
+
+body.plans-page .plan{
+  border-radius:20px!important;
+  transition:border-color .16s ease,transform .16s ease!important;
+}
+
+body.plans-page .plan:hover{
+  border-color:rgba(255,255,255,.15)!important;
+  transform:translateY(-2px)!important;
+}
+
+body.plans-page .plan.plus{
+  border-color:rgba(143,124,255,.42)!important;
+  background:linear-gradient(180deg,rgba(143,124,255,.075),#101012 28%)!important;
+}
+
+body.plans-page .popular-pill{
+  border-color:rgba(143,124,255,.24)!important;
+  background:var(--premium-accent-soft)!important;
+  color:#b9b0ff!important;
+}
+
+body.plans-page .btn{
+  min-height:44px!important;
+  border-radius:12px!important;
+  border-color:var(--premium-line)!important;
+  background:#151518!important;
+  color:#f0f0f2!important;
+  box-shadow:none!important;
+}
+
+body.plans-page .plan.plus .btn:first-child,
+body.plans-page .links .primary{
+  border-color:#f3f3f4!important;
+  background:#f3f3f4!important;
+  color:#111114!important;
+}
+
+body.plans-page footer{
+  border-top:1px solid var(--premium-line)!important;
+  background:#09090a!important;
+}
