@@ -6,16 +6,18 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 test('landing page keeps the current chat-first hero contract', () => {
   assert.match(home, /homepage-chat-first-2026-10-04/);
-  assert.match(home, /<h1 id="hero-title">What can I help with\?<\/h1>/);
+  assert.match(home, /<h1 id="hero-title">Build faster\.<br><span>Think bigger\.<\/span><\/h1>/);
   assert.match(home, /placeholder="Message Stellar AI"/);
   assert.match(home, /Free to try · no card required/);
-  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Open full chat/);
+  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Start free/);
 });
 
 test('landing keeps the developer preview and product sections behind the chat-first entry', () => {
   assert.match(home, /data-hero-editor/);
   assert.match(home, /id="playground"/);
   assert.match(home, /id="comparison"/);
+  assert.match(home, /id="showcase"/);
+  assert.match(home, /id="business"/);
   assert.match(home, /id="trust"/);
   assert.match(home, /id="plans"/);
   assert.match(home, /faq-section/);
