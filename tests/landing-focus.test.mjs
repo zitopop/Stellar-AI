@@ -29,5 +29,6 @@ test('final call to action represents the whole Stellar product', () => {
   assert.match(home, /Bring the task/);
   assert.match(home, /Leave with something useful/);
   assert.match(home, /Explore Business AI/);
-  assert.match(home, /Review AI-generated output before relying on it/);
+  assert.match(home, /Generated code should be tested in a development environment before production use/);
+  assert.match(home, /Review other AI-generated output before relying on it/);
 });
