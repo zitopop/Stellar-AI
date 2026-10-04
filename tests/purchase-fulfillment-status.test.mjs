@@ -65,7 +65,7 @@ test('signed-in Settings can show recent paid business service progress', () => 
 test('purchase-status GET bypasses the public business checkout guard', () => {
   const checkout = read('api/create-checkout.js');
   assert.match(checkout, /const purchaseStatusRequest = req\.method === 'GET' && action === 'purchase-status'/);
-  assert.match(checkout, /req\.method === 'GET' && !publicBusinessCheckout && !purchaseStatusRequest/);
+  assert.match(checkout, /req\.method === 'GET' && !purchaseStatusRequest/);
   const guard = checkout.indexOf("!publicBusinessCheckout && !purchaseStatusRequest");
   const statusHandler = checkout.indexOf("if (purchaseStatusRequest)");
   assert.ok(guard >= 0 && statusHandler > guard, 'purchase-status requests must survive the GET checkout guard');
