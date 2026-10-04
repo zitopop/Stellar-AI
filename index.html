@@ -26,7 +26,7 @@
 <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="stellar-build" content="homepage-focus-2026-10-03">
+  <meta name="stellar-build" content="homepage-3d-scroll-2026-10-04">
   <meta name="application-name" content="Stellar AI">
   <title>Stellar AI — Generate & Debug FiveM and Roblox Scripts</title>
   <meta name="description" content="Generate and debug FiveM QBCore, ESX, ox_lib and Roblox Luau scripts with Stellar AI. Start free with no card.">
@@ -1883,6 +1883,138 @@ body.public-home::before{display:none!important}
   .public-home .stellar-team-offer{padding:20px!important}
 }
 </style>
+
+<style id="stellar-scroll-cinema-v1">
+/* Scroll-linked depth system: cinematic like premium product pages, but lightweight and accessible. */
+body.public-home[data-scroll-cinema="on"]{position:relative;isolation:isolate}
+body.public-home[data-scroll-cinema="on"] main{position:relative;z-index:1;overflow:clip!important;perspective:1600px;perspective-origin:50% 35%}
+body.public-home[data-scroll-cinema="on"] .footer{position:relative;z-index:1}
+body.public-home[data-scroll-cinema="on"] .stellar-scroll-ambient{
+  position:fixed;inset:-18vh -12vw;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(42vw 34vw at 18% 20%,rgba(138,43,226,.18),transparent 70%),
+    radial-gradient(38vw 30vw at 82% 62%,rgba(0,240,255,.10),transparent 72%),
+    radial-gradient(30vw 24vw at 52% 86%,rgba(125,104,255,.08),transparent 74%);
+  filter:blur(20px);opacity:.78;
+  transform:translate3d(var(--ambient-x,0px),var(--ambient-y,0px),0) scale(1.08);
+  will-change:transform,opacity
+}
+body.public-home[data-scroll-cinema="on"] .site-header{z-index:40!important}
+
+body.public-home[data-scroll-cinema="on"] .stellar-scroll-scene{
+  position:relative;
+  transform-style:preserve-3d;
+  transform-origin:50% 40%;
+  transform:
+    perspective(1600px)
+    translate3d(0,var(--scene-y,0px),var(--scene-z,0px))
+    rotateX(var(--scene-rx,0deg))
+    rotateY(var(--scene-ry,0deg))
+    scale(var(--scene-scale,1));
+  opacity:var(--scene-opacity,1);
+  filter:saturate(var(--scene-sat,1));
+  will-change:transform,opacity,filter
+}
+body.public-home[data-scroll-cinema="on"] .oa2-hero.stellar-scroll-scene{
+  transform:none!important;opacity:1!important;filter:none!important;transform-style:preserve-3d
+}
+body.public-home[data-scroll-cinema="on"] .oa2-hero .dev-hero-copy{
+  transform:
+    translate3d(var(--hero-copy-x,0px),var(--hero-copy-y,0px),var(--hero-copy-z,0px))
+    scale(var(--hero-copy-scale,1));
+  opacity:var(--hero-copy-opacity,1);
+  transform-origin:50% 35%;
+  will-change:transform,opacity
+}
+body.public-home[data-scroll-cinema="on"] .oa2-hero .hero-editor{
+  transform:
+    perspective(1500px)
+    translate3d(var(--hero-editor-x,0px),var(--hero-editor-y,0px),var(--hero-editor-z,0px))
+    rotateX(var(--hero-editor-rx,0deg))
+    rotateY(var(--hero-editor-ry,0deg))
+    scale(var(--hero-editor-scale,1))!important;
+  transform-origin:50% 50%;
+  box-shadow:
+    0 var(--hero-shadow-y,36px) var(--hero-shadow-blur,110px) rgba(0,0,0,.46),
+    0 0 var(--hero-glow,74px) rgba(138,43,226,.10)!important;
+  will-change:transform,box-shadow
+}
+body.public-home[data-scroll-cinema="on"] .stellar-scroll-card{
+  transform:
+    perspective(1200px)
+    translate3d(0,var(--card-y,0px),var(--card-z,0px))
+    rotateX(var(--card-rx,0deg))
+    rotateY(var(--card-ry,0deg))
+    scale(var(--card-scale,1))!important;
+  opacity:var(--card-opacity,1);
+  transform-origin:50% 45%;
+  will-change:transform,opacity
+}
+body.public-home[data-scroll-cinema="on"] .plan.stellar-scroll-card.featured{
+  box-shadow:
+    0 0 0 1px rgba(139,124,246,.11) inset,
+    0 var(--card-shadow-y,18px) 64px rgba(82,58,170,.12)!important
+}
+body.public-home[data-scroll-cinema="on"] .stellar-comparison-card.stellar-scroll-card,
+body.public-home[data-scroll-cinema="on"] .stellar-trust-grid article.stellar-scroll-card{
+  box-shadow:0 var(--card-shadow-y,18px) 56px rgba(0,0,0,.18)!important
+}
+body.public-home[data-scroll-cinema="on"] .dev-playground-shell.stellar-scroll-card,
+body.public-home[data-scroll-cinema="on"] .hero-editor{
+  backface-visibility:hidden
+}
+
+/* Product-story pauses: the demo and comparison deck hold in view while the page moves around them. */
+@media(min-width:980px) and (min-height:700px){
+  body.public-home[data-scroll-cinema="on"] .stellar-dev-playground{
+    min-height:138vh!important;
+    padding-bottom:28vh!important
+  }
+  body.public-home[data-scroll-cinema="on"] .stellar-dev-playground .dev-playground-shell{
+    position:sticky!important;top:112px
+  }
+  body.public-home[data-scroll-cinema="on"] .stellar-comparison{
+    min-height:122vh!important;padding-bottom:24vh!important
+  }
+  body.public-home[data-scroll-cinema="on"] .stellar-comparison .stellar-comparison-grid{
+    position:sticky;top:132px
+  }
+}
+
+/* Mobile keeps the depth, but removes the expensive sticky/tilt behaviour. */
+@media(max-width:979px){
+  body.public-home[data-scroll-cinema="on"] .stellar-scroll-scene{
+    transform:
+      translate3d(0,var(--scene-y,0px),0)
+      scale(var(--scene-scale,1))!important;
+    filter:none!important
+  }
+  body.public-home[data-scroll-cinema="on"] .stellar-scroll-card{
+    transform:translate3d(0,var(--card-y,0px),0) scale(var(--card-scale,1))!important
+  }
+  body.public-home[data-scroll-cinema="on"] .oa2-hero .hero-editor{
+    transform:
+      translate3d(0,var(--hero-editor-y,0px),0)
+      scale(var(--hero-editor-scale,1))!important
+  }
+}
+@media(max-width:640px){
+  body.public-home[data-scroll-cinema="on"] .stellar-scroll-ambient{opacity:.46;filter:blur(28px)}
+}
+@media(prefers-reduced-motion:reduce){
+  body.public-home[data-scroll-cinema="on"] .stellar-scroll-scene,
+  body.public-home[data-scroll-cinema="on"] .stellar-scroll-card,
+  body.public-home[data-scroll-cinema="on"] .oa2-hero .dev-hero-copy,
+  body.public-home[data-scroll-cinema="on"] .oa2-hero .hero-editor{
+    transform:none!important;opacity:1!important;filter:none!important;will-change:auto!important
+  }
+  body.public-home[data-scroll-cinema="on"] .stellar-dev-playground,
+  body.public-home[data-scroll-cinema="on"] .stellar-comparison{min-height:0!important;padding-bottom:clamp(68px,8vw,96px)!important}
+  body.public-home[data-scroll-cinema="on"] .dev-playground-shell,
+  body.public-home[data-scroll-cinema="on"] .stellar-comparison-grid{position:static!important}
+  body.public-home[data-scroll-cinema="on"] .stellar-scroll-ambient{display:none!important}
+}
+</style>
 </head>
 <body class="stellar-public public-home">
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -2270,6 +2402,130 @@ root.querySelectorAll('[data-demo-download]').forEach(button=>button.addEventLis
   link.href=URL.createObjectURL(blob);link.download=button.dataset.demoDownload==='debugger'?'stellar-fixed-script.lua':'stellar-qbcore-script.lua';
   document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 }));
+})();
+</script>
+
+<script id="stellar-scroll-cinema-v1">
+(()=>{'use strict';
+const body=document.body;
+if(!body?.classList.contains('public-home'))return;
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+const clamp=(value,min=0,max=1)=>Math.min(max,Math.max(min,value));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const sceneSelectors=[
+  '.oa2-hero',
+  '.dev-proof-strip',
+  '.stellar-dev-playground',
+  '.stellar-comparison',
+  '.stellar-trust-section',
+  '.pricing-section',
+  '.faq-section',
+  '.final-cta'
+];
+const scenes=sceneSelectors.map(selector=>document.querySelector(selector)).filter(Boolean);
+const cardSelectors=[
+  '.dev-proof-item',
+  '.dev-playground-shell',
+  '.stellar-comparison-card',
+  '.stellar-trust-grid article',
+  '.plan',
+  '.stellar-debug-proof',
+  '.stellar-team-offer',
+  '.faqs details'
+];
+const cards=[...document.querySelectorAll(cardSelectors.join(','))];
+scenes.forEach(scene=>scene.classList.add('stellar-scroll-scene'));
+cards.forEach((card,index)=>{card.classList.add('stellar-scroll-card');card.dataset.scrollDepth=String(index%5)});
+const ambient=document.createElement('div');
+ambient.className='stellar-scroll-ambient';
+ambient.setAttribute('aria-hidden','true');
+body.prepend(ambient);
+body.dataset.scrollCinema='on';
+
+const hero=document.querySelector('.oa2-hero');
+const heroCopy=hero?.querySelector('.dev-hero-copy');
+const heroEditor=hero?.querySelector('.hero-editor');
+let raf=0;
+
+function setScene(scene,vh,desktop){
+  const rect=scene.getBoundingClientRect();
+  const enter=clamp((vh*.96-rect.top)/(vh*.78));
+  const exit=clamp(rect.bottom/(vh*.34));
+  const visibility=Math.min(enter,exit);
+  const signed=clamp((rect.top-vh*.50)/vh,-1,1);
+  const depth=desktop?1:.42;
+  scene.style.setProperty('--scene-y',(lerp(62,0,visibility)+signed*8*depth).toFixed(2)+'px');
+  scene.style.setProperty('--scene-z',desktop?lerp(-80,18,visibility).toFixed(2)+'px':'0px');
+  scene.style.setProperty('--scene-rx',desktop?(lerp(6.5,0,visibility)+signed*1.2).toFixed(2)+'deg':'0deg');
+  scene.style.setProperty('--scene-ry',desktop?(signed*-1.1*(1-visibility)).toFixed(2)+'deg':'0deg');
+  scene.style.setProperty('--scene-scale',lerp(desktop?.925:.965,1,visibility).toFixed(4));
+  scene.style.setProperty('--scene-opacity',lerp(.34,1,visibility).toFixed(3));
+  scene.style.setProperty('--scene-sat',lerp(.72,1,visibility).toFixed(3));
+}
+
+function setCard(card,vh,desktop,index){
+  const rect=card.getBoundingClientRect();
+  const enter=clamp((vh*.94-rect.top)/(vh*.64));
+  const exit=clamp(rect.bottom/(vh*.22));
+  const visibility=Math.min(enter,exit);
+  const lane=((Number(card.dataset.scrollDepth)||index)%5)-2;
+  const side=desktop?lane:0;
+  card.style.setProperty('--card-y',lerp(46+Math.abs(side)*5,0,visibility).toFixed(2)+'px');
+  card.style.setProperty('--card-z',desktop?lerp(-54,12,visibility).toFixed(2)+'px':'0px');
+  card.style.setProperty('--card-rx',desktop?lerp(7.5,0,visibility).toFixed(2)+'deg':'0deg');
+  card.style.setProperty('--card-ry',desktop?lerp(side*2.2,0,visibility).toFixed(2)+'deg':'0deg');
+  card.style.setProperty('--card-scale',lerp(desktop?.93:.97,1,visibility).toFixed(4));
+  card.style.setProperty('--card-opacity',lerp(.28,1,visibility).toFixed(3));
+  card.style.setProperty('--card-shadow-y',lerp(34,16,visibility).toFixed(1)+'px');
+}
+
+function setHero(vh,desktop){
+  if(!hero)return;
+  const rect=hero.getBoundingClientRect();
+  const span=Math.max(vh*.9,hero.offsetHeight*.72);
+  const progress=clamp((-rect.top)/span);
+  if(heroCopy){
+    heroCopy.style.setProperty('--hero-copy-y',(progress*(desktop?-54:-18)).toFixed(2)+'px');
+    heroCopy.style.setProperty('--hero-copy-z',desktop?(progress*36).toFixed(2)+'px':'0px');
+    heroCopy.style.setProperty('--hero-copy-scale',lerp(1,desktop?.965:.99,progress).toFixed(4));
+    heroCopy.style.setProperty('--hero-copy-opacity',lerp(1,.78,progress).toFixed(3));
+  }
+  if(heroEditor){
+    const editorEntry=clamp((vh*.92-heroEditor.getBoundingClientRect().top)/(vh*.78));
+    const p=Math.max(progress*.72,editorEntry*.55);
+    heroEditor.style.setProperty('--hero-editor-y',lerp(desktop?54:26,desktop?-18:0,p).toFixed(2)+'px');
+    heroEditor.style.setProperty('--hero-editor-z',desktop?lerp(-86,28,p).toFixed(2)+'px':'0px');
+    heroEditor.style.setProperty('--hero-editor-rx',desktop?lerp(10,-2.5,p).toFixed(2)+'deg':'0deg');
+    heroEditor.style.setProperty('--hero-editor-ry',desktop?lerp(-5,2.2,p).toFixed(2)+'deg':'0deg');
+    heroEditor.style.setProperty('--hero-editor-scale',lerp(desktop?.92:.97,1,p).toFixed(4));
+    heroEditor.style.setProperty('--hero-shadow-y',lerp(52,26,p).toFixed(1)+'px');
+    heroEditor.style.setProperty('--hero-shadow-blur',lerp(130,86,p).toFixed(1)+'px');
+    heroEditor.style.setProperty('--hero-glow',lerp(110,58,p).toFixed(1)+'px');
+  }
+}
+
+function render(){
+  raf=0;
+  if(reduce.matches){body.dataset.scrollMotion='reduced';return}
+  body.dataset.scrollMotion='active';
+  const vh=Math.max(window.innerHeight||0,600);
+  const desktop=window.innerWidth>=980;
+  const scrollY=Math.max(0,window.scrollY||0);
+  const page=Math.max(1,document.documentElement.scrollHeight-vh);
+  const pageProgress=clamp(scrollY/page);
+  body.style.setProperty('--ambient-x',(Math.sin(pageProgress*Math.PI*2)*38).toFixed(1)+'px');
+  body.style.setProperty('--ambient-y',(lerp(-24,68,pageProgress)).toFixed(1)+'px');
+  ambient.style.opacity=String(lerp(.66,.88,Math.sin(pageProgress*Math.PI)*.5+.5));
+  setHero(vh,desktop);
+  scenes.forEach(scene=>{if(scene!==hero)setScene(scene,vh,desktop)});
+  cards.forEach((card,index)=>setCard(card,vh,desktop,index));
+}
+function schedule(){if(!raf)raf=requestAnimationFrame(render)}
+addEventListener('scroll',schedule,{passive:true});
+addEventListener('resize',schedule,{passive:true});
+reduce.addEventListener?.('change',schedule);
+addEventListener('load',schedule,{once:true});
+schedule();
 })();
 </script>
 <script src="/lib/assets/stellar-analytics.js?v=2"></script>
