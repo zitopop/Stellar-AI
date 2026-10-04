@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090a0f">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Stellar AI OS</title>
+  <meta name="description" content="Private Stellar AI operating system workspace.">
+  <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/lib/assets/stellar-ai-os.css?v=1">
+  <script src="/lib/assets/stellar-ai-os.js?v=1" type="module"></script>
+</head>
+<body>
+  <a class="skip" href="#command-input">Skip to command</a>
+
+  <section id="access" class="access-shell">
+    <div class="access-card">
+      <span class="mark" aria-hidden="true">✦</span>
+      <p class="eyebrow">PRIVATE STELLAR WORKSPACE</p>
+      <h1>AI OS is locked.</h1>
+      <p id="access-message">Checking private access…</p>
+      <a class="button primary" href="/app?signin=1">Open sign in</a>
+    </div>
+  </section>
+
+  <div id="os" class="os-shell" hidden>
+    <aside class="rail" aria-label="AI OS navigation">
+      <a class="brand" href="/app"><span>✦</span><b>Stellar</b><small>AI OS</small></a>
+      <nav>
+        <a href="/ai-os" class="active" aria-current="page"><span>◉</span> Command</a>
+        <a href="/private-workspace.html"><span>◆</span> Missions</a>
+        <a href="/jarvis"><span>◈</span> Jarvis</a>
+        <a href="/plugins"><span>⊞</span> Connections</a>
+        <a href="/deploy"><span>↗</span> Deploy</a>
+        <a href="/app"><span>⌁</span> Chat</a>
+      </nav>
+      <div class="rail-foot">
+        <span class="secure-dot"></span>
+        <div><strong>Private mode</strong><small>Server-verified access</small></div>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><span class="live-dot"></span><span id="system-status">AI OS connecting…</span></div>
+        <div class="top-actions"><button id="refresh" type="button" class="ghost">Refresh</button><a class="ghost" href="/app">Exit to Stellar</a></div>
+      </header>
+
+      <div class="page">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">PRIVATE EXECUTIVE SYSTEM</p>
+            <h1>Your AI team.<br><span>One brain.</span></h1>
+            <p>Give Stellar one objective. The Brain coordinates specialist agents, keeps the evidence together and returns one owner brief with decisions, next actions, blockers and approvals.</p>
+          </div>
+          <div class="brain-wrap" aria-label="AI Brain status">
+            <div class="brain-orbit orbit-a"></div><div class="brain-orbit orbit-b"></div>
+            <div class="brain-core"><span>✦</span><strong>AI BRAIN</strong><small id="brain-state">CONNECTING</small></div>
+          </div>
+        </section>
+
+        <p id="feedback" class="feedback" role="status" aria-live="polite">Loading private AI OS…</p>
+
+        <section class="metrics" aria-label="AI OS overview">
+          <article><span>ACTIVE</span><strong id="metric-active">0</strong><small>missions running</small></article>
+          <article><span>BLOCKERS</span><strong id="metric-blocked">0</strong><small>need a decision</small></article>
+          <article><span>DONE</span><strong id="metric-done">0</strong><small>saved missions</small></article>
+          <article><span>TEAM</span><strong id="metric-agents">6</strong><small>coordinated agents</small></article>
+        </section>
+
+        <section class="command-panel" aria-labelledby="command-heading">
+          <div class="section-head">
+            <div><p class="eyebrow">EXECUTIVE COMMAND</p><h2 id="command-heading">What should the team solve?</h2></div>
+            <span class="private-pill">OWNER ONLY</span>
+          </div>
+          <form id="command-form">
+            <fieldset id="command-fields" disabled>
+              <label class="sr-only" for="command-input">Objective for the AI team</label>
+              <textarea id="command-input" minlength="10" maxlength="4000" rows="5" placeholder="Example: Work out the highest-value thing to improve on Stellar this week. Check evidence, revenue impact, technical work and risks, then give me the exact order to do it."></textarea>
+              <div class="quick-row" aria-label="Quick objectives">
+                <button type="button" data-prompt="Review Stellar AI and decide the three highest-value priorities for this week. Balance revenue, product quality, reliability and owner workload.">Weekly priorities</button>
+                <button type="button" data-prompt="Find the strongest realistic revenue opportunity for Stellar AI right now. Check evidence, offer, pricing, conversion blockers, technical requirements and the smallest next experiment.">Grow revenue</button>
+                <button type="button" data-prompt="Review the current Stellar AI product and engineering direction. Identify the highest-risk technical blocker and propose the smallest safe implementation plan.">Engineering brief</button>
+                <button type="button" data-prompt="Act as my executive assistant. Turn my current Stellar work into a short priority list, identify blockers or approvals, and tell me what deserves attention first.">Plan my day</button>
+              </div>
+              <div class="command-footer">
+                <div class="notify">
+                  <label><input type="checkbox" id="notify-email"> Email when ready</label>
+                  <label><input type="checkbox" id="notify-call"> Call me when ready</label>
+                </div>
+                <button class="button primary" id="run-brain" type="submit">Run AI Brain <span aria-hidden="true">↑</span></button>
+              </div>
+            </fieldset>
+          </form>
+          <p class="fine">The team researches, plans, drafts and reviews. External actions still require the relevant approved tool or owner decision. Mission history is retained for 30 days.</p>
+        </section>
+
+        <section class="agents-section" aria-labelledby="agents-heading">
+          <div class="section-head"><div><p class="eyebrow">AGENT TEAM</p><h2 id="agents-heading">Specialists coordinated by the Brain</h2></div><span id="capability-summary" class="quiet">Checking services…</span></div>
+          <div id="agents" class="agent-grid"></div>
+        </section>
+
+        <section class="work-layout">
+          <section class="mission-panel" aria-labelledby="missions-heading">
+            <div class="section-head"><div><p class="eyebrow">MISSION CONTROL</p><h2 id="missions-heading">Recent missions</h2></div><span class="quiet">30-day context</span></div>
+            <div id="mission-list" class="mission-list"></div>
+          </section>
+
+          <section class="detail-panel" id="mission-detail" aria-label="Selected AI OS mission">
+            <div class="empty-detail"><span>✦</span><h3>Select a mission</h3><p>The Brain brief and every agent result will appear here.</p></div>
+          </section>
+        </section>
+
+        <section class="approval-section" aria-labelledby="approval-heading">
+          <div class="section-head"><div><p class="eyebrow">OWNER DECISIONS</p><h2 id="approval-heading">Approvals &amp; blockers</h2></div><span class="quiet">Nothing executes itself here</span></div>
+          <div id="approvals" class="approval-list"></div>
+        </section>
+
+        <section class="system-section" aria-labelledby="system-heading">
+          <div class="section-head"><div><p class="eyebrow">SYSTEMS</p><h2 id="system-heading">AI OS connections</h2></div><a href="/plugins">Manage connections ↗</a></div>
+          <div id="capabilities" class="capability-grid"></div>
+        </section>
+
+        <footer><span>Stellar AI OS · Private workspace</span><span>Evidence first · approvals stay with you</span></footer>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
