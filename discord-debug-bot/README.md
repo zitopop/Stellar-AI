@@ -25,7 +25,7 @@ The bot does **not** hold Anthropic/Forge keys. It calls the private Stellar bri
 - One strong random `STELLAR_DISCORD_BOT_KEY` configured in both the bot host and the Stellar AI Vercel project
 - Optional `DISCORD_GUILD_ID` while testing
 - Existing `KV_REST_API_URL` and `KV_REST_API_TOKEN` on the Stellar web project for durable free-usage metering
-- Optional `STELLAR_SERVER_PASS_GUILD_IDS` on the Stellar web project: comma-separated Discord guild IDs for verified Server Pass pilot customers
+- Optional `STELLAR_SERVER_PASS_GUILD_IDS` on the Stellar web project: comma-separated Discord guild IDs for verified Server Pass customers
 
 Only the `Guilds` gateway intent is used. Message Content is not required because users supply code and support text through slash-command options. For full setup, role sync and tickets, the bot role needs **Manage Roles** and **Manage Channels**. Keep the bot role above the Stellar plan/support roles it manages. `/stellar-setup` itself is restricted to Discord administrators.
 
@@ -71,7 +71,7 @@ The `/api/generate` compatibility route rewrites to the existing private chat de
 
 The public Discord `/debug` path allows **2 repairs per Discord user per UTC day**. The bridge meters this server-side in KV; the Discord client cannot grant itself extra requests.
 
-For the £50/month Server Pass pilot, the preferred production path is now dynamic:
+For the £50/month Server Pass team add-on, the preferred production path is dynamic:
 
 1. The buyer connects Discord to the Stellar account that owns the paid Server Pass.
 2. A server owner/admin runs `/serverpass action:Activate this server`.
