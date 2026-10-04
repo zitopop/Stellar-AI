@@ -31,7 +31,7 @@ test('Jarvis workspace refuses accounts without a paid Jarvis entitlement', () =
   assert.match(jarvis, /capabilities\?\.jarvis/);
   assert.match(jarvis, /if\(!jarvisAccess\.enabled\)/);
   assert.match(jarvis, /Upgrade to Plus for Voice \+ Vision/);
-  assert.match(jarvis, /data-owner-only="true"/);
+  assert.match(jarvis, /data-restricted="true"/);
 });
 
 test('app and pricing surfaces explain Plus and Pro Jarvis value', () => {
@@ -48,7 +48,7 @@ test('owner phone and admin controls stay owner-only', () => {
   assert.match(app, /const ownerTools=isOwner\(\)\?/);
   assert.match(app, /id="owner-call-now"/);
   assert.match(app, /id="jarvis-briefings-nav"/);
-  assert.match(jarvis, /data-owner-only="true"/);
+  assert.match(jarvis, /data-restricted="true"/);
 });
 
 
@@ -56,5 +56,5 @@ test('paid Jarvis exposes secure Computer control through StellarX', () => {
   assert.match(jarvis, /data-jarvis-computer="true"/);
   assert.match(jarvis, /Open PC control/);
   assert.match(jarvis, /location\.href='\/desktop\?from=jarvis'/);
-  assert.doesNotMatch(jarvis, /data-name="Computer" data-owner-only="true"/);
+  assert.doesNotMatch(jarvis, /data-name="Computer" data-restricted="true"/);
 });

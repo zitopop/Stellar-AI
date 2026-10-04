@@ -1193,9 +1193,9 @@ export default async function handler(req, res) {
     } finally {
       reader.releaseLock();
       if (streamCompleted && session?.email && KV_URL && KV_TOKEN) {
-        recordScriptGenerated(KV_URL, KV_TOKEN, session.email).catch((error) => console.error('Could not record script achievement', error?.message || error));
+        recordScriptGenerated(KV_URL, KV_TOKEN, session.email).catch((error) => console.warn('Optional script achievement telemetry unavailable', error?.message || error));
         const country = req.headers['x-vercel-ip-country'] || req.headers['cf-ipcountry'] || '';
-        recordCountryActivity(KV_URL, KV_TOKEN, country).catch((error) => console.error('Could not record aggregate country activity', error?.message || error));
+        recordCountryActivity(KV_URL, KV_TOKEN, country).catch((error) => console.warn('Optional aggregate country telemetry unavailable', error?.message || error));
       }
     }
   } catch (error) {

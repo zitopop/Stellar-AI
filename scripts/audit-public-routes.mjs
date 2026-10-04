@@ -39,6 +39,12 @@ const expectedCleanRoutes = new Map([
   ['/blog', 'blog.html'],
 ]);
 
+const expectedRewriteDestinations = new Map([
+  ['/business', '/services/business'],
+  ['/ai-receptionist', '/services/ai-receptionist'],
+  ['/website-audit', '/services/website-audit'],
+]);
+
 function exists(relativePath) {
   return fs.existsSync(path.join(root, relativePath));
 }
@@ -107,6 +113,11 @@ for (const sitemapFile of sitemapFiles) {
 }
 for (const [route, file] of expectedCleanRoutes) {
   if (!exists(file)) errors.push(`Expected clean route ${route} is missing source file ${file}`);
+}
+for (const [route, destination] of expectedRewriteDestinations) {
+  if (vercelRewrites.get(route) !== destination) {
+    errors.push(`Expected public route ${route} to rewrite to ${destination}, got ${vercelRewrites.get(route) || 'nothing'}`);
+  }
 }
 
 const htmlFiles = walk('.');

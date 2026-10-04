@@ -15,7 +15,7 @@ test('workspace exposes a focused Jarvis Voice and Vision route for verified own
 });
 
 test('sensitive Jarvis modules stay owner-gated', () => {
-  assert.match(jarvis, /data-owner-only="true"/);
+  assert.match(jarvis, /data-restricted="true"/);
   assert.match(jarvis, /fetch\('\/api\/get-plan'/);
   assert.match(jarvis, /data\?\.owner===true/);
   assert.match(app, /serverOwner=data\.owner===true\|\|account\.owner===true/);
