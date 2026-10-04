@@ -468,6 +468,11 @@ test('owner-call source logs sanitized Twilio REST and terminal callback diagnos
   assert.match(provider, /Twilio owner call skipped before API submission/);
   assert.match(provider, /moreInfo/);
   assert.match(voice, /Twilio owner call terminal failure/);
+  assert.match(voice, /readTwilioTerminalDiagnostic/);
+  assert.match(voice, /monitor\.twilio\.com\/v1\/Alerts\?PageSize=20/);
+  assert.match(voice, /sanitizeTwilioDiagnosticText/);
+  assert.match(voice, /callErrorCode/);
+  assert.match(voice, /alertCode/);
   assert.match(voice, /ErrorCode/);
   assert.match(broadcast, /code: error\?\.code/);
 });
