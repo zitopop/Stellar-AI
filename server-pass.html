@@ -25,14 +25,14 @@
     <div>
       <p class="eyebrow">SERVER PASS · B2B PILOT</p>
       <h1>Put Stellar inside your dev Discord.</h1>
-      <p class="lead">For FiveM servers, Roblox studios and small development teams that want shared script debugging without sending every developer through a separate support workflow.</p>
+      <p class="lead">For FiveM servers, Roblox studios and small development teams that want one shared Discord debugging lane for the people already working together.</p>
       <div class="actions"><a class="btn primary" href="/app?upgrade=server-pass&source=server-pass">Buy Server Pass — £50/month</a><a class="btn" href="/app?welcome=1">Try Stellar free first</a></div>
-      <p class="note">Checkout uses debit/credit card through Stripe. No phone number is required by Stellar Checkout. After payment, connect Discord to the Stellar account that bought Server Pass, then run <code>/serverpass</code> inside the Discord server you manage. Stellar verifies the paid account and guild before activation.</p>
+      <p class="note"><strong>Server Pass is a team add-on, not a replacement for Starter, Plus or Pro.</strong> It covers one verified Discord server. Checkout uses debit/credit card through Stripe and does not require a phone number. After payment, connect Discord to the Stellar account that bought Server Pass, then run <code>/serverpass</code> inside the server you manage. Stellar verifies the paid entitlement and your server permission before activation.</p>
     </div>
     <aside class="price-card" aria-label="Server Pass pilot">
       <span class="tag">PILOT ACCESS</span>
       <div class="price">£50<span> / month</span></div>
-      <p>One activated Discord server with team-oriented debugging access and onboarding.</p>
+      <p>One verified Discord server gets the shared team debugging lane. Individual web-app plan limits stay separate.</p>
       <div class="features">
         <div><b>✓</b><span>Shared <code>/debug</code> workflow inside the activated guild</span></div>
         <div><b>✓</b><span>QBCore, ESX, ox_lib and Roblox Luau debugging context</span></div>
@@ -65,7 +65,7 @@
   <section class="wrap section">
     <div class="section-head"><p class="eyebrow">QUESTIONS</p><h2>What Server Pass is—and is not.</h2></div>
     <div class="faq">
-      <details><summary>Does Server Pass mean zero limits?</summary><p>No. The pilot removes the normal free daily Discord counter for activated guilds, but provider capacity, abuse protection, input-size limits and safety controls still apply.</p></details>
+      <details><summary>Is Server Pass another Stellar web-app plan?</summary><p>No. Server Pass is a separate team add-on for one verified Discord server. Starter, Plus and Pro control individual web-app access and capacity.</p></details><details><summary>Does Server Pass mean zero limits?</summary><p>No. It removes the normal free daily Discord debug counter for the activated guild, but provider capacity, abuse protection, input-size limits and safety controls still apply.</p></details>
       <details><summary>Does Stellar execute generated code on my live server?</summary><p>No. The bot returns code and debugging guidance for a developer to inspect. Test changes on a development or staging server before production deployment.</p></details>
       <details><summary>Are private API keys supposed to be pasted into Discord?</summary><p>No. Do not paste passwords, API keys, database credentials, payment details or recovery codes into Discord prompts.</p></details>
     </div>
@@ -81,7 +81,7 @@
   box.className = 'wrap';
   box.style.cssText = 'margin-top:18px;padding:14px 16px;border:1px solid rgba(156,236,243,.22);border-radius:14px;background:rgba(156,236,243,.06);color:#dfe8ef';
   if (payment === 'success') {
-    box.innerHTML = '<strong>Payment received.</strong> Your Server Pass is ready for Discord activation. Connect Discord to this Stellar account, then run <code>/serverpass</code> inside the server you manage.';
+    box.innerHTML = '<strong>Payment received.</strong> Stripe is syncing your Server Pass entitlement. Connect Discord to this Stellar account, then run <code>/serverpass</code> inside the server you manage. If activation is not recognised immediately, wait a moment and run the command again.';
   } else if (payment === 'cancelled') {
     box.textContent = 'Checkout cancelled. Nothing was charged.';
   } else return;
