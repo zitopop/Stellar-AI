@@ -25,9 +25,10 @@ test('empty workspace stays chat-first while explaining the core actions', () =>
   assert.doesNotMatch(app, /quick-start-card|suggested-prompt-grid/);
 });
 
-test('paid customers do not see a misleading upgrade label in the sidebar', () => {
+test('sidebar keeps plan navigation neutral instead of constantly upselling', () => {
   assert.match(app, /id="side-plan-button"/);
-  assert.match(app, /sidePlanButton\.textContent=signedInUser&&paid\?'Plans':'Upgrade plan'/);
+  assert.match(app, /sidePlanButton\.textContent='Plans'/);
+  assert.doesNotMatch(app, /sidePlanButton\.textContent=.*Upgrade plan/);
 });
 
 test('new chat polish preserves paid-customer billing portal routing', () => {
