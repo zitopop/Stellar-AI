@@ -6,11 +6,11 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-premium-v53.css', import.meta.url), 'utf8');
 
 test('premium landing v53 uses a concrete hero and one clear conversion path', () => {
-  assert.match(home, /Generate &amp; debug<br><span>FiveM \+ Roblox code\.<\/span>/);
-  assert.match(home, /Build QBCore, ESX, ox_lib and Roblox Luau faster/);
+  assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
+  assert.match(home, /Generate QBCore, ESX, ox_lib and Roblox Luau/);
   assert.match(home, /Try one message free · no card required/);
-  assert.match(home, /class="oa2-primary-action">Start free/);
-  assert.match(home, /class="oa2-secondary-action">See real code demo/);
+  assert.match(home, /class="oa2-primary-action">Try Stellar free/);
+  assert.match(home, /class="oa2-secondary-action">See code demo/);
   assert.match(home, /stellar-landing-premium-v53\.css/);
 });
 
@@ -35,7 +35,7 @@ test('business bridge prioritizes three paid offers and keeps secondary workflow
 
 test('landing pricing presents monthly choices first', () => {
   assert.match(css, /\.public-home \.plan \.annual,[\s\S]*\.plan-yearly-link[\s\S]*display:none!important/);
-  assert.match(home, /Full annual pricing and team options are available on the Plans page/);
+  assert.match(home, /Paid plans add more usage and deeper Stellar capability when you actually need it/);
   assert.match(home, /MOST POPULAR/);
 });
 
