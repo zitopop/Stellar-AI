@@ -6,7 +6,7 @@ const read = (name) => readFileSync(new URL('../' + name, import.meta.url), 'utf
 
 test('purchase status endpoint verifies Stripe and exposes only safe fulfilment state', () => {
   const full = read('api/create-checkout.js');
-  const start = full.indexOf('async function purchaseStatusPayload');
+  const start = full.indexOf('function purchaseProduct');
   const end = full.indexOf('export default async function handler');
   const source = full.slice(start, end);
   assert.match(source, /checkout\.sessions\.retrieve\(sessionId\)/);
