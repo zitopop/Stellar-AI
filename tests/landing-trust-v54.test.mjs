@@ -57,3 +57,12 @@ test('trust layout is responsive and restrained', () => {
   assert.match(css, /@media\(max-width:700px\)/);
   assert.match(css, /prefers-reduced-motion:reduce/);
 });
+
+
+test('developer pricing appears before the separate business toolkit', () => {
+  const pricing = home.indexOf('<section class="section container pricing-section');
+  const business = home.indexOf('<section class="stellar-business-entry');
+  const faq = home.indexOf('<section class="section container faq-section');
+  assert.ok(pricing >= 0 && business > pricing, 'business tools should appear after developer pricing');
+  assert.ok(faq > business, 'business tools should remain before FAQ');
+});
