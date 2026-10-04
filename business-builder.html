@@ -164,14 +164,28 @@ async function buyPackage(){
 async function waitForPayment(){
   const params=new URLSearchParams(location.search);
   if(params.get('payment')!=='success')return checkAccess();
-  history.replaceState(null,'',location.pathname);
-  setStatus('Payment received by Stripe. Verifying package access…');
-  for(let attempt=0;attempt<6;attempt+=1){
-    if(await checkAccess(true))return true;
+  const sessionId=String(params.get('session_id')||'').trim();
+  setStatus('Confirming your £99 Stripe payment…');
+  if(/^cs_[A-Za-z0-9_]+$/.test(sessionId)){
+    try{
+      const statusRes=await fetch('/api/purchase-status?session_id='+encodeURIComponent(sessionId),{cache:'no-store',headers:{Accept:'application/json'}});
+      const statusData=await statusRes.json().catch(()=>({}));
+      if(statusRes.ok&&statusData.payment==='paid')setStatus(statusData.message||'Payment confirmed. Unlocking Website Builder…','good');
+      else if(statusRes.ok&&statusData.payment==='pending')setStatus('Stripe is still confirming the payment. Do not pay again.','');
+    }catch{}
+  }
+  for(let attempt=0;attempt<8;attempt+=1){
+    if(await checkAccess(true)){
+      params.delete('payment');params.delete('session_id');
+      history.replaceState(null,'',location.pathname+(params.toString()?'?'+params.toString():''));
+      return true;
+    }
     await new Promise(resolve=>setTimeout(resolve,1000));
   }
+  params.delete('payment');params.delete('session_id');
+  history.replaceState(null,'',location.pathname+(params.toString()?'?'+params.toString():''));
   $('builder-paywall').hidden=false;$('recheck-btn').classList.remove('hidden');
-  setStatus('Stripe payment completed, but access is still syncing. Press Recheck access.','error');
+  setStatus('Payment is confirmed, but access is still syncing. Press Recheck access — do not buy again.','error');
   return false;
 }
 function streamText(event){
