@@ -59,13 +59,75 @@ export function subscriptionPriceForPlan(plan, env = process.env, currency = 'GB
   return prices[plan] || '';
 }
 
+async function portalProductsForLivePlans(stripe) {
+  const entries = await Promise.all(
+    Object.values(LIVE_GBP_SUBSCRIPTION_PRICES).map(async (priceId) => {
+      const price = await stripe.prices.retrieve(priceId);
+      const productId = typeof price.product === 'string' ? price.product : String(price.product?.id || '');
+      return { productId, priceId };
+    })
+  );
+  const grouped = new Map();
+  for (const { productId, priceId } of entries) {
+    if (!/^prod_[A-Za-z0-9]+$/.test(productId)) continue;
+    if (!grouped.has(productId)) grouped.set(productId, []);
+    grouped.get(productId).push(priceId);
+  }
+  return [...grouped.entries()].map(([product, prices]) => ({ product, prices }));
+}
+
 async function resolvePortalConfiguration(stripe) {
+  const products = await portalProductsForLivePlans(stripe);
+  if (!products.length) throw new Error('No live Stellar subscription products are available for billing management.');
+
+  const features = {
+    customer_update: { enabled: true, allowed_updates: ['email', 'name'] },
+    invoice_history: { enabled: true },
+    payment_method_update: { enabled: true },
+    subscription_cancel: {
+      enabled: true,
+      mode: 'at_period_end',
+      cancellation_reason: {
+        enabled: true,
+        options: ['too_expensive', 'missing_features', 'unused', 'too_complex', 'switched_service', 'low_quality', 'customer_service', 'other'],
+      },
+    },
+    subscription_update: {
+      enabled: true,
+      default_allowed_updates: ['price'],
+      proration_behavior: 'create_prorations',
+      products,
+    },
+  };
+
   const configuredId = String(process.env.STRIPE_BILLING_PORTAL_CONFIG_ID || '').trim();
-  if (configuredId) return configuredId;
+  if (configuredId) {
+    const updated = await stripe.billingPortal.configurations.update(configuredId, {
+      business_profile: {
+        headline: 'Manage your Stellar AI subscription and payment method.',
+        privacy_policy_url: 'https://trystellarai.com/privacy',
+        terms_of_service_url: 'https://trystellarai.com/terms',
+      },
+      features,
+      metadata: { app: 'stellar-ai', purpose: 'customer-billing' },
+    });
+    return updated.id;
+  }
 
   const existing = await stripe.billingPortal.configurations.list({ active: true, limit: 100 });
   const stellar = existing.data.find((configuration) => configuration.metadata?.app === 'stellar-ai');
-  if (stellar) return stellar.id;
+  if (stellar) {
+    const updated = await stripe.billingPortal.configurations.update(stellar.id, {
+      business_profile: {
+        headline: 'Manage your Stellar AI subscription and payment method.',
+        privacy_policy_url: 'https://trystellarai.com/privacy',
+        terms_of_service_url: 'https://trystellarai.com/terms',
+      },
+      features,
+      metadata: { app: 'stellar-ai', purpose: 'customer-billing' },
+    });
+    return updated.id;
+  }
 
   const created = await stripe.billingPortal.configurations.create({
     business_profile: {
@@ -73,24 +135,9 @@ async function resolvePortalConfiguration(stripe) {
       privacy_policy_url: 'https://trystellarai.com/privacy',
       terms_of_service_url: 'https://trystellarai.com/terms',
     },
-    features: {
-      customer_update: { enabled: true, allowed_updates: ['email', 'name'] },
-      invoice_history: { enabled: true },
-      payment_method_update: { enabled: true },
-      subscription_cancel: {
-        enabled: true,
-        mode: 'at_period_end',
-        cancellation_reason: {
-          enabled: true,
-          options: ['too_expensive', 'missing_features', 'unused', 'too_complex', 'switched_service', 'low_quality', 'customer_service', 'other'],
-        },
-      },
-      // Plan changes remain in Stellar Checkout so historic Stripe prices can
-      // never be offered accidentally through the generic portal.
-      subscription_update: { enabled: false },
-    },
+    features,
     metadata: { app: 'stellar-ai', purpose: 'customer-billing' },
-  }, { idempotencyKey: 'stellar-ai-billing-portal-v1' });
+  }, { idempotencyKey: 'stellar-ai-billing-portal-v2' });
 
   return created.id;
 }
@@ -506,11 +553,14 @@ export default async function handler(req, res) {
     }
 
     // Never create a second recurring subscription for an account that already has one.
+    // Existing paid customers change tier inside the Stripe Billing Portal, where
+    // only the live Stellar Starter/Plus/Pro prices are offered.
     const existingSubscriptionId = String(accountUser?.stripeSubscriptionId || '').trim();
     if (isPaidPlan(accountUser?.plan) && /^sub_[A-Za-z0-9]+$/.test(existingSubscriptionId)) {
       return res.status(409).json({
-        error: 'This account already has an active Stellar subscription. Open Manage billing before starting another plan checkout.',
+        error: 'This account already has an active Stellar subscription. Continue in Manage billing to change plan.',
         code: 'ACTIVE_SUBSCRIPTION_EXISTS',
+        manageBilling: true,
       });
     }
 

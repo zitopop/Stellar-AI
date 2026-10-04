@@ -17,11 +17,16 @@ test('billing portal is authenticated and resolves Stripe customer from a paid p
   assert.doesNotMatch(endpoint, /req\.body[^\n]*customer/i);
 });
 
-test('portal allows payment invoice and cancellation self-service without plan switching', () => {
+test('portal allows safe plan switching across live Stellar prices', () => {
   assert.match(endpoint, /payment_method_update:\s*\{ enabled: true \}/);
   assert.match(endpoint, /invoice_history:\s*\{ enabled: true \}/);
   assert.match(endpoint, /subscription_cancel:[\s\S]*?enabled: true,[\s\S]*?mode: 'at_period_end'/);
-  assert.match(endpoint, /subscription_update:\s*\{ enabled: false \}/);
+  assert.match(endpoint, /subscription_update:[\s\S]*?enabled: true/);
+  assert.match(endpoint, /default_allowed_updates: \['price'\]/);
+  assert.match(endpoint, /proration_behavior: 'create_prorations'/);
+  assert.match(endpoint, /portalProductsForLivePlans/);
+  assert.match(endpoint, /stripe\.prices\.retrieve\(priceId\)/);
+  assert.match(endpoint, /stripe\.billingPortal\.configurations\.update/);
 });
 
 test('app exposes billing management for paid plans and Server Pass and validates Stripe host', () => {
@@ -34,4 +39,6 @@ test('app exposes billing management for paid plans and Server Pass and validate
   assert.match(app, /JSON\.stringify\(\{plan:'manage-billing'\}\)/);
   assert.match(app, /portalUrl\.hostname!=='billing\.stripe\.com'/);
   assert.match(app, /Card, invoices &amp; cancellation/);
+  assert.match(app, /res\.status===409&&data\.code==='ACTIVE_SUBSCRIPTION_EXISTS'&&data\.manageBilling===true/);
+  assert.match(app, /Opening billing so you can change plan/);
 });
