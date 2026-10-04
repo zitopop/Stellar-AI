@@ -293,9 +293,10 @@ export default async function handler(req, res) {
 
   try {
     const owner = isOwnerEmail(session.email);
-    const [storedValue, authRecord] = await Promise.all([
+    const [storedValue, authRecord, serverPassRecord] = await Promise.all([
       kvGet(url, token, `stellar:user:${session.email}`),
       kvGet(url, token, `stellar:auth:${session.email}`),
+      kvGet(url, token, `stellar:server-pass:${session.email}`),
     ]);
     const stored = storedValue || { plan: 'free', walletPence: 0, createdAt: Date.now() };
     const user = await ensureReferralProfile(url, token, session.email, stored);
@@ -322,6 +323,17 @@ export default async function handler(req, res) {
     const walletPence = Math.max(0, Number(user.walletPence) || 0);
     const planBilling = isPaidPlan(plan) ? (user.planBilling === 'annual' ? 'annual' : 'monthly') : null;
     const accountPlan = accountPlanTruth({ plan, owner, user: { ...user, walletPence, planBilling }, capabilities, usage, billing });
+    const serverPassStatus = owner ? 'active' : String(serverPassRecord?.status || 'none').trim().toLowerCase();
+    const serverPass = owner
+      ? { purchased: true, active: true, activationReady: true, guildLinked: true, manageable: false, status: 'active' }
+      : {
+          purchased: Boolean(serverPassRecord?.checkoutSessionId),
+          active: serverPassStatus === 'active',
+          activationReady: serverPassStatus === 'active' || serverPassStatus === 'pending_activation',
+          guildLinked: Boolean(serverPassRecord?.guildId),
+          manageable: /^cus_[A-Za-z0-9]+$/.test(String(serverPassRecord?.stripeCustomerId || '').trim()),
+          status: serverPassStatus,
+        };
 
     return res.status(200).json({
       plan,
@@ -347,6 +359,7 @@ export default async function handler(req, res) {
       achievements,
       achievementDefinitions: achievementDefinitions(),
       websiteBuilder,
+      serverPass,
       discord: discordProfile(authRecord),
       updatedAt: user.updatedAt || null,
     });
