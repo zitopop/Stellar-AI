@@ -17,8 +17,8 @@ test('hero makes pricing and buyer protections visible without a second click', 
   assert.match(home, /Starter from £8\/mo/);
   assert.match(home, /Secure Stripe checkout/);
   assert.match(home, /href="\/refunds">Refund policy/);
-  assert.match(home, /100 credits\/day · up to 30 requests\/hour/);
-  assert.match(home, /5,000 credits\/month · up to 120 requests\/hour/);
+  assert.match(home, /Daily allowance · up to 30 requests\/hour/);
+  assert.match(home, /Higher monthly allowance · up to 120 requests\/hour/);
 });
 
 test('trust layer uses verifiable product evidence instead of invented social proof', () => {
