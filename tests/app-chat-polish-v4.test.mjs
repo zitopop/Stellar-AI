@@ -21,7 +21,7 @@ test('assistant pending state uses an accessible animated thinking cue', () => {
 
 test('empty workspace stays chat-first while explaining the core actions', () => {
   assert.match(app, /What can I help with\?/);
-  assert.match(app, /Ask anything, attach an image, or switch to Debug when code is broken/);
+  assert.match(app, /Ask anything, attach a file or image, search the web when needed, or switch to Debug for broken code/);
   assert.doesNotMatch(app, /quick-start-card|suggested-prompt-grid/);
 });
 
