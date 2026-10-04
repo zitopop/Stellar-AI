@@ -81,15 +81,20 @@
   box.className = 'wrap';
   box.style.cssText = 'margin-top:18px;padding:14px 16px;border:1px solid rgba(156,236,243,.22);border-radius:14px;background:rgba(156,236,243,.06);color:#dfe8ef';
   if (payment === 'success') {
-    box.innerHTML = '<strong>Returned from checkout.</strong> Stripe is confirming your Server Pass entitlement. Connect Discord to this Stellar account, then run <code>/serverpass</code> inside the server you manage. If activation is not recognised immediately, wait a moment and run the command again.';
+    box.dataset.purchaseStatus = '';
+    box.innerHTML = '<strong>Confirming your Server Pass…</strong><span style="display:block;margin-top:4px">Checking Stripe and Stellar activation readiness.</span>';
   } else if (payment === 'cancelled') {
     box.textContent = 'Checkout cancelled. Nothing was charged.';
   } else return;
   document.querySelector('main')?.prepend(box);
-  q.delete('payment'); q.delete('session_id'); q.delete('attempt');
-  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : ''));
+  q.delete('payment'); q.delete('attempt');
+  if (payment !== 'success') {
+    q.delete('session_id');
+    history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : ''));
+  }
 })();
 </script>
+<script src="/lib/assets/stellar-purchase-status-v1.js?v=1"></script>
 
 <footer class="wrap footer">© 2026 Stellar AI · FiveM & Roblox developer workspace · <a href="/">trystellarai.com</a></footer>
 </body>
