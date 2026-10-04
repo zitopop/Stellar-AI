@@ -6,8 +6,8 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-trust-v54.css', import.meta.url), 'utf8');
 
 test('landing leads with a specific FiveM and Roblox value proposition', () => {
-  assert.match(home, /BUILT FOR FIVEM \+ ROBLOX DEVELOPERS/);
-  assert.match(home, /Generate &amp; debug<br><span>FiveM \+ Roblox code\.<\/span>/);
+  assert.match(home, /AI FOR FIVEM \+ ROBLOX DEVELOPERS/);
+  assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
   assert.match(home, /QBCore, ESX, ox_lib and Roblox Luau/);
   assert.match(home, /See code demo/);
 });
@@ -23,9 +23,9 @@ test('hero makes pricing and buyer protections visible without a second click', 
 
 test('trust layer uses verifiable product evidence instead of invented social proof', () => {
   assert.match(home, /WHY TRUST STELLAR/);
-  assert.match(home, /See what you get before you pay\./);
+  assert.match(home, /Try it first\. Check the facts\. Then decide\./);
   assert.match(home, /Real product preview/);
-  assert.match(home, /Transparent pricing/);
+  assert.match(home, /Pricing and limits upfront/);
   assert.match(home, /Public GitHub/);
   assert.match(home, /Public support \+ policies/);
   assert.match(home, /github\.com\/zitopop\/Stellar-AI/);
