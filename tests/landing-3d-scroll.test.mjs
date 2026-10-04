@@ -1,1 +1,33 @@
-import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { readFileSync } from 'node:fs';\n\nconst home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');\n\ntest('landing page keeps the current chat-first hero contract', () => {\n  assert.match(home, /homepage-chat-first-2026-10-04/);\n  assert.match(home, /<h1 id="hero-title">What can I help with\?<\/h1>/);\n  assert.match(home, /placeholder="Message Stellar AI"/);\n  assert.match(home, /Free to try · no card required/);\n  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Open full chat/);\n});\n\ntest('landing keeps the developer preview and product sections behind the chat-first entry', () => {\n  assert.match(home, /data-hero-editor/);\n  assert.match(home, /id="playground"/);\n  assert.match(home, /id="comparison"/);\n  assert.match(home, /id="trust"/);\n  assert.match(home, /id="plans"/);\n  assert.match(home, /faq-section/);\n});\n\ntest('landing remains responsive and motion-accessible without heavy animation dependencies', () => {\n  assert.match(home, /prefers-reduced-motion:reduce|prefers-reduced-motion: reduce/);\n  assert.match(home, /@media\(max-width:390px\)/);\n  assert.doesNotMatch(home, /three\.js|gsap|ScrollTrigger/i);\n});\n\ntest('chat-first redesign does not leave the removed scroll-cinema runtime active', () => {\n  assert.doesNotMatch(home, /stellar-scroll-cinema-v1/);\n  assert.doesNotMatch(home, /body\.dataset\.scrollCinema='on'/);\n});\n
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+
+test('landing page keeps the current chat-first hero contract', () => {
+  assert.match(home, /homepage-chat-first-2026-10-04/);
+  assert.match(home, /<h1 id="hero-title">What can I help with\?<\/h1>/);
+  assert.match(home, /placeholder="Message Stellar AI"/);
+  assert.match(home, /Free to try · no card required/);
+  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Open full chat/);
+});
+
+test('landing keeps the developer preview and product sections behind the chat-first entry', () => {
+  assert.match(home, /data-hero-editor/);
+  assert.match(home, /id="playground"/);
+  assert.match(home, /id="comparison"/);
+  assert.match(home, /id="trust"/);
+  assert.match(home, /id="plans"/);
+  assert.match(home, /faq-section/);
+});
+
+test('landing remains responsive and motion-accessible without heavy animation dependencies', () => {
+  assert.match(home, /prefers-reduced-motion:reduce|prefers-reduced-motion: reduce/);
+  assert.match(home, /@media\(max-width:390px\)/);
+  assert.doesNotMatch(home, /three\.js|gsap|ScrollTrigger/i);
+});
+
+test('chat-first redesign does not leave the removed scroll-cinema runtime active', () => {
+  assert.doesNotMatch(home, /stellar-scroll-cinema-v1/);
+  assert.doesNotMatch(home, /body\.dataset\.scrollCinema='on'/);
+});
