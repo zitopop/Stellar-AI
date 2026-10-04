@@ -348,9 +348,12 @@ export default async function handler(req, res) {
 
     const kvUrl = process.env.KV_REST_API_URL;
     const kvToken = process.env.KV_REST_API_TOKEN;
-    const accountUser = kvUrl && kvToken
-      ? await kvGet(kvUrl, kvToken, `stellar:user:${sessionUser.email}`)
-      : null;
+    const [accountUser, serverPassUser] = kvUrl && kvToken
+      ? await Promise.all([
+          kvGet(kvUrl, kvToken, `stellar:user:${sessionUser.email}`),
+          kvGet(kvUrl, kvToken, `stellar:server-pass:${sessionUser.email}`),
+        ])
+      : [null, null];
 
     if (action === 'confirm-checkout') {
       const confirmed = await confirmCompletedSubscription(stripe, kvUrl, kvToken, sessionUser, sessionId);
@@ -365,11 +368,15 @@ export default async function handler(req, res) {
     if (plan === 'manage-billing') {
       if (!kvUrl || !kvToken) return res.status(500).json({ error: 'Account storage is not configured.' });
       const user = accountUser;
-      if (!user || !isPaidPlan(user.plan)) {
-        return res.status(400).json({ error: 'A paid Stellar plan is required to manage subscription billing.' });
+      const planCustomerId = String(user?.stripeCustomerId || '').trim();
+      const serverPassCustomerId = String(serverPassUser?.stripeCustomerId || '').trim();
+      const hasPaidPlan = Boolean(user && isPaidPlan(user.plan));
+      const hasServerPassBilling = Boolean(serverPassUser?.checkoutSessionId && /^cus_[A-Za-z0-9]+$/.test(serverPassCustomerId));
+      if (!hasPaidPlan && !hasServerPassBilling) {
+        return res.status(400).json({ error: 'A paid Stellar plan or Server Pass is required to manage subscription billing.' });
       }
 
-      const customerId = String(user.stripeCustomerId || '').trim();
+      const customerId = /^cus_[A-Za-z0-9]+$/.test(planCustomerId) ? planCustomerId : serverPassCustomerId;
       if (!/^cus_[A-Za-z0-9]+$/.test(customerId)) {
         return res.status(409).json({ error: 'Your Stripe customer record is still syncing. Please try again shortly or contact support.' });
       }
