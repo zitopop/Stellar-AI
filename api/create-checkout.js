@@ -388,7 +388,7 @@ export default async function handler(req, res) {
   const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = input;
   const purchaseStatusRequest = req.method === 'GET' && action === 'purchase-status';
   const publicBusinessCheckout = plan === 'website-audit' || plan === 'ai-receptionist';
-  if (req.method === 'GET' && !publicBusinessCheckout) return res.status(405).json({ error: 'GET checkout is only available for public business services.' });
+  if (req.method === 'GET' && !publicBusinessCheckout && !purchaseStatusRequest) return res.status(405).json({ error: 'GET checkout is only available for public business services or purchase status.' });
   const sessionUser = (publicBusinessCheckout || purchaseStatusRequest) ? null : requireSession(req, res);
   if (!publicBusinessCheckout && !purchaseStatusRequest && !sessionUser) return;
   const sourceName = acquisitionSource(source);
