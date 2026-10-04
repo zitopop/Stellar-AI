@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const read = (name) => readFileSync(new URL('../' + name, import.meta.url), 'utf8');
 
 test('purchase status endpoint verifies Stripe and exposes only safe fulfilment state', () => {
-  const source = read('api/purchase-status.js');
+  const source = read('api/create-checkout.js');
   assert.match(source, /checkout\.sessions\.retrieve\(sessionId\)/);
   assert.match(source, /loadBusinessFulfillmentJob/);
   assert.match(source, /website-builder/);
