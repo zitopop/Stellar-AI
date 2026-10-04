@@ -80,6 +80,24 @@ export function assertJarvisContract(){
   assert.match(plans,/StellarX computer control beta/);
 }
 
+export function assertSeoUsageCopyContract(){
+  const pages=[
+    'traffic-plan/index.html',
+    'google-growth/index.html',
+    'qbcore-drug-system-script/index.html',
+    'qbcore-bank-robbery-script/index.html',
+    'fivem-dispatch-system-script/index.html',
+    'fivem-housing-script-generator/index.html',
+    'growth-kit/index.html',
+    'roblox-trading-system-script-generator/index.html',
+    'ai-game-script-generator/index.html',
+  ];
+  for(const page of pages){
+    const html=read(page);
+    assert.doesNotMatch(html,/\bcredits?\b/i,page+' should use current customer-facing usage language');
+  }
+}
+
 export function assertSiteContract(){
   const pages=["404.html","acceptable-use.html","affiliate.html","ai-receptionist-thank-you.html","app.html","blog.html","business-builder.html","business-terms.html","business-thank-you.html","cookies.html","deploy-center.html","desktop-agent.html","email-agent.html","index.html","install.html","investors.html","private-workspace.html","jarvis-workspace.html","jarvis.html","legal.html","models.html","offline.html","plans.html","plugins.html","privacy.html","refunds.html","roblox-studio.html","support.html","terms.html","thank-you.html","website-audit-thank-you.html","what-is-what.html"];
   for(const page of pages){
