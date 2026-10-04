@@ -26,7 +26,7 @@
 <!-- Stellar AI PWA metadata: iPhone/iPad home-screen install support -->
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="stellar-build" content="homepage-3d-scroll-2026-10-04">
+  <meta name="stellar-build" content="homepage-chat-first-2026-10-04">
   <meta name="application-name" content="Stellar AI">
   <title>Stellar AI — Generate & Debug FiveM and Roblox Scripts</title>
   <meta name="description" content="Generate and debug FiveM QBCore, ESX, ox_lib and Roblox Luau scripts with Stellar AI. Start free with no card.">
@@ -1884,135 +1884,45 @@ body.public-home::before{display:none!important}
 }
 </style>
 
-<style id="stellar-scroll-cinema-v1">
-/* Scroll-linked depth system: cinematic like premium product pages, but lightweight and accessible. */
-body.public-home[data-scroll-cinema="on"]{position:relative;isolation:isolate}
-body.public-home[data-scroll-cinema="on"] main{position:relative;z-index:1;overflow:clip!important;perspective:1600px;perspective-origin:50% 35%}
-body.public-home[data-scroll-cinema="on"] .footer{position:relative;z-index:1}
-body.public-home[data-scroll-cinema="on"] .stellar-scroll-ambient{
-  position:fixed;inset:-18vh -12vw;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(42vw 34vw at 18% 20%,rgba(138,43,226,.18),transparent 70%),
-    radial-gradient(38vw 30vw at 82% 62%,rgba(0,240,255,.10),transparent 72%),
-    radial-gradient(30vw 24vw at 52% 86%,rgba(125,104,255,.08),transparent 74%);
-  filter:blur(20px);opacity:.78;
-  transform:translate3d(var(--ambient-x,0px),var(--ambient-y,0px),0) scale(1.08);
-  will-change:transform,opacity
-}
-body.public-home[data-scroll-cinema="on"] .site-header{z-index:40!important}
-
-body.public-home[data-scroll-cinema="on"] .stellar-scroll-scene{
-  position:relative;
-  transform-style:preserve-3d;
-  transform-origin:50% 40%;
-  transform:
-    perspective(1600px)
-    translate3d(0,var(--scene-y,0px),var(--scene-z,0px))
-    rotateX(var(--scene-rx,0deg))
-    rotateY(var(--scene-ry,0deg))
-    scale(var(--scene-scale,1));
-  opacity:var(--scene-opacity,1);
-  filter:saturate(var(--scene-sat,1));
-  will-change:transform,opacity,filter
-}
-body.public-home[data-scroll-cinema="on"] .oa2-hero.stellar-scroll-scene{
-  transform:none!important;opacity:1!important;filter:none!important;transform-style:preserve-3d
-}
-body.public-home[data-scroll-cinema="on"] .oa2-hero .dev-hero-copy{
-  transform:
-    translate3d(var(--hero-copy-x,0px),var(--hero-copy-y,0px),var(--hero-copy-z,0px))
-    scale(var(--hero-copy-scale,1));
-  opacity:var(--hero-copy-opacity,1);
-  transform-origin:50% 35%;
-  will-change:transform,opacity
-}
-body.public-home[data-scroll-cinema="on"] .oa2-hero .hero-editor{
-  transform:
-    perspective(1500px)
-    translate3d(var(--hero-editor-x,0px),var(--hero-editor-y,0px),var(--hero-editor-z,0px))
-    rotateX(var(--hero-editor-rx,0deg))
-    rotateY(var(--hero-editor-ry,0deg))
-    scale(var(--hero-editor-scale,1))!important;
-  transform-origin:50% 50%;
-  box-shadow:
-    0 var(--hero-shadow-y,36px) var(--hero-shadow-blur,110px) rgba(0,0,0,.46),
-    0 0 var(--hero-glow,74px) rgba(138,43,226,.10)!important;
-  will-change:transform,box-shadow
-}
-body.public-home[data-scroll-cinema="on"] .stellar-scroll-card{
-  transform:
-    perspective(1200px)
-    translate3d(0,var(--card-y,0px),var(--card-z,0px))
-    rotateX(var(--card-rx,0deg))
-    rotateY(var(--card-ry,0deg))
-    scale(var(--card-scale,1))!important;
-  opacity:var(--card-opacity,1);
-  transform-origin:50% 45%;
-  will-change:transform,opacity
-}
-body.public-home[data-scroll-cinema="on"] .plan.stellar-scroll-card.featured{
-  box-shadow:
-    0 0 0 1px rgba(139,124,246,.11) inset,
-    0 var(--card-shadow-y,18px) 64px rgba(82,58,170,.12)!important
-}
-body.public-home[data-scroll-cinema="on"] .stellar-comparison-card.stellar-scroll-card,
-body.public-home[data-scroll-cinema="on"] .stellar-trust-grid article.stellar-scroll-card{
-  box-shadow:0 var(--card-shadow-y,18px) 56px rgba(0,0,0,.18)!important
-}
-body.public-home[data-scroll-cinema="on"] .dev-playground-shell.stellar-scroll-card,
-body.public-home[data-scroll-cinema="on"] .hero-editor{
-  backface-visibility:hidden
-}
-
-/* Product-story pauses: the demo and comparison deck hold in view while the page moves around them. */
-@media(min-width:980px) and (min-height:700px){
-  body.public-home[data-scroll-cinema="on"] .stellar-dev-playground{
-    min-height:138vh!important;
-    padding-bottom:28vh!important
-  }
-  body.public-home[data-scroll-cinema="on"] .stellar-dev-playground .dev-playground-shell{
-    position:sticky!important;top:112px
-  }
-  body.public-home[data-scroll-cinema="on"] .stellar-comparison{
-    min-height:122vh!important;padding-bottom:24vh!important
-  }
-  body.public-home[data-scroll-cinema="on"] .stellar-comparison .stellar-comparison-grid{
-    position:sticky;top:132px
-  }
-}
-
-/* Mobile keeps the depth, but removes the expensive sticky/tilt behaviour. */
-@media(max-width:979px){
-  body.public-home[data-scroll-cinema="on"] .stellar-scroll-scene{
-    transform:
-      translate3d(0,var(--scene-y,0px),0)
-      scale(var(--scene-scale,1))!important;
-    filter:none!important
-  }
-  body.public-home[data-scroll-cinema="on"] .stellar-scroll-card{
-    transform:translate3d(0,var(--card-y,0px),0) scale(var(--card-scale,1))!important
-  }
-  body.public-home[data-scroll-cinema="on"] .oa2-hero .hero-editor{
-    transform:
-      translate3d(0,var(--hero-editor-y,0px),0)
-      scale(var(--hero-editor-scale,1))!important
-  }
-}
-@media(max-width:640px){
-  body.public-home[data-scroll-cinema="on"] .stellar-scroll-ambient{opacity:.46;filter:blur(28px)}
-}
-@media(prefers-reduced-motion:reduce){
-  body.public-home[data-scroll-cinema="on"] .stellar-scroll-scene,
-  body.public-home[data-scroll-cinema="on"] .stellar-scroll-card,
-  body.public-home[data-scroll-cinema="on"] .oa2-hero .dev-hero-copy,
-  body.public-home[data-scroll-cinema="on"] .oa2-hero .hero-editor{
-    transform:none!important;opacity:1!important;filter:none!important;will-change:auto!important
-  }
-  body.public-home[data-scroll-cinema="on"] .stellar-dev-playground,
-  body.public-home[data-scroll-cinema="on"] .stellar-comparison{min-height:0!important;padding-bottom:clamp(68px,8vw,96px)!important}
-  body.public-home[data-scroll-cinema="on"] .dev-playground-shell,
-  body.public-home[data-scroll-cinema="on"] .stellar-comparison-grid{position:static!important}
-  body.public-home[data-scroll-cinema="on"] .stellar-scroll-ambient{display:none!important}
+<style id="stellar-chatgpt-simple-home-v1">
+html,body.public-home{min-height:100%;background:#212121!important;color:#f4f4f4!important}
+body.public-home{overflow-x:hidden}
+.public-home .site-header{position:fixed!important;inset:0 0 auto!important;height:64px!important;background:#212121!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;z-index:50}
+.public-home .nav{height:64px!important;min-height:64px!important;max-width:none!important;width:100%!important;padding:0 18px!important}
+.public-home .brand{font-size:18px!important;gap:8px!important}.public-home .brand svg{width:20px!important;height:20px!important}
+.public-home .nav-links{display:none!important}.public-home .nav-actions{gap:16px!important}.public-home .nav-login{font-size:14px!important;color:#d1d1d1!important}
+.public-home #nav-toggle,.public-home #mobile-nav{display:none!important}
+.public-home main#main-content{min-height:100dvh!important;display:grid!important;place-items:center!important;padding:84px 16px 28px!important}
+.public-home main#main-content>section:not(.oa2-hero){display:none!important}
+.public-home .oa2-hero{width:min(820px,100%)!important;max-width:820px!important;min-height:auto!important;padding:0!important;margin:0 auto!important;display:block!important;text-align:center!important;grid-template-columns:1fr!important}
+.public-home .dev-hero-copy{width:100%!important;max-width:none!important}
+.public-home .hero-editor{display:none!important}
+.public-home .dev-release-badge{border:0!important;background:transparent!important;padding:0!important;margin:0 0 22px!important;color:#b4b4b4!important;font-size:13px!important;justify-content:center!important}
+.public-home .dev-status-dot{display:none!important}
+.public-home .oa2-hero h1{font-family:Manrope,system-ui,sans-serif!important;font-size:clamp(30px,5vw,44px)!important;font-weight:600!important;line-height:1.15!important;letter-spacing:-.035em!important;margin:0!important;color:#ececec!important}
+.public-home .oa2-lead{font-size:14px!important;line-height:1.5!important;color:#9b9b9b!important;margin:12px auto 26px!important;max-width:620px!important}
+.public-home .anonymous-preview-form{margin:0 auto!important;max-width:760px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.public-home .anonymous-preview-form label.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.public-home .anonymous-preview-input{display:flex!important;align-items:flex-end!important;gap:8px!important;padding:10px 10px 10px 18px!important;border:1px solid #4a4a4a!important;border-radius:26px!important;background:#2f2f2f!important;box-shadow:none!important}
+.public-home .anonymous-preview-input:focus-within{border-color:#666!important}
+.public-home #anonymous-preview-prompt{min-height:52px!important;max-height:180px!important;padding:12px 4px!important;border:0!important;outline:0!important;background:transparent!important;color:#f2f2f2!important;font:15px/1.5 Manrope,system-ui,sans-serif!important;resize:none!important}
+.public-home #anonymous-preview-prompt::placeholder{color:#9b9b9b!important}
+.public-home #anonymous-preview-submit{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;padding:0!important;border:0!important;border-radius:50%!important;background:#f4f4f4!important;color:#1f1f1f!important;font-size:20px!important;font-weight:700!important;display:grid!important;place-items:center!important;line-height:1!important}
+.public-home #anonymous-preview-submit:disabled{opacity:.55!important}
+.public-home .anonymous-preview-status{margin:10px 0 0!important;color:#8f8f8f!important;font-size:11px!important}
+.public-home .anonymous-preview-result{margin:18px auto 0!important;max-width:760px!important;text-align:left!important;border:0!important;border-radius:18px!important;background:#2a2a2a!important;padding:18px!important}
+.public-home .anonymous-preview-result-head{border:0!important;padding:0 0 12px!important}
+.public-home .anonymous-preview-result pre{background:#1f1f1f!important;border-radius:12px!important;border:0!important}
+.public-home .oa2-hero-actions{margin:14px 0 0!important}
+.public-home .oa2-primary-action{background:transparent!important;border:0!important;padding:0!important;min-height:auto!important;color:#aeb4ff!important;font-size:12px!important;font-weight:600!important;box-shadow:none!important}
+.public-home footer.footer{display:none!important}
+@media(max-width:700px){
+ .public-home .site-header{height:56px!important}.public-home .nav{height:56px!important;min-height:56px!important;padding:0 14px!important}
+ .public-home main#main-content{padding:72px 12px 20px!important}
+ .public-home .oa2-hero h1{font-size:30px!important}
+ .public-home .oa2-lead{font-size:13px!important;margin-bottom:20px!important}
+ .public-home .anonymous-preview-input{border-radius:22px!important;padding-left:14px!important}
+ .public-home #anonymous-preview-prompt{font-size:16px!important}
 }
 </style>
 </head>
@@ -2021,43 +1931,31 @@ body.public-home[data-scroll-cinema="on"] .hero-editor{
   <header class="site-header">
     <nav class="container nav" aria-label="Primary navigation">
       <a class="brand" href="/" aria-label="Stellar AI home"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 1.5 20.1 11.9 30.5 16 20.1 20.1 16 30.5 11.9 20.1 1.5 16 11.9 11.9Z" fill="currentColor"/></svg><span>Stellar<span class="brand-ai">AI</span></span></a>
-      <div class="nav-links"><a href="#playground">Playground</a><a href="#comparison">Why Stellar</a><a href="/models">Models</a><a href="#plans">Pricing</a><a href="/blog">Guides</a><a href="/support">Support</a></div>
-      <div class="nav-actions"><a class="nav-login" href="/app?signin=1">Sign in</a><a href="/app?welcome=1" class="button button-small">Get started <span aria-hidden="true">↗</span></a><button id="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button></div>
+      <div class="nav-links"><a href="/plans">Plans</a></div>
+      <div class="nav-actions"><a class="nav-login" href="/plans">Plans</a><a class="nav-login" href="/app?signin=1">Sign in</a><button id="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button></div>
     </nav>
-    <nav id="mobile-nav" class="mobile-nav container" aria-label="Mobile navigation" hidden><a href="#playground">Playground</a><a href="#comparison">Why Stellar</a><a href="/models">Models</a><a href="#plans">Pricing</a><a href="/blog">Guides</a><a href="/support">Support</a><a href="/app?signin=1">Sign in</a></nav>
+    <nav id="mobile-nav" class="mobile-nav container" aria-label="Mobile navigation" hidden><a href="/plans">Plans</a><a href="/app?signin=1">Sign in</a></nav>
   </header>
   <main id="main-content" tabindex="-1">
     <section class="oa2-hero container" aria-labelledby="hero-title">
       <div class="dev-hero-copy">
-        <div class="dev-release-badge" role="status" aria-live="polite"><span class="dev-status-dot" aria-hidden="true"></span><span data-hero-status>Stellar AI v2.4 · Checking production service</span></div>
-        <h1 id="hero-title">Generate &amp; debug FiveM + Roblox scripts.<br><span class="dev-hero-accent">From broken code to safer fixes.</span></h1>
-        <p class="oa2-lead">Build QBCore, ESX, ox_lib and Roblox Luau in one focused workspace. Generate a real preview free, debug broken code, and inspect every result before you use it.</p>
+        <div class="dev-release-badge" role="status" aria-live="polite"><span class="dev-status-dot" aria-hidden="true"></span><span data-hero-status>Stellar AI</span></div>
+        <h1 id="hero-title">What can I help with?</h1>
+        <p class="oa2-lead">Ask anything. Code, writing, research, FiveM, Roblox or everyday questions.</p>
         <form class="anonymous-preview-form" id="anonymous-preview-form" novalidate>
-          <label for="anonymous-preview-prompt"><strong>Try one real script before signing up</strong><span>Describe a FiveM or Roblox script. Your first code preview is anonymous.</span></label>
+          <label class="sr-only" for="anonymous-preview-prompt">Message Stellar AI</label>
           <div class="anonymous-preview-input">
-            <textarea id="anonymous-preview-prompt" rows="3" maxlength="800" spellcheck="true" placeholder="Build a secure QBCore police evidence locker with server-side validation"></textarea>
-            <button id="anonymous-preview-submit" type="submit">Generate free script</button>
+            <textarea id="anonymous-preview-prompt" rows="2" maxlength="800" spellcheck="true" placeholder="Message Stellar AI"></textarea>
+            <button id="anonymous-preview-submit" type="submit" aria-label="Send message">↑</button>
           </div>
-          <p id="anonymous-preview-status" class="anonymous-preview-status" role="status" aria-live="polite">1 free anonymous preview · no card. Create a free account only when you want another build or a download.</p>
+          <p id="anonymous-preview-status" class="anonymous-preview-status" role="status" aria-live="polite">Free to try · no card required</p>
         </form>
         <section class="anonymous-preview-result" id="anonymous-preview-result" aria-label="Generated anonymous script preview" hidden>
           <div class="anonymous-preview-result-head"><span id="anonymous-preview-meta">Game script · preview only</span><button id="anonymous-preview-download" type="button">Download files ↗</button></div>
           <pre><code id="anonymous-preview-code"></code></pre>
           <p>Preview only. Review and test generated code in a development environment before production use.</p>
         </section>
-        <div class="oa2-hero-actions"><a href="/app?welcome=1" class="oa2-primary-action">Start free — no card <span aria-hidden="true">↗</span></a><a href="/app?mode=debug" class="oa2-secondary-action">Debug broken script</a></div><div class="hero-mini-proof" aria-label="Stellar AI quick benefits and upgrade path"><span>✓ Free preview · no card</span><span>✓ Plus · £20/mo for active builders</span><span>✓ Server Pass · £50/mo for teams</span></div>
-        <p class="dev-security-note">🔒 HTTPS in transit · 🔐 Server-side secret handling · 🛡️ Anti-exploit validation is injected by default for relevant game-dev prompts</p>
-        <div class="oa2-framework-checklist" aria-label="Supported developer frameworks"><span>QBCore</span><span>ESX</span><span>ox_lib</span><span>Roblox Luau</span><span>ModuleScripts</span></div>
-        <div class="dev-trust-row" aria-label="Stellar AI trust signals">
-          <span>Server-side secret handling</span>
-          <a href="https://github.com/zitopop/Stellar-AI" target="_blank" rel="noopener noreferrer">Public GitHub ↗</a>
-          <a href="https://discord.gg/e6uRAV9HGA" target="_blank" rel="noopener noreferrer">Official Stellar AI community ↗</a>
-          <a href="/privacy">Privacy policy</a>
-          <a href="/terms">Clear terms</a>
-          <a href="/refunds">Refund policy</a>
-          <a href="/support">Support</a>
-        </div>
-        <p class="dev-runtime-note">AI-generated code still needs runtime testing and server-side validation before production deployment.</p>
+        <div class="oa2-hero-actions"><a href="/app?welcome=1" class="oa2-primary-action">Open full chat</a></div>
       </div>
       <div class="hero-editor" data-hero-editor aria-label="Interactive game script editor preview">
         <div class="hero-editor-top">
@@ -2405,129 +2303,6 @@ root.querySelectorAll('[data-demo-download]').forEach(button=>button.addEventLis
 })();
 </script>
 
-<script id="stellar-scroll-cinema-v1">
-(()=>{'use strict';
-const body=document.body;
-if(!body?.classList.contains('public-home'))return;
-const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
-const clamp=(value,min=0,max=1)=>Math.min(max,Math.max(min,value));
-const lerp=(a,b,t)=>a+(b-a)*t;
-const sceneSelectors=[
-  '.oa2-hero',
-  '.dev-proof-strip',
-  '.stellar-dev-playground',
-  '.stellar-comparison',
-  '.stellar-trust-section',
-  '.pricing-section',
-  '.faq-section',
-  '.final-cta'
-];
-const scenes=sceneSelectors.map(selector=>document.querySelector(selector)).filter(Boolean);
-const cardSelectors=[
-  '.dev-proof-item',
-  '.dev-playground-shell',
-  '.stellar-comparison-card',
-  '.stellar-trust-grid article',
-  '.plan',
-  '.stellar-debug-proof',
-  '.stellar-team-offer',
-  '.faqs details'
-];
-const cards=[...document.querySelectorAll(cardSelectors.join(','))];
-scenes.forEach(scene=>scene.classList.add('stellar-scroll-scene'));
-cards.forEach((card,index)=>{card.classList.add('stellar-scroll-card');card.dataset.scrollDepth=String(index%5)});
-const ambient=document.createElement('div');
-ambient.className='stellar-scroll-ambient';
-ambient.setAttribute('aria-hidden','true');
-body.prepend(ambient);
-body.dataset.scrollCinema='on';
-
-const hero=document.querySelector('.oa2-hero');
-const heroCopy=hero?.querySelector('.dev-hero-copy');
-const heroEditor=hero?.querySelector('.hero-editor');
-let raf=0;
-
-function setScene(scene,vh,desktop){
-  const rect=scene.getBoundingClientRect();
-  const enter=clamp((vh*.96-rect.top)/(vh*.78));
-  const exit=clamp(rect.bottom/(vh*.34));
-  const visibility=Math.min(enter,exit);
-  const signed=clamp((rect.top-vh*.50)/vh,-1,1);
-  const depth=desktop?1:.42;
-  scene.style.setProperty('--scene-y',(lerp(62,0,visibility)+signed*8*depth).toFixed(2)+'px');
-  scene.style.setProperty('--scene-z',desktop?lerp(-80,18,visibility).toFixed(2)+'px':'0px');
-  scene.style.setProperty('--scene-rx',desktop?(lerp(6.5,0,visibility)+signed*1.2).toFixed(2)+'deg':'0deg');
-  scene.style.setProperty('--scene-ry',desktop?(signed*-1.1*(1-visibility)).toFixed(2)+'deg':'0deg');
-  scene.style.setProperty('--scene-scale',lerp(desktop?.925:.965,1,visibility).toFixed(4));
-  scene.style.setProperty('--scene-opacity',lerp(.34,1,visibility).toFixed(3));
-  scene.style.setProperty('--scene-sat',lerp(.72,1,visibility).toFixed(3));
-}
-
-function setCard(card,vh,desktop,index){
-  const rect=card.getBoundingClientRect();
-  const enter=clamp((vh*.94-rect.top)/(vh*.64));
-  const exit=clamp(rect.bottom/(vh*.22));
-  const visibility=Math.min(enter,exit);
-  const lane=((Number(card.dataset.scrollDepth)||index)%5)-2;
-  const side=desktop?lane:0;
-  card.style.setProperty('--card-y',lerp(46+Math.abs(side)*5,0,visibility).toFixed(2)+'px');
-  card.style.setProperty('--card-z',desktop?lerp(-54,12,visibility).toFixed(2)+'px':'0px');
-  card.style.setProperty('--card-rx',desktop?lerp(7.5,0,visibility).toFixed(2)+'deg':'0deg');
-  card.style.setProperty('--card-ry',desktop?lerp(side*2.2,0,visibility).toFixed(2)+'deg':'0deg');
-  card.style.setProperty('--card-scale',lerp(desktop?.93:.97,1,visibility).toFixed(4));
-  card.style.setProperty('--card-opacity',lerp(.28,1,visibility).toFixed(3));
-  card.style.setProperty('--card-shadow-y',lerp(34,16,visibility).toFixed(1)+'px');
-}
-
-function setHero(vh,desktop){
-  if(!hero)return;
-  const rect=hero.getBoundingClientRect();
-  const span=Math.max(vh*.9,hero.offsetHeight*.72);
-  const progress=clamp((-rect.top)/span);
-  if(heroCopy){
-    heroCopy.style.setProperty('--hero-copy-y',(progress*(desktop?-54:-18)).toFixed(2)+'px');
-    heroCopy.style.setProperty('--hero-copy-z',desktop?(progress*36).toFixed(2)+'px':'0px');
-    heroCopy.style.setProperty('--hero-copy-scale',lerp(1,desktop?.965:.99,progress).toFixed(4));
-    heroCopy.style.setProperty('--hero-copy-opacity',lerp(1,.78,progress).toFixed(3));
-  }
-  if(heroEditor){
-    const editorEntry=clamp((vh*.92-heroEditor.getBoundingClientRect().top)/(vh*.78));
-    const p=Math.max(progress*.72,editorEntry*.55);
-    heroEditor.style.setProperty('--hero-editor-y',lerp(desktop?54:26,desktop?-18:0,p).toFixed(2)+'px');
-    heroEditor.style.setProperty('--hero-editor-z',desktop?lerp(-86,28,p).toFixed(2)+'px':'0px');
-    heroEditor.style.setProperty('--hero-editor-rx',desktop?lerp(10,-2.5,p).toFixed(2)+'deg':'0deg');
-    heroEditor.style.setProperty('--hero-editor-ry',desktop?lerp(-5,2.2,p).toFixed(2)+'deg':'0deg');
-    heroEditor.style.setProperty('--hero-editor-scale',lerp(desktop?.92:.97,1,p).toFixed(4));
-    heroEditor.style.setProperty('--hero-shadow-y',lerp(52,26,p).toFixed(1)+'px');
-    heroEditor.style.setProperty('--hero-shadow-blur',lerp(130,86,p).toFixed(1)+'px');
-    heroEditor.style.setProperty('--hero-glow',lerp(110,58,p).toFixed(1)+'px');
-  }
-}
-
-function render(){
-  raf=0;
-  if(reduce.matches){body.dataset.scrollMotion='reduced';return}
-  body.dataset.scrollMotion='active';
-  const vh=Math.max(window.innerHeight||0,600);
-  const desktop=window.innerWidth>=980;
-  const scrollY=Math.max(0,window.scrollY||0);
-  const page=Math.max(1,document.documentElement.scrollHeight-vh);
-  const pageProgress=clamp(scrollY/page);
-  body.style.setProperty('--ambient-x',(Math.sin(pageProgress*Math.PI*2)*38).toFixed(1)+'px');
-  body.style.setProperty('--ambient-y',(lerp(-24,68,pageProgress)).toFixed(1)+'px');
-  ambient.style.opacity=String(lerp(.66,.88,Math.sin(pageProgress*Math.PI)*.5+.5));
-  setHero(vh,desktop);
-  scenes.forEach(scene=>{if(scene!==hero)setScene(scene,vh,desktop)});
-  cards.forEach((card,index)=>setCard(card,vh,desktop,index));
-}
-function schedule(){if(!raf)raf=requestAnimationFrame(render)}
-addEventListener('scroll',schedule,{passive:true});
-addEventListener('resize',schedule,{passive:true});
-reduce.addEventListener?.('change',schedule);
-addEventListener('load',schedule,{once:true});
-schedule();
-})();
-</script>
 <script src="/lib/assets/stellar-analytics.js?v=2"></script>
 <script src="/lib/assets/telemetry.js"></script>
 </body>
