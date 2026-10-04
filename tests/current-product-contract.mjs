@@ -24,7 +24,9 @@ export function assertHomeContract(){
   assert.match(home,/id="build-form"/);
   assert.match(home,/id="plans"/);
   assert.match(home,/\/app\?welcome=1/);
-  assert.match(home,/Ask anything\./);
+  assert.match(home,/Build faster\./);
+  assert.match(home,/More than a blank chat box\./);
+  assert.match(home,/Stellar for Business/i);
   assert.match(home,/stellar-serious-chat-first-v37/);
   assert.doesNotMatch(home,/(credits\/month|Buy Stellar Credits|top.?up)/i);
 }
