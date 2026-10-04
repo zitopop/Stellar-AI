@@ -388,7 +388,7 @@ export default async function handler(req, res) {
   const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = input;
   const purchaseStatusRequest = req.method === 'GET' && action === 'purchase-status';
   const publicBusinessCheckout = plan === 'website-audit' || plan === 'ai-receptionist';
-  if (req.method === 'GET' && !publicBusinessCheckout && !purchaseStatusRequest) return res.status(405).json({ error: 'GET checkout is only available for public business services or purchase status.' });
+  if (req.method === 'GET' && !purchaseStatusRequest) return res.status(405).json({ error: 'Checkout creation requires a POST request.' });
   const sessionUser = (publicBusinessCheckout || purchaseStatusRequest) ? null : requireSession(req, res);
   if (!publicBusinessCheckout && !purchaseStatusRequest && !sessionUser) return;
   const sourceName = acquisitionSource(source);
@@ -464,7 +464,6 @@ export default async function handler(req, res) {
         incrementConversionMetric('business-service-checkout-started'),
         incrementConversionMetric('business-service-website_mini_audit-checkout-started'),
       ]);
-      if (req.method === 'GET') return res.redirect(303, checkout.url);
       return res.status(200).json({ url: checkout.url });
     }
 
@@ -534,7 +533,6 @@ export default async function handler(req, res) {
         incrementConversionMetric('business-service-checkout-started'),
         incrementConversionMetric('business-service-ai_receptionist-checkout-started'),
       ]);
-      if (req.method === 'GET') return res.redirect(303, checkout.url);
       return res.status(200).json({ url: checkout.url });
     }
 
