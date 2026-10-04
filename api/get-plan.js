@@ -6,6 +6,7 @@ import { achievementDefinitions, ensureReferralProfile, kvGet, kvPipeline, unloc
 import { readApiKeySummary, regenerateApiKey } from '../lib/api-keys.js';
 import { MODEL_CREDIT_COSTS, OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, isPaidPlan, normalisePlan } from '../lib/pricing.js';
 import { getUsageSnapshot } from '../lib/usage.js';
+import { listBusinessFulfillmentJobs } from '../lib/business-fulfillment.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -293,10 +294,11 @@ export default async function handler(req, res) {
 
   try {
     const owner = isOwnerEmail(session.email);
-    const [storedValue, authRecord, serverPassRecord] = await Promise.all([
+    const [storedValue, authRecord, serverPassRecord, businessOrdersRaw] = await Promise.all([
       kvGet(url, token, `stellar:user:${session.email}`),
       kvGet(url, token, `stellar:auth:${session.email}`),
       kvGet(url, token, `stellar:server-pass:${session.email}`),
+      owner ? Promise.resolve([]) : listBusinessFulfillmentJobs({ limit: 5, email: session.email }).catch(() => []),
     ]);
     const stored = storedValue || { plan: 'free', walletPence: 0, createdAt: Date.now() };
     const user = await ensureReferralProfile(url, token, session.email, stored);
@@ -335,6 +337,16 @@ export default async function handler(req, res) {
           status: serverPassStatus,
         };
 
+    const businessOrders = (Array.isArray(businessOrdersRaw) ? businessOrdersRaw : []).slice(0, 5).map(job => ({
+      id: String(job?.id || ''),
+      service: String(job?.service || ''),
+      label: String(job?.serviceLabel || 'Business service').slice(0, 100),
+      status: String(job?.status || 'queued').slice(0, 40),
+      createdAt: Number(job?.createdAt) || null,
+      updatedAt: Number(job?.updatedAt) || null,
+      completedAt: Number(job?.completedAt) || null,
+    }));
+
     return res.status(200).json({
       plan,
       planId: plan,
@@ -360,6 +372,7 @@ export default async function handler(req, res) {
       achievementDefinitions: achievementDefinitions(),
       websiteBuilder,
       serverPass,
+      businessOrders,
       discord: discordProfile(authRecord),
       updatedAt: user.updatedAt || null,
     });
