@@ -12,6 +12,8 @@ test('billing portal is authenticated and resolves Stripe customer from a paid p
   assert.match(endpoint, /stellar:server-pass:\$\{sessionUser\.email\}/);
   assert.match(endpoint, /serverPassUser\?\.checkoutSessionId/);
   assert.match(endpoint, /serverPassUser\?\.stripeCustomerId/);
+  assert.match(endpoint, /serverPassCheckoutCustomerId/);
+  assert.match(endpoint, /existingCustomerId = \/\^cus_\[A-Za-z0-9\]\+\$\/\.test\(accountCustomerId\)/);
   assert.doesNotMatch(endpoint, /req\.body[^\n]*customer/i);
 });
 
