@@ -5,6 +5,7 @@ import { requireSession } from '../lib/auth.js';
 import { isPaidPlan, normalisePlan } from '../lib/pricing.js';
 import { kvGet, kvSet } from '../lib/profile.js';
 import { createCheckoutAttempt, incrementConversionMetric } from '../lib/conversion-metrics.js';
+import { businessServiceFromCheckout, loadBusinessFulfillmentJob } from '../lib/business-fulfillment.js';
 
 function setCors(req, res) {
   const origin = req.headers.origin || '';
@@ -245,6 +246,139 @@ function missingPlanMessage(plan) {
   return messages[plan] || 'That plan is not available.';
 }
 
+
+function purchaseProduct(session = {}) {
+  const service = businessServiceFromCheckout(session);
+  if (service === 'website_mini_audit') return { id: 'website-audit', label: 'Website Audit / Quick Fix', kind: 'service' };
+  if (service === 'ai_receptionist') return { id: 'ai-receptionist', label: 'AI Receptionist', kind: 'service' };
+  const rawPlan = String(session?.metadata?.plan || '').trim().toLowerCase();
+  if (rawPlan === 'website-builder') return { id: rawPlan, label: 'AI Business Website', kind: 'one-time' };
+  if (rawPlan === 'server-pass') return { id: rawPlan, label: 'Server Pass', kind: 'subscription' };
+  const plan = normalisePlan(rawPlan);
+  if (!plan || plan === 'free') return null;
+  const labels = { starter: 'Starter', plus: 'Plus', pro: 'Pro' };
+  return { id: plan, label: 'Stellar ' + (labels[plan] || plan), kind: 'subscription' };
+}
+
+function businessStatusMessage(status, label) {
+  if (status === 'delivered') return { ready: true, title: label + ' is ready', message: 'Your completed audit has been sent to the email used at checkout.' };
+  if (status === 'live') return { ready: true, title: label + ' is live', message: 'Your receptionist has been provisioned and the live link has been sent to the email used at checkout.' };
+  if (status === 'waiting_for_customer') return { ready: false, actionRequired: true, title: 'One detail is needed', message: 'Check your email for a secure Stellar link. Fulfilment resumes automatically after you confirm the missing information.' };
+  if (status === 'needs_owner_review') return { ready: false, title: 'Stellar is reviewing this order', message: 'Automatic recovery could not finish this order. Stellar support has been alerted; your payment and order record are preserved.' };
+  if (status === 'retrying') return { ready: false, title: 'Still processing', message: 'Stellar is retrying the fulfilment automatically. You do not need to buy again.' };
+  if (status === 'processing' || status === 'qa_processing') return { ready: false, title: 'Your order is being prepared', message: 'Payment is confirmed and Stellar is processing the paid service automatically.' };
+  return { ready: false, title: 'Payment confirmed', message: 'Your paid order is queued for automatic fulfilment.' };
+}
+
+async function purchaseEntitlementStatus(product, session, env = process.env) {
+  const email = String(session?.metadata?.email || session?.customer_details?.email || session?.customer_email || '').trim().toLowerCase();
+  const url = String(env.KV_REST_API_URL || '').trim();
+  const token = String(env.KV_REST_API_TOKEN || '').trim();
+  if (!email || !url || !token) return { ready: false, status: 'provisioning' };
+
+  if (product.id === 'website-builder') {
+    const value = await kvGet(url, token, `stellar:website-builder:${email}`).catch(() => null);
+    const ready = value?.status === 'active' && Boolean(value?.checkoutSessionId);
+    return {
+      ready,
+      status: ready ? 'ready' : 'provisioning',
+      title: ready ? 'Website Builder unlocked' : 'Unlocking Website Builder',
+      message: ready ? 'Your £99 website package is active on the purchasing Stellar account.' : 'Payment is confirmed. Stellar is syncing the website-builder entitlement now.',
+    };
+  }
+
+  if (product.id === 'server-pass') {
+    const value = await kvGet(url, token, `stellar:server-pass:${email}`).catch(() => null);
+    const status = String(value?.status || '').toLowerCase();
+    const ready = status === 'pending_activation' || status === 'active';
+    return {
+      ready,
+      status: ready ? status : 'provisioning',
+      title: status === 'active' ? 'Server Pass active' : ready ? 'Server Pass ready to activate' : 'Preparing Server Pass',
+      message: status === 'active'
+        ? 'Your verified Discord guild is active.'
+        : ready
+          ? 'Connect Discord to the purchasing Stellar account, then run /serverpass in the server you manage.'
+          : 'Payment is confirmed. Stellar is syncing the Server Pass entitlement now.',
+    };
+  }
+
+  if (['starter', 'plus', 'pro'].includes(product.id)) {
+    const value = await kvGet(url, token, `stellar:user:${email}`).catch(() => null);
+    const activePlan = normalisePlan(value?.plan);
+    const ready = activePlan === product.id;
+    return {
+      ready,
+      status: ready ? 'ready' : 'provisioning',
+      title: ready ? product.label + ' is active' : 'Activating ' + product.label,
+      message: ready ? 'Your paid plan is active on the purchasing Stellar account.' : 'Payment is confirmed and the account entitlement is syncing.',
+    };
+  }
+
+  return { ready: false, status: 'provisioning' };
+}
+
+async function purchaseStatusPayload(stripe, sessionId) {
+  if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return { httpStatus: 400, body: { error: 'A valid checkout session is required.' } };
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  const product = purchaseProduct(session);
+  if (!product || (session.metadata?.app && session.metadata.app !== 'stellar-ai')) {
+    return { httpStatus: 404, body: { error: 'This checkout does not belong to a supported Stellar purchase.' } };
+  }
+
+  const paid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
+  if (!paid) {
+    const expired = session.status === 'expired';
+    return {
+      httpStatus: 200,
+      body: {
+        ok: true,
+        product,
+        payment: expired ? 'expired' : 'pending',
+        status: expired ? 'expired' : 'payment_pending',
+        ready: false,
+        actionRequired: false,
+        title: expired ? 'Checkout expired' : 'Payment is still processing',
+        message: expired ? 'This checkout expired and did not create access. Start a new checkout if you still want the product.' : 'Stripe has not confirmed payment yet. Do not pay again while the checkout is still processing.',
+      },
+    };
+  }
+
+  if (product.kind === 'service') {
+    const job = await loadBusinessFulfillmentJob(session.id).catch(() => null);
+    const status = String(job?.status || 'queued');
+    const detail = businessStatusMessage(status, product.label);
+    return {
+      httpStatus: 200,
+      body: {
+        ok: true,
+        product,
+        payment: 'paid',
+        status,
+        ready: detail.ready,
+        actionRequired: detail.actionRequired === true,
+        title: detail.title,
+        message: detail.message,
+      },
+    };
+  }
+
+  const entitlement = await purchaseEntitlementStatus(product, session);
+  return {
+    httpStatus: 200,
+    body: {
+      ok: true,
+      product,
+      payment: 'paid',
+      status: entitlement.status,
+      ready: entitlement.ready === true,
+      actionRequired: false,
+      title: entitlement.title || 'Payment confirmed',
+      message: entitlement.message || 'Your Stellar purchase is being provisioned automatically.',
+    },
+  };
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -252,16 +386,17 @@ export default async function handler(req, res) {
 
   const input = req.method === 'GET' ? (req.query || {}) : (req.body || {});
   const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = input;
+  const purchaseStatusRequest = req.method === 'GET' && action === 'purchase-status';
   const publicBusinessCheckout = plan === 'website-audit' || plan === 'ai-receptionist';
   if (req.method === 'GET' && !publicBusinessCheckout) return res.status(405).json({ error: 'GET checkout is only available for public business services.' });
-  const sessionUser = publicBusinessCheckout ? null : requireSession(req, res);
-  if (!publicBusinessCheckout && !sessionUser) return;
+  const sessionUser = (publicBusinessCheckout || purchaseStatusRequest) ? null : requireSession(req, res);
+  if (!publicBusinessCheckout && !purchaseStatusRequest && !sessionUser) return;
   const sourceName = acquisitionSource(source);
   const headerCountry = String(req.headers['x-vercel-ip-country'] || req.headers['x-country'] || '').trim().toUpperCase();
   const country = /^[A-Z]{2}$/.test(headerCountry) ? headerCountry : (/^[A-Z]{2}$/.test(String(requestedCountry || '').toUpperCase()) ? String(requestedCountry).toUpperCase() : 'GB');
   // GBP is the base price currency; eligible subscription checkouts use Stripe Adaptive Pricing for local presentment.
   const currency = 'GBP';
-  if (!plan && action !== 'confirm-checkout') return res.status(400).json({ error: 'Choose a plan before continuing.' });
+  if (!plan && action !== 'confirm-checkout' && action !== 'purchase-status') return res.status(400).json({ error: 'Choose a plan before continuing.' });
 
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   if (!stripeSecret) return res.status(500).json({ error: 'Stripe is not configured.' });
@@ -269,6 +404,16 @@ export default async function handler(req, res) {
   try {
     const Stripe = (await import('stripe')).default;
     const stripe = new Stripe(stripeSecret);
+
+    if (purchaseStatusRequest) {
+      try {
+        const result = await purchaseStatusPayload(stripe, String(input.session_id || input.sessionId || '').trim());
+        return res.status(result.httpStatus).json(result.body);
+      } catch (error) {
+        console.error('Purchase status failed', error?.message || error);
+        return res.status(503).json({ error: 'Purchase status could not be verified right now. Your Stripe receipt remains the payment record.' });
+      }
+    }
 
     if (plan === 'website-audit') {
       const checkout = await stripe.checkout.sessions.create({
@@ -519,7 +664,7 @@ export default async function handler(req, res) {
           },
           quantity: 1,
         }],
-        success_url: 'https://trystellarai.com/business-builder?payment=success',
+        success_url: 'https://trystellarai.com/business-builder?payment=success&session_id={CHECKOUT_SESSION_ID}',
         cancel_url: `https://trystellarai.com/business-builder?payment=cancelled&attempt=${encodeURIComponent(attemptId)}`,
         after_expiration: { recovery: { enabled: true } },
         client_reference_id: attemptId,
