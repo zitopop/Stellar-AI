@@ -2054,13 +2054,32 @@ body.public-home::before{display:none!important}
 .public-home .plan[data-plan="plus"] .plan-value strong{color:#fff}
 @media(max-width:700px){.public-home .hero-service-link{text-align:center}.public-home .hero-trust-line{gap:6px!important}}
 </style>
+
+<style id="stellar-home-focus-v61">
+/* Conversion focus: keep the public homepage about the developer product. */
+.public-home #business-path{display:none!important}
+.public-home .stellar-path-grid{grid-template-columns:minmax(0,1fr)!important;max-width:980px;margin-inline:auto}
+.public-home .stellar-paths-head{max-width:760px;margin-inline:auto;text-align:center}
+.public-home .oa2-hero-actions{gap:10px!important}
+.public-home .oa2-secondary-action{background:transparent!important;border-color:rgba(255,255,255,.10)!important;color:#c8ced8!important;box-shadow:none!important}
+.public-home .hero-trust-line{margin-top:16px!important}
+.public-home .anonymous-preview-form{margin-top:26px!important}
+.public-home .nav-actions .nav-login[href="/app?signin=1"]{color:#9aa2ae!important}
+@media(max-width:760px){
+  .public-home .nav-actions .nav-login[href="#game-path"],
+  .public-home .nav-actions .nav-login[href="/install"]{display:none!important}
+  .public-home .oa2-hero-actions{display:grid!important;grid-template-columns:1fr!important;width:100%!important}
+  .public-home .oa2-hero-actions a{width:100%!important}
+  .public-home .stellar-paths-head{text-align:left}
+}
+</style>
 </head>
 <body class="stellar-public public-home">
   <a href="#main-content" class="skip-link">Skip to main content</a>
   <header class="site-header">
     <nav class="container nav" aria-label="Primary navigation">
       <a class="brand" href="/" aria-label="Stellar AI home"><svg class="stellar-brand-mark" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect class="stellar-brand-shell" x="2.5" y="2.5" width="31" height="31" rx="10"/><path class="stellar-brand-star" d="M18 7.2 20.7 14.3 27.8 17 20.7 19.7 18 26.8 15.3 19.7 8.2 17 15.3 14.3 18 7.2Z"/><path class="stellar-brand-orbit" d="M9.2 23.1c4.1 3.2 12.2 3.8 17.5-.9"/><circle class="stellar-brand-dot" cx="27.8" cy="10.3" r="2.1"/></svg><span>Stellar<span class="brand-ai">AI</span></span></a>
-      <div class="nav-actions"><a class="nav-login" href="#game-path">How it works</a><a class="nav-login" href="#plans">Plans</a><a class="nav-login" href="/install" data-conversion="install">Get app</a><a class="nav-login" href="/business">Business</a><a class="nav-login" href="/app?signin=1">Sign in</a><a class="button button-small" href="/app?welcome=1">Start free</a></div>
+      <div class="nav-actions"><a class="nav-login" href="#game-path">How it works</a><a class="nav-login" href="#plans">Plans</a><a class="nav-login" href="/install" data-conversion="install">Get app</a><a class="nav-login" href="/app?signin=1">Sign in</a><a class="button button-small" href="/app?welcome=1&utm_source=homepage&utm_campaign=nav">Start free</a></div>
     </nav>
   </header>
   <main id="main-content" tabindex="-1">
@@ -2076,15 +2095,14 @@ body.public-home::before{display:none!important}
         <div class="dev-release-badge" role="status" aria-live="polite"><span class="dev-status-dot" aria-hidden="true"></span><span data-hero-status>AI coding workspace</span></div>
         <p class="landing-kicker">FIVEM + ROBLOX AI CODING</p>
         <h1 id="hero-title">Build, debug and ship FiveM &amp; Roblox scripts faster.</h1>
-        <p class="oa2-lead">Describe what you need or paste broken code. Stellar returns framework-aware code you can inspect, fix and export — with three previews before signup.</p>
+        <p class="oa2-lead">Stop wasting time rebuilding prompts around broken Lua and Luau. Describe the feature or paste the error; Stellar keeps your framework context together and returns code you can inspect, fix and export.</p>
         <p class="hero-benefit">Generate · Debug · Review · Export</p>
         <div class="oa2-hero-actions">
-          <a href="/app?welcome=1&utm_source=homepage&utm_campaign=hero" class="oa2-primary-action" data-conversion="start-free">Start building free <span aria-hidden="true">↗</span></a>
-          <a href="/app?upgrade=plus&utm_source=homepage&utm_campaign=hero" class="oa2-secondary-action" data-conversion="plus">See Plus · £20/mo</a>
+          <a href="/app?welcome=1&utm_source=homepage&utm_campaign=hero" class="oa2-primary-action" data-conversion="start-free">Start free — no card <span aria-hidden="true">↗</span></a>
+          <a href="#playground" class="oa2-secondary-action">See the workflow</a>
         </div>
-        <p class="hero-service-link">Want Stellar on your phone? <a href="/install" data-conversion="install">Install the app free ↗</a> <span aria-hidden="true">·</span> Need a complete fix? <a href="/script-fix" data-conversion="script-fix">Priority Script Fix · £99 ↗</a></p>
-        <div class="hero-trust-line" aria-label="Stellar AI trial and checkout summary">
-          <span>3 instant previews</span><span>Free · up to 15 Fast/day</span><span>Plus · £20/month</span><span>Secure Stripe checkout</span>
+        <div class="hero-trust-line" aria-label="Stellar AI trial summary">
+          <span>3 instant previews</span><span>QBCore · ESX · ox_lib · Luau</span><span>Inspect before export</span>
         </div>
         <form class="anonymous-preview-form" id="anonymous-preview-form" novalidate>
           <label class="sr-only" for="anonymous-preview-prompt">Message Stellar AI</label>
@@ -2189,7 +2207,7 @@ TriggerServerEvent(<span class="syn-str">'stellar:complete'</span>)</code></pre>
             <div><span>02 · PROVE</span><strong>Use a real script or error</strong><small>Generate, debug, copy or export before deciding to pay.</small></div>
             <div class="is-highlight"><span>03 · BUILD MORE</span><strong>Plus · £20/month</strong><small>400 req/hr ceiling, Stellar Deep and larger project workflows.</small></div>
           </div>
-          <div class="stellar-path-actions"><a class="oa2-primary-action" href="/app?welcome=1">Start free <span aria-hidden="true">↗</span></a><a class="stellar-path-link" href="/script-fix">Priority Script Fix · £99 once</a><a class="stellar-path-link stellar-plus-link" href="/app?upgrade=plus">Get Plus · £20/mo</a><a class="stellar-path-link" href="#playground">See the live demo</a></div>
+          <div class="stellar-path-actions"><a class="oa2-primary-action" href="/app?welcome=1&utm_source=homepage&utm_campaign=developer-path">Start free <span aria-hidden="true">↗</span></a><a class="stellar-path-link" href="#playground">See the live demo</a><a class="stellar-path-link stellar-plus-link" href="#plans">Compare plans</a></div>
         </article>
         <article class="stellar-path-card stellar-path-business" id="business-path">
           <div class="stellar-path-top"><span>02 · BUSINESS</span><span class="stellar-path-chip">UK small business</span></div>
