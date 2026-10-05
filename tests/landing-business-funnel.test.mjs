@@ -9,11 +9,11 @@ const receptionist = readFileSync(new URL('../services/ai-receptionist.html', im
 const builder = readFileSync(new URL('../business-builder.html', import.meta.url), 'utf8');
 
 test('main landing page exposes a clear For Business route without replacing developer positioning', () => {
-  assert.match(home, /href="\/business">For Business/);
+  assert.match(home, /href="\/business">Business/);
   assert.match(home, /id="business"/);
   assert.match(home, /SEPARATE BUSINESS TOOLS/);
   assert.match(home, /Running a business too\? Stellar has a separate toolkit\./);
-  assert.match(home, /Build & Debug FiveM and Roblox Scripts Faster/);
+  assert.match(home, /Generate & Debug FiveM and Roblox Scripts/);
 });
 
 test('landing business bridge shows the real current service catalogue and prices', () => {
