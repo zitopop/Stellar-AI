@@ -9,7 +9,7 @@ test('landing leads with a specific FiveM and Roblox value proposition', () => {
   assert.match(home, /AI FOR FIVEM \+ ROBLOX DEVELOPERS/);
   assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
   assert.match(home, /QBCore, ESX, ox_lib and Roblox Luau/);
-  assert.match(home, /See code demo/);
+  assert.match(home, /See it in action/);
 });
 
 test('hero makes pricing and buyer protections visible without a second click', () => {
