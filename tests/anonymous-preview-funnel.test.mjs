@@ -33,10 +33,12 @@ test('homepage offers three anonymous previews before account gating', () => {
 test('preview endpoint is server-only, counted and fails closed without usage storage', () => {
   assert.match(previewApi, /KV_REST_API_URL/);
   assert.match(previewApi, /\['INCR', deviceKey\]/);
-  assert.match(previewApi, /DEVICE_PREVIEW_LIMIT = 3/);\n  assert.match(previewApi, /IP_PREVIEW_LIMIT = 15/);
+  assert.match(previewApi, /DEVICE_PREVIEW_LIMIT = 3/);
+  assert.match(previewApi, /IP_PREVIEW_LIMIT = 15/);
   assert.match(previewApi, /Cache-Control', 'no-store/);
   assert.match(previewApi, /max_completion_tokens: 850/);
-  assert.match(previewApi, /previewsRemaining:/);\n  assert.match(previewApi, /ANON_PREVIEW_USED/);
+  assert.match(previewApi, /previewsRemaining:/);
+  assert.match(previewApi, /ANON_PREVIEW_USED/);
 });
 
 test('preview gate cannot be bypassed by closing the sign-in panel in the app', () => {
@@ -51,5 +53,6 @@ test('downloadable code carries Stellar attribution and anonymous preview downlo
   assert.match(home, watermark);
   assert.match(builder, watermark);
   assert.match(homepageRuntime, /anonymous-preview-download/);
-  assert.match(homepageRuntime, /link\\.download = currentFilename/);\n  assert.match(previewApi, /requiresAccountForDownload: false/);
+  assert.match(homepageRuntime, /link\.download = currentFilename/);
+  assert.match(previewApi, /requiresAccountForDownload: false/);
 });
