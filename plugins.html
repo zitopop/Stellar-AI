@@ -17,7 +17,7 @@
 .explain{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0 52px}.explain article{border:1px solid var(--line);border-radius:18px;padding:17px;background:#121212}.explain small{color:#888;font-weight:850}.explain strong{display:block;margin-top:7px;font-size:16px}.explain p{margin:6px 0 0;color:#919191;font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:#777}.dot.good{background:var(--good)}.dot.connect{background:#b9adff}.dot.soon{background:var(--warn)}
 .section{padding:36px 0;border-top:1px solid var(--line)}.section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:16px}.section-head h2{margin:0;font-size:clamp(28px,4vw,42px);letter-spacing:-.025em}.section-head p{max-width:570px;margin:8px 0 0;color:#939393}.section-head .right{color:#858585;font-size:12px;font-weight:800;white-space:nowrap}
 .notice{border:1px solid var(--line);border-radius:18px;background:#121212;padding:17px;color:#999}.notice strong{display:block;color:#eee;margin-bottom:4px}.notice .btn{margin-top:12px}.account-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;color:#888;font-size:12px}.account-bar strong{color:#ddd}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.tool-card{min-height:236px;border:1px solid var(--line);border-radius:19px;background:#121212;padding:17px;display:flex;flex-direction:column;gap:11px}.tool-card:hover{border-color:rgba(255,255,255,.13);background:#151515}.tool-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.ico{width:46px;height:46px;min-width:46px;border-radius:13px;display:grid;place-items:center;background:#1d1d1d;border:1px solid var(--line);font-size:19px}.status{min-height:25px;display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:0 9px;color:#a4a4a4;font-size:10px;font-weight:900}.status.ready{color:#c9f2de;border-color:rgba(141,225,185,.22);background:rgba(141,225,185,.05)}.status.connect{color:#ddd5ff;border-color:rgba(90,167,255,.25);background:rgba(90,167,255,.06)}.status.soon{color:#ecdba9;border-color:rgba(231,202,131,.22);background:rgba(231,202,131,.05)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.tool-card{min-height:236px;transition:transform .16s ease,border-color .16s ease,background .16s ease;border:1px solid var(--line);border-radius:19px;background:#121212;padding:17px;display:flex;flex-direction:column;gap:11px}.tool-card:hover{border-color:rgba(255,255,255,.16);background:#151515;transform:translateY(-1px)}.tool-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.ico{width:46px;height:46px;min-width:46px;border-radius:13px;display:grid;place-items:center;background:#1d1d1d;border:1px solid var(--line);font-size:19px}.status{min-height:25px;display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:0 9px;color:#a4a4a4;font-size:10px;font-weight:900}.status.ready{color:#c9f2de;border-color:rgba(141,225,185,.22);background:rgba(141,225,185,.05)}.status.connect{color:#ddd5ff;border-color:rgba(90,167,255,.25);background:rgba(90,167,255,.06)}.status.soon{color:#ecdba9;border-color:rgba(231,202,131,.22);background:rgba(231,202,131,.05)}
 .tool-card h3{margin:0;font-size:19px;letter-spacing:-.035em}.tool-card p{margin:0;color:#999;font-size:12.5px;line-height:1.6}.skills{display:grid;gap:5px;margin-top:1px}.skills span{color:#c4c4c4;font-size:11px}.skills span:before{content:"✓";margin-right:7px;color:#8de1b9;font-weight:900}.card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}.card-actions .btn{min-height:40px}
 .access{border-top:1px solid var(--line);padding-top:10px;margin-top:1px}.access summary{cursor:pointer;color:#8f8f8f;font-size:11px;font-weight:800}.access-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.access-list span{min-height:25px;display:inline-flex;align-items:center;padding:0 8px;border-radius:999px;background:#1b1b1b;color:#aaa;font-size:10px}.access-list span.high{color:#efc0c0}
 .token-box{display:grid;gap:8px;margin-top:3px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#0e0e0e}.token-box label{font-size:11px;color:#aaa;font-weight:800}.token-box input{min-height:42px;border:1px solid var(--line2);border-radius:10px;background:#111;color:#fff;padding:0 11px;outline:0}.token-box input:focus{border-color:rgba(90,167,255,.5)}
@@ -38,9 +38,9 @@
 <main class="wrap">
 <section class="hero">
   <div class="kicker">Apps & tools</div>
-  <h1>Use tools without the clutter.</h1>
-  <p>Built-in tools work straight away. Connected apps only appear when there is something useful to connect, and you stay in control of access.</p>
-  <div class="hero-actions"><a class="btn primary" href="#connections">Your apps</a><a class="btn" href="/app">Back to chat</a></div>
+  <h1>Your apps. One clean workspace.</h1>
+  <p>Use Stellar instantly, then connect the accounts you actually need. Every connection shows its status, permissions and next action in one place.</p>
+  <div class="hero-actions"><a class="btn primary" href="#connections">Manage connections</a><a class="btn" href="#browse-tools">Browse built-in tools</a></div>
 </section>
 
 <section class="explain" aria-label="How apps and tools work">
@@ -49,13 +49,13 @@
 </section>
 
 <section class="section" id="connections">
-  <div class="section-head"><div><h2>Your connections</h2><p><strong>Connected apps for Stellar.</strong> Sign in once, choose an app, then press <strong>Connect</strong>. You can disconnect it again here whenever you want.</p></div><span class="right" id="connection-count">0 connected</span></div>
+  <div class="section-head"><div><h2>Your connections</h2><p><strong>Your connected accounts, clearly managed.</strong> Each available app shows whether it is connected, what access it needs and the action you can take next. Disconnect whenever you want.</p></div><span class="right" id="connection-count">0 connected</span></div>
   <div id="plugin-account-status" class="notice"><strong>Sign in to manage apps</strong>Your connected apps will appear here.<br><a class="btn primary" href="/app?signin=1">Sign in</a></div>
   <div class="grid" id="plugin-account-grid" aria-live="polite"></div>
 </section>
 
 <section class="section" id="browse-tools">
-  <div class="section-head"><div><h2>Browse tools</h2><p>Search the tools already built into Stellar. These do not need a separate account connection.</p></div><span class="right">No setup needed</span></div>
+  <div class="section-head"><div><h2>Built into Stellar</h2><p>These tools are ready immediately. No provider account, extra installation or connection step is required.</p></div><span class="right">No setup needed</span></div>
   <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="search" type="search" placeholder="Search tools…" aria-label="Search tools"><button class="clear-search" id="clear-search" type="button" hidden>Clear</button></div><span class="tool-count" id="tool-count" aria-live="polite">4 tools</span></div>
   <div class="builtin-grid">
     <article class="builtin" data-browse-tool data-search="files documents upload pdf notes summarise rewrite compare"><div class="ico">▣</div><h3>Files & documents</h3><p>Upload files and ask Stellar to explain, compare, summarise or rewrite them.</p><a href="/app?prompt=Help%20me%20work%20with%20a%20file%20or%20document.">Use in chat →</a></article>
@@ -66,7 +66,7 @@
 </section>
 
 <section class="section" id="plugin-safety">
-  <div class="section-head"><div><h2>You stay in control</h2><p>Connections should be easy to understand before you approve them.</p></div></div>
+  <div class="section-head"><div><h2>Clear access. No surprises.</h2><p>Before an account is connected, Stellar shows what it needs and keeps higher-impact actions reviewable.</p></div></div>
   <div class="control-grid">
     <article><strong>No passwords shared with Stellar</strong><p>Supported connections use the provider's sign-in screen. Advanced developer tokens stay inside the secure connection form.</p></article>
     <article><strong>Permissions first.</strong><p>Each connected app shows the access it asks for before you use it. No passwords shared, and you can disconnect anytime.</p></article>
