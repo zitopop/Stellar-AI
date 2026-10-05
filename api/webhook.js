@@ -341,7 +341,7 @@ function stripeObjectId(value, prefix) {
 
 function knownCheckoutPlan(value) {
   const plan = String(value || '').trim().toLowerCase();
-  return ['website-builder', 'server-pass', 'topup'].includes(plan) || Boolean(normalisePlan(plan));
+  return ['website-builder', 'server-pass', 'script-fix', 'topup'].includes(plan) || Boolean(normalisePlan(plan));
 }
 
 async function customerEmail(stripe, customer) {
@@ -500,6 +500,33 @@ export default async function handler(req, res) {
               incrementConversionMetric(`checkout-completed-source-${sourceName}`),
               incrementConversionMetric('server-pass-completed'),
               incrementConversionMetric('revenue-pence', 5000),
+            ]);
+          }
+        } else if (checkoutPlan === 'script-fix') {
+          const paid = session.payment_status === 'paid' || event.type === 'checkout.session.async_payment_succeeded';
+          const amountMatches = Number(session.amount_total) === 9900 && Number(session.metadata?.amount || 0) === 9900;
+          if (!paid) {
+            console.info('Stripe Priority Script Fix checkout is awaiting payment', session.id);
+          } else {
+            if (!amountMatches) throw new Error(`Invalid completed script-fix session ${session.id}`);
+            const saved = await kvSet(`stellar:script-fix:${session.id}`, {
+              status: 'paid_awaiting_brief',
+              checkoutSessionId: session.id,
+              customerEmail: email,
+              stripeCustomerId: checkoutCustomerId || null,
+              paymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : '',
+              amountPence: 9900,
+              currency: 'gbp',
+              acquisitionSource: sourceName,
+              purchasedAt: Date.now(),
+              updatedAt: Date.now(),
+            });
+            if (!saved) throw new Error(`Could not persist script-fix order for ${session.id}`);
+            await Promise.all([
+              incrementConversionMetric('checkout-completed'),
+              incrementConversionMetric(`checkout-completed-source-${sourceName}`),
+              incrementConversionMetric('script-fix-completed'),
+              incrementConversionMetric('revenue-pence', 9900),
             ]);
           }
         } else if (checkoutPlan === 'topup') {
