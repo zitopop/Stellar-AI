@@ -6,8 +6,8 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-trust-v55.css', import.meta.url), 'utf8');
 
 test('v55 hero is specific, useful and low-friction', () => {
-  assert.match(home, /AI FOR FIVEM \+ ROBLOX DEVELOPERS/);
-  assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
+  assert.match(home, /STELLAR AI · FIVEM \+ ROBLOX/);
+  assert.match(home, /Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span>/);
   assert.match(home, /Generate secure QBCore, ESX, ox_lib and Roblox Luau/);
   assert.match(home, /placeholder="Describe a script or paste an error…"/);
   assert.match(home, /class="oa2-primary-action">Try Stellar free/);
