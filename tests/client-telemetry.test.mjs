@@ -52,7 +52,7 @@ test('app tracks conversion milestones without sending user content', () => {
 
 test('install funnel is visible and measurable across social sources', () => {
   assert.match(landing, /href="\/install"[^>]*data-conversion="install"/);
-  assert.match(landing, /Install the app free/);
+  assert.match(landing, /href="\/install"[^>]*data-conversion="install"[^>]*>Get app<\/a>/);
   assert.match(install, /telemetry\.js/);
   assert.match(install, /track\?\.\('install-cta'\)/);
   assert.match(install, /track\?\.\('install-completed'\)/);
