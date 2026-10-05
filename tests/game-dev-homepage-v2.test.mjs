@@ -40,11 +40,11 @@ test('homepage pricing reflects live server plan ceilings rather than stale mark
   assert.match(pricing,/starter:[\s\S]*?requestsPerHour: 120/);
   assert.match(pricing,/plus:[\s\S]*?requestsPerHour: 400/);
   assert.match(pricing,/pro:[\s\S]*?requestsPerHour: 1600/);
-  assert.match(pricing,/free:[\s\S]*?includedCredits: 100/);
+  assert.match(pricing,/free:[\s\S]*?includedCredits: 30/);
   assert.match(home,/£8 Starter · 120 req\/hr/);
   assert.match(home,/£20 Plus · 400 req\/hr/);
   assert.match(home,/£75 Pro · 1,600 req\/hr · Nova/);
-  assert.match(home,/Daily free allowance · no card required/);
+  assert.match(home,/Up to 15 Fast generations per day · no card required/);
   assert.match(home,/100 credits refresh each day/);
   assert.match(home,/120 requests\/hour ceiling[\s\S]*?longer scripts/);
   assert.match(home,/400 requests\/hour ceiling[\s\S]*?full game systems/);
