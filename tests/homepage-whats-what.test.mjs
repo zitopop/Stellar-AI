@@ -4,14 +4,13 @@ import { readFileSync } from 'node:fs';
 
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('homepage explains the main product areas once, in plain language', () => {
-  assert.match(home, /class="home-whats-what"/);
-  assert.match(home, /Know what each part is for\./);
-  for (const label of ['Chat','Models','Plans','Business']) {
-    assert.match(home, new RegExp('<strong>'+label+'<\\/strong>'));
+test('homepage shows the real workspace tools instead of a sitemap-style whats-what block', () => {
+  assert.match(home, /class="landing-tool-rail/);
+  for (const label of ['Chat','Code + Debug','Files','Web','Voice','StellarX']) {
+    assert.match(home, new RegExp('<strong>'+label.replace('+','\\+')+'<\\/strong>'));
   }
-  assert.match(home, /files, images, web search, voice and StellarX live inside the app/);
-  assert.match(home, /href="\/what-is-what">See the full what's-what guide/);
+  assert.doesNotMatch(home, /class="home-whats-what"/);
+  assert.doesNotMatch(home, /Know what each part is for\./);
 });
 
 test('homepage header has one link for each destination with no duplicate plan navigation', () => {
@@ -25,10 +24,13 @@ test('homepage header has one link for each destination with no duplicate plan n
   assert.doesNotMatch(header, /id="mobile-nav"|id="nav-toggle"|class="nav-links"/);
 });
 
-test('hero avoids repeating the brand and only the compact whats-what section stays visible beneath chat', () => {
+test('homepage no longer hides the product behind the old chat-only compatibility contract', () => {
   assert.match(home, /data-hero-status>AI workspace<\/span>/);
-  assert.match(home, /main#main-content>section:not\(\.oa2-hero\):not\(\.home-whats-what\)\{display:none!important\}/);
+  assert.doesNotMatch(home, /stellar-chatgpt-simple-home-v1/);
+  assert.doesNotMatch(home, /main#main-content>section:not\(\.oa2-hero\):not\(\.home-whats-what\)\{display:none!important\}/);
+  assert.match(home, /id="showcase"/);
+  assert.match(home, /id="playground"/);
+  assert.match(home, /id="plans"/);
   assert.match(home, /id="business"/);
-  assert.match(home, /home-whats-what-grid/);
-  assert.match(home, /@media\(max-width:700px\)[\s\S]*home-whats-what-grid\{grid-template-columns:1fr\}/);
+  assert.match(home, /faq-section/);
 });
