@@ -29,9 +29,11 @@ iOS builds require macOS/Xcode. Android builds require Android Studio and the An
 
 ## Release gate
 
-Do not submit the current remote-web test shell directly to App Store production. Apple requires apps to provide value beyond a repackaged website. Before store submission, add and verify native-only value such as share-sheet integration, resilient network/offline handling, push notifications where useful, native account/session affordances, and on-device QA.
+The mobile shell now prepares a native share-sheet action for Stellar responses, keeps the existing offline fallback, and switches the remote workspace into a store-safe account mode when launched natively. In that mode customers can sign in and use access already attached to their Stellar account, while Stripe subscription purchase buttons and external plan-purchase calls to action are suppressed.
 
-Keep subscriptions and other digital purchases policy-compliant for the store build. Web Stripe checkout must not simply be assumed to be acceptable inside a store-distributed build.
+Do not treat this as automatic App Store approval. Apple still expects meaningful app-like value beyond a repackaged website, so public App Store submission should follow real-device QA and TestFlight testing. Google Play should also start with internal/closed testing before production.
+
+For public store builds, keep digital-subscription billing aligned with the rules for each storefront. The normal website keeps its Stripe checkout; the native companion mode intentionally does not expose that web checkout.
 
 ## Free install path
 
