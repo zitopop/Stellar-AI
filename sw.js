@@ -1,5 +1,5 @@
 // Stellar AI service worker — clean landing cache, Google sign-in UI patch, offline support and push notifications.
-const SW_VERSION = 'stellar-sw-2026-09-29-clean-landing-google-v1';
+const SW_VERSION = 'stellar-sw-2026-10-05-native-auth-v2';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -183,9 +183,8 @@ async function patchAppNavigationResponse(request, response) {
   const type = response.headers.get('Content-Type') || '';
   if (!type.toLowerCase().includes('text/html')) return response;
   let html = await response.text();
-  const injection = `${simpleWorkspaceLayer()}\n${googleSignInPatch()}`;
   if (!html.includes('stellar-simple-workspace-v2')) html = html.replace('</head>', `${simpleWorkspaceLayer()}\n</head>`);
-  if (!html.includes('stellar-google-signin-ui-v1')) html = html.replace('</body>', `${googleSignInPatch()}\n</body>`);
+  // Google sign-in is owned by app.html. Do not inject a second auth UI from the service worker.
   const headers = new Headers(response.headers);
   headers.set('Content-Type', 'text/html; charset=utf-8');
   headers.set('Cache-Control', 'no-store');
