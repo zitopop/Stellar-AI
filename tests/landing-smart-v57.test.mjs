@@ -21,8 +21,8 @@ test('v57 puts concrete tools directly after the hero', () => {
 });
 
 test('v57 uses a benefit-led hero and two clear actions', () => {
-  assert.match(home, /Prompt → code → error fix, without switching tools\./);
-  assert.match(home, /Generate your first script/);
+  assert.match(home, /QBCore · ESX · ox_lib · Roblox Luau/);
+  assert.match(home, /Start coding free/);
   assert.match(home, /See it in action/);
   assert.match(home, /class="stellar-showcase-cta"/);
 });
