@@ -6,7 +6,7 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-premium-v53.css', import.meta.url), 'utf8');
 
 test('premium landing v53 uses a concrete hero and one clear conversion path', () => {
-  assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
+  assert.match(home, /Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span>/);
   assert.match(home, /Generate secure QBCore, ESX, ox_lib and Roblox Luau/);
   assert.match(home, /Try 3 code previews free · no card required/);
   assert.match(home, /class="oa2-primary-action">Try Stellar free/);
