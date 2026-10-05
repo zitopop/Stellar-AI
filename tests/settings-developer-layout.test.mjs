@@ -9,7 +9,7 @@ const oauth = fs.readFileSync(new URL('../api/discord-oauth.js', import.meta.url
 const apiKeys = fs.readFileSync(new URL('../lib/api-keys.js', import.meta.url), 'utf8');
 
 test('Settings uses four simple product sections', () => {
-  for (const label of ['General','Models &amp; Tools','Billing','Account']) assert.match(app, new RegExp('>'+label+'<'));
+  for (const label of ['General','Models &amp; tools','Plan','Account']) assert.match(app, new RegExp('>'+label+'<'));
   assert.match(css, /width:min\(820px,calc\(100vw - 32px\)\)/);
   assert.match(css, /grid-template-columns:178px minmax\(0,1fr\)/);
   assert.match(css, /min-height:44px/);
