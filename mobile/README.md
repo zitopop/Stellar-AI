@@ -38,3 +38,12 @@ For public store builds, keep digital-subscription billing aligned with the rule
 ## Free install path
 
 The production website remains installable as a PWA from a supported browser without an App Store or Play Store developer account.
+
+
+## Android Assist Mode
+
+The Android build includes an optional user-controlled AccessibilityService bridge. It is intentionally limited to one explicit action per user command: read a sanitized visible-UI snapshot, tap matching visible text, type into a non-password field, scroll, Back, or Home.
+
+Password fields are redacted and Android permission, installer, credential and system-UI surfaces are blocked. Screen details stay local unless the user explicitly chooses **Ask Stellar about this screen**. Enabling the service always requires the user to open Android Accessibility settings and switch Stellar AI on manually.
+
+Do not describe this as autonomous background phone control. Keep the disclosure, affirmative consent and one-action-at-a-time approval model for Play review and user safety.
