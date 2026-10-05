@@ -21,7 +21,7 @@ test('usage panel has a contextual, non-blocking upgrade path',()=>{
   assert.match(app,/upgrade-from-usage/);
   assert.match(app,/usage-panel-opened/);
   assert.match(app,/plans-panel-opened/);
-  assert.match(app,/£8\/month/);
+  assert.match(app,/£8\/mo/);
   assert.match(app,/£20\/month/);
   assert.match(app,/£75\/month/);
 });

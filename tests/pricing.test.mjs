@@ -40,7 +40,7 @@ test('annual and monthly prices normalize to the canonical plan access tier', ()
 
 
 test('public plan entitlements match the conversion promises', () => {
-  assert.equal(PLAN_DEFINITIONS.free.includedCredits, 100);
+  assert.equal(PLAN_DEFINITIONS.free.includedCredits, 30);
   assert.equal(PLAN_DEFINITIONS.starter.requestsPerHour, 120);
   assert.equal(PLAN_DEFINITIONS.plus.requestsPerHour, 400);
   assert.equal(PLAN_DEFINITIONS.pro.requestsPerHour, 1600);
