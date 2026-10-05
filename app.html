@@ -865,6 +865,7 @@ async function mobileControlPerform(action){
   const value=String($('mobile-control-value')?.value||'');
   if(action==='clickText'&&!target){setStatus('Enter the visible text you want to tap.','warn');return}
   if(action==='setText'&&!value){setStatus('Enter the text you want Stellar to type.','warn');return}
+  if(action==='clickText'&&!confirm('Tap the visible control matching “'+target.slice(0,160)+'”?'))return;
   if(action==='setText'&&!confirm('Type this text into the selected visible field?\\n\\n'+value.slice(0,240)))return;
   try{
     const result=await plugin.perform({action,target,value});
