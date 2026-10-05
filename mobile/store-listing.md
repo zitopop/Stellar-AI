@@ -53,3 +53,10 @@ Do not submit these blindly. Confirm them in each console against the current Pr
 - any file or image upload declarations;
 - account deletion instructions;
 - trader / business verification details.
+
+
+## Android Phone Assist Mode disclosure draft
+
+The Android build can offer an optional Phone Assist Mode. When the user explicitly enables Stellar Assist Mode in Android Accessibility settings, Stellar can read visible interface labels/structure and perform a single user-requested tap, text-entry, scroll, Back or Home action. Password fields are not read and editable field contents are redacted. Screen summaries are not sent to Stellar AI unless the user explicitly chooses **Add this screen to Stellar chat**.
+
+Phone Assist Mode is not an accessibility tool for disability support and must not be represented as one. Before Google Play submission, complete the AccessibilityService declaration, provide the required prominent in-app disclosure/consent flow and review the final Data Safety answers against production behavior.
