@@ -7,7 +7,7 @@ const discord=readFileSync(new URL('../api/discord-oauth.js',import.meta.url),'u
 
 test('dashboard exposes a dedicated broken-code and error-log debug mode',()=>{
   assert.match(app,/data-composer-mode="general"/);
-  assert.match(app,/data-composer-mode="debug">Paste Broken Code \/ Error Log/);
+  assert.match(app,/data-composer-mode="debug">Debug code/);
   assert.match(app,/DEBUG_MODE_INSTRUCTION/);
   assert.match(app,/QBCore\/ESX\/ox_lib/);
   assert.match(app,/Roblox Luau/);
