@@ -40,12 +40,22 @@
   <div class="kicker">Apps & tools</div>
   <h1>Your apps. One clean workspace.</h1>
   <p>Use Stellar instantly, then connect the accounts you actually need. Every connection shows its status, permissions and next action in one place.</p>
-  <div class="hero-actions"><a class="btn primary" href="#connections">Manage connections</a><a class="btn" href="#browse-tools">Browse built-in tools</a></div>
+  <div class="hero-actions"><a class="btn primary" href="#directory">Discover plugins</a><a class="btn" href="#connections">Installed & connected</a></div>
 </section>
 
 <section class="explain" aria-label="How apps and tools work">
   <article><small><span class="dot good"></span>BUILT IN</small><strong>Works straight away</strong><p>No setup. Open the tool and use it.</p></article>
   <article><small><span class="dot connect"></span>CONNECTED APPS</small><strong>You approve access</strong><p>Connect only when you want Stellar to use one of your accounts.</p></article>
+</section>
+
+<section class="section" id="directory">
+  <div class="section-head"><div><h2>Discover plugins</h2><p>Install focused workflows, then connect only the accounts they need. Plugins can combine Stellar skills with supported apps without turning your chat into a settings screen.</p></div><span class="right">Built for Stellar</span></div>
+  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search plugins…" aria-label="Search plugins"></div><span class="tool-count">Featured</span></div>
+  <div class="grid" id="plugin-directory">
+    <article class="tool-card" data-directory-plugin data-search="developer fivem roblox github code debug scripts"><div class="tool-top"><div class="ico">⌘</div><span class="status ready">Featured</span></div><h3>Developer</h3><p>Generate, debug and review FiveM, Roblox and web code with a developer-focused Stellar workflow.</p><div class="skills"><span>Code generation & debugging</span><span>GitHub-ready workflow</span><span>FiveM + Roblox context</span></div><div class="card-actions"><a class="btn primary" href="/app?prompt=Use%20the%20Developer%20workflow%20to%20help%20with%20my%20code.">Use plugin</a></div></article>
+    <article class="tool-card" data-directory-plugin data-search="business gmail email website leads payments"><div class="tool-top"><div class="ico">✦</div><span class="status ready">Featured</span></div><h3>Business Ops</h3><p>Turn business requests into structured website, inbox and customer workflows with approval where it matters.</p><div class="skills"><span>Website workflow</span><span>Inbox-ready actions</span><span>Approval-first operations</span></div><div class="card-actions"><a class="btn primary" href="/app?prompt=Use%20the%20Business%20Ops%20workflow%20to%20help%20with%20my%20business.">Use plugin</a></div></article>
+    <article class="tool-card" data-directory-plugin data-search="files documents pdf research writing"><div class="tool-top"><div class="ico">▣</div><span class="status ready">Built in</span></div><h3>Documents</h3><p>Work across uploaded files with a focused workflow for summarising, comparing, rewriting and extracting next steps.</p><div class="skills"><span>Summarise & compare</span><span>Rewrite documents</span><span>Extract actions</span></div><div class="card-actions"><a class="btn primary" href="/app?prompt=Use%20the%20Documents%20workflow%20with%20my%20files.">Use plugin</a></div></article>
+  </div>
 </section>
 
 <section class="section" id="connections">
@@ -77,6 +87,8 @@
 </main>
 
 <script>
+const directorySearch=document.getElementById('directory-search'),directoryCards=[...document.querySelectorAll('[data-directory-plugin]')];
+directorySearch?.addEventListener('input',()=>{const q=directorySearch.value.trim().toLowerCase();directoryCards.forEach(card=>card.classList.toggle('browse-hidden',!!q&&!((card.dataset.search+' '+card.textContent).toLowerCase().includes(q))))});
 const connectionCount=document.getElementById('connection-count');
 const accountGrid=document.getElementById('plugin-account-grid');
 const accountStatus=document.getElementById('plugin-account-status');
