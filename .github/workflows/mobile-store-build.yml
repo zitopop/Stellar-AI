@@ -1,0 +1,95 @@
+name: Mobile Store Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install mobile dependencies
+        run: npm install --no-audit --no-fund
+      - name: Create Android project
+        run: npm run add:android
+      - name: Sync Capacitor
+        run: npm run sync
+      - name: Build debug APK
+        run: cd android && ./gradlew assembleDebug
+      - name: Build release bundle
+        run: cd android && ./gradlew bundleRelease
+      - name: Sign release bundle when upload-key secrets exist
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > stellar-upload.jks
+          KEY_PASS="${ANDROID_KEY_PASSWORD:-$ANDROID_KEYSTORE_PASSWORD}"
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore stellar-upload.jks \
+            -storepass "$ANDROID_KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASS" \
+            -signedjar android/app/build/outputs/bundle/release/StellarAI-release.aab \
+            android/app/build/outputs/bundle/release/app-release.aab "$ANDROID_KEY_ALIAS"
+      - name: Upload Android QA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stellar-android-qa
+          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload Android store bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: stellar-android-store
+          path: |
+            mobile/android/app/build/outputs/bundle/release/StellarAI-release.aab
+            mobile/android/app/build/outputs/bundle/release/app-release.aab
+
+  ios-simulator:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install mobile dependencies
+        run: npm install --no-audit --no-fund
+      - name: Create iOS project
+        run: npm run add:ios
+      - name: Sync Capacitor
+        run: npm run sync
+      - name: Build iOS simulator app
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build-ios \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+      - name: Upload iOS simulator build
+        uses: actions/upload-artifact@v4
+        with:
+          name: stellar-ios-simulator
+          path: mobile/build-ios/Build/Products/Debug-iphonesimulator/App.app
