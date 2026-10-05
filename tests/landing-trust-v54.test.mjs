@@ -6,10 +6,10 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-trust-v54.css', import.meta.url), 'utf8');
 
 test('landing leads with a specific FiveM and Roblox value proposition', () => {
-  assert.match(home, /AI FOR FIVEM \+ ROBLOX DEVELOPERS/);
-  assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
-  assert.match(home, /QBCore, ESX, ox_lib and Roblox Luau/);
-  assert.match(home, /See code demo/);
+  assert.match(home, /STELLAR AI · FIVEM \+ ROBLOX/);
+  assert.match(home, /Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span>/);
+  assert.match(home, /QBCore · ESX · ox_lib · Roblox Luau/);
+  assert.match(home, /See it in action/);
 });
 
 test('hero makes pricing and buyer protections visible without a second click', () => {
