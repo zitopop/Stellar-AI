@@ -1,0 +1,188 @@
+/* Stellar auth v51 — focused sign-in surface. */
+.panel-backdrop.auth-open{
+  padding:24px!important;
+  background:#212121!important;
+  backdrop-filter:none!important;
+}
+#panel.auth-panel{
+  width:min(430px,calc(100vw - 32px))!important;
+  max-height:min(760px,calc(100dvh - 48px))!important;
+  overflow:auto!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:22px!important;
+  background:#171717!important;
+  box-shadow:0 24px 80px rgba(0,0,0,.42)!important;
+}
+#panel.auth-panel .panel-head{
+  position:relative!important;
+  display:block!important;
+  padding:32px 56px 8px!important;
+  border-bottom:0!important;
+  background:#171717!important;
+  text-align:center!important;
+  backdrop-filter:none!important;
+}
+#panel.auth-panel .panel-head>div{max-width:330px!important;margin:0 auto!important}
+#panel.auth-panel #panelTitle{
+  margin:0!important;color:#f4f4f5!important;font-size:25px!important;line-height:1.2!important;
+  font-weight:650!important;letter-spacing:-.035em!important;
+}
+#panel.auth-panel #panelIntro{
+  margin:9px 0 0!important;color:#96969d!important;font-size:13px!important;line-height:1.5!important;
+}
+#panel.auth-panel .close{
+  position:absolute!important;top:12px!important;right:12px!important;width:40px!important;height:40px!important;
+  min-width:40px!important;min-height:40px!important;border-radius:10px!important;background:transparent!important;color:#8d8d93!important;
+}
+#panel.auth-panel .close:hover,#panel.auth-panel .close:focus-visible{background:#242424!important;color:#fff!important}
+#panel.auth-panel .panel-body{padding:18px 28px 28px!important}
+.stellar-auth-shell{display:grid!important;gap:16px!important}
+.stellar-auth-mark{
+  width:38px!important;height:38px!important;display:grid!important;place-items:center!important;margin:0 auto 2px!important;
+  border:1px solid rgba(255,255,255,.11)!important;border-radius:12px!important;background:#202020!important;color:#f3f3f4!important;
+  font-size:17px!important;box-shadow:none!important;
+}
+.stellar-auth-provider-stack{display:grid!important;gap:9px!important}
+.auth-provider{
+  width:100%!important;min-height:50px!important;display:grid!important;grid-template-columns:26px minmax(0,1fr) 26px!important;
+  align-items:center!important;padding:0 14px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important;
+  background:#242424!important;color:#f2f2f3!important;text-align:center!important;font-size:13px!important;font-weight:650!important;
+  cursor:pointer!important;box-shadow:none!important;
+}
+.auth-provider::after{content:""!important;width:26px!important}
+.auth-provider:hover,.auth-provider:focus-visible{border-color:rgba(255,255,255,.20)!important;background:#2b2b2b!important;outline:none!important}
+.auth-provider-discord{border-color:rgba(88,101,242,.38)!important;background:#5865f2!important;color:#fff!important}
+.auth-provider-discord:hover,.auth-provider-discord:focus-visible{background:#6672f3!important;border-color:#7480ff!important}
+.auth-provider-icon{display:grid!important;place-items:center!important;width:26px!important;height:26px!important;font-size:13px!important;font-weight:800!important}
+.google-render{
+  width:100%!important;min-height:50px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  overflow:hidden!important;border-radius:12px!important;
+}
+.google-render>div,.google-render iframe{max-width:100%!important}
+.google-fallback[hidden]{display:none!important}
+/* Hide the retired service-worker injected Google box even for visitors with an older cached worker. */
+#stellar-google-signin-box,.stellar-google-box{display:none!important}
+.auth-divider{
+  display:flex!important;align-items:center!important;gap:12px!important;margin:1px 0!important;color:#77777e!important;
+  font-size:10px!important;font-weight:650!important;letter-spacing:0!important;text-transform:none!important;
+}
+.auth-divider::before,.auth-divider::after{content:""!important;height:1px!important;flex:1!important;background:rgba(255,255,255,.08)!important}
+.auth-email-card{display:grid!important;gap:12px!important}
+.auth-email-card .field{gap:6px!important;margin:0!important}
+.auth-email-card .field label{color:#b9b9be!important;font-size:11.5px!important;font-weight:600!important}
+.auth-email-card .field input{
+  width:100%!important;min-height:50px!important;padding:0 13px!important;border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:12px!important;background:#101010!important;color:#f3f3f4!important;font-size:14px!important;outline:none!important;box-shadow:none!important;
+}
+.auth-email-card .field input::placeholder{color:#6f6f75!important}
+.auth-email-card .field input:focus{border-color:rgba(255,255,255,.28)!important;box-shadow:0 0 0 2px rgba(255,255,255,.035)!important}
+.auth-email-submit{
+  width:100%!important;min-height:50px!important;margin-top:1px!important;border-radius:12px!important;background:#f4f4f4!important;
+  color:#111!important;font-size:13px!important;font-weight:700!important;
+}
+.auth-email-submit:hover,.auth-email-submit:focus-visible{background:#fff!important;color:#111!important}
+.auth-create-copy{margin:0!important;color:#8b8b91!important;text-align:center!important;font-size:12px!important}
+.auth-text-action{
+  min-height:36px!important;padding:0 5px!important;border:0!important;background:transparent!important;color:#d9d9dd!important;
+  font-size:12px!important;font-weight:650!important;cursor:pointer!important;
+}
+.auth-text-action:hover,.auth-text-action:focus-visible{color:#fff!important;text-decoration:underline!important;text-underline-offset:3px!important;outline:none!important}
+#panel.auth-panel .settings-auth-note{
+  margin:0!important;padding-top:2px!important;color:#737379!important;text-align:center!important;font-size:10.5px!important;line-height:1.55!important;
+}
+#panel.auth-panel .settings-auth-note a{color:#a9a9ae!important;text-decoration:underline!important;text-underline-offset:2px!important}
+
+body.light .panel-backdrop.auth-open{background:#fff!important}
+body.light #panel.auth-panel{background:#fff!important;border-color:#dedede!important}
+body.light #panel.auth-panel .panel-head{background:#fff!important}
+body.light #panel.auth-panel #panelTitle{color:#202123!important}
+body.light .stellar-auth-mark{background:#f5f5f5!important;color:#202123!important;border-color:#ddd!important}
+body.light .auth-provider:not(.auth-provider-discord){background:#fff!important;color:#202123!important;border-color:#d4d4d4!important}
+body.light .auth-email-card .field input{background:#fff!important;color:#202123!important;border-color:#d4d4d4!important}
+
+@media(max-width:540px){
+  .panel-backdrop.auth-open{align-items:center!important;padding:12px!important}
+  #panel.auth-panel{
+    width:100%!important;max-height:calc(100dvh - 24px)!important;border-radius:20px!important;
+    border-bottom:1px solid rgba(255,255,255,.10)!important;
+  }
+  #panel.auth-panel .panel-head{padding:28px 50px 6px!important}
+  #panel.auth-panel .panel-body{padding:16px 18px max(22px,calc(16px + env(safe-area-inset-bottom)))!important}
+  .auth-provider,.auth-email-submit,.auth-email-card .field input{min-height:52px!important}
+}
+
+
+/* v52 — clearer sign-in/create-account states and better form ergonomics. */
+#panel.auth-panel .panel-head{padding-top:28px!important}
+.stellar-auth-brand{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  margin:0 auto 2px!important;
+  color:#f4f4f5!important;
+  font-size:14px!important;
+  font-weight:720!important;
+  letter-spacing:-.025em!important;
+}
+.stellar-auth-brand>span:last-child>span{color:#9a9aa1!important;font-weight:650!important}
+.stellar-auth-brand .stellar-auth-mark{
+  width:34px!important;
+  height:34px!important;
+  margin:0!important;
+  border-radius:11px!important;
+}
+.auth-free-strip{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:center!important;
+  gap:6px!important;
+  margin-top:-3px!important;
+}
+.auth-free-strip span{
+  min-height:28px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 9px!important;
+  border:1px solid rgba(255,255,255,.085)!important;
+  border-radius:999px!important;
+  background:#1d1d1d!important;
+  color:#929298!important;
+  font-size:9.5px!important;
+  font-weight:620!important;
+}
+.auth-password-wrap{
+  position:relative!important;
+  display:grid!important;
+}
+.auth-password-wrap input{
+  padding-right:64px!important;
+}
+.auth-password-toggle{
+  position:absolute!important;
+  right:6px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  min-width:48px!important;
+  min-height:36px!important;
+  padding:0 8px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#96969c!important;
+  font-size:11px!important;
+  font-weight:650!important;
+  cursor:pointer!important;
+}
+.auth-password-toggle:hover,.auth-password-toggle:focus-visible{
+  background:#242424!important;
+  color:#fff!important;
+  outline:none!important;
+}
+.auth-email-submit{transition:transform .12s ease,background .12s ease!important}
+.auth-email-submit:active{transform:scale(.992)!important}
+#panel.auth-panel .settings-auth-note{max-width:330px!important;margin-inline:auto!important}
+@media(max-width:540px){
+  .auth-free-strip{gap:5px!important}
+  .auth-free-strip span{font-size:9px!important;padding-inline:8px!important}
+}
