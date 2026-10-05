@@ -6,20 +6,19 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-trust-v54.css', import.meta.url), 'utf8');
 
 test('landing leads with a specific FiveM and Roblox value proposition', () => {
-  assert.match(home, /STELLAR AI · GAME DEVELOPMENT WORKSPACE/);
-  assert.match(home, /Build game scripts faster\.<br><span>Debug them before they ship\.<\/span>/);
-  assert.match(home, /QBCore, ESX, ox_lib and Luau code/);
-  assert.match(home, /See the workflow/);
+  assert.match(home, /STELLAR AI · FIVEM \+ ROBLOX/);
+  assert.match(home, /Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span>/);
+  assert.match(home, /QBCore · ESX · ox_lib · Roblox Luau/);
+  assert.match(home, /See it in action/);
 });
 
 test('hero makes pricing and buyer protections visible without a second click', () => {
-  assert.match(home, /3 previews free/);
-  assert.match(home, /No card required/);
+  assert.match(home, /Free · no card/);
   assert.match(home, /Starter £8\/mo/);
   assert.match(home, /Secure Stripe checkout/);
-  assert.match(home, /href="\/refunds">Clear refund policy/);
-  assert.match(home, /£8 Starter · 120 req\/hr/);
-  assert.match(home, /£20 Plus · 400 req\/hr/);
+  assert.match(home, /href="\/refunds">Refund policy/);
+  assert.match(home, /Daily allowance · up to 30 requests\/hour/);
+  assert.match(home, /Higher monthly allowance · up to 120 requests\/hour/);
 });
 
 test('trust layer uses verifiable product evidence instead of invented social proof', () => {
@@ -58,6 +57,7 @@ test('trust layout is responsive and restrained', () => {
   assert.match(css, /@media\(max-width:700px\)/);
   assert.match(css, /prefers-reduced-motion:reduce/);
 });
+
 
 test('developer pricing appears before the separate business toolkit', () => {
   const pricing = home.indexOf('<section class="section container pricing-section');
