@@ -37,8 +37,11 @@ test('native mobile shell uses current Capacitor 8 and an HTTPS production origi
   assert.match(mobileConfig, /cleartext: false/);
 });
 
-test('mobile release notes protect against premature store submission', () => {
-  assert.match(mobileReadme, /Do not submit the current remote-web test shell directly to App Store production/);
-  assert.match(mobileReadme, /Apple requires apps to provide value beyond a repackaged website/);
-  assert.match(mobileReadme, /Web Stripe checkout must not simply be assumed to be acceptable/);
+test('mobile release notes and runtime protect store testing', () => {
+  assert.equal(mobilePackage.dependencies['@capacitor/share'], '^8.0.0');
+  assert.match(mobileReadme, /public App Store submission should follow real-device QA and TestFlight testing/);
+  assert.match(mobileReadme, /native companion mode intentionally does not expose that web checkout/);
+  assert.match(app, /const NATIVE_SHELL=/);
+  assert.match(app, /Purchases are not offered in this mobile build/);
+  assert.match(app, /data-message-action="share"/);
 });
