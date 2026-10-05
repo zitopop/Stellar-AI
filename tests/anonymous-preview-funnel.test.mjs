@@ -20,23 +20,23 @@ test('anonymous preview helpers constrain input and detect supported stacks', ()
   assert.equal(stripCodeFences('```lua\nprint("ok")\n```'), 'print("ok")');
 });
 
-test('homepage offers exactly one anonymous preview path before account gating', () => {
+test('homepage offers three anonymous previews before account gating', () => {
   assert.match(home, /id="anonymous-preview-form"/);
   assert.match(home, /id="anonymous-preview-prompt"/);
   assert.match(home, /id="anonymous-preview-result"/);
   assert.match(homepageRuntime, /fetch\('\/api\/preview'/);
-  assert.match(homepageRuntime, /stellar-anonymous-preview-used-v1/);
+  assert.match(homepageRuntime, /stellar-anonymous-preview-count-v2/);
   assert.match(homepageRuntime, /auth.*preview/);
-  assert.match(homepageRuntime, /Preview used · open the full chat to continue\./);
+  assert.match(homepageRuntime, /3 free previews used today · open the full chat to continue\./);
 });
 
-test('preview endpoint is server-only, capped and fails closed without usage storage', () => {
+test('preview endpoint is server-only, counted and fails closed without usage storage', () => {
   assert.match(previewApi, /KV_REST_API_URL/);
-  assert.match(previewApi, /\['SET', deviceKey, '1', 'NX', 'EX', PREVIEW_TTL_SECONDS\]/);
-  assert.match(previewApi, /IP_PREVIEW_LIMIT = 5/);
+  assert.match(previewApi, /\['INCR', deviceKey\]/);
+  assert.match(previewApi, /DEVICE_PREVIEW_LIMIT = 3/);\n  assert.match(previewApi, /IP_PREVIEW_LIMIT = 15/);
   assert.match(previewApi, /Cache-Control', 'no-store/);
   assert.match(previewApi, /max_completion_tokens: 850/);
-  assert.match(previewApi, /ANON_PREVIEW_USED/);
+  assert.match(previewApi, /previewsRemaining:/);\n  assert.match(previewApi, /ANON_PREVIEW_USED/);
 });
 
 test('preview gate cannot be bypassed by closing the sign-in panel in the app', () => {
@@ -45,11 +45,11 @@ test('preview gate cannot be bypassed by closing the sign-in panel in the app', 
   assert.match(app, /Create a free account to download the preview or generate another/);
 });
 
-test('downloadable code carries Stellar attribution while anonymous preview download stays gated', () => {
+test('downloadable code carries Stellar attribution and anonymous preview download works in place', () => {
   const watermark = /Generated with Stellar AI.*https:\/\/trystellarai\.com/;
   assert.match(app, watermark);
   assert.match(home, watermark);
   assert.match(builder, watermark);
   assert.match(homepageRuntime, /anonymous-preview-download/);
-  assert.match(homepageRuntime, /gateToAccount/);
+  assert.match(homepageRuntime, /link\\.download = currentFilename/);\n  assert.match(previewApi, /requiresAccountForDownload: false/);
 });
