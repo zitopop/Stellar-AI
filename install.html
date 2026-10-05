@@ -70,6 +70,7 @@
 
     <p class="fineprint">This free route installs the Stellar AI progressive web app; it does not place Stellar in Apple’s App Store or Google Play. Store listings can be added later when the native build and store requirements are ready. <a href="/terms">Terms</a> and <a href="/privacy">Privacy</a>.</p>
   </main>
+  <script src="/lib/assets/telemetry.js?v=20261005-install-funnel"></script>
   <script>
     (() => {
       const button = document.getElementById('install-button');
@@ -103,6 +104,7 @@
       });
 
       button.addEventListener('click', async () => {
+        window.StellarTelemetry?.track?.('install-cta');
         if (standalone) return;
         if (deferredPrompt) {
           deferredPrompt.prompt();
@@ -122,6 +124,7 @@
       });
 
       window.addEventListener('appinstalled', () => {
+        window.StellarTelemetry?.track?.('install-completed');
         button.textContent = 'Stellar AI is installed';
         button.disabled = true;
         show('Installed. You can now launch Stellar AI from your Home Screen.');
