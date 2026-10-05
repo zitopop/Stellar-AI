@@ -418,26 +418,8 @@ export default async function handler(req, res) {
     if (plan === 'website-audit') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        payment_method_types: ['card'],
         billing_address_collection: 'auto',
         customer_creation: 'always',
-        name_collection: { business: { enabled: true, optional: false } },
-        custom_fields: [
-          {
-            key: 'website',
-            label: { type: 'custom', custom: 'Business website URL' },
-            type: 'text',
-            optional: false,
-            text: { minimum_length: 4, maximum_length: 200 },
-          },
-          {
-            key: 'mainissue',
-            label: { type: 'custom', custom: 'Main website issue to fix' },
-            type: 'text',
-            optional: false,
-            text: { minimum_length: 3, maximum_length: 200 },
-          },
-        ],
         line_items: [{
           price_data: {
             currency: 'gbp',
@@ -457,6 +439,8 @@ export default async function handler(req, res) {
           service: 'website_mini_audit',
           stage: 'live',
           acquisition_source: sourceName,
+          checkout_experience: 'dynamic_payment_methods',
+          post_purchase_onboarding: 'required',
         },
       }, { idempotencyKey: 'stellar_business_audit_' + crypto.randomUUID() });
       await Promise.all([
@@ -470,40 +454,10 @@ export default async function handler(req, res) {
     if (plan === 'ai-receptionist') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        payment_method_types: ['card'],
         billing_address_collection: 'auto',
-        name_collection: { business: { enabled: true, optional: false } },
-        custom_fields: [
-          {
-            key: 'website',
-            label: { type: 'custom', custom: 'Business website or social page' },
-            type: 'text',
-            optional: true,
-            text: { maximum_length: 200 },
-          },
-          {
-            key: 'businessfacts',
-            label: { type: 'custom', custom: 'Services, hours, prices + booking link' },
-            type: 'text',
-            optional: false,
-            text: { maximum_length: 255 },
-          },
-          {
-            key: 'customdomain',
-            label: { type: 'custom', custom: 'Domain option' },
-            type: 'dropdown',
-            optional: false,
-            dropdown: {
-              options: [
-                { label: 'Use included receptionist URL', value: 'no' },
-                { label: 'Use my existing domain (DNS needed)', value: 'existing' },
-              ],
-            },
-          },
-        ],
         custom_text: {
           submit: {
-            message: '£150 setup + £49/month. Standard receptionist URL included. Existing-domain setup requires authorised DNS access. By paying, you agree to the Stellar AI Business Services Terms and acknowledge the Privacy Notice and Refund & Cancellation Policy on trystellarai.com.',
+            message: '£150 setup + £49/month. After payment, Stellar securely collects your business details and domain choice before activation. By paying, you agree to the Stellar AI Business Services Terms and acknowledge the Privacy Notice and Refund & Cancellation Policy on trystellarai.com.',
           },
         },
         line_items: [
@@ -518,6 +472,8 @@ export default async function handler(req, res) {
           service: 'ai_receptionist',
           stage: 'live',
           acquisition_source: sourceName,
+          checkout_experience: 'dynamic_payment_methods',
+          post_purchase_onboarding: 'required',
         },
         subscription_data: {
           metadata: {
@@ -593,136 +549,6 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'server-pass' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        // Temporary safety guard: the live Stripe webhook is not yet subscribed to async Checkout events.
-        // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
-        payment_method_types: ['card'],
-        phone_number_collection: { enabled: false },
-        ...checkoutCustomer,
-        line_items: [{
-          price_data: {
-            currency: 'gbp',
-            unit_amount: 5000,
-            recurring: { interval: 'month', interval_count: 1 },
-            product_data: {
-              name: 'Stellar AI Server Pass',
-              description: 'Team access for one verified FiveM server or Roblox studio, including shared Discord debugging and priority developer support. Provider capacity, safety and abuse controls still apply.',
-            },
-          },
-          quantity: 1,
-        }],
-        success_url: 'https://trystellarai.com/server-pass?payment=success&session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: `https://trystellarai.com/server-pass?payment=cancelled&attempt=${encodeURIComponent(attemptId)}`,
-        after_expiration: { recovery: { enabled: true } },
-        client_reference_id: attemptId,
-        metadata: {
-          app: 'stellar-ai',
-          email: sessionUser.email,
-          plan: 'server-pass',
-          amount: '5000',
-          country,
-          currency,
-          acquisition_source: sourceName,
-        },
-        subscription_data: {
-          metadata: {
-            app: 'stellar-ai',
-            email: sessionUser.email,
-            plan: 'server-pass',
-            acquisition_source: sourceName,
-          },
-        },
-        adaptive_pricing: { enabled: true },
-      }, { idempotencyKey: checkoutIdempotencyKey(sessionUser.email, 'server-pass') });
-      if (newAttempt) await Promise.all([
-        incrementConversionMetric('checkout-started'),
-        incrementConversionMetric(`checkout-started-source-${sourceName}`),
-        incrementConversionMetric('server-pass-checkout-started'),
-      ]);
-      return res.status(200).json({ url: checkout.url });
-    }
-
-    if (plan === 'website-builder') {
-      const attemptId = checkoutIdempotencyKey(sessionUser.email, 'website-builder');
-      const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
-      const checkout = await stripe.checkout.sessions.create({
-        mode: 'payment',
-        // Keep one-time fulfillment synchronous until async Checkout webhook delivery is enabled live.
-        // Use the standard card flow and do not collect a phone number at Checkout.
-        payment_method_types: ['card'],
-        phone_number_collection: { enabled: false },
-        ...checkoutCustomer,
-        line_items: [{
-          price_data: {
-            currency: 'gbp',
-            unit_amount: 9900,
-            product_data: {
-              name: 'Stellar AI Business Website Package',
-              description: 'One-time access to the Stellar AI Business Website Builder for an approved business website project, including AI generation, preview, refinement and HTML download.',
-            },
-          },
-          quantity: 1,
-        }],
-        success_url: 'https://trystellarai.com/business-builder?payment=success&session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: `https://trystellarai.com/business-builder?payment=cancelled&attempt=${encodeURIComponent(attemptId)}`,
-        after_expiration: { recovery: { enabled: true } },
-        client_reference_id: attemptId,
-        metadata: {
-          app: 'stellar-ai',
-          email: sessionUser.email,
-          plan: 'website-builder',
-          amount: '9900',
-          country,
-          currency,
-          acquisition_source: sourceName,
-        },
-        payment_intent_data: {
-          metadata: {
-            app: 'stellar-ai',
-            email: sessionUser.email,
-            plan: 'website-builder',
-            amount: '9900',
-          },
-        },
-      }, { idempotencyKey: checkoutIdempotencyKey(sessionUser.email, 'website-builder') });
-      if (newAttempt) await Promise.all([
-        incrementConversionMetric('checkout-started'),
-        incrementConversionMetric(`checkout-started-source-${sourceName}`),
-      ]);
-      return res.status(200).json({ url: checkout.url });
-    }
-
-    if (plan === 'topup') {
-      return res.status(410).json({ error: 'Usage top-ups are no longer sold. Choose a plan with the usage capacity you need.' });
-    }
-
-    // Never create a second recurring subscription for an account that already has one.
-    // Existing paid customers change tier inside the Stripe Billing Portal, where
-    // only the live Stellar Starter/Plus/Pro prices are offered.
-    const existingSubscriptionId = String(accountUser?.stripeSubscriptionId || '').trim();
-    if (isPaidPlan(accountUser?.plan) && /^sub_[A-Za-z0-9]+$/.test(existingSubscriptionId)) {
-      return res.status(409).json({
-        error: 'This account already has an active Stellar subscription. Continue in Manage billing to change plan.',
-        code: 'ACTIVE_SUBSCRIPTION_EXISTS',
-        manageBilling: true,
-      });
-    }
-
-    // Price IDs are server-owned. Historic Plus aliases remain supported, but a
-    // missing Starter ID must never silently charge a Plus or Pro price.
-    // Production GBP checkout is pinned to the exact live Stripe prices advertised
-    // on /plans. Environment aliases remain a compatibility fallback for non-live
-    // deployments, but cannot silently switch a customer onto an old GBP price.
-    const price = liveSubscriptionPriceForPlan(plan, currency)
-      || subscriptionPriceForPlan(plan, process.env, currency);
-    if (!price) return res.status(400).json({ error: missingPlanMessage(plan), code: 'PLAN_PRICE_NOT_CONFIGURED', country, currency });
-
-    const attemptId = checkoutIdempotencyKey(sessionUser.email, plan);
-    const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
-    const checkout = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      // Temporary safety guard: the live Stripe webhook is not yet subscribed to every async lifecycle event.
-      // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
-      payment_method_types: ['card'],
         phone_number_collection: { enabled: false },
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
