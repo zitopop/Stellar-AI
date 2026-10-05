@@ -106,7 +106,7 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 
 test('plugin directory stays calm while preserving real account connection controls', () => {
   assert.match(page, /Your connected apps/);
-  assert.match(page, /A plugin is simply an app/);
+  assert.match(page, /Built-in tools work straight away/);
   assert.match(page, /Permissions first\./);
   assert.match(page, /No passwords shared/);
   assert.match(page, /disconnect anytime/i);
@@ -128,8 +128,9 @@ test('plugins directory keeps touch-safe controls and visible tool icons', () =>
   assert.match(page, /\.btn\{min-height:44px/);
   assert.match(page, /\.ico\{width:46px;height:46px/);
   assert.match(page, /\.tool-card/);
-  assert.match(page, /WORKS NOW/);
-  assert.match(page, /COMING LATER/);
+  assert.match(page, /BUILT IN/);
+  assert.match(page, /CONNECTED APPS/);
+  assert.doesNotMatch(page, />COMING LATER</);
   assert.match(page, /Permissions/);
 });
 
