@@ -793,7 +793,7 @@ async function copyAssistantResponse(button){const wrap=button?.closest?.('.msg.
 async function shareAssistantResponse(button){const wrap=button?.closest?.('.msg.assistant');const text=wrap?.querySelector?.('.bubble')?.textContent?.trim()||'';if(!text)return;const share=window.Capacitor?.Plugins?.Share;if(!NATIVE_SHELL||!share?.share){setStatus('Sharing is available in the installed mobile app.','warn');return}try{await share.share({title:'Stellar AI',text,dialogTitle:'Share Stellar response'});setStatus('Share sheet opened','good')}catch(error){if(!/cancel/i.test(String(error?.message||error||'')))setStatus('Could not open share sheet','error')}}
 const MOBILE_CONTROL_CONSENT_KEY='stellar-mobile-control-consent-v1';
 let mobileControlLastSnapshot=null;
-function mobileControlPlugin(){return NATIVE_SHELL?window.Capacitor?.Plugins?.StellarControl:null}
+let mobileControlBridge=null;function mobileControlPlugin(){if(!NATIVE_SHELL)return null;if(mobileControlBridge)return mobileControlBridge;try{mobileControlBridge=window.Capacitor?.registerPlugin?.('StellarControl')||window.Capacitor?.Plugins?.StellarControl||null}catch{}return mobileControlBridge}
 function mobileControlConsent(){return safeStorageGet(MOBILE_CONTROL_CONSENT_KEY,'')==='yes'}
 function mobileControlSnapshotText(snapshot){
   const nodes=Array.isArray(snapshot?.nodes)?snapshot.nodes:[];
