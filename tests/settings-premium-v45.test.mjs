@@ -7,7 +7,7 @@ const css = readFileSync(new URL('../lib/assets/stellar-settings-premium-v45.css
 
 test('premium Settings stylesheet is loaded after the app styles', () => {
   assert.match(app, /stellar-settings-premium-v45\.css\?v=20261004-premium-settings/);
-  assert.match(app, /Preferences, AI tools, billing and account\./);
+  assert.match(app, /Preferences, tools, plan and account\./);
 });
 
 test('desktop Settings has a bounded premium two-column layout', () => {
