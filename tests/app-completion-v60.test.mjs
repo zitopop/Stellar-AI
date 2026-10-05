@@ -62,6 +62,14 @@ test('sign in is clear without blocking guest use', () => {
   assert.match(app, /Save chats, keep your plan synced, and continue on any device/);
 });
 
+test('pricing remains discoverable and model labels match the real default', () => {
+  assert.match(app, /#side-plan-button\{display:flex!important\}/);
+  assert.match(app, /#side-plan-button\[hidden\]\{display:none!important\}/);
+  assert.match(app, /sidePlanButton\.hidden=serverOwner/);
+  assert.match(app, /badge:'Core'/);
+  assert.doesNotMatch(app, /badge:'Default'/);
+});
+
 test('billing, plan gating and private owner tools stay server controlled', () => {
   assert.match(app, /function startPlanCheckout\(plan\)/);
   assert.match(app, /u\.hostname!=='checkout\.stripe\.com'/);
