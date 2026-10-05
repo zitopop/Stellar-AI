@@ -9,7 +9,8 @@ const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 
 const PREVIEW_TTL_SECONDS = 24 * 60 * 60;
-const IP_PREVIEW_LIMIT = 5;
+const DEVICE_PREVIEW_LIMIT = 3;
+const IP_PREVIEW_LIMIT = 15;
 const MAX_PROMPT_CHARS = 800;
 const MAX_OUTPUT_CHARS = 6000;
 const RETRYABLE_STATUSES = new Set([400, 404, 408, 409, 425, 429, 500, 502, 503, 504]);
@@ -119,29 +120,33 @@ async function reservePreview(ip, clientId, userAgent) {
   const deviceKey = `stellar:anon-preview:device:${deviceHash}`;
   const ipKey = `stellar:anon-preview:ip:${ipHash}`;
 
-  const reserved = await kvPipeline([['SET', deviceKey, '1', 'NX', 'EX', PREVIEW_TTL_SECONDS]]);
-  if (reserved?.[0]?.result !== 'OK') return { allowed: false, reason: 'used' };
-
   const counted = await kvPipeline([
+    ['INCR', deviceKey],
+    ['EXPIRE', deviceKey, PREVIEW_TTL_SECONDS],
     ['INCR', ipKey],
     ['EXPIRE', ipKey, PREVIEW_TTL_SECONDS],
   ]);
-  const ipCount = Number(counted?.[0]?.result);
-  if (!Number.isFinite(ipCount)) {
-    await kvPipeline([['DEL', deviceKey]]).catch(() => {});
+  const deviceCount = Number(counted?.[0]?.result);
+  const ipCount = Number(counted?.[2]?.result);
+  if (!Number.isFinite(deviceCount) || !Number.isFinite(ipCount)) {
+    await kvPipeline([['DECR', deviceKey], ['DECR', ipKey]]).catch(() => {});
     throw new Error('preview_storage_unavailable');
   }
+  if (deviceCount > DEVICE_PREVIEW_LIMIT) {
+    await kvPipeline([['DECR', deviceKey], ['DECR', ipKey]]).catch(() => {});
+    return { allowed: false, reason: 'used' };
+  }
   if (ipCount > IP_PREVIEW_LIMIT) {
-    await kvPipeline([['DEL', deviceKey], ['DECR', ipKey]]).catch(() => {});
+    await kvPipeline([['DECR', deviceKey], ['DECR', ipKey]]).catch(() => {});
     return { allowed: false, reason: 'ip-limit' };
   }
-  return { allowed: true, deviceKey, ipKey };
+  return { allowed: true, deviceKey, ipKey, deviceCount, ipCount };
 }
 
 async function releasePreview(reservation) {
   if (!reservation?.deviceKey || !reservation?.ipKey) return;
   await kvPipeline([
-    ['DEL', reservation.deviceKey],
+    ['DECR', reservation.deviceKey],
     ['DECR', reservation.ipKey],
   ]).catch(() => {});
 }
@@ -249,7 +254,7 @@ export default async function handler(req, res) {
     return res.status(429).json({
       error: reservation.reason === 'ip-limit'
         ? 'Anonymous previews are at capacity on this network today. Create a free account to keep building.'
-        : 'Your anonymous preview has already been used. Create a free account to keep generating.',
+        : 'You used your 3 free previews for today. Create a free account to keep generating.',
       code: 'ANON_PREVIEW_USED',
       signInUrl: '/app?auth=preview',
     });
@@ -265,8 +270,9 @@ export default async function handler(req, res) {
       language: target.language,
       framework: target.framework,
       filename: target.filename,
-      requiresAccountForDownload: true,
-      requiresAccountForNextGeneration: true,
+      requiresAccountForDownload: false,
+      requiresAccountForNextGeneration: reservation.deviceCount >= DEVICE_PREVIEW_LIMIT,
+      previewsRemaining: Math.max(0, DEVICE_PREVIEW_LIMIT - reservation.deviceCount),
     });
   } catch (error) {
     await releasePreview(reservation);
