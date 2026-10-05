@@ -53,3 +53,12 @@ Do not submit these blindly. Confirm them in each console against the current Pr
 - any file or image upload declarations;
 - account deletion instructions;
 - trader / business verification details.
+
+
+## Android Accessibility disclosure draft
+
+Stellar AI's optional **Android Assist Mode** uses Android Accessibility access only after the user reads an in-app disclosure, affirmatively opts in, and manually enables Stellar AI in Android Accessibility settings.
+
+When enabled, Assist Mode can read visible interface labels and identify tappable, editable and scrollable controls so the user can request one explicit action at a time. Password fields are redacted. Stellar blocks Android permission, installer, credential and system-UI surfaces. Visible screen details are not sent to Stellar's AI service unless the user explicitly taps **Ask Stellar about this screen**.
+
+Do not mark Stellar as an accessibility tool unless the product's core purpose genuinely changes to serving accessibility needs. Complete the Google Play Accessibility API declaration accurately before public release.
