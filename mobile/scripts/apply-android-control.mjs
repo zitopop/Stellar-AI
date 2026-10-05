@@ -36,7 +36,7 @@ for(const name of ['StellarControlPlugin.java','StellarAccessibilityService.java
 writeFileSync(mainActivityPath,[
   'package '+packageName+';','','import android.os.Bundle;','import com.getcapacitor.BridgeActivity;','',
   'public class MainActivity extends BridgeActivity {','  @Override','  public void onCreate(Bundle savedInstanceState) {',
-  '    super.onCreate(savedInstanceState);','    registerPlugin(StellarControlPlugin.class);','  }','}',''
+  '    registerPlugin(StellarControlPlugin.class);','    super.onCreate(savedInstanceState);','  }','}',''
 ].join('\n'));
 
 let manifest=readFileSync(manifestPath,'utf8');
