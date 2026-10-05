@@ -1940,6 +1940,20 @@ body.public-home::before{display:none!important}
 .public-home .stellar-path-actions .oa2-primary-action{min-height:48px}
 .public-home .stellar-path-link{color:#c6ccd7;font-size:13px;font-weight:760;text-decoration:none}
 .public-home .stellar-path-link:hover{color:#fff}
+.public-home .stellar-mini-funnel,.public-home .stellar-business-offers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:4px 0 26px}
+.public-home .stellar-mini-funnel>div,.public-home .stellar-business-offers>div{padding:15px;border:1px solid rgba(255,255,255,.075);border-radius:15px;background:rgba(255,255,255,.025)}
+.public-home .stellar-mini-funnel>div.is-highlight,.public-home .stellar-business-offers>div.is-highlight{border-color:rgba(159,150,255,.28);background:rgba(139,124,246,.08)}
+.public-home .stellar-mini-funnel span,.public-home .stellar-business-offers span{display:block;margin-bottom:9px;color:#9188e8;font:800 9px/1 'DM Mono',monospace;letter-spacing:.1em}
+.public-home .stellar-mini-funnel strong,.public-home .stellar-business-offers strong{display:block;margin-bottom:5px;color:#f6f7fa;font-size:14px;letter-spacing:-.015em}
+.public-home .stellar-mini-funnel small,.public-home .stellar-business-offers small{display:block;color:#99a2b1;font-size:11px;line-height:1.55}
+.public-home .stellar-plus-link{color:#bdb6ff}
+.public-home .stellar-business-demo{display:grid;grid-template-columns:.9fr 1.1fr;gap:8px;margin:4px 0 12px}
+.public-home .stellar-business-demo>div{padding:16px;border:1px solid rgba(255,255,255,.075);border-radius:15px;background:#0d1016}
+.public-home .stellar-business-demo span{display:block;margin-bottom:10px;color:#9188e8;font:800 9px/1 'DM Mono',monospace;letter-spacing:.1em}
+.public-home .stellar-business-demo p{margin:0;color:#e7eaf0;font-size:13px;line-height:1.6}
+.public-home .stellar-business-demo ol{margin:0;padding-left:18px;color:#b5bdca;font-size:12px;line-height:1.6}
+.public-home .stellar-business-demo li+li{margin-top:5px}
+
 .public-home .landing-tool-rail,
 .public-home .landing-how,
 .public-home .landing-trust-panel,
@@ -1949,7 +1963,7 @@ body.public-home::before{display:none!important}
 .public-home .stellar-business-entry{display:none!important}
 .public-home .dev-proof-strip{margin-top:0!important}
 @media(max-width:860px){.public-home .stellar-path-grid{grid-template-columns:1fr}.public-home .stellar-path-card{min-height:420px}}
-@media(max-width:620px){.public-home .stellar-paths-head{text-align:left}.public-home .stellar-path-card{padding:22px;border-radius:20px;min-height:0}.public-home .stellar-path-card h3{margin-top:34px}.public-home .stellar-path-top{align-items:flex-start}.public-home .stellar-path-actions{align-items:stretch;flex-direction:column}.public-home .stellar-path-actions .oa2-primary-action{width:100%}}
+@media(max-width:620px){.public-home .stellar-paths-head{text-align:left}.public-home .stellar-path-card{padding:22px;border-radius:20px;min-height:0}.public-home .stellar-path-card h3{margin-top:34px}.public-home .stellar-path-top{align-items:flex-start}.public-home .stellar-path-actions{align-items:stretch;flex-direction:column}.public-home .stellar-path-actions .oa2-primary-action{width:100%}.public-home .stellar-mini-funnel,.public-home .stellar-business-offers,.public-home .stellar-business-demo{grid-template-columns:1fr}}
 </style>
 
 </head>
@@ -2075,14 +2089,28 @@ TriggerServerEvent(<span class="syn-str">'stellar:complete'</span>)</code></pre>
           <h3>Build, debug and export game scripts.</h3>
           <p>Generate QBCore, ESX, ox_lib and Roblox Luau code, paste broken scripts or errors, inspect the fix, then copy or download supported files.</p>
           <div class="stellar-path-points"><span>QBCore · ESX · ox_lib</span><span>Roblox Luau</span><span>Error debugger</span><span>.lua export</span></div>
-          <div class="stellar-path-actions"><a class="oa2-primary-action" href="/app?welcome=1">Open game workspace <span aria-hidden="true">↗</span></a><a class="stellar-path-link" href="#playground">See the live demo</a></div>
+          <div class="stellar-mini-funnel" aria-label="Game developer upgrade path">
+            <div><span>01 · TRY</span><strong>Start free</strong><small>Up to 15 Stellar Fast generations/day. No card.</small></div>
+            <div><span>02 · PROVE</span><strong>Use a real script or error</strong><small>Generate, debug, copy or export before deciding to pay.</small></div>
+            <div class="is-highlight"><span>03 · BUILD MORE</span><strong>Plus · £20/month</strong><small>400 req/hr ceiling, Stellar Deep and larger project workflows.</small></div>
+          </div>
+          <div class="stellar-path-actions"><a class="oa2-primary-action" href="/app?welcome=1">Start free <span aria-hidden="true">↗</span></a><a class="stellar-path-link stellar-plus-link" href="/app?upgrade=plus">Get Plus · £20/mo</a><a class="stellar-path-link" href="#playground">See the live demo</a></div>
         </article>
         <article class="stellar-path-card stellar-path-business" id="business-path">
           <div class="stellar-path-top"><span>02 · BUSINESS</span><span class="stellar-path-chip">UK small business</span></div>
           <h3>Turn routine business work into clear AI workflows.</h3>
           <p>Start with a free website check, then use Stellar for website work, customer enquiries, receptionist flows and inbox follow-up with important actions kept reviewable.</p>
           <div class="stellar-path-points"><span>Free 3-point website check</span><span>Website work · £99</span><span>AI receptionist · £150 setup + £49/mo</span><span>Inbox follow-up</span></div>
-          <div class="stellar-path-actions"><a class="oa2-primary-action" href="/business">Explore business AI <span aria-hidden="true">↗</span></a><a class="stellar-path-link" href="/website-audit">See the £99 website service</a></div>
+          <div class="stellar-business-demo" id="business-demo" aria-label="Example Stellar business workflow">
+            <div class="stellar-business-demo-question"><span>EXAMPLE BUSINESS PROBLEM</span><p>“We keep missing website enquiries after hours. What should we improve first?”</p></div>
+            <div class="stellar-business-demo-answer"><span>STELLAR WORKFLOW</span><ol><li>Check whether the homepage makes the service and next action obvious.</li><li>Build replies from approved prices, hours and services instead of inventing details.</li><li>Keep important outbound replies reviewable before they are sent.</li></ol></div>
+          </div>
+          <div class="stellar-business-offers" aria-label="Business offer ladder">
+            <div><span>START FREE</span><strong>3-point website check</strong><small>Find the clearest trust or conversion issue first.</small></div>
+            <div><span>FIX / BUILD</span><strong>£99 one-time</strong><small>Website audit / quick fix or AI business website package.</small></div>
+            <div class="is-highlight"><span>HANDLE ENQUIRIES</span><strong>£150 setup + £49/mo</strong><small>AI receptionist flow using approved business information.</small></div>
+          </div>
+          <div class="stellar-path-actions"><a class="oa2-primary-action" href="/app?welcome=1&prompt=Give%20me%20a%20free%203-point%20website%20mini%20audit.%20I%20will%20paste%20the%20business%20website%20URL.%20Check%20the%20public%20homepage%20for%3A%201)%20trust%20and%20clarity%2C%202)%20mobile%2Fbooking%2Fcontact%20friction%2C%20and%203)%20the%20single%20highest-value%20improvement.%20Keep%20it%20concise%20and%20do%20not%20invent%20facts.">Run free website check <span aria-hidden="true">↗</span></a><a class="stellar-path-link" href="/business">Explore business AI</a><a class="stellar-path-link" href="/ai-receptionist">See AI receptionist</a></div>
         </article>
       </div>
     </section>
