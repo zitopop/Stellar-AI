@@ -418,26 +418,10 @@ export default async function handler(req, res) {
     if (plan === 'website-audit') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        payment_method_types: ['card'],
+        // Let Stripe dynamically surface eligible wallets and payment methods.
+        // Fulfilment collects the website URL and brief after payment.
         billing_address_collection: 'auto',
         customer_creation: 'always',
-        name_collection: { business: { enabled: true, optional: false } },
-        custom_fields: [
-          {
-            key: 'website',
-            label: { type: 'custom', custom: 'Business website URL' },
-            type: 'text',
-            optional: false,
-            text: { minimum_length: 4, maximum_length: 200 },
-          },
-          {
-            key: 'mainissue',
-            label: { type: 'custom', custom: 'Main website issue to fix' },
-            type: 'text',
-            optional: false,
-            text: { minimum_length: 3, maximum_length: 200 },
-          },
-        ],
         line_items: [{
           price_data: {
             currency: 'gbp',
@@ -457,6 +441,8 @@ export default async function handler(req, res) {
           service: 'website_mini_audit',
           stage: 'live',
           acquisition_source: sourceName,
+          checkout_experience: 'dynamic_payment_methods',
+          post_purchase_onboarding: 'required',
         },
       }, { idempotencyKey: 'stellar_business_audit_' + crypto.randomUUID() });
       await Promise.all([
@@ -470,40 +456,12 @@ export default async function handler(req, res) {
     if (plan === 'ai-receptionist') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        payment_method_types: ['card'],
+        // Keep payment first: Stripe chooses eligible wallets/methods, then Stellar
+        // securely collects business facts and the domain choice after payment.
         billing_address_collection: 'auto',
-        name_collection: { business: { enabled: true, optional: false } },
-        custom_fields: [
-          {
-            key: 'website',
-            label: { type: 'custom', custom: 'Business website or social page' },
-            type: 'text',
-            optional: true,
-            text: { maximum_length: 200 },
-          },
-          {
-            key: 'businessfacts',
-            label: { type: 'custom', custom: 'Services, hours, prices + booking link' },
-            type: 'text',
-            optional: false,
-            text: { maximum_length: 255 },
-          },
-          {
-            key: 'customdomain',
-            label: { type: 'custom', custom: 'Domain option' },
-            type: 'dropdown',
-            optional: false,
-            dropdown: {
-              options: [
-                { label: 'Use included receptionist URL', value: 'no' },
-                { label: 'Use my existing domain (DNS needed)', value: 'existing' },
-              ],
-            },
-          },
-        ],
         custom_text: {
           submit: {
-            message: '£150 setup + £49/month. Standard receptionist URL included. Existing-domain setup requires authorised DNS access. By paying, you agree to the Stellar AI Business Services Terms and acknowledge the Privacy Notice and Refund & Cancellation Policy on trystellarai.com.',
+            message: '£150 setup + £49/month. After payment, Stellar securely collects your business details and domain choice before activation. By paying, you agree to the Stellar AI Business Services Terms and acknowledge the Privacy Notice and Refund & Cancellation Policy on trystellarai.com.',
           },
         },
         line_items: [
@@ -518,6 +476,8 @@ export default async function handler(req, res) {
           service: 'ai_receptionist',
           stage: 'live',
           acquisition_source: sourceName,
+          checkout_experience: 'dynamic_payment_methods',
+          post_purchase_onboarding: 'required',
         },
         subscription_data: {
           metadata: {
@@ -593,9 +553,8 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'server-pass' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        // Temporary safety guard: the live Stripe webhook is not yet subscribed to async Checkout events.
-        // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
-        payment_method_types: ['card'],
+        // The production webhook covers asynchronous Checkout outcomes, so Stripe can
+        // dynamically surface eligible wallets and payment methods.
         phone_number_collection: { enabled: false },
         ...checkoutCustomer,
         line_items: [{
@@ -646,9 +605,8 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        // Keep one-time fulfillment synchronous until async Checkout webhook delivery is enabled live.
-        // Use the standard card flow and do not collect a phone number at Checkout.
-        payment_method_types: ['card'],
+        // The production webhook covers asynchronous Checkout outcomes. Keep phone
+        // collection off, while letting Stripe choose eligible wallets/methods.
         phone_number_collection: { enabled: false },
         ...checkoutCustomer,
         line_items: [{
@@ -720,10 +678,9 @@ export default async function handler(req, res) {
     const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      // Temporary safety guard: the live Stripe webhook is not yet subscribed to every async lifecycle event.
-      // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
-      payment_method_types: ['card'],
-        phone_number_collection: { enabled: false },
+      // The production webhook covers asynchronous Checkout outcomes, so Stripe can
+      // dynamically surface eligible wallets and payment methods.
+      phone_number_collection: { enabled: false },
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
       success_url: `https://trystellarai.com/app?payment=success&plan=${encodeURIComponent(plan)}&session_id={CHECKOUT_SESSION_ID}`,
