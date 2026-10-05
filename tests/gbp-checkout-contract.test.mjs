@@ -18,13 +18,19 @@ test('customer country is still retained for analytics metadata', () => {
 });
 
 
-test('Stripe Checkout stays on synchronous card methods with Link and phone collection disabled', () => {
-  assert.ok((checkout.match(/payment_method_types:\s*\['card'\]/g)||[]).length >= 3);
+test('Stripe Checkout uses dynamic payment methods and keeps unnecessary collection off', () => {
+  assert.doesNotMatch(checkout, /payment_method_types:\s*\['card'\]/);
+  assert.doesNotMatch(checkout, /Temporary safety guard/);
   assert.ok((checkout.match(/phone_number_collection:\s*\{ enabled: false \}/g)||[]).length >= 3);
-  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*'link'/);
-  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*(?:bacs_debit|sepa_debit|us_bank_account|acss_debit)[^\]]*\]/);
-  assert.match(checkout, /Temporary safety guard/);
+  assert.match(checkout, /dynamically surface eligible wallets and payment methods/);
   assert.match(checkout, /checkoutIdempotencyKey\(sessionUser\.email, plan\)/);
   assert.match(checkout, /acquisition_source:\s*sourceName/);
   assert.match(checkout, /checkout-started-source-\$\{sourceName\}/);
+});
+
+test('business service checkout defers onboarding details until after payment', () => {
+  assert.doesNotMatch(checkout, /custom_fields:/);
+  assert.doesNotMatch(checkout, /name_collection:/);
+  assert.match(checkout, /post_purchase_onboarding:\s*'required'/);
+  assert.match(checkout, /After payment, Stellar securely collects your business details and domain choice before activation/);
 });
