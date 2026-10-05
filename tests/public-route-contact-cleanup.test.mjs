@@ -19,7 +19,7 @@ test('public product and business routes resolve to concrete files', () => {
     '/refunds':'/refunds.html',
     '/legal':'/legal.html',
     '/blog':'/blog.html',
-    '/desktop':'/desktop-agent.html',
+    '/desktop':'/desktop-agent',
     '/business':'/services/business',
     '/website-audit':'/services/website-audit',
     '/ai-receptionist':'/services/ai-receptionist',
