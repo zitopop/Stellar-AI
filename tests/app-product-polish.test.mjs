@@ -13,7 +13,8 @@ test('returning model preference waits for server plan truth before use', () => 
 });
 
 test('locked models stay inactive and open the paid-plan surface at the value moment', () => {
-  assert.match(app, /if\(!allowedModels\.includes\(m\)\)\{metric\('upgrade-intent'\);openPanel\('plans'\);/);
+  assert.match(app, /if\(!allowedModels\.includes\(m\)\)\{if\(NATIVE_SHELL\)\{openPanel\('plans'\);/);
+  assert.match(app, /metric\('upgrade-intent'\);openPanel\('plans'\);setStatus/);
   assert.match(app, /Instant access after checkout/);
   assert.match(app, /data-open="plans"/);
 });

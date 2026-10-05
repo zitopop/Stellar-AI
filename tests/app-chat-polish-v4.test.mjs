@@ -27,7 +27,7 @@ test('empty workspace stays chat-first while explaining the core actions', () =>
 
 test('sidebar keeps plan navigation neutral instead of constantly upselling', () => {
   assert.match(app, /id="side-plan-button"/);
-  assert.match(app, /sidePlanButton\.textContent=signedInUser\?'Plans & billing':'Plans'/);
+  assert.match(app, /sidePlanButton\.textContent=NATIVE_SHELL\?'Plan':\(signedInUser\?'Plans & billing':'Plans'\)/);
   assert.match(app, /sidePlanButton\.hidden=serverOwner/);
 });
 

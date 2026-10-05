@@ -70,6 +70,14 @@ test('pricing remains discoverable and model labels match the real default', () 
   assert.doesNotMatch(app, /badge:'Default'/);
 });
 
+test('native store mode suppresses web checkout and adds app-like sharing', () => {
+  assert.match(app, /const NATIVE_SHELL=/);
+  assert.match(app, /Purchases are not offered in this mobile build/);
+  assert.match(app, /data-message-action="share"/);
+  assert.match(app, /Capacitor\?\.Plugins\?\.Share/);
+  assert.match(app, /requires a '.+?' account/);
+});
+
 test('billing, plan gating and private owner tools stay server controlled', () => {
   assert.match(app, /function startPlanCheckout\(plan\)/);
   assert.match(app, /u\.hostname!=='checkout\.stripe\.com'/);

@@ -106,10 +106,10 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 
 test('plugin directory stays calm while preserving real account connection controls', () => {
   assert.match(page, /Your connected apps/);
-  assert.match(page, /Built-in tools work straight away/);
-  assert.match(page, /Permissions first\./);
-  assert.match(page, /No passwords shared/);
-  assert.match(page, /disconnect anytime/i);
+  assert.match(page, /Works straight away/);
+  assert.match(page, /You approve access/);
+  assert.match(page, /Your password stays with the app/);
+  assert.match(page, /disconnect(?: an app)? (?:whenever you want|at any time)/i);
   assert.match(page, /id="plugin-account-grid"/);
   assert.match(page, /async function pluginApi\(action,payload=\{\}\)/);
   assert.match(page, /pluginApi\('list'\)/);
