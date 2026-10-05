@@ -40,6 +40,7 @@ const expectedCleanRoutes = new Map([
 ]);
 
 const expectedRewriteDestinations = new Map([
+  ['/desktop', '/desktop-agent'],
   ['/business', '/services/business'],
   ['/ai-receptionist', '/services/ai-receptionist'],
   ['/website-audit', '/services/website-audit'],
