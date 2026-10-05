@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 const checkout = fs.readFileSync(new URL('../api/create-checkout.js', import.meta.url), 'utf8');
+const webhook = fs.readFileSync(new URL('../api/webhook.js', import.meta.url), 'utf8');
 
 test('live checkout is GBP-only regardless of customer country', () => {
   assert.match(checkout, /const currency = 'GBP';/);
@@ -18,12 +19,12 @@ test('customer country is still retained for analytics metadata', () => {
 });
 
 
-test('Stripe Checkout stays on synchronous card methods with Link and phone collection disabled', () => {
-  assert.ok((checkout.match(/payment_method_types:\s*\['card'\]/g)||[]).length >= 3);
+test('Stripe Checkout uses Dashboard-managed dynamic methods with async lifecycle safety', () => {
+  assert.doesNotMatch(checkout, /payment_method_types:\s*\[/);
   assert.ok((checkout.match(/phone_number_collection:\s*\{ enabled: false \}/g)||[]).length >= 3);
-  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*'link'/);
-  assert.doesNotMatch(checkout, /payment_method_types:\s*\[[^\]]*(?:bacs_debit|sepa_debit|us_bank_account|acss_debit)[^\]]*\]/);
-  assert.match(checkout, /Temporary safety guard/);
+  assert.match(checkout, /Dashboard-managed dynamic payment methods/);
+  assert.match(webhook, /checkout\.session\.async_payment_succeeded/);
+  assert.match(webhook, /checkout\.session\.async_payment_failed/);
   assert.match(checkout, /checkoutIdempotencyKey\(sessionUser\.email, plan\)/);
   assert.match(checkout, /acquisition_source:\s*sourceName/);
   assert.match(checkout, /checkout-started-source-\$\{sourceName\}/);
