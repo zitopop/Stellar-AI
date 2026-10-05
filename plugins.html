@@ -49,13 +49,9 @@
 </section>
 
 <section class="section" id="directory">
-  <div class="section-head"><div><h2>Discover plugins</h2><p>Install focused workflows, then connect only the accounts they need. Plugins can combine Stellar skills with supported apps without turning your chat into a settings screen.</p></div><span class="right">Built for Stellar</span></div>
-  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search plugins…" aria-label="Search plugins"></div><span class="tool-count">Featured</span></div>
-  <div class="grid" id="plugin-directory">
-    <article class="tool-card" data-directory-plugin data-search="developer fivem roblox github code debug scripts"><div class="tool-top"><div class="ico">⌘</div><span class="status ready">Featured</span></div><h3>Developer</h3><p>Generate, debug and review FiveM, Roblox and web code with a developer-focused Stellar workflow.</p><div class="skills"><span>Code generation & debugging</span><span>GitHub-ready workflow</span><span>FiveM + Roblox context</span></div><div class="card-actions"><a class="btn primary" href="/app?prompt=Use%20the%20Developer%20workflow%20to%20help%20with%20my%20code.">Use plugin</a></div></article>
-    <article class="tool-card" data-directory-plugin data-search="business gmail email website leads payments"><div class="tool-top"><div class="ico">✦</div><span class="status ready">Featured</span></div><h3>Business Ops</h3><p>Turn business requests into structured website, inbox and customer workflows with approval where it matters.</p><div class="skills"><span>Website workflow</span><span>Inbox-ready actions</span><span>Approval-first operations</span></div><div class="card-actions"><a class="btn primary" href="/app?prompt=Use%20the%20Business%20Ops%20workflow%20to%20help%20with%20my%20business.">Use plugin</a></div></article>
-    <article class="tool-card" data-directory-plugin data-search="files documents pdf research writing"><div class="tool-top"><div class="ico">▣</div><span class="status ready">Built in</span></div><h3>Documents</h3><p>Work across uploaded files with a focused workflow for summarising, comparing, rewriting and extracting next steps.</p><div class="skills"><span>Summarise & compare</span><span>Rewrite documents</span><span>Extract actions</span></div><div class="card-actions"><a class="btn primary" href="/app?prompt=Use%20the%20Documents%20workflow%20with%20my%20files.">Use plugin</a></div></article>
-  </div>
+  <div class="section-head"><div><h2>Discover plugins</h2><p>Browse the apps and workflows Stellar can use with your account. Available plugins can be installed or connected here; upcoming integrations are clearly labelled.</p></div><span class="right" id="directory-count">Loading…</span></div>
+  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search plugins…" aria-label="Search plugins"><button class="clear-search" id="clear-directory-search" type="button" hidden>Clear</button></div><span class="tool-count">Apps & workflows</span></div>
+  <div class="grid" id="plugin-directory" aria-live="polite"></div>
 </section>
 
 <section class="section" id="connections">
@@ -87,8 +83,28 @@
 </main>
 
 <script>
-const directorySearch=document.getElementById('directory-search'),directoryCards=[...document.querySelectorAll('[data-directory-plugin]')];
-directorySearch?.addEventListener('input',()=>{const q=directorySearch.value.trim().toLowerCase();directoryCards.forEach(card=>card.classList.toggle('browse-hidden',!!q&&!((card.dataset.search+' '+card.textContent).toLowerCase().includes(q))))});
+const directorySearch=document.getElementById('directory-search'),directoryGrid=document.getElementById('plugin-directory'),directoryCount=document.getElementById('directory-count'),clearDirectorySearch=document.getElementById('clear-directory-search');
+let directoryPlugins=[];
+function applyDirectorySearch(){const q=String(directorySearch?.value||'').trim().toLowerCase();let shown=0;[...directoryGrid.querySelectorAll('[data-directory-plugin]')].forEach(card=>{const visible=!q||String(card.dataset.search||'').includes(q);card.classList.toggle('browse-hidden',!visible);if(visible)shown++});if(directoryCount)directoryCount.textContent=shown+' plugin'+(shown===1?'':'s');if(clearDirectorySearch)clearDirectorySearch.hidden=!q}
+directorySearch?.addEventListener('input',applyDirectorySearch);clearDirectorySearch?.addEventListener('click',()=>{directorySearch.value='';directorySearch.focus();applyDirectorySearch()});
+function renderDirectory(plugins){
+  directoryPlugins=Array.isArray(plugins)?plugins:[];
+  directoryGrid.textContent='';
+  directoryPlugins.forEach(plugin=>{
+    const card=document.createElement('article');card.className='tool-card';card.dataset.directoryPlugin=plugin.id;card.dataset.search=(String(plugin.name||'')+' '+String(plugin.description||'')+' '+String(plugin.category||'')+' '+(plugin.skills||[]).join(' ')).toLowerCase();
+    const top=document.createElement('div');top.className='tool-top';const icon=document.createElement('div');icon.className='ico';icon.textContent=iconFor(plugin.id);
+    const status=document.createElement('span');const coming=plugin.status==='coming_soon';status.className='status '+(plugin.connected?'ready':coming?'soon':'connect');status.textContent=plugin.connected?'Connected':plugin.enabled?'Installed':coming?'Coming soon':'Available';top.append(icon,status);
+    const title=document.createElement('h3');title.textContent=plugin.name;const desc=document.createElement('p');desc.textContent=plugin.description;
+    const meta=document.createElement('div');meta.className='plugin-meta';const cat=document.createElement('span');cat.textContent=plugin.category||'Plugin';meta.append(cat);if(plugin.verified){const v=document.createElement('span');v.textContent='Verified';meta.append(v)}
+    const skills=document.createElement('div');skills.className='skills';(plugin.skills||[]).slice(0,3).forEach(x=>{const s=document.createElement('span');s.textContent=x;skills.append(s)});
+    const actions=document.createElement('div');actions.className='card-actions';
+    if(plugin.connected){if(plugin.route){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open';actions.append(a)}const manage=document.createElement('a');manage.className='btn';manage.href='#connections';manage.textContent='Manage';actions.append(manage)}
+    else if(plugin.oauthAvailable)actions.append(pluginButton(plugin.connectLabel||'Connect','oauth',plugin.id,true));
+    else if(plugin.installable&&!coming)actions.append(pluginButton(plugin.installLabel||'Install','install',plugin.id,true));
+    else {const b=document.createElement('button');b.className='btn';b.disabled=true;b.textContent=coming?'Coming soon':'Unavailable';actions.append(b)}
+    card.append(top,title,desc,meta,skills,actions);directoryGrid.append(card)
+  });applyDirectorySearch()
+}
 const connectionCount=document.getElementById('connection-count');
 const accountGrid=document.getElementById('plugin-account-grid');
 const accountStatus=document.getElementById('plugin-account-status');
@@ -176,9 +192,9 @@ function renderConnectedApps(data){
   });
 }
 async function loadConnectedApps(){
-  if(!sessionToken()){if(connectionCount)connectionCount.textContent='0 connected';showNotice('Sign in to manage apps','Your connected apps will appear here.');const link=document.createElement('a');link.className='btn primary';link.href='/app?signin=1';link.textContent='Sign in';accountStatus.append(document.createElement('br'),link);return}
+  if(!sessionToken()){if(connectionCount)connectionCount.textContent='0 connected';if(directoryCount)directoryCount.textContent='Sign in to view';if(directoryGrid)directoryGrid.innerHTML='<div class="notice"><strong>Sign in to discover plugins</strong>Your available plugins and connection options are personalised to your account.</div>';showNotice('Sign in to manage apps','Your connected apps will appear here.');const link=document.createElement('a');link.className='btn primary';link.href='/app?signin=1';link.textContent='Sign in';accountStatus.append(document.createElement('br'),link);return}
   showNotice('Checking your apps','Loading your connections…');
-  try{renderConnectedApps(await pluginApi('list'))}catch(error){showNotice('Could not load apps',error.message||'Try again shortly.')}
+  try{const data=await pluginApi('list');renderDirectory(data.plugins);renderConnectedApps(data)}catch(error){showNotice('Could not load apps',error.message||'Try again shortly.');if(directoryGrid)directoryGrid.innerHTML='<div class="notice"><strong>Sign in to browse account plugins</strong>Available integrations for your account will appear after sign-in.</div>'}
 }
 async function pluginAction(button){
   const id=button.dataset.pluginId,action=button.dataset.pluginAction;if(!id||!action)return;
