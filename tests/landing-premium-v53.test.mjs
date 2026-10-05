@@ -7,10 +7,10 @@ const css = readFileSync(new URL('../lib/assets/stellar-landing-premium-v53.css'
 
 test('premium landing v53 uses a concrete hero and one clear conversion path', () => {
   assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
-  assert.match(home, /Generate QBCore, ESX, ox_lib and Roblox Luau/);
+  assert.match(home, /Write, debug and export FiveM \+ Roblox scripts from one focused workspace/);
   assert.match(home, /Try 3 code previews free · no card required/);
-  assert.match(home, /class="oa2-primary-action">Try Stellar free/);
-  assert.match(home, /class="oa2-secondary-action">See code demo/);
+  assert.match(home, /class="oa2-primary-action">Start coding free/);
+  assert.match(home, /class="oa2-secondary-action">See it in action/);
   assert.match(home, /stellar-landing-premium-v53\.css/);
 });
 
