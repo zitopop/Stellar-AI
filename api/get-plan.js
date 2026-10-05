@@ -47,7 +47,8 @@ const CLIENT_METRIC_EVENTS = new Set([
   'first-message-sent','chat-send-error','checkout-open','checkout-error','billing-open','client-error',
   'usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked',
   'pricing-view','plan-free-selected','plan-starter-selected','plan-plus-selected','plan-pro-selected',
-  'preview-generated','preview-gate-opened','server-pass-selected',
+  'preview-started','preview-generated','preview-downloaded','preview-error','preview-gate-opened','server-pass-selected',
+  'pricing-cta','service-cta','checkout-intent','checkout-success','checkout-cancelled',
 ]);
 
 const clientWindows = new Map();
