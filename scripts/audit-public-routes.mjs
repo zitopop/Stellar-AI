@@ -30,6 +30,7 @@ const expectedCleanRoutes = new Map([
   ['/desktop', 'desktop-agent.html'],
   ['/roblox-studio', 'roblox-studio.html'],
   ['/business', 'services/business.html'],
+  ['/script-fix', 'services/script-fix.html'],
   ['/ai-receptionist', 'services/ai-receptionist.html'],
   ['/website-audit', 'services/website-audit.html'],
   ['/small-business-ai', 'small-business-ai/index.html'],
@@ -42,6 +43,7 @@ const expectedCleanRoutes = new Map([
 const expectedRewriteDestinations = new Map([
   ['/desktop', '/desktop-agent'],
   ['/business', '/services/business'],
+  ['/script-fix', '/services/script-fix.html'],
   ['/ai-receptionist', '/services/ai-receptionist'],
   ['/website-audit', '/services/website-audit'],
 ]);
