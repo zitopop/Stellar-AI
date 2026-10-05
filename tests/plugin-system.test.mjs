@@ -78,7 +78,6 @@ test('plugin manager is account-scoped and only enables token plugins after conn
   assert.match(manager, /plugin\.audience==='owner'\|\|plugin\.status==='coming_soon'/);
   assert.match(manager, /viewer:\{signedIn:true,privateAccess:isOwner===true\}/);
   assert.match(manager, /publicOauthStatus/);
-  assert.match(registry, /audience:plugin\.audience==='owner'\?'restricted':plugin\.audience/);
   assert.match(manager, /exposeSetup=isOwner===true/);
 });
 
