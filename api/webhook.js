@@ -14,6 +14,7 @@ import { getGmailPushConfiguration, getGmailWatchStatus, processGmailPush, start
 import { deliverQStashReminder, QStashReminderError } from '../lib/qstash-reminders.js';
 import { answerBusinessReceptionist, applyBusinessCustomerUpdate, businessServiceFromCheckout, createBusinessFulfillmentJob, enqueueBusinessFulfillment, deliverBusinessFulfillment, getBusinessCustomerUpdateView, getPublicBusinessReceptionist, recoverBusinessFulfillmentJobs, submitBusinessReceptionistEnquiry, subscriptionHasAiReceptionist, invoiceHasAiReceptionist, updateBusinessServiceBilling } from '../lib/business-fulfillment.js';
 import { EPHEMERAL, processDiscordInteraction, verifyDiscordInteraction } from '../lib/discord-interactions.js';
+import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
@@ -138,6 +139,157 @@ async function handleDiscordInteractions(req, res) {
   await processDiscordInteraction(interaction).catch((error) => {
     console.error('Discord serverless interaction failed', error?.message || error);
   });
+}
+
+const SCRIPT_FIX_PROJECTS = new Set(['fivem','roblox','other']);
+const SCRIPT_FIX_JOBS = new Set(['fix','build','debug']);
+
+function cleanScriptFixInput(value, max) {
+  return String(value || '')
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '')
+    .trim()
+    .slice(0, max);
+}
+
+function paidScriptFixSession(session) {
+  return Boolean(
+    session
+    && session.metadata?.app === 'stellar-ai'
+    && session.metadata?.plan === 'script-fix'
+    && (session.payment_status === 'paid' || session.payment_status === 'no_payment_required')
+    && Number(session.amount_total) === 9900
+    && String(session.currency || '').toLowerCase() === 'gbp'
+  );
+}
+
+function scriptFixCustomerEmail(session) {
+  return String(session?.customer_details?.email || session?.customer_email || session?.metadata?.email || '').trim().toLowerCase();
+}
+
+function maskScriptFixEmail(email) {
+  const [name, domain] = String(email || '').split('@');
+  if (!name || !domain) return '';
+  return (name.length <= 2 ? name[0] + '*' : name.slice(0, 2) + '*'.repeat(Math.min(6, name.length - 2))) + '@' + domain;
+}
+
+async function notifyOwnerOfScriptFix(order) {
+  const apiKey = String(process.env.RESEND_API_KEY || '').trim();
+  const from = resendSender();
+  if (!apiKey || !from) return { ok: false, reason: 'email-not-configured' };
+  const subject = 'PAID £99 SCRIPT JOB — ' + order.projectType.toUpperCase() + ' · ' + order.jobType.toUpperCase();
+  const text = [
+    'A paid Priority Script Fix order is ready.',
+    '',
+    'Paid: £99',
+    'Customer: ' + order.customerEmail,
+    'Project: ' + order.projectType,
+    'Job: ' + order.jobType,
+    'Framework / stack: ' + (order.framework || 'Not specified'),
+    'Reference link: ' + (order.referenceLink || 'None'),
+    'Checkout session: ' + order.checkoutSessionId,
+    '',
+    'CUSTOMER BRIEF',
+    '--------------',
+    order.brief,
+    '',
+    'Reply to this email to contact the customer directly.',
+  ].join('\n');
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + apiKey,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': 'stellar-script-fix-' + order.checkoutSessionId,
+    },
+    body: JSON.stringify({
+      from,
+      to: [SUPPORT_EMAIL],
+      reply_to: order.customerEmail,
+      subject,
+      text,
+    }),
+    signal: AbortSignal.timeout(10000),
+  });
+  const data = await response.json().catch(() => ({}));
+  return response.ok && data?.id ? { ok: true, id: String(data.id) } : { ok: false, reason: 'email-provider-rejected' };
+}
+
+async function handleScriptFixIntake(req, res) {
+  res.setHeader('Cache-Control', 'private, no-store');
+  if (!['GET','POST'].includes(req.method)) {
+    res.setHeader('Allow', 'GET, POST');
+    return res.status(405).json({ error: 'Method not allowed.' });
+  }
+  if (!STRIPE_SECRET) return res.status(503).json({ error: 'Payments are temporarily unavailable.' });
+
+  const input = req.method === 'GET' ? (req.query || {}) : await readJsonBody(req);
+  const sessionId = cleanScriptFixInput(input.session_id || input.sessionId, 200);
+  if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return res.status(400).json({ error: 'A valid checkout session is required.' });
+
+  try {
+    const stripe = new Stripe(STRIPE_SECRET);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (!paidScriptFixSession(session)) {
+      return res.status(403).json({ error: 'This checkout is not a confirmed paid Priority Script Fix order.' });
+    }
+    const email = scriptFixCustomerEmail(session);
+    if (!email) return res.status(409).json({ error: 'The paid checkout is missing a customer email.' });
+
+    if (req.method === 'GET') {
+      return res.status(200).json({ ok: true, paid: true, amountPence: 9900, currency: 'gbp', customerEmail: maskScriptFixEmail(email) });
+    }
+
+    const projectType = cleanScriptFixInput(input.projectType, 20).toLowerCase();
+    const jobType = cleanScriptFixInput(input.jobType, 20).toLowerCase();
+    const framework = cleanScriptFixInput(input.framework, 120);
+    const referenceLink = cleanScriptFixInput(input.referenceLink, 500);
+    const brief = cleanScriptFixInput(input.brief, 20000);
+    if (!SCRIPT_FIX_PROJECTS.has(projectType)) return res.status(400).json({ error: 'Choose FiveM, Roblox, or Other.' });
+    if (!SCRIPT_FIX_JOBS.has(jobType)) return res.status(400).json({ error: 'Choose Fix, Build, or Debug.' });
+    if (brief.length < 20) return res.status(400).json({ error: 'Add a little more detail, code, or the exact error so the job can be started.' });
+    if (referenceLink && !/^https?:\/\//i.test(referenceLink)) return res.status(400).json({ error: 'Reference link must start with http:// or https://.' });
+
+    const order = {
+      version: 1,
+      status: 'brief_submitted',
+      checkoutSessionId: sessionId,
+      customerEmail: email,
+      amountPence: 9900,
+      currency: 'gbp',
+      projectType,
+      jobType,
+      framework,
+      referenceLink,
+      brief,
+      submittedAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+
+    const saved = await kvSet('stellar:script-fix:' + sessionId, order, 400 * 24 * 60 * 60);
+    const emailed = await notifyOwnerOfScriptFix(order).catch(() => ({ ok: false, reason: 'email-failed' }));
+    if (!emailed.ok) {
+      return res.status(503).json({
+        error: saved
+          ? 'Your paid brief is saved, but the inbox notification did not send yet. Please press Submit again in a moment; you will not be charged again.'
+          : 'Your brief could not be delivered right now. Please try again.',
+        saved,
+      });
+    }
+
+    if (saved) {
+      await kvSet('stellar:script-fix:' + sessionId, {
+        ...order,
+        status: 'owner_notified',
+        ownerEmailMessageId: emailed.id,
+        updatedAt: Date.now(),
+      }, 400 * 24 * 60 * 60).catch(() => {});
+    }
+    return res.status(200).json({ ok: true, saved, ownerNotified: true, contact: SUPPORT_EMAIL });
+  } catch (error) {
+    console.error('Priority Script Fix intake failed', error?.message || error);
+    return res.status(503).json({ error: 'The paid order could not be verified or delivered right now. Please try again.' });
+  }
 }
 
 async function handleBusinessFulfillment(req, res) {
@@ -368,6 +520,7 @@ export default async function handler(req, res) {
   if (source === 'gmail-watch') return handleGmailWatch(req, res);
   if (source === 'qstash-reminder') return handleQStashReminder(req, res);
   if (source === 'discord-interactions') return handleDiscordInteractions(req, res);
+  if (source === 'script-fix-intake') return handleScriptFixIntake(req, res);
   if (source === 'business-fulfillment') return handleBusinessFulfillment(req, res);
   if (source === 'business-customer-update') return handleBusinessCustomerUpdate(req, res);
   if (source === 'business-receptionist') return handlePublicBusinessReceptionist(req, res);
