@@ -10,8 +10,8 @@ test('v55 hero is specific, useful and low-friction', () => {
   assert.match(home, /Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span>/);
   assert.match(home, /Generate QBCore, ESX, ox_lib and Roblox Luau/);
   assert.match(home, /placeholder="Describe a script or paste an error…"/);
-  assert.match(home, /class="oa2-primary-action">Try Stellar free/);
-  assert.match(home, /class="oa2-secondary-action">See code demo/);
+  assert.match(home, /class="oa2-primary-action">Generate your first script/);
+  assert.match(home, /class="oa2-secondary-action">See it in action/);
 });
 
 test('v55 explains the workflow in three concrete steps', () => {
