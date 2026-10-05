@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 test('homepage keeps one clear primary action and secondary business navigation', () => {
-  assert.match(home, /<h1 id="hero-title">Build &amp; fix<br><span>FiveM \+ Roblox scripts\.<\/span><\/h1>/);
+  assert.match(home, /<h1 id="hero-title">Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span><\/h1>/);
   assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Try Stellar free/);
   assert.match(home, /href="#playground" class="oa2-secondary-action">See code demo<\/a>/);
   assert.doesNotMatch(home, /class="stellar-hero-paths"/);
