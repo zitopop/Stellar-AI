@@ -16,6 +16,13 @@ test('v60 is the authoritative chat-first app finish', () => {
   assert.match(css, /--accent:#9b8cff!important/);
 });
 
+
+test('inline app runtime parses as JavaScript', () => {
+  const match = app.match(/<script id="stellar-google-signin-ui-v1">([\s\S]*?)<\/script>/);
+  assert.ok(match, 'main inline app runtime missing');
+  assert.doesNotThrow(() => new Function(match[1]));
+});
+
 test('workspace stays simple while keeping the useful tools', () => {
   for (const id of ['side','newChatBtn','search-chats-btn','chat','chatForm','prompt','sendBtn','modelBtn','image-upload-btn','web-search-btn','voice-input-btn']) {
     assert.ok(app.includes('id="' + id + '"'), 'missing #' + id);
