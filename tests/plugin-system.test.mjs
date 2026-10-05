@@ -106,7 +106,7 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 
 test('plugin directory stays calm while preserving real account connection controls', () => {
   assert.match(page, /Your connected apps/);
-  assert.match(page, /Built-in tools work straight away/);
+  assert.match(page, /Works straight away/);
   assert.match(page, /Permissions first\./);
   assert.match(page, /No passwords shared/);
   assert.match(page, /disconnect anytime/i);
