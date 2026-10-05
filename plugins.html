@@ -38,8 +38,8 @@
 <main class="wrap">
 <section class="hero">
   <div class="kicker">Apps & tools</div>
-  <h1>Your apps. One clean workspace.</h1>
-  <p>Use Stellar instantly, then connect the accounts you actually need. Every connection shows its status, permissions and next action in one place.</p>
+  <h1>Connect an app. Start using it.</h1>
+  <p>Pick an app, connect your account, then use it with Stellar in chat. No complicated setup.</p>
   <div class="hero-actions"><a class="btn primary" href="#directory">Discover plugins</a><a class="btn" href="#connections">Installed & connected</a></div>
 </section>
 
@@ -49,19 +49,19 @@
 </section>
 
 <section class="section" id="directory">
-  <div class="section-head"><div><h2>Discover plugins</h2><p>Browse the apps and workflows Stellar can use with your account. Available plugins can be installed or connected here; upcoming integrations are clearly labelled.</p></div><span class="right" id="directory-count">Loading…</span></div>
-  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search plugins…" aria-label="Search plugins"><button class="clear-search" id="clear-directory-search" type="button" hidden>Clear</button></div><span class="tool-count">Apps & workflows</span></div>
+  <div class="section-head"><div><h2>Choose an app</h2><p>Connect the apps you already use. Stellar will show one clear next step for each app.</p></div><span class="right" id="directory-count">Loading…</span></div>
+  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search apps…" aria-label="Search plugins"><button class="clear-search" id="clear-directory-search" type="button" hidden>Clear</button></div><span class="tool-count">Apps & workflows</span></div>
   <div class="grid" id="plugin-directory" aria-live="polite"></div>
 </section>
 
 <section class="section" id="connections">
-  <div class="section-head"><div><h2>Your connections</h2><p><strong>Your connected accounts, clearly managed.</strong> Each available app shows whether it is connected, what access it needs and the action you can take next. Disconnect whenever you want.</p></div><span class="right" id="connection-count">0 connected</span></div>
+  <div class="section-head"><div><h2>Your apps</h2><p>See what is connected and manage it in one place. You can disconnect an app whenever you want.</p></div><span class="right" id="connection-count">0 connected</span></div>
   <div id="plugin-account-status" class="notice"><strong>Sign in to manage apps</strong>Your connected apps will appear here.<br><a class="btn primary" href="/app?signin=1">Sign in</a></div>
   <div class="grid" id="plugin-account-grid" aria-live="polite"></div>
 </section>
 
 <section class="section" id="browse-tools">
-  <div class="section-head"><div><h2>Built into Stellar</h2><p>These tools are ready immediately. No provider account, extra installation or connection step is required.</p></div><span class="right">No setup needed</span></div>
+  <div class="section-head"><div><h2>Ready without setup</h2><p>These tools already work in Stellar. Just open one and start.</p></div><span class="right">No setup needed</span></div>
   <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="search" type="search" placeholder="Search tools…" aria-label="Search tools"><button class="clear-search" id="clear-search" type="button" hidden>Clear</button></div><span class="tool-count" id="tool-count" aria-live="polite">4 tools</span></div>
   <div class="builtin-grid">
     <article class="builtin" data-browse-tool data-search="files documents upload pdf notes summarise rewrite compare"><div class="ico">▣</div><h3>Files & documents</h3><p>Upload files and ask Stellar to explain, compare, summarise or rewrite them.</p><a href="/app?prompt=Help%20me%20work%20with%20a%20file%20or%20document.">Use in chat →</a></article>
@@ -72,11 +72,11 @@
 </section>
 
 <section class="section" id="plugin-safety">
-  <div class="section-head"><div><h2>Clear access. No surprises.</h2><p>Before an account is connected, Stellar shows what it needs and keeps higher-impact actions reviewable.</p></div></div>
+  <div class="section-head"><div><h2>You are always in control</h2><p>Stellar shows what an app can access before you connect it. You can disconnect at any time.</p></div></div>
   <div class="control-grid">
-    <article><strong>No passwords shared with Stellar</strong><p>Supported connections use the provider's sign-in screen. Advanced developer tokens stay inside the secure connection form.</p></article>
-    <article><strong>Permissions first.</strong><p>Each connected app shows the access it asks for before you use it. No passwords shared, and you can disconnect anytime.</p></article>
-    <article><strong>Higher-impact actions stay reviewable</strong><p>Sending messages, publishing changes and money-related actions remain approval-first where the workflow supports them.</p></article>
+    <article><strong>Your password stays with the app</strong><p>You sign in on the provider's own secure screen. Stellar does not ask for your provider password.</p></article>
+    <article><strong>See access before connecting</strong><p>You can check what Stellar needs before you connect, and remove access later.</p></article>
+    <article><strong>Important actions ask first</strong><p>For supported workflows, actions like sending, publishing or changing billing stay approval-first.</p></article>
   </div>
   <p hidden>Personal account connections only. Human review. Restricted integrations are not offered to standard accounts.</p>
 </section>
@@ -93,15 +93,15 @@ function renderDirectory(plugins){
   directoryPlugins.forEach(plugin=>{
     const card=document.createElement('article');card.className='tool-card';card.dataset.directoryPlugin=plugin.id;card.dataset.search=(String(plugin.name||'')+' '+String(plugin.description||'')+' '+String(plugin.category||'')+' '+(plugin.skills||[]).join(' ')).toLowerCase();
     const top=document.createElement('div');top.className='tool-top';const icon=document.createElement('div');icon.className='ico';icon.textContent=iconFor(plugin.id);
-    const status=document.createElement('span');const coming=plugin.status==='coming_soon';status.className='status '+(plugin.connected?'ready':coming?'soon':'connect');status.textContent=plugin.connected?'Connected':plugin.enabled?'Installed':coming?'Coming soon':'Available';top.append(icon,status);
+    const status=document.createElement('span');const coming=plugin.status==='coming_soon';status.className='status '+(plugin.connected?'ready':coming?'soon':'connect');status.textContent=plugin.connected?'Connected':plugin.enabled?'Ready':coming?'Coming soon':'Connect';top.append(icon,status);
     const title=document.createElement('h3');title.textContent=plugin.name;const desc=document.createElement('p');desc.textContent=plugin.description;
     const meta=document.createElement('div');meta.className='plugin-meta';const cat=document.createElement('span');cat.textContent=plugin.category||'Plugin';meta.append(cat);if(plugin.verified){const v=document.createElement('span');v.textContent='Verified';meta.append(v)}
     const skills=document.createElement('div');skills.className='skills';(plugin.skills||[]).slice(0,3).forEach(x=>{const s=document.createElement('span');s.textContent=x;skills.append(s)});
     const actions=document.createElement('div');actions.className='card-actions';
     if(plugin.connected){if(plugin.route){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open';actions.append(a)}const manage=document.createElement('a');manage.className='btn';manage.href='#connections';manage.textContent='Manage';actions.append(manage)}
     else if(plugin.oauthAvailable)actions.append(pluginButton(plugin.connectLabel||'Connect','oauth',plugin.id,true));
-    else if(plugin.installable&&!coming)actions.append(pluginButton(plugin.installLabel||'Install','install',plugin.id,true));
-    else {const b=document.createElement('button');b.className='btn';b.disabled=true;b.textContent=coming?'Coming soon':'Unavailable';actions.append(b)}
+    else if(plugin.installable&&!coming)actions.append(pluginButton(plugin.connection?(plugin.connectLabel||'Connect'):'Turn on','install',plugin.id,true));
+    else {const b=document.createElement('button');b.className='btn';b.disabled=true;b.textContent=coming?'Coming soon':'Not available';actions.append(b)}
     card.append(top,title,desc,meta,skills,actions);directoryGrid.append(card)
   });applyDirectorySearch()
 }
