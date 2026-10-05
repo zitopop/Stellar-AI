@@ -7,6 +7,9 @@
 - [x] PWA/offline fallback exists.
 - [x] Store listing copy drafted.
 - [x] GitHub workflow can produce Android QA APK, Android release AAB and an iOS simulator build.
+- [x] Android Phone Assist Mode source and build integration added.
+- [ ] Real-device Android Phone Assist QA (enable service, inspect screen, tap, type, scroll, Back/Home, stop).
+- [ ] Google Play AccessibilityService declaration and demo video prepared.
 - [ ] Real-device Android QA.
 - [ ] Real-device iPhone QA.
 - [ ] Signed Android release with permanent upload key.
