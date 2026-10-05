@@ -48,11 +48,11 @@ const CLIENT_METRIC_EVENTS = new Set([
   'usage-panel-opened','plans-panel-opened','upgrade-from-usage','business-service-clicked',
   'pricing-view','plan-free-selected','plan-starter-selected','plan-plus-selected','plan-pro-selected',
   'preview-started','preview-generated','preview-downloaded','preview-error','preview-gate-opened','server-pass-selected',
-  'pricing-cta','service-cta','checkout-intent','checkout-success','checkout-cancelled',
+  'pricing-cta','service-cta','checkout-intent','checkout-success','checkout-cancelled','install-view','install-cta','install-completed',
 ]);
 
 const clientWindows = new Map();
-const ATTRIBUTION_SOURCES = new Set(['direct','github','cfx','builtbybit','google','discord','other']);
+const ATTRIBUTION_SOURCES = new Set(['direct','github','cfx','builtbybit','google','discord','tiktok','instagram','youtube','x','other']);
 const CLIENT_WINDOW_MS = 60_000;
 const CLIENT_MAX_PER_WINDOW = 40;
 
