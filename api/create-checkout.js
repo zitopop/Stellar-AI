@@ -418,7 +418,6 @@ export default async function handler(req, res) {
     if (plan === 'website-audit') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        payment_method_types: ['card'],
         billing_address_collection: 'auto',
         customer_creation: 'always',
         name_collection: { business: { enabled: true, optional: false } },
@@ -470,7 +469,6 @@ export default async function handler(req, res) {
     if (plan === 'ai-receptionist') {
       const checkout = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        payment_method_types: ['card'],
         billing_address_collection: 'auto',
         name_collection: { business: { enabled: true, optional: false } },
         custom_fields: [
@@ -595,7 +593,6 @@ export default async function handler(req, res) {
         mode: 'subscription',
         // Temporary safety guard: the live Stripe webhook is not yet subscribed to async Checkout events.
         // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
-        payment_method_types: ['card'],
         phone_number_collection: { enabled: false },
         ...checkoutCustomer,
         line_items: [{
@@ -646,9 +643,7 @@ export default async function handler(req, res) {
       const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan: 'website-builder' });
       const checkout = await stripe.checkout.sessions.create({
         mode: 'payment',
-        // Keep one-time fulfillment synchronous until async Checkout webhook delivery is enabled live.
-        // Use the standard card flow and do not collect a phone number at Checkout.
-        payment_method_types: ['card'],
+        // Stripe Checkout uses Dashboard-managed dynamic payment methods. Async Checkout lifecycle events are subscribed live.
         phone_number_collection: { enabled: false },
         ...checkoutCustomer,
         line_items: [{
@@ -720,9 +715,7 @@ export default async function handler(req, res) {
     const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      // Temporary safety guard: the live Stripe webhook is not yet subscribed to every async lifecycle event.
-      // Use the standard card flow. Eligible card wallets may still appear; Stripe Link is intentionally disabled.
-      payment_method_types: ['card'],
+      // Stripe Checkout uses Dashboard-managed dynamic payment methods. Async Checkout lifecycle events are subscribed live.
         phone_number_collection: { enabled: false },
       ...checkoutCustomer,
       line_items: [{ price, quantity: 1 }],
