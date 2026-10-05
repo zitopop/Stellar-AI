@@ -870,7 +870,7 @@ async function mobileControlPerform(action){
   try{
     const result=await plugin.perform({action,target,value});
     mobileControlLastSnapshot=null;
-    setStatus(result?.ok?'Phone action completed':'That action could not be completed',result?.ok?'good':'warn');
+    setStatus(result?.ok?'Phone action approved — switching to the target app if needed':'That action could not be started',result?.ok?'good':'warn');
     if(panelBackdrop.classList.contains('open'))setTimeout(()=>renderMobileControlPanel(),250);
   }catch(error){setStatus(String(error?.message||'Phone action failed.'),'error')}
 }
