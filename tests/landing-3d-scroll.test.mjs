@@ -4,16 +4,15 @@ import { readFileSync } from 'node:fs';
 
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('landing page keeps the current smart developer hero contract', () => {
+test('landing page keeps the current chat-first hero contract', () => {
   assert.match(home, /homepage-money-first-chat-2026-10-04/);
-  assert.match(home, /premium-smart-v58/);
-  assert.match(home, /<h1 id="hero-title">Build game scripts faster\.<br><span>Debug them before they ship\.<\/span><\/h1>/);
+  assert.match(home, /<h1 id="hero-title">Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span><\/h1>/);
   assert.match(home, /placeholder="Describe a script or paste an error…"/);
-  assert.match(home, /3 free previews · no signup · no card/);
-  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Start building free/);
+  assert.match(home, /Try 3 code previews free · no card required/);
+  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Start coding free/);
 });
 
-test('landing keeps the developer preview and product sections in source behind the focused entry', () => {
+test('landing keeps the developer preview and product sections in source behind the chat-first entry', () => {
   assert.match(home, /data-hero-editor/);
   assert.match(home, /id="playground"/);
   assert.match(home, /id="comparison"/);
@@ -33,7 +32,7 @@ test('landing remains responsive and motion-accessible without heavy animation d
   assert.doesNotMatch(home, /three\.js|gsap|ScrollTrigger/i);
 });
 
-test('smart redesign does not leave the removed scroll-cinema runtime active', () => {
+test('chat-first redesign does not leave the removed scroll-cinema runtime active', () => {
   assert.doesNotMatch(home, /stellar-scroll-cinema-v1/);
   assert.doesNotMatch(home, /body\.dataset\.scrollCinema='on'/);
 });
