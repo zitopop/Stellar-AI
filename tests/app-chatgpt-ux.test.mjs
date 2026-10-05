@@ -32,8 +32,9 @@ test('chat history exposes pinned and recent groups behind compact menus', () =>
 test('model picker uses a simple Fast Core Deep Max capability ladder', () => {
   for (const label of ['Stellar Fast','Stellar Core','Stellar Deep','Stellar Max']) assert.match(app, new RegExp(label));
   assert.match(app, /Fast everyday answers/);
-  assert.match(app, /Balanced default/);
+  assert.match(app, /Balanced model/);
   assert.match(app, /Deeper reasoning/);
+  assert.match(app, /badge:'Core'/);
   assert.match(app, /Maximum capability/);
 });
 
