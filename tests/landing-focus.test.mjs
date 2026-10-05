@@ -4,23 +4,28 @@ import { readFileSync } from 'node:fs';
 
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
-test('homepage keeps one clear developer conversion path', () => {
-  assert.match(home, /<h1 id="hero-title">Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span><\/h1>/);
-  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Start coding free/);
-  assert.match(home, /href="#playground" class="oa2-secondary-action">See it in action<\/a>/);
-  assert.match(home, /href="\/business">Business<\/a>/);
+test('homepage keeps one clear primary action and secondary workflow navigation', () => {
+  assert.match(home, /<h1 id="hero-title">Build game scripts faster\.<br><span>Debug them before they ship\.<\/span><\/h1>/);
+  assert.match(home, /href="\/app\?welcome=1" class="oa2-primary-action">Start building free/);
+  assert.match(home, /href="#playground" class="oa2-secondary-action">See the workflow<\/a>/);
+  assert.doesNotMatch(home, /class="stellar-hero-paths"/);
+  assert.match(home, /href="\/business">For Business<\/a>/);
 });
 
-test('homepage puts concrete tools near the hero and keeps the full product visible', () => {
-  assert.match(home, /class="landing-tool-rail/);
-  assert.match(home, /QBCore · ESX · ox_lib · Roblox Luau/);
-  assert.match(home, /class="stellar-showcase-cta"/);
-  assert.doesNotMatch(home, /class="home-whats-what"/);
-  assert.doesNotMatch(home, /main#main-content>section:not\(\.oa2-hero\)/);
+test('homepage suppresses duplicate marketing sections while keeping the useful flow visible', () => {
+  assert.match(home, /id="stellar-smart-home-v58"/);
+  assert.match(home, /\.public-home \.landing-trust-panel,/);
+  assert.match(home, /\.public-home \.home-whats-what,/);
+  assert.match(home, /\.public-home \.stellar-debug-proof\{display:none!important\}/);
+  assert.match(home, /id="playground"/);
+  assert.match(home, /id="plans"/);
+  assert.match(home, /id="business"/);
 });
 
-test('business stays visually separate from the developer product', () => {
-  assert.match(home, /class="landing-business-divider/);
-  assert.match(home, /DEVELOPER WORKSPACE/);
-  assert.match(home, /SEPARATE BUSINESS TOOLKIT/);
+test('full product and business sections remain in source for direct routes and future use', () => {
+  assert.match(home, /id="showcase"/);
+  assert.match(home, /id="business"/);
+  assert.match(home, /id="playground"/);
+  assert.match(home, /id="plans"/);
+  assert.match(home, /faq-section/);
 });
