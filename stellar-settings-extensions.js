@@ -6,7 +6,7 @@
 
   const STORAGE_KEY = 'stellar-ui-preferences-v1';
   const STREAK_KEY = 'stellar-daily-streak-v1';
-  const SUPPORT_EMAIL = 'support@trystellarai.com';
+  const SUPPORT_EMAIL = 'deadlyfox10@gmail.com';
   const DEFAULTS = Object.freeze({
     sidebarDensity: 'comfortable',
     codeWrap: true,
