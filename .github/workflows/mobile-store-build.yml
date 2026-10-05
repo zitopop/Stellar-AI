@@ -2,6 +2,11 @@ name: Mobile Store Build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/mobile-store-build.yml'
 
 permissions:
   contents: read
@@ -67,6 +72,7 @@ jobs:
             mobile/android/app/build/outputs/bundle/release/app-release.aab
 
   ios-simulator:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: macos-latest
     timeout-minutes: 30
     defaults:
