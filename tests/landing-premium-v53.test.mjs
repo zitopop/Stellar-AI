@@ -5,12 +5,13 @@ import { readFileSync } from 'node:fs';
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-premium-v53.css', import.meta.url), 'utf8');
 
-test('premium landing keeps a concrete hero and clear conversion path', () => {
-  assert.match(home, /Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span>/);
-  assert.match(home, /Write, debug and export FiveM \+ Roblox scripts from one focused workspace/);
-  assert.match(home, /Try 3 code previews free · no card required/);
-  assert.match(home, /class="oa2-primary-action">Start coding free/);
-  assert.match(home, /class="oa2-secondary-action">See it in action/);
+test('premium landing uses a concrete hero and one clear conversion path', () => {
+  assert.match(home, /Build game scripts faster\.<br><span>Debug them before they ship\.<\/span>/);
+  assert.match(home, /Generate QBCore, ESX, ox_lib and Luau code/);
+  assert.match(home, /3 free previews · no signup · no card/);
+  assert.match(home, /class="oa2-primary-action">Start building free/);
+  assert.match(home, /class="oa2-secondary-action">See the workflow/);
+  assert.match(home, /stellar-landing-premium-v57\.css/);
 });
 
 test('premium proof strip uses product facts instead of unverifiable social proof', () => {
@@ -21,13 +22,15 @@ test('premium proof strip uses product facts instead of unverifiable social proo
   assert.doesNotMatch(proof, /data-discord-members|online now|community/i);
 });
 
-test('business bridge prioritizes three paid offers and removes internal-looking numbering', () => {
+test('business bridge prioritizes three paid offers and keeps secondary workflows compact', () => {
   const business = home.match(/<section class="stellar-business-entry[\s\S]*?<\/section>/)?.[0] || '';
-  assert.equal((business.match(/class="stellar-business-entry-card"/g) || []).length, 3);
+  const cards = business.match(/class="stellar-business-entry-card"/g) || [];
+  assert.equal(cards.length, 3);
   assert.match(business, /Website Audit \/ Quick Fix/);
   assert.match(business, /AI Business Website/);
   assert.match(business, /AI Receptionist/);
-  assert.doesNotMatch(business, /0[123] · (?:CONVERSION|WEBSITE|RECEPTIONIST)/);
+  assert.match(business, /Inbox Closer/);
+  assert.match(business, /Open Guided Sales Mode/);
 });
 
 test('landing pricing presents monthly choices first', () => {
