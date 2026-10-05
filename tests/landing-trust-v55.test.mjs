@@ -6,12 +6,12 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../lib/assets/stellar-landing-trust-v55.css', import.meta.url), 'utf8');
 
 test('v55 hero is specific, useful and low-friction', () => {
-  assert.match(home, /STELLAR AI · FIVEM \+ ROBLOX/);
-  assert.match(home, /Build\. Debug\. Ship\.<br><span>FiveM \+ Roblox scripts\.<\/span>/);
-  assert.match(home, /Write, debug and export FiveM \+ Roblox scripts from one focused workspace/);
+  assert.match(home, /STELLAR AI · GAME DEVELOPMENT WORKSPACE/);
+  assert.match(home, /Build game scripts faster\.<br><span>Debug them before they ship\.<\/span>/);
+  assert.match(home, /A focused AI coding workspace for FiveM and Roblox/);
   assert.match(home, /placeholder="Describe a script or paste an error…"/);
-  assert.match(home, /class="oa2-primary-action">Start coding free/);
-  assert.match(home, /class="oa2-secondary-action">See it in action/);
+  assert.match(home, /class="oa2-primary-action">Start building free/);
+  assert.match(home, /class="oa2-secondary-action">See the workflow/);
 });
 
 test('v55 explains the workflow in three concrete steps', () => {
@@ -28,8 +28,8 @@ test('v55 trust language is confident and verifiable', () => {
   assert.match(home, /product preview, pricing, service status and policies are public/);
   assert.match(home, /Starter £8\/mo/);
   assert.match(home, /Secure Stripe checkout/);
-  assert.match(home, /Cancel from Billing/);
-  assert.match(home, /Refund policy/);
+  assert.match(home, /No card required/);
+  assert.match(home, /Clear refund policy/);
   assert.doesNotMatch(home, /No invented testimonials/);
 });
 
@@ -40,14 +40,13 @@ test('v55 styling stays compact and responsive', () => {
   assert.match(css, /prefers-reduced-motion:reduce/);
 });
 
-
 test('v55 keeps navigation and final CTA developer-focused', () => {
   const header = home.match(/<header class="site-header">[\s\S]*?<\/header>/)?.[0] || '';
   const finalCta = home.match(/<section class="container final-cta">[\s\S]*?<\/section>/)?.[0] || '';
   assert.match(header, /href="\/blog">Guides<\/a>/);
   assert.match(home, /Real product preview · inspect before use/);
   assert.match(finalCta, /Try one message\./);
-  assert.match(finalCta, /Start coding free/);
+  assert.match(finalCta, /Try Stellar free/);
   assert.match(finalCta, /Compare plans/);
   assert.doesNotMatch(finalCta, /Explore Business AI/);
   assert.doesNotMatch(home, /href="\/investors">Investors<\/a>/);
