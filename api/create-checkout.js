@@ -387,7 +387,7 @@ export default async function handler(req, res) {
   const input = req.method === 'GET' ? (req.query || {}) : (req.body || {});
   const { plan, action, sessionId, amount, qty, source, country: requestedCountry } = input;
   const purchaseStatusRequest = req.method === 'GET' && action === 'purchase-status';
-  const publicBusinessCheckout = plan === 'website-audit' || plan === 'ai-receptionist';
+  const publicBusinessCheckout = plan === 'website-audit' || plan === 'ai-receptionist' || plan === 'script-fix';
   if (req.method === 'GET' && !purchaseStatusRequest) return res.status(405).json({ error: 'Checkout creation requires a POST request.' });
   const sessionUser = (publicBusinessCheckout || purchaseStatusRequest) ? null : requireSession(req, res);
   if (!publicBusinessCheckout && !purchaseStatusRequest && !sessionUser) return;
@@ -413,6 +413,43 @@ export default async function handler(req, res) {
         console.error('Purchase status failed', error?.message || error);
         return res.status(503).json({ error: 'Purchase status could not be verified right now. Your Stripe receipt remains the payment record.' });
       }
+    }
+
+    if (plan === 'script-fix') {
+      const checkout = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        billing_address_collection: 'auto',
+        customer_creation: 'always',
+        line_items: [{
+          price_data: {
+            currency: 'gbp',
+            unit_amount: 9900,
+            product_data: {
+              name: 'Stellar AI Priority Script Fix',
+              description: 'One-off FiveM or Roblox script diagnosis, fix/build brief and implementation guidance for one focused job.',
+            },
+          },
+          quantity: 1,
+        }],
+        success_url: 'https://trystellarai.com/script-fix-thank-you?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'https://trystellarai.com/script-fix?checkout=cancelled#buy',
+        after_expiration: { recovery: { enabled: true } },
+        metadata: {
+          app: 'stellar-ai',
+          plan: 'script-fix',
+          amount: '9900',
+          currency: 'GBP',
+          stage: 'live',
+          acquisition_source: sourceName,
+          post_purchase_onboarding: 'required',
+        },
+      }, { idempotencyKey: 'stellar_script_fix_' + crypto.randomUUID() });
+      await Promise.all([
+        incrementConversionMetric('checkout-started'),
+        incrementConversionMetric(`checkout-started-source-${sourceName}`),
+        incrementConversionMetric('script-fix-checkout-started'),
+      ]);
+      return res.status(200).json({ url: checkout.url });
     }
 
     if (plan === 'website-audit') {
