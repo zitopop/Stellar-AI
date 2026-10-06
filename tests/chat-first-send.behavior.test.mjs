@@ -10,6 +10,9 @@ test('first send path points at chat API and renders recoverable assistant statu
   assert.match(app, /async function sendMessage\(/);
   assert.match(app, /Thinking…/);
   assert.match(app, /Try again\./);
+  assert.match(app, /markAssistantRetry/);
+  assert.match(app, /Try sending the last message again/);
+  assert.match(app, /Send failed · try again/);
   assert.match(app, /chat-send-error/);
 });
 
