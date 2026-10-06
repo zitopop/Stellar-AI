@@ -1087,6 +1087,94 @@ html,body{background:#0b0c0f!important}
 }
 </style>
 
+
+<style id="stellar-app-background-v45">
+/* Branded workspace background: subtle depth, never distracts from chat. */
+.main{
+  position:relative!important;
+  isolation:isolate!important;
+  background:
+    radial-gradient(760px 420px at 50% 8%,rgba(90,167,255,.075),transparent 72%),
+    radial-gradient(620px 340px at 18% 78%,rgba(67,224,192,.035),transparent 74%),
+    #0b0d11!important;
+}
+.main::before{
+  content:""!important;
+  position:absolute!important;
+  inset:52px 0 0!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)!important;
+  background-size:48px 48px!important;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 80%)!important;
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 80%)!important;
+}
+.chat{background:transparent!important}
+.welcome{
+  position:relative!important;
+  z-index:1!important;
+}
+.welcome::before{
+  content:""!important;
+  position:absolute!important;
+  width:min(680px,92vw)!important;
+  height:280px!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-58%)!important;
+  z-index:-1!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle,rgba(90,167,255,.09),rgba(67,224,192,.025) 42%,transparent 72%)!important;
+  filter:blur(18px)!important;
+  pointer-events:none!important;
+}
+.welcome-brand{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  margin:0 auto 18px!important;
+  padding:7px 11px!important;
+  border:1px solid rgba(255,255,255,.075)!important;
+  border-radius:999px!important;
+  background:rgba(17,20,26,.72)!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.16)!important;
+  backdrop-filter:blur(10px)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+}
+.welcome-brand-mark{
+  display:grid!important;
+  place-items:center!important;
+  width:22px!important;
+  height:22px!important;
+  border-radius:7px!important;
+  background:linear-gradient(135deg,rgba(90,167,255,.18),rgba(67,224,192,.10))!important;
+  color:#8fc8ff!important;
+  font-size:12px!important;
+}
+.welcome-brand strong{
+  color:#e9edf4!important;
+  font-size:11px!important;
+  font-weight:760!important;
+  letter-spacing:-.01em!important;
+}
+.welcome h1{text-shadow:0 12px 42px rgba(0,0,0,.25)!important}
+@media(max-width:760px){
+  .main{
+    background:
+      radial-gradient(520px 300px at 50% 8%,rgba(90,167,255,.065),transparent 72%),
+      #0b0d11!important;
+  }
+  .main::before{background-size:42px 42px!important;opacity:.6!important}
+  .welcome-brand{margin-bottom:14px!important}
+  .welcome::before{height:220px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .welcome::before{filter:none!important}
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -1185,7 +1273,7 @@ function codeTextFromButton(button){const code=button?.closest?.('.code-block-sh
 async function copyCodeBlock(button){const text=codeTextFromButton(button);if(!text.trim())return;try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const temp=document.createElement('textarea');temp.value=text;temp.style.position='fixed';temp.style.opacity='0';document.body.append(temp);temp.select();document.execCommand('copy');temp.remove()}const original=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=original,1200);setStatus('Code copied','good')}catch{setStatus('Could not copy code','error')}}
 function downloadLuaBlock(button){if(previewAuthGateRequested&&!signedInUser){openPanel('settings');setStatus('Create a free account to download the preview or generate another.','warn');return}const responseBubble=button?.closest?.('.bubble'),downloadableCount=responseBubble?.querySelectorAll?.('[data-code-action="download-lua"]')?.length||0;if(!serverOwner&&String(planState.plan||'free')==='free'&&downloadableCount>1){metric('upgrade-intent');metric('upgrade-from-multifile-download');openPanel('plans');setStatus('Full multi-file downloads are included with Starter, Plus or Pro. Preview and copy stay free.','warn');return}const text=codeTextFromButton(button);if(!text.trim())return;const shell=button?.closest?.('.code-block-shell'),lang=String(shell?.dataset?.language||'lua').toLowerCase(),base=lang.includes('luau')||lang.includes('roblox')?'stellar-modulescript':'stellar-script';const blob=new Blob([withStellarLuaWatermark(text)],{type:'text/plain;charset=utf-8'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=base+'.lua';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);setStatus('Lua file downloaded','good')}
 function renderChatList(){sortSessions();chatList.innerHTML='';chatEmpty.classList.toggle('hidden',sessions.length>0);const addGroup=(label,items)=>{if(!items.length)return;const heading=document.createElement('div');heading.className='chat-group-label';heading.textContent=label;chatList.append(heading);for(const s of items){const wrap=document.createElement('div');wrap.className='chat-history-row';wrap.dataset.chatRow='true';wrap.dataset.id=s.id;if(s.pinned)wrap.dataset.pinned='true';const row=document.createElement('button');row.type='button';row.className='chat-item'+(s.id===activeId?' active':'');row.dataset.id=s.id;row.innerHTML='<span class="chat-title">'+escapeHtml(s.title||'New chat')+'</span><span class="chat-meta">'+escapeHtml(chatAge(s.updated))+'</span>';const menu=document.createElement('button');menu.type='button';menu.className='chat-menu-button';menu.dataset.chatMenu=s.id;menu.setAttribute('aria-label','Chat options for '+String(s.title||'New chat'));menu.setAttribute('aria-expanded','false');menu.innerHTML='<span aria-hidden="true">•••</span>';const actions=document.createElement('div');actions.className='chat-actions';actions.setAttribute('aria-label','Chat actions');const pin=document.createElement('button');pin.type='button';pin.className='chat-action chat-pin';pin.dataset.pinChat=s.id;pin.setAttribute('aria-pressed',s.pinned?'true':'false');pin.innerHTML='<span aria-hidden="true">📌</span><span>'+(s.pinned?'Unpin':'Pin')+'</span>';const rename=document.createElement('button');rename.type='button';rename.className='chat-action chat-rename';rename.dataset.renameChat=s.id;rename.innerHTML='<span aria-hidden="true">✎</span><span>Rename</span>';const del=document.createElement('button');del.type='button';del.className='chat-action chat-delete';del.dataset.deleteChat=s.id;del.disabled=Boolean(s.pinned);del.setAttribute('aria-disabled',s.pinned?'true':'false');del.innerHTML='<span aria-hidden="true">⌫</span><span>'+(s.pinned?'Unpin before deleting':'Delete')+'</span>';actions.append(pin,rename,del);wrap.append(row,menu,actions);chatList.append(wrap)}};addGroup('Pinned',sessions.filter(session=>session.pinned));addGroup('Recent',sessions.filter(session=>!session.pinned))}
-function welcomeHtml(){return '<div class="welcome"><h1>What are you building?</h1><p>Build or debug FiveM and Roblox scripts, or ask Stellar anything.</p></div>'}function renderMessages(){const s=activeSession();chatInner.innerHTML='';if(!s.messages.length){chatInner.innerHTML=welcomeHtml();return}for(let index=0;index<s.messages.length;index++){const m=s.messages[index];addMessage(m.role,m.content,false,index)}}
+function welcomeHtml(){return '<div class="welcome"><div class="welcome-brand" aria-label="Stellar AI"><span class="welcome-brand-mark" aria-hidden="true">✦</span><strong>Stellar AI</strong></div><h1>What are you building?</h1><p>Build or debug FiveM and Roblox scripts, or ask Stellar anything.</p></div>'}function renderMessages(){const s=activeSession();chatInner.innerHTML='';if(!s.messages.length){chatInner.innerHTML=welcomeHtml();return}for(let index=0;index<s.messages.length;index++){const m=s.messages[index];addMessage(m.role,m.content,false,index)}}
 function renderAll(){renderChatList();renderMessages();updateHeader()}
 function addAssistantActions(wrap,bubble){if(!wrap||!bubble||wrap.querySelector('.message-actions'))return;const actions=document.createElement('div');actions.className='message-actions';const codeCount=bubble.querySelectorAll('pre code').length,copyAll=codeCount>1?'<button class="message-action" type="button" data-message-action="copy-all-code">Copy all code</button>':'',review=codeCount?'<button class="message-action" type="button" data-message-action="review-code">Review code</button>':'';actions.innerHTML='<button class="message-action" type="button" data-message-action="copy">Copy</button>'+copyAll+review+'<button class="message-action" type="button" data-message-action="regenerate">Regenerate</button>'+(NATIVE_SHELL?'<button class="message-action" type="button" data-message-action="share">Share</button>':'');wrap.append(actions)}function markAssistantRetry(wrap){const button=wrap?.querySelector?.('[data-message-action="regenerate"]');if(!button)return;button.textContent='Try again';button.setAttribute('aria-label','Try sending the last message again')}
 function addUserActions(wrap,messageIndex){if(!wrap||!Number.isInteger(messageIndex)||wrap.querySelector('.message-actions'))return;const actions=document.createElement('div');actions.className='message-actions user-message-actions';actions.innerHTML='<button class="message-action" type="button" data-message-action="edit" data-message-index="'+messageIndex+'">Edit &amp; resend</button>';wrap.append(actions)}
