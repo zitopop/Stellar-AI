@@ -39,7 +39,11 @@ test('attachments are removable and failed sends remain retryable', () => {
   assert.match(app, /attachmentClear\?\.classList\.add\('hidden'\)/);
   assert.match(app, /attachmentClear\?\.classList\.remove\('hidden'\)/);
   assert.match(app, /Attachment removed/);
-  assert.match(app, /metric\('chat-send-error'\);renderAssistantBubble[\s\S]*addAssistantActions/);
+  assert.match(app, /metric\('chat-send-error'\)/);
+  assert.match(app, /const failedWrap=reply\.closest\('\.msg\.assistant'\)/);
+  assert.match(app, /renderAssistantBubble\(reply,'Could not send\./);
+  assert.match(app, /addAssistantActions\(failedWrap,reply\)/);
+  assert.match(app, /markAssistantRetry\(failedWrap\)/);
 });
 
 test('keyboard, speech and modal behavior support real users', () => {
