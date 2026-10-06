@@ -53,6 +53,10 @@ test('app tracks conversion milestones without sending user content', () => {
 test('install funnel is visible and measurable across social sources', () => {
   assert.match(landing, /href="\/install"[^>]*data-conversion="install"/);
   assert.match(landing, /href="\/install"[^>]*data-conversion="install"[^>]*>Get app<\/a>/);
+  assert.match(landing, /href="\/install\?utm_campaign=homepage-install"[^>]*data-conversion="install"[^>]*>Install Stellar on your phone/);
+  assert.match(app, /id="side-install-link"[^>]*href="\/install\?utm_campaign=app-sidebar"[^>]*>Install app<\/a>/);
+  assert.match(install, /id="share-button"[^>]*>Share install link<\/button>/);
+  assert.match(install, /navigator\.share|navigator\.clipboard/);
   assert.match(install, /telemetry\.js/);
   assert.match(install, /track\?\.\('install-cta'\)/);
   assert.match(install, /track\?\.\('install-completed'\)/);

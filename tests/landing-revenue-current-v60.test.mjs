@@ -7,15 +7,15 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 test('current landing page has one clear developer revenue path', () => {
   assert.match(home, /homepage-revenue-funnel-2026-10-05/);
   assert.match(home, /Build, debug and ship FiveM &amp; Roblox scripts faster\./);
-  assert.match(home, /Start building free/);
-  assert.match(home, /See Plus · £20\/mo/);
+  assert.match(home, /Start free — no card/);
+  assert.match(home, /Plus · £20\/month/);
   assert.match(home, /Priority Script Fix · £99/);
   assert.match(home, /Get Plus · £20\/mo/);
 });
 
 test('homepage preserves try-before-pay and framework proof', () => {
   assert.match(home, /3 instant previews/);
-  assert.match(home, /Free · up to 15 Fast\/day/);
+  assert.match(home, /Up to 15 Stellar Fast generations\/day/);
   for (const name of ['QBCore','ESX','ox_lib','Luau']) assert.match(home, new RegExp(name));
   assert.match(home, /anonymous-preview-form/);
 });
