@@ -2509,8 +2509,8 @@ body.stellar-public{
 
 
 <style id="stellar-basic-landing-v1">
-/* 2026-10-06: deliberately simple public landing page.
-   Keep the working preview, pricing, auth and checkout flows; remove presentation noise. */
+/* 2026-10-06: full Stellar homepage, kept visually simple.
+   Everything important stays discoverable; styling stays restrained and consistent. */
 body.public-home{
   background:#0b0c0f!important;
   color:#f5f5f7!important;
@@ -2525,26 +2525,20 @@ body.public-home{
 .public-home .nav{min-height:64px!important}
 .public-home .brand{font-weight:750!important;letter-spacing:-.025em!important}
 .public-home .nav-actions{gap:16px!important}
-.public-home .nav-actions>a[href="#game-path"],
-.public-home .nav-actions>a[href="/install"]{display:none!important}
-
-.public-home .premium-server-scene,
-.public-home .dev-release-badge,
-.public-home .landing-kicker,
-.public-home .hero-benefit,
-.public-home .hero-trust-line,
-.public-home .hero-service-link,
-.public-home .hero-install-link{display:none!important}
 
 .public-home .oa2-hero{
   min-height:auto!important;
-  max-width:900px!important;
-  padding:clamp(86px,12vw,150px) 20px clamp(72px,10vw,120px)!important;
+  max-width:980px!important;
+  padding:clamp(86px,12vw,148px) 20px clamp(68px,9vw,108px)!important;
   text-align:center!important;
 }
-.public-home .dev-hero-copy{max-width:820px!important;margin:0 auto!important}
+.public-home .dev-hero-copy{max-width:860px!important;margin:0 auto!important}
+.public-home .premium-server-scene{
+  opacity:.34!important;
+  filter:saturate(.8)!important;
+}
 .public-home .oa2-hero h1{
-  max-width:820px!important;
+  max-width:860px!important;
   margin:0 auto!important;
   font-size:clamp(44px,7vw,76px)!important;
   line-height:1!important;
@@ -2552,15 +2546,23 @@ body.public-home{
   text-wrap:balance!important;
 }
 .public-home .oa2-lead{
-  max-width:660px!important;
-  margin:24px auto 0!important;
+  max-width:680px!important;
+  margin:22px auto 0!important;
   color:#a9b0bb!important;
   font-size:clamp(16px,2vw,19px)!important;
   line-height:1.65!important;
 }
+.public-home .hero-benefit,
+.public-home .hero-trust-line,
+.public-home .hero-service-link,
+.public-home .hero-install-link{
+  max-width:760px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
 .public-home .oa2-hero-actions{
   justify-content:center!important;
-  margin:30px auto 0!important;
+  margin:28px auto 0!important;
   gap:10px!important;
 }
 .public-home .oa2-primary-action,
@@ -2570,7 +2572,7 @@ body.public-home{
   box-shadow:none!important;
 }
 .public-home .anonymous-preview-form{
-  width:min(720px,100%)!important;
+  width:min(740px,100%)!important;
   margin:26px auto 0!important;
 }
 .public-home .anonymous-preview-input{
@@ -2588,47 +2590,86 @@ body.public-home{
   font-size:11px!important;
 }
 
-/* Keep the page to the essentials: try it, understand it, price it, answer objections. */
+/* Full homepage: show the complete product story, but as calm stacked sections. */
 .public-home .stellar-paths,
-.public-home .stellar-business-demo,
-.public-home .stellar-priority-fix,
 .public-home .landing-tool-rail,
 .public-home .dev-proof-strip,
+.public-home .landing-how,
 .public-home .landing-trust-panel,
 .public-home .stellar-showcase,
 .public-home .stellar-dev-playground,
 .public-home .stellar-comparison,
 .public-home .stellar-trust-section,
+.public-home .pricing-section,
+.public-home .faq-section,
+.public-home .final-cta{
+  display:block!important;
+}
+.public-home .stellar-priority-fix,
 .public-home .stellar-debug-proof,
 .public-home .stellar-team-offer,
 .public-home .landing-business-divider,
-.public-home .stellar-business-entry,
-.public-home #business,
-.public-home #showcase,
-.public-home #playground,
-.public-home #comparison,
-.public-home #trust{display:none!important}
-
-.public-home .landing-how{
-  padding:clamp(60px,8vw,92px) 0!important;
-  border-top:1px solid rgba(255,255,255,.06)!important;
+.public-home .stellar-business-entry{
+  display:block!important;
 }
-.public-home .landing-how-head{max-width:700px!important;margin:0 auto 28px!important;text-align:center!important}
-.public-home .landing-how-grid{gap:12px!important}
-.public-home .landing-how-grid>*{
+
+.public-home main>section{
+  scroll-margin-top:84px!important;
+}
+.public-home .stellar-paths,
+.public-home .landing-tool-rail,
+.public-home .dev-proof-strip,
+.public-home .landing-how,
+.public-home .landing-trust-panel,
+.public-home .stellar-showcase,
+.public-home .stellar-dev-playground,
+.public-home .stellar-comparison,
+.public-home .stellar-trust-section,
+.public-home .pricing-section,
+.public-home .faq-section{
+  padding-top:clamp(60px,8vw,96px)!important;
+  padding-bottom:clamp(60px,8vw,96px)!important;
+  border-top:1px solid rgba(255,255,255,.055)!important;
+}
+.public-home .dev-section-head,
+.public-home .stellar-paths-head,
+.public-home .landing-how-head,
+.public-home .stellar-showcase-head,
+.public-home .stellar-trust-head,
+.public-home .pricing-heading,
+.public-home .section-heading{
+  max-width:760px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.public-home .stellar-path-card,
+.public-home .stellar-priority-fix,
+.public-home .landing-how-grid>*,
+.public-home .stellar-showcase-card,
+.public-home .stellar-comparison-card,
+.public-home .stellar-trust-grid>*,
+.public-home .stellar-business-entry-card,
+.public-home .stellar-debug-proof,
+.public-home .stellar-team-offer{
   border:1px solid rgba(255,255,255,.08)!important;
   border-radius:18px!important;
+  background:#101216!important;
+  box-shadow:none!important;
+}
+.public-home .hero-editor,
+.public-home .dev-playground-shell,
+.public-home .anonymous-preview-result{
+  border:1px solid rgba(255,255,255,.09)!important;
   background:#101216!important;
   box-shadow:none!important;
 }
 
 .public-home .pricing-section{
   width:min(1160px,calc(100% - 32px))!important;
-  padding:clamp(70px,9vw,110px) 0!important;
 }
-.public-home .pricing-heading{max-width:720px!important;margin-inline:auto!important}
+.public-home .pricing-heading{max-width:720px!important}
 .public-home .stellar-plan-focus,
-.public-home .landing-plan-bridge{display:none!important}
+.public-home .landing-plan-bridge{display:grid!important}
 .public-home .pricing-trust{margin:18px auto 28px!important}
 .public-home .plans{
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
@@ -2647,13 +2688,11 @@ body.public-home{
   border-color:rgba(139,128,255,.42)!important;
   box-shadow:0 0 0 1px rgba(139,128,255,.12)!important;
 }
-.public-home .faq-section{
-  max-width:860px!important;
-  padding:clamp(64px,8vw,96px) 0!important;
-}
+.public-home .faq-section{max-width:920px!important}
 .public-home .final-cta{
   max-width:920px!important;
-  margin-inline:auto!important;
+  margin:0 auto clamp(60px,8vw,96px)!important;
+  padding:clamp(28px,5vw,52px)!important;
   border:1px solid rgba(255,255,255,.08)!important;
   border-radius:24px!important;
   background:#101216!important;
@@ -2665,13 +2704,16 @@ body.public-home{
   .public-home .plans{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:700px){
-  .public-home .nav-actions>a[href="#plans"]{display:none!important}
+  .public-home .nav-actions>a[href="#game-path"],
+  .public-home .nav-actions>a[href="/install"]{display:none!important}
   .public-home .nav-login{font-size:11px!important}
   .public-home .oa2-hero{padding-top:70px!important}
   .public-home .oa2-hero h1{font-size:clamp(42px,13vw,58px)!important}
   .public-home .oa2-hero-actions{display:grid!important;grid-template-columns:1fr!important}
   .public-home .oa2-hero-actions a{width:100%!important}
   .public-home .plans{grid-template-columns:1fr!important}
+  .public-home .stellar-plan-focus,
+  .public-home .landing-plan-bridge{display:block!important}
 }
 </style>
 
