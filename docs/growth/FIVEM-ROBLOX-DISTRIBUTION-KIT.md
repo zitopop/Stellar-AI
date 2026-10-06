@@ -143,5 +143,11 @@ Until then, use the existing creator/referral page for transparent sharing rathe
 - Contact server/studio owners individually with a specific observed use case; avoid bulk unsolicited spam.
 - Measure landing → app open → first successful generation → checkout or Server Pass purchase, then improve the weakest step.
 
+Free tools hub: https://trystellarai.com/free-tools
 Primary product: https://trystellarai.com
 Server Pass: https://trystellarai.com/server-pass
+
+
+## Ready-to-post channel copy
+
+Use `docs/growth/FREE-PROMO-POSTS.md` for the prepared Cfx.re, BuiltByBit, Roblox Developer Forum, Product Hunt and short-form versions. Keep each post useful on its own and follow each community’s current self-promotion rules.
