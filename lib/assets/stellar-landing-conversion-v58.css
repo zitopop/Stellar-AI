@@ -406,3 +406,78 @@
   .public-home .nav-actions .nav-login[href="/app?signin=1"]{display:none!important}
   .public-home .dev-proof-grid{grid-template-columns:1fr!important}
 }
+
+
+/* Stellar landing focus v63 — 2026-10-06 */
+/* Keep the first screen about trying Stellar, not choosing between unrelated offers. */
+body.public-home #main-content .hero-service-link{
+  display:none!important;
+}
+
+/* Sharpen the hero hierarchy while preserving the real code preview. */
+body.public-home #main-content .oa2-hero h1{
+  max-width:700px!important;
+  text-wrap:balance!important;
+}
+body.public-home #main-content .oa2-lead{
+  max-width:600px!important;
+  color:#b8bec9!important;
+}
+body.public-home #main-content .hero-benefit{
+  display:inline-flex!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin-top:14px!important;
+  padding:7px 10px!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#919aa8!important;
+  font-size:10.5px!important;
+}
+
+/* Make the free prompt box read like the product, not another marketing card. */
+body.public-home #main-content .anonymous-preview-form{
+  border-color:rgba(167,156,255,.20)!important;
+  background:linear-gradient(180deg,rgba(20,22,31,.96),rgba(12,14,20,.98))!important;
+  box-shadow:0 24px 80px rgba(0,0,0,.24)!important;
+}
+body.public-home #main-content #anonymous-preview-submit{
+  background:linear-gradient(135deg,#9b82ff,#765fff)!important;
+  border-color:rgba(176,159,255,.48)!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+/* Keep paid conversion obvious but do not let four equal cards flatten the choice. */
+body.public-home #plans .plan.featured{
+  border-color:rgba(167,156,255,.48)!important;
+  background:linear-gradient(180deg,rgba(31,27,48,.98),rgba(16,17,24,.98) 38%,#121212)!important;
+  box-shadow:0 22px 74px rgba(82,61,174,.14)!important;
+}
+body.public-home #plans .plan.featured .button-primary{
+  background:linear-gradient(135deg,#9b82ff,#725eff)!important;
+  border-color:rgba(176,159,255,.48)!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+/* Cleaner mobile handoff: start free remains visible; secondary proof comes after. */
+@media(max-width:760px){
+  body.public-home #main-content .hero-benefit{
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  body.public-home #main-content .hero-install-link{
+    display:none!important;
+  }
+  body.public-home #main-content .hero-trust-line{
+    justify-content:center!important;
+  }
+  body.public-home #main-content .hero-editor{
+    max-height:520px!important;
+  }
+  body.public-home #plans .plan.featured{
+    order:-1!important;
+  }
+}
