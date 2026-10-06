@@ -2717,6 +2717,66 @@ body.public-home{
 }
 </style>
 
+
+<style id="stellar-site-polish-v1">
+/* Homepage conversion polish: clearer primary CTA, quieter competing asks, smoother motion */
+.public-home .oa2-hero-actions{gap:12px!important;margin-top:26px!important}
+.public-home .oa2-primary-action{
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.22)!important;
+}
+.public-home .oa2-primary-action:hover{transform:translateY(-1px)!important}
+.public-home .oa2-secondary-action{transition:border-color .18s ease,background .18s ease,color .18s ease!important}
+.public-home .hero-trust-line{margin-top:18px!important;opacity:.92!important}
+.public-home .hero-service-link--quiet{
+  margin-top:14px!important;
+  font-size:12.5px!important;
+  color:#8b93a3!important;
+}
+.public-home .hero-service-link--quiet a{color:#b7c0d0!important;text-decoration:none!important;border-bottom:1px solid rgba(183,192,208,.25)}
+.public-home .hero-service-link--quiet a:hover{color:#e8eef8!important;border-bottom-color:rgba(232,238,248,.45)}
+.public-home .hero-biz-sep{margin:0 .45rem;opacity:.5}
+.public-home .hero-install-link{display:none!important}
+.public-home .stellar-path-business .oa2-primary-action{display:none!important}
+.public-home .stellar-path-card,
+.public-home .plan,
+.public-home .oa2-audience-grid article,
+.public-home .oa2-preview-shell{
+  transition:transform .18s ease,border-color .18s ease,background .18s ease!important;
+}
+.public-home .stellar-paths-head + .stellar-path-grid{gap:18px!important}
+.public-home .landing-business-divider{opacity:.55!important}
+/* Keep business entry demoted; prefer For Business nav path */
+.public-home .stellar-business-entry .oa2-primary-action{
+  background:transparent!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  color:#d7dde8!important;
+}
+</style>
+
+
+<style id="stellar-site-money-v2">
+/* Hide competing business sales block on homepage; keep one quiet exit */
+.public-home .stellar-path-business,
+.public-home .landing-business-divider,
+.public-home .stellar-business-entry{display:none!important}
+.public-home .stellar-path-grid{grid-template-columns:1fr!important;max-width:720px!important;margin-inline:auto!important}
+.public-home .plan[data-plan="starter"] .price,
+.public-home .plan[data-plan="plus"] .price{opacity:.55!important}
+.public-home .plan[data-plan="starter"] .plan-cta,
+.public-home .plan[data-plan="plus"] .plan-cta{pointer-events:none!important;opacity:.45!important}
+.public-home .for-business-exit{
+  margin:28px auto 0;max-width:720px;text-align:center;color:#8b93a3;font-size:13px;
+}
+.public-home .for-business-exit a{color:#c5cddb;text-decoration:none;border-bottom:1px solid rgba(197,205,219,.28)}
+.public-home .ship-week-checklist{
+  width:min(720px,calc(100% - 36px));margin:36px auto 8px;padding:18px 20px;border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;background:rgba(16,18,25,.72);
+}
+.public-home .ship-week-checklist h2{margin:0 0 10px;font-size:18px;letter-spacing:-.02em}
+.public-home .ship-week-checklist ol{margin:0;padding-left:1.2rem;color:#b7c0d0;line-height:1.55;font-size:14px}
+</style>
+
 </head>
 <body class="stellar-public public-home">
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -2739,24 +2799,26 @@ body.public-home{
         <div class="dev-release-badge" role="status" aria-live="polite"><span class="dev-status-dot" aria-hidden="true"></span><span data-hero-status>AI coding workspace</span></div>
         <p class="landing-kicker">FIVEM + ROBLOX AI CODING</p>
         <h1 id="hero-title">Build, debug and ship FiveM &amp; Roblox scripts faster.</h1>
-        <p class="oa2-lead">Generate QBCore, ESX, ox_lib and Roblox Luau code, or paste a broken script and its error. Stellar keeps the framework context together so you can review, copy and export the result.</p>
+        <p class="oa2-lead">Stellar AI writes, fixes and explains scripts for QBCore, ESX, ox_lib and Roblox Luau. Paste your error or describe the feature, and get working code back in seconds.</p>
         <p class="hero-benefit">Generate · Debug · Review · Export</p>
         <div class="oa2-hero-actions">
-          <a href="/app?welcome=1&utm_source=homepage&utm_campaign=hero" class="oa2-primary-action" data-conversion="start-free">Start free — no card <span aria-hidden="true">↗</span></a>
-          <a href="#playground" class="oa2-secondary-action">See the workflow</a>
+          <a href="/app?welcome=1&utm_source=homepage&utm_campaign=hero" class="oa2-primary-action" data-conversion="start-free">Start free. No card needed. <span aria-hidden="true">↗</span></a>
+          <a href="#anonymous-preview-form" class="oa2-secondary-action">Try a preview without signing up <span aria-hidden="true">→</span></a>
         </div>
         <div class="hero-trust-line" aria-label="Stellar AI trial summary">
-          <span>3 instant previews</span><span>QBCore · ESX · ox_lib · Luau</span><span>Inspect before export</span>
+          <span>Free · up to 15 Fast gens/day</span><span>No card required</span><span>QBCore · ESX · ox_lib · Luau</span>
         </div>
-        <p class="hero-service-link">Need the bug handled for you? <a href="/script-fix?utm_source=homepage&utm_campaign=hero-service" data-conversion="script-fix">Priority Script Fix · £99 one-off <span aria-hidden="true">→</span></a></p>
-        <a class="hero-install-link" href="/install?utm_campaign=homepage-install" data-conversion="install">Install Stellar on your phone <span aria-hidden="true">→</span></a>
+        <p class="hero-service-link hero-service-link--quiet">Need a bug handled for you? <a href="/script-fix?utm_source=homepage&utm_campaign=hero-service" data-conversion="script-fix">Priority Script Fix · £99 <span aria-hidden="true">→</span></a>
+          <span class="hero-biz-sep" aria-hidden="true">·</span>
+          <a href="/business?utm_source=homepage&utm_campaign=hero-for-business" data-conversion="for-business">For Business <span aria-hidden="true">→</span></a>
+        </p>
         <form class="anonymous-preview-form" id="anonymous-preview-form" novalidate>
           <label class="sr-only" for="anonymous-preview-prompt">Message Stellar AI</label>
           <div class="anonymous-preview-input">
             <textarea id="anonymous-preview-prompt" rows="2" maxlength="800" spellcheck="true" placeholder="Describe a FiveM/Roblox script or paste the error…"></textarea>
             <button id="anonymous-preview-submit" type="submit" aria-label="Send message">↑</button>
           </div>
-          <p id="anonymous-preview-status" class="anonymous-preview-status" role="status" aria-live="polite">3 instant previews before signup · then create a free account for up to 15 Stellar Fast generations/day</p>
+          <p id="anonymous-preview-status" class="anonymous-preview-status" role="status" aria-live="polite">3 instant previews before signup · free account: up to 15 Stellar Fast generations/day · no card</p>
         </form>
         <section class="anonymous-preview-result" id="anonymous-preview-result" aria-label="Generated anonymous script preview" hidden>
           <div class="anonymous-preview-result-head"><span id="anonymous-preview-meta">Game script · preview only</span><button id="anonymous-preview-download" type="button">Download .lua ↗</button></div>
@@ -2869,7 +2931,7 @@ TriggerServerEvent(<span class="syn-str">'stellar:complete'</span>)</code></pre>
             <div><span>FIX / BUILD</span><strong>£99 one-time</strong><small>Website audit / quick fix or AI business website package.</small></div>
             <div class="is-highlight"><span>HANDLE ENQUIRIES</span><strong>£150 setup + £49/mo</strong><small>AI receptionist flow using approved business information.</small></div>
           </div>
-          <div class="stellar-path-actions"><a class="oa2-primary-action" href="/app?welcome=1&prompt=Give%20me%20a%20free%203-point%20website%20mini%20audit.%20I%20will%20paste%20the%20business%20website%20URL.%20Check%20the%20public%20homepage%20for%3A%201)%20trust%20and%20clarity%2C%202)%20mobile%2Fbooking%2Fcontact%20friction%2C%20and%203)%20the%20single%20highest-value%20improvement.%20Keep%20it%20concise%20and%20do%20not%20invent%20facts.">Run free website check <span aria-hidden="true">↗</span></a><a class="stellar-path-link" href="/business">Explore business AI</a><a class="stellar-path-link" href="/ai-receptionist">See AI receptionist</a></div>
+          <div class="stellar-path-actions"><a class="oa2-secondary-action" href="/business?utm_source=homepage&utm_campaign=business-path" data-conversion="for-business">For Business <span aria-hidden="true">→</span></a><a class="stellar-path-link" href="/business">Explore business AI</a><a class="stellar-path-link" href="/ai-receptionist">See AI receptionist</a></div>
         </article>
       </div>
     </section>
@@ -3061,11 +3123,24 @@ Player.Functions.AddMoney(<span class="syn-str">'cash'</span>, reward)</code></p
       <p class="stellar-trust-note">Stellar Fast, Core, Deep and Max are Stellar capability tiers. Internal routing can use configured third-party providers; that does not imply sponsorship, endorsement or partnership.</p>
     </section>
 
+    
+    <aside class="ship-week-checklist" aria-label="Ship this week">
+      <h2>Ship one script this week</h2>
+      <ol>
+        <li>Pick one script that must ship this week.</li>
+        <li>Paste the error or brief into Stellar.</li>
+        <li>Apply the fix or accept the scaffold.</li>
+        <li>Test once in-game.</li>
+        <li>Ship — upgrade if you hit the free daily limit.</li>
+      </ol>
+    </aside>
+    <p class="for-business-exit">Running a business site too? <a href="/business?utm_source=homepage&utm_campaign=exit">For Business →</a></p>
+
     <section class="section container pricing-section" id="plans">
       <div class="section-heading center pricing-heading">
         <p class="eyebrow">STELLAR WORKSPACE PLANS</p>
         <h2>Simple plans.</h2>
-        <p>Start free. Upgrade only when you need more capacity, deeper models or team workflows.</p>
+        <p>Start free. Upgrade when you're shipping more — when you hit the free daily limit, upgrade to keep going.</p>
       </div>
       <a class="stellar-plan-focus" href="/app?upgrade=plus" aria-label="Choose Stellar Plus for £20 per month">
         <span class="stellar-plan-focus-badge">RECOMMENDED PAID PLAN</span>
