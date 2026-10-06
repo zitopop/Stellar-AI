@@ -1825,7 +1825,6 @@ html,body,.app{
 .side-brand-row,
 .side-primary,
 .side-history,
-.side-account,
 .legacy-side-actions{
   display:none!important;
 }
@@ -1836,6 +1835,29 @@ html,body,.app{
   margin:0!important;
   width:100%!important;
   min-height:46px!important;
+}
+</style>
+
+
+<style id="stellar-sidebar-bottom-links-v59">
+/* New chat stays at the top; account/settings/terms stay quietly pinned at the bottom. */
+.side-account{
+  display:grid!important;
+  margin-top:auto!important;
+  gap:6px!important;
+  padding-top:12px!important;
+}
+.side-account .side-bottom-link{
+  min-height:42px!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  padding:0 12px!important;
+}
+.side-account .side-bottom-link span{
+  color:#f5f6f8!important;
+  font-size:11px!important;
+  font-weight:760!important;
 }
 </style>
 
@@ -1878,12 +1900,10 @@ html,body,.app{
 
     <div class="hidden legacy-side-actions" aria-hidden="true"><button class="nav" type="button" id="tools-nav" data-open="tools">Tools</button><button class="nav" type="button" id="stellarx-btn">StellarX</button><button class="nav" type="button" id="export-chat-btn">Export chat</button></div>
 
-    <div class="side-account">
-      <p class="side-section-label">Account</p>
-      <button class="side-bottom-link side-upgrade" type="button" id="side-plan-button" data-open="plans"><span>Upgrade plan</span><small>See Free, Starter, Plus &amp; Pro</small></button>
-      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open Settings"><span>Settings</span><small>Account, models and preferences</small></button>
-      <a class="side-bottom-link" href="/support"><span>Help &amp; support</span><small>Get help or report a problem</small></a>
-      <a class="side-install-quiet" id="side-install-link" href="/install?utm_campaign=app-sidebar" data-conversion="install">Install Stellar app</a>
+    <div class="side-account" aria-label="Account links">
+      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open account"><span>Account</span></button>
+      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open settings"><span>Settings</span></button>
+      <a class="side-bottom-link" href="/terms"><span>Terms</span></a>
     </div>
   </aside>
   <main class="main">
