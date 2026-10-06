@@ -13,7 +13,17 @@
   <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://trystellarai.com/install">
   <title>Install Stellar AI Free | iPhone & Android</title>
-  <meta name="description" content="Install Stellar AI on iPhone or Android from the web for free. No App Store or Google Play account is needed for this web-app install method.">
+  <meta name="description" content="Install Stellar AI on iPhone, iPad or Android for free. Add the web app to your Home Screen and launch Stellar in its own app-style window.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Stellar AI">
+  <meta property="og:title" content="Install Stellar AI — Free on iPhone & Android">
+  <meta property="og:description" content="Put Stellar AI on your Home Screen for faster access to FiveM and Roblox generation, debugging and project work.">
+  <meta property="og:url" content="https://trystellarai.com/install">
+  <meta property="og:image" content="https://trystellarai.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Install Stellar AI — Free on iPhone & Android">
+  <meta name="twitter:description" content="Add Stellar AI to your Home Screen and launch it like an app.">
+  <meta name="twitter:image" content="https://trystellarai.com/og-image.png">
   <style>
     :root{color-scheme:dark;--bg:#080808;--panel:#121214;--panel2:#17171a;--line:#303036;--text:#f7f7fb;--muted:#aaa8b5;--gold:#f4d676;--mint:#7fe7cb}
     *{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;min-width:320px;min-height:100dvh;background:radial-gradient(circle at 50% -10%,rgba(212,175,55,.24),transparent 34rem),var(--bg);color:var(--text);font-family:Inter,Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -39,9 +49,10 @@
       <div class="actions">
         <button class="btn primary" id="install-button" type="button">Install Stellar AI</button>
         <a class="btn" href="/app?source=install-page">Use Stellar in browser</a>
+        <button class="btn" id="share-button" type="button">Share install link</button>
       </div>
       <div class="status" id="install-status" role="status" aria-live="polite"></div>
-      <div class="note">£0 install route · no store download required</div>
+      <div class="note">Free install · iPhone, iPad and Android · no store download required</div>
     </section>
 
     <section class="grid" aria-label="Installation instructions">
@@ -75,6 +86,7 @@
     (() => {
       const button = document.getElementById('install-button');
       const status = document.getElementById('install-status');
+      const shareButton = document.getElementById('share-button');
       let deferredPrompt = null;
       const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       const ua = navigator.userAgent || '';
@@ -121,6 +133,25 @@
         }
         document.getElementById('android').scrollIntoView({ behavior: 'smooth', block: 'center' });
         show('If Chrome does not show a prompt, open its menu and choose Install app or Add to Home screen.');
+      });
+
+      shareButton?.addEventListener('click', async () => {
+        const url = 'https://trystellarai.com/install';
+        try {
+          if (navigator.share) {
+            await navigator.share({ title: 'Stellar AI', text: 'Install Stellar AI on your phone or tablet.', url });
+            show('Share sheet opened. Send the install link to anyone you want to invite.');
+            return;
+          }
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(url);
+            show('Install link copied. Paste it into Discord, TikTok, Instagram, YouTube or a message.');
+            return;
+          }
+          show('Share this install link: ' + url);
+        } catch (error) {
+          if (error?.name !== 'AbortError') show('Share this install link: ' + url);
+        }
       });
 
       window.addEventListener('appinstalled', () => {
