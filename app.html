@@ -1325,6 +1325,113 @@ html,body{background:#0b0c0f!important}
 }
 </style>
 
+
+<style id="stellar-chatbar-minimal-v52">
+/* Minimal composer: one field + send. Extra controls stay out of sight. */
+.composer-mode-tabs,
+#image-upload-btn,
+#web-search-btn,
+#voice-input-btn,
+.image-upload-status,
+.attachment-clear,
+.composer-status,
+.composer-note{
+  display:none!important;
+}
+.composer-wrap{
+  width:min(720px,calc(100% - 28px))!important;
+  padding:0 0 20px!important;
+  margin-inline:auto!important;
+}
+.composer{
+  min-height:52px!important;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:18px!important;
+  background:rgba(20,23,29,.78)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.22)!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+}
+.composer:focus-within{
+  border-color:rgba(255,255,255,.16)!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.26)!important;
+}
+.composer-main{
+  min-height:52px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 36px!important;
+  align-items:end!important;
+  gap:8px!important;
+  padding:7px 8px 7px 14px!important;
+}
+#prompt{
+  width:100%!important;
+  min-height:36px!important;
+  max-height:156px!important;
+  margin:0!important;
+  padding:8px 2px 7px!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#edf0f4!important;
+  font-size:14px!important;
+  line-height:1.45!important;
+  resize:none!important;
+  box-shadow:none!important;
+}
+#prompt::placeholder{
+  color:#737b86!important;
+  opacity:1!important;
+}
+#sendBtn{
+  width:36px!important;
+  height:36px!important;
+  min-width:36px!important;
+  min-height:36px!important;
+  align-self:end!important;
+  display:grid!important;
+  place-items:center!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:#f0f2f5!important;
+  color:#11151a!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+}
+#sendBtn:hover,#sendBtn:focus-visible{
+  background:#ffffff!important;
+  outline:none!important;
+}
+#sendBtn:disabled{
+  opacity:.42!important;
+  cursor:default!important;
+}
+@media(max-width:760px){
+  .composer-wrap{
+    width:calc(100% - 18px)!important;
+    padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+  }
+  .composer{
+    min-height:50px!important;
+    border-radius:16px!important;
+  }
+  .composer-main{
+    min-height:50px!important;
+    grid-template-columns:minmax(0,1fr) 34px!important;
+    padding:6px 7px 6px 12px!important;
+  }
+  #sendBtn{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    min-height:34px!important;
+  }
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -1378,7 +1485,7 @@ html,body{background:#0b0c0f!important}
       <div class="actions"><button class="btn ghost hidden" type="button" data-open="plans">Plans</button><button class="btn ghost" id="accountButton" type="button" data-open="settings">Sign in</button></div>
     </header>
     <section class="chat" id="chat"><div class="chat-inner" id="chatInner"></div></section>
-    <section class="composer-wrap"><div class="composer-mode-tabs" role="tablist" aria-label="Prompt mode"><button class="composer-mode-tab" type="button" role="tab" aria-selected="true" data-composer-mode="general">Chat</button><button class="composer-mode-tab" type="button" role="tab" aria-selected="false" data-composer-mode="debug">Debug code</button></div><form class="composer" id="chatForm" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."><input class="hidden" id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,.txt,.md,.json,.js,.ts,.jsx,.tsx,.lua,.luau,.py,.html,.css,.csv,.xml,.yml,.yaml"><div class="composer-main"><button class="composer-tool" id="image-upload-btn" type="button" aria-label="Attach a file or image" title="Add file" data-tooltip="Add file">＋</button><button class="composer-tool web-search-tool" id="web-search-btn" type="button" aria-label="Search the web for this message" aria-pressed="false" title="Search web" data-tooltip="Search web">🌐</button><label class="hidden" for="prompt">Ask Stellar anything</label><textarea id="prompt" maxlength="8000" placeholder="Message Stellar AI" autocomplete="off" spellcheck="true"></textarea><button class="composer-tool" id="voice-input-btn" type="button" aria-label="Start voice input" aria-pressed="false" title="Voice" data-tooltip="Voice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg></button><button id="sendBtn" type="submit" aria-label="Send message" title="Send" data-tooltip="Send">↑</button></div><div class="image-upload-status" id="image-upload-status" role="status" aria-live="polite"></div><button class="attachment-clear hidden" id="attachment-clear-btn" type="button" aria-label="Remove attachment">Remove</button></form><span class="status good composer-status" id="status" role="status" aria-live="polite">Ready</span><p class="composer-note" id="composer-note">Stellar can make mistakes. Check important information.</p></section>
+    <section class="composer-wrap"><div class="composer-mode-tabs" role="tablist" aria-label="Prompt mode"><button class="composer-mode-tab" type="button" role="tab" aria-selected="true" data-composer-mode="general">Chat</button><button class="composer-mode-tab" type="button" role="tab" aria-selected="false" data-composer-mode="debug">Debug code</button></div><form class="composer" id="chatForm" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."><input class="hidden" id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,.txt,.md,.json,.js,.ts,.jsx,.tsx,.lua,.luau,.py,.html,.css,.csv,.xml,.yml,.yaml"><div class="composer-main"><button class="composer-tool" id="image-upload-btn" type="button" aria-label="Attach a file or image" title="Add file" data-tooltip="Add file">＋</button><button class="composer-tool web-search-tool" id="web-search-btn" type="button" aria-label="Search the web for this message" aria-pressed="false" title="Search web" data-tooltip="Search web">🌐</button><label class="hidden" for="prompt">Ask Stellar anything</label><textarea id="prompt" maxlength="8000" placeholder="Message Stellar" autocomplete="off" spellcheck="true"></textarea><button class="composer-tool" id="voice-input-btn" type="button" aria-label="Start voice input" aria-pressed="false" title="Voice" data-tooltip="Voice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg></button><button id="sendBtn" type="submit" aria-label="Send message" title="Send" data-tooltip="Send">↑</button></div><div class="image-upload-status" id="image-upload-status" role="status" aria-live="polite"></div><button class="attachment-clear hidden" id="attachment-clear-btn" type="button" aria-label="Remove attachment">Remove</button></form><span class="status good composer-status" id="status" role="status" aria-live="polite">Ready</span><p class="composer-note" id="composer-note">Stellar can make mistakes. Check important information.</p></section>
   </main>
 </div>
 <div class="panel-backdrop" id="panelBackdrop"><section class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle"><div class="panel-head"><div><h2 id="panelTitle">Settings</h2><p id="panelIntro">Account, usage and developer settings.</p></div><button class="close" type="button" id="closePanel" aria-label="Close">×</button></div><div class="panel-body" id="panelBody"></div></section></div>
