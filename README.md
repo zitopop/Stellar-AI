@@ -6,6 +6,8 @@
 
 ## Free developer resources
 
+**Public free-tools hub:** https://trystellarai.com/free-tools
+
 - [FiveM: secure QBCore reward event](developer-resources/fivem/secure-qbcore-reward)
 - [Roblox: secure RemoteEvent reward handler](developer-resources/roblox/secure-remoteevent-handler)
 - [Developer resources index](developer-resources/README.md)
