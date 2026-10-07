@@ -194,8 +194,10 @@ async function handleWelcomeResend(req, res, url, token) {
   if (!session) return res.status(401).json({ error: 'Please sign in again to continue.' });
 
   const { email, name } = req.body || {};
-  const normalizedEmail = String(email || '').trim().toLowerCase();
-  if (!normalizedEmail || normalizedEmail !== session.email) {
+  const accountUser = (await kvGet(url, token, `stellar:user:${session.email}`)) || {};
+  const loginEmail = String(accountUser.loginEmail || session.email).trim().toLowerCase();
+  const normalizedEmail = String(email || loginEmail).trim().toLowerCase();
+  if (!normalizedEmail || normalizedEmail !== loginEmail) {
     return res.status(403).json({ error: 'You can only send a welcome email to your signed-in account.' });
   }
 
@@ -331,7 +333,10 @@ export default async function handler(req, res) {
 
     if (action === 'redeemCode') {
       const session = readSession(req);
-      if (!session || session.email !== normalizedEmail) return res.status(401).json({ error: 'Please sign in again before redeeming a code.' });
+      if (!session) return res.status(401).json({ error: 'Please sign in again before redeeming a code.' });
+      const accountUser = (await kvGet(url, token, `stellar:user:${session.email}`)) || {};
+      const loginEmail = String(accountUser.loginEmail || session.email).trim().toLowerCase();
+      if (normalizedEmail !== loginEmail) return res.status(401).json({ error: 'Please sign in again before redeeming a code.' });
       const normalizedCode = String(code || '').trim().toUpperCase();
       if (!/^STELLAR-[A-Z0-9-]{6,64}$/.test(normalizedCode)) return res.status(400).json({ error: 'That code is not valid.' });
 
@@ -341,8 +346,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'That code is invalid or has already been used.' });
       }
 
-      const userKey = `stellar:user:${normalizedEmail}`;
-      const existing = (await kvGet(url, token, userKey)) || { plan: 'free', createdAt: Date.now() };
+      const userKey = `stellar:user:${session.email}`;
+      const existing = (await kvGet(url, token, userKey)) || { plan: 'free', createdAt: Date.now(), loginEmail };
       const amount = Math.round(Number(gift.amount));
       const updatedUser = {
         ...existing,
