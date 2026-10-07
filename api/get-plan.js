@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 // api/get-plan.js — retrieves the signed-in user's plan, add-on credits, usage, referrals, achievements, and plan capabilities
-import { isOwnerEmail, requireSession } from '../lib/auth.js';
+import { isOwnerEmail, isStaffEmail, requireSession } from '../lib/auth.js';
 import { incrementConversionMetric, recordCheckoutCancellation } from '../lib/conversion-metrics.js';
 import { achievementDefinitions, ensureReferralProfile, kvGet, kvPipeline, unlockedAchievements } from '../lib/profile.js';
 import { readApiKeySummary, regenerateApiKey } from '../lib/api-keys.js';
@@ -295,6 +295,7 @@ export default async function handler(req, res) {
 
   try {
     const owner = isOwnerEmail(session.email);
+    const staff = isStaffEmail(session.email);
     const [storedValue, authRecord, serverPassRecord, businessOrdersRaw] = await Promise.all([
       kvGet(url, token, `stellar:user:${session.email}`),
       kvGet(url, token, `stellar:auth:${session.email}`),
@@ -357,6 +358,7 @@ export default async function handler(req, res) {
       planSource: accountPlan.source,
       accountPlan,
       owner,
+      staff,
       capabilities,
       availableModels: capabilities.models,
       billing: billingState({ plan, user, owner }),
