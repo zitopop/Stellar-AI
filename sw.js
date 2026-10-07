@@ -1,5 +1,5 @@
 // Stellar AI service worker — clean landing cache, Google sign-in UI patch, offline support and push notifications.
-const SW_VERSION = 'stellar-sw-2026-10-05-native-auth-v2';
+const SW_VERSION = 'stellar-sw-2026-10-07-settings-restore-v3';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
