@@ -2504,6 +2504,136 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-chat-actions-polish-v69">
+/* Premium recent-chat overflow menu. */
+.chat-history-row{
+  overflow:visible!important;
+}
+.chat-menu-button{
+  width:32px!important;
+  height:32px!important;
+  min-width:32px!important;
+  min-height:32px!important;
+  margin-right:1px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#777d86!important;
+  opacity:.62!important;
+  transition:background .14s ease,color .14s ease,opacity .14s ease!important;
+}
+.chat-menu-button svg{
+  width:17px!important;
+  height:17px!important;
+  display:block!important;
+  fill:currentColor!important;
+}
+.chat-history-row:hover .chat-menu-button,
+.chat-history-row:focus-within .chat-menu-button,
+.chat-history-row.menu-open .chat-menu-button{
+  opacity:1!important;
+}
+.chat-menu-button:hover,
+.chat-menu-button:focus-visible,
+.chat-history-row.menu-open .chat-menu-button{
+  background:rgba(255,255,255,.055)!important;
+  color:#f4f5f7!important;
+  outline:0!important;
+}
+.chat-history-row.menu-open{
+  z-index:12!important;
+}
+.chat-actions{
+  display:none!important;
+  position:absolute!important;
+  right:0!important;
+  top:38px!important;
+  z-index:30!important;
+  width:174px!important;
+  min-height:0!important;
+  padding:5px!important;
+  gap:2px!important;
+  border:1px solid rgba(255,255,255,.085)!important;
+  border-radius:12px!important;
+  background:rgba(14,15,17,.98)!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.48)!important;
+  backdrop-filter:blur(18px)!important;
+}
+.chat-history-row.menu-open .chat-actions{
+  display:grid!important;
+}
+.chat-action{
+  width:100%!important;
+  height:38px!important;
+  min-height:38px!important;
+  display:grid!important;
+  grid-template-columns:18px minmax(0,1fr)!important;
+  align-items:center!important;
+  justify-content:start!important;
+  gap:9px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#d9dde2!important;
+  font-size:11.5px!important;
+  font-weight:650!important;
+  line-height:1!important;
+  text-align:left!important;
+}
+.chat-action svg{
+  width:16px!important;
+  height:16px!important;
+  display:block!important;
+  fill:currentColor!important;
+}
+.chat-action:hover,
+.chat-action:focus-visible{
+  background:rgba(255,255,255,.055)!important;
+  color:#fff!important;
+  outline:0!important;
+}
+.chat-pin[aria-pressed="true"]{
+  background:rgba(255,255,255,.04)!important;
+  color:#f4f5f7!important;
+}
+.chat-delete{
+  color:#e89090!important;
+}
+.chat-delete:hover,
+.chat-delete:focus-visible{
+  background:rgba(255,92,92,.085)!important;
+  color:#ffb0b0!important;
+}
+.chat-delete:disabled,
+.chat-delete[aria-disabled="true"]{
+  opacity:.38!important;
+  cursor:not-allowed!important;
+  background:transparent!important;
+  color:#777d86!important;
+}
+@media(max-width:900px){
+  .chat-menu-button{
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    min-height:38px!important;
+  }
+  .chat-actions{
+    top:42px!important;
+    width:184px!important;
+  }
+  .chat-action{
+    min-height:42px!important;
+    height:42px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .chat-menu-button{transition:none!important}
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -2599,7 +2729,7 @@ function renderAssistantBubble(bubble,text){if(!bubble)return;const value=String
 function codeTextFromButton(button){const code=button?.closest?.('.code-block-shell')?.querySelector?.('code');return String(code?.textContent||'').replace(/\r\n/g,'\n').replace(/\s+$/,'')+'\n'}const STELLAR_LUA_WATERMARK='-- Generated with Stellar AI — https://trystellarai.com\n';function withStellarLuaWatermark(value){const text=String(value||'');return text.startsWith(STELLAR_LUA_WATERMARK)?text:STELLAR_LUA_WATERMARK+text}
 async function copyCodeBlock(button){const text=codeTextFromButton(button);if(!text.trim())return;try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const temp=document.createElement('textarea');temp.value=text;temp.style.position='fixed';temp.style.opacity='0';document.body.append(temp);temp.select();document.execCommand('copy');temp.remove()}const original=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=original,1200);setStatus('Code copied','good')}catch{setStatus('Could not copy code','error')}}
 function downloadLuaBlock(button){if(previewAuthGateRequested&&!signedInUser){openPanel('settings');setStatus('Create a free account to download the preview or generate another.','warn');return}const responseBubble=button?.closest?.('.bubble'),downloadableCount=responseBubble?.querySelectorAll?.('[data-code-action="download-lua"]')?.length||0;if(!serverOwner&&String(planState.plan||'free')==='free'&&downloadableCount>1){metric('upgrade-intent');metric('upgrade-from-multifile-download');openPanel('plans');setStatus('Full multi-file downloads are included with Starter, Plus or Pro. Preview and copy stay free.','warn');return}const text=codeTextFromButton(button);if(!text.trim())return;const shell=button?.closest?.('.code-block-shell'),lang=String(shell?.dataset?.language||'lua').toLowerCase(),base=lang.includes('luau')||lang.includes('roblox')?'stellar-modulescript':'stellar-script';const blob=new Blob([withStellarLuaWatermark(text)],{type:'text/plain;charset=utf-8'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=base+'.lua';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);setStatus('Lua file downloaded','good')}
-function renderChatList(){sortSessions();chatList.innerHTML='';const historySessions=sessions.filter(session=>Array.isArray(session?.messages)&&session.messages.length>0),historySection=chatList.closest('.side-history');if(historySection)historySection.hidden=historySessions.length===0;chatEmpty.classList.add('hidden');const addGroup=(label,items)=>{if(!items.length)return;if(label){const heading=document.createElement('div');heading.className='chat-group-label';heading.textContent=label;chatList.append(heading)}for(const s of items){const wrap=document.createElement('div');wrap.className='chat-history-row';wrap.dataset.chatRow='true';wrap.dataset.id=s.id;if(s.pinned)wrap.dataset.pinned='true';const row=document.createElement('button');row.type='button';row.className='chat-item'+(s.id===activeId?' active':'');row.dataset.id=s.id;row.innerHTML='<span class="chat-title">'+escapeHtml(s.title||'New chat')+'</span><span class="chat-meta">'+escapeHtml(chatAge(s.updated))+'</span>';const menu=document.createElement('button');menu.type='button';menu.className='chat-menu-button';menu.dataset.chatMenu=s.id;menu.setAttribute('aria-label','Chat options for '+String(s.title||'New chat'));menu.setAttribute('aria-expanded','false');menu.innerHTML='<span aria-hidden="true">•••</span>';const actions=document.createElement('div');actions.className='chat-actions';actions.setAttribute('aria-label','Chat actions');const pin=document.createElement('button');pin.type='button';pin.className='chat-action chat-pin';pin.dataset.pinChat=s.id;pin.setAttribute('aria-pressed',s.pinned?'true':'false');pin.innerHTML='<span aria-hidden="true">📌</span><span>'+(s.pinned?'Unpin':'Pin')+'</span>';const rename=document.createElement('button');rename.type='button';rename.className='chat-action chat-rename';rename.dataset.renameChat=s.id;rename.innerHTML='<span aria-hidden="true">✎</span><span>Rename</span>';const del=document.createElement('button');del.type='button';del.className='chat-action chat-delete';del.dataset.deleteChat=s.id;del.disabled=Boolean(s.pinned);del.setAttribute('aria-disabled',s.pinned?'true':'false');del.innerHTML='<span aria-hidden="true">⌫</span><span>'+(s.pinned?'Unpin before deleting':'Delete')+'</span>';actions.append(pin,rename,del);wrap.append(row,menu,actions);chatList.append(wrap)}};addGroup('Pinned',historySessions.filter(session=>session.pinned));addGroup('',historySessions.filter(session=>!session.pinned))}
+function renderChatList(){sortSessions();chatList.innerHTML='';const historySessions=sessions.filter(session=>Array.isArray(session?.messages)&&session.messages.length>0),historySection=chatList.closest('.side-history');if(historySection)historySection.hidden=historySessions.length===0;chatEmpty.classList.add('hidden');const addGroup=(label,items)=>{if(!items.length)return;if(label){const heading=document.createElement('div');heading.className='chat-group-label';heading.textContent=label;chatList.append(heading)}for(const s of items){const wrap=document.createElement('div');wrap.className='chat-history-row';wrap.dataset.chatRow='true';wrap.dataset.id=s.id;if(s.pinned)wrap.dataset.pinned='true';const row=document.createElement('button');row.type='button';row.className='chat-item'+(s.id===activeId?' active':'');row.dataset.id=s.id;row.innerHTML='<span class="chat-title">'+escapeHtml(s.title||'New chat')+'</span><span class="chat-meta">'+escapeHtml(chatAge(s.updated))+'</span>';const menu=document.createElement('button');menu.type='button';menu.className='chat-menu-button';menu.dataset.chatMenu=s.id;menu.setAttribute('aria-label','Chat options for '+String(s.title||'New chat'));menu.setAttribute('aria-expanded','false');menu.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg>';const actions=document.createElement('div');actions.className='chat-actions';actions.setAttribute('aria-label','Chat actions');const pin=document.createElement('button');pin.type='button';pin.className='chat-action chat-pin';pin.dataset.pinChat=s.id;pin.setAttribute('aria-pressed',s.pinned?'true':'false');pin.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3h8l-.9 6.1 2.9 2.9v2H13v6l-1 1-1-1v-6H6v-2l2.9-2.9L8 3Z"></path></svg><span>'+(s.pinned?'Unpin':'Pin')+'</span>';const rename=document.createElement('button');rename.type='button';rename.className='chat-action chat-rename';rename.dataset.renameChat=s.id;rename.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 16.8V20h3.2L17.7 9.5l-3.2-3.2L4 16.8Zm15.8-9.4a1.1 1.1 0 0 0 0-1.6l-1.6-1.6a1.1 1.1 0 0 0-1.6 0l-1.2 1.2 3.2 3.2 1.2-1.2Z"></path></svg><span>Rename</span>';const del=document.createElement('button');del.type='button';del.className='chat-action chat-delete';del.dataset.deleteChat=s.id;del.disabled=Boolean(s.pinned);del.setAttribute('aria-disabled',s.pinned?'true':'false');del.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7h8l-.7 13H8.7L8 7Zm2-3h4l1 1h4v2H5V5h4l1-1Z"></path></svg><span>'+(s.pinned?'Unpin to delete':'Delete')+'</span>';actions.append(pin,rename,del);wrap.append(row,menu,actions);chatList.append(wrap)}};addGroup('Pinned',historySessions.filter(session=>session.pinned));addGroup('',historySessions.filter(session=>!session.pinned))}
 function welcomeName(){const raw=String(signedInUser?.name||'').trim();if(raw)return raw.split(/\s+/)[0];return 'Tobi'}function welcomeGreeting(nowDate=new Date()){const hour=nowDate.getHours();return hour<5?'Good night':hour<12?'Good morning':hour<18?'Good afternoon':hour<22?'Good evening':'Good night'}function welcomeSubtext(nowDate=new Date()){const hour=nowDate.getHours();if(hour<5)return 'Still awake, night owl?';if(hour<12)return 'Ready for a fresh start?';if(hour<18)return 'Hope your day is going well.';if(hour<22)return 'Settling in for the evening?';return 'Still awake, night owl?'}function welcomeHtml(){const nowDate=new Date(),name=escapeHtml(welcomeName()),greeting=escapeHtml(welcomeGreeting(nowDate)),subtext=escapeHtml(welcomeSubtext(nowDate));return '<div class="welcome"><h1>'+greeting+', '+name+'</h1><p class="welcome-time-note">'+subtext+'</p></div>'}function renderMessages(){const s=activeSession();chatInner.innerHTML='';if(!s.messages.length){chatInner.innerHTML=welcomeHtml();return}for(let index=0;index<s.messages.length;index++){const m=s.messages[index];addMessage(m.role,m.content,false,index)}}
 function renderAll(){renderChatList();renderMessages();updateHeader()}
 function addAssistantActions(wrap,bubble){if(!wrap||!bubble||wrap.querySelector('.message-actions'))return;const actions=document.createElement('div');actions.className='message-actions';const codeCount=bubble.querySelectorAll('pre code').length,copyAll=codeCount>1?'<button class="message-action" type="button" data-message-action="copy-all-code">Copy all code</button>':'',review=codeCount?'<button class="message-action" type="button" data-message-action="review-code">Review code</button>':'';actions.innerHTML='<button class="message-action" type="button" data-message-action="copy">Copy</button>'+copyAll+review+'<button class="message-action" type="button" data-message-action="regenerate">Regenerate</button>'+(NATIVE_SHELL?'<button class="message-action" type="button" data-message-action="share">Share</button>':'');wrap.append(actions)}function markAssistantRetry(wrap){const button=wrap?.querySelector?.('[data-message-action="regenerate"]');if(!button)return;button.textContent='Try again';button.setAttribute('aria-label','Try sending the last message again')}
