@@ -1,6 +1,6 @@
 // api/broadcast.js - owner-authorized email broadcast
 import { timingSafeEqual } from 'node:crypto';
-import { isOwnerEmail, requireSession } from '../lib/auth.js';
+import { isOwnerEmail, isStaffEmail, requireSession } from '../lib/auth.js';
 import { readConversionMetrics } from '../lib/conversion-metrics.js';
 import { readFunnelMetrics } from '../lib/funnel-metrics.js';
 import { handleTelnyxVoiceWebhook, readOwnerCallHealth, startOwnerCall } from '../lib/owner-call.js';
@@ -144,7 +144,10 @@ export default async function handler(req, res) {
   if (!internalEscalation) {
     const session = requireSession(req, res);
     if (!session) return;
-    if (!isOwnerEmail(session.email)) return res.status(403).json({ error: 'Owner access is required.' });
+    const owner = isOwnerEmail(session.email);
+    const staff = isStaffEmail(session.email);
+    const staffAllowed = staff && new Set(['conversionMetrics', 'funnelMetrics']).has(action);
+    if (!owner && !staffAllowed) return res.status(403).json({ error: 'Private access is required.' });
     ownerSession = session;
   }
 
