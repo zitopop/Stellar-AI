@@ -4296,6 +4296,54 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-centered-chatbar-with-left-model-v95">
+/* Keep the chatbar geometrically centered; model picker sits just to its left. */
+.composer-layout{
+  position:relative!important;
+  width:100%!important;
+  display:block!important;
+}
+.composer-layout .composer{
+  width:100%!important;
+  min-width:0!important;
+  margin:0 auto!important;
+}
+@media(min-width:761px){
+  .composer-layout>.composer-model-wrap{
+    position:absolute!important;
+    right:calc(100% + 8px)!important;
+    left:auto!important;
+    bottom:9px!important;
+    width:128px!important;
+    margin:0!important;
+    z-index:20!important;
+  }
+}
+@media(max-width:760px){
+  .composer-layout{
+    display:grid!important;
+    grid-template-columns:108px minmax(0,1fr)!important;
+    gap:6px!important;
+    align-items:end!important;
+  }
+  .composer-layout>.composer-model-wrap{
+    position:relative!important;
+    right:auto!important;
+    left:auto!important;
+    bottom:auto!important;
+    width:auto!important;
+    margin-bottom:8px!important;
+  }
+}
+@media(max-width:430px){
+  .composer-layout{
+    grid-template-columns:96px minmax(0,1fr)!important;
+    gap:5px!important;
+  }
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
