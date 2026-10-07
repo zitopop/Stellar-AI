@@ -3510,6 +3510,55 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-matched-rail-icons-v82">
+/* One consistent outlined SVG icon system for the collapsed sidebar. */
+.side-rail-icon{
+  display:none!important;
+}
+@media(min-width:901px){
+  body.sidebar-collapsed .side-account .side-bottom-link::before,
+  body.sidebar-collapsed .side-new-chat::before{
+    content:none!important;
+    display:none!important;
+  }
+  body.sidebar-collapsed .side-account .side-bottom-link>span:first-child,
+  body.sidebar-collapsed .side-new-chat>span:first-child{
+    display:none!important;
+  }
+  body.sidebar-collapsed .side-rail-icon{
+    display:grid!important;
+    width:22px!important;
+    height:22px!important;
+    place-items:center!important;
+    color:#d7dbe1!important;
+    overflow:visible!important;
+  }
+  body.sidebar-collapsed .side-rail-icon svg{
+    display:block!important;
+    width:20px!important;
+    height:20px!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.65!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+    overflow:visible!important;
+  }
+  body.sidebar-collapsed .side-account .side-bottom-link,
+  body.sidebar-collapsed .side-new-chat{
+    display:grid!important;
+    place-items:center!important;
+  }
+  body.sidebar-collapsed .side-account .side-bottom-link:hover .side-rail-icon,
+  body.sidebar-collapsed .side-account .side-bottom-link:focus-visible .side-rail-icon,
+  body.sidebar-collapsed .side-new-chat:hover .side-rail-icon,
+  body.sidebar-collapsed .side-new-chat:focus-visible .side-rail-icon{
+    color:#fff!important;
+  }
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -3545,12 +3594,12 @@ html,body,.app{
     <div class="hidden legacy-side-actions" aria-hidden="true"><button class="nav" type="button" id="tools-nav" data-open="tools">Tools</button><button class="nav" type="button" id="stellarx-btn">StellarX</button><button class="nav" type="button" id="export-chat-btn">Export chat</button></div>
 
     <div class="side-account" aria-label="Account links">
-      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open account"><span>Account</span></button>
-      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open settings"><span>Settings</span></button>
-      <a class="side-bottom-link" href="/terms" aria-label="Open terms" title="Terms"><span>Terms</span><span class="collapsed-terms-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M7 3.75h7.25L18.25 7.75V20.25H7V3.75Z"></path><path d="M14 3.75V8H18.25"></path><path d="M9.5 11.25H15.75"></path><path d="M9.5 14.25H15.75"></path><path d="M9.5 17.25H13.5"></path></svg></span></a>
+      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open account" title="Account"><span>Account</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.75 19.25c.7-3.25 2.85-5 6.25-5s5.55 1.75 6.25 5"></path></svg></span></button>
+      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open settings" title="Settings"><span>Settings</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7.7 7.7 0 0 0-.1-1.2l2-1.55-2-3.45-2.45 1a7.7 7.7 0 0 0-2.1-1.2L14 3h-4l-.35 2.6a7.7 7.7 0 0 0-2.1 1.2l-2.45-1-2 3.45 2 1.55A7.7 7.7 0 0 0 5 12c0 .4.03.8.1 1.2l-2 1.55 2 3.45 2.45-1a7.7 7.7 0 0 0 2.1 1.2L10 21h4l.35-2.6a7.7 7.7 0 0 0 2.1-1.2l2.45 1 2-3.45-2-1.55c.07-.4.1-.8.1-1.2Z"></path></svg></span></button>
+      <a class="side-bottom-link" href="/terms" aria-label="Open terms" title="Terms"><span>Terms</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M7 3.75h7.25L18.25 7.75V20.25H7V3.75Z"></path><path d="M14 3.75V8H18.25"></path><path d="M9.5 11.25H15.75"></path><path d="M9.5 14.25H15.75"></path><path d="M9.5 17.25H13.5"></path></svg></span></a>
     </div>
 
-    <button class="side-new-chat" type="button" id="newChatBtn"><span>New chat</span></button>
+    <button class="side-new-chat" type="button" id="newChatBtn" aria-label="New chat" title="New chat"><span>New chat</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 5.75h9.5"></path><path d="M5 9.75h6.5"></path><path d="M5 13.75h5"></path><path d="M14.5 18.5 19 14l1 1-4.5 4.5-2 .5.5-2Z"></path></svg></span></button>
   </aside>
   <main class="main">
     <header class="top">
