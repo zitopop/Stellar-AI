@@ -13,9 +13,11 @@ test('landing page exposes one visible conversion homepage while preserving lega
   assert.equal((home.match(/<header class="site-header">/g)||[]).length,1);
 });
 
-test('phone sidebar toggle remains visible above the drawer and exposes close state',()=>{
+test('phone sidebar always has visible open and close controls',()=>{
   assert.match(app,/id="stellar-mobile-sidebar-toggle-v81"/);
-  assert.match(app,/@media\(max-width:900px\)\{[\s\S]*?\.mobile-menu\{[\s\S]*?position:fixed!important;[\s\S]*?z-index:35!important;[\s\S]*?width:44px!important;[\s\S]*?height:44px!important/);
-  assert.match(app,/menu\.textContent=closed\?'☰':'×'/);
+  assert.match(app,/id="menuBtn"[^>]*aria-label="Open sidebar"/);
+  assert.match(app,/id="sideCloseBtn"[^>]*aria-label="Close sidebar"[^>]*>×<\/button>/);
+  assert.match(app,/\.side-close-mobile\{[\s\S]*?display:none[\s\S]*?@media\(max-width:900px\)[\s\S]*?\.side-close-mobile\{[\s\S]*?display:grid!important;[\s\S]*?width:44px!important;[\s\S]*?height:44px!important/);
+  assert.match(app,/\$\('sideCloseBtn'\)\?\.addEventListener\('click',\(\)=>closeSide\(\)\)/);
   assert.match(app,/menu\.setAttribute\('aria-expanded',closed\?'false':'true'\)/);
 });
