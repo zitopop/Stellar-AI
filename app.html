@@ -3777,6 +3777,88 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-compact-model-menu-v87">
+.panel.model-picker-panel.model-picker-compact{
+  width:min(390px,calc(100vw - 28px))!important;
+}
+.panel.model-picker-panel.model-picker-compact .panel-head{
+  padding-bottom:8px!important;
+}
+.panel.model-picker-panel.model-picker-compact #panelIntro{
+  display:none!important;
+}
+.panel.model-picker-panel.model-picker-compact .panel-body{
+  padding-top:4px!important;
+}
+.model-grid-compact{
+  display:grid!important;
+  gap:3px!important;
+}
+.model-card-compact{
+  width:100%!important;
+  min-height:58px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 24px!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:9px 10px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:#f1f2f4!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.model-card-compact:hover,
+.model-card-compact:focus-visible{
+  background:rgba(255,255,255,.055)!important;
+  outline:none!important;
+  transform:none!important;
+}
+.model-card-compact.selected{
+  background:rgba(255,255,255,.07)!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.model-card-compact.locked{
+  border:0!important;
+  background:transparent!important;
+  opacity:.72!important;
+}
+.model-card-compact .model-card-copy{
+  min-width:0!important;
+  display:grid!important;
+  gap:3px!important;
+  text-align:left!important;
+}
+.model-card-compact .model-card-copy strong{
+  color:#f2f3f5!important;
+  font-size:12px!important;
+  font-weight:730!important;
+  line-height:1.25!important;
+}
+.model-card-compact .model-card-copy small{
+  color:#858b94!important;
+  font-size:10.5px!important;
+  line-height:1.35!important;
+}
+.model-card-compact .model-card-state{
+  display:grid!important;
+  place-items:center!important;
+  color:#aeb4bd!important;
+  font-size:12px!important;
+}
+@media(max-width:540px){
+  .panel.model-picker-panel.model-picker-compact{
+    width:100%!important;
+  }
+  .model-card-compact{
+    min-height:60px!important;
+  }
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -4107,7 +4189,7 @@ function salesUseInChat(){
   closePanel();prompt.value=selectedSalesPrompt();resizePrompt();prompt.focus();setStatus('Guided sales brief added to chat','good');
 }
 
-function renderModelsPanel(){document.getElementById('panel')?.classList.add('model-picker-panel');panelTitle.textContent='Choose a model';panelIntro.textContent='Choose how much speed or reasoning you want for this chat.';const order=['spark','star','comet','nova'];const meta={spark:{icon:'F',badge:'Fast',best:'Best for quick jobs',desc:'Fastest option for everyday questions, short rewrites, simple code help and quick ideas.',plan:'Free',speed:'Fastest',depth:'Light'},star:{icon:'C',badge:'Core',best:'Best for most chats',desc:'Balanced for coding, writing, planning and general problem solving when you want more depth without slowing down.',plan:'Starter',speed:'Fast',depth:'Balanced'},comet:{icon:'D',badge:'Deep',best:'Best for hard problems',desc:'Uses deeper reasoning for debugging, research, multi-step coding and work where accuracy matters more than speed.',plan:'Plus',speed:'Slower',depth:'Deep'},nova:{icon:'M',badge:'Max',best:'Best for the hardest work',desc:'Highest-capability option for complex projects, difficult reviews, long reasoning chains and demanding technical work.',plan:'Pro',speed:'Slowest',depth:'Maximum'}};panelBody.innerHTML='<div class="model-picker-note"><span class="model-picker-dot" aria-hidden="true"></span><span>Pick per chat · you can change model any time</span></div><div class="model-grid">'+order.map(key=>{const allowed=allowedModels.includes(key),selected=selectedModel===key,m=meta[key];return '<button class="model-card'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" data-action="select-model" data-model="'+key+'" aria-pressed="'+(selected?'true':'false')+'" aria-disabled="'+(allowed?'false':'true')+'"><span class="model-card-icon" aria-hidden="true">'+m.icon+'</span><span class="model-card-copy"><span class="model-card-top"><strong>'+MODELS[key]+'</strong><span class="model-card-badge">'+m.badge+'</span></span><span class="model-card-best">'+m.best+'</span><small>'+m.desc+'</small><span class="model-card-traits"><span>'+m.speed+'</span><span>'+m.depth+' reasoning</span></span><span class="model-card-meta">'+(allowed?'Included on your plan':m.plan+' required'+(NATIVE_SHELL?'':' · tap to upgrade'))+'</span></span><span class="model-card-state" aria-hidden="true">'+(selected?'✓':allowed?'›':'🔒')+'</span></button>'}).join('')+'</div>'}
+function renderModelsPanel(){document.getElementById('panel')?.classList.add('model-picker-panel','model-picker-compact');panelTitle.textContent='Model';panelIntro.textContent='';const order=['spark','star','comet','nova'];const meta={spark:{desc:'Quick everyday answers, rewrites and simple code help.'},star:{desc:'Balanced for most chats, coding, writing and planning.'},comet:{desc:'Deeper reasoning for debugging and harder multi-step work.'},nova:{desc:'Maximum capability for the most complex projects.'}};panelBody.innerHTML='<div class="model-grid model-grid-compact">'+order.map(key=>{const allowed=allowedModels.includes(key),selected=selectedModel===key,m=meta[key];return '<button class="model-card model-card-compact'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" data-action="select-model" data-model="'+key+'" aria-pressed="'+(selected?'true':'false')+'" aria-disabled="'+(allowed?'false':'true')+'"><span class="model-card-copy"><strong>'+MODELS[key]+'</strong><small>'+m.desc+'</small></span><span class="model-card-state" aria-hidden="true">'+(selected?'✓':allowed?'':'🔒')+'</span></button>'}).join('')+'</div>'}
 function settingsOwnerTools(){
   if(!isOwner())return'';
   return '<section class="settings-dev-card"><div class="settings-dev-card-title"><div><strong>Private tools</strong><small>Visible only to the verified owner account.</small></div></div><div class="settings-owner-tools"><button class="row" id="growth-report-nav" type="button" data-action="open-growth-report"><span class="settings-row-copy"><strong>Growth &amp; Revenue</strong><small>Traffic sources, checkout conversion and activation</small></span><span class="settings-row-value">Open</span></button><a class="row" id="ai-os-nav" href="/ai-os"><span class="settings-row-copy"><strong>AI OS</strong><small>Private Brain, executive assistant and coordinated agent team</small></span><span class="settings-row-value">Open</span></a><button class="row" id="jarvis-briefings-nav" type="button" data-action="open-jarvis-briefings"><span class="settings-row-copy"><strong>Jarvis Briefings</strong><small>Phone updates and urgent private status</small></span><span class="settings-row-value">Open</span></button><a class="row" id="jarvis-nav" href="/jarvis"><span class="settings-row-copy"><strong>Jarvis Voice &amp; Vision</strong><small>Private command centre</small></span><span class="settings-row-value">Open</span></a><button class="row" id="owner-call-now" type="button" data-action="call-owner"><span class="settings-row-copy"><strong>Ring my phone</strong><small>Start a private Jarvis call</small></span><span class="settings-row-value">Call</span></button><a class="row" id="deploy-center-nav" href="/deploy"><span class="settings-row-copy"><strong>Deploy Center</strong><small>Private deployment controls</small></span><span class="settings-row-value">Open</span></a></div></section>'
