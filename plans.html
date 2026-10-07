@@ -87,10 +87,21 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 @media(max-width:700px){.plan-topline{margin-bottom:6px}.plan .price{margin-top:16px}.plan-proof{grid-template-columns:1fr;margin-top:-28px}.plan-proof-providers{margin-top:2px}.plans .plan.plus{order:-1}.plans .plan{border-radius:18px!important}}
 </style>
   <link rel="stylesheet" href="/stellar-clean-premium-v35.css?v=20261004-clean-premium">\n<link rel="stylesheet" href="/stellar-brand-system-v1.css?v=20261005-1">
+<style id="stellar-plans-billing-toggle-v1">
+.billing-cycle-toggle{display:flex;justify-content:center;gap:6px;margin:0 auto 22px;padding:5px;width:max-content;max-width:100%;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:#111114}
+.billing-cycle-toggle button{min-height:42px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:#999fa9;font:800 12px/1 Inter,system-ui,sans-serif;cursor:pointer}
+.billing-cycle-toggle button[aria-pressed="true"]{background:#f4f4f4;color:#111}
+.billing-cycle-toggle .billing-save{margin-left:5px;color:#66d8b1;font-size:10px}
+@media(max-width:700px){.billing-cycle-toggle{width:100%;display:grid;grid-template-columns:1fr 1fr}.billing-cycle-toggle button{padding:0 9px}}
+</style>
 </head>
 <body class="plans-page">
 <header class="top"><nav class="wrap nav"><a class="brand" href="/">Stellar AI</a><div class="links"><a href="/app">App</a><a href="/plugins">Plugins</a><a href="/business">Business</a><a href="/legal">Legal</a><a class="primary" href="/app?welcome=1">Open app</a></div></nav></header>
 <main class="wrap"><section class="hero"><div class="kicker">Stellar plans</div><h1>Start free. Move to Plus when you are building seriously.</h1><p class="lead">Free is for trying Stellar. Starter is the lower-cost step up. Plus at £20/month is the recommended paid plan for active FiveM and Roblox builders who need Stellar Deep, larger projects and more capacity.</p><div class="trust"><span>No card for Free</span><span>Card payments via Stripe</span><span>Cancel renewal anytime</span><span>Yearly plans save 30%</span></div></section>
+<div class="billing-cycle-toggle" role="group" aria-label="Billing cycle">
+  <button type="button" data-billing-cycle="monthly" aria-pressed="true">Monthly</button>
+  <button type="button" data-billing-cycle="annual" aria-pressed="false">Yearly <span class="billing-save">Save 30%</span></button>
+</div>
 <section class="plans" aria-label="Stellar AI plans">
 <article class="plan">
   <div class="plan-topline"><span class="plan-fit">TRY STELLAR</span></div>
@@ -103,7 +114,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
   <div class="actions"><a class="btn" href="/app?welcome=1">Start free</a></div>
   <ul class="features"><li><i>✓</i><span>General AI chat, writing and coding</span></li><li><i>✓</i><span>Up to 15 Stellar Fast generations per day</span></li><li><i>✓</i><span>Daily automatic reset</span></li><li><i>✓</i><span>Up to 1,800 output tokens</span></li></ul>
 </article>
-<article class="plan paid">
+<article class="plan paid" data-billing-plan="starter">
   <div class="plan-topline"><span class="plan-fit">EVERYDAY</span></div>
   <h2>Starter</h2>
   <p class="desc">For regular chat, writing, coding, research and troubleshooting.</p>
@@ -115,7 +126,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
   <span class="checkout-trust">✓ Instant access • Cancel anytime</span>
   <ul class="features"><li><i>✓</i><span>Standard monthly usage</span></li><li><i>✓</i><span>Everyday coding and problem solving</span></li><li><i>✓</i><span>Up to 4,000 output tokens</span></li></ul>
 </article>
-<article class="plan paid plus">
+<article class="plan paid plus" data-billing-plan="plus">
   <div class="plan-topline"><span class="popular-pill">RECOMMENDED</span><span class="plan-fit">FOR ACTIVE BUILDERS</span></div>
   <h2>Plus</h2>
   <p class="desc">The best default paid plan for active FiveM and Roblox builders working on larger code, repeated debugging and multi-step projects.</p>
@@ -127,7 +138,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
   <span class="checkout-trust">✓ Instant access • Cancel anytime</span>
   <ul class="features"><li><i>✓</i><span>Higher monthly usage</span></li><li><i>✓</i><span>Jarvis Voice + Vision</span></li><li><i>✓</i><span>StellarX computer control beta</span></li><li><i>✓</i><span>Up to 6,500 output tokens</span></li></ul>
 </article>
-<article class="plan paid">
+<article class="plan paid" data-billing-plan="pro">
   <div class="plan-topline"><span class="plan-fit">MAXIMUM</span></div>
   <h2>Pro</h2>
   <p class="desc">For intensive professional work across large projects, codebases and advanced reviews.</p>
@@ -149,4 +160,26 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 <section class="section"><h2>Questions</h2><div class="faq"><details><summary>Can I use Free without a card?</summary><p>Yes. Free starts without a card and includes a daily usage allowance.</p></details><details><summary>Can I cancel a paid plan?</summary><p>Paid users can manage renewal through billing settings. Access normally continues until the paid period ends.</p></details><details><summary>What can I use Stellar for?</summary><p>Stellar is a general AI chatbot for questions, writing, research, coding, planning and troubleshooting. Optional tools handle larger specialist tasks when you need them.</p></details><details><summary>What changes when I move to Plus?</summary><p>Plus adds Stellar Deep, a larger monthly allowance and Jarvis Computer → StellarX computer control beta for deeper coding and larger projects.</p></details></div></section>
 <section class="final"><div><h2>Open Stellar and pick the plan inside the app.</h2><p>That keeps checkout, usage and model access attached to your account.</p></div><a class="btn primary" href="/app?welcome=1">Open app</a></section>
 </main><footer><div class="wrap">© 2026 Stellar AI · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="/refunds">Refunds</a></div></footer>
+<script id="stellar-plans-billing-toggle-js-v1">
+(()=>{'use strict';
+const buttons=[...document.querySelectorAll('[data-billing-cycle]')],defs={
+ starter:{monthly:'£8',annual:'£67',equiv:'£5.58',save:'£29',monthlyPlan:'starter',annualPlan:'starter-annual'},
+ plus:{monthly:'£20',annual:'£168',equiv:'£14',save:'£72',monthlyPlan:'plus',annualPlan:'plus-annual'},
+ pro:{monthly:'£75',annual:'£630',equiv:'£52.50',save:'£270',monthlyPlan:'pro',annualPlan:'pro-annual'}
+};
+function apply(cycle){
+ buttons.forEach(button=>button.setAttribute('aria-pressed',button.dataset.billingCycle===cycle?'true':'false'));
+ document.querySelectorAll('[data-billing-plan]').forEach(card=>{
+  const key=card.dataset.billingPlan,def=defs[key];if(!def)return;const yearly=cycle==='annual';
+  const price=card.querySelector('.price strong'),suffix=card.querySelector('.price span'),note=card.querySelector('.year'),actions=card.querySelector('.actions'),primary=actions?.querySelector('.btn:first-child'),alternate=actions?.querySelector('.btn:nth-child(2)');
+  if(price)price.textContent=yearly?def.annual:def.monthly;if(suffix)suffix.textContent=yearly?' / year':' / month';
+  if(note)note.textContent=yearly?def.equiv+'/mo equivalent · save '+def.save:def.annual+'/year · save '+def.save;
+  if(primary){primary.href='/app?upgrade='+(yearly?def.annualPlan:def.monthlyPlan);primary.textContent='Choose '+key.charAt(0).toUpperCase()+key.slice(1)+' · '+(yearly?def.annual+'/yr':def.monthly+'/mo');}
+  if(alternate)alternate.hidden=true;
+ });
+}
+buttons.forEach(button=>button.addEventListener('click',()=>apply(button.dataset.billingCycle)));
+apply('monthly');
+})();
+</script>
 </body></html>
