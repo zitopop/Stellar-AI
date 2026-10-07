@@ -4077,6 +4077,82 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-model-picker-inside-with-side-text-v91">
+/* Picker stays inside the chatbar; model descriptions sit beside model names. */
+.composer-layout{display:contents!important}
+.composer-main{
+  grid-template-columns:minmax(108px,136px) 34px 34px minmax(0,1fr) 34px 34px!important;
+  gap:5px!important;
+  align-items:center!important;
+}
+.composer-main>.composer-model-wrap{
+  min-width:0!important;
+  margin:0!important;
+  align-self:center!important;
+}
+.composer-main>.composer-model-wrap .composer-model-picker{
+  width:100%!important;
+  min-width:0!important;
+  min-height:34px!important;
+  padding:0 7px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.composer-main>.composer-model-wrap .composer-model-picker:hover,
+.composer-main>.composer-model-wrap .composer-model-picker:focus-visible{
+  background:rgba(255,255,255,.055)!important;
+}
+.composer-model-option{
+  min-height:46px!important;
+  grid-template-columns:minmax(0,1fr) 18px!important;
+  padding:6px 8px!important;
+}
+.composer-model-option-copy{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:96px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+.composer-model-option-copy strong{
+  white-space:nowrap!important;
+}
+.composer-model-option-copy small{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  text-align:left!important;
+}
+@media(max-width:760px){
+  .composer-main{
+    grid-template-columns:92px 32px 32px minmax(0,1fr) 32px 32px!important;
+    gap:2px!important;
+  }
+  .composer-model-option-copy{
+    grid-template-columns:82px minmax(0,1fr)!important;
+    gap:8px!important;
+  }
+}
+@media(max-width:430px){
+  .composer-main{
+    grid-template-columns:86px 32px minmax(0,1fr) 32px!important;
+  }
+  #web-search-btn,
+  #voice-input-btn{
+    display:none!important;
+  }
+  .composer-model-option-copy{
+    grid-template-columns:1fr!important;
+    gap:2px!important;
+  }
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -4125,7 +4201,7 @@ html,body,.app{
       <div class="actions"><button class="btn ghost hidden" type="button" data-open="plans">Plans</button></div>
     </header>
     <section class="chat" id="chat"><div class="chat-inner" id="chatInner"></div></section>
-    <section class="composer-wrap"><div class="composer-mode-tabs" role="tablist" aria-label="Prompt mode"><button class="composer-mode-tab" type="button" role="tab" aria-selected="true" data-composer-mode="general">Chat</button><button class="composer-mode-tab" type="button" role="tab" aria-selected="false" data-composer-mode="debug">Debug code</button></div><div class="composer-layout"><div class="composer-model-wrap"><button class="composer-model-picker" id="modelBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-model-menu" aria-label="Model: Stellar Fast" title="Choose model"><span class="composer-model-dot" aria-hidden="true"></span><span class="composer-model-copy"><strong id="modelLabel">Stellar Fast</strong><small id="modelShort">Fast</small></span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6.75 8 3.25 3.25L13.25 8"></path></svg></button><div class="composer-model-menu" id="composer-model-menu" role="menu" aria-label="Choose model" hidden></div></div><form class="composer" id="chatForm" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."><input class="hidden" id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,.txt,.md,.json,.js,.ts,.jsx,.tsx,.lua,.luau,.py,.html,.css,.csv,.xml,.yml,.yaml"><div class="composer-main"><button class="composer-tool" id="image-upload-btn" type="button" aria-label="Attach a file or image" title="Add file" data-tooltip="Add file">＋</button><button class="composer-tool web-search-tool" id="web-search-btn" type="button" aria-label="Search the web for this message" aria-pressed="false" title="Search web" data-tooltip="Search web">🌐</button><label class="hidden" for="prompt">Ask Stellar anything</label><textarea id="prompt" maxlength="8000" placeholder="Ask anything" autocomplete="off" spellcheck="true"></textarea><button class="composer-tool" id="voice-input-btn" type="button" aria-label="Start voice input" aria-pressed="false" title="Voice" data-tooltip="Voice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg></button><button id="sendBtn" type="submit" aria-label="Send message" title="Send" data-tooltip="Send">↑</button></div><div class="image-upload-status" id="image-upload-status" role="status" aria-live="polite"></div><button class="attachment-clear hidden" id="attachment-clear-btn" type="button" aria-label="Remove attachment">Remove</button></form></div><span class="status good composer-status" id="status" role="status" aria-live="polite">Ready</span><p class="composer-note" id="composer-note">Stellar can make mistakes. Check important information.</p></section>
+    <section class="composer-wrap"><div class="composer-mode-tabs" role="tablist" aria-label="Prompt mode"><button class="composer-mode-tab" type="button" role="tab" aria-selected="true" data-composer-mode="general">Chat</button><button class="composer-mode-tab" type="button" role="tab" aria-selected="false" data-composer-mode="debug">Debug code</button></div><form class="composer" id="chatForm" aria-label="Message composer. Press Enter to send and Shift+Enter for a new line."><input class="hidden" id="image-upload-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,.txt,.md,.json,.js,.ts,.jsx,.tsx,.lua,.luau,.py,.html,.css,.csv,.xml,.yml,.yaml"><div class="composer-main"><div class="composer-model-wrap"><button class="composer-model-picker" id="modelBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-model-menu" aria-label="Model: Stellar Fast" title="Choose model"><span class="composer-model-dot" aria-hidden="true"></span><span class="composer-model-copy"><strong id="modelLabel">Stellar Fast</strong><small id="modelShort">Fast</small></span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6.75 8 3.25 3.25L13.25 8"></path></svg></button><div class="composer-model-menu" id="composer-model-menu" role="menu" aria-label="Choose model" hidden></div></div><button class="composer-tool" id="image-upload-btn" type="button" aria-label="Attach a file or image" title="Add file" data-tooltip="Add file">＋</button><button class="composer-tool web-search-tool" id="web-search-btn" type="button" aria-label="Search the web for this message" aria-pressed="false" title="Search web" data-tooltip="Search web">🌐</button><label class="hidden" for="prompt">Ask Stellar anything</label><textarea id="prompt" maxlength="8000" placeholder="Ask anything" autocomplete="off" spellcheck="true"></textarea><button class="composer-tool" id="voice-input-btn" type="button" aria-label="Start voice input" aria-pressed="false" title="Voice" data-tooltip="Voice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg></button><button id="sendBtn" type="submit" aria-label="Send message" title="Send" data-tooltip="Send">↑</button></div><div class="image-upload-status" id="image-upload-status" role="status" aria-live="polite"></div><button class="attachment-clear hidden" id="attachment-clear-btn" type="button" aria-label="Remove attachment">Remove</button></form><span class="status good composer-status" id="status" role="status" aria-live="polite">Ready</span><p class="composer-note" id="composer-note">Stellar can make mistakes. Check important information.</p></section>
   </main>
 </div>
 <div class="panel-backdrop" id="panelBackdrop"><section class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle"><div class="panel-head"><div><h2 id="panelTitle">Settings</h2><p id="panelIntro">Account, usage and developer settings.</p></div><button class="close" type="button" id="closePanel" aria-label="Close">×</button></div><div class="panel-body" id="panelBody"></div></section></div>
@@ -4408,7 +4484,7 @@ function salesUseInChat(){
 }
 
 function modelMenuMeta(){return{spark:'Quick everyday answers, rewrites and simple code help.',star:'Balanced for most chats, coding, writing and planning.',comet:'Deeper reasoning for debugging and harder multi-step work.',nova:'Maximum capability for the most complex projects.'}}
-function renderComposerModelMenu(){if(!modelMenu)return;const meta=modelMenuMeta(),order=['spark','star','comet','nova'];modelMenu.innerHTML=order.map(key=>{const allowed=allowedModels.includes(key),selected=selectedModel===key;return '<button class="composer-model-option'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" role="menuitemradio" aria-checked="'+(selected?'true':'false')+'" data-model-menu="'+key+'"><span><strong>'+MODELS[key]+'</strong><small>'+meta[key]+'</small></span><b aria-hidden="true">'+(selected?'✓':allowed?'':'🔒')+'</b></button>'}).join('')}
+function renderComposerModelMenu(){if(!modelMenu)return;const meta=modelMenuMeta(),order=['spark','star','comet','nova'];modelMenu.innerHTML=order.map(key=>{const allowed=allowedModels.includes(key),selected=selectedModel===key;return '<button class="composer-model-option'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" role="menuitemradio" aria-checked="'+(selected?'true':'false')+'" data-model-menu="'+key+'"><span class="composer-model-option-copy"><strong>'+MODELS[key]+'</strong><small>'+meta[key]+'</small></span><b aria-hidden="true">'+(selected?'✓':allowed?'':'🔒')+'</b></button>'}).join('')}
 function closeComposerModelMenu(){if(!modelMenu||!modelBtn)return;modelMenu.hidden=true;modelBtn.setAttribute('aria-expanded','false')}
 function toggleComposerModelMenu(){if(!modelMenu||!modelBtn)return;const opening=modelMenu.hidden;closeComposerModelMenu();if(opening){renderComposerModelMenu();modelMenu.hidden=false;modelBtn.setAttribute('aria-expanded','true');requestAnimationFrame(()=>modelMenu.querySelector('.composer-model-option.selected,.composer-model-option')?.focus())}}
 function renderModelsPanel(){document.getElementById('panel')?.classList.add('model-picker-panel','model-picker-compact');panelTitle.textContent='Model';panelIntro.textContent='';const order=['spark','star','comet','nova'];const meta={spark:{desc:'Quick everyday answers, rewrites and simple code help.'},star:{desc:'Balanced for most chats, coding, writing and planning.'},comet:{desc:'Deeper reasoning for debugging and harder multi-step work.'},nova:{desc:'Maximum capability for the most complex projects.'}};panelBody.innerHTML='<div class="model-grid model-grid-compact">'+order.map(key=>{const allowed=allowedModels.includes(key),selected=selectedModel===key,m=meta[key];return '<button class="model-card model-card-compact'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" data-action="select-model" data-model="'+key+'" aria-pressed="'+(selected?'true':'false')+'" aria-disabled="'+(allowed?'false':'true')+'"><span class="model-card-copy"><strong>'+MODELS[key]+'</strong><small>'+m.desc+'</small></span><span class="model-card-state" aria-hidden="true">'+(selected?'✓':allowed?'':'🔒')+'</span></button>'}).join('')+'</div>'}
