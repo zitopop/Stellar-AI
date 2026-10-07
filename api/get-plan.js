@@ -201,7 +201,7 @@ function accountPlanTruth({ plan, owner, user, capabilities, usage, billing }) {
   return {
     id: plan,
     name: capabilities.name,
-    label: owner ? 'Private' : capabilities.name,
+    label: owner ? 'Owner' : capabilities.name,
     owner,
     paid: isPaidPlan(plan),
     source: owner ? 'owner-email' : 'account-storage',
