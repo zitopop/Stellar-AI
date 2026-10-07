@@ -2432,6 +2432,78 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-recent-chats-v68">
+/* Show real conversation history in the minimal sidebar. */
+.side-history{
+  display:flex!important;
+  min-height:0!important;
+  flex:1 1 auto!important;
+  flex-direction:column!important;
+  padding:18px 0 10px!important;
+}
+.side-history[hidden]{
+  display:none!important;
+}
+.side-history-head{
+  padding:0 4px 7px!important;
+}
+.side-history-head .side-section-label{
+  margin:0!important;
+  padding:0!important;
+  color:#777d86!important;
+  font-size:10px!important;
+  font-weight:760!important;
+  letter-spacing:.055em!important;
+}
+.side-search{
+  display:none!important;
+}
+.side-history .chat-list{
+  display:grid!important;
+  min-height:0!important;
+  gap:2px!important;
+  overflow:auto!important;
+  padding:0!important;
+}
+.side-history .chat-history-row{
+  min-width:0!important;
+}
+.side-history .chat-item{
+  width:100%!important;
+  min-height:34px!important;
+  padding:0 4px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#c9cdd3!important;
+}
+.side-history .chat-item:hover,
+.side-history .chat-item:focus-visible,
+.side-history .chat-item.active{
+  background:transparent!important;
+  color:#ffffff!important;
+  outline:0!important;
+}
+.side-history .chat-title{
+  font-size:11px!important;
+  font-weight:620!important;
+}
+.side-history .chat-meta{
+  display:none!important;
+}
+.side-history .chat-menu-button{
+  color:#777d86!important;
+  background:transparent!important;
+}
+.side-history .chat-group-label{
+  margin:8px 4px 3px!important;
+  color:#696f78!important;
+  font-size:9px!important;
+  font-weight:700!important;
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -2460,7 +2532,7 @@ html,body,.app{
 
     <section class="side-history" aria-labelledby="side-history-title">
       <div class="side-history-head">
-        <p class="side-section-label" id="side-history-title">Your chats</p>
+        <p class="side-section-label" id="side-history-title">Recent chats</p>
         <button class="side-search" type="button" id="search-chats-btn" data-open="search" aria-label="Search chats" title="Search chats">⌕</button>
       </div>
       <div class="chat-list" id="chatList"></div>
@@ -2527,7 +2599,7 @@ function renderAssistantBubble(bubble,text){if(!bubble)return;const value=String
 function codeTextFromButton(button){const code=button?.closest?.('.code-block-shell')?.querySelector?.('code');return String(code?.textContent||'').replace(/\r\n/g,'\n').replace(/\s+$/,'')+'\n'}const STELLAR_LUA_WATERMARK='-- Generated with Stellar AI — https://trystellarai.com\n';function withStellarLuaWatermark(value){const text=String(value||'');return text.startsWith(STELLAR_LUA_WATERMARK)?text:STELLAR_LUA_WATERMARK+text}
 async function copyCodeBlock(button){const text=codeTextFromButton(button);if(!text.trim())return;try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const temp=document.createElement('textarea');temp.value=text;temp.style.position='fixed';temp.style.opacity='0';document.body.append(temp);temp.select();document.execCommand('copy');temp.remove()}const original=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=original,1200);setStatus('Code copied','good')}catch{setStatus('Could not copy code','error')}}
 function downloadLuaBlock(button){if(previewAuthGateRequested&&!signedInUser){openPanel('settings');setStatus('Create a free account to download the preview or generate another.','warn');return}const responseBubble=button?.closest?.('.bubble'),downloadableCount=responseBubble?.querySelectorAll?.('[data-code-action="download-lua"]')?.length||0;if(!serverOwner&&String(planState.plan||'free')==='free'&&downloadableCount>1){metric('upgrade-intent');metric('upgrade-from-multifile-download');openPanel('plans');setStatus('Full multi-file downloads are included with Starter, Plus or Pro. Preview and copy stay free.','warn');return}const text=codeTextFromButton(button);if(!text.trim())return;const shell=button?.closest?.('.code-block-shell'),lang=String(shell?.dataset?.language||'lua').toLowerCase(),base=lang.includes('luau')||lang.includes('roblox')?'stellar-modulescript':'stellar-script';const blob=new Blob([withStellarLuaWatermark(text)],{type:'text/plain;charset=utf-8'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=base+'.lua';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);setStatus('Lua file downloaded','good')}
-function renderChatList(){sortSessions();chatList.innerHTML='';chatEmpty.classList.toggle('hidden',sessions.length>0);const addGroup=(label,items)=>{if(!items.length)return;const heading=document.createElement('div');heading.className='chat-group-label';heading.textContent=label;chatList.append(heading);for(const s of items){const wrap=document.createElement('div');wrap.className='chat-history-row';wrap.dataset.chatRow='true';wrap.dataset.id=s.id;if(s.pinned)wrap.dataset.pinned='true';const row=document.createElement('button');row.type='button';row.className='chat-item'+(s.id===activeId?' active':'');row.dataset.id=s.id;row.innerHTML='<span class="chat-title">'+escapeHtml(s.title||'New chat')+'</span><span class="chat-meta">'+escapeHtml(chatAge(s.updated))+'</span>';const menu=document.createElement('button');menu.type='button';menu.className='chat-menu-button';menu.dataset.chatMenu=s.id;menu.setAttribute('aria-label','Chat options for '+String(s.title||'New chat'));menu.setAttribute('aria-expanded','false');menu.innerHTML='<span aria-hidden="true">•••</span>';const actions=document.createElement('div');actions.className='chat-actions';actions.setAttribute('aria-label','Chat actions');const pin=document.createElement('button');pin.type='button';pin.className='chat-action chat-pin';pin.dataset.pinChat=s.id;pin.setAttribute('aria-pressed',s.pinned?'true':'false');pin.innerHTML='<span aria-hidden="true">📌</span><span>'+(s.pinned?'Unpin':'Pin')+'</span>';const rename=document.createElement('button');rename.type='button';rename.className='chat-action chat-rename';rename.dataset.renameChat=s.id;rename.innerHTML='<span aria-hidden="true">✎</span><span>Rename</span>';const del=document.createElement('button');del.type='button';del.className='chat-action chat-delete';del.dataset.deleteChat=s.id;del.disabled=Boolean(s.pinned);del.setAttribute('aria-disabled',s.pinned?'true':'false');del.innerHTML='<span aria-hidden="true">⌫</span><span>'+(s.pinned?'Unpin before deleting':'Delete')+'</span>';actions.append(pin,rename,del);wrap.append(row,menu,actions);chatList.append(wrap)}};addGroup('Pinned',sessions.filter(session=>session.pinned));addGroup('Recent',sessions.filter(session=>!session.pinned))}
+function renderChatList(){sortSessions();chatList.innerHTML='';const historySessions=sessions.filter(session=>Array.isArray(session?.messages)&&session.messages.length>0),historySection=chatList.closest('.side-history');if(historySection)historySection.hidden=historySessions.length===0;chatEmpty.classList.add('hidden');const addGroup=(label,items)=>{if(!items.length)return;if(label){const heading=document.createElement('div');heading.className='chat-group-label';heading.textContent=label;chatList.append(heading)}for(const s of items){const wrap=document.createElement('div');wrap.className='chat-history-row';wrap.dataset.chatRow='true';wrap.dataset.id=s.id;if(s.pinned)wrap.dataset.pinned='true';const row=document.createElement('button');row.type='button';row.className='chat-item'+(s.id===activeId?' active':'');row.dataset.id=s.id;row.innerHTML='<span class="chat-title">'+escapeHtml(s.title||'New chat')+'</span><span class="chat-meta">'+escapeHtml(chatAge(s.updated))+'</span>';const menu=document.createElement('button');menu.type='button';menu.className='chat-menu-button';menu.dataset.chatMenu=s.id;menu.setAttribute('aria-label','Chat options for '+String(s.title||'New chat'));menu.setAttribute('aria-expanded','false');menu.innerHTML='<span aria-hidden="true">•••</span>';const actions=document.createElement('div');actions.className='chat-actions';actions.setAttribute('aria-label','Chat actions');const pin=document.createElement('button');pin.type='button';pin.className='chat-action chat-pin';pin.dataset.pinChat=s.id;pin.setAttribute('aria-pressed',s.pinned?'true':'false');pin.innerHTML='<span aria-hidden="true">📌</span><span>'+(s.pinned?'Unpin':'Pin')+'</span>';const rename=document.createElement('button');rename.type='button';rename.className='chat-action chat-rename';rename.dataset.renameChat=s.id;rename.innerHTML='<span aria-hidden="true">✎</span><span>Rename</span>';const del=document.createElement('button');del.type='button';del.className='chat-action chat-delete';del.dataset.deleteChat=s.id;del.disabled=Boolean(s.pinned);del.setAttribute('aria-disabled',s.pinned?'true':'false');del.innerHTML='<span aria-hidden="true">⌫</span><span>'+(s.pinned?'Unpin before deleting':'Delete')+'</span>';actions.append(pin,rename,del);wrap.append(row,menu,actions);chatList.append(wrap)}};addGroup('Pinned',historySessions.filter(session=>session.pinned));addGroup('',historySessions.filter(session=>!session.pinned))}
 function welcomeName(){const raw=String(signedInUser?.name||'').trim();if(raw)return raw.split(/\s+/)[0];return 'Tobi'}function welcomeGreeting(nowDate=new Date()){const hour=nowDate.getHours();return hour<5?'Good night':hour<12?'Good morning':hour<18?'Good afternoon':hour<22?'Good evening':'Good night'}function welcomeSubtext(nowDate=new Date()){const hour=nowDate.getHours();if(hour<5)return 'Still awake, night owl?';if(hour<12)return 'Ready for a fresh start?';if(hour<18)return 'Hope your day is going well.';if(hour<22)return 'Settling in for the evening?';return 'Still awake, night owl?'}function welcomeHtml(){const nowDate=new Date(),name=escapeHtml(welcomeName()),greeting=escapeHtml(welcomeGreeting(nowDate)),subtext=escapeHtml(welcomeSubtext(nowDate));return '<div class="welcome"><h1>'+greeting+', '+name+'</h1><p class="welcome-time-note">'+subtext+'</p></div>'}function renderMessages(){const s=activeSession();chatInner.innerHTML='';if(!s.messages.length){chatInner.innerHTML=welcomeHtml();return}for(let index=0;index<s.messages.length;index++){const m=s.messages[index];addMessage(m.role,m.content,false,index)}}
 function renderAll(){renderChatList();renderMessages();updateHeader()}
 function addAssistantActions(wrap,bubble){if(!wrap||!bubble||wrap.querySelector('.message-actions'))return;const actions=document.createElement('div');actions.className='message-actions';const codeCount=bubble.querySelectorAll('pre code').length,copyAll=codeCount>1?'<button class="message-action" type="button" data-message-action="copy-all-code">Copy all code</button>':'',review=codeCount?'<button class="message-action" type="button" data-message-action="review-code">Review code</button>':'';actions.innerHTML='<button class="message-action" type="button" data-message-action="copy">Copy</button>'+copyAll+review+'<button class="message-action" type="button" data-message-action="regenerate">Regenerate</button>'+(NATIVE_SHELL?'<button class="message-action" type="button" data-message-action="share">Share</button>':'');wrap.append(actions)}function markAssistantRetry(wrap){const button=wrap?.querySelector?.('[data-message-action="regenerate"]');if(!button)return;button.textContent='Try again';button.setAttribute('aria-label','Try sending the last message again')}
@@ -2540,7 +2612,7 @@ function renameChat(chatId){const id=String(chatId||'');const target=sessions.fi
 function saveChatRename(chatId){const id=String(chatId||'');const target=sessions.find(session=>session.id===id),input=$('chat-rename-input');if(!target||!input)return;const clean=String(input.value||'').trim().replace(/\s+/g,' ').slice(0,80);if(!clean){setStatus('Chat name cannot be empty','warn');input.focus();return}target.title=clean;target.updated=now();saveSessions();renderChatList();closePanel();setStatus('Chat renamed','good')}
 function beginEditUserMessage(button){if(busy)return;const s=activeSession(),index=Number(button?.dataset?.messageIndex);if(!Number.isInteger(index)||index<0||index>=s.messages.length)return;const message=s.messages[index];if(message?.role!=='user')return;editingMessage={sessionId:s.id,index,attachmentName:String(message.attachmentName||''),attachmentText:String(message.attachmentText||''),webSearchContext:String(message.webSearchContext||'')};prompt.value=String(message.originalContent||message.content||'').replace(/\n\n📎 [^\n]+$/,'');setComposerMode(message.mode||'general',false);resizePrompt();prompt.focus();setStatus('Editing message · sending replaces later replies','warn')}
 function deleteChat(chatId){const id=String(chatId||'');const target=sessions.find(session=>session.id===id);if(!target)return;if(target.pinned){setStatus('Pinned chats are protected. Unpin first before deleting.','warn');return}const title=String(target.title||'New chat').trim()||'New chat';if(!confirm('Delete “'+title+'”? This cannot be undone.'))return;sessions=sessions.filter(session=>session.id!==id);if(!sessions.length)sessions=[defaultSession()];if(activeId===id)activeId=sessions[0].id;saveSessions();renderAll();setStatus('Chat deleted','good')}
-function closeChatMenus(except=null){for(const wrap of chatList.querySelectorAll('.chat-history-row.menu-open')){if(wrap===except)continue;wrap.classList.remove('menu-open');wrap.querySelector('.chat-menu-button')?.setAttribute('aria-expanded','false')}}chatList.addEventListener('click',e=>{const menu=e.target.closest('.chat-menu-button[data-chat-menu]');if(menu){e.preventDefault();e.stopPropagation();const wrap=menu.closest('.chat-history-row'),open=!wrap?.classList.contains('menu-open');closeChatMenus(wrap);wrap?.classList.toggle('menu-open',open);menu.setAttribute('aria-expanded',open?'true':'false');return}const pin=e.target.closest('.chat-pin[data-pin-chat]');if(pin){e.preventDefault();e.stopPropagation();togglePinChat(pin.dataset.pinChat);return}const rename=e.target.closest('.chat-rename[data-rename-chat]');if(rename){e.preventDefault();e.stopPropagation();renameChat(rename.dataset.renameChat);return}const del=e.target.closest('.chat-delete[data-delete-chat]');if(del){e.preventDefault();e.stopPropagation();if(del.disabled||del.getAttribute('aria-disabled')==='true'){setStatus('Pinned chats are protected. Unpin first before deleting.','warn');return}deleteChat(del.dataset.deleteChat);return}const row=e.target.closest('.chat-item');if(!row)return;activeId=row.dataset.id;renderAll();closeSide()});document.addEventListener('click',e=>{if(!e.target.closest('.chat-history-row'))closeChatMenus()});function newChat(){editingMessage=null;removeImage();setWebSearchEnabled(false);const s=defaultSession();sessions.unshift(s);activeId=s.id;saveSessions();renderAll();closeSide();setStatus('Ready','good');prompt.focus()}$('newChatBtn').addEventListener('click',newChat);
+function closeChatMenus(except=null){for(const wrap of chatList.querySelectorAll('.chat-history-row.menu-open')){if(wrap===except)continue;wrap.classList.remove('menu-open');wrap.querySelector('.chat-menu-button')?.setAttribute('aria-expanded','false')}}chatList.addEventListener('click',e=>{const menu=e.target.closest('.chat-menu-button[data-chat-menu]');if(menu){e.preventDefault();e.stopPropagation();const wrap=menu.closest('.chat-history-row'),open=!wrap?.classList.contains('menu-open');closeChatMenus(wrap);wrap?.classList.toggle('menu-open',open);menu.setAttribute('aria-expanded',open?'true':'false');return}const pin=e.target.closest('.chat-pin[data-pin-chat]');if(pin){e.preventDefault();e.stopPropagation();togglePinChat(pin.dataset.pinChat);return}const rename=e.target.closest('.chat-rename[data-rename-chat]');if(rename){e.preventDefault();e.stopPropagation();renameChat(rename.dataset.renameChat);return}const del=e.target.closest('.chat-delete[data-delete-chat]');if(del){e.preventDefault();e.stopPropagation();if(del.disabled||del.getAttribute('aria-disabled')==='true'){setStatus('Pinned chats are protected. Unpin first before deleting.','warn');return}deleteChat(del.dataset.deleteChat);return}const row=e.target.closest('.chat-item');if(!row)return;activeId=row.dataset.id;renderAll();if(matchMedia('(max-width:900px)').matches)closeSide()});document.addEventListener('click',e=>{if(!e.target.closest('.chat-history-row'))closeChatMenus()});function newChat(){editingMessage=null;removeImage();setWebSearchEnabled(false);const s=defaultSession();sessions.unshift(s);activeId=s.id;saveSessions();renderAll();if(matchMedia('(max-width:900px)').matches)closeSide();setStatus('Ready','good');prompt.focus()}$('newChatBtn').addEventListener('click',newChat);
 async function copyAssistantResponse(button){const wrap=button?.closest?.('.msg.assistant');const text=wrap?.querySelector?.('.bubble')?.textContent?.trim()||'';if(!text)return;try{await navigator.clipboard.writeText(text);button.textContent='Copied';setTimeout(()=>button.textContent='Copy',1200)}catch{setStatus('Could not copy reply','error')}}async function copyAllAssistantCode(button){const wrap=button?.closest?.('.msg.assistant'),blocks=[...(wrap?.querySelectorAll?.('.bubble pre code')||[])].map(code=>String(code.textContent||'').replace(/\s+$/,'')).filter(Boolean);if(!blocks.length)return;try{await navigator.clipboard.writeText(blocks.join('\n\n'));const old=button.textContent;button.textContent='Copied all';setTimeout(()=>button.textContent=old,1200);setStatus('All code copied','good')}catch{setStatus('Could not copy all code','error')}}async function reviewAssistantCode(button){if(busy)return;const wrap=button?.closest?.('.msg.assistant'),all=[...chatInner.querySelectorAll('.msg.assistant')];if(wrap!==all.at(-1)){setStatus('Code review is available on the latest reply','warn');return}if(!wrap?.querySelector?.('pre code')){setStatus('No code found in this reply','warn');return}metric('code-review-started');await sendMessage('Review the code in your previous answer for bugs, security issues, framework or API mistakes, missing dependencies, and likely runtime errors. Keep the review concise, then give the exact corrected code or changes needed.','debug')}async function regenerateAssistantResponse(button){const s=activeSession();if(busy||!s.messages.length)return;const wrap=button?.closest?.('.msg.assistant');const all=[...chatInner.querySelectorAll('.msg.assistant')];if(wrap!==all.at(-1)){setStatus('Regenerate is available on the latest reply','warn');return}if(s.messages.at(-1)?.role==='assistant')s.messages.pop();const lastUser=s.messages.at(-1);if(!lastUser||lastUser.role!=='user'){setStatus('Nothing to regenerate','warn');return}s.messages.pop();editingMessage={sessionId:s.id,index:s.messages.length,attachmentName:String(lastUser.attachmentName||''),attachmentText:String(lastUser.attachmentText||''),webSearchContext:String(lastUser.webSearchContext||'')};saveSessions();renderMessages();await sendMessage(lastUser.originalContent||lastUser.content,lastUser.mode||'general')}
 async function shareAssistantResponse(button){const wrap=button?.closest?.('.msg.assistant');const text=wrap?.querySelector?.('.bubble')?.textContent?.trim()||'';if(!text)return;const share=window.Capacitor?.Plugins?.Share;if(!NATIVE_SHELL||!share?.share){setStatus('Sharing is available in the installed mobile app.','warn');return}try{await share.share({title:'Stellar AI',text,dialogTitle:'Share Stellar response'});setStatus('Share sheet opened','good')}catch(error){if(!/cancel/i.test(String(error?.message||error||'')))setStatus('Could not open share sheet','error')}}
 const MOBILE_CONTROL_CONSENT_KEY='stellar-mobile-control-consent-v1';
