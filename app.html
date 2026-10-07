@@ -2358,6 +2358,80 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-sidebar-restored-v67">
+/* Restore the toggleable sidebar; keep New chat as plain text with no bar/card. */
+.app{
+  grid-template-columns:260px minmax(0,1fr)!important;
+}
+.side{
+  display:flex!important;
+}
+.drawer-backdrop{
+  display:none!important;
+}
+.mobile-menu{
+  display:inline-flex!important;
+}
+#newChatBtn,
+.side-new-chat{
+  width:auto!important;
+  min-height:34px!important;
+  margin:2px 0 0!important;
+  padding:0 4px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#f4f5f7!important;
+  justify-content:flex-start!important;
+}
+#newChatBtn::before,
+.side-new-chat::before{
+  content:none!important;
+}
+#newChatBtn:hover,
+#newChatBtn:focus-visible,
+.side-new-chat:hover,
+.side-new-chat:focus-visible{
+  background:transparent!important;
+  border:0!important;
+  color:#fff!important;
+  outline:0!important;
+}
+@media(min-width:901px){
+  body.sidebar-collapsed .app{
+    grid-template-columns:0 minmax(0,1fr)!important;
+  }
+  body.sidebar-collapsed .side{
+    display:flex!important;
+    transform:translateX(-100%)!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr!important}
+  .side{
+    display:flex!important;
+    position:fixed!important;
+    z-index:30!important;
+    inset:0 auto 0 0!important;
+    width:min(300px,84vw)!important;
+    height:100dvh!important;
+    transform:translateX(-105%)!important;
+  }
+  .side.open{transform:translateX(0)!important}
+  .drawer-backdrop{
+    display:block!important;
+  }
+  .drawer-backdrop.open{
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
