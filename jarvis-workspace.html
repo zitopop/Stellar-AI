@@ -3,15 +3,96 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090a12">
+<meta name="theme-color" content="#0d0d0d">
 <meta name="robots" content="noindex,nofollow">
-<title>Jarvis — Stellar AI</title>
-<meta name="description" content="Talk or type to Jarvis, the conversational assistant inside Stellar AI.">
+<title>Jarvis Text Chat — Stellar AI</title>
+<meta name="description" content="Chat with Jarvis. Clear answers, coding help, planning and optional voice in Stellar AI.">
 <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
 <style>
 :root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--bg:#090a12;--panel:#11131c;--panel2:#171a25;--line:#292d3b;--text:#f2f1f7;--muted:#969baa;--accent:#b7a7ff;--good:#80d7b2}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 50% -10%,rgba(119,91,220,.14),transparent 34rem),var(--bg);color:var(--text)}button,textarea,a{font:inherit}button,a{-webkit-tap-highlight-color:transparent}.shell{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto}.topbar{height:64px;display:flex;align-items:center;gap:12px;padding:0 max(18px,env(safe-area-inset-right)) 0 max(18px,env(safe-area-inset-left));border-bottom:1px solid rgba(255,255,255,.06);background:rgba(9,10,18,.86);backdrop-filter:blur(18px);position:sticky;top:0;z-index:5}.brand{display:flex;align-items:center;gap:9px;color:#fff;text-decoration:none;font-weight:780}.brand-mark{width:31px;height:31px;border:1px solid rgba(183,167,255,.26);border-radius:10px;display:grid;place-items:center;color:var(--accent);background:rgba(183,167,255,.07)}.title{font-size:13px;color:#d8d5e2}.top-actions{margin-left:auto;display:flex;gap:8px}.top-actions a,.top-actions button{min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#12141d;color:#bbb8c7;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.top-actions button[aria-pressed=true]{border-color:rgba(183,167,255,.4);color:#eee9ff;background:rgba(183,167,255,.1)}#owner-link{display:none}.chat{width:min(900px,100%);margin:0 auto;padding:38px 22px 170px}.hero{text-align:center;padding:8vh 0 42px}.orb{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;border:1px solid rgba(183,167,255,.28);background:radial-gradient(circle at 35% 28%,#c8b9ff 0,#7564a5 22%,#342c48 55%,#151620 78%);box-shadow:0 0 64px rgba(127,94,220,.16);font-size:27px;color:#fff9}.hero h1{font-size:clamp(34px,6vw,58px);letter-spacing:-.055em;margin:0 0 13px;font-weight:680}.hero p{margin:0 auto;color:var(--muted);max-width:520px;font-size:14px;line-height:1.65}.messages{display:grid;gap:20px}.msg{display:flex;gap:11px;align-items:flex-start}.msg.user{justify-content:flex-end}.avatar{flex:0 0 29px;width:29px;height:29px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;color:#c7bcf5;background:#151722}.msg.user .avatar{display:none}.bubble{max-width:min(720px,88%);padding:13px 15px;border:1px solid rgba(255,255,255,.055);border-radius:16px;background:rgba(18,20,29,.78);font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user .bubble{background:#1b1d29;border-color:#2b2e3a}.status{width:min(900px,100%);margin:0 auto;padding:0 22px 8px;color:var(--muted);font-size:11px;min-height:24px}.status.good{color:var(--good)}.status.bad{color:#ffabb8}.composer-wrap{position:fixed;left:0;right:0;bottom:0;padding:12px max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:linear-gradient(180deg,transparent,rgba(9,10,18,.96) 28%);z-index:5}.composer{width:min(900px,100%);margin:auto;border:1px solid var(--line);border-radius:19px;background:#141720;padding:10px;box-shadow:0 18px 55px rgba(0,0,0,.28)}textarea{display:block;width:100%;min-height:54px;max-height:170px;resize:none;border:0;outline:0;background:transparent;color:var(--text);font-size:16px;line-height:1.5;padding:8px 9px}textarea::placeholder{color:#7f8492}.composer-row{display:flex;align-items:center;gap:8px}.composer-row button{min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:12px;background:#1a1d28;color:#d7d3e4;cursor:pointer;padding:0 13px}.composer-row button.primary{margin-left:auto;border-color:#b7a7ff;background:#b7a7ff;color:#1c1729;font-weight:750}.composer-row button[aria-pressed=true]{border-color:#8d78ec;color:#fff;background:#31284e}.composer-row button:disabled,.top-actions button:disabled{opacity:.38;cursor:not-allowed;filter:saturate(.45)}textarea:disabled{opacity:.55;cursor:not-allowed}#handsfree-toggle{white-space:nowrap}.access-mode{display:inline-flex;align-items:center;min-height:28px;padding:0 9px;border:1px solid rgba(255,255,255,.08);border-radius:999px;color:#8f93a3;background:rgba(255,255,255,.025);font-size:10px;font-weight:750;letter-spacing:.04em;text-transform:uppercase}.access-mode.owner{color:#d9d0ff;border-color:rgba(183,167,255,.28);background:rgba(183,167,255,.07)}.listening{animation:pulse 1.15s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(183,167,255,.08)}}.signin{display:none;margin:18px auto 0;width:min(900px,calc(100% - 44px));padding:16px;border:1px solid #42385f;border-radius:14px;background:#181524;color:#cfc8e8;font-size:13px;line-height:1.6}.signin a{color:white}.signin.show{display:block}@media(max-width:600px){.topbar{height:58px}.title{display:none}.top-actions a,.top-actions button{min-height:44px;padding:0 9px;font-size:11px}.chat{padding:24px 15px 158px}.hero{padding:5vh 0 30px}.hero p{font-size:12px}.bubble{max-width:92%;font-size:13px}.status{padding-left:16px}.composer-wrap{padding-left:10px;padding-right:10px}.composer{border-radius:16px}.composer-row button{padding:0 10px;font-size:12px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
+
+<style id="stellar-jarvis-text-polish-v2">
+:root{--bg:#0d0d0d;--panel:#161616;--panel2:#202020;--line:rgba(255,255,255,.12);--text:#f5f5f5;--muted:#afb0b6;--accent:#c2b4f5}
+html{scroll-behavior:smooth}
+body{color:#f5f5f5!important}
+.topbar{height:66px;background:rgba(13,13,13,.92)!important;border-bottom:1px solid rgba(255,255,255,.075)!important}
+.brand{font-size:14px;letter-spacing:-.015em;font-weight:700}
+.brand-mark{background:#202020!important;box-shadow:none!important;color:#eee!important;border-color:rgba(255,255,255,.12)}
+.title{font-size:13px;color:#d4d4d8;font-weight:560}
+.top-actions{align-items:center}
+.top-actions a,.top-actions button{font-size:12px;color:#e5e5e7;border-color:rgba(255,255,255,.11);background:#191919;transition:background .15s,border-color .15s}
+.top-actions a:hover,.top-actions button:hover{background:#252525;border-color:rgba(255,255,255,.2)}
+.top-actions :focus-visible,.composer button:focus-visible,.signin a:focus-visible{outline:2px solid #c6b6ff;outline-offset:3px}
+#access-mode{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat{width:min(820px,100%);padding:38px 26px 225px;background:transparent!important}
+.hero{max-width:640px;margin:0 auto;padding:clamp(46px,11vh,110px) 0 46px;text-align:center}
+.hero .orb{width:62px;height:62px;margin-bottom:22px;box-shadow:none!important;border:1px solid rgba(255,255,255,.13)!important;background:#1d1d1d!important;filter:none!important;font-weight:670;font-size:25px;color:#f4f4f5}
+.hero .hero-eyebrow{margin:0 0 11px;color:#bbb3de!important;font-size:10px;font-weight:720;letter-spacing:.13em;line-height:1.4}
+.hero h1{margin:0 0 15px;color:#fafafa!important;font-size:clamp(33px,5vw,47px);font-weight:690;letter-spacing:-.052em!important;line-height:1.15}
+.hero p:not(.hero-eyebrow){max-width:490px;margin:0 auto;color:#bfc0c6!important;font-size:15px;line-height:1.75}
+.messages{gap:26px}
+.msg{gap:13px;max-width:100%;align-items:flex-start}
+.avatar{width:32px;height:32px;flex-basis:32px;border-radius:10px;font-weight:720;color:#e6e1ff;background:#1e1d24;border-color:rgba(255,255,255,.12)}
+.message-content{flex:1;min-width:0;max-width:730px}
+.msg.user .message-content{flex:0 1 auto;max-width:min(83%,650px)}
+.speaker{margin:3px 0 9px;color:#bfc0c7;font-size:12px;line-height:1.25;font-weight:690;letter-spacing:.01em}
+.msg.user .speaker{text-align:right}
+.bubble{max-width:100%;padding:0;background:transparent;border:0;border-radius:0;color:#ebebef;font-size:15px;line-height:1.78;white-space:pre-wrap;overflow-wrap:anywhere;letter-spacing:.002em}
+.msg.user .bubble{padding:13px 17px;border-radius:18px 18px 5px 18px;background:#242424;border:1px solid rgba(255,255,255,.08);color:#f5f5f6}
+.bubble.rich-body{white-space:normal}
+.bubble.rich-body p{margin:0 0 12px;color:#ebebef!important;font-size:inherit;line-height:inherit;white-space:pre-line}
+.bubble.rich-body p:last-child,.bubble.rich-body ul:last-child,.bubble.rich-body ol:last-child{margin-bottom:0}
+.bubble.rich-body strong{color:#fff;font-weight:720}
+.bubble.rich-body em{color:#ededf3}
+.bubble.rich-body h2,.bubble.rich-body h3,.bubble.rich-body h4{font-size:17px;line-height:1.4;color:#f5f5f5!important;letter-spacing:-.02em!important;margin:22px 0 9px;font-weight:700}
+.bubble.rich-body h2:first-child,.bubble.rich-body h3:first-child,.bubble.rich-body h4:first-child{margin-top:0}
+.bubble.rich-body ul,.bubble.rich-body ol{padding-left:23px;margin:0 0 15px}
+.bubble.rich-body li{margin:5px 0;color:#e7e7eb!important;padding-left:3px}
+.bubble.rich-body a{color:#c8bbff;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.bubble.rich-body a:hover{color:#e1d8ff}
+.bubble.rich-body blockquote{border-left:2px solid #8c83af;margin:12px 0;padding:1px 0 1px 15px;color:#c7c7cf}
+.bubble.rich-body code{padding:2px 5px;border-radius:5px;border:1px solid rgba(255,255,255,.09);background:#242424;color:#ece8ff;font-size:.88em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.bubble.rich-body pre{margin:14px 0 18px;max-width:100%;padding:14px;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:#151515;overflow:auto;white-space:pre}
+.bubble.rich-body pre code{display:block;border:0;background:transparent;color:#e8e8ef;padding:0;font-size:12.5px;line-height:1.65;white-space:pre;overflow-wrap:normal}
+.composer-wrap{padding:16px max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:linear-gradient(180deg,transparent,#0d0d0d 27%)!important}
+.composer{width:min(790px,100%);border:1px solid rgba(255,255,255,.13)!important;border-radius:19px;background:#1a1a1a!important;padding:10px 12px 11px;box-shadow:0 16px 40px rgba(0,0,0,.25)!important}
+.composer:focus-within{border-color:rgba(202,191,246,.5)!important}
+.composer #prompt{min-height:49px;max-height:180px;padding:9px 8px;color:#f5f5f6!important;background:transparent!important;font-size:16px;line-height:1.5;outline:0!important}
+.composer #prompt::placeholder{color:#a5a5ac!important}
+.composer .status{width:auto;min-height:17px;margin:0;padding:0 8px 8px;color:#999ba3;font-size:11px;line-height:1.4}
+.composer .status.good{color:#acddc5}.composer .status.bad{color:#ffbcc5}
+.composer-row{gap:8px;flex-wrap:wrap}
+.composer-row button{border-color:rgba(255,255,255,.11);border-radius:10px;background:#282828;color:#ececf0;font-size:12px;font-weight:560}
+.composer-row button:hover:enabled{border-color:rgba(255,255,255,.24);background:#333}
+.composer-row button.primary{margin-left:auto;background:#ededed;color:#101010;border-color:#ededed;font-weight:720;min-width:84px}
+.composer-row button.primary:hover:enabled{background:#fff}
+.signin{border-color:rgba(196,180,245,.22);background:#1b1a20;color:#e8e4f4;max-width:790px;font-size:14px;line-height:1.6}
+.signin a{color:#f0eaff;text-underline-offset:3px}
+@media(max-width:600px){
+ .topbar{height:58px;padding:0 12px;gap:8px}
+ .brand{gap:6px;font-size:13px}.brand-mark{width:27px;height:27px}
+ .top-actions{gap:6px}
+ .top-actions a,.top-actions button{min-height:40px;padding:0 8px;font-size:11px}
+ #access-mode{font-size:9px;max-width:94px;padding:0 6px}
+ .chat{padding:18px 16px 235px}
+ .hero{padding:clamp(35px,8vh,75px) 0 25px}
+ .hero h1{font-size:34px}
+ .hero p:not(.hero-eyebrow){font-size:14.5px;line-height:1.65}
+ .messages{gap:22px}.msg{gap:9px}.avatar{width:27px;height:27px;flex-basis:27px;font-size:11px}
+ .bubble{font-size:15px;line-height:1.7}
+ .msg.user .message-content{max-width:91%}
+ .msg.user .bubble{padding:11px 14px}
+ .composer-wrap{padding:11px 10px max(12px,env(safe-area-inset-bottom)) 10px}
+ .composer{padding:8px 9px;border-radius:15px}
+ .composer-row{gap:6px}.composer-row button{padding:0 9px;min-height:42px}
+ #handsfree-toggle{font-size:11px}
+ .bubble.rich-body pre{padding:11px}.bubble.rich-body pre code{font-size:12px}
+}
+@media(max-width:380px){.top-actions #voice-toggle{display:none}.composer-row #handsfree-toggle{order:3;flex:1 1 100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 </head>
 <body>
 <div class="shell">
@@ -19,7 +100,7 @@
 <a class="brand" href="/app"><span class="brand-mark" aria-hidden="true">✦</span><span>Stellar AI</span></a>
 <span class="title">Jarvis</span>
 <div class="top-actions">
-<a href="/app">Chat</a>
+<a href="/app">← Back to chat</a>
 <span id="access-mode" class="access-mode">Checking access</span>
 <a id="owner-link" href="/private-workspace.html">Private workspace</a>
 <button id="voice-toggle" type="button" aria-pressed="true">🔊 Voice on</button>
@@ -28,15 +109,15 @@
 <main>
 <div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span> <a id="access-link" href="/app?signin=1">Open sign in →</a></div>
 <section id="chat" class="chat" aria-label="Jarvis conversation">
-<div id="hero" class="hero"><div class="orb" aria-hidden="true">J</div><h1>Jarvis, ready when you are.</h1><p>Type or speak naturally. Jarvis keeps routine answers concise, speaks back with an original calm British assistant profile, and switches to private command mode only for the verified private account.</p></div>
-<div id="messages" class="messages" aria-live="polite"></div>
+<div id="hero" class="hero"><div class="orb" aria-hidden="true">J</div><p class="hero-eyebrow">YOUR AI ASSISTANT</p><h1>Chat with Jarvis</h1><p>Ask a question, get help with code, or plan your next step. Write a message below, or switch on voice when you prefer to talk.</p></div>
+<div id="messages" class="messages" role="log" aria-label="Jarvis messages" aria-live="polite"></div>
 </section>
-<div id="status" class="status" role="status" aria-live="polite">Ready.</div>
 </main>
 <div class="composer-wrap">
 <form id="composer" class="composer">
 <label for="prompt" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message Jarvis</label>
-<textarea id="prompt" rows="1" maxlength="12000" placeholder="Message Jarvis…"></textarea>
+<textarea id="prompt" rows="1" maxlength="12000" placeholder="Ask Jarvis anything…"></textarea>
+<div id="status" class="status" role="status" aria-live="polite">Ready.</div>
 <div class="composer-row">
 <button id="mic" type="button" aria-label="Talk to Jarvis" aria-pressed="false">🎙 Talk</button>
 <button id="handsfree-toggle" type="button" aria-label="Toggle hands-free conversation" aria-pressed="false">Hands-free off</button>
@@ -68,7 +149,9 @@
     const row=document.createElement('div');row.className='msg '+role;
     const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=role==='assistant'?'J':'You';
     const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;
-    row.append(avatar,bubble);$('messages').appendChild(row);row.scrollIntoView({block:'end',behavior:'smooth'});return bubble;
+    const content=document.createElement('div');content.className='message-content';
+    const speaker=document.createElement('div');speaker.className='speaker';speaker.textContent=role==='assistant'?'Jarvis':'You';
+    content.append(speaker,bubble);row.append(avatar,content);$('messages').appendChild(row);row.scrollIntoView({block:'end',behavior:'smooth'});return bubble;
   }
   function cleanSpeech(text){return String(text||'').replace(/```[\s\S]*?```/g,'I have code ready for you on screen.').replace(/`([^`]+)`/g,'$1').replace(/https?:\/\/\S+/g,'a link').replace(/[•*_>#~]/g,' ').replace(/\s+/g,' ').trim()}
   function chooseVoice(){const list=speechSynthesis?.getVoices?.()||[];return list.find(v=>/^en-GB$/i.test(v.lang)&&/ryan|daniel|oliver|arthur|natural|premium|google|microsoft/i.test(v.name))||list.find(v=>/^en-GB$/i.test(v.lang))||list.find(v=>/^en/i.test(v.lang))||null}
