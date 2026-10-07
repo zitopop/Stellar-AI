@@ -153,6 +153,100 @@ body{color:#f5f5f5!important}
     const speaker=document.createElement('div');speaker.className='speaker';speaker.textContent=role==='assistant'?'Jarvis':'You';
     content.append(speaker,bubble);row.append(avatar,content);$('messages').appendChild(row);row.scrollIntoView({block:'end',behavior:'smooth'});return bubble;
   }
+
+  function appendFormattedInline(parent, value) {
+    const source=String(value||'');
+    const token=/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)|\u0060([^\u0060\n]+)\u0060|\*\*([^*\n]+)\*\*|\*([^*\n]+)\*/g;
+    let offset=0,match;
+    while((match=token.exec(source))!==null){
+      if(match.index>offset)parent.append(document.createTextNode(source.slice(offset,match.index)));
+      let element;
+      if(match[1]&&match[2]){
+        try{
+          const url=new URL(match[2]);
+          if(url.protocol==='http:'||url.protocol==='https:'){
+            element=document.createElement('a');
+            element.href=url.href;
+            element.target='_blank';
+            element.rel='noopener noreferrer';
+            element.textContent=match[1];
+          }
+        }catch{}
+      }else if(match[3]){
+        element=document.createElement('code');element.textContent=match[3];
+      }else if(match[4]){
+        element=document.createElement('strong');element.textContent=match[4];
+      }else if(match[5]){
+        element=document.createElement('em');element.textContent=match[5];
+      }
+      if(element)parent.append(element);
+      else parent.append(document.createTextNode(match[0]));
+      offset=token.lastIndex;
+    }
+    if(offset<source.length)parent.append(document.createTextNode(source.slice(offset)));
+  }
+  function renderFormattedReply(bubble, reply) {
+    const lines=String(reply||'').replace(/\r\n?/g,'\n').split('\n');
+    const fragment=document.createDocumentFragment();
+    let paragraph=[],list=null;
+    function endParagraph(){
+      if(!paragraph.length)return;
+      const p=document.createElement('p');
+      appendFormattedInline(p,paragraph.join('\n'));
+      fragment.append(p);
+      paragraph=[];
+    }
+    function endList(){list=null}
+    for(let i=0;i<lines.length;i++){
+      const line=lines[i],trimmed=line.trim();
+      const fence=trimmed.match(/^\x60{3}\s*([a-z0-9+#.-]*)\s*$/i);
+      if(fence){
+        endParagraph();endList();
+        const codeLines=[];
+        while(++i<lines.length&&!/^\s*\x60{3}\s*$/.test(lines[i]))codeLines.push(lines[i]);
+        const pre=document.createElement('pre');
+        const code=document.createElement('code');
+        code.textContent=codeLines.join('\n');
+        if(fence[1])code.dataset.language=fence[1].slice(0,24).toLowerCase();
+        pre.append(code);
+        fragment.append(pre);
+        continue;
+      }
+      if(!trimmed){endParagraph();endList();continue}
+      const heading=trimmed.match(/^(#{1,3})\s+(.+)$/);
+      if(heading){
+        endParagraph();endList();
+        const h=document.createElement(heading[1].length===1?'h2':heading[1].length===2?'h3':'h4');
+        appendFormattedInline(h,heading[2]);
+        fragment.append(h);
+        continue;
+      }
+      const quote=trimmed.match(/^>\s?(.*)$/);
+      if(quote){
+        endParagraph();endList();
+        const q=document.createElement('blockquote');
+        appendFormattedInline(q,quote[1]);
+        fragment.append(q);
+        continue;
+      }
+      const unordered=trimmed.match(/^[-*+]\s+(.+)$/),ordered=trimmed.match(/^\d+[.)]\s+(.+)$/);
+      if(unordered||ordered){
+        endParagraph();
+        const kind=ordered?'ol':'ul';
+        if(!list||list.tagName.toLowerCase()!==kind){list=document.createElement(kind);fragment.append(list)}
+        const li=document.createElement('li');
+        appendFormattedInline(li,(ordered||unordered)[1]);
+        list.append(li);
+        continue;
+      }
+      endList();
+      paragraph.push(trimmed);
+    }
+    endParagraph();
+    bubble.classList.add('rich-body');
+    bubble.replaceChildren(fragment);
+  }
+
   function cleanSpeech(text){return String(text||'').replace(/```[\s\S]*?```/g,'I have code ready for you on screen.').replace(/`([^`]+)`/g,'$1').replace(/https?:\/\/\S+/g,'a link').replace(/[•*_>#~]/g,' ').replace(/\s+/g,' ').trim()}
   function chooseVoice(){const list=speechSynthesis?.getVoices?.()||[];return list.find(v=>/^en-GB$/i.test(v.lang)&&/ryan|daniel|oliver|arthur|natural|premium|google|microsoft/i.test(v.name))||list.find(v=>/^en-GB$/i.test(v.lang))||list.find(v=>/^en/i.test(v.lang))||null}
   function stopSpeech(){try{speechSynthesis?.cancel()}catch{};speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Ready.')}
@@ -183,7 +277,7 @@ body{color:#f5f5f5!important}
       const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
       while(true){const {done,value}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const chunks=buffer.split('\n');buffer=chunks.pop()||'';for(const line of chunks){if(!line.startsWith('data:'))continue;const raw=line.slice(5).trim();if(!raw||raw==='[DONE]')continue;const delta=parseEvent(raw);if(delta){full+=delta;bubble.textContent=full;bubble.scrollIntoView({block:'end'})}}}
       if(buffer.startsWith('data:')){const raw=buffer.slice(5).trim();if(raw&&raw!=='[DONE]'){const delta=parseEvent(raw);if(delta)full+=delta}}
-      if(!full.trim())full='I could not produce a response this time. Please try again.';bubble.textContent=full;messages.push({role:'assistant',content:full});setStatus('Ready.');speak(full);
+      if(!full.trim())full='I could not produce a response this time. Please try again.';renderFormattedReply(bubble,full);messages.push({role:'assistant',content:full});setStatus('Ready.');speak(full);
     }catch(error){bubble.textContent=error.message||'Jarvis could not answer.';setStatus(error.message||'Jarvis could not answer.','bad')}
     finally{setBusy(false)}
   }
