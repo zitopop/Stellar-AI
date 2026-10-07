@@ -3467,6 +3467,49 @@ html,body,.app{
 }
 </style>
 
+
+<style id="stellar-sidebar-text-workspace-v81">
+/* Workspace rows are text-only; collapsed desktop keeps only the simple utility rail. */
+.side-primary .side-tool{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+.side-primary .side-tool-copy{
+  width:100%!important;
+}
+.side-primary .side-tool-icon{
+  display:none!important;
+}
+.collapsed-terms-icon{
+  display:none!important;
+}
+@media(min-width:901px){
+  body.sidebar-collapsed .side-primary{
+    display:none!important;
+  }
+  body.sidebar-collapsed .side-account a.side-bottom-link::before{
+    content:none!important;
+  }
+  body.sidebar-collapsed .side-account a.side-bottom-link .collapsed-terms-icon{
+    display:grid!important;
+    width:22px!important;
+    height:22px!important;
+    place-items:center!important;
+    overflow:visible!important;
+  }
+  body.sidebar-collapsed .collapsed-terms-icon svg{
+    display:block!important;
+    width:20px!important;
+    height:20px!important;
+    overflow:visible!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.7!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+}
+</style>
+
 </head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
@@ -3480,15 +3523,12 @@ html,body,.app{
     <nav class="side-primary" aria-label="Workspace">
       <p class="side-section-label">Workspace</p>
       <button class="side-tool" type="button" data-side-mode="general" aria-pressed="true" title="Build & chat" aria-label="Build & chat">
-        <span class="side-tool-icon" aria-hidden="true">✦</span>
         <span class="side-tool-copy"><strong>Build &amp; chat</strong><small>Generate FiveM or Roblox code</small></span>
       </button>
       <button class="side-tool" type="button" data-side-mode="debug" aria-pressed="false" title="Debug code" aria-label="Debug code">
-        <span class="side-tool-icon" aria-hidden="true">⌘</span>
         <span class="side-tool-copy"><strong>Debug code</strong><small>Paste errors and broken scripts</small></span>
       </button>
       <a class="side-tool" href="/free-tools" title="Free tools" aria-label="Free tools">
-        <span class="side-tool-icon" aria-hidden="true">◫</span>
         <span class="side-tool-copy"><strong>Free tools</strong><small>QBCore + Roblox starter code</small></span>
       </a>
     </nav>
@@ -3507,7 +3547,7 @@ html,body,.app{
     <div class="side-account" aria-label="Account links">
       <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open account"><span>Account</span></button>
       <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open settings"><span>Settings</span></button>
-      <a class="side-bottom-link" href="/terms"><span>Terms</span></a>
+      <a class="side-bottom-link" href="/terms" aria-label="Open terms" title="Terms"><span>Terms</span><span class="collapsed-terms-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M7 3.75h7.25L18.25 7.75V20.25H7V3.75Z"></path><path d="M14 3.75V8H18.25"></path><path d="M9.5 11.25H15.75"></path><path d="M9.5 14.25H15.75"></path><path d="M9.5 17.25H13.5"></path></svg></span></a>
     </div>
 
     <button class="side-new-chat" type="button" id="newChatBtn"><span>New chat</span></button>
