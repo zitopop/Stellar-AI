@@ -4515,6 +4515,13 @@ body.public-home .stellar-mini-plan-grid--informative article.recommended{box-sh
 .stellar-account-topbar,
 .stellar-about-only{display:none!important}
 </style>
+<style id="stellar-billing-cycle-toggle-v1">
+.billing-cycle-toggle{display:flex;justify-content:center;gap:6px;margin:20px auto 18px;padding:5px;width:max-content;max-width:100%;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(255,255,255,.025)}
+.billing-cycle-toggle button{min-height:40px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:#9ea5b2;font:800 12px/1 Inter,system-ui,sans-serif;cursor:pointer}
+.billing-cycle-toggle button[aria-pressed="true"]{background:#f4f4f4;color:#111}
+.billing-cycle-toggle .billing-save{margin-left:5px;color:#6edab4;font-size:10px}
+@media(max-width:560px){.billing-cycle-toggle{width:100%;display:grid;grid-template-columns:1fr 1fr}.billing-cycle-toggle button{padding:0 10px}}
+</style>
 </head>
 <body class="stellar-public public-home">
   <header class="stellar-account-topbar" aria-label="Stellar account navigation">
@@ -5017,7 +5024,11 @@ Player.Functions.AddMoney(<span class="syn-str">'cash'</span>, reward)</code></p
         <h2>Simple plans.</h2>
         <p>Start free. Upgrade when you're shipping more — when you hit the free daily limit, upgrade to keep going.</p>
       </div>
-      <a class="stellar-plan-focus" href="/app?upgrade=plus" aria-label="Choose Stellar Plus for £20 per month">
+      <div class="billing-cycle-toggle" role="group" aria-label="Billing cycle">
+        <button type="button" data-billing-cycle="monthly" aria-pressed="true">Monthly</button>
+        <button type="button" data-billing-cycle="annual" aria-pressed="false">Yearly <span class="billing-save">Save 30%</span></button>
+      </div>
+      <a class="stellar-plan-focus" data-billing-plan-focus="plus" href="/app?upgrade=plus" aria-label="Choose Stellar Plus for £20 per month">
         <span class="stellar-plan-focus-badge">RECOMMENDED PAID PLAN</span>
         <span class="stellar-plan-focus-copy"><strong>Plus · £20/month</strong><small>Best default for active FiveM and Roblox builders who need Stellar Deep, larger projects and more capacity.</small></span>
         <span class="stellar-plan-focus-cta">Choose Plus →</span>
@@ -5302,5 +5313,37 @@ root.querySelectorAll('[data-demo-download]').forEach(button=>button.addEventLis
 
 <script src="/lib/assets/stellar-analytics.js?v=2"></script>
 <script src="/lib/assets/telemetry.js?v=20261005-revenue-funnel"></script>
+<script id="stellar-billing-cycle-toggle-js-v1">
+(()=>{'use strict';
+const section=document.querySelector('.pricing-section#plans');
+if(!section)return;
+const buttons=[...section.querySelectorAll('[data-billing-cycle]')];
+const plans={
+ starter:{monthlyPrice:'£8',annualPrice:'£67',annualMonthly:'£5.58',save:'£29',monthlyPlan:'starter',annualPlan:'starter-annual',monthlyCta:'Choose Starter · £8/mo',annualCta:'Choose Starter yearly · £67/yr'},
+ plus:{monthlyPrice:'£20',annualPrice:'£168',annualMonthly:'£14',save:'£72',monthlyPlan:'plus',annualPlan:'plus-annual',monthlyCta:'Get Plus · £20/mo',annualCta:'Get Plus yearly · £168/yr'},
+ pro:{monthlyPrice:'£75',annualPrice:'£630',annualMonthly:'£52.50',save:'£270',monthlyPlan:'pro',annualPlan:'pro-annual',monthlyCta:'Go Pro · £75/mo',annualCta:'Go Pro yearly · £630/yr'}
+};
+function apply(cycle){
+ section.dataset.billingCycle=cycle;
+ for(const button of buttons)button.setAttribute('aria-pressed',button.dataset.billingCycle===cycle?'true':'false');
+ for(const card of section.querySelectorAll('.plan[data-plan]')){
+   const key=card.dataset.plan,def=plans[key];if(!def)continue;
+   const price=card.querySelector('.price strong'),suffix=card.querySelector('.price span'),annual=card.querySelector('.annual'),limit=card.querySelector('.plan-limit'),cta=card.querySelector('.plan-actions .button'),yearlyLink=card.querySelector('.plan-yearly-link');
+   const yearly=cycle==='annual';
+   if(price)price.textContent=yearly?def.annualPrice:def.monthlyPrice;
+   if(suffix)suffix.textContent=yearly?' / year':' / month';
+   if(annual)annual.innerHTML=yearly?'<strong>'+def.annualMonthly+'/mo equivalent</strong> · save '+def.save:'<strong>'+def.annualPrice+'/year</strong> · save '+def.save;
+   if(limit)limit.textContent=(yearly?def.annualPrice+'/year':def.monthlyPrice+'/'+(key==='starter'?'mo':'mo'))+' · '+(key==='starter'?'120 req/hr':key==='plus'?'400 req/hr':'1,600 req/hr · Stellar Max');
+   if(cta){cta.href='/app?upgrade='+(yearly?def.annualPlan:def.monthlyPlan);cta.setAttribute('aria-label',(yearly?'Choose '+key+' yearly':'Choose '+key+' monthly'));cta.innerHTML=(yearly?def.annualCta:def.monthlyCta)+' <span aria-hidden="true">↗</span>'}
+   if(yearlyLink)yearlyLink.hidden=true;
+ }
+ const focus=section.querySelector('[data-billing-plan-focus="plus"]');
+ if(focus){const yearly=cycle==='annual';focus.href='/app?upgrade='+(yearly?'plus-annual':'plus');focus.setAttribute('aria-label',yearly?'Choose Stellar Plus for £168 per year':'Choose Stellar Plus for £20 per month');const strong=focus.querySelector('.stellar-plan-focus-copy strong');if(strong)strong.textContent=yearly?'Plus · £168/year (£14/mo equivalent)':'Plus · £20/month';}
+ const bridge=section.querySelector('.landing-plan-bridge div:nth-child(2) span');if(bridge)bridge.textContent=cycle==='annual'?'PLUS · £168/YR':'PLUS · £20/MO';
+}
+buttons.forEach(button=>button.addEventListener('click',()=>apply(button.dataset.billingCycle)));
+apply('monthly');
+})();
+</script>
 </body>
 </html>
