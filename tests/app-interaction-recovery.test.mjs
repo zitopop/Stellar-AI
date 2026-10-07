@@ -10,7 +10,7 @@ test('app keeps phone controls tappable and inactive overlays inert',()=>{
   assert.match(app,/\.drawer-backdrop\.open\{opacity:1;pointer-events:auto\}/);
   assert.match(app,/\.panel-backdrop\{position:fixed;[\s\S]*?display:none/);
   assert.match(app,/\.panel-backdrop\.open\{display:grid\}/);
-  assert.match(app,/id="accountButton"[^>]*type="button"/);
+  assert.match(app,/class="side-bottom-link"[^>]*data-open="settings"[^>]*aria-label="Open account"/);
 });
 
 test('service worker fetches navigation HTML fresh before applying patches',()=>{
