@@ -10,12 +10,17 @@ const jarvis = readFileSync(new URL('../lib/jarvis-voice.js', import.meta.url), 
 const emailConfig = readFileSync(new URL('../lib/email-config.js', import.meta.url), 'utf8');
 const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
 
-test('privileged UI uses server-verified owner state rather than browser email matching', () => {
+test('privileged UI uses server-verified owner and staff state rather than browser email matching', () => {
   assert.match(getPlan, /owner = isOwnerEmail\(session\.email\)/);
+  assert.match(getPlan, /staff = isStaffEmail\(session\.email\)/);
   assert.match(getPlan, /\n\s*owner,/);
+  assert.match(getPlan, /\n\s*staff,/);
   assert.match(app, /serverOwner=data\.owner===true\|\|account\.owner===true/);
+  assert.match(app, /serverStaff=data\.staff===true/);
   assert.match(app, /function isOwner\(\)\{return serverOwner===true\}/);
-  assert.match(app, /const ownerTools=isOwner\(\)\?/);
+  assert.match(app, /function isStaff\(\)\{return serverStaff===true\}/);
+  assert.match(app, /function canUsePrivateTools\(\)\{return isOwner\(\)\|\|isStaff\(\)\}/);
+  assert.match(app, /privateTools=canUsePrivateTools\(\)\?/);
   assert.doesNotMatch(app, /email==='tobi@trystellarai\.com'/);
 });
 
