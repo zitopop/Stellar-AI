@@ -4867,7 +4867,7 @@ body.public-home .stellar-footer-copyright{
 
 
 <style id="stellar-founder-projects-v84">
-body.public-home .stellar-about-only #other-businesses{
+body.public-home #main-content #other-businesses{
   display:block!important;
   width:100%!important;max-width:1180px!important;
   margin:clamp(56px,7vw,84px) auto 0!important;
@@ -4959,6 +4959,75 @@ body.public-home #other-businesses .stellar-founder-projects-note{
   body.public-home #other-businesses .stellar-founder-project h3{
     margin-top:13px!important;font-size:18px!important
   }
+}
+</style>
+
+<style id="stellar-annual-mobile-tablet-v85">
+/* Keep the real pricing section's billing controls usable at iPhone and iPad widths. */
+body.public-home #plans .billing-cycle-toggle{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:min(100%,460px)!important;max-width:100%!important;
+  margin:18px auto 12px!important;padding:5px!important;
+  border:1px solid rgba(255,255,255,.15)!important;border-radius:13px!important;
+  background:#1a1d22!important;box-sizing:border-box!important;overflow:visible!important;
+}
+body.public-home #plans .billing-cycle-toggle button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-wrap:wrap!important;gap:4px!important;min-width:0!important;min-height:48px!important;
+  padding:9px 12px!important;white-space:normal!important;line-height:1.25!important;
+  border-radius:10px!important;font-size:13px!important;font-weight:750!important;
+  color:#e9edf3!important;
+}
+body.public-home #plans .billing-cycle-toggle button[aria-pressed="true"]{
+  color:#14171b!important;background:#f5f6f8!important;
+}
+body.public-home #plans .billing-cycle-toggle button:focus-visible{
+  outline:2px solid #bdb1ff!important;outline-offset:3px!important;
+}
+body.public-home #plans .billing-cycle-toggle .billing-save{
+  display:inline!important;margin:0!important;font-size:10px!important;font-weight:800!important;
+  color:#a7f0cb!important;white-space:nowrap!important;
+}
+body.public-home #plans .billing-cycle-toggle button[aria-pressed="true"] .billing-save{color:#226a49!important}
+body.public-home #plans .stellar-annual-mobile-summary{display:none!important}
+body.public-home #plans .plan-yearly-link[hidden]{display:none!important}
+@media(max-width:1024px){
+  body.public-home #plans{width:min(100% - 28px,940px)!important;max-width:940px!important}
+  body.public-home #plans .plans{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:14px!important;max-width:100%!important
+  }
+  body.public-home #plans .plans .plan{min-width:0!important;width:100%!important;padding:20px!important}
+  body.public-home #plans .plan .price{display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;gap:4px!important}
+  body.public-home #plans .plan .price strong{font-size:clamp(31px,4.5vw,43px)!important;color:#fafbfc!important}
+  body.public-home #plans .plan .price span{font-size:12px!important;color:#e1e5ea!important;white-space:normal!important}
+  body.public-home #plans .plan .annual{display:block!important;margin:9px 0 0!important;min-height:0!important;color:#d5dbe3!important;font-size:12px!important;line-height:1.55!important}
+  body.public-home #plans .plan .annual strong{color:#f0f5f9!important;font-weight:750!important}
+  body.public-home #plans .stellar-annual-mobile-summary{
+    display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:center!important;
+    gap:8px 16px!important;max-width:740px!important;margin:0 auto 18px!important;
+    padding:13px 16px!important;border:1px solid rgba(255,255,255,.10)!important;
+    border-radius:13px!important;background:#171a1f!important;
+    color:#e9edf3!important;font-size:12px!important;line-height:1.5!important;
+  }
+  body.public-home #plans .stellar-annual-mobile-summary>strong{width:100%!important;text-align:center!important;color:#fff!important;font-size:13px!important}
+  body.public-home #plans .stellar-annual-mobile-summary b{color:#fff!important;font-weight:770!important}
+  body.public-home #plans .stellar-annual-mobile-summary small{display:block!important;width:100%!important;text-align:center!important;color:#c6ccd4!important;font-size:11px!important}
+  body.public-home #plans .plan-actions .button{min-height:44px!important;white-space:normal!important}
+}
+@media(max-width:600px){
+  body.public-home #plans{width:calc(100% - 24px)!important}
+  body.public-home #plans .plans{grid-template-columns:1fr!important;gap:12px!important}
+  body.public-home #plans .plans .plan{padding:19px!important}
+  body.public-home #plans .billing-cycle-toggle{width:100%!important}
+  body.public-home #plans .billing-cycle-toggle button{min-height:48px!important;padding:8px 7px!important;font-size:13px!important}
+  body.public-home #plans .stellar-annual-mobile-summary{justify-content:space-around!important;gap:8px 10px!important;padding:12px 10px!important}
+  body.public-home #plans .stellar-annual-mobile-summary span{font-size:11px!important;white-space:nowrap!important}
+  body.public-home #plans .pricing-heading h2{font-size:clamp(27px,8vw,37px)!important}
+}
+@media(max-width:340px){
+  body.public-home #plans .billing-cycle-toggle button{font-size:12px!important}
+  body.public-home #plans .billing-cycle-toggle .billing-save{font-size:9px!important}
 }
 </style>
 </head>
@@ -5090,37 +5159,6 @@ body.public-home #other-businesses .stellar-founder-projects-note{
   </div>
 </section>
 
-
-  <section class="stellar-simple-section stellar-founder-projects" id="other-businesses" aria-labelledby="founder-projects-title">
-    <div class="stellar-founder-projects-head">
-      <div>
-        <p class="stellar-about-kicker">MORE FROM THE FOUNDER</p>
-        <h2 id="founder-projects-title">Other businesses &amp; projects.</h2>
-      </div>
-      <p>Stellar AI stays focused on AI. Explore the separate businesses and projects behind the scenes.</p>
-    </div>
-    <div class="stellar-founder-projects-grid">
-      <article class="stellar-founder-project">
-        <span class="stellar-founder-project-type">ONLINE STORE</span>
-        <h3>Chrome Cruiser</h3>
-        <p>Car interior LED lighting and ambient accessories, with product details and checkout on its own store.</p>
-        <a href="https://chromecruiser.co.uk/" target="_blank" rel="noopener noreferrer" aria-label="Visit Chrome Cruiser store (opens in a new tab)">Visit Chrome Cruiser <span aria-hidden="true">↗</span></a>
-      </article>
-      <article class="stellar-founder-project">
-        <span class="stellar-founder-project-type">BUSINESS SERVICES</span>
-        <h3>Stellar for Business</h3>
-        <p>AI website building, website reviews and receptionist workflows for businesses that want practical help.</p>
-        <a href="/business" aria-label="Explore Stellar AI business services">Explore business services <span aria-hidden="true">→</span></a>
-      </article>
-      <article class="stellar-founder-project">
-        <span class="stellar-founder-project-type">FIVEM COMMUNITY PROJECT</span>
-        <h3>Stellar Sloths Role Play</h3>
-        <p>A separate FiveM roleplay server project. Server information will be shared when a public destination is ready.</p>
-        <span class="stellar-founder-project-status">Community project · updates to follow</span>
-      </article>
-    </div>
-    <p class="stellar-founder-projects-note">These are separate projects. Stellar AI plans do not include store purchases or FiveM server access.</p>
-  </section>
 
   <section class="stellar-simple-section stellar-policy-section" id="policies" aria-labelledby="stellar-policy-title">
     <div class="stellar-policy-summary">
@@ -5502,6 +5540,13 @@ Player.Functions.AddMoney(<span class="syn-str">'cash'</span>, reward)</code></p
         <button type="button" data-billing-cycle="monthly" aria-pressed="true">Monthly</button>
         <button type="button" data-billing-cycle="annual" aria-pressed="false">Yearly <span class="billing-save">Save 30%</span></button>
       </div>
+      <div class="stellar-annual-mobile-summary" aria-label="Annual subscription prices">
+        <strong>Yearly plans · Save 30%</strong>
+        <span>Starter <b>£67/yr</b></span>
+        <span>Plus <b>£168/yr</b></span>
+        <span>Pro <b>£630/yr</b></span>
+        <small>Pay once per year. Select Yearly above to compare and choose an annual plan.</small>
+      </div>
       <a class="stellar-plan-focus" data-billing-plan-focus="plus" href="/app?upgrade=plus" aria-label="Choose Stellar Plus for £20 per month">
         <span class="stellar-plan-focus-badge">RECOMMENDED PAID PLAN</span>
         <span class="stellar-plan-focus-copy"><strong>Plus · £20/month</strong><small>Best default for active FiveM and Roblox builders who need Stellar Deep, larger projects and more capacity.</small></span>
@@ -5660,6 +5705,37 @@ end)</code></pre>
     </section>
 
     <section class="section container faq-section"><div><p class="eyebrow">QUESTIONS</p><h2>The important stuff, simply.</h2><p>Need more help?<br><a href="/support" class="text-link">Visit support <span aria-hidden="true">↗</span></a></p></div><div class="faqs"><details><summary>Can I try Stellar before paying?<span aria-hidden="true">+</span></summary><p>Yes. The landing page offers up to 3 anonymous previews. A free account includes up to 15 Stellar Fast generations per day and does not require a card.</p></details><details><summary>Which game frameworks does Stellar support?<span aria-hidden="true">+</span></summary><p>Stellar is focused on FiveM QBCore, ESX and ox_lib workflows plus Roblox Luau. Always review and test generated code before production use.</p></details><details><summary>Can Stellar help with broken scripts?<span aria-hidden="true">+</span></summary><p>Yes. Paste code and the error into Debug mode, inspect the suggested fix, then copy or download supported files.</p></details><details><summary>Can I cancel a paid plan?<span aria-hidden="true">+</span></summary><p>Yes. Paid users can manage or cancel the subscription from billing settings. Cancellation stops the next renewal and access normally continues to the end of the paid period.</p></details></div></section>
+
+  <section class="stellar-simple-section stellar-founder-projects" id="other-businesses" aria-labelledby="founder-projects-title">
+    <div class="stellar-founder-projects-head">
+      <div>
+        <p class="stellar-about-kicker">MORE FROM THE FOUNDER</p>
+        <h2 id="founder-projects-title">Other businesses &amp; projects.</h2>
+      </div>
+      <p>Stellar AI stays focused on AI. Explore the separate businesses and projects behind the scenes.</p>
+    </div>
+    <div class="stellar-founder-projects-grid">
+      <article class="stellar-founder-project">
+        <span class="stellar-founder-project-type">ONLINE STORE</span>
+        <h3>Chrome Cruiser</h3>
+        <p>Car interior LED lighting and ambient accessories, with product details and checkout on its own store.</p>
+        <a href="https://chromecruiser.co.uk/" target="_blank" rel="noopener noreferrer" aria-label="Visit Chrome Cruiser store (opens in a new tab)">Visit Chrome Cruiser <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="stellar-founder-project">
+        <span class="stellar-founder-project-type">BUSINESS SERVICES</span>
+        <h3>Stellar for Business</h3>
+        <p>AI website building, website reviews and receptionist workflows for businesses that want practical help.</p>
+        <a href="/business" aria-label="Explore Stellar AI business services">Explore business services <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="stellar-founder-project">
+        <span class="stellar-founder-project-type">FIVEM COMMUNITY PROJECT</span>
+        <h3>Stellar Sloths Role Play</h3>
+        <p>A separate FiveM roleplay server project. Server information will be shared when a public destination is ready.</p>
+        <span class="stellar-founder-project-status">Community project · updates to follow</span>
+      </article>
+    </div>
+    <p class="stellar-founder-projects-note">These are separate projects. Stellar AI plans do not include store purchases or FiveM server access.</p>
+  </section>
 
     <section class="container final-cta"><p class="eyebrow">START WITH A REAL SCRIPT</p><h2>Try Stellar free.<br><span>Or hand us one focused fix for £99.</span></h2><div class="final-cta-actions"><a href="/app?welcome=1" class="button button-primary">Start free <span aria-hidden="true">↗</span></a><a href="/script-fix" class="button button-outline">Priority Script Fix · £99</a></div><p class="hero-footnote">No card is required for Free. Running a business too? <a href="/business">Explore the separate Stellar Business tools.</a></p></section>
   </main>
