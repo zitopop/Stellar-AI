@@ -1530,7 +1530,7 @@ body.public-home::before{display:none!important}
   .public-home .dev-proof-grid{grid-template-columns:1fr 1fr!important}
   .public-home .pricing-section,.public-home .stellar-dev-playground,.public-home .stellar-comparison,
   .public-home .faq-section,.public-home .final-cta{width:calc(100% - 22px)!important}
-  .public-home .pricing-section .plan.featured{order:-1!important}
+  /* Keep plan tiers in Free → Starter → Plus → Pro order. */
   .public-home .final-cta{padding:38px 20px!important;margin-bottom:48px!important}
 }
 @media(max-width:390px){
@@ -5029,6 +5029,13 @@ body.public-home #plans .plan-yearly-link[hidden]{display:none!important}
   body.public-home #plans .billing-cycle-toggle button{font-size:12px!important}
   body.public-home #plans .billing-cycle-toggle .billing-save{font-size:9px!important}
 }
+</style>
+<style id="stellar-home-stable-plan-order-v86">
+/* Monthly and yearly share one predictable visual and reading order. */
+body.public-home #plans .plans>.plan[data-plan="free"]{order:1!important}
+body.public-home #plans .plans>.plan[data-plan="starter"]{order:2!important}
+body.public-home #plans .plans>.plan[data-plan="plus"]{order:3!important}
+body.public-home #plans .plans>.plan[data-plan="pro"]{order:4!important}
 </style>
 </head>
 <body class="stellar-public public-home">
