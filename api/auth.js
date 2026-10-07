@@ -23,6 +23,24 @@ function validEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
 }
 
+function cleanName(value, max = 60) {
+  return String(value || '').replace(/[\u0000-\u001F\u007F]/g, '').trim().replace(/\s+/g, ' ').slice(0, max);
+}
+
+function publicAccountUser(user, email, source = '') {
+  const firstName = cleanName(user?.firstName || user?.given_name || '');
+  const lastName = cleanName(user?.lastName || user?.family_name || '');
+  const name = cleanName([firstName, lastName].filter(Boolean).join(' ') || user?.name || '');
+  return {
+    email: String(email || user?.loginEmail || '').trim().toLowerCase(),
+    firstName,
+    lastName,
+    name,
+    signInSource: String(source || user?.signInSource || '').trim().toLowerCase() || 'account',
+    ...(String(user?.picture || '').startsWith('https://') ? { picture: String(user.picture).slice(0, 500) } : {}),
+  };
+}
+
 function hashPassword(password, salt) {
   return crypto.pbkdf2Sync(String(password), salt, 150000, 32, 'sha256').toString('hex');
 }
@@ -81,6 +99,8 @@ async function verifyGoogleCredential(token) {
   return {
     email: String(payload.email).toLowerCase().trim(),
     name: String(payload.name || payload.given_name || '').slice(0, 100),
+    firstName: cleanName(payload.given_name || ''),
+    lastName: cleanName(payload.family_name || ''),
     picture: String(payload.picture || '').slice(0, 500),
   };
 }
@@ -125,11 +145,19 @@ async function sendWelcomeEmail(email, requestedName = '') {
   }
 }
 
-async function ensureUser(url, token, email, source) {
+async function ensureUser(url, token, email, source, identity = {}) {
   const userKey = `stellar:user:${email}`;
   const existing = await kvGet(url, token, userKey);
   if (existing) {
-    const user = await ensureReferralProfile(url, token, email, existing);
+    const patch = {};
+    if (!existing.signInSource && source) patch.signInSource = source;
+    if (!existing.loginEmail) patch.loginEmail = String(email || '').toLowerCase().trim();
+    if (!existing.firstName && identity.firstName) patch.firstName = cleanName(identity.firstName);
+    if (!existing.lastName && identity.lastName) patch.lastName = cleanName(identity.lastName);
+    if (!existing.picture && /^https:\/\//i.test(String(identity.picture || ''))) patch.picture = String(identity.picture).slice(0, 500);
+    const base = Object.keys(patch).length ? { ...existing, ...patch, updatedAt: Date.now() } : existing;
+    if (base !== existing) await kvSet(url, token, userKey, base);
+    const user = await ensureReferralProfile(url, token, email, base);
     return { user, isNew: false };
   }
 
@@ -140,6 +168,10 @@ async function ensureUser(url, token, email, source) {
     welcomeCreditAt: Date.now(),
     createdAt: Date.now(),
     signInSource: source,
+    loginEmail: String(email || '').toLowerCase().trim(),
+    firstName: cleanName(identity.firstName || ''),
+    lastName: cleanName(identity.lastName || ''),
+    ...( /^https:\/\//i.test(String(identity.picture || '')) ? { picture: String(identity.picture).slice(0, 500) } : {} ),
     funnel: initialFunnelState(),
   };
   await kvSet(url, token, userKey, user);
@@ -181,6 +213,69 @@ async function handleWelcomeResend(req, res, url, token) {
   return res.status(200).json({ success: true });
 }
 
+async function handleProfileUpdate(req, res, url, token) {
+  const session = readSession(req);
+  if (!session) return res.status(401).json({ error: 'Please sign in again to continue.' });
+
+  const accountEmail = String(session.email || '').trim().toLowerCase();
+  const userKey = `stellar:user:${accountEmail}`;
+  const user = (await kvGet(url, token, userKey)) || { createdAt: Date.now(), signInSource: 'account' };
+  const currentLoginEmail = String(user.loginEmail || accountEmail).trim().toLowerCase();
+  const requestedEmail = String(req.body?.newEmail || currentLoginEmail).trim().toLowerCase();
+  const firstName = cleanName(req.body?.firstName || '');
+  const lastName = cleanName(req.body?.lastName || '');
+  const currentPassword = String(req.body?.currentPassword || '');
+
+  if (!firstName) return res.status(400).json({ error: 'Enter your first name.' });
+  if (firstName.length > 60 || lastName.length > 60) return res.status(400).json({ error: 'Name is too long.' });
+  if (!validEmail(requestedEmail)) return res.status(400).json({ error: 'Enter a valid email address.' });
+
+  const currentAuthKey = `stellar:auth:${currentLoginEmail}`;
+  const authRecord = await kvGet(url, token, currentAuthKey);
+  const passwordAccount = Boolean(authRecord?.salt && authRecord?.hash);
+  const emailChanging = requestedEmail !== currentLoginEmail;
+
+  if (emailChanging) {
+    if (!passwordAccount) {
+      return res.status(400).json({ error: 'This account uses Google sign-in. Change the Google account email with Google, then sign in again.' });
+    }
+    if (!currentPassword || currentPassword.length < 8) {
+      return res.status(400).json({ error: 'Enter your current password to change your email.' });
+    }
+    const candidate = Buffer.from(hashPassword(currentPassword, authRecord.salt), 'hex');
+    const stored = Buffer.from(authRecord.hash, 'hex');
+    if (candidate.length !== stored.length || !crypto.timingSafeEqual(candidate, stored)) {
+      return res.status(403).json({ error: 'Current password is incorrect.' });
+    }
+    const nextAuthKey = `stellar:auth:${requestedEmail}`;
+    const taken = await kvGet(url, token, nextAuthKey);
+    if (taken) return res.status(409).json({ error: 'That email is already in use.' });
+
+    await kvPipeline(url, token, [
+      ['SET', nextAuthKey, JSON.stringify({ ...authRecord, accountEmail, emailChangedAt: Date.now() })],
+      ['DEL', currentAuthKey],
+    ]);
+  }
+
+  const updated = {
+    ...user,
+    firstName,
+    lastName,
+    name: [firstName, lastName].filter(Boolean).join(' '),
+    loginEmail: requestedEmail,
+    signInSource: passwordAccount ? 'password' : String(user.signInSource || 'google'),
+    updatedAt: Date.now(),
+  };
+  await kvSet(url, token, userKey, updated);
+
+  return res.status(200).json({
+    ok: true,
+    emailChanged: emailChanging,
+    user: publicAccountUser(updated, requestedEmail, updated.signInSource),
+    session: createSession(accountEmail),
+  });
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -201,6 +296,8 @@ export default async function handler(req, res) {
 
   if (String(req.query?.mode || '') === 'send-welcome') return handleWelcomeResend(req, res, url, token);
 
+  if (req.body?.action === 'updateProfile') return handleProfileUpdate(req, res, url, token);
+
   const { action, email, password, credential, code, referralCode } = req.body || {};
   const actionName = String(action || '').trim();
   const rateEmail = String(email || '').toLowerCase().trim();
@@ -212,19 +309,21 @@ export default async function handler(req, res) {
 
     if (action === 'googleLogin') {
       const googleUser = await verifyGoogleCredential(credential);
-      const { isNew } = await ensureUser(url, token, googleUser.email, 'google');
+      const { user, isNew } = await ensureUser(url, token, googleUser.email, 'google', googleUser);
       const referral = await awardReferralIfEligible(url, token, googleUser.email, referralCode, isNew);
       if (isNew) {
         void sendWelcomeEmail(googleUser.email, googleUser.name);
         void recordFunnelSignup({ url, token, email: googleUser.email });
       }
-      return res.status(200).json({ ok: true, user: googleUser, session: createSession(googleUser.email), isNew, referralAwarded: Boolean(referral?.applied) });
+      return res.status(200).json({ ok: true, user: publicAccountUser({ ...user, picture: user.picture || googleUser.picture }, googleUser.email, 'google'), session: createSession(googleUser.email), isNew, referralAwarded: Boolean(referral?.applied) });
     }
 
     if (action === 'refreshSession') {
       const session = readSession(req);
       if (!session) return res.status(401).json({ error: 'Please sign in again to continue.' });
-      return res.status(200).json({ ok: true, email: session.email, session: createSession(session.email) });
+      const user = (await kvGet(url, token, `stellar:user:${session.email}`)) || {};
+      const loginEmail = String(user.loginEmail || session.email).trim().toLowerCase();
+      return res.status(200).json({ ok: true, email: loginEmail, user: publicAccountUser(user, loginEmail, user.signInSource), session: createSession(session.email) });
     }
 
     const normalizedEmail = String(email || '').toLowerCase().trim();
@@ -268,12 +367,12 @@ export default async function handler(req, res) {
     if (action === 'signup') {
       if (existingAuth) return res.status(409).json({ error: 'That email already has an account. Try signing in instead.' });
       const salt = crypto.randomBytes(16).toString('hex');
-      await kvSet(url, token, authKey, { salt, hash: hashPassword(password, salt), createdAt: Date.now() });
-      const { isNew } = await ensureUser(url, token, normalizedEmail, 'password');
+      await kvSet(url, token, authKey, { salt, hash: hashPassword(password, salt), accountEmail: normalizedEmail, createdAt: Date.now() });
+      const { user, isNew } = await ensureUser(url, token, normalizedEmail, 'password');
       const referral = await awardReferralIfEligible(url, token, normalizedEmail, referralCode, isNew);
       void sendWelcomeEmail(normalizedEmail);
       void recordFunnelSignup({ url, token, email: normalizedEmail });
-      return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail), referralAwarded: Boolean(referral?.applied) });
+      return res.status(200).json({ ok: true, email: normalizedEmail, user: publicAccountUser(user, normalizedEmail, 'password'), session: createSession(normalizedEmail), referralAwarded: Boolean(referral?.applied) });
     }
 
     if (!existingAuth) return res.status(404).json({ error: 'No account found with that email. Create one first.' });
@@ -283,7 +382,9 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: 'Wrong password.' });
     }
 
-    return res.status(200).json({ ok: true, email: normalizedEmail, session: createSession(normalizedEmail) });
+    const accountEmail = String(existingAuth.accountEmail || normalizedEmail).trim().toLowerCase();
+    const accountUser = (await kvGet(url, token, `stellar:user:${accountEmail}`)) || {};
+    return res.status(200).json({ ok: true, email: normalizedEmail, user: publicAccountUser({ ...accountUser, loginEmail: normalizedEmail }, normalizedEmail, 'password'), session: createSession(accountEmail) });
   } catch (error) {
     const message = String(error?.message || error || '');
     console.error('Authentication error', message);
