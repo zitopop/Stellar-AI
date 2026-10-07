@@ -5,8 +5,9 @@ import { readFileSync } from 'node:fs';
 const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const app=readFileSync(new URL('../app.html',import.meta.url),'utf8');
 
-test('landing page keeps one clear primary homepage structure',()=>{
-  assert.doesNotMatch(home,/class="stellar-about-only"/);
+test('landing page exposes one visible conversion homepage while preserving legacy contracts',()=>{
+  assert.match(home,/id="stellar-single-visible-home-v81"/);
+  assert.match(home,/\.stellar-account-topbar,\s*\n\.stellar-about-only\{display:none!important\}/);
   assert.match(home,/id="main-content"/);
   assert.match(home,/id="hero-title"/);
   assert.equal((home.match(/<header class="site-header">/g)||[]).length,1);
