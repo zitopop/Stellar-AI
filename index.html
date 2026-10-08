@@ -10,6 +10,11 @@
   <link rel="canonical" href="https://trystellarai.com/">
   <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/lib/assets/pwa/icon-180.png">
+  <link rel="icon" href="/lib/assets/pwa/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-startup-image" href="/lib/assets/pwa/splash-iphone.png" media="(orientation: portrait) and (max-width: 600px)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="/manifest.json">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Stellar AI">
@@ -144,6 +149,17 @@ h3{font-size:19px;margin-bottom:9px}
 .footer-links a{color:#c7cfda;text-decoration:none;font-size:12px;min-height:44px;display:inline-flex;align-items:center}
 .footer-links a:hover{color:#fff}
 
+.work-details{border:1px solid var(--line);border-radius:14px;background:#121721;padding:0 22px}
+.work-details summary{cursor:pointer;list-style:none;font-size:15px;font-weight:750;min-height:58px;display:flex;align-items:center;gap:12px}
+.work-details summary::-webkit-details-marker{display:none}
+.work-details summary::after{content:"+";margin-left:auto;color:var(--accent2);font-size:22px}
+.work-details[open] summary::after{content:"−"}
+.work-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 0 20px}
+.work-shortcut{display:block;padding:17px;border:1px solid #2f3849;border-radius:11px;text-decoration:none;background:#0d121b}
+.work-shortcut:hover{border-color:#a99aff}
+.work-shortcut strong{display:block;margin-bottom:4px;font-size:14px}
+.work-shortcut span{display:block;color:var(--muted);font-size:12px}
+@media(max-width:560px){.work-shortcuts{grid-template-columns:1fr}.work-details{padding:0 16px}}
 .preview-panel{background:linear-gradient(145deg,#111622,#0f121a);border:1px solid #344055;border-radius:16px;padding:24px;max-width:850px}
 .preview-field{display:block;color:#e6e9f2;font-size:13px;font-weight:750;margin:0 0 10px}
 .preview-form{display:flex;gap:10px;align-items:stretch}
@@ -174,6 +190,7 @@ h3{font-size:19px;margin-bottom:9px}
     <a class="brand" href="/" aria-label="Stellar AI homepage"><span class="brand-mark" aria-hidden="true">✦</span>Stellar AI</a>
     <nav class="site-nav" id="site-nav" aria-label="Main navigation">
       <a href="#features">Features</a>
+      <a href="#work-tasks">Work</a>
       <a href="#how-it-works">How it works</a>
       <a href="#plans">Pricing</a>
       <a href="#faq">FAQs</a>
@@ -285,6 +302,17 @@ h3{font-size:19px;margin-bottom:9px}
       </div>
     </div>
   </section>
+<section class="section" id="work-tasks" aria-labelledby="work-tasks-title">
+  <div class="container">
+    <div class="section-head"><p class="eyebrow">Everyday work, too</p><h2 id="work-tasks-title">Use Stellar for more than games.</h2><p>Write emails, plan projects, summarise supported files or debug a script. Your prompt opens in the app for review and editing; Stellar does not automatically send emails or change your files.</p></div>
+    <details class="work-details"><summary>Explore four example tasks</summary><div class="work-shortcuts">
+    <a class="work-shortcut" href="/app?prompt=Help%20me%20write%20a%20professional%20email.%20Ask%20who%20I%20am%20writing%20to%2C%20the%20purpose%20and%20the%20tone.&amp;utm_source=homepage&amp;utm_campaign=work-email"><strong>Write an email</strong><span>Turn rough notes into a professional message.</span></a>
+    <a class="work-shortcut" href="/app?prompt=Help%20me%20plan%20a%20project.%20Ask%20about%20my%20goal%2C%20deadline%2C%20budget%20and%20what%20I%20have%20done%20so%20far.&amp;utm_source=homepage&amp;utm_campaign=work-plan"><strong>Plan a project</strong><span>Make a practical plan and next steps.</span></a>
+    <a class="work-shortcut" href="/app?prompt=Help%20me%20understand%20and%20summarise%20my%20notes.%20Ask%20me%20to%20paste%20text%20or%20attach%20a%20supported%20file.&amp;utm_source=homepage&amp;utm_campaign=work-notes"><strong>Explain files and notes</strong><span>Summarise supported documents and project material.</span></a>
+    <a class="work-shortcut" href="/app?mode=debug&amp;prompt=Help%20me%20debug%20a%20FiveM%20Lua%20or%20Roblox%20Luau%20script.%20Ask%20for%20the%20code%2C%20exact%20error%20and%20framework.&amp;utm_source=homepage&amp;utm_campaign=work-debug"><strong>Debug a game script</strong><span>Bring a real FiveM or Roblox error into chat.</span></a>
+    </div></details>
+  </div>
+</section>
   <section class="section" id="plans" aria-labelledby="plans-title">
     <div class="container">
       <div class="pricing-head">
