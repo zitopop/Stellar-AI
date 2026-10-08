@@ -6,11 +6,12 @@ import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const app = fs.readFileSync(path.join(root, 'app.html'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'lib/assets/stellar-landing-clean-v1.css'), 'utf8');
 
 test('homepage keeps everyday work available without burying developer positioning', () => {
-  assert.match(index, /Build and fix FiveM &amp; Roblox scripts\./);
+  assert.match(index, /Build and debug FiveM &amp; Roblox scripts\./);
   assert.match(index, /id="work-tasks"/);
-  assert.match(index, /Write emails, plan projects/i);
+  assert.match(index, /Open editable prompts for emails, plans, files and debugging/i);
   assert.match(index, /No emails are sent automatically/i);
   assert.match(index, /FiveM, Roblox and everyday work/);
   assert.match(index, /class="work-details"/);
@@ -33,9 +34,9 @@ test('four work examples open editable prompts in the same app', () => {
 test('work is accessible from the responsive menu', () => {
   assert.match(index, /href="#work-tasks">Work<\/a>/);
   assert.match(index, /class="menu-toggle"/);
-  assert.match(index, /\.site-nav\.is-open\{display:flex\}/);
-  assert.match(index, /@media\(max-width:560px\)/);
-  assert.match(index, /:focus-visible/);
+  assert.match(css, /\.site-nav\.is-open\{display:flex\}/);
+  assert.match(css, /@media\(max-width:560px\)/);
+  assert.match(css, /:focus-visible/);
 });
 
 test('app still labels general work and debug modes clearly', () => {
