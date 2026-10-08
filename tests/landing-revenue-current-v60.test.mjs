@@ -6,8 +6,8 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const preview = readFileSync(new URL('../lib/assets/homepage.js', import.meta.url), 'utf8');
 
 test('landing is lean, focused and honest about capabilities', () => {
-  assert.match(home, /Build scripts\.<br>Find bugs\.<br>Keep creating\./);
-  assert.match(home, /FiveM and Roblox creators/);
+  assert.match(home, /Build and fix FiveM &amp; Roblox scripts\./);
+  assert.match(home, /FiveM, Roblox and everyday work/);
   assert.match(home, /QBCore · ESX · ox_lib · Luau/);
   assert.match(home, /generated code in your own environment/i);
   assert.match(home, /no card needed/i);
