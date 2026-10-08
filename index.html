@@ -39,6 +39,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #bc
 .brand{font-size:17px;font-weight:800;text-decoration:none;letter-spacing:-.05em;white-space:nowrap}
 .brand-mark{display:inline-flex;align-items:center;justify-content:center;color:var(--accent2);width:30px;height:30px;margin-right:7px;border:1px solid rgba(152,129,255,.4);border-radius:9px;background:#1b1733}
 .site-nav{display:flex;align-items:center;gap:25px;margin-left:auto}
+.nav-mobile-auth{display:none}
 .site-nav a,.login-link{font-size:13px;font-weight:650;text-decoration:none;color:#c3cada;white-space:nowrap}
 .site-nav a:hover,.login-link:hover{color:#fff}
 .header-actions{display:flex;align-items:center;gap:16px;margin-left:4px}
@@ -140,15 +141,33 @@ h3{font-size:19px;margin-bottom:9px}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
 .footer-inner p{color:#aab4c4;font-size:12px;margin:0}
 .footer-links{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
-.footer-links a{color:#c7cfda;text-decoration:none;font-size:12px;min-height:32px;display:inline-flex;align-items:center}
+.footer-links a{color:#c7cfda;text-decoration:none;font-size:12px;min-height:44px;display:inline-flex;align-items:center}
 .footer-links a:hover{color:#fff}
+
+.preview-panel{background:linear-gradient(145deg,#111622,#0f121a);border:1px solid #344055;border-radius:16px;padding:24px;max-width:850px}
+.preview-field{display:block;color:#e6e9f2;font-size:13px;font-weight:750;margin:0 0 10px}
+.preview-form{display:flex;gap:10px;align-items:stretch}
+.preview-form textarea{width:100%;min-height:100px;padding:15px;background:#080c14;color:#fff;border:1px solid #424c60;border-radius:11px;resize:vertical;font:14px/1.55 inherit}
+.preview-form textarea::placeholder{color:#98a4b7}
+.preview-form textarea:focus{outline:2px solid #a696ff;outline-offset:2px}
+.preview-form button{min-width:110px;align-self:stretch}
+.preview-status{color:#a6b3c5;font-size:12px;margin:12px 0 0}
+.preview-status[data-state="error"]{color:#ffbcb8}
+.preview-result{margin-top:21px;border-top:1px solid #344055;padding-top:17px}
+.preview-result[hidden]{display:none}
+.preview-result-head{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:12px}
+.preview-result-head strong{color:#d7cdff;font-size:13px}
+.preview-result pre{max-height:440px;overflow:auto;margin:0;background:#090d14;color:#e8ebf5;border:1px solid #2e3647;border-radius:12px;padding:18px;font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}
+.preview-result .button{min-height:42px}
+@media(max-width:560px){.preview-panel{padding:18px}.preview-form{flex-direction:column}.preview-form button{width:100%;min-height:48px}.preview-result pre{padding:12px}}
+
 @media(max-width:1080px){.site-nav{gap:15px}.hero{gap:28px}.pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-description{min-height:0}}
-@media(max-width:800px){.container{width:min(var(--max),calc(100% - 32px))}.site-header{height:66px}.header-inner{gap:10px}.site-nav{display:none;position:absolute;left:0;right:0;top:65px;padding:13px 20px 23px;background:#0c1018;border-bottom:1px solid #343b4d;flex-direction:column;align-items:stretch;gap:0;box-shadow:0 20px 30px rgba(0,0,0,.3)}.site-nav.is-open{display:flex}.site-nav a{padding:11px 6px;min-height:44px;display:flex;align-items:center}.menu-toggle{display:inline-flex;align-items:center}.header-actions{margin-left:auto;gap:8px}.login-link{display:none}.hero{padding-block:66px;grid-template-columns:1fr;gap:35px}.demo{max-width:640px}.split,.faq{grid-template-columns:1fr;gap:24px}.section{padding-block:64px}.pricing-head{align-items:start;flex-direction:column}.workflow{gap:13px}.lower-cta{align-items:flex-start;flex-direction:column}.footer-inner{align-items:start;flex-direction:column;gap:13px}}
+@media(max-width:800px){.container{width:min(var(--max),calc(100% - 32px))}.site-header{height:66px}.header-inner{gap:10px}.site-nav{display:none;position:absolute;left:0;right:0;top:65px;padding:13px 20px 23px;background:#0c1018;border-bottom:1px solid #343b4d;flex-direction:column;align-items:stretch;gap:0;box-shadow:0 20px 30px rgba(0,0,0,.3)}.site-nav.is-open{display:flex}.site-nav .nav-mobile-auth{display:flex}.site-nav a{padding:11px 6px;min-height:44px;display:flex;align-items:center}.menu-toggle{display:inline-flex;align-items:center}.header-actions{margin-left:auto;gap:8px}.login-link{display:none}.hero{padding-block:66px;grid-template-columns:1fr;gap:35px}.demo{max-width:640px}.split,.faq{grid-template-columns:1fr;gap:24px}.section{padding-block:64px}.pricing-head{align-items:start;flex-direction:column}.workflow{gap:13px}.lower-cta{align-items:flex-start;flex-direction:column}.footer-inner{align-items:start;flex-direction:column;gap:13px}}
 @media(max-width:560px){h1{font-size:clamp(40px,11vw,56px)}h2{font-size:32px}.feature-grid,.pricing-grid,.workflow{grid-template-columns:1fr}.hero{padding-block:54px}.cta-row{display:grid}.cta-row .button{width:100%}.hero-meta span{display:block;margin:2px 0}.feature{padding:22px}.section{padding-block:51px}.pricing-head{gap:15px}.billing-toggle{width:100%}.billing-toggle button{flex:1}.plan{padding:21px}.price{font-size:36px}.site-footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}.brand{font-size:16px}.button-small{padding-inline:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}.button:hover{transform:none}}
 </style>
 </head>
-<body>
+<body class="public-home" data-layout="lean-v1">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="container header-inner">
@@ -175,7 +194,7 @@ h3{font-size:19px;margin-bottom:9px}
       <h1 id="hero-title">Build scripts.<br>Find bugs.<br>Keep creating.</h1>
       <p class="lead">From QBCore resources that won't start to Roblox Luau systems you want to build, Stellar helps you write code, understand errors and work through changes in one focused AI workspace.</p>
       <div class="cta-row">
-        <a class="button button-primary" href="/app?welcome=1&amp;utm_source=homepage&amp;utm_campaign=hero">Start free <span aria-hidden="true">↗</span></a>
+        <a class="button button-primary" data-conversion="start-free" href="/app?welcome=1&amp;utm_source=homepage&amp;utm_campaign=hero">Start free <span aria-hidden="true">↗</span></a>
         <a class="button button-quiet" href="/app?mode=debug&amp;utm_source=homepage&amp;utm_campaign=hero-debug">Debug a script <span aria-hidden="true">→</span></a>
       </div>
       <p class="hero-meta"><span>Free plan, no card needed</span><span>15 Fast generations per day</span><span>QBCore · ESX · ox_lib · Luau</span></p>
@@ -195,6 +214,30 @@ h3{font-size:19px;margin-bottom:9px}
         </div>
       </div>
       <div class="demo-note">Illustrative example. Always test generated code in your own environment.</div>
+    </div>
+  </section>
+  <section class="section" id="try-preview" aria-labelledby="preview-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Try before you sign up</p>
+        <h2 id="preview-title">Give Stellar a real scripting task.</h2>
+        <p>Try up to 3 instant previews without an account. Describe a FiveM or Roblox script, review the result and continue in the full workspace.</p>
+      </div>
+      <div class="preview-panel">
+        <form id="anonymous-preview-form" class="preview-form">
+          <div style="flex:1;min-width:0">
+            <label class="preview-field" for="anonymous-preview-prompt">What do you want to build?</label>
+            <textarea id="anonymous-preview-prompt" name="prompt" maxlength="800" required placeholder="Example: Write a QBCore Lua server-side command with a permission check…" autocomplete="off"></textarea>
+          </div>
+          <button id="anonymous-preview-submit" class="button button-primary" type="submit" aria-label="Generate a script preview">Generate →</button>
+        </form>
+        <p id="anonymous-preview-status" class="preview-status" role="status" aria-live="polite">3 preview generations available · no card required</p>
+        <div id="anonymous-preview-result" class="preview-result" hidden>
+          <div class="preview-result-head"><strong id="anonymous-preview-meta">Script preview</strong><button id="anonymous-preview-download" class="button button-quiet" type="button">Download code ↓</button></div>
+          <pre id="anonymous-preview-code" tabindex="0" aria-label="Generated code"></pre>
+        </div>
+      </div>
+      <p class="disclaimer">Previews are limited and intended to demonstrate the experience; results may need additional files, dependencies or testing. <a class="fine-link" href="/app?welcome=1">Want the full chat? Open Stellar →</a></p>
     </div>
   </section>
   <section class="section" id="features" aria-labelledby="features-title">
@@ -271,11 +314,11 @@ h3{font-size:19px;margin-bottom:9px}
           <a class="button button-quiet" data-choose href="/app?upgrade=starter&amp;utm_source=homepage&amp;utm_campaign=pricing">Choose Starter</a>
         </article>
         <article class="plan recommended" data-plan="plus">
-          <div class="plan-label">Plus <em>Most popular choice</em></div><div class="price" data-price>£20<small>/mo</small></div>
+          <div class="plan-label">Plus <em>Recommended</em></div><div class="price" data-price>£20<small>/mo</small></div>
           <p class="plan-description">For ongoing game projects and deeper debugging.</p>
           <ul><li>Fast + Core + Deep</li><li>400 requests/hour ceiling</li><li>Jarvis Voice + Vision</li><li>StellarX computer control beta</li><li>Up to 6,500 output tokens</li></ul>
           <span class="plan-note" data-note>Or £168/year · save £72</span>
-          <a class="button button-primary" data-choose href="/app?upgrade=plus&amp;utm_source=homepage&amp;utm_campaign=pricing">Choose Plus</a>
+          <a class="button button-primary" data-conversion="plus" data-choose href="/app?upgrade=plus&amp;utm_source=homepage&amp;utm_campaign=pricing">Choose Plus</a>
         </article>
         <article class="plan" data-plan="pro">
           <div class="plan-label">Pro</div><div class="price" data-price>£75<small>/mo</small></div>
@@ -376,6 +419,7 @@ h3{font-size:19px;margin-bottom:9px}
   setCycle('monthly');
 })();
 </script>
+<script src="/lib/assets/homepage.js?v=20261008-clean" defer></script>
 <script src="/lib/assets/stellar-analytics.js?v=2" defer></script>
 <script src="/lib/assets/telemetry.js?v=20261005-revenue-funnel" defer></script>
 </body>
