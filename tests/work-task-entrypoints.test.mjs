@@ -10,10 +10,10 @@ const menu = fs.readFileSync(path.join(root, 'lib/assets/homepage.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'lib/assets/stellar-work-home.css'), 'utf8');
 
 test('homepage explains everyday work and game coding without claiming unattended actions', () => {
-  assert.match(index, /Build scripts\. Get work done\./);
+  assert.match(index, /AI for work and game scripts\./);
   assert.match(index, /id="work-tasks"/);
-  assert.match(index, /write emails, plan projects/);
-  assert.match(index, /does not automatically send emails or change your files/);
+  assert.match(index, /Write, plan, build FiveM or Roblox scripts/);
+  assert.match(index, /Choose a task to open an editable prompt in chat/);
   assert.match(index, /FiveM and Roblox/);
 });
 
@@ -33,8 +33,8 @@ test('each example opens a valid editable prompt in Stellar chat', () => {
 });
 
 test('work links are in desktop and mobile menus and responsive styles', () => {
-  assert.match(index, /href="#work-tasks">Work<\/a>/);
-  assert.match(menu, /href="#work-tasks">Work<\/a>/);
+  assert.match(index, /href="#work-tasks">Try tasks<\/a>/);
+  assert.match(menu, /href="#work-tasks">Try tasks<\/a>/);
   assert.match(css, /max-width:640px/);
   assert.match(css, /focus-visible/);
   assert.match(index, /stellar-compare-reveal/);
