@@ -1,0 +1,49 @@
+name: Stellar homepage smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app.html'
+      - 'lib/assets/homepage.js'
+      - 'lib/assets/stellar-landing-clean-v1.css'
+      - 'lib/assets/stellar-home-clarity-v1.css'
+      - 'tests/**'
+      - '.github/workflows/landing-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app.html'
+      - 'lib/assets/homepage.js'
+      - 'lib/assets/stellar-landing-clean-v1.css'
+      - 'lib/assets/stellar-home-clarity-v1.css'
+      - 'tests/**'
+      - '.github/workflows/landing-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  landing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Node 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Check homepage and app entrypoints
+        run: >
+          node --test
+          tests/home-clarity-v2.test.mjs
+          tests/concise-current-home.test.mjs
+          tests/landing-revenue-current-v60.test.mjs
+          tests/home-performance.test.mjs
+          tests/work-task-entrypoints.test.mjs
+          tests/anonymous-preview-funnel.test.mjs
+          tests/upgrade-intent-routing.test.mjs
+          tests/free-install-page.test.mjs
