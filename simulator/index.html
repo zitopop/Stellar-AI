@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#090c14">
+  <meta name="description" content="Drive through real-world cities in Stellar Simulator, a free 3D map driving prototype powered by OpenStreetMap.">
+  <meta name="robots" content="noindex,follow">
+  <title>Stellar Simulator — Real World Drive</title>
+  <link rel="icon" href="/lib/assets/pwa/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.13.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/simulator/style.css">
+</head>
+<body>
+  <div id="world" role="img" aria-label="Interactive map of real-world streets and buildings"></div>
+  <div class="map-vignette" aria-hidden="true"></div>
+  <a class="skip-link" href="#game-controls">Skip to driving controls</a>
+  <header class="topbar">
+    <div class="brand-group">
+      <a class="back-link" href="/" title="Return to Stellar AI" aria-label="Back to Stellar AI">←</a>
+      <div class="brand">
+        <span class="brand-star" aria-hidden="true">✦</span>
+        <span>STELLAR <strong>SIMULATOR</strong></span>
+      </div>
+      <span class="alpha-badge">DRIVING PREVIEW</span>
+    </div>
+    <div class="header-actions">
+      <button type="button" id="camera-button" class="outline-button" title="Switch camera">Camera: 3D</button>
+      <button type="button" id="map-style-button" class="outline-button" title="Switch map style">Night map</button>
+      <button type="button" id="fullscreen-button" class="icon-button" title="Fullscreen" aria-label="Toggle fullscreen">⛶</button>
+    </div>
+  </header>
+  <main>
+    <section class="city-panel" aria-labelledby="city-title">
+      <span class="eyebrow">THE WORLD IS YOUR ROAD</span>
+      <h1 id="city-title">Real places. Your drive.</h1>
+      <p>Explore real streets and city layouts with a free-roam driving prototype.</p>
+      <label for="city-selector">Choose a city</label>
+      <select id="city-selector">
+        <option value="london">London, UK</option>
+        <option value="manchester">Manchester, UK</option>
+        <option value="new-york">New York, USA</option>
+        <option value="tokyo">Tokyo, Japan</option>
+        <option value="los-angeles">Los Angeles, USA</option>
+      </select>
+      <div class="city-actions">
+        <button type="button" id="reset-button" class="subtle-button">↺ Reset car</button>
+        <button type="button" id="pause-button" class="subtle-button" aria-pressed="false">Ⅱ Pause</button>
+      </div>
+    </section>
+    <div id="loading-message" class="map-message" role="status" aria-live="polite">Loading real-world map data…</div>
+    <div id="car" class="car-anchor" aria-hidden="true">
+      <span class="car-shadow"></span>
+      <svg viewBox="0 0 76 142" class="car-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="paint" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#b9a6ff"/><stop offset=".48" stop-color="#6246c9"/><stop offset="1" stop-color="#242c66"/>
+          </linearGradient>
+          <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+            <stop stop-color="#a9d2ec"/><stop offset="1" stop-color="#122440"/>
+          </linearGradient>
+        </defs>
+        <rect x="5" y="27" width="10" height="32" rx="3" fill="#161b25"/>
+        <rect x="61" y="27" width="10" height="32" rx="3" fill="#161b25"/>
+        <rect x="5" y="89" width="10" height="30" rx="3" fill="#161b25"/>
+        <rect x="61" y="89" width="10" height="30" rx="3" fill="#161b25"/>
+        <path d="M16 20 Q19 9 31 8 L45 8 Q57 9 60 20 L63 112 Q58 133 48 135 H28 Q18 133 13 112 Z" fill="url(#paint)" stroke="#dbcfff" stroke-width="2"/>
+        <path d="M21 46 Q37 38 55 46 L54 70 H22Z" fill="url(#glass)" stroke="#ccd3ef" stroke-width="1.2"/>
+        <path d="M22 91 H54 L56 116 Q37 127 20 116Z" fill="#14233b" stroke="#6a7b96"/>
+        <path d="M15 34 Q36 24 61 34" stroke="#efdeff" stroke-width="3" fill="none" opacity=".85"/>
+        <path d="M15 109 H61" stroke="#d3c7ff" stroke-width="2" opacity=".8"/>
+        <rect x="18" y="14" width="13" height="6" rx="2" fill="#e7f6ff"/>
+        <rect x="45" y="14" width="13" height="6" rx="2" fill="#e7f6ff"/>
+        <rect x="16" y="120" width="13" height="5" rx="2" fill="#ff5267"/>
+        <rect x="47" y="120" width="13" height="5" rx="2" fill="#ff5267"/>
+      </svg>
+    </div>
+    <section class="bottom-hud" aria-label="Driving information">
+      <div class="speed-card">
+        <span class="speed-caption">SPEED</span>
+        <div class="speed-value"><span id="speed">0</span><small id="speed-unit">KM/H</small></div>
+        <div class="speed-track"><span id="speed-track-fill"></span></div>
+      </div>
+      <div class="trip-card">
+        <span class="trip-label">DISTANCE</span><strong id="distance">0.00 km</strong>
+        <span class="trip-label">LOCATION</span><strong id="location">London</strong>
+      </div>
+      <div class="hud-controls" id="game-controls">
+        <span class="controls-label">DESKTOP CONTROLS</span>
+        <span><kbd>W</kbd> or <kbd>↑</kbd> accelerate · <kbd>S</kbd> or <kbd>↓</kbd> brake / reverse</span>
+        <span><kbd>A</kbd> <kbd>D</kbd> or <kbd>←</kbd> <kbd>→</kbd> steer · <kbd>P</kbd> pause</span>
+      </div>
+    </section>
+    <div class="touch-controls" aria-label="Touch driving controls">
+      <div class="touch-steer">
+        <button type="button" data-drive="left" aria-label="Turn left" class="touch-key">↶</button>
+        <button type="button" data-drive="right" aria-label="Turn right" class="touch-key">↷</button>
+      </div>
+      <div class="touch-pedals">
+        <button type="button" data-drive="brake" aria-label="Brake or reverse" class="touch-key touch-brake">BRAKE</button>
+        <button type="button" data-drive="accelerate" aria-label="Accelerate" class="touch-key touch-accelerate">GO</button>
+      </div>
+    </div>
+    <p class="map-disclaimer">Real OpenStreetMap geography · Arcade handling · No collision or traffic simulation yet</p>
+    <section id="start-panel" class="start-panel" aria-labelledby="start-heading">
+      <div class="start-card">
+        <span class="eyebrow">STELLAR SIMULATOR / VERSION 0.1</span>
+        <h2 id="start-heading">Drive the real world.</h2>
+        <p>London, Manchester, New York, Tokyo and Los Angeles — all based on real street map data.</p>
+        <button type="button" id="start-button" class="start-button">Start driving <span aria-hidden="true">→</span></button>
+        <small>Free driving preview · Internet required · No registration</small>
+      </div>
+    </section>
+  </main>
+  <noscript><p class="noscript">JavaScript is required for this interactive driving prototype.</p></noscript>
+  <script type="module" src="/simulator/game.mjs"></script>
+</body>
+</html>
