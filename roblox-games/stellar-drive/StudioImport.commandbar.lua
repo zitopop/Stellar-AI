@@ -32,8 +32,8 @@ local query = "[out:json][timeout:45];(" ..
 
 print("Stellar Drive: downloading real road data for " .. SETTINGS.place .. "…")
 local endpoints = {
-    "https://overpass.kumi.systems/api/interpreter?data=",
     "https://overpass-api.de/api/interpreter?data=",
+    "https://overpass.private.coffee/api/interpreter?data=",
 }
 local payload
 local requestError = "unknown"
