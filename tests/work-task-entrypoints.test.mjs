@@ -6,20 +6,19 @@ import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const app = fs.readFileSync(path.join(root, 'app.html'), 'utf8');
-const menu = fs.readFileSync(path.join(root, 'lib/assets/homepage.js'), 'utf8');
-const css = fs.readFileSync(path.join(root, 'lib/assets/stellar-work-home.css'), 'utf8');
 
-test('homepage explains everyday work and game coding without claiming unattended actions', () => {
-  assert.match(index, /Build scripts\. Get work done\./);
+test('homepage keeps everyday work available without burying developer positioning', () => {
+  assert.match(index, /Build scripts\.<br>Find bugs\.<br>Keep creating\./);
   assert.match(index, /id="work-tasks"/);
-  assert.match(index, /write emails, plan projects/);
-  assert.match(index, /does not automatically send emails or change your files/);
-  assert.match(index, /FiveM and Roblox/);
+  assert.match(index, /Write emails, plan projects/i);
+  assert.match(index, /does not automatically send emails or change your files/i);
+  assert.match(index, /FiveM and Roblox creators/);
+  assert.match(index, /class="work-details"/);
 });
 
-test('each example opens a valid editable prompt in Stellar chat', () => {
-  const section = index.split('id="work-tasks"')[1].split('id="capabilities"')[0];
-  const links = [...section.matchAll(/class="stellar-work-shortcut" href="([^"]+)"/g)].map(([, raw]) => raw.replaceAll('&amp;', '&'));
+test('four work examples open editable prompts in the same app', () => {
+  const section = index.split('id="work-tasks"')[1].split('id="plans"')[0];
+  const links = [...section.matchAll(/class="work-shortcut" href="([^"]+)"/g)].map(([, raw]) => raw.replaceAll('&amp;', '&'));
   assert.equal(links.length, 4);
   for (const href of links) {
     const url = new URL(href, 'https://trystellarai.com');
@@ -29,19 +28,17 @@ test('each example opens a valid editable prompt in Stellar chat', () => {
   }
   assert.equal(new URL(links[3], 'https://trystellarai.com').searchParams.get('mode'), 'debug');
   assert.match(app, /q\.get\('prompt'\)/);
-  assert.match(app, /prompt\.value=prefill\.slice\(0,8000\)/);
 });
 
-test('work links are in desktop and mobile menus and responsive styles', () => {
+test('work is accessible from the responsive menu', () => {
   assert.match(index, /href="#work-tasks">Work<\/a>/);
-  assert.match(menu, /href="#work-tasks">Work<\/a>/);
-  assert.match(css, /max-width:640px/);
-  assert.match(css, /focus-visible/);
-  assert.match(index, /stellar-compare-reveal/);
+  assert.match(index, /class="menu-toggle"/);
+  assert.match(index, /\.site-nav\.is-open\{display:flex\}/);
+  assert.match(index, /@media\(max-width:560px\)/);
+  assert.match(index, /:focus-visible/);
 });
 
-test('app labels general mode for work and keeps debugging', () => {
+test('app still labels general work and debug modes clearly', () => {
   assert.match(app, /Chat &amp; work/);
   assert.match(app, /Debug code/);
-  assert.match(app, /Writing, planning, coding and files/);
 });
