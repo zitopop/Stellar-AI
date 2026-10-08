@@ -1,0 +1,85 @@
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ink:#f8f8fd;--muted:#b8bdcd;--glass:rgba(9,12,21,.83);--border:rgba(240,239,255,.19)}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#090c14;color:var(--ink);overscroll-behavior:none}
+button,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #b5a0ff;outline-offset:3px}
+#world{position:fixed;inset:0;z-index:0}
+.map-vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:linear-gradient(to bottom,rgba(4,8,19,.58),transparent 24%,transparent 58%,rgba(5,8,18,.58))}
+.maplibregl-ctrl-bottom-right{bottom:4px!important;right:8px!important}
+.maplibregl-ctrl-attrib{background:rgba(10,13,22,.82)!important;color:#eaeaf2!important;font-size:10px!important;border-radius:6px}
+.maplibregl-ctrl-attrib a{color:#e7deff!important}
+.topbar{position:absolute;z-index:5;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:calc(16px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) 12px max(18px,env(safe-area-inset-left,0px));pointer-events:none}
+.brand-group,.header-actions{display:flex;align-items:center;gap:10px;pointer-events:auto}
+.brand{font-weight:800;letter-spacing:.105em;white-space:nowrap;font-size:13px;display:flex;align-items:center;gap:8px;text-shadow:0 1px 8px #03050a}
+.brand strong{color:#c1afff}
+.brand-star{color:#bcb0ff;font-size:21px}
+.back-link,.outline-button,.icon-button,.subtle-button{border:1px solid var(--border);background:var(--glass);color:#fff;backdrop-filter:blur(16px);border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 13px}
+.back-link{width:42px;font-size:22px}
+.icon-button{width:42px;font-size:24px}
+.outline-button,.subtle-button{font-size:12px;font-weight:750}
+.alpha-badge{font-size:10px;letter-spacing:.1em;color:#d5c8ff;background:rgba(85,66,150,.4);border:1px solid rgba(179,158,255,.36);border-radius:99px;padding:7px 11px}
+.city-panel{position:absolute;z-index:4;top:100px;left:22px;width:min(315px,calc(100vw - 44px));border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(23px);padding:20px;border-radius:20px;box-shadow:0 22px 60px #0005}
+.eyebrow{color:#b49fff;font-size:10px;font-weight:850;letter-spacing:.17em}
+.city-panel h1{font-size:24px;letter-spacing:-.05em;line-height:1.1;margin:10px 0}
+.city-panel p{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 18px}
+.city-panel label{display:block;color:#d5d6e6;font-size:10px;letter-spacing:.12em;font-weight:750;margin-bottom:7px;text-transform:uppercase}
+.city-panel select{width:100%;background:#1a2030;color:#fdfcff;padding:12px 13px;border:1px solid rgba(255,255,255,.2);border-radius:10px;min-height:44px}
+.city-actions{display:flex;gap:8px;margin-top:12px}
+.city-actions button{flex:1}
+.map-message{position:absolute;z-index:3;top:47%;left:50%;transform:translate(-50%,-50%);font-weight:650;font-size:14px;color:#f7f7ff;background:rgba(11,14,24,.88);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:15px 20px;max-width:85vw;text-align:center;pointer-events:none}
+.map-message[hidden]{display:none}
+.car-anchor{position:fixed;z-index:3;pointer-events:none;top:57%;left:50%;transform:translate(-50%,-50%) perspective(430px) rotateX(25deg);width:70px;height:130px;filter:drop-shadow(0 14px 11px #0009)}
+.car-svg{width:100%;height:100%;transform:rotate(180deg)}
+.car-shadow{position:absolute;top:24px;left:11px;width:49px;height:86px;border-radius:50%;background:#0009;filter:blur(13px)}
+.bottom-hud{position:fixed;z-index:4;bottom:calc(30px + env(safe-area-inset-bottom,0px));left:24px;right:24px;display:flex;align-items:flex-end;gap:12px;pointer-events:none}
+.speed-card,.trip-card,.hud-controls{background:var(--glass);border:1px solid var(--border);backdrop-filter:blur(19px);border-radius:16px;padding:17px;box-shadow:0 10px 40px #0004}
+.speed-card{min-width:176px}
+.speed-caption,.trip-label,.controls-label{display:block;color:#a9aebd;font-size:10px;letter-spacing:.16em;font-weight:750}
+.speed-value{display:flex;align-items:baseline;gap:8px}
+.speed-value>span{font-variant-numeric:tabular-nums;font-size:52px;line-height:1.25;font-weight:850;letter-spacing:-.07em}
+.speed-value small{font-size:11px;color:#dbd6ec;font-weight:750}
+.speed-track{height:4px;background:#414455;border-radius:20px;overflow:hidden}
+.speed-track>span{height:100%;width:0%;display:block;background:linear-gradient(90deg,#8e72f5,#a8e2ee);transition:width .2s}
+.trip-card{display:grid;min-width:125px;gap:5px}
+.trip-card strong{font-size:13px;margin-bottom:4px}
+.hud-controls{font-size:11px;color:#c6c8d1;line-height:1.65;margin-left:auto}
+.hud-controls span{display:block}
+.hud-controls kbd{font-size:10px;font-family:inherit;border:1px solid #5f6476;background:#252a3a;padding:1px 5px;border-radius:4px;color:#eee}
+.map-disclaimer{position:absolute;z-index:4;bottom:0;left:24px;margin:0 0 8px;color:#e0dde7;font-size:10px;text-shadow:0 2px 4px #000}
+.start-panel{position:fixed;inset:0;z-index:7;display:grid;place-items:center;background:rgba(4,6,13,.62);backdrop-filter:blur(9px);padding:25px}
+.start-panel[hidden]{display:none}
+.start-card{width:min(460px,100%);background:linear-gradient(150deg,#202236,#0e1320 70%);border:1px solid rgba(187,166,255,.38);padding:37px;border-radius:26px;box-shadow:0 36px 110px #0008;text-align:left}
+.start-card h2{font-size:clamp(31px,6vw,45px);line-height:1.05;letter-spacing:-.065em;margin:14px 0}
+.start-card p{color:#c2c4d1;font-size:15px;line-height:1.7}
+.start-card small{display:block;margin-top:14px;font-size:11px;color:#aaa9be}
+.start-button{width:100%;border:0;color:#151022;background:#d2c5ff;min-height:54px;padding:12px 18px;border-radius:13px;display:flex;justify-content:space-between;align-items:center;font-weight:850;margin-top:25px}
+.touch-controls{position:fixed;z-index:4;display:none;pointer-events:none;bottom:calc(35px + env(safe-area-inset-bottom,0px));width:100%;padding:0 15px;justify-content:space-between}
+.touch-steer,.touch-pedals{display:flex;gap:10px;pointer-events:auto}
+.touch-key{width:64px;height:66px;border:1px solid #fff5;background:#151925e3;color:white;border-radius:18px;font-size:29px;font-weight:800;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.touch-key[aria-pressed=true],.touch-key:active{background:#6852a8}
+.touch-brake{font-size:12px;background:#4b2129ed}
+.touch-accelerate{font-size:16px;background:#27614fee}
+.skip-link{position:absolute;top:-100px;left:10px;z-index:10;color:#fff}.skip-link:focus{top:10px}
+.noscript{position:absolute;z-index:10;top:10px;left:10px;color:white;background:#151925;padding:20px}
+@media(max-width:860px){
+  .topbar{padding:calc(10px + env(safe-area-inset-top,0px)) 12px 8px}
+  .alpha-badge,.header-actions .outline-button{display:none}
+  .brand{font-size:12px}
+  .city-panel{top:calc(73px + env(safe-area-inset-top,0px));left:12px;max-width:250px;padding:13px;border-radius:14px}
+  .city-panel h1{font-size:19px;margin:7px 0}
+  .city-panel p{font-size:11px;margin-bottom:10px}
+  .city-actions{margin-top:7px}
+  .city-actions button{font-size:10px;padding:6px}
+  .bottom-hud{bottom:calc(110px + env(safe-area-inset-bottom,0px));left:12px;right:12px;gap:8px}
+  .speed-card{min-width:112px;padding:11px}
+  .speed-value>span{font-size:38px}
+  .trip-card{min-width:102px;padding:10px;gap:3px}
+  .hud-controls{display:none}
+  .touch-controls{display:flex}
+  .map-disclaimer{bottom:calc(4px + env(safe-area-inset-bottom,0px));left:12px;right:12px;font-size:9px}
+  .car-anchor{top:53%;width:55px;height:100px}
+}
+@media(max-width:370px){.city-panel{max-width:216px}.city-panel p{display:none}.speed-card{min-width:103px}.trip-card{min-width:92px}.touch-key{width:55px;height:61px}}
+@media(max-height:550px){.city-panel{top:60px}.city-panel p{display:none}.bottom-hud{bottom:110px}.start-card{padding:22px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition-duration:0s!important}}
