@@ -19,7 +19,7 @@ test('anonymous preview is usable and keeps its anti-abuse script', () => {
   for (const id of ['anonymous-preview-form','anonymous-preview-prompt','anonymous-preview-submit','anonymous-preview-status','anonymous-preview-result','anonymous-preview-code','anonymous-preview-download']) {
     assert.match(home, new RegExp('id="' + id + '"'));
   }
-  assert.match(home, /homepage\.js\?v=20261008-clean/);
+  assert.match(home, /homepage\.js\?v=20261008-preview-v4/);
   assert.match(preview, /wireAnonymousPreview\(\)/);
   assert.match(preview, /fetch\('\/api\/preview'/);
   assert.match(preview, /ANON_COUNT_TIME_KEY/);

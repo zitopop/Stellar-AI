@@ -18,8 +18,8 @@ Shows a Luau RemoteEvent pattern with server-owned reward configuration, type ch
 
 ## Try the developer workspace
 
-Use Stellar AI for QBCore, ESX, ox_lib and Roblox Luau generation/debugging:
+Try 3 free script previews on the homepage, or sign in for the full workspace. Supports QBCore, ESX, ox_lib and Roblox Luau:
 
-https://trystellarai.com/?utm_source=github&utm_medium=organic&utm_campaign=developer_resources
+https://trystellarai.com/?utm_source=github&utm_medium=organic&utm_campaign=developer_resources#try-preview
 
 Generated code should still be reviewed and tested in a development environment before production use.
