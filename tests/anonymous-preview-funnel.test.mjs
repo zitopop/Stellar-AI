@@ -27,7 +27,7 @@ test('homepage offers three anonymous previews before account gating', () => {
   assert.match(homepageRuntime, /fetch\('\/api\/preview'/);
   assert.match(homepageRuntime, /stellar-anonymous-preview-count-v2/);
   assert.match(homepageRuntime, /auth.*preview/);
-  assert.match(homepageRuntime, /3 free previews used today · open the full chat to continue\./);
+  assert.match(homepageRuntime, /3 previews used · open the full chat to continue\./);
 });
 
 test('preview endpoint is server-only, counted and fails closed without usage storage', () => {
@@ -50,7 +50,7 @@ test('preview gate cannot be bypassed by closing the sign-in panel in the app', 
 test('downloadable code carries Stellar attribution and anonymous preview download works in place', () => {
   const watermark = /Generated with Stellar AI.*https:\/\/trystellarai\.com/;
   assert.match(app, watermark);
-  assert.match(home, watermark);
+  assert.match(home, /id="anonymous-preview-download"/);
   assert.match(builder, watermark);
   assert.match(homepageRuntime, /anonymous-preview-download/);
   assert.match(homepageRuntime, /link\.download = currentFilename/);

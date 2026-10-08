@@ -5,6 +5,7 @@ import path from 'node:path';
 
 const root=path.resolve(import.meta.dirname,'..');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const css=fs.readFileSync(path.join(root,'lib/assets/stellar-landing-clean-v1.css'),'utf8');
 
 test('landing has a short FiveM Roblox headline and clear work scope',()=>{
  const headline=html.match(/<h1 id="hero-title">([^<]+)<\/h1>/)?.[1]||'';
@@ -37,8 +38,8 @@ test('pricing and customer support remain clear',()=>{
  assert.match(html,/deadlyfox10@gmail\.com/);
 });
 test('compact styling retains 390px friendly breakpoints',()=>{
- assert.match(html,/\.section\{padding:55px 0/);
- assert.match(html,/@media\(max-width:800px\)/);
- assert.match(html,/@media\(max-width:560px\)/);
- assert.match(html,/\.menu-toggle\{display:inline-flex/);
+ assert.match(css,/\.section\{padding:55px 0/);
+ assert.match(css,/@media\(max-width:800px\)/);
+ assert.match(css,/@media\(max-width:560px\)/);
+ assert.match(css,/\.menu-toggle\{display:inline-flex/);
 });
