@@ -40,7 +40,7 @@ test('braking safely switches to reverse and clamps maximum speed', () => {
 test('geographic coordinates stay finite and longitude wraps at the dateline', () => {
   const moved = movePosition(179.999, 0, 90, 500);
   assert.ok(moved.longitude < -179.99);
-  assert.equal(moved.latitude, 0);
+  assert.ok(Math.abs(moved.latitude) < 1e-10);
   const step = stepVehicle({ ...startingVehicle(), speed: 10 }, { accelerate: true }, 200);
   assert.ok(Number.isFinite(step.longitude));
   assert.ok(Number.isFinite(step.latitude));
