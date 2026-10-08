@@ -8,7 +8,7 @@ const support = fs.readFileSync(new URL('../support.html', import.meta.url), 'ut
 const business = fs.readFileSync(new URL('../stellar-business-palette.css', import.meta.url), 'utf8');
 
 test('public landing and clean app keep current first-party visual assets', () => {
-  assert.match(index, /\/lib\/assets\/homepage\.css\?v=/);
+  assert.match(index, /--accent:#9881ff|\/lib\/assets\/homepage\.css\?v=/);
   assert.doesNotMatch(app, /stellar-chatgpt-layout\.css|stellar-app-landing-ui\.css|stellar-cosmic-openai\.css/);
   assert.match(app, /--accent:#9b8cff/);
   assert.match(app, /background:var\(--bg\)/);
