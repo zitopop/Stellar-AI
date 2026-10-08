@@ -39,33 +39,33 @@ local function spawnCar(player, offset)
     model:SetAttribute("SpeedKmh", 0)
     model.Parent = vehicles
     local body = fixedPart(model, "Chassis", Vector3.new(6.5, 1.45, 12),
-        Color3.fromRGB(93, 66, 205), CFrame.new(0, 3.4, 0))
+        Color3.fromRGB(93, 66, 205), CFrame.new(0, 2.2, 0))
     body.CanCollide = false
     model.PrimaryPart = body
 
     fixedPart(model, "Roof", Vector3.new(5.1, 0.8, 5.6),
-        Color3.fromRGB(35, 39, 71), CFrame.new(0, 4.35, 0.4))
+        Color3.fromRGB(35, 39, 71), CFrame.new(0, 3.12, 0.4))
     fixedPart(model, "Windscreen", Vector3.new(5.2, 0.2, 2.3),
-        Color3.fromRGB(135, 190, 213), CFrame.new(0, 4.8, -1.3), Enum.Material.Glass)
+        Color3.fromRGB(135, 190, 213), CFrame.new(0, 3.55, -1.3), Enum.Material.Glass)
     for _, x in ipairs({-3.2, 3.2}) do
         for _, z in ipairs({-3.7, 3.7}) do
-            local wheel = fixedPart(model, "Wheel", Vector3.new(2.1, 1, 2.1),
+            local wheel = fixedPart(model, "Wheel", Vector3.new(1, 2.1, 2.1),
                 Color3.fromRGB(24, 25, 29),
-                CFrame.new(x, 2.55, z) * CFrame.Angles(0, 0, math.rad(90)))
+                CFrame.new(x, 1.1, z))
             wheel.Shape = Enum.PartType.Cylinder
         end
     end
     for _, x in ipairs({-2.15, 2.15}) do
         fixedPart(model, "Headlight", Vector3.new(1.2, 0.4, 0.2),
-            Color3.fromRGB(236, 245, 255), CFrame.new(x, 3.5, -6.1), Enum.Material.Neon)
+            Color3.fromRGB(236, 245, 255), CFrame.new(x, 2.35, -6.1), Enum.Material.Neon)
         fixedPart(model, "Taillight", Vector3.new(1.2, 0.4, 0.2),
-            Color3.fromRGB(240, 42, 68), CFrame.new(x, 3.5, 6.1), Enum.Material.Neon)
+            Color3.fromRGB(240, 42, 68), CFrame.new(x, 2.35, 6.1), Enum.Material.Neon)
     end
 
     local seat = Instance.new("VehicleSeat")
     seat.Name = "DriveSeat"
     seat.Size = Vector3.new(2.2, 0.65, 2.2)
-    seat.CFrame = CFrame.new(0, 5.1, 0.6)
+    seat.CFrame = CFrame.new(0, 3.95, 0.6)
     seat.Anchored = true
     seat.CanCollide = true
     seat.Color = Color3.fromRGB(31, 29, 55)
@@ -89,7 +89,7 @@ local function spawnCar(player, offset)
         if humanoid then seat:Sit(humanoid) end
     end)
 
-    local position = marker.CFrame * CFrame.new(offset, 0, 0)
+    local position = marker.CFrame * CFrame.new(offset, 1.3, 0)
     model:PivotTo(position)
 
     -- Prevent large dt spikes from teleporting the vehicle across entire streets.
