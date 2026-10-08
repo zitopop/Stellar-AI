@@ -4,6 +4,13 @@
 
 **Live site:** https://trystellarai.com
 
+## Try the AI script debugger free
+
+**No account required for the first 3 script previews:** [Try Stellar AI on FiveM or Roblox code](https://trystellarai.com/?utm_source=github&utm_medium=organic&utm_campaign=free_script_preview#try-preview).
+
+Paste a QBCore, ESX, ox_lib or Roblox Luau task into the live generator. Review the output and test any script in your own development environment before deployment. You can also [open the full AI chat](https://trystellarai.com/app?welcome=1&utm_source=github&utm_medium=organic&utm_campaign=free_script_preview).
+
+
 ## Free developer resources
 
 **Public free-tools hub:** https://trystellarai.com/free-tools
