@@ -6,8 +6,8 @@ const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8')
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('home page uses external CSS and keeps app route separate', () => {
-  assert.match(index, /\/lib\/assets\/homepage\.css\?v=/);
-  assert.match(index, /href="\/app\?welcome=1"|href="\/app"/);
+  assert.match(index, /\/lib\/assets\/stellar-landing-clean-v1\.css\?v=/);
+  assert.match(index, /href="\/app\?welcome=1(?:&amp;|")|href="\/app"/);
   assert.doesNotMatch(index, /<script[^>]+src="https:\/\/cdn\.tailwindcss\.com/i);
 });
 
