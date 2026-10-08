@@ -6,7 +6,7 @@ const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 
 test('landing pricing preserves paid plan intent when opening workspace', () => {
-  for (const plan of ['starter', 'plus', 'pro']) assert.ok(landing.includes(`href="/app?upgrade=${plan}"`));
+  for (const plan of ['starter', 'plus', 'pro']) assert.ok(landing.includes(`href="/app?upgrade=${plan}&amp;`));
 });
 
 test('workspace persists upgrade intent through sign-in and starts authenticated Stripe checkout', () => {
