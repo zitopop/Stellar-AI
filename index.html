@@ -5801,16 +5801,69 @@ body.public-home .stellar-venture-status{
   }
 }
 </style>
+
+<style id="stellar-home-details-v84">
+/* Detailed but restrained landing content. Preserve the existing split layout. */
+body.public-home .stellar-inline-links{display:flex;flex-wrap:wrap;gap:12px 22px;margin-top:24px}
+body.public-home .stellar-inline-links a,
+body.public-home .stellar-text-cta,
+body.public-home .stellar-plan-clarity a,
+body.public-home .stellar-faq-items a,
+body.public-home .stellar-support-contact a{
+  color:#dfe4ec!important;font-size:12px!important;font-weight:700!important;
+  text-decoration:underline;text-decoration-color:rgba(223,228,236,.35);text-underline-offset:4px
+}
+body.public-home .stellar-text-cta{display:inline-flex;margin-top:22px}
+body.public-home .stellar-workspace-list article>div,
+body.public-home .stellar-example-list article>div{align-items:flex-start!important}
+body.public-home .stellar-workspace-list article span{min-width:58px!important}
+body.public-home .stellar-example-list article span{min-width:70px!important}
+body.public-home .stellar-example-list article p{margin-left:84px!important}
+body.public-home .stellar-plan-clarity{max-width:800px;margin:24px 0 0!important;color:#878f9b!important;font-size:11.5px!important;line-height:1.65!important}
+body.public-home .stellar-mini-plan-grid article{min-height:430px!important}
+body.public-home .stellar-faq-items{display:block;min-width:0}
+body.public-home .stellar-faq-items details{
+  border-top:1px solid rgba(255,255,255,.09);background:transparent;color:#dfe3e9
+}
+body.public-home .stellar-faq-items details:last-child{border-bottom:1px solid rgba(255,255,255,.09)}
+body.public-home .stellar-faq-items summary{
+  list-style:none;position:relative;display:flex;align-items:center;justify-content:space-between;
+  gap:18px;min-height:58px;padding:16px 26px 16px 0;cursor:pointer;color:#e1e5eb;
+  font:700 14px/1.45 Manrope,system-ui,sans-serif
+}
+body.public-home .stellar-faq-items summary::-webkit-details-marker{display:none}
+body.public-home .stellar-faq-items summary::after{content:"+";position:absolute;right:3px;color:#9ba4b1;font-size:21px;font-weight:400}
+body.public-home .stellar-faq-items details[open] summary::after{content:"−"}
+body.public-home .stellar-faq-items details p{margin:0;padding:0 24px 22px 0;color:#9aa2ad;font-size:12.5px;line-height:1.75}
+body.public-home .stellar-faq-items summary:focus-visible,
+body.public-home .stellar-inline-links a:focus-visible,
+body.public-home .stellar-final-actions a:focus-visible{outline:2px solid #b8bfff;outline-offset:4px}
+body.public-home .stellar-final-section{align-items:center!important}
+body.public-home .stellar-final-actions{display:flex;align-items:flex-start;flex-direction:column;gap:20px}
+body.public-home .stellar-final-actions .stellar-secondary-link{min-height:44px!important;display:inline-flex!important;align-items:center!important}
+body.public-home .stellar-final-actions span{max-width:370px;color:#7d8591;font-size:11.5px;line-height:1.6}
+body.public-home .stellar-support-contact{margin-top:20px!important}
+@media(max-width:900px){
+ body.public-home .stellar-workspace-section,.public-home .stellar-examples-section,.public-home .stellar-faq-section,.public-home .stellar-final-section{grid-template-columns:1fr!important}
+}
+@media(max-width:620px){
+ body.public-home .stellar-mini-plan-grid article{min-height:0!important}
+ body.public-home .stellar-example-list article p{margin-left:0!important}
+ body.public-home .stellar-example-list article>div{flex-direction:column!important;gap:8px!important}
+ body.public-home .stellar-faq-items summary{font-size:13px}
+ body.public-home .stellar-final-actions{gap:14px}
+}
+</style>
 </head>
 <body class="stellar-public public-home">
   <header class="stellar-account-topbar" aria-label="Stellar account navigation">
     <a class="stellar-topbar-brand" href="/">Stellar AI</a>
     <nav class="stellar-topbar-links" aria-label="Landing page">
-      <a href="#capabilities">How it works</a>
-      <a href="#try-a-task">Try a task</a>
+      <a href="#capabilities">Features</a>
+      <a href="#workspace">Workspace</a>
       <a href="#plans">Plans</a>
-      <a href="#other-businesses">Other businesses</a>
-      <a href="#policies">Policies</a>
+      <a href="#other-businesses">Businesses</a>
+      <a href="#questions">Questions</a>
     </nav>
     <nav class="stellar-auth-nav" id="stellar-auth-nav" aria-label="Account"></nav>
   </header>
@@ -5819,7 +5872,7 @@ body.public-home .stellar-venture-status{
       <div class="stellar-intro-copy">
         <p class="stellar-about-kicker">FiveM + Roblox AI coding</p>
         <h1 id="stellar-about-title">Build and debug game scripts without the mess.</h1>
-        <p class="stellar-about-copy">Stellar helps you write, fix and review QBCore, ESX, ox_lib and Roblox Luau code in one focused workspace. Bring an idea or a real error and keep working from there.</p>
+        <p class="stellar-about-copy">Stellar AI is a chat-first workspace for generating, debugging and reviewing FiveM and Roblox scripts. Describe what you want to build, paste broken code or upload a file, then work through the result with clear explanations and practical next steps. You can also use Stellar for everyday AI chat, writing and planning.</p>
         <div class="stellar-intro-actions">
           <a class="stellar-primary-link" href="/app?welcome=1&utm_source=homepage&utm_campaign=hero">Open Stellar</a>
           <a class="stellar-secondary-link" href="/app?mode=debug&utm_source=homepage&utm_campaign=hero-debug">Debug a script</a>
@@ -5842,10 +5895,44 @@ body.public-home .stellar-venture-status{
         <p>Stellar is centred on game scripting and debugging. The interface stays simple; the framework context stays visible.</p>
       </div>
       <div class="stellar-feature-grid stellar-feature-grid--expanded">
-        <article><strong>FiveM resources</strong><p>Build and repair QBCore, ESX and ox_lib resources with clear client, server, config and dependency boundaries.</p></article>
-        <article><strong>Roblox Luau</strong><p>Work with Script, LocalScript and ModuleScript-style code while keeping Studio placement and project context clear.</p></article>
-        <article><strong>Error debugging</strong><p>Paste a real error, log or broken file and get a focused diagnosis before changing the code.</p></article>
-        <article><strong>Review and export</strong><p>Inspect risky client trust, validation and failure paths, then copy or download supported files for testing.</p></article>
+        <article><strong>FiveM resources</strong><p>Draft and improve QBCore, ESX and ox_lib Lua resources, including client/server files, config, fxmanifest and dependencies. Ask where each file belongs and what needs testing.</p></article>
+        <article><strong>Roblox Luau</strong><p>Get help with Script, LocalScript and ModuleScript code, RemoteEvents, gameplay systems and Roblox Studio placement. Keep server authority and client behaviour separate.</p></article>
+        <article><strong>Error debugging</strong><p>Paste console output, stack traces or a broken file. Ask what failed, why it failed, which lines to change and how to reproduce and verify the fix.</p></article>
+        <article><strong>Code review and export</strong><p>Check common validation, permission, client-trust and edge-case issues. Copy results or download supported files, then test them in your own server or Studio project.</p></article>
+        <article><strong>AI chat and explanations</strong><p>Ask technical questions, understand unfamiliar code, plan a feature, write documentation or use the same workspace for general writing and research.</p></article>
+        <article><strong>Files and documents</strong><p>Upload supported files and ask Stellar to explain, compare, summarise or rewrite the contents. Useful for code snippets, error logs, notes and project documentation.</p></article>
+      </div>
+    </section>
+
+    <section class="stellar-simple-section stellar-split-section stellar-workspace-section" id="workspace" aria-labelledby="stellar-workspace-title">
+      <div class="stellar-section-copy">
+        <p class="stellar-about-kicker">One workspace, more than a code generator</p>
+        <h2 id="stellar-workspace-title">Chat, code, files and assistance in one place.</h2>
+        <p>Start with a normal conversation, then use a specialist tool when the task needs it. Some advanced features depend on your plan, device and connected services.</p>
+        <div class="stellar-inline-links">
+          <a href="/plugins">Browse apps &amp; tools →</a>
+          <a href="/plans">See model and feature access →</a>
+        </div>
+      </div>
+      <div class="stellar-what-list stellar-workspace-list">
+        <article><div><span>Chat</span><strong>Stellar Fast, Core, Deep and Max</strong></div><p>Ask questions, plan work and iterate on code with the model included in your plan. More capable tiers offer greater room for complex tasks.</p></article>
+        <article><div><span>Files</span><strong>Read and work with project material</strong></div><p>Bring code, notes and documents into a conversation instead of explaining every detail from scratch.</p></article>
+        <article><div><span>Jarvis</span><strong>Voice, vision and assistant features</strong></div><p>Jarvis Voice + Vision is listed for Plus and Pro. Pro includes additional briefings and proactive alerts; availability depends on the feature and setup.</p></article>
+        <article><div><span>Apps</span><strong>Connected tools and StellarX beta</strong></div><p>Choose supported app connections yourself and review permissions. StellarX computer control is a beta feature on eligible plans and requires an approved setup.</p></article>
+      </div>
+    </section>
+
+    <section class="stellar-simple-section stellar-split-section stellar-examples-section" id="examples" aria-labelledby="stellar-examples-title">
+      <div class="stellar-section-copy">
+        <p class="stellar-about-kicker">Example requests</p>
+        <h2 id="stellar-examples-title">Know what to ask and what you get back.</h2>
+        <p>Give Stellar the framework, the expected behaviour and the current error or code. Ask for file-by-file changes and a test checklist rather than just a code block.</p>
+        <a class="stellar-text-cta" href="/app?welcome=1&utm_source=homepage&utm_campaign=examples">Try one of these in Stellar →</a>
+      </div>
+      <div class="stellar-what-list stellar-example-list">
+        <article><div><span>01 · FiveM</span><strong>“Build a QBCore delivery job with server-validated payouts.”</strong></div><p>Ask for the Lua files, fxmanifest, configuration, install steps and cases to test before adding the resource to your server.</p></article>
+        <article><div><span>02 · Roblox</span><strong>“Help me build a Roblox inventory system using Luau.”</strong></div><p>Request Script, LocalScript and ModuleScript placement, RemoteEvent handling and checks that keep important decisions on the server.</p></article>
+        <article><div><span>03 · Debug</span><strong>“This error appears when my resource starts. Find the cause.”</strong></div><p>Paste the exact error plus the relevant code. Ask for the smallest safe fix, an explanation and a way to verify it worked.</p></article>
       </div>
     </section>
 
@@ -5883,6 +5970,8 @@ body.public-home .stellar-venture-status{
             <li>15 Stellar Fast generations/day</li>
             <li>FiveM + Roblox generation</li>
             <li>Debug broken scripts</li>
+            <li>Everyday chat and coding help</li>
+            <li>Daily allowance resets automatically</li>
           </ul>
           <div class="stellar-plan-price-note">No card required</div>
           <a href="/app?welcome=1&utm_source=homepage&utm_campaign=pricing-free">Open Free</a>
@@ -5895,6 +5984,8 @@ body.public-home .stellar-venture-status{
             <li>Stellar Fast + Core</li>
             <li>120 requests/hour ceiling</li>
             <li>Longer answers and code</li>
+            <li>Everyday writing and research</li>
+            <li>Up to 4,000 output tokens</li>
           </ul>
           <div class="stellar-plan-price-note" data-plan-note>£67/year · save £29</div>
           <a data-plan-cta href="/app?upgrade=starter&utm_source=homepage&utm_campaign=pricing">Choose Starter</a>
@@ -5908,6 +5999,8 @@ body.public-home .stellar-venture-status{
             <li>Stellar Fast + Core + Deep</li>
             <li>400 requests/hour ceiling</li>
             <li>Jarvis Voice + Vision</li>
+            <li>StellarX computer control beta</li>
+            <li>Up to 6,500 output tokens</li>
           </ul>
           <div class="stellar-plan-price-note" data-plan-note>£168/year · save £72</div>
           <a data-plan-cta href="/app?upgrade=plus&utm_source=homepage&utm_campaign=pricing">Choose Plus</a>
@@ -5919,12 +6012,15 @@ body.public-home .stellar-venture-status{
           <ul class="stellar-plan-perks">
             <li>Stellar Deep + Max</li>
             <li>1,600 requests/hour ceiling</li>
-            <li>Jarvis Pro features</li>
+            <li>Jarvis Pro voice, vision and alerts</li>
+            <li>Pro briefings and advanced workflows</li>
+            <li>Up to 10,000 output tokens</li>
           </ul>
           <div class="stellar-plan-price-note" data-plan-note>£630/year · save £270</div>
           <a data-plan-cta href="/app?upgrade=pro&utm_source=homepage&utm_campaign=pricing">Choose Pro</a>
         </article>
       </div>
+      <p class="stellar-plan-clarity">Hourly request ceilings are not a promise of unlimited usage. Monthly allowances, model-aware usage and fair-use safeguards also apply. Yearly plans are billed upfront. <a href="/plans">Read the full plan details →</a></p>
     </section>
 
     <section class="stellar-simple-section stellar-ventures-section" id="other-businesses" aria-labelledby="stellar-ventures-title">
@@ -5968,12 +6064,43 @@ body.public-home .stellar-venture-status{
       </div>
     </section>
 
+    <section class="stellar-simple-section stellar-split-section stellar-faq-section" id="questions" aria-labelledby="stellar-faq-title">
+      <div class="stellar-section-copy">
+        <p class="stellar-about-kicker">Common questions</p>
+        <h2 id="stellar-faq-title">The details before you start.</h2>
+        <p>What the workspace does, how its tools work and what to expect before upgrading.</p>
+        <a class="stellar-text-cta" href="/support">More help and support →</a>
+      </div>
+      <div class="stellar-faq-items">
+        <details><summary>Does Stellar install or run a script for me?</summary><p>Stellar helps generate, explain and debug code. You still need to review it, put files in the right place and test them inside your FiveM server or Roblox Studio project. Generated code is not guaranteed to work without testing.</p></details>
+        <details><summary>Can I bring existing code or an error log?</summary><p>Yes. Paste code and the exact error in chat, or use supported file uploads. Include your framework, dependencies and what you expected to happen for a more useful diagnosis.</p></details>
+        <details><summary>Is Stellar only for FiveM and Roblox?</summary><p>No. Game scripting is the main focus of this page, but Stellar also supports general AI chat, writing, research, troubleshooting, documents and practical business tasks.</p></details>
+        <details><summary>What changes when I upgrade?</summary><p>Paid tiers add different Stellar models, usage capacity and advanced features. Plus includes Stellar Deep and Jarvis Voice + Vision; Pro adds Stellar Max and additional Jarvis features. <a href="/plans">Compare every plan →</a></p></details>
+        <details><summary>Are apps and computer controls automatic?</summary><p>No. Supported app connections require you to approve access. Higher-impact actions remain reviewable. StellarX computer control is in beta and requires an approved computer and eligible access.</p></details>
+        <details><summary>Can I cancel or choose yearly billing?</summary><p>Paid plans can be cancelled to stop renewal, normally with access until the current paid period ends. Yearly prices are billed upfront and are displayed when you select Yearly. <a href="/refunds">Read the refund and cancellation policy →</a></p></details>
+      </div>
+    </section>
+
+    <section class="stellar-simple-section stellar-split-section stellar-final-section" aria-labelledby="stellar-final-title">
+      <div class="stellar-section-copy">
+        <p class="stellar-about-kicker">Ready to build?</p>
+        <h2 id="stellar-final-title">Start with a real task, not a sales pitch.</h2>
+        <p>Try Stellar Fast on the free plan, bring your own code or begin with a feature idea. Upgrade only when you need more room to build.</p>
+      </div>
+      <div class="stellar-final-actions">
+        <a class="stellar-primary-link" href="/app?welcome=1&utm_source=homepage&utm_campaign=bottom-cta">Start using Stellar free</a>
+        <a class="stellar-secondary-link" href="/plans">Compare all plans</a>
+        <span>No card required for Free. Important changes and generated code still need your review.</span>
+      </div>
+    </section>
+
     <section class="stellar-simple-section stellar-policy-section" id="policies" aria-labelledby="stellar-policy-title">
       <div class="stellar-policy-summary">
         <p class="stellar-about-kicker">Before you pay</p>
         <h2 id="stellar-policy-title">Clear pricing. Clear policies.</h2>
         <p>Paid plans can be cancelled so they do not renew. Access normally continues to the end of the paid period. Refunds and remedies follow the published policy and applicable law.</p>
         <a href="/refunds">Refund &amp; cancellation policy →</a>
+        <p class="stellar-support-contact">Questions about accounts or billing? <a href="mailto:deadlyfox10@gmail.com">deadlyfox10@gmail.com</a></p>
       </div>
       <div class="stellar-policy-links">
         <a href="/terms"><span>Terms</span><strong>Rules for using Stellar and paid services.</strong></a>
