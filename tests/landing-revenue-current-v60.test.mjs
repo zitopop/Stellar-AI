@@ -6,10 +6,10 @@ const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const preview = readFileSync(new URL('../lib/assets/homepage.js', import.meta.url), 'utf8');
 
 test('landing is lean, focused and honest about capabilities', () => {
-  assert.match(home, /Build scripts\.<br>Find bugs\.<br>Keep creating\./);
+  assert.match(home, /Build and debug FiveM &amp; Roblox scripts\./);
   assert.match(home, /FiveM and Roblox creators/);
   assert.match(home, /QBCore · ESX · ox_lib · Luau/);
-  assert.match(home, /generated code in your own environment/i);
+  assert.match(home, /Generated code should be tested in a development environment before production use/i);
   assert.match(home, /no card needed/i);
   assert.doesNotMatch(home, /guaranteed bug-free|trusted by \d+|most popular choice/i);
   assert.ok(home.length < 80_000, 'homepage should no longer include hundreds of KB of legacy styles');
@@ -40,7 +40,7 @@ test('nav, mobile controls, contact and legal links are preserved', () => {
   assert.match(home, /class="menu-toggle"/);
   assert.match(home, /aria-expanded="false"/);
   assert.match(home, /deadlyfox10@gmail\.com/);
-  for (const path of ['/plans','/terms','/privacy','/refunds','/support','/business']) {
+  for (const path of ['/plans','/terms','/privacy','/refunds','/support','/business','/install','/server-pass','/script-fix']) {
     assert.match(home, new RegExp('href="' + path + '"'));
   }
 });
