@@ -488,7 +488,379 @@
 @media(max-width:640px){.shell:not(.restricted-verified) .deck{grid-template-columns:1fr!important}}
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
-</head><body><div class="jarvis-lock" id="jarvis-lock"><div class="jarvis-lock-card"><h1>Jarvis is a paid Stellar feature.</h1><p id="jarvis-lock-copy">Sign in with a Plus or Pro account. Plus unlocks Voice + Vision; Pro adds briefings and proactive alerts.</p><div class="jarvis-lock-actions"><a href="/app?signin=1">Sign in</a><a class="primary" href="/plans">See plans</a></div></div></div><div class="shell" id="shell" aria-hidden="true"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">Jarvis Vision workspace</div><h1>Control Stellar with your hands.</h1><p>Enable the camera, pinch a module to move it, or use mouse and touch normally.</p><div class="status"><b></b><span id="statusText">Ready · camera off</span></div><span class="status jarvis-pro-badge">Jarvis Pro · briefings + alerts enabled</span></section><main class="deck" id="deck" aria-label="Jarvis gesture workspace"><article class="orb o1" data-name="AI Chat" tabindex="0" role="button" aria-label="AI Chat. Double-click or press Enter to open"><div><div class="ico">✦</div><strong>AI Chat</strong><small>Return to Stellar and continue your conversation</small><span class="orb-meta">Open chat</span></div></article><article class="orb o2" data-name="Voice" tabindex="0" role="button" aria-label="Voice. Double-click or press Enter to open"><div><div class="ico">◉</div><strong>Voice</strong><small>Live conversation and private voice tools</small><span class="orb-meta">Start voice</span></div></article><article class="orb o3 orb-featured" data-name="Computer" data-jarvis-computer="true" tabindex="0" role="button" aria-label="Open Jarvis computer control"><div><div class="ico">⌘</div><strong>Computer</strong><small>Open StellarX to inspect files, edit approved work, run approved terminal steps, browse, and optionally use mouse + keyboard.</small><span class="orb-meta">Open PC control</span></div></article><article class="orb o4" data-name="Email" data-restricted="true" aria-hidden="true" tabindex="0" role="button" aria-label="Email integration status"><div><div class="ico">✉</div><strong>Email</strong><small>Inbox context through authorised integrations</small><span class="orb-meta orb-meta-warn">Authorised connector</span></div></article><article class="orb o5" data-name="Projects" tabindex="0" role="button" aria-label="Projects. Double-click or press Enter to open"><div><div class="ico">▣</div><strong>Projects</strong><small>Open project files and generated work</small><span class="orb-meta">Open projects</span></div></article><article class="orb o6" data-name="Agents" data-restricted="true" aria-hidden="true" tabindex="0" role="button" aria-label="AI Agents. Double-click or press Enter to open"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist roles for research, review, testing and security</small><span class="orb-meta">Choose an agent</span></div></article><article class="orb o7" data-name="Vision" tabindex="0" role="button" aria-label="Vision status"><div><div class="ico">◌</div><strong>Vision</strong><small>Camera stays in-browser; hand tracking runs locally after model download</small><span class="orb-meta">Start vision</span></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch + move · drag</span><span>✌ Peace · reset</span><span>🤏🤏 Two hands · zoom</span><span>J · narration</span><span>F · effects</span><span>Mouse + touch supported</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
+
+<style id="stellar-jarvis-smart-home-v5">
+:root{
+  --jarvis-bg:#12151a;
+  --jarvis-surface:#171b20;
+  --jarvis-surface-2:#1c2128;
+  --jarvis-line:rgba(255,255,255,.08);
+  --jarvis-text:#f5f6f7;
+  --jarvis-muted:#9aa2ad;
+}
+html,body{
+  background:var(--jarvis-bg)!important;
+  color:var(--jarvis-text)!important;
+}
+.shell{
+  min-height:100dvh!important;
+  height:100dvh!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(900px 480px at 50% -100px,rgba(255,255,255,.045),transparent 68%),
+    linear-gradient(180deg,#171a20 0%,#12151a 52%,#101318 100%)!important;
+}
+#cam{
+  opacity:.055!important;
+  filter:saturate(.4) contrast(1) brightness(.62)!important;
+}
+.veil{
+  background:linear-gradient(180deg,rgba(18,21,26,.18),rgba(18,21,26,.74))!important;
+}
+.top{
+  min-height:58px!important;
+  padding:0 18px!important;
+  border-bottom:1px solid var(--jarvis-line)!important;
+  background:rgba(18,21,26,.9)!important;
+}
+.brand{
+  font-size:13px!important;
+  font-weight:760!important;
+}
+.brand i{
+  width:30px!important;
+  height:30px!important;
+  border-radius:9px!important;
+  border:1px solid var(--jarvis-line)!important;
+  background:#1b2026!important;
+  color:#fff!important;
+}
+.pill{
+  min-height:34px!important;
+  height:34px!important;
+  padding:0 11px!important;
+  border:1px solid var(--jarvis-line)!important;
+  border-radius:9px!important;
+  background:#171b20!important;
+  color:#cfd4db!important;
+  font-size:10px!important;
+}
+.pill.primary{
+  background:#f3f4f6!important;
+  border-color:#f3f4f6!important;
+  color:#111318!important;
+}
+#effectsBtn,#resetBtn{display:none!important}
+
+.hud{
+  position:absolute!important;
+  top:88px!important;
+  left:50%!important;
+  width:min(1080px,calc(100% - 40px))!important;
+  transform:translateX(-50%)!important;
+  text-align:left!important;
+  pointer-events:none!important;
+}
+.hud-kicker{
+  color:#cfd4db!important;
+  font:800 8.5px/1 "DM Mono",ui-monospace,monospace!important;
+  letter-spacing:.12em!important;
+}
+.hud h1{
+  max-width:660px!important;
+  margin-top:10px!important;
+  color:#f5f6f7!important;
+  background:none!important;
+  -webkit-text-fill-color:currentColor!important;
+  font-size:clamp(32px,4vw,48px)!important;
+  line-height:1.02!important;
+  letter-spacing:-.048em!important;
+}
+.hud p{
+  max-width:610px!important;
+  margin:10px 0 0!important;
+  color:#a2a9b3!important;
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+.status{
+  min-height:28px!important;
+  margin-top:12px!important;
+  padding:0 9px!important;
+  border:1px solid rgba(111,220,191,.14)!important;
+  background:rgba(111,220,191,.045)!important;
+  color:#bde5d9!important;
+  font-size:8.5px!important;
+}
+.status b{
+  width:6px!important;
+  height:6px!important;
+  background:#6fdcbe!important;
+  box-shadow:none!important;
+}
+
+.jarvis-command-center{
+  position:absolute!important;
+  top:226px!important;
+  left:50%!important;
+  z-index:20!important;
+  width:min(1080px,calc(100% - 40px))!important;
+  transform:translateX(-50%)!important;
+  padding:18px!important;
+  border:1px solid var(--jarvis-line)!important;
+  border-radius:16px!important;
+  background:rgba(23,27,32,.92)!important;
+  box-shadow:0 18px 54px rgba(0,0,0,.18)!important;
+}
+.jarvis-command-copy{
+  display:grid!important;
+  gap:5px!important;
+}
+.jarvis-command-copy>span{
+  color:#b8bec7!important;
+  font:800 8px/1 "DM Mono",ui-monospace,monospace!important;
+  letter-spacing:.11em!important;
+}
+.jarvis-command-copy>strong{
+  color:#f5f6f7!important;
+  font-size:15px!important;
+  letter-spacing:-.02em!important;
+}
+.jarvis-command-copy>small{
+  color:#8f97a2!important;
+  font-size:10.5px!important;
+  line-height:1.5!important;
+}
+.jarvis-command-form{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:8px!important;
+  margin-top:14px!important;
+}
+.jarvis-command-form input{
+  min-width:0!important;
+  height:46px!important;
+  padding:0 14px!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:11px!important;
+  outline:none!important;
+  background:#11151a!important;
+  color:#f5f6f7!important;
+  font-size:12px!important;
+}
+.jarvis-command-form input::placeholder{color:#69727e!important}
+.jarvis-command-form input:focus{
+  border-color:rgba(255,255,255,.2)!important;
+  box-shadow:0 0 0 3px rgba(255,255,255,.03)!important;
+}
+.jarvis-command-form button{
+  min-height:46px!important;
+  padding:0 16px!important;
+  border:0!important;
+  border-radius:11px!important;
+  background:#f3f4f6!important;
+  color:#111318!important;
+  font-size:11px!important;
+  font-weight:780!important;
+  cursor:pointer!important;
+}
+.jarvis-command-actions{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  margin-top:10px!important;
+}
+.jarvis-command-actions button,
+.jarvis-command-actions a{
+  min-height:30px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 9px!important;
+  border:1px solid rgba(255,255,255,.075)!important;
+  border-radius:8px!important;
+  background:#15191e!important;
+  color:#bdc4cd!important;
+  font-size:9px!important;
+  font-weight:680!important;
+  text-decoration:none!important;
+  cursor:pointer!important;
+}
+.jarvis-command-actions button:hover,
+.jarvis-command-actions a:hover,
+.jarvis-command-actions button:focus-visible,
+.jarvis-command-actions a:focus-visible{
+  color:#fff!important;
+  border-color:rgba(255,255,255,.16)!important;
+  outline:none!important;
+}
+
+.deck{
+  position:absolute!important;
+  inset:420px max(20px,calc((100vw - 1080px)/2)) 54px!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(124px,1fr)!important;
+  gap:9px!important;
+  overflow:auto!important;
+  transform:none!important;
+}
+.orb,
+.orb-featured,
+.o1,.o2,.o3,.o4,.o5,.o6,.o7{
+  position:relative!important;
+  inset:auto!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:auto!important;
+  min-width:0!important;
+  min-height:124px!important;
+  aspect-ratio:auto!important;
+  padding:15px!important;
+  border:1px solid var(--jarvis-line)!important;
+  border-radius:14px!important;
+  background:#171b20!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+  transform:none!important;
+}
+.orb:hover,.orb:focus-visible{
+  border-color:rgba(255,255,255,.16)!important;
+  background:#1c2128!important;
+  transform:translateY(-1px)!important;
+}
+.orb::after{display:none!important}
+.orb>div{
+  max-width:none!important;
+  text-align:left!important;
+}
+.orb .ico{
+  width:30px!important;
+  height:30px!important;
+  margin:0 0 10px!important;
+  border:1px solid var(--jarvis-line)!important;
+  border-radius:9px!important;
+  background:#1d2228!important;
+  color:#f4f5f7!important;
+  font-size:14px!important;
+}
+.orb strong{
+  font-size:12px!important;
+  color:#f2f4f6!important;
+}
+.orb small{
+  min-height:0!important;
+  margin-top:5px!important;
+  color:#8f97a2!important;
+  font-size:9px!important;
+  line-height:1.45!important;
+}
+.orb-meta{
+  min-height:22px!important;
+  margin-top:9px!important;
+  padding:0 7px!important;
+  border:1px solid rgba(255,255,255,.065)!important;
+  background:#14181d!important;
+  color:#aab2bc!important;
+  font-size:7.5px!important;
+}
+.orb-featured{
+  border-color:rgba(255,255,255,.14)!important;
+  background:#1a1f25!important;
+}
+.legend{display:none!important}
+
+@media(max-width:980px){
+  .hud{
+    width:calc(100% - 28px)!important;
+  }
+  .jarvis-command-center{
+    width:calc(100% - 28px)!important;
+  }
+  .deck{
+    inset:430px 14px 32px!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:640px){
+  html,body{overflow:auto!important}
+  .shell{
+    height:auto!important;
+    min-height:100dvh!important;
+    overflow:visible!important;
+  }
+  .top{
+    position:sticky!important;
+    top:0!important;
+    padding:8px 10px!important;
+    flex-wrap:nowrap!important;
+  }
+  .brand{width:auto!important}
+  #jarvisBtn{display:none!important}
+  .hud{
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    width:auto!important;
+    margin:24px 14px 0!important;
+    transform:none!important;
+  }
+  .hud h1{font-size:32px!important}
+  .hud p{display:block!important}
+  .jarvis-command-center{
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    width:auto!important;
+    margin:18px 10px 0!important;
+    transform:none!important;
+    padding:14px!important;
+  }
+  .jarvis-command-form{
+    grid-template-columns:1fr!important;
+  }
+  .jarvis-command-form button{width:100%!important}
+  .jarvis-command-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+  }
+  .deck{
+    position:relative!important;
+    inset:auto!important;
+    grid-template-columns:1fr!important;
+    margin:10px!important;
+    padding:0 0 24px!important;
+    overflow:visible!important;
+  }
+  .orb,
+  .orb-featured,
+  .o1,.o2,.o3,.o4,.o5,.o6,.o7{
+    min-height:118px!important;
+    touch-action:manipulation!important;
+  }
+}
+</style>
+
+</head><body><div class="jarvis-lock" id="jarvis-lock"><div class="jarvis-lock-card"><h1>Jarvis is a paid Stellar feature.</h1><p id="jarvis-lock-copy">Sign in with a Plus or Pro account. Plus unlocks Voice + Vision; Pro adds briefings and proactive alerts.</p><div class="jarvis-lock-actions"><a href="/app?signin=1">Sign in</a><a class="primary" href="/plans">See plans</a></div></div></div><div class="shell" id="shell" aria-hidden="true"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">STELLAR JARVIS · AI ASSISTANT</div><h1>Ask Jarvis. Then use the right tool.</h1><p>One command center for AI chat, voice, vision, projects and secure computer work.</p><div class="status"><b></b><span id="statusText">Ready · camera off</span></div><span class="status jarvis-pro-badge">Jarvis Pro · briefings + alerts enabled</span></section><section class="jarvis-command-center" aria-labelledby="jarvis-command-title">
+  <div class="jarvis-command-copy">
+    <span>SMART COMMAND</span>
+    <strong id="jarvis-command-title">What do you want Jarvis to do?</strong>
+    <small>Describe the outcome. Jarvis will open the main Stellar workspace with your instruction ready.</small>
+  </div>
+  <form class="jarvis-command-form" id="jarvis-command-form">
+    <label class="sr-only" for="jarvis-command-input">Ask Jarvis</label>
+    <input id="jarvis-command-input" autocomplete="off" maxlength="1200" placeholder="Ask Jarvis to build, debug, research, plan or help with a project…" />
+    <button type="submit">Ask Jarvis</button>
+  </form>
+  <div class="jarvis-command-actions" aria-label="Quick Jarvis actions">
+    <button type="button" data-jarvis-prompt="Debug this FiveM or Roblox error and give me the smallest safe fix.">Debug code</button>
+    <button type="button" data-jarvis-prompt="Help me plan the next steps for my current project.">Plan project</button>
+    <a href="/app?jarvis=voice">Start voice</a>
+    <button type="button" data-jarvis-vision>Use vision</button>
+    <a href="/desktop?from=jarvis">Open computer</a>
+  </div>
+</section>
+<main class="deck" id="deck" aria-label="Jarvis tools"><article class="orb o1" data-name="AI Chat" tabindex="0" role="button" aria-label="AI Chat. Double-click or press Enter to open"><div><div class="ico">✦</div><strong>AI Chat</strong><small>Return to Stellar and continue your conversation</small><span class="orb-meta">Open chat</span></div></article><article class="orb o2" data-name="Voice" tabindex="0" role="button" aria-label="Voice. Double-click or press Enter to open"><div><div class="ico">◉</div><strong>Voice</strong><small>Live conversation and private voice tools</small><span class="orb-meta">Start voice</span></div></article><article class="orb o3 orb-featured" data-name="Computer" data-jarvis-computer="true" tabindex="0" role="button" aria-label="Open Jarvis computer control"><div><div class="ico">⌘</div><strong>Computer</strong><small>Open StellarX to inspect files, edit approved work, run approved terminal steps, browse, and optionally use mouse + keyboard.</small><span class="orb-meta">Open PC control</span></div></article><article class="orb o4" data-name="Email" data-restricted="true" aria-hidden="true" tabindex="0" role="button" aria-label="Email integration status"><div><div class="ico">✉</div><strong>Email</strong><small>Inbox context through authorised integrations</small><span class="orb-meta orb-meta-warn">Authorised connector</span></div></article><article class="orb o5" data-name="Projects" tabindex="0" role="button" aria-label="Projects. Double-click or press Enter to open"><div><div class="ico">▣</div><strong>Projects</strong><small>Open project files and generated work</small><span class="orb-meta">Open projects</span></div></article><article class="orb o6" data-name="Agents" data-restricted="true" aria-hidden="true" tabindex="0" role="button" aria-label="AI Agents. Double-click or press Enter to open"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist roles for research, review, testing and security</small><span class="orb-meta">Choose an agent</span></div></article><article class="orb o7" data-name="Vision" tabindex="0" role="button" aria-label="Vision status"><div><div class="ico">◌</div><strong>Vision</strong><small>Camera stays in-browser; hand tracking runs locally after model download</small><span class="orb-meta">Start vision</span></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch + move · drag</span><span>✌ Peace · reset</span><span>🤏🤏 Two hands · zoom</span><span>J · narration</span><span>F · effects</span><span>Mouse + touch supported</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
 <script type="module">
 const q=s=>document.querySelector(s), deck=q('#deck'), cursor=q('#cursor'), statusText=q('#statusText'), toast=q('#toast'), cam=q('#cam');
 let jarvisAccess={enabled:false,voice:false,vision:false,briefings:false,proactiveAlerts:false,ownerControls:false};async function syncJarvisAccess(){
@@ -553,6 +925,17 @@ document.querySelectorAll('.orb').forEach(el=>{
   el.addEventListener('dblclick',()=>activateOrb(el));
   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activateOrb(el)}});
 });
+const jarvisCommandForm=q('#jarvis-command-form'),jarvisCommandInput=q('#jarvis-command-input');
+function openJarvisPrompt(value){
+  const prompt=String(value||jarvisCommandInput?.value||'').trim();
+  if(!prompt){jarvisCommandInput?.focus();note('Tell Jarvis what you want to do');return}
+  location.href='/app?jarvis=chat&prompt='+encodeURIComponent(prompt);
+}
+jarvisCommandForm?.addEventListener('submit',e=>{e.preventDefault();openJarvisPrompt()});
+document.querySelectorAll('[data-jarvis-prompt]').forEach(button=>button.addEventListener('click',()=>{
+  if(jarvisCommandInput){jarvisCommandInput.value=button.dataset.jarvisPrompt||'';jarvisCommandInput.focus()}
+}));
+document.querySelector('[data-jarvis-vision]')?.addEventListener('click',()=>enableCamera());
 syncJarvisAccess();
 window.addEventListener('focus',syncJarvisAccess);
 window.addEventListener('beforeunload',()=>stream?.getTracks().forEach(t=>t.stop()));
