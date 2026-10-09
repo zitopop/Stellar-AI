@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const jarvis = readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
+const jarvis = readFileSync(new URL('../jarvis-vision.html', import.meta.url), 'utf8');
 const studio = readFileSync(new URL('../roblox-studio.html', import.meta.url), 'utf8');
 const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
 

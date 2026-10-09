@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const app = fs.readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-const jarvis = fs.readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
+const jarvis = fs.readFileSync(new URL('../jarvis-vision.html', import.meta.url), 'utf8');
 const vercel = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
 
 test('Jarvis stays private in the app while its routes remain available to verified owner state', () => {
@@ -23,8 +23,8 @@ test('Jarvis Vision has local camera hand controls plus pointer fallback', () =>
 });
 
 test('deployment routes Jarvis and limits camera permission to same origin', () => {
-  assert.ok(vercel.rewrites.some((route) => route.source === '/jarvis' && route.destination === '/jarvis-workspace.html'));
-  assert.ok(vercel.rewrites.some((route) => route.source === '/jarvis/vision' && route.destination === '/jarvis.html'));
+  assert.ok(vercel.rewrites.some((route) => route.source === '/jarvis' && route.destination === '/jarvis-workspace'));
+  assert.ok(vercel.rewrites.some((route) => route.source === '/jarvis/vision' && route.destination === '/jarvis-vision'));
   const permission = vercel.headers.flatMap((entry) => entry.headers || []).find((entry) => entry.key === 'Permissions-Policy');
   assert.equal(permission?.value, 'camera=(self), geolocation=(), payment=()');
 });

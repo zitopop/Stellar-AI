@@ -21,7 +21,7 @@ const pages=[
   'investors.html',
   'private-workspace.html',
   'jarvis-workspace.html',
-  'jarvis.html',
+  'jarvis-vision.html',
   'legal.html',
   'models.html',
   'offline.html',

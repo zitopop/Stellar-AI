@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { getPlanDefinition } from '../lib/pricing.js';
 
 const getPlan = readFileSync(new URL('../api/get-plan.js', import.meta.url), 'utf8');
-const jarvis = readFileSync(new URL('../jarvis.html', import.meta.url), 'utf8');
+const jarvis = readFileSync(new URL('../jarvis-vision.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const plans = readFileSync(new URL('../plans.html', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
