@@ -26,6 +26,8 @@ const expectedCleanRoutes = new Map([
   ['/support', 'support.html'],
   ['/plans', 'plans.html'],
   ['/plugins', 'plugins.html'],
+  ['/jarvis', 'jarvis-workspace.html'],
+  ['/jarvis/vision', 'jarvis-vision.html'],
   ['/models', 'models.html'],
   ['/desktop', 'desktop-agent.html'],
   ['/roblox-studio', 'roblox-studio.html'],
@@ -42,6 +44,8 @@ const expectedCleanRoutes = new Map([
 
 const expectedRewriteDestinations = new Map([
   ['/desktop', '/desktop-agent'],
+  ['/jarvis', '/jarvis-workspace'],
+  ['/jarvis/vision', '/jarvis-vision'],
   ['/business', '/business.html'],
   ['/script-fix', '/services/script-fix'],
   ['/ai-receptionist', '/services/ai-receptionist'],
