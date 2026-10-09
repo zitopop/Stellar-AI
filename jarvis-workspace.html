@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0c0d10">
-<meta name="jarvis-release" content="2026-10-09-jarvis-polish-v8">
+<meta name="jarvis-release" content="2026-10-09-jarvis-reliability-v9">
 <meta name="robots" content="noindex,nofollow">
 <title>Jarvis Text Chat — Stellar AI</title>
 <meta name="description" content="Chat with Jarvis. Clear answers, coding help, planning and optional voice in Stellar AI.">
@@ -132,6 +132,11 @@ body,.shell{background:var(--bg)}
 .composer{box-shadow:0 16px 44px rgba(0,0,0,.24)}
 .composer-row #stop-response{min-width:44px;border-color:rgba(185,164,245,.3);background:#302b3b;color:#f2eaff}
 .composer-row #stop-response:hover{background:#423950}
+.signin #retry-access{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-left:8px;padding:0 12px;border:1px solid rgba(185,164,245,.4);border-radius:10px;background:#292530;color:#f5eeff}
+.signin #retry-access[hidden]{display:none}
+.signin .access-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:9px}
+.signin .access-actions a{min-height:42px;display:inline-flex;align-items:center}
+@media(max-width:360px){.signin .access-actions{align-items:stretch;flex-direction:column}.signin #retry-access{margin:0}}
 @media(max-width:600px){
  .top-actions .apps-link{min-height:44px;padding:0 9px;font-size:12px}
  .hero{padding:clamp(65px,14vh,120px) 0 18px}
@@ -161,7 +166,7 @@ body,.shell{background:var(--bg)}
 </div>
 </header>
 <main>
-<div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span> <a id="access-link" href="/app?signin=1">Open sign in →</a></div>
+<div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span><div class="access-actions"><a id="access-link" href="/app?signin=1">Open sign in →</a><button id="retry-access" type="button" hidden>Retry connection</button></div></div>
 <section id="chat" class="chat" aria-label="Jarvis conversation">
 <div id="hero" class="hero"><h1>How can I help?</h1><p>Plan, write, research or get help with code. Ask in your own words.</p></div>
 <div id="messages" class="messages" role="log" aria-label="Jarvis messages" aria-live="polite"></div>
@@ -188,7 +193,7 @@ body,.shell{background:var(--bg)}
   function safeStorageGet(key,fallback=''){try{const value=localStorage.getItem(key);return value==null?fallback:value}catch{return fallback}}
   function safeStorageSet(key,value){try{localStorage.setItem(key,value);return true}catch{return false}}
   let busy = false, recognition = null, speaking = false, accessChecked = false, jarvisEntitled = false, micAvailable = false;
-  let pendingController = null;
+  let pendingController = null, speechRunId = 0;
   let jarvisSource = 'jarvis-public';
   let voiceOn = safeStorageGet('stellarJarvisVoiceReplies','1') !== '0';
   let handsFree = safeStorageGet('stellarJarvisHandsFree','0') === '1';
@@ -309,14 +314,14 @@ body,.shell{background:var(--bg)}
 
   function cleanSpeech(text){return String(text||'').replace(/```[\s\S]*?```/g,'I have code ready for you on screen.').replace(/`([^`]+)`/g,'$1').replace(/https?:\/\/\S+/g,'a link').replace(/[•*_>#~]/g,' ').replace(/\s+/g,' ').trim()}
   function chooseVoice(){const list=speechSynthesis?.getVoices?.()||[];return list.find(v=>/^en-GB$/i.test(v.lang)&&/ryan|daniel|oliver|arthur|natural|premium|google|microsoft/i.test(v.name))||list.find(v=>/^en-GB$/i.test(v.lang))||list.find(v=>/^en/i.test(v.lang))||null}
-  function stopSpeech(){try{speechSynthesis?.cancel()}catch{};speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Ready.')}
+  function stopSpeech(){speechRunId++;try{speechSynthesis?.cancel()}catch{};speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Ready.')}
   function speak(text){
     if(!voiceOn||!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window))return;
     const clean=cleanSpeech(text).slice(0,1800);if(!clean)return;
-    stopSpeech();speaking=true;$('stop-voice').hidden=false;setStatus('Speaking…','good');
+    stopSpeech();const runId=++speechRunId;speaking=true;$('stop-voice').hidden=false;setStatus('Speaking…','good');
     const utterance=new SpeechSynthesisUtterance(clean);utterance.lang='en-GB';utterance.rate=.96;utterance.pitch=.90;utterance.volume=1;const v=chooseVoice();if(v)utterance.voice=v;
-    utterance.onend=()=>{speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Ready.');if(handsFree&&jarvisEntitled)setTimeout(startListening,320)};
-    utterance.onerror=()=>{speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Voice playback stopped.','bad')};
+    utterance.onend=()=>{if(runId!==speechRunId)return;speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Ready.');if(handsFree&&jarvisEntitled)setTimeout(()=>{if(runId===speechRunId)startListening()},320)};
+    utterance.onerror=()=>{if(runId!==speechRunId)return;speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Voice playback stopped.','bad')};
     speechSynthesis.speak(utterance);
   }
   function updateVoiceToggle(){const b=$('voice-toggle');b.setAttribute('aria-pressed',String(voiceOn));const label=voiceOn?'Turn voice replies off':'Turn voice replies on';b.setAttribute('aria-label',label);b.title=label;b.textContent=voiceOn?'🔊 Voice replies on':'🔇 Voice replies off'}
@@ -328,7 +333,7 @@ body,.shell{background:var(--bg)}
     text=String(text||'').trim();if(!text||busy)return;
     if(!accessChecked){setStatus('Checking Jarvis access…','good');return}
     if(!jarvisEntitled){showAccess(sessionToken()?'Jarvis Voice is included with Plus and Pro.':'Sign in to use Jarvis Voice.',sessionToken()?'/plans':'/app?signin=1',sessionToken()?'See plans →':'Open sign in →');setStatus('Jarvis access is required.','bad');return}
-    stopSpeech();addMessage('user',text);messages.push({role:'user',content:text});$('prompt').value='';resizePrompt();setBusy(true);setStatus('Thinking…','good');
+    stopSpeech();const userBubble=addMessage('user',text);messages.push({role:'user',content:text});$('prompt').value='';resizePrompt();setBusy(true);setStatus('Thinking…','good');
     const bubble=addMessage('assistant','');bubble.classList.add('typing');let full='';
     const requestController=new AbortController();pendingController=requestController;
     try{
@@ -345,7 +350,14 @@ body,.shell{background:var(--bg)}
         if(full.trim()){renderFormattedReply(bubble,full);bubble.parentElement?.querySelector('.copy-response')?.removeAttribute('hidden');messages.push({role:'assistant',content:full})}
         else bubble.parentElement?.parentElement?.remove();
         setStatus('Response stopped.');
-      }else{bubble.textContent=error.message||'Jarvis could not answer.';setStatus(error.message||'Jarvis could not answer.','bad')}
+      }else{
+        // Failed requests must not lose a user's prompt or pollute the next conversation.
+        if(!full.trim()){
+          messages.pop();userBubble.closest('.msg')?.remove();bubble.closest('.msg')?.remove();
+          if(!$('prompt').value.trim()){$('prompt').value=text;resizePrompt()}
+        }else{renderFormattedReply(bubble,full);bubble.parentElement?.querySelector('.copy-response')?.removeAttribute('hidden');messages.push({role:'assistant',content:full})}
+        setStatus((error.message||'Jarvis could not answer.')+' You can retry your message.','bad')
+      }
     }
     finally{if(pendingController===requestController)pendingController=null;setBusy(false)}
   }
@@ -355,7 +367,7 @@ body,.shell{background:var(--bg)}
     micAvailable=true;recognition=new Recognition();recognition.lang='en-GB';recognition.interimResults=true;recognition.continuous=false;
     let finalText='';
     recognition.onstart=()=>{finalText='';$('mic').classList.add('listening');$('mic').setAttribute('aria-pressed','true');$('mic').textContent='●';setStatus('Listening…','good')};
-    recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}$('prompt').value=(finalText||interim).trim()};
+    recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}$('prompt').value=(finalText||interim).trim();resizePrompt()};
     let recognitionFailed=false;
     recognition.onerror=e=>{recognitionFailed=true;if(e.error==='not-allowed'){handsFree=false;safeStorageSet('stellarJarvisHandsFree','0');updateHandsFreeToggle();setStatus('Microphone permission was denied. Enable microphone access in your browser to talk to Jarvis.','bad')}else if(e.error==='no-speech')setStatus('I did not hear anything. Try again when you are ready.','bad');else setStatus('Voice input stopped. Try again or type your message.','bad')};
     recognition.onend=()=>{$('mic').classList.remove('listening');$('mic').setAttribute('aria-pressed','false');$('mic').textContent='🎙';const spoken=finalText.trim();finalText='';if(spoken)sendMessage(spoken);else if(!busy&&!recognitionFailed)setStatus('Ready.');recognitionFailed=false};
@@ -366,7 +378,7 @@ body,.shell{background:var(--bg)}
   async function syncJarvisAccess(){
     accessChecked=false;jarvisEntitled=false;setBusy(false);
     const mode={textContent:'',classList:{add(){},remove(){}}};
-    if(!sessionToken()){mode.textContent='Sign in required';showAccess('Sign in to use Jarvis Voice.','/app?signin=1','Open sign in →');accessChecked=true;setBusy(false);return false}
+    if(!sessionToken()){mode.textContent='Sign in required';$('retry-access').hidden=true;showAccess('Sign in to use Jarvis Voice.','/app?signin=1','Open sign in →');accessChecked=true;setBusy(false);return false}
     try{
       const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+sessionToken()},cache:'no-store'});const d=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(d.error||'Could not verify Jarvis access.');
@@ -375,9 +387,9 @@ body,.shell{background:var(--bg)}
       if(owner){jarvisSource='jarvis-owner';jarvisEntitled=true;mode.textContent='Jarvis enabled'}
       else if(caps.voice===true||caps.enabled===true){jarvisSource='jarvis-public';jarvisEntitled=true;mode.textContent='Jarvis voice';mode.classList.remove('owner')}
       else{mode.textContent='Plus or Pro';showAccess('Jarvis Voice is included with Plus and Pro.','/plans','See plans →')}
-    }catch(error){mode.textContent='Access unavailable';showAccess(error.message||'Jarvis access could not be verified.','/app','Back to Stellar →')}
+    }catch(error){mode.textContent='Access unavailable';showAccess(error.message||'Jarvis access could not be verified.','/app','Back to Stellar →');$('retry-access').hidden=false}
     accessChecked=true;setBusy(false);
-    if(jarvisEntitled)$('signin').classList.remove('show');
+    if(jarvisEntitled){$('retry-access').hidden=true;$('signin').classList.remove('show')}
     return jarvisEntitled;
   }
   function resizePrompt(){const el=$('prompt');el.style.height='auto';el.style.height=Math.min(el.scrollHeight,168)+'px'}
@@ -388,6 +400,7 @@ voiceMenuButton.addEventListener('click',()=>{voicePanel.hidden=!voicePanel.hidd
 document.addEventListener('pointerdown',event=>{if(!voicePanel.hidden&&!voicePanel.contains(event.target)&&!voiceMenuButton.contains(event.target))closeVoicePanel()});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!voicePanel.hidden){closeVoicePanel();voiceMenuButton.focus()}});
 $('new-chat').addEventListener('click',()=>{closeVoicePanel();newChat()});
+$('retry-access').addEventListener('click',()=>syncJarvisAccess());
   $('prompt').addEventListener('input',resizePrompt);
   $('composer').addEventListener('submit',e=>{e.preventDefault();sendMessage($('prompt').value)});
   $('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&e.keyCode!==229){e.preventDefault();sendMessage($('prompt').value)}});
