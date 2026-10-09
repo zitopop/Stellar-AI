@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0b0b">
-<meta name="stellar-plugins-release" content="2026-10-09-no-token-google-v41">
+<meta name="stellar-plugins-release" content="2026-10-09-layout-v42">
 <title>Apps & Tools — Stellar AI</title>
 <meta name="description" content="Use built-in Stellar tools or connect apps such as Gmail when you need them. Clear permissions, simple controls and no hidden actions.">
 <link rel="canonical" href="https://trystellarai.com/plugins">
@@ -84,43 +84,114 @@ body{background:var(--bg);color:#f4f5f8}
 .token-box{border-color:rgba(255,255,255,.07);background:#12141a}
 .token-box label{color:#bbc0d0}
 @media(max-width:600px){.tool-card .card-actions{display:flex;flex-wrap:wrap}.tool-card .card-actions .btn{min-height:44px}}
+</style><style id="stellar-plugins-layout-v42">
+/* Compact, legible integrations UI. Live statuses still come from /api/plugins. */
+html{scroll-padding-top:88px}
+body{background:#090b10!important;color:#f5f6f9!important}
+.wrap{width:min(1100px,calc(100% - 40px))}
+.top{background:rgba(9,11,16,.95)!important;border-bottom-color:rgba(255,255,255,.065)!important}
+.nav{min-height:62px}
+.nav .brand{display:flex;align-items:center;gap:7px;font-size:15px;letter-spacing:-.025em}
+.nav .brand>span{display:grid;place-items:center;width:27px;height:27px;border:1px solid rgba(190,172,255,.25);border-radius:8px;color:#cbbcff;background:#221d34}
+.nav .brand em{font-style:normal;font-size:11px;font-weight:580;color:#929aa9;padding-left:10px;border-left:1px solid rgba(255,255,255,.12)}
+.nav-actions{align-items:center}
+.nav-actions .primary{border-radius:11px;background:#f6f6fa;color:#15151b}
+.hero{max-width:760px;padding:51px 0 20px}
+.hero .kicker{color:#b5a7ed!important;font-size:10px}
+.hero h1{max-width:680px;font-size:clamp(40px,5.5vw,64px);line-height:1.05;letter-spacing:-.053em}
+.hero p{max-width:620px;margin-top:13px;color:#adb4c1;font-size:15px;line-height:1.65}
+.hero-actions{margin-top:22px;gap:9px}
+.hero-actions .btn{min-height:44px}
+.hero-actions .btn.primary{background:#eee9ff;border-color:rgba(190,172,255,.45);color:#211934}
+.plugin-command{margin:13px 0 28px;border-color:rgba(183,164,255,.16);background:linear-gradient(110deg,rgba(145,117,233,.08),rgba(255,255,255,.008) 55%)}
+.plugin-command-head{padding:10px 17px;min-height:44px}
+.plugin-command-stats>div{padding:13px 18px}
+.plugin-command-stats strong{font-size:23px}
+.plugin-command-stats span{font-size:11px}
+.plugin-command-actions{min-height:46px;padding:10px 17px}
+.section{padding:32px 0;border-top-color:rgba(255,255,255,.07)}
+.section-head{margin-bottom:15px;align-items:center}
+.section-head h2{font-size:clamp(23px,3.4vw,31px);letter-spacing:-.035em}
+.section-head p{max-width:670px;margin-top:5px;color:#9da5b4;font-size:12.5px}
+.section-head .right{color:#a79bd8;font-weight:740}
+.plugin-toolbar{margin-bottom:12px}
+.plugin-search-wrap{min-width:0}
+.plugin-search{min-height:46px;background:#151821;border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#fff}
+.directory-filters{margin-bottom:12px}
+.directory-filter{min-height:42px;background:#151821;border-color:rgba(255,255,255,.09);font-weight:630}
+.directory-filter[aria-pressed="true"]{background:#eee9ff;color:#1b1530;border-color:#eee9ff}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tool-card{min-height:215px;padding:17px;background:#151820;border:1px solid rgba(255,255,255,.09);border-radius:15px;box-shadow:none;transform:none!important;transition:border-color .17s ease,background .17s ease}
+.tool-card:hover{background:#191d28;border-color:rgba(187,167,255,.34)}
+.tool-card h3{font-size:17px;letter-spacing:-.03em}
+.tool-card p{color:#a4acbb;font-size:12px}
+.tool-card .ico{width:41px;height:41px;min-width:41px;border-radius:12px;background:#242333;color:#d7caff}
+.tool-card .status{font-size:10px}
+.plugin-meta{margin-top:auto}
+.skills{gap:4px}
+.skills span{color:#abb0bf;font-size:10.5px}
+.card-actions{align-items:center;margin-top:10px}
+.card-actions .btn{font-weight:690}
+.plugin-advanced{flex:1 1 100%;padding:8px 0 0;border-top:1px solid rgba(255,255,255,.06)}
+.plugin-advanced summary{cursor:pointer;color:#aaa3c4;font-size:12px;font-weight:680;min-height:30px}
+.plugin-advanced p{margin:4px 0 9px!important;color:#969eab!important;font-size:11px!important;line-height:1.6!important}
+.plugin-advanced>.btn{background:#282235;border-color:rgba(190,165,255,.28);color:#f1ecff}
+.builtin-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.builtin{min-width:0;min-height:191px;padding:17px;border-radius:15px;background:#151820;border-color:rgba(255,255,255,.09)}
+.builtin h3{font-size:15px}
+.builtin p{font-size:12px;color:#a6aebb;line-height:1.65}
+.builtin a{font-size:12px;color:#cfc3ff}
+.plugin-guide{margin:27px 0;padding:0;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:#12151c;overflow:hidden}
+.plugin-guide>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:70px;padding:14px 19px;cursor:pointer;list-style:none}
+.plugin-guide>summary::-webkit-details-marker{display:none}
+.plugin-guide>summary>span:first-child{display:grid;gap:4px}
+.plugin-guide>summary strong{font-size:14px}
+.plugin-guide>summary small{font-size:12px;color:#999fac;line-height:1.5}
+.plugin-guide>summary>span:last-child{font-size:21px;color:#cfc5ff;transition:transform .15s}
+.plugin-guide[open]>summary>span:last-child{transform:rotate(180deg)}
+.plugin-guide-body{padding:8px 19px 18px;border-top:1px solid rgba(255,255,255,.065)}
+.plugin-guide-body p{color:#aeb4c1;font-size:12.5px;line-height:1.65}
+.plugin-guide-body strong{color:#f1effa}
+.control-grid article{background:#14171e;border-color:rgba(255,255,255,.075)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid #bba9ff!important;outline-offset:3px!important}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.builtin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.wrap{width:calc(100% - 28px)}.nav-actions>a:not(.primary){display:none}.hero{padding:38px 0 18px}.hero h1{font-size:clamp(37px,10.5vw,50px)}.hero p{font-size:14px}.grid,.builtin-grid{grid-template-columns:1fr}.section{padding:25px 0}.section-head{align-items:start;gap:8px}.section-head .right{font-size:11px}.tool-card{min-height:0}.builtin{min-height:0}.plugin-command-head span:last-child{margin-left:0!important}.plugin-command-stats>div{padding:12px 10px}.plugin-command-stats strong{font-size:21px}.plugin-command-stats span{font-size:10px}.plugin-guide{margin:18px 0}.hero-actions{flex-wrap:wrap}}
+@media(max-width:350px){.plugin-command-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.plugin-command-stats>div{padding:12px 7px}.plugin-command-stats span{font-size:9px}.nav .brand em{display:none}}
+@media(prefers-reduced-motion:reduce){.tool-card,.plugin-guide>summary>span:last-child{transition:none}}
 </style></head>
 <body>
-<header class="top"><nav class="wrap nav"><a class="brand" href="/">Stellar AI</a><div class="nav-actions"><a href="/plans">Plans</a><a href="/support">Help</a><a class="primary" href="/app">Back to chat</a></div></nav></header>
+<header class="top"><nav class="wrap nav"><a class="brand" href="/" aria-label="Stellar AI home"><span aria-hidden="true">✦</span> Stellar AI <em>Apps</em></a><div class="nav-actions"><a href="/plans">Plans</a><a href="/support">Help</a><a class="primary" href="/app">Open chat <span aria-hidden="true">↗</span></a></div></nav></header>
 <main class="wrap">
 <section class="hero">
-  <div class="kicker">Apps & tools</div>
-  <h1>Your AI. Your connected tools.</h1>
-  <p>Connect supported accounts, inspect their permissions and start useful work from one place. You stay in control of what Stellar can access.</p>
-  <div class="hero-actions"><a class="btn primary" href="#directory">Explore integrations</a><a class="btn" href="#connections">Manage connections</a><a class="btn" href="/jarvis">Open Jarvis ↗</a></div>
+  <div class="kicker">Stellar workspace / Integrations</div>
+  <h1>Tools that work with you.</h1>
+  <p>Use built-in tools instantly. Connect supported apps when you need them — with clear permissions and no surprise access.</p>
+  <div class="hero-actions"><a class="btn primary" href="#directory">Browse apps <span aria-hidden="true">↗</span></a><a class="btn" href="#connections">My connections</a></div>
 </section>
 <section class="plugin-command" aria-label="Connected app overview">
-  <div class="plugin-command-head"><span class="command-pulse" aria-hidden="true"></span><strong>Integration centre</strong><span id="plugin-command-status" role="status" aria-live="polite">Checking app catalogue…</span></div>
+  <div class="plugin-command-head"><span class="command-pulse" aria-hidden="true"></span><strong>Connection status</strong><span id="plugin-command-status" role="status" aria-live="polite">Checking availability…</span></div>
   <div class="plugin-command-stats">
     <div><strong id="plugin-overview-connected">—</strong><span>Connected</span></div>
-    <div><strong id="plugin-overview-ready">—</strong><span>Available to connect</span></div>
+    <div><strong id="plugin-overview-ready">—</strong><span>Connectable now</span></div>
     <div><strong id="plugin-overview-planned">—</strong><span>Coming soon</span></div>
   </div>
   <div class="plugin-command-actions" id="plugin-quick-actions" aria-label="Connected app shortcuts"><p>Sign in and connect a supported app to see your shortcuts here.</p></div>
 </section>
 
-<section class="explain" aria-label="How apps and tools work">
-  <article><small><span class="dot good"></span>BUILT IN</small><strong>Works straight away</strong><p>No setup. Open the tool and use it.</p></article>
-  <article><small><span class="dot connect"></span>CONNECTED APPS</small><strong>You approve access</strong><p>Connect only when you want Stellar to use one of your accounts.</p></article>
-</section>
-
-<section class="section" id="how-connect">
-  <div class="section-head"><div><h2>How connecting works</h2><p>Where Google sign-in is available, connect without creating an API token. Advanced developer integrations may still need owner setup.</p></div><span class="right">3 simple steps</span></div>
-  <div class="grid guide-steps">
-    <article class="tool-card"><div class="tool-top"><div class="ico">1</div></div><h3>Choose an app</h3><p>Find the app you want Stellar to work with and tap <strong>Connect</strong>.</p></article>
-    <article class="tool-card"><div class="tool-top"><div class="ico">2</div></div><h3>Approve access</h3><p>Approve the permissions in your provider's secure window. Developer setup is only shown when one-click linking is unavailable.</p></article>
-    <article class="tool-card"><div class="tool-top"><div class="ico">3</div></div><h3>Use or disconnect</h3><p>Connected apps appear in <strong>My connections</strong>. Pause or disconnect whenever you choose.</p></article>
+<section class="section" id="browse-tools">
+  <div class="section-head"><div><h2>Start without connecting anything.</h2><p>Work with these built-in tools straight away.</p></div><span class="right">No token required</span></div>
+  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="search" type="search" placeholder="Search tools…" aria-label="Search tools"><button class="clear-search" id="clear-search" type="button" hidden>Clear</button></div><span class="tool-count" id="tool-count" aria-live="polite">4 tools</span></div>
+  <div class="builtin-grid">
+    <article class="builtin" data-browse-tool data-search="files documents upload pdf notes summarise rewrite compare"><div class="ico">▣</div><h3>Files & documents</h3><p>Upload files and ask Stellar to explain, compare, summarise or rewrite them.</p><a href="/app?prompt=Help%20me%20work%20with%20a%20file%20or%20document.">Use in chat →</a></article>
+    <article class="builtin" data-browse-tool data-search="code scripts fivem roblox web errors debugging"><div class="ico">⌘</div><h3>Code & scripts</h3><p>Fix code, explain errors and work on FiveM, Roblox and web projects.</p><a href="/script-generator-hub">Open code tools →</a></article>
+    <article class="builtin" data-browse-tool data-search="website pages layouts web design fixes"><div class="ico">↗</div><h3>Website work</h3><p>Improve pages, check layouts and prepare safer website changes.</p><a href="/app?prompt=Help%20me%20improve%20my%20website.">Ask Stellar →</a></article>
+    <article class="builtin" data-browse-tool data-search="stellarx desktop computer tasks automation files terminal"><div class="ico">▰</div><span class="status ready">Beta</span><h3>StellarX desktop tasks</h3><p>Work on an approved computer or project with inspection and approval controls.</p><a href="/desktop">Open StellarX</a></article>
   </div>
 </section>
 
 <section class="section" id="directory">
-  <div class="section-head"><div><h2>Choose an app</h2><p>Connect the apps you already use. Stellar will show one clear next step for each app.</p></div><span class="right" id="directory-count">Loading…</span></div>
-  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search apps…" aria-label="Search plugins"><button class="clear-search" id="clear-directory-search" type="button" hidden>Clear</button></div><span class="tool-count">Apps & workflows</span></div>
+  <div class="section-head"><div><h2>Connect an app</h2><p>Look for <strong>Connect</strong> or <strong>Connect with Google</strong>. Apps that still need developer setup are clearly marked.</p></div><span class="right" id="directory-count">Loading…</span></div>
+  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search apps…" aria-label="Search plugins"><button class="clear-search" id="clear-directory-search" type="button" hidden>Clear</button></div><span class="tool-count">Live availability</span></div>
   <div class="directory-filters" role="group" aria-label="Filter apps">
     <button type="button" class="directory-filter" data-directory-filter="all" aria-pressed="true">All apps</button>
     <button type="button" class="directory-filter" data-directory-filter="connected" aria-pressed="false">Connected</button>
@@ -133,21 +204,19 @@ body{background:var(--bg);color:#f4f5f8}
 </section>
 
 <section class="section" id="connections">
-  <div class="section-head"><div><h2>My connections</h2><p>Only apps connected to your account appear here. Pause or disconnect them at any time.</p></div><span class="right" id="connection-count">0 connected</span></div>
+  <div class="section-head"><div><h2>My connections</h2><p>Review access and pause or disconnect linked accounts.</p></div><span class="right" id="connection-count">0 connected</span></div>
   <div id="plugin-account-status" class="notice"><strong>Sign in to manage apps</strong>Your connected apps will appear here.<br><a class="btn primary" href="/app?signin=1">Sign in</a></div>
   <div class="grid" id="plugin-account-grid" aria-live="polite"></div>
 </section>
 
-<section class="section" id="browse-tools">
-  <div class="section-head"><div><h2>Ready without setup</h2><p>These tools already work in Stellar. Just open one and start.</p></div><span class="right">No setup needed</span></div>
-  <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="search" type="search" placeholder="Search tools…" aria-label="Search tools"><button class="clear-search" id="clear-search" type="button" hidden>Clear</button></div><span class="tool-count" id="tool-count" aria-live="polite">4 tools</span></div>
-  <div class="builtin-grid">
-    <article class="builtin" data-browse-tool data-search="files documents upload pdf notes summarise rewrite compare"><div class="ico">▣</div><h3>Files & documents</h3><p>Upload files and ask Stellar to explain, compare, summarise or rewrite them.</p><a href="/app?prompt=Help%20me%20work%20with%20a%20file%20or%20document.">Use in chat →</a></article>
-    <article class="builtin" data-browse-tool data-search="code scripts fivem roblox web errors debugging"><div class="ico">⌘</div><h3>Code & scripts</h3><p>Fix code, explain errors and work on FiveM, Roblox and web projects.</p><a href="/script-generator-hub">Open code tools →</a></article>
-    <article class="builtin" data-browse-tool data-search="website pages layouts web design fixes"><div class="ico">↗</div><h3>Website work</h3><p>Improve pages, check layouts and prepare safer website changes.</p><a href="/app?prompt=Help%20me%20improve%20my%20website.">Ask Stellar →</a></article>
-    <article class="builtin" data-browse-tool data-search="stellarx desktop computer tasks automation files terminal"><div class="ico">▰</div><span class="status ready">Beta</span><h3>StellarX desktop tasks</h3><p>Work on an approved computer or project with inspection and approval controls.</p><a href="/desktop">Open StellarX</a></article>
+<details class="plugin-guide" id="how-connect">
+  <summary><span><strong>How connections work</strong><small>Choose an app, approve permissions, and disconnect whenever you want.</small></span><span aria-hidden="true">⌄</span></summary>
+  <div class="plugin-guide-body">
+    <p><strong>1 · Choose an app.</strong> Open a supported connection from the directory.</p>
+    <p><strong>2 · Approve access.</strong> Continue through the provider's own secure sign-in screen. If no sign-in option is available, the integration requires developer setup and cannot be linked automatically.</p>
+    <p><strong>3 · Stay in control.</strong> Manage, pause or disconnect the app under My connections. Gmail's short-lived connection may need periodic reconnection.</p>
   </div>
-</section>
+</details>
 
 <section class="section" id="plugin-safety">
   <div class="section-head"><div><h2>You are always in control</h2><p>Stellar shows what an app can access before you connect it. You can disconnect at any time.</p></div></div>
@@ -238,7 +307,7 @@ function renderDirectory(plugins,{signedOut=false}={}){
     const status=document.createElement('span');const coming=plugin.status==='coming_soon';
     const paused=plugin.connected&&!plugin.enabled;
     status.className='status '+(paused?'paused':plugin.connected||plugin.enabled?'ready':coming?'soon':'connect');
-    status.textContent=coming?'Coming soon':paused?'Paused':plugin.connected?'Connected':signedOut?'Sign in to check':plugin.enabled?'Ready':plugin.oauthAvailable?'Available':plugin.browserOAuthAvailable?'Google sign-in':plugin.oauthStatus?.tokenFallback?'Developer setup':'Unavailable';
+    status.textContent=coming?'Coming soon':paused?'Paused':plugin.connected?'Connected':signedOut?'Sign in to check':plugin.enabled?'Ready':plugin.oauthAvailable?'Connect available':plugin.browserOAuthAvailable?'Google sign-in':plugin.oauthStatus?.tokenFallback?'Setup needed':'Not configured';
     top.append(icon,status);
     const title=document.createElement('h3');title.textContent=plugin.name;const desc=document.createElement('p');desc.textContent=plugin.description;
     const meta=document.createElement('div');meta.className='plugin-meta';const cat=document.createElement('span');cat.textContent=plugin.category||'Plugin';meta.append(cat);if(plugin.verified){const v=document.createElement('span');v.textContent='Verified';meta.append(v)}
@@ -261,7 +330,11 @@ function renderDirectory(plugins,{signedOut=false}={}){
       note.textContent='Secure Google sign-in. No developer token needed. This connection is temporary and may need reconnecting.';
       actions.append(note);
     }else if(plugin.oauthStatus?.tokenFallback){
-      actions.append(pluginButton('Developer setup','show-token',plugin.id,true));
+      const advanced=document.createElement('details');advanced.className='plugin-advanced';
+      const summary=document.createElement('summary');summary.textContent='Advanced developer setup';
+      const info=document.createElement('p');info.textContent='Automatic sign-in is not configured for this integration. An authorised developer may connect a provider token here; do not paste passwords or secrets into chat.';
+      advanced.append(summary,info,pluginButton('Enter provider token','show-token',plugin.id));
+      actions.append(advanced);
     }else if(plugin.installable&&!coming&&!plugin.connection){
       actions.append(pluginButton('Turn on','install',plugin.id,true));
     }else{
@@ -387,7 +460,11 @@ function renderConnectedApps(data){
     }else if(plugin.browserOAuthAvailable){
       actions.append(pluginButton('Connect with Google','browser-oauth',plugin.id,true));
     }else if(plugin.oauthStatus?.tokenFallback){
-      actions.append(pluginButton('Advanced setup','show-token',plugin.id));
+      const advanced=document.createElement('details');advanced.className='plugin-advanced';
+      const summary=document.createElement('summary');summary.textContent='Advanced developer setup';
+      const info=document.createElement('p');info.textContent='This connection cannot use one-click sign-in yet. A developer may provide their provider token.';
+      advanced.append(summary,info,pluginButton('Enter provider token','show-token',plugin.id));
+      actions.append(advanced);
     }else if(plugin.installable&&!plugin.connection){
       actions.append(pluginButton(plugin.enabled?'Enabled':'Turn on','install',plugin.id,true));
     }
