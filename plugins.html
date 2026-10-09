@@ -243,7 +243,7 @@ function applyDirectorySearch(){
     const matchesQuery=!q||String(card.dataset.search||'').includes(q);
     const matchesFilter=directoryFilter==='all'
       ||(directoryFilter==='connected'&&plugin?.connected)
-      ||(directoryFilter==='supported'&&plugin?.status!=='coming_soon'&&Boolean(plugin?.connected||plugin?.enabled||plugin?.oauthAvailable||plugin?.installable&&!plugin?.connection||plugin?.browserOAuthAvailable||plugin?.oauthStatus?.tokenFallback))
+      ||(directoryFilter==='supported'&&plugin?.status!=='coming_soon'&&Boolean(plugin?.connected||plugin?.enabled||plugin?.oauthAvailable||plugin?.browserOAuthAvailable||plugin?.installable&&!plugin?.connection))
       ||(directoryFilter==='planned'&&plugin?.status==='coming_soon');
     const visible=matchesQuery&&matchesFilter;
     card.classList.toggle('browse-hidden',!visible);
@@ -253,7 +253,7 @@ function applyDirectorySearch(){
   if(clearDirectorySearch)clearDirectorySearch.hidden=!q;
   if(directoryEmpty){
     directoryEmpty.hidden=shown!==0;
-    directoryEmpty.textContent=q?'No apps match your search. Try another name.':directoryFilter==='connected'?'No connected apps yet. Browse apps to connect one.':directoryFilter==='supported'?'No apps can be connected with the current setup.':'No apps in this category yet.';
+    directoryEmpty.textContent=q?'No apps match your search. Try another name.':directoryFilter==='connected'?'No connected apps yet. Browse apps to connect one.':directoryFilter==='supported'?'No apps are ready for one-click connection yet. Built-in tools above do not need an account link.':'No apps in this category yet.';
   }
 }
 directoryFilters.forEach(button=>button.addEventListener('click',()=>{
@@ -266,7 +266,7 @@ clearDirectorySearch?.addEventListener('click',()=>{directorySearch.value='';dir
 function updatePluginOverview(plugins,signedOut=false){
   const all=Array.isArray(plugins)?plugins:[];
   const connected=all.filter(app=>app.connected===true);
-  const available=all.filter(app=>app.status!=='coming_soon'&&!app.connected&&(app.oauthAvailable||app.browserOAuthAvailable||app.oauthStatus?.tokenFallback||app.installable&&!app.connection));
+  const available=all.filter(app=>app.status!=='coming_soon'&&!app.connected&&(app.oauthAvailable||app.browserOAuthAvailable||app.installable&&!app.connection));
   const planned=all.filter(app=>app.status==='coming_soon');
   const connectedLabel=document.getElementById('plugin-overview-connected');
   const availableLabel=document.getElementById('plugin-overview-ready');
