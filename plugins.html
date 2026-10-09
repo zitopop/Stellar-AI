@@ -30,6 +30,18 @@
 </style>
 <style id="stellar-plugins-polish-v36">
 .plugin-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:14px 0 18px}.plugin-search-wrap{position:relative;min-width:0}.plugin-search{width:100%;min-height:44px;border:1px solid var(--line2);border-radius:12px;background:#0f0f0f;color:#fff;padding:0 72px 0 13px;outline:0}.plugin-search:focus{border-color:rgba(90,167,255,.5)}.clear-search{position:absolute;right:6px;top:6px;min-height:32px;border:0;border-radius:999px;background:#242424;color:#bbb;padding:0 10px;font-size:11px;font-weight:800}.tool-count{color:#858585;font-size:11px;font-weight:800;white-space:nowrap}.plugin-meta,.plugin-permissions{display:flex;gap:6px;flex-wrap:wrap}.plugin-meta span,.plugin-permissions span{min-height:24px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid var(--line);border-radius:999px;color:#aaa;font-size:10px}.plugin-permissions span.high{color:#efc0c0}.browse-hidden{display:none!important}@media(max-width:680px){.plugin-toolbar{grid-template-columns:1fr}.tool-count{justify-self:start}}
+
+/* Accessible, compact plugin filters and empty states. */
+.directory-filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:0 0 16px;padding:1px 0 6px}
+.directory-filters::-webkit-scrollbar{display:none}
+.directory-filter{min-height:44px;border:1px solid var(--line2);border-radius:999px;padding:0 15px;background:#151515;color:#b5b5b5;font-size:12px;font-weight:800;white-space:nowrap}
+.directory-filter[aria-pressed="true"]{background:#f2f2f2;color:#111;border-color:#f2f2f2}
+.directory-filter:focus-visible,.btn:focus-visible,.clear-search:focus-visible,.plugin-search:focus-visible,.access summary:focus-visible{outline:2px solid #88bcff;outline-offset:3px}
+.directory-empty{grid-column:1/-1;padding:22px;border:1px solid var(--line);border-radius:16px;color:#b7b7b7;background:#121212}
+.status.paused{color:#e7ca83;border-color:rgba(231,202,131,.3)}
+.guide-steps .tool-card{min-height:160px;gap:7px}
+@media(max-width:680px){.directory-filters{margin-inline:-2px}.directory-filter{padding-inline:14px}.guide-steps .tool-card{min-height:0}}
+@media(prefers-reduced-motion:reduce){.tool-card{transition:none}.tool-card:hover{transform:none}}
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
 <link rel="stylesheet" href="/stellar-brand-system-v1.css?v=20261005-1">
@@ -52,7 +64,7 @@
 
 <section class="section" id="how-connect">
   <div class="section-head"><div><h2>Connect in seconds</h2><p>No API keys or technical setup for normal connections.</p></div><span class="right">3 simple steps</span></div>
-  <div class="grid">
+  <div class="grid guide-steps">
     <article class="tool-card"><div class="tool-top"><div class="ico">1</div></div><h3>Choose an app</h3><p>Find the app you want Stellar to work with and tap <strong>Connect</strong>.</p></article>
     <article class="tool-card"><div class="tool-top"><div class="ico">2</div></div><h3>Sign in securely</h3><p>Sign in on the app provider's own page and approve the access shown to you.</p></article>
     <article class="tool-card"><div class="tool-top"><div class="ico">3</div></div><h3>Use it with Stellar</h3><p>You return to Stellar with the app marked <strong>Connected</strong>. Then use it from chat or its workflow.</p></article>
@@ -62,7 +74,14 @@
 <section class="section" id="directory">
   <div class="section-head"><div><h2>Choose an app</h2><p>Connect the apps you already use. Stellar will show one clear next step for each app.</p></div><span class="right" id="directory-count">Loading…</span></div>
   <div class="plugin-toolbar"><div class="plugin-search-wrap"><input class="plugin-search" id="directory-search" type="search" placeholder="Search apps…" aria-label="Search plugins"><button class="clear-search" id="clear-directory-search" type="button" hidden>Clear</button></div><span class="tool-count">Apps & workflows</span></div>
+  <div class="directory-filters" role="group" aria-label="Filter apps">
+    <button type="button" class="directory-filter" data-directory-filter="all" aria-pressed="true">All apps</button>
+    <button type="button" class="directory-filter" data-directory-filter="connected" aria-pressed="false">Connected</button>
+    <button type="button" class="directory-filter" data-directory-filter="supported" aria-pressed="false">Supported</button>
+    <button type="button" class="directory-filter" data-directory-filter="planned" aria-pressed="false">Coming soon</button>
+  </div>
   <div class="grid" id="plugin-directory" aria-live="polite"></div>
+  <div class="directory-empty" id="directory-empty" role="status" hidden>No apps match this search.</div>
 </section>
 
 <section class="section" id="connections">
@@ -96,24 +115,76 @@
 <script>
 const directorySearch=document.getElementById('directory-search'),directoryGrid=document.getElementById('plugin-directory'),directoryCount=document.getElementById('directory-count'),clearDirectorySearch=document.getElementById('clear-directory-search');
 let directoryPlugins=[];
-function applyDirectorySearch(){const q=String(directorySearch?.value||'').trim().toLowerCase();let shown=0;[...directoryGrid.querySelectorAll('[data-directory-plugin]')].forEach(card=>{const visible=!q||String(card.dataset.search||'').includes(q);card.classList.toggle('browse-hidden',!visible);if(visible)shown++});if(directoryCount)directoryCount.textContent=shown+' plugin'+(shown===1?'':'s');if(clearDirectorySearch)clearDirectorySearch.hidden=!q}
-directorySearch?.addEventListener('input',applyDirectorySearch);clearDirectorySearch?.addEventListener('click',()=>{directorySearch.value='';directorySearch.focus();applyDirectorySearch()});
-function renderDirectory(plugins){
+const directoryEmpty=document.getElementById('directory-empty');
+const directoryFilters=[...document.querySelectorAll('[data-directory-filter]')];
+let directoryFilter='all';
+function applyDirectorySearch(){
+  const q=String(directorySearch?.value||'').trim().toLowerCase();
+  let shown=0;
+  [...directoryGrid.querySelectorAll('[data-directory-plugin]')].forEach(card=>{
+    const plugin=directoryPlugins.find(item=>item.id===card.dataset.directoryPlugin);
+    const matchesQuery=!q||String(card.dataset.search||'').includes(q);
+    const matchesFilter=directoryFilter==='all'
+      ||(directoryFilter==='connected'&&plugin?.connected)
+      ||(directoryFilter==='supported'&&plugin?.status!=='coming_soon')
+      ||(directoryFilter==='planned'&&plugin?.status==='coming_soon');
+    const visible=matchesQuery&&matchesFilter;
+    card.classList.toggle('browse-hidden',!visible);
+    if(visible)shown++;
+  });
+  if(directoryCount)directoryCount.textContent=shown+' app'+(shown===1?'':'s');
+  if(clearDirectorySearch)clearDirectorySearch.hidden=!q;
+  if(directoryEmpty){
+    directoryEmpty.hidden=shown!==0;
+    directoryEmpty.textContent=q?'No apps match your search. Try another name.':'No apps in this category yet.';
+  }
+}
+directoryFilters.forEach(button=>button.addEventListener('click',()=>{
+  directoryFilter=button.dataset.directoryFilter||'all';
+  directoryFilters.forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
+  applyDirectorySearch();
+}));
+directorySearch?.addEventListener('input',applyDirectorySearch);
+clearDirectorySearch?.addEventListener('click',()=>{directorySearch.value='';directorySearch.focus();applyDirectorySearch()});
+function renderDirectory(plugins,{signedOut=false}={}){
   directoryPlugins=Array.isArray(plugins)?plugins:[];
   directoryGrid.textContent='';
+  const connectedFilter=directoryFilters.find(button=>button.dataset.directoryFilter==='connected');
+  if(connectedFilter)connectedFilter.hidden=signedOut;
+  if(signedOut&&directoryFilter==='connected'){
+    directoryFilter='all';
+    directoryFilters.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.directoryFilter==='all')));
+  }
   directoryPlugins.forEach(plugin=>{
     const card=document.createElement('article');card.className='tool-card';card.dataset.directoryPlugin=plugin.id;card.dataset.search=(String(plugin.name||'')+' '+String(plugin.description||'')+' '+String(plugin.category||'')+' '+(plugin.skills||[]).join(' ')).toLowerCase();
     const top=document.createElement('div');top.className='tool-top';const icon=document.createElement('div');icon.className='ico';icon.textContent=iconFor(plugin.id);
-    const status=document.createElement('span');const coming=plugin.status==='coming_soon';status.className='status '+(plugin.connected?'ready':coming?'soon':'connect');status.textContent=plugin.connected?'Connected':plugin.enabled?'Ready':coming?'Coming soon':'Connect';top.append(icon,status);
+    const status=document.createElement('span');const coming=plugin.status==='coming_soon';
+    const paused=plugin.connected&&!plugin.enabled;
+    status.className='status '+(paused?'paused':plugin.connected||plugin.enabled?'ready':coming?'soon':'connect');
+    status.textContent=coming?'Coming soon':paused?'Paused':plugin.connected?'Connected':signedOut?'Sign in to check':plugin.enabled?'Ready':plugin.oauthAvailable?'Available':plugin.oauthStatus?.tokenFallback?'Advanced setup':'Unavailable';
+    top.append(icon,status);
     const title=document.createElement('h3');title.textContent=plugin.name;const desc=document.createElement('p');desc.textContent=plugin.description;
     const meta=document.createElement('div');meta.className='plugin-meta';const cat=document.createElement('span');cat.textContent=plugin.category||'Plugin';meta.append(cat);if(plugin.verified){const v=document.createElement('span');v.textContent='Verified';meta.append(v)}
     const skills=document.createElement('div');skills.className='skills';(plugin.skills||[]).slice(0,3).forEach(x=>{const s=document.createElement('span');s.textContent=x;skills.append(s)});
     const actions=document.createElement('div');actions.className='card-actions';
-    if(plugin.enabled&&plugin.route&&!plugin.connection){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open tool';actions.append(a)}
-    else if(plugin.connected){if(plugin.route){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open';actions.append(a)}if(plugin.enabled){const use=useAppLink(plugin.id);if(use)actions.append(use)}const manage=document.createElement('a');manage.className='btn';manage.href='#connections';manage.textContent='Manage';actions.append(manage)}
-    else if(plugin.oauthAvailable)actions.append(pluginButton(plugin.connectLabel||'Connect','oauth',plugin.id,true));
-    else if(plugin.installable&&!coming)actions.append(pluginButton(plugin.connection?(plugin.connectLabel||'Connect'):'Turn on','install',plugin.id,true));
-    else {const b=document.createElement('button');b.className='btn';b.disabled=true;b.textContent=coming?'Coming soon':'Not available';actions.append(b)}
+    if(signedOut&&!coming){
+      const signIn=document.createElement('a');signIn.className='btn primary';signIn.href='/app?signin=1';signIn.textContent='Sign in to connect';actions.append(signIn);
+    }else if(plugin.enabled&&plugin.route&&!plugin.connection){
+      const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open tool';actions.append(a);
+    }else if(plugin.connected){
+      if(plugin.route&&plugin.enabled){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open';actions.append(a)}
+      if(plugin.enabled){const use=useAppLink(plugin.id);if(use)actions.append(use)}
+      if(!plugin.enabled)actions.append(pluginButton('Resume','resume',plugin.id,true));
+      const manage=document.createElement('a');manage.className='btn';manage.href='#connections';manage.textContent='Manage';actions.append(manage);
+    }else if(plugin.oauthAvailable){
+      actions.append(pluginButton(plugin.connectLabel||'Connect','oauth',plugin.id,true));
+    }else if(plugin.oauthStatus?.tokenFallback){
+      actions.append(pluginButton('Advanced setup','show-token',plugin.id,true));
+    }else if(plugin.installable&&!coming&&!plugin.connection){
+      actions.append(pluginButton('Turn on','install',plugin.id,true));
+    }else{
+      const unavailable=document.createElement('span');unavailable.className='status';unavailable.textContent=coming?'Not available yet':'Setup not available';actions.append(unavailable);
+    }
     card.append(top,title,desc,meta,skills,actions);directoryGrid.append(card)
   });applyDirectorySearch()
 }
@@ -189,8 +260,8 @@ function renderConnectedApps(data){
     const top=document.createElement('div');top.className='tool-top';
     const icon=document.createElement('div');icon.className='ico';icon.textContent=iconFor(plugin.id);
     const status=document.createElement('span');
-    status.className='status '+(plugin.connected?'ready':'connect');
-    status.textContent=plugin.connected?'Connected':'Ready to connect';
+    status.className='status '+(plugin.connected?(plugin.enabled?'ready':'paused'):'connect');
+    status.textContent=plugin.connected?(plugin.enabled?'Connected':'Paused'):plugin.oauthAvailable?'Ready to connect':plugin.oauthStatus?.tokenFallback?'Advanced setup':'Not available';
     top.append(icon,status);
 
     const title=document.createElement('h3');title.textContent=String(plugin.name||plugin.id||'App');
@@ -212,7 +283,8 @@ function renderConnectedApps(data){
       if(plugin.route&&plugin.enabled){const open=document.createElement('a');open.className='btn primary';open.href=plugin.route;open.textContent='Open';actions.append(open)}
       if(plugin.enabled){const use=useAppLink(plugin.id);if(use)actions.append(use)}
       if(plugin.inspectable&&plugin.enabled)actions.append(pluginButton('View data','inspect',plugin.id));
-      if(!plugin.enabled)actions.append(pluginButton('Enable','install',plugin.id,true));
+      if(!plugin.enabled)actions.append(pluginButton('Resume','resume',plugin.id,true));
+      else actions.append(pluginButton('Pause','pause',plugin.id));
       actions.append(pluginButton('Disconnect','disconnect',plugin.id));
     }else if(plugin.oauthAvailable){
       actions.append(pluginButton('Connect','oauth',plugin.id,true));
@@ -227,8 +299,8 @@ function renderConnectedApps(data){
 
     if(!plugin.connected&&plugin.oauthStatus?.tokenFallback){
       const box=document.createElement('div');box.className='token-box';box.hidden=true;box.dataset.tokenBox=plugin.id;
-      const label=document.createElement('label');label.textContent='Developer access token';
-      const input=document.createElement('input');input.type='password';input.autocomplete='off';input.spellcheck=false;input.placeholder='Paste token here';input.dataset.tokenInput=plugin.id;
+      const label=document.createElement('label');label.textContent='Developer access token';label.htmlFor='plugin-token-'+plugin.id;
+      const input=document.createElement('input');input.id='plugin-token-'+plugin.id;input.type='password';input.autocomplete='off';input.spellcheck=false;input.placeholder='Paste token here';input.dataset.tokenInput=plugin.id;
       const connect=pluginButton('Connect token','connect-token',plugin.id,true);
       box.append(label,input,connect);card.append(box);
     }
@@ -236,13 +308,41 @@ function renderConnectedApps(data){
   });
 }
 async function loadConnectedApps(){
-  if(!sessionToken()){if(connectionCount)connectionCount.textContent='0 connected';if(directoryCount)directoryCount.textContent='Sign in to view';if(directoryGrid)directoryGrid.innerHTML='<div class="notice"><strong>Sign in to discover plugins</strong>Your available plugins and connection options are personalised to your account.</div>';showNotice('Sign in to manage apps','Your connected apps will appear here.');const link=document.createElement('a');link.className='btn primary';link.href='/app?signin=1';link.textContent='Sign in';accountStatus.append(document.createElement('br'),link);return}
+  if(!sessionToken()){
+    if(connectionCount)connectionCount.textContent='Sign in required';
+    accountGrid.textContent='';
+    showNotice('Sign in to manage apps','Your connected apps will appear here.');
+    const link=document.createElement('a');link.className='btn primary';link.href='/app?signin=1';link.textContent='Sign in';
+    accountStatus.append(document.createElement('br'),link);
+    if(directoryCount)directoryCount.textContent='Loading apps…';
+    try{
+      const response=await fetch('/api/plugins?action=publicCatalog',{cache:'no-store'});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!Array.isArray(data.plugins))throw new Error('Public catalogue unavailable');
+      renderDirectory(data.plugins,{signedOut:true});
+    }catch{
+      directoryGrid.textContent='';
+      if(directoryCount)directoryCount.textContent='Sign in to explore';
+      if(directoryEmpty){directoryEmpty.hidden=false;directoryEmpty.textContent='Could not load apps. Sign in to see your available connections.'}
+    }
+    return;
+  }
   showNotice('Checking your apps','Loading your connections…');
-  try{const data=await pluginApi('list');renderDirectory(data.plugins);renderConnectedApps(data)}catch(error){showNotice('Could not load apps',error.message||'Try again shortly.');if(directoryGrid)directoryGrid.innerHTML='<div class="notice"><strong>Sign in to browse account plugins</strong>Available integrations for your account will appear after sign-in.</div>'}
+  try{
+    const data=await pluginApi('list');
+    renderDirectory(data.plugins);
+    renderConnectedApps(data);
+  }catch(error){
+    showNotice('Could not load apps',error.message||'Try again shortly.');
+    directoryGrid.textContent='';
+    if(directoryCount)directoryCount.textContent='Unavailable';
+    if(directoryEmpty){directoryEmpty.hidden=false;directoryEmpty.textContent='Could not load your apps. Refresh the page to try again.'}
+  }
 }
 async function pluginAction(button){
   const id=button.dataset.pluginId,action=button.dataset.pluginAction;if(!id||!action)return;
-  if(action==='show-token'){const box=accountGrid.querySelector('[data-token-box="'+CSS.escape(id)+'"]');if(box){box.hidden=!box.hidden;if(!box.hidden)box.querySelector('input')?.focus()}return}
+  if(action==='show-token'){const box=accountGrid.querySelector('[data-token-box="'+CSS.escape(id)+'"]');if(box){box.hidden=!box.hidden;if(!box.hidden){document.getElementById('connections')?.scrollIntoView({behavior:'smooth',block:'start'});box.querySelector('input')?.focus()}}return}
+  if(action==='disconnect'&&!window.confirm('Disconnect this app from Stellar AI? You can reconnect it later.'))return;
   button.disabled=true;
   try{
     if(action==='oauth'){
@@ -251,6 +351,7 @@ async function pluginAction(button){
     if(action==='connect-token'){
       const input=accountGrid.querySelector('[data-token-input="'+CSS.escape(id)+'"]');const token=String(input?.value||'').trim();if(!token)throw new Error('Paste the developer token first.');await pluginApi('connectToken',{id,token});if(input)input.value='';
     }else if(action==='disconnect')await pluginApi('disconnect',{id});
+    else if(action==='pause'||action==='resume')await pluginApi('setEnabled',{id,enabled:action==='resume'});
     else if(action==='install'){
       const result=await pluginApi('install',{id});if(result?.needsConnection)throw new Error('This app needs a connection before it can be turned on.');
     }else if(action==='inspect'){
