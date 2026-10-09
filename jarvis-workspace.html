@@ -297,7 +297,7 @@ body,.shell{background:var(--bg)}
     utterance.onerror=()=>{speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Voice playback stopped.','bad')};
     speechSynthesis.speak(utterance);
   }
-  function updateVoiceToggle(){const b=$('voice-toggle');b.setAttribute('aria-pressed',String(voiceOn));const label=voiceOn?'Turn voice replies off':'Turn voice replies on';b.setAttribute('aria-label',label);b.title=label;b.textContent=voiceOn?'🔊 Voice replies on':'🔇 Voice replies off'
+  function updateVoiceToggle(){const b=$('voice-toggle');b.setAttribute('aria-pressed',String(voiceOn));const label=voiceOn?'Turn voice replies off':'Turn voice replies on';b.setAttribute('aria-label',label);b.title=label;b.textContent=voiceOn?'🔊 Voice replies on':'🔇 Voice replies off'}
   function updateHandsFreeToggle(){const b=$('handsfree-toggle');b.setAttribute('aria-pressed',String(handsFree));b.textContent=handsFree?'Hands-free on':'Hands-free off'}
   function parseEvent(raw){
     try{const e=JSON.parse(raw);return e?.delta?.text||e?.text||e?.content_block?.text||e?.message?.content?.[0]?.text||(typeof e?.choices?.[0]?.delta?.content==='string'?e.choices[0].delta.content:'')||''}catch{return ''}
