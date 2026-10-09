@@ -1,0 +1,42 @@
+name: Stellar plugin app checks
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'api/chat.js'
+      - 'lib/plugin-*'
+      - 'plugins.html'
+      - 'tests/plugin-*.test.mjs'
+      - '.github/workflows/plugin-app-checks.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/chat.js'
+      - 'lib/plugin-*'
+      - 'plugins.html'
+      - 'tests/plugin-*.test.mjs'
+      - '.github/workflows/plugin-app-checks.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  plugins:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Syntax-check plugin backend
+        run: |
+          node --check api/chat.js
+          node --check lib/plugin-manager-handler.js
+          node --check lib/plugin-chat-context.js
+          node --check lib/plugin-providers.js
+      - name: Run focused plugin integration tests
+        run: node --test tests/plugin-system.test.mjs tests/plugin-oauth-readiness.test.mjs tests/plugin-app-usage.test.mjs
