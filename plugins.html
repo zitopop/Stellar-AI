@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0b0b">
+<meta name="stellar-plugins-release" content="2026-10-09-plugins-clarity-v37">
 <title>Apps & Tools — Stellar AI</title>
 <meta name="description" content="Use built-in Stellar tools or connect apps such as Gmail when you need them. Clear permissions, simple controls and no hidden actions.">
 <link rel="canonical" href="https://trystellarai.com/plugins">
@@ -52,9 +53,9 @@
 <main class="wrap">
 <section class="hero">
   <div class="kicker">Apps & tools</div>
-  <h1>Connect an app. Start using it.</h1>
-  <p>Pick an app, connect your account, then use it with Stellar in chat. No complicated setup.</p>
-  <div class="hero-actions"><a class="btn primary" href="#directory">Choose an app</a><a class="btn" href="#how-connect">How connecting works</a></div>
+  <h1>Connect the apps you use.</h1>
+  <p>Find an app, review its permissions and connect securely. Available apps work alongside your Stellar chat.</p>
+  <div class="hero-actions"><a class="btn primary" href="#directory">Browse apps</a><a class="btn" href="#connections">My connections</a></div>
 </section>
 
 <section class="explain" aria-label="How apps and tools work">
@@ -63,11 +64,11 @@
 </section>
 
 <section class="section" id="how-connect">
-  <div class="section-head"><div><h2>Connect in seconds</h2><p>No API keys or technical setup for normal connections.</p></div><span class="right">3 simple steps</span></div>
+  <div class="section-head"><div><h2>How connecting works</h2><p>Supported apps use secure provider sign-in. Some integrations require extra setup.</p></div><span class="right">3 simple steps</span></div>
   <div class="grid guide-steps">
     <article class="tool-card"><div class="tool-top"><div class="ico">1</div></div><h3>Choose an app</h3><p>Find the app you want Stellar to work with and tap <strong>Connect</strong>.</p></article>
-    <article class="tool-card"><div class="tool-top"><div class="ico">2</div></div><h3>Sign in securely</h3><p>Sign in on the app provider's own page and approve the access shown to you.</p></article>
-    <article class="tool-card"><div class="tool-top"><div class="ico">3</div></div><h3>Use it with Stellar</h3><p>You return to Stellar with the app marked <strong>Connected</strong>. Then use it from chat or its workflow.</p></article>
+    <article class="tool-card"><div class="tool-top"><div class="ico">2</div></div><h3>Approve access</h3><p>Review the permissions requested by the provider. Advanced connections may need a developer token.</p></article>
+    <article class="tool-card"><div class="tool-top"><div class="ico">3</div></div><h3>Use or disconnect</h3><p>Connected apps appear in <strong>My connections</strong>. Pause or disconnect whenever you choose.</p></article>
   </div>
 </section>
 
@@ -77,7 +78,7 @@
   <div class="directory-filters" role="group" aria-label="Filter apps">
     <button type="button" class="directory-filter" data-directory-filter="all" aria-pressed="true">All apps</button>
     <button type="button" class="directory-filter" data-directory-filter="connected" aria-pressed="false">Connected</button>
-    <button type="button" class="directory-filter" data-directory-filter="supported" aria-pressed="false">Supported</button>
+    <button type="button" class="directory-filter" data-directory-filter="supported" aria-pressed="false">Available now</button>
     <button type="button" class="directory-filter" data-directory-filter="planned" aria-pressed="false">Coming soon</button>
   </div>
   <div class="grid" id="plugin-directory" aria-live="polite"></div>
@@ -85,7 +86,7 @@
 </section>
 
 <section class="section" id="connections">
-  <div class="section-head"><div><h2>Your apps</h2><p>See what is connected and manage it in one place. You can disconnect an app whenever you want.</p></div><span class="right" id="connection-count">0 connected</span></div>
+  <div class="section-head"><div><h2>My connections</h2><p>Only apps connected to your account appear here. Pause or disconnect them at any time.</p></div><span class="right" id="connection-count">0 connected</span></div>
   <div id="plugin-account-status" class="notice"><strong>Sign in to manage apps</strong>Your connected apps will appear here.<br><a class="btn primary" href="/app?signin=1">Sign in</a></div>
   <div class="grid" id="plugin-account-grid" aria-live="polite"></div>
 </section>
@@ -126,7 +127,7 @@ function applyDirectorySearch(){
     const matchesQuery=!q||String(card.dataset.search||'').includes(q);
     const matchesFilter=directoryFilter==='all'
       ||(directoryFilter==='connected'&&plugin?.connected)
-      ||(directoryFilter==='supported'&&plugin?.status!=='coming_soon')
+      ||(directoryFilter==='supported'&&plugin?.status!=='coming_soon'&&Boolean(plugin?.connected||plugin?.enabled||plugin?.oauthAvailable||plugin?.installable&&!plugin?.connection||plugin?.oauthStatus?.tokenFallback))
       ||(directoryFilter==='planned'&&plugin?.status==='coming_soon');
     const visible=matchesQuery&&matchesFilter;
     card.classList.toggle('browse-hidden',!visible);
@@ -136,7 +137,7 @@ function applyDirectorySearch(){
   if(clearDirectorySearch)clearDirectorySearch.hidden=!q;
   if(directoryEmpty){
     directoryEmpty.hidden=shown!==0;
-    directoryEmpty.textContent=q?'No apps match your search. Try another name.':'No apps in this category yet.';
+    directoryEmpty.textContent=q?'No apps match your search. Try another name.':directoryFilter==='connected'?'No connected apps yet. Browse apps to connect one.':directoryFilter==='supported'?'No apps can be connected with the current setup.':'No apps in this category yet.';
   }
 }
 directoryFilters.forEach(button=>button.addEventListener('click',()=>{
@@ -185,7 +186,16 @@ function renderDirectory(plugins,{signedOut=false}={}){
     }else{
       const unavailable=document.createElement('span');unavailable.className='status';unavailable.textContent=coming?'Not available yet':'Setup not available';actions.append(unavailable);
     }
-    card.append(top,title,desc,meta,skills,actions);directoryGrid.append(card)
+    card.append(top,title,desc,meta,skills,actions);
+    if(!signedOut && plugin.oauthStatus?.tokenFallback && !coming && !plugin.connected){
+      if(plugin.oauthAvailable)actions.append(pluginButton('Use developer token','show-token',plugin.id));
+      const box=document.createElement('div');box.className='token-box';box.hidden=true;box.dataset.tokenBox=plugin.id;
+      const label=document.createElement('label');label.textContent='Developer access token';label.htmlFor='plugin-token-'+plugin.id;
+      const input=document.createElement('input');input.id='plugin-token-'+plugin.id;input.type='password';input.autocomplete='off';input.spellcheck=false;input.placeholder='Paste token here';input.dataset.tokenInput=plugin.id;
+      const connect=pluginButton('Connect securely','connect-token',plugin.id,true);
+      box.append(label,input,connect);card.append(box);
+    }
+    directoryGrid.append(card)
   });applyDirectorySearch()
 }
 const connectionCount=document.getElementById('connection-count');
@@ -250,10 +260,10 @@ function showNotice(title,message,kind=''){
 function renderConnectedApps(data){
   accountGrid.textContent='';
   const all=Array.isArray(data?.plugins)?data.plugins:[];
-  const plugins=all.filter(plugin=>Boolean(plugin.connection)&&plugin.status!=='coming_soon');
+  const plugins=all.filter(plugin=>plugin.connected===true&&plugin.status!=='coming_soon');
   const connectedTotal=plugins.filter(plugin=>plugin.connected).length;
   if(connectionCount)connectionCount.textContent=connectedTotal+' connected';
-  if(!plugins.length){showNotice('No connected apps yet','You can browse the supported apps above. They will appear here after you connect them.');return}
+  if(!plugins.length){showNotice('No connected apps yet','Browse available apps above and approve a connection to use it in Stellar.');const link=document.createElement('a');link.className='btn primary';link.href='#directory';link.textContent='Browse apps';accountStatus.append(link);return}
   accountStatus.style.display='none';
   plugins.forEach(plugin=>{
     const card=document.createElement('article');card.className='tool-card';card.dataset.plugin=String(plugin.id||'');
@@ -341,7 +351,7 @@ async function loadConnectedApps(){
 }
 async function pluginAction(button){
   const id=button.dataset.pluginId,action=button.dataset.pluginAction;if(!id||!action)return;
-  if(action==='show-token'){const box=accountGrid.querySelector('[data-token-box="'+CSS.escape(id)+'"]');if(box){box.hidden=!box.hidden;if(!box.hidden){document.getElementById('connections')?.scrollIntoView({behavior:'smooth',block:'start'});box.querySelector('input')?.focus()}}return}
+  if(action==='show-token'){const box=document.querySelector('[data-token-box="'+CSS.escape(id)+'"]');if(box){box.hidden=!box.hidden;if(!box.hidden){box.closest('.tool-card')?.scrollIntoView({behavior:'smooth',block:'nearest'});box.querySelector('input')?.focus()}}return}
   if(action==='disconnect'&&!window.confirm('Disconnect this app from Stellar AI? You can reconnect it later.'))return;
   button.disabled=true;
   try{
@@ -349,7 +359,7 @@ async function pluginAction(button){
       const data=await pluginApi('startOAuth',{id});if(!data.url)throw new Error('This connection is not available yet.');const url=new URL(data.url);if(url.protocol!=='https:')throw new Error('Invalid connection link.');location.assign(url.href);return;
     }
     if(action==='connect-token'){
-      const input=accountGrid.querySelector('[data-token-input="'+CSS.escape(id)+'"]');const token=String(input?.value||'').trim();if(!token)throw new Error('Paste the developer token first.');await pluginApi('connectToken',{id,token});if(input)input.value='';
+      const input=document.querySelector('[data-token-input="'+CSS.escape(id)+'"]');const token=String(input?.value||'').trim();if(!token)throw new Error('Paste the developer token first.');await pluginApi('connectToken',{id,token});if(input)input.value='';
     }else if(action==='disconnect')await pluginApi('disconnect',{id});
     else if(action==='pause'||action==='resume')await pluginApi('setEnabled',{id,enabled:action==='resume'});
     else if(action==='install'){
