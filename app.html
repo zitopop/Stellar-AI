@@ -4480,6 +4480,39 @@ html,body,.app{
 .plan-billing-note{display:block!important;margin-top:5px!important;color:#8be5ce!important;font-weight:800!important}
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-home-clarity-v1.css?v=20261009-smart-sidebar-v1">
+
+<style id="stellar-focused-chat-billing-v97">
+/* Chat remains the primary workspace; the same chat/debug mode controls stay by the composer. */
+body[data-stellar-clean-app="true"] .side-primary{display:none!important}
+body[data-stellar-clean-app="true"] .side-brand-row .side-product-label{display:none!important}
+body[data-stellar-clean-app="true"] .side-history{min-height:0;margin-top:16px!important}
+body[data-stellar-clean-app="true"] .side-history-head{padding-block:4px!important}
+body[data-stellar-clean-app="true"] .side-account{gap:2px!important}
+body[data-stellar-clean-app="true"] .side-account .side-bottom-link{min-height:44px!important}
+body[data-stellar-clean-app="true"] .side-account #side-plan-button{cursor:pointer}
+body[data-stellar-clean-app="true"] .welcome{max-width:760px!important;margin:0 auto!important}
+body[data-stellar-clean-app="true"] .welcome h1{letter-spacing:-.045em!important;text-wrap:balance}
+body[data-stellar-clean-app="true"] .welcome p{max-width:520px!important;margin-inline:auto!important}
+body[data-stellar-clean-app="true"] #prompt{font-size:16px!important;min-width:0!important}
+body[data-stellar-clean-app="true"] .composer-main{min-width:0!important}
+body[data-stellar-clean-app="true"] #sendBtn{flex-shrink:0!important}
+@media(max-width:900px){
+ body[data-stellar-clean-app="true"] .side{padding-bottom:max(16px,env(safe-area-inset-bottom))!important}
+ body[data-stellar-clean-app="true"] .composer-layout{min-width:0!important;width:100%!important}
+ body[data-stellar-clean-app="true"] .composer{width:100%!important}
+ body[data-stellar-clean-app="true"] .chat-inner{max-width:760px!important}
+}
+@media(max-width:540px){
+ body[data-stellar-clean-app="true"] .welcome{padding-top:clamp(66px,14vh,110px)!important}
+ body[data-stellar-clean-app="true"] .welcome h1{font-size:clamp(28px,8.6vw,38px)!important}
+ body[data-stellar-clean-app="true"] .composer-wrap{padding-inline:10px!important}
+ body[data-stellar-clean-app="true"] .composer-layout{display:block!important}
+ body[data-stellar-clean-app="true"] .composer-model-wrap{max-width:100%!important;margin-bottom:8px!important}
+ body[data-stellar-clean-app="true"] .composer-main{gap:4px!important}
+ body[data-stellar-clean-app="true"] .composer-tool,
+ body[data-stellar-clean-app="true"] #sendBtn{min-width:44px!important;min-height:44px!important}
+}
+</style>
 <script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
 </head>
 <body data-stellar-clean-app="true">
@@ -4488,7 +4521,7 @@ html,body,.app{
   <aside class="side" id="side" aria-label="Stellar navigation">
     <div class="side-brand-row">
       <a class="brand" href="/app" aria-label="Stellar AI home">Stellar AI</a>
-      <span class="side-product-label">AI workspace</span>
+      
     </div>
     <button class="side-close-mobile" id="sideCloseBtn" type="button" aria-label="Close sidebar" title="Close sidebar">×</button>
 
@@ -4520,16 +4553,18 @@ html,body,.app{
         <button class="side-search" type="button" id="search-chats-btn" data-open="search" aria-label="Search chats" title="Search chats">⌕</button>
       </div>
       <div class="chat-list" id="chatList"></div>
-      <p class="empty-note hidden" id="chatEmpty">No chats yet. Start with Build or Debug.</p>
+      <p class="empty-note hidden" id="chatEmpty">No chats yet. Start a new conversation.</p>
     </section>
 
     <div class="hidden legacy-side-actions" aria-hidden="true"><button class="nav" type="button" id="tools-nav" data-open="tools">Tools</button><button class="nav" type="button" id="stellarx-btn">StellarX</button><button class="nav" type="button" id="export-chat-btn">Export chat</button></div>
 
     <div class="side-account" aria-label="Account links">
       <a class="side-bottom-link" id="jarvis-text-sidebar" href="/plans" title="Jarvis text chat (Plus or Pro)" aria-label="Jarvis text chat — requires Plus or Pro" data-locked="true"><span>Jarvis</span><small class="jarvis-plan-label">Plus or Pro · Locked</small></a>
+      <a class="side-bottom-link" href="/plugins" title="Explore Stellar plugins">Plugins</a>
+      <button class="side-bottom-link" id="side-plan-button" type="button" data-open="plans" aria-label="View plans and billing" title="Plans & billing"><span>Plans &amp; billing</span></button>
       <a class="side-bottom-link" id="side-install-link" href="/install?utm_campaign=app-sidebar" title="Install Stellar">Install app</a>
-      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open account" title="Account"><span>Account</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.75 19.25c.7-3.25 2.85-5 6.25-5s5.55 1.75 6.25 5"></path></svg></span></button>
-      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open settings" title="Settings"><span>Settings</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7.7 7.7 0 0 0-.1-1.2l2-1.55-2-3.45-2.45 1a7.7 7.7 0 0 0-2.1-1.2L14 3h-4l-.35 2.6a7.7 7.7 0 0 0-2.1 1.2l-2.45-1-2 3.45 2 1.55A7.7 7.7 0 0 0 5 12c0 .4.03.8.1 1.2l-2 1.55 2 3.45 2.45-1a7.7 7.7 0 0 0 2.1 1.2L10 21h4l.35-2.6a7.7 7.7 0 0 0 2.1-1.2l2.45 1 2-3.45-2-1.55c.07-.4.1-.8.1-1.2Z"></path></svg></span></button>
+      
+      <button class="side-bottom-link" type="button" data-open="settings" aria-label="Open account and settings" title="Account & settings"><span>Account &amp; settings</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7.7 7.7 0 0 0-.1-1.2l2-1.55-2-3.45-2.45 1a7.7 7.7 0 0 0-2.1-1.2L14 3h-4l-.35 2.6a7.7 7.7 0 0 0-2.1 1.2l-2.45-1-2 3.45 2 1.55A7.7 7.7 0 0 0 5 12c0 .4.03.8.1 1.2l-2 1.55 2 3.45 2.45-1a7.7 7.7 0 0 0 2.1 1.2L10 21h4l.35-2.6a7.7 7.7 0 0 0 2.1-1.2l2.45 1 2-3.45-2-1.55c.07-.4.1-.8.1-1.2Z"></path></svg></span></button>
       <a class="side-bottom-link" href="/terms" aria-label="Open terms" title="Terms"><span>Terms</span><span class="side-rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M7 3.75h7.25L18.25 7.75V20.25H7V3.75Z"></path><path d="M14 3.75V8H18.25"></path><path d="M9.5 11.25H15.75"></path><path d="M9.5 14.25H15.75"></path><path d="M9.5 17.25H13.5"></path></svg></span></a>
     </div>
 
