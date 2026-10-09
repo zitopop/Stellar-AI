@@ -40,6 +40,10 @@
 .public-home .showcase-steps span{display:block;padding:10px 12px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.035)}
 .public-home .showcase-hint{opacity:.78;font-size:.9rem}
 .public-home .stellar-showcase .demo-note a{color:#cbb6ff}
+.public-home .builder-links{margin:18px 0 0;color:#9da2b2;font-size:13px;line-height:1.8}
+.public-home .builder-links a{color:#d3c9ff;text-underline-offset:3px}
+.public-home .preview-example{margin-top:6px;padding:8px 0;min-height:36px;border:0;background:transparent;color:#cbb6ff;text-align:left;font-size:12px;font-weight:700;cursor:pointer}
+.public-home .preview-example:hover,.public-home .preview-example:focus-visible{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:640px){.public-home .hero h1{max-width:100%}.public-home .stellar-showcase{width:100%}.public-home .hero .cta-row .button{min-height:46px}}
 @media(max-width:360px){.public-home .header-actions .button-small{display:none}}
 </style>
@@ -115,6 +119,7 @@
     <a class="work-shortcut" href="/app?prompt=Help%20me%20understand%20and%20summarise%20my%20notes.%20Ask%20me%20to%20paste%20text%20or%20attach%20a%20supported%20file.&amp;utm_source=homepage&amp;utm_campaign=work-notes"><strong>Explain files and notes</strong><span>Make important context easier to use.</span></a>
     <a class="work-shortcut" href="/app?mode=debug&amp;prompt=Help%20me%20debug%20my%20code.%20Ask%20for%20the%20code%2C%20exact%20error%2C%20language%20and%20expected%20behaviour.&amp;utm_source=homepage&amp;utm_campaign=work-debug"><strong>Debug code</strong><span>Find the next fix from an error.</span></a>
     </div>
+    <p class="builder-links">Building a game? <a href="/roblox-script-generator">Roblox Luau scripts</a> · <a href="/fivem-ai-script-generator-free">FiveM Lua scripts</a> · <a href="/ai-game-script-generator">All game scripts</a></p>
   </div>
 </section>
   <section class="section" id="try-preview" aria-labelledby="preview-title">
@@ -128,7 +133,8 @@
         <form id="anonymous-preview-form" class="preview-form">
           <div style="flex:1;min-width:0">
             <label class="preview-field" for="anonymous-preview-prompt">What do you want to build?</label>
-            <textarea id="anonymous-preview-prompt" name="prompt" maxlength="800" required placeholder="Example: Write a JavaScript function that validates a form…" autocomplete="off"></textarea>
+            <textarea id="anonymous-preview-prompt" name="prompt" maxlength="800" required placeholder="Describe a script or error. Example: build a Roblox coin pickup…" autocomplete="off"></textarea>
+            <button id="anonymous-preview-example" class="preview-example" type="button">Use a sample Roblox prompt ↗</button>
           </div>
           <button id="anonymous-preview-submit" class="button button-primary" type="submit" aria-label="Generate a free script preview">Generate preview</button>
         </form>
