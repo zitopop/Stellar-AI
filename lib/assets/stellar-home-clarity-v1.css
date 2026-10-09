@@ -276,3 +276,33 @@ body[data-stellar-clean-app="true"] .composer-note{
   body[data-stellar-clean-app="true"] .welcome::before{filter:none!important}
   body[data-stellar-clean-app="true"] #sendBtn{transition:none!important}
 }
+
+
+/* v2.1 composer fix: textarea must expand when optional tools are hidden. */
+body[data-stellar-clean-app="true"] .composer-main{
+  display:flex!important;
+  align-items:center!important;
+  grid-template-columns:none!important;
+  width:100%!important;
+  min-width:0!important;
+}
+body[data-stellar-clean-app="true"] .composer-main #prompt{
+  flex:1 1 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  display:block!important;
+}
+body[data-stellar-clean-app="true"] .composer-main .composer-tool,
+body[data-stellar-clean-app="true"] .composer-main #sendBtn{
+  flex:0 0 auto!important;
+}
+@media(max-width:540px){
+  body[data-stellar-clean-app="true"] .composer-main{
+    display:flex!important;
+    align-items:center!important;
+  }
+  body[data-stellar-clean-app="true"] .composer-main #prompt{
+    flex-basis:0!important;
+  }
+}
