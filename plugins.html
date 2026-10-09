@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0b0b">
-<meta name="stellar-plugins-release" content="2026-10-09-plugins-recovery-v38">
+<meta name="stellar-plugins-release" content="2026-10-09-integrations-command-v39">
 <title>Apps & Tools — Stellar AI</title>
 <meta name="description" content="Use built-in Stellar tools or connect apps such as Gmail when you need them. Clear permissions, simple controls and no hidden actions.">
 <link rel="canonical" href="https://trystellarai.com/plugins">
@@ -47,15 +47,51 @@
 <link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
 <link rel="stylesheet" href="/stellar-brand-system-v1.css?v=20261005-1">
 <script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
-</head>
+
+<style id="stellar-plugin-command-v39">
+/* Integration status is derived from /api/plugins; never display simulated connected counts. */
+:root{--bg:#0b0c11;--panel:#14161c;--panel2:#191b23;--accent:#ad9bff}
+body{background:var(--bg);color:#f4f5f8}
+.top{background:rgba(11,12,17,.94)}
+.hero{max-width:850px;padding:58px 0 26px}
+.hero h1{font-size:clamp(40px,6vw,62px);line-height:1.09;letter-spacing:-.048em}
+.hero p{max-width:670px;color:#a8b0bd;font-size:16px}
+.plugin-command{overflow:hidden;margin:14px 0 32px;padding:0;border:1px solid rgba(181,160,255,.18);border-radius:18px;background:linear-gradient(125deg,rgba(129,102,209,.095),rgba(255,255,255,.013) 70%)}
+.plugin-command-head{display:flex;align-items:center;flex-wrap:wrap;gap:9px;min-height:47px;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.plugin-command-head strong{color:#ede9fb;font-size:13px;font-weight:780}
+.plugin-command-head span:last-child{margin-left:auto;color:#9ca5b4;font-size:12px}
+.command-pulse{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:#bcaaff;box-shadow:0 0 14px rgba(174,150,255,.33)}
+.plugin-command-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.plugin-command-stats>div{display:grid;gap:3px;padding:20px 23px;border-right:1px solid rgba(255,255,255,.065)}
+.plugin-command-stats>div:last-child{border-right:0}
+.plugin-command-stats strong{font-size:27px;line-height:1.2;letter-spacing:-.03em;font-weight:750;color:#fff}
+.plugin-command-stats span{font-size:12px;color:#9aa4b4}
+.plugin-command-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-height:65px;padding:12px 18px;border-top:1px solid rgba(255,255,255,.065)}
+.plugin-command-actions p{margin:0;color:#a4aaba;font-size:12px}
+.plugin-command-actions .btn{white-space:normal;text-align:center}
+.tool-card,.builtin,.explain article,.notice{background:#14161c;border-color:rgba(255,255,255,.08)}
+.tool-card:hover,.builtin:hover{border-color:rgba(177,153,255,.24);background:#191b23}
+.tool-card .ico,.builtin .ico{background:#21232d;color:#d5ccff}
+.directory-filter[aria-pressed="true"]{border-color:rgba(177,153,255,.4)}
+@media(max-width:600px){.hero{padding-top:40px}.plugin-command-stats>div{padding:15px 12px}.plugin-command-stats strong{font-size:22px}.plugin-command-stats span{font-size:11px}.plugin-command-head span:last-child{margin-left:0;width:100%}.plugin-command-actions .btn{flex:1 1 auto}.plugin-command-actions{padding:13px}.hero p{font-size:15px}}
+</style></head>
 <body>
 <header class="top"><nav class="wrap nav"><a class="brand" href="/">Stellar AI</a><div class="nav-actions"><a href="/plans">Plans</a><a href="/support">Help</a><a class="primary" href="/app">Back to chat</a></div></nav></header>
 <main class="wrap">
 <section class="hero">
   <div class="kicker">Apps & tools</div>
-  <h1>Connect the apps you use.</h1>
-  <p>Find an app, review its permissions and connect securely. Available apps work alongside your Stellar chat.</p>
-  <div class="hero-actions"><a class="btn primary" href="#directory">Browse apps</a><a class="btn" href="#connections">My connections</a></div>
+  <h1>Your AI. Your connected tools.</h1>
+  <p>Connect supported accounts, inspect their permissions and start useful work from one place. You stay in control of what Stellar can access.</p>
+  <div class="hero-actions"><a class="btn primary" href="#directory">Explore integrations</a><a class="btn" href="#connections">Manage connections</a><a class="btn" href="/jarvis">Open Jarvis ↗</a></div>
+</section>
+<section class="plugin-command" aria-label="Connected app overview">
+  <div class="plugin-command-head"><span class="command-pulse" aria-hidden="true"></span><strong>Integration centre</strong><span id="plugin-command-status" role="status" aria-live="polite">Checking app catalogue…</span></div>
+  <div class="plugin-command-stats">
+    <div><strong id="plugin-overview-connected">—</strong><span>Connected</span></div>
+    <div><strong id="plugin-overview-ready">—</strong><span>Available to connect</span></div>
+    <div><strong id="plugin-overview-planned">—</strong><span>Coming soon</span></div>
+  </div>
+  <div class="plugin-command-actions" id="plugin-quick-actions" aria-label="Connected app shortcuts"><p>Sign in and connect a supported app to see your shortcuts here.</p></div>
 </section>
 
 <section class="explain" aria-label="How apps and tools work">
@@ -148,8 +184,37 @@ directoryFilters.forEach(button=>button.addEventListener('click',()=>{
 }));
 directorySearch?.addEventListener('input',applyDirectorySearch);
 clearDirectorySearch?.addEventListener('click',()=>{directorySearch.value='';directorySearch.focus();applyDirectorySearch()});
+function updatePluginOverview(plugins,signedOut=false){
+  const all=Array.isArray(plugins)?plugins:[];
+  const connected=all.filter(app=>app.connected===true);
+  const available=all.filter(app=>app.status!=='coming_soon'&&!app.connected&&(app.oauthAvailable||app.oauthStatus?.tokenFallback||app.installable&&!app.connection));
+  const planned=all.filter(app=>app.status==='coming_soon');
+  const connectedLabel=document.getElementById('plugin-overview-connected');
+  const availableLabel=document.getElementById('plugin-overview-ready');
+  const plannedLabel=document.getElementById('plugin-overview-planned');
+  const statusLabel=document.getElementById('plugin-command-status');
+  const shortcuts=document.getElementById('plugin-quick-actions');
+  if(connectedLabel)connectedLabel.textContent=signedOut?'Sign in':String(connected.length);
+  if(availableLabel)availableLabel.textContent=String(available.length);
+  if(plannedLabel)plannedLabel.textContent=String(planned.length);
+  if(statusLabel)statusLabel.textContent=signedOut?'Sign in to check your connected apps':connected.length?'Connected apps ready to manage':'Browse supported connections';
+  if(!shortcuts)return;
+  shortcuts.replaceChildren();
+  if(signedOut){
+    const link=document.createElement('a');link.className='btn primary';link.href='/app?signin=1';link.textContent='Sign in to connect';shortcuts.append(link);return;
+  }
+  const active=connected.filter(app=>app.enabled&&Object.hasOwn(appPrompts,app.id));
+  if(!active.length){const p=document.createElement('p');p.textContent='Connect an available app to unlock account-specific shortcuts.';shortcuts.append(p);return}
+  active.forEach(app=>{
+    const link=useAppLink(app.id);
+    if(!link)return;
+    link.textContent='Use '+String(app.name||app.id)+' in chat ↗';
+    shortcuts.append(link);
+  });
+}
 function renderDirectory(plugins,{signedOut=false}={}){
   directoryPlugins=Array.isArray(plugins)?plugins:[];
+  updatePluginOverview(directoryPlugins,signedOut);
   directoryGrid.textContent='';
   const connectedFilter=directoryFilters.find(button=>button.dataset.directoryFilter==='connected');
   if(connectedFilter)connectedFilter.hidden=signedOut;
@@ -206,7 +271,12 @@ const search=document.getElementById('search'),clearSearch=document.getElementBy
 function applyToolSearch(){const q=String(search?.value||'').trim().toLowerCase();let shown=0;browseCards.forEach(card=>{const hay=(card.dataset.search+' '+card.textContent).toLowerCase();const visible=!q||hay.includes(q);card.classList.toggle('browse-hidden',!visible);if(visible)shown++});if(toolCount)toolCount.textContent=shown+' tool'+(shown===1?'':'s');if(clearSearch)clearSearch.hidden=!q}
 search?.addEventListener('input',applyToolSearch);clearSearch?.addEventListener('click',()=>{search.value='';search.focus();applyToolSearch()});applyToolSearch();
 
-function sessionToken(){try{const store=JSON.parse(localStorage.getItem('stellar-store')||'{}');return typeof store.session==='string'?store.session:''}catch{return ''}}
+function sessionToken(){
+  for(const storage of [sessionStorage,localStorage])for(const key of ['stellar-store-session-fallback','stellar-store']){
+    try{const store=JSON.parse(storage.getItem(key)||'{}');if(typeof store.session==='string'&&store.session)return store.session}catch{}
+  }
+  return '';
+}
 async function pluginApi(action,payload={}){
   const token=sessionToken();
   if(!token)throw new Error('Sign in to manage connected apps.');
@@ -327,6 +397,7 @@ async function loadConnectedApps(){
     const link=document.createElement('a');link.className='btn primary';link.href='/app?signin=1';link.textContent='Sign in';
     accountStatus.append(document.createElement('br'),link);
     if(directoryCount)directoryCount.textContent='Loading apps…';
+    const status=document.getElementById('plugin-command-status');if(status)status.textContent='Checking the public catalogue…';
     try{
       const response=await fetch('/api/plugins?action=publicCatalog',{cache:'no-store'});
       const data=await response.json().catch(()=>({}));
@@ -334,6 +405,7 @@ async function loadConnectedApps(){
       renderDirectory(data.plugins,{signedOut:true});
     }catch{
       directoryGrid.textContent='';
+      const status=document.getElementById('plugin-command-status');if(status)status.textContent='App catalogue temporarily unavailable';
       if(directoryCount)directoryCount.textContent='Sign in to explore';
       if(directoryEmpty){directoryEmpty.hidden=false;directoryEmpty.textContent='Could not load the app catalogue. Check your connection and retry.'}if(retryDirectory)retryDirectory.hidden=false
     }
@@ -348,6 +420,7 @@ async function loadConnectedApps(){
     showNotice('Could not load apps',error.message||'Try again shortly.');
     const retry=document.createElement('button');retry.type='button';retry.className='btn primary';retry.textContent='Try again';retry.addEventListener('click',loadConnectedApps);accountStatus.append(retry);
     directoryGrid.textContent='';
+    const status=document.getElementById('plugin-command-status');if(status)status.textContent='Connection check failed · retry below';
     if(directoryCount)directoryCount.textContent='Unavailable';
     if(directoryEmpty){directoryEmpty.hidden=false;directoryEmpty.textContent='Could not load your apps. You can retry without signing out.'}if(retryDirectory)retryDirectory.hidden=false
   }
