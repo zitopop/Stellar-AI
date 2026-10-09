@@ -159,3 +159,12 @@ test('OAuth status covers every planned provider without pretending all exchange
     assert.ok(plugin.setupEnv.length >= 1, id);
   }
 });
+
+test('Gmail connection promises only scopes its OAuth token actually grants', () => {
+  const gmail = getPluginDefinition('gmail');
+  assert.deepEqual(gmail.permissions.map(permission => permission.id), ['mail.read']);
+  assert.deepEqual(gmail.setupEnv, ['GMAIL_CLIENT_ID', 'GMAIL_CLIENT_SECRET']);
+  assert.match(manager, /gmailClientId\(\)\&\&gmailClientSecret\(\)/);
+  assert.match(manager, /https:\/\/www\.googleapis\.com\/auth\/gmail\.readonly/);
+  assert.match(page, /Gmail connection cannot send, draft or delete messages/);
+});
