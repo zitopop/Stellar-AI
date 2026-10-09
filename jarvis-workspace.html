@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0c0d10">
-<meta name="jarvis-release" content="2026-10-09-jarvis-minimal-v7">
+<meta name="jarvis-release" content="2026-10-09-jarvis-polish-v8">
 <meta name="robots" content="noindex,nofollow">
 <title>Jarvis Text Chat — Stellar AI</title>
 <meta name="description" content="Chat with Jarvis. Clear answers, coding help, planning and optional voice in Stellar AI.">
@@ -120,6 +120,25 @@ body,.shell{background:var(--bg)}
 }
 @media(max-width:350px){.chat{padding-bottom:190px}}
 </style>
+<style id="jarvis-ui-v8">
+/* Clear, compact Jarvis conversation and reachable mobile controls. */
+.top-actions .apps-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 12px;border:1px solid transparent;border-radius:11px;color:#c9c8d2;text-decoration:none;font-size:13px;font-weight:600}
+.top-actions .apps-link:hover{background:#25262c;border-color:var(--line);color:#fff}
+.top-actions .apps-link:focus-visible{outline:2px solid #c7b4ff;outline-offset:3px}
+.hero{padding:clamp(68px,15vh,138px) 0 18px}
+.hero h1{max-width:16ch;margin-inline:auto}
+.hero p:last-child{max-width:46ch}
+.chat{padding-bottom:195px}
+.composer{box-shadow:0 16px 44px rgba(0,0,0,.24)}
+.composer-row #stop-response{min-width:44px;border-color:rgba(185,164,245,.3);background:#302b3b;color:#f2eaff}
+.composer-row #stop-response:hover{background:#423950}
+@media(max-width:600px){
+ .top-actions .apps-link{min-height:44px;padding:0 9px;font-size:12px}
+ .hero{padding:clamp(65px,14vh,120px) 0 18px}
+ .chat{padding-bottom:195px}
+ .composer-row #stop-response{min-width:44px}
+}
+</style>
 <script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
 
 </head>
@@ -130,6 +149,7 @@ body,.shell{background:var(--bg)}
 <a class="back-link" href="/app" aria-label="Back to Stellar AI" title="Back to Stellar AI">←</a>
 <div class="brand">Jarvis</div>
 <div class="top-actions">
+<a class="apps-link" href="/plugins" title="Manage connected apps">Apps</a>
 <button id="new-chat" type="button" aria-label="Start new chat" title="New chat"><span aria-hidden="true">＋</span><span class="new-chat-label">New chat</span></button>
 <button id="voice-settings" type="button" aria-label="Voice settings" aria-controls="voice-panel" aria-expanded="false" title="Voice settings">⚙</button>
 </div>
@@ -143,17 +163,18 @@ body,.shell{background:var(--bg)}
 <main>
 <div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span> <a id="access-link" href="/app?signin=1">Open sign in →</a></div>
 <section id="chat" class="chat" aria-label="Jarvis conversation">
-<div id="hero" class="hero"><h1>How can I help?</h1><p>Ask Jarvis anything.</p></div>
+<div id="hero" class="hero"><h1>How can I help?</h1><p>Plan, write, research or get help with code. Ask in your own words.</p></div>
 <div id="messages" class="messages" role="log" aria-label="Jarvis messages" aria-live="polite"></div>
 </section>
 </main>
 <div class="composer-wrap">
 <form id="composer" class="composer">
 <label for="prompt" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message Jarvis</label>
-<textarea id="prompt" rows="1" maxlength="12000" placeholder="Ask Jarvis anything…"></textarea>
+<textarea id="prompt" rows="1" maxlength="12000" placeholder="Message Jarvis…"></textarea>
 <div id="status" class="status" role="status" aria-live="polite"></div>
 <div class="composer-row">
 <button id="mic" type="button" aria-label="Talk to Jarvis" title="Talk to Jarvis" aria-pressed="false">🎙</button>
+<button id="stop-response" type="button" aria-label="Stop generating the response" title="Stop response" hidden>■ Stop</button>
 <button id="stop-voice" type="button" aria-label="Stop Jarvis speaking" hidden>■ Stop</button>
 <button id="send" class="primary" type="submit" aria-label="Send message" title="Send message">↑</button>
 </div>
@@ -167,6 +188,7 @@ body,.shell{background:var(--bg)}
   function safeStorageGet(key,fallback=''){try{const value=localStorage.getItem(key);return value==null?fallback:value}catch{return fallback}}
   function safeStorageSet(key,value){try{localStorage.setItem(key,value);return true}catch{return false}}
   let busy = false, recognition = null, speaking = false, accessChecked = false, jarvisEntitled = false, micAvailable = false;
+  let pendingController = null;
   let jarvisSource = 'jarvis-public';
   let voiceOn = safeStorageGet('stellarJarvisVoiceReplies','1') !== '0';
   let handsFree = safeStorageGet('stellarJarvisHandsFree','0') === '1';
@@ -176,7 +198,7 @@ body,.shell{background:var(--bg)}
   }
   function headers(){const h={'Content-Type':'application/json'};const token=sessionToken();if(token)h.Authorization='Bearer '+token;return h}
   function setStatus(text,kind=''){const el=$('status');el.textContent=/^Ready[.]?$/.test(text)?'':text;el.className='status '+kind}
-  function setBusy(value){busy=value;const blocked=!jarvisEntitled||!accessChecked;$('send').disabled=value||blocked;$('mic').disabled=value||blocked||!micAvailable;$('handsfree-toggle').disabled=blocked||!micAvailable;$('voice-toggle').disabled=blocked;$('prompt').disabled=blocked;$('new-chat').disabled=value}
+  function setBusy(value){busy=value;const blocked=!jarvisEntitled||!accessChecked;$('send').disabled=value||blocked;$('mic').disabled=value||blocked||!micAvailable;$('handsfree-toggle').disabled=blocked||!micAvailable;$('voice-toggle').disabled=blocked;$('prompt').disabled=blocked;$('new-chat').disabled=value;$('stop-response').hidden=!value}
   function addMessage(role,text){
     $('hero').hidden=true;
     const row=document.createElement('div');row.className='msg '+role;
@@ -308,16 +330,24 @@ body,.shell{background:var(--bg)}
     if(!jarvisEntitled){showAccess(sessionToken()?'Jarvis Voice is included with Plus and Pro.':'Sign in to use Jarvis Voice.',sessionToken()?'/plans':'/app?signin=1',sessionToken()?'See plans →':'Open sign in →');setStatus('Jarvis access is required.','bad');return}
     stopSpeech();addMessage('user',text);messages.push({role:'user',content:text});$('prompt').value='';resizePrompt();setBusy(true);setStatus('Thinking…','good');
     const bubble=addMessage('assistant','');bubble.classList.add('typing');let full='';
+    const requestController=new AbortController();pendingController=requestController;
     try{
-      const response=await fetch('/api/chat',{method:'POST',headers:headers(),body:JSON.stringify({action:'chat',model:'star',selectedModel:'star',messages:messages.slice(-24),use_credit:false,client:{source:jarvisSource}})});
+      const response=await fetch('/api/chat',{method:'POST',headers:headers(),body:JSON.stringify({action:'chat',model:'star',selectedModel:'star',messages:messages.slice(-24),use_credit:false,client:{source:jarvisSource}}),signal:requestController.signal});
       if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===401){$('signin').classList.add('show');throw new Error(data.error||'Sign in to use Jarvis.')}throw new Error(data.error||'Jarvis could not answer that request.')}
       if(!response.body)throw new Error('Jarvis returned no response.');
       const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
       while(true){const {done,value}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const chunks=buffer.split('\n');buffer=chunks.pop()||'';for(const line of chunks){if(!line.startsWith('data:'))continue;const raw=line.slice(5).trim();if(!raw||raw==='[DONE]')continue;const delta=parseEvent(raw);if(delta){full+=delta;bubble.classList.remove('typing');bubble.textContent=full;bubble.scrollIntoView({block:'end'})}}}
       if(buffer.startsWith('data:')){const raw=buffer.slice(5).trim();if(raw&&raw!=='[DONE]'){const delta=parseEvent(raw);if(delta)full+=delta}}
       if(!full.trim())full='I could not produce a response this time. Please try again.';bubble.classList.remove('typing');renderFormattedReply(bubble,full);bubble.parentElement?.querySelector('.copy-response')?.removeAttribute('hidden');messages.push({role:'assistant',content:full});setStatus('Ready.');speak(full);
-    }catch(error){bubble.classList.remove('typing');bubble.textContent=error.message||'Jarvis could not answer.';setStatus(error.message||'Jarvis could not answer.','bad')}
-    finally{setBusy(false)}
+    }catch(error){
+      bubble.classList.remove('typing');
+      if(requestController.signal.aborted){
+        if(full.trim()){renderFormattedReply(bubble,full);bubble.parentElement?.querySelector('.copy-response')?.removeAttribute('hidden');messages.push({role:'assistant',content:full})}
+        else bubble.parentElement?.parentElement?.remove();
+        setStatus('Response stopped.');
+      }else{bubble.textContent=error.message||'Jarvis could not answer.';setStatus(error.message||'Jarvis could not answer.','bad')}
+    }
+    finally{if(pendingController===requestController)pendingController=null;setBusy(false)}
   }
   function setupMic(){
     const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -364,6 +394,7 @@ $('new-chat').addEventListener('click',()=>{closeVoicePanel();newChat()});
   $('voice-toggle').addEventListener('click',()=>{voiceOn=!voiceOn;safeStorageSet('stellarJarvisVoiceReplies',voiceOn?'1':'0');if(!voiceOn){handsFree=false;safeStorageSet('stellarJarvisHandsFree','0');updateHandsFreeToggle();stopSpeech()}updateVoiceToggle()});
   $('handsfree-toggle').addEventListener('click',()=>{if(!jarvisEntitled)return;handsFree=!handsFree;voiceOn=handsFree?true:voiceOn;safeStorageSet('stellarJarvisHandsFree',handsFree?'1':'0');safeStorageSet('stellarJarvisVoiceReplies',voiceOn?'1':'0');updateVoiceToggle();updateHandsFreeToggle();if(handsFree&&!busy&&!speaking)startListening()});
   $('stop-voice').addEventListener('click',stopSpeech);
+  $('stop-response').addEventListener('click',()=>{if(pendingController&&!pendingController.signal.aborted){pendingController.abort();setStatus('Stopping response…')}});
   updateVoiceToggle();updateHandsFreeToggle();setupMic();resizePrompt();syncJarvisAccess();
 })();
 </script>
