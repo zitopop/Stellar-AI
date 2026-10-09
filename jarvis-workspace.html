@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0d0d0d">
+<meta name="theme-color" content="#0d0d0d">\n<meta name="jarvis-release" content="2026-10-09-smart-start-v3">
 <meta name="robots" content="noindex,nofollow">
 <title>Jarvis Text Chat — Stellar AI</title>
 <meta name="description" content="Chat with Jarvis. Clear answers, coding help, planning and optional voice in Stellar AI.">
@@ -94,6 +94,126 @@ body{color:#f5f5f5!important}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 <script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
+<style id="jarvis-smart-ui-v3">
+/* Smarter Jarvis start state: purposeful, calm and action-oriented. */
+.hero .orb{
+  position:relative!important;
+  background:radial-gradient(circle at 30% 22%,#ece5ff 0%,#b2a0e4 16%,#5a4a79 42%,#211c2e 72%,#15151a 100%)!important;
+  box-shadow:0 0 0 7px rgba(184,165,255,.045),0 0 34px rgba(141,112,210,.18),inset -8px -6px 18px rgba(0,0,0,.4)!important;
+}
+.hero .orb::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-9px!important;
+  border:1px solid rgba(194,180,245,.18)!important;
+  border-radius:50%!important;
+  transform:rotate(-22deg) scaleY(.58)!important;
+  pointer-events:none!important;
+}
+.hero h1{
+  max-width:680px!important;
+  margin-inline:auto!important;
+  background:linear-gradient(112deg,#fff 18%,#e8e0ff 62%,#c3e8ff 112%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+}
+.hero-status{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  margin:20px auto 0!important;
+  min-height:30px!important;
+  padding:0 11px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#aaaab2!important;
+  font-size:10px!important;
+  letter-spacing:.01em!important;
+}
+.hero-status-dot{
+  width:6px!important;
+  height:6px!important;
+  border-radius:50%!important;
+  background:#8fe1bd!important;
+  box-shadow:0 0 12px rgba(143,225,189,.65)!important;
+}
+.hero-status-divider{color:#5f6068!important}
+.smart-starts{
+  display:grid!important;
+  gap:10px!important;
+  margin:30px auto 0!important;
+  max-width:650px!important;
+}
+.smart-starts-label{
+  color:#777982!important;
+  font-size:10px!important;
+  font-weight:650!important;
+  letter-spacing:.1em!important;
+  text-transform:uppercase!important;
+}
+.smart-starts-list{
+  display:flex!important;
+  justify-content:center!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+.smart-starts-list button{
+  min-height:40px!important;
+  padding:0 13px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.035)!important;
+  color:#d7d7dd!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  letter-spacing:.005em!important;
+}
+.smart-starts-list button span{
+  margin-left:6px!important;
+  color:#aaa0ce!important;
+}
+.smart-starts-list button:hover,
+.smart-starts-list button:focus-visible{
+  border-color:rgba(194,180,245,.38)!important;
+  background:rgba(194,180,245,.10)!important;
+  color:#fff!important;
+  outline:none!important;
+  transform:translateY(-1px)!important;
+}
+.composer-hint{
+  margin:10px 8px 0!important;
+  color:#777981!important;
+  font-size:10px!important;
+  line-height:1.45!important;
+  text-align:center!important;
+}
+.composer{
+  box-shadow:0 18px 54px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035)!important;
+}
+.composer-row button{
+  min-height:42px!important;
+}
+.composer-row button.primary{
+  box-shadow:0 6px 18px rgba(255,255,255,.08)!important;
+}
+@media(max-width:600px){
+  .hero-status{margin-top:16px!important}
+  .smart-starts{margin-top:24px!important}
+  .smart-starts-list{
+    justify-content:flex-start!important;
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    padding:2px 2px 5px!important;
+    scrollbar-width:none!important;
+  }
+  .smart-starts-list::-webkit-scrollbar{display:none!important}
+  .smart-starts-list button{flex:0 0 auto!important}
+  .composer-hint{font-size:9.5px!important}
+}
+</style>
 </head>
 <body>
 <div class="shell">
@@ -110,21 +230,36 @@ body{color:#f5f5f5!important}
 <main>
 <div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span> <a id="access-link" href="/app?signin=1">Open sign in →</a></div>
 <section id="chat" class="chat" aria-label="Jarvis conversation">
-<div id="hero" class="hero"><div class="orb" aria-hidden="true">J</div><p class="hero-eyebrow">YOUR AI ASSISTANT</p><h1>Chat with Jarvis</h1><p>Ask a question, get help with code, or plan your next step. Write a message below, or switch on voice when you prefer to talk.</p></div>
+<div id="hero" class="hero">
+<div class="orb" aria-hidden="true">J</div>
+<p class="hero-eyebrow">JARVIS INTELLIGENCE</p>
+<h1>What should Jarvis handle?</h1>
+<p>Ask a question, shape an idea or give Jarvis a task. It will help you think through the details and take the next step.</p>
+<div class="hero-status" aria-label="Jarvis status"><span class="hero-status-dot" aria-hidden="true"></span><span>Ready when you are</span><span class="hero-status-divider" aria-hidden="true">·</span><span>Voice optional</span></div>
+<div class="smart-starts" aria-label="Suggested prompts">
+  <span class="smart-starts-label">Start with</span>
+  <div class="smart-starts-list" role="group" aria-label="Jarvis starter prompts">
+    <button type="button" data-smart-prompt="Plan my next move">Plan my next move <span aria-hidden="true">↗</span></button>
+    <button type="button" data-smart-prompt="Turn this idea into a clear plan">Shape an idea <span aria-hidden="true">↗</span></button>
+    <button type="button" data-smart-prompt="Draft a clear message for me">Draft a message <span aria-hidden="true">↗</span></button>
+  </div>
+</div>
+</div>
 <div id="messages" class="messages" role="log" aria-label="Jarvis messages" aria-live="polite"></div>
 </section>
 </main>
 <div class="composer-wrap">
 <form id="composer" class="composer">
 <label for="prompt" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message Jarvis</label>
-<textarea id="prompt" rows="1" maxlength="12000" placeholder="Ask Jarvis anything…"></textarea>
-<div id="status" class="status" role="status" aria-live="polite">Ready.</div>
+<textarea id="prompt" rows="1" maxlength="12000" placeholder="Tell Jarvis what you need to move forward…"></textarea>
+<div id="status" class="status" role="status" aria-live="polite">Ready when you are.</div>
 <div class="composer-row">
 <button id="mic" type="button" aria-label="Talk to Jarvis" aria-pressed="false">🎙 Talk</button>
 <button id="handsfree-toggle" type="button" aria-label="Toggle hands-free conversation" aria-pressed="false">Hands-free off</button>
 <button id="stop-voice" type="button" aria-label="Stop Jarvis speaking" hidden>■ Stop voice</button>
 <button id="send" class="primary" type="submit">Send ↑</button>
 </div>
+<p class="composer-hint">Jarvis can plan, write and talk through the next step. Shift + Enter adds a new line.</p>
 </form>
 </div>
 </div>
@@ -319,6 +454,19 @@ body{color:#f5f5f5!important}
   $('handsfree-toggle').addEventListener('click',()=>{if(!jarvisEntitled)return;handsFree=!handsFree;voiceOn=handsFree?true:voiceOn;safeStorageSet('stellarJarvisHandsFree',handsFree?'1':'0');safeStorageSet('stellarJarvisVoiceReplies',voiceOn?'1':'0');updateVoiceToggle();updateHandsFreeToggle();if(handsFree&&!busy&&!speaking)startListening()});
   $('stop-voice').addEventListener('click',stopSpeech);
   updateVoiceToggle();updateHandsFreeToggle();setupMic();syncJarvisAccess();
+})();
+</script>
+<script id="jarvis-smart-starts-v3">
+(() => {
+  const prompt = document.getElementById('prompt');
+  if (!prompt) return;
+  document.querySelectorAll('[data-smart-prompt]').forEach((button) => {
+    button.addEventListener('click', () => {
+      prompt.value = button.dataset.smartPrompt || '';
+      prompt.focus();
+      prompt.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
 })();
 </script>
 </body>
