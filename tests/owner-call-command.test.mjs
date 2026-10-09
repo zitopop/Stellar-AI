@@ -10,7 +10,7 @@ test('Stellar exposes protected owner Jarvis call controls',()=>{
   assert.match(app,/async function ownerCallCommand\(text\)/);
   assert.match(app,/ring\|phone/);
   assert.match(app,/give\\s\+me\\s\+a\\s\+call/);
-  assert.match(app,/Jarvis is ringing your phone/);
+  assert.match(app,/Jarvis is checking your phone connection/);
   assert.match(app,/\/lib\/assets\/stellar-call\.js/);
   assert.match(app,/if\(await ownerCallCommand\(userText\)\)\{/);
   assert.ok(app.indexOf("if(await ownerCallCommand(userText))") < app.indexOf("fetch('/api/chat'"));
@@ -33,4 +33,19 @@ test('owner API handles call health verification and secure escalation',()=>{
   assert.match(ownerCall,/ai-receptionist-live-chi\.vercel\.app\/api\/call-owner/);
   assert.match(broadcast,/requireSession\(req, res\)/);
   assert.match(broadcast,/isOwnerEmail\(session\.email\)/);
+});
+
+test('private owner calls recover or clearly reject expired authentication without leaking into chat',()=>{
+  const request=app.slice(app.indexOf('async function ownerRequest('),app.indexOf('async function renderGrowthReportPanel('));
+  assert.match(request,/res\.status===401/);
+  assert.match(request,/refreshSession\(\)/);
+  assert.match(request,/clearSession\(\)/);
+  assert.match(request,/Sign in again, then retry your Jarvis call/);
+  const start=app.indexOf('async function triggerOwnerCall(');
+  const end=app.indexOf('async function ownerCallCommand(',start);
+  const trigger=app.slice(start,end);
+  assert.match(trigger,/return true; \/\/ Command was handled/);
+  assert.match(trigger,/provider!=='.?stellar-inapp'/);
+  assert.match(trigger,/data\?\.phone_blocked/);
+  assert.doesNotMatch(trigger,/Jarvis is calling your phone/);
 });
