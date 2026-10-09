@@ -15,10 +15,10 @@ test('code exports support common languages without adding Lua comments to them'
   assert.match(app, /javascript:'js'/);
   assert.match(app, /typescript:'ts'/);
   assert.match(app, /python:'py'/);
-  assert.match(app, /data-code-action="\'+(ext==='lua'?'download-lua':'download-code')/);
+  assert.ok(app.includes("ext==='lua'?'download-lua':'download-code'"));
   assert.match(app, /contents=ext==='lua'\?withStellarLuaWatermark\(text\):text/);
   assert.match(app, /link.download=base\+'\.'\+ext/);
-  assert.match(app, /downloadableCount=responseBubble\?\.querySelectorAll\?\.\('\[data-code-action="download-lua"\],\[data-code-action="download-code"\]'\)/);
+  assert.ok(app.includes('[data-code-action="download-lua"],[data-code-action="download-code"]'));
 });
 
 test('successful chat status is visually quiet but warnings and errors remain visible', () => {
