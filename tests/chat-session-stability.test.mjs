@@ -37,6 +37,7 @@ function harness({ planResponses = [], authResponses = [], onFetch } = {}) {
     safeModel: value => value,
     updateHeader: () => {},
     setStatus: (message, tone) => notices.push({ message, tone }),
+    setTimeout: callback => callback(), // Fast-forward the one-time transient-401 retry.
     fetch: async (url, options) => {
       calls.push({ url, auth: options?.headers?.Authorization || '' });
       onFetch?.(url, state);
@@ -81,7 +82,7 @@ test('a plan-only 401 cannot sign out an auth-verified user', async () => {
 test('only a confirmed 401 from the session endpoint signs out an expired login', async () => {
   const { state } = harness({
     planResponses: [response(401)],
-    authResponses: [response(401, { error: 'Please sign in again.' })],
+    authResponses: [response(401, { error: 'Please sign in again.' }), response(401, { error: 'Please sign in again.' })],
   });
   await state.loadPlanTruth();
   assert.equal(state.currentToken, '');
