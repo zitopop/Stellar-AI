@@ -60,6 +60,30 @@ export function subscriptionPriceForPlan(plan, env = process.env, currency = 'GB
   return prices[plan] || '';
 }
 
+
+const EXPECTED_GBP_SUBSCRIPTION_TERMS = Object.freeze({
+  starter: { amount: 800, interval: 'month' },
+  'starter-annual': { amount: 6700, interval: 'year' },
+  plus: { amount: 2000, interval: 'month' },
+  'plus-annual': { amount: 16800, interval: 'year' },
+  pro: { amount: 7500, interval: 'month' },
+  'pro-annual': { amount: 63000, interval: 'year' },
+});
+
+// Price IDs alone do not prove that Stripe will bill the advertised amount.
+// Fail closed if a price is archived, in the wrong currency, or has the wrong cadence.
+export async function validateSubscriptionPrice(stripe, plan, priceId) {
+  const expected = EXPECTED_GBP_SUBSCRIPTION_TERMS[plan];
+  if (!expected || !/^price_[A-Za-z0-9]+$/.test(String(priceId || ''))) return false;
+  const actual = await stripe.prices.retrieve(priceId);
+  return actual?.active === true
+    && actual?.currency === 'gbp'
+    && actual?.type === 'recurring'
+    && actual?.unit_amount === expected.amount
+    && actual?.recurring?.interval === expected.interval
+    && (actual?.recurring?.interval_count || 1) === 1;
+}
+
 async function portalProductsForLivePlans(stripe) {
   const entries = await Promise.all(
     Object.values(LIVE_GBP_SUBSCRIPTION_PRICES).map(async (priceId) => {
@@ -710,6 +734,10 @@ export default async function handler(req, res) {
     const price = liveSubscriptionPriceForPlan(plan, currency)
       || subscriptionPriceForPlan(plan, process.env, currency);
     if (!price) return res.status(400).json({ error: missingPlanMessage(plan), code: 'PLAN_PRICE_NOT_CONFIGURED', country, currency });
+    if (!(await validateSubscriptionPrice(stripe, plan, price))) {
+      console.error('Stellar Stripe price terms mismatch', { plan, price });
+      return res.status(409).json({ error: 'This plan is temporarily unavailable because billing could not be verified. No payment has been taken.', code: 'PLAN_PRICE_VALIDATION_FAILED' });
+    }
 
     const attemptId = checkoutIdempotencyKey(sessionUser.email, plan);
     const newAttempt = await createCheckoutAttempt({ id: attemptId, email: sessionUser.email, plan });
