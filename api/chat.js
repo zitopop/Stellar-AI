@@ -231,7 +231,7 @@ const ROLE_RESPONSE_SCHEMAS = {
 };
 
 const STRUCTURED_FALLBACK_NOTICE = 'STRUCTURED OUTPUT FALLBACK: If JSON Schema transport is unavailable on a fallback provider, preserve every required field in clearly labelled prose or JSON-like sections, but do not claim that schema validation or execution occurred.';
-const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+// Anthropic uses HTTP 529 when its API is overloaded; try the configured fallback.\nconst ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504, 529]);
 const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 const MAX_REQUEST_PAYLOAD_CHARS = 5_000_000;
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
@@ -561,7 +561,7 @@ function resolveModelTier(requestedModel, plan) {
 
 function getModelCandidates(tier) {
   const modelTier = MODEL_TIERS[tier] || MODEL_TIERS.star;
-  return [modelTier.primary, modelTier.fallback].filter(Boolean);
+  return [...new Set([modelTier.primary, modelTier.fallback].filter(Boolean))];
 }
 
 function resolveRoute(requestedModel, requestedRole, plan) {
@@ -894,7 +894,7 @@ async function createForgeResponse({ model, maxTokens, system, messages, signal,
 async function createAnthropicStream({ tier, maxTokens, system, messages, signal }) {
   let lastResponse = null;
 
-    for (const model of getModelCandidates(tier)) {
+  for (const model of getModelCandidates(tier)) {
     let response;
     try {
       response = await fetch('https://api.anthropic.com/v1/messages', {
