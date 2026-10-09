@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0b0b">
-<meta name="stellar-plugins-release" content="2026-10-09-no-token-google-v40">
+<meta name="stellar-plugins-release" content="2026-10-09-no-token-google-v41">
 <title>Apps & Tools — Stellar AI</title>
 <meta name="description" content="Use built-in Stellar tools or connect apps such as Gmail when you need them. Clear permissions, simple controls and no hidden actions.">
 <link rel="canonical" href="https://trystellarai.com/plugins">
@@ -113,7 +113,7 @@ body{background:var(--bg);color:#f4f5f8}
   <div class="section-head"><div><h2>How connecting works</h2><p>Where Google sign-in is available, connect without creating an API token. Advanced developer integrations may still need owner setup.</p></div><span class="right">3 simple steps</span></div>
   <div class="grid guide-steps">
     <article class="tool-card"><div class="tool-top"><div class="ico">1</div></div><h3>Choose an app</h3><p>Find the app you want Stellar to work with and tap <strong>Connect</strong>.</p></article>
-    <article class="tool-card"><div class="tool-top"><div class="ico">2</div></div><h3>Approve access</h3><p>Review the permissions requested by the provider. Advanced connections may need a developer token.</p></article>
+    <article class="tool-card"><div class="tool-top"><div class="ico">2</div></div><h3>Approve access</h3><p>Approve the permissions in your provider's secure window. Developer setup is only shown when one-click linking is unavailable.</p></article>
     <article class="tool-card"><div class="tool-top"><div class="ico">3</div></div><h3>Use or disconnect</h3><p>Connected apps appear in <strong>My connections</strong>. Pause or disconnect whenever you choose.</p></article>
   </div>
 </section>
@@ -451,9 +451,11 @@ function googleBrowserPermission(clientId){
   }
   return new Promise((resolve,reject)=>{
     let finished=false;
+    const fallback=setTimeout(()=>done(new Error('Google sign-in was not completed. Close the pop-up and try again.')),90000);
     const done=(error,token)=>{
       if(finished)return;
       finished=true;
+      clearTimeout(fallback);
       if(error)reject(error);else resolve(token);
     };
     try{
