@@ -78,7 +78,7 @@ test('public plan details explain general AI work and match Pro model access', (
   const plans = read('plans.html');
   assert.match(plans, /Start free with AI chat, writing, planning and coding/);
   assert.doesNotMatch(plans, /Stellar focuses on FiveM Lua and Roblox Luau/);
-  const pro = plans.split('data-plan="pro"')[1].split('</article>')[0];
+  const pro = plans.split('<article class="plan paid" data-plan="pro"')[1].split('</article>')[0];
   for (const model of ['Stellar Fast', 'Stellar Core', 'Stellar Deep', 'Stellar Max']) {
     assert.ok(pro.includes(model), 'Pro should show ' + model);
   }
