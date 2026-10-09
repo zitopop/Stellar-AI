@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { PLAN_DEFINITIONS, TOPUP_MAX_PENCE, TOPUP_MIN_PENCE, clampTopupPence, isValidTopupPence, normalisePlan, topupBonusPence } from '../lib/pricing.js';
 
 test('top-up bonus schedule matches the customer-facing offers', () => {
@@ -45,4 +46,18 @@ test('public plan entitlements match the conversion promises', () => {
   assert.equal(PLAN_DEFINITIONS.plus.requestsPerHour, 400);
   assert.equal(PLAN_DEFINITIONS.pro.requestsPerHour, 1600);
   assert.ok(PLAN_DEFINITIONS.pro.models.includes('nova'));
+});
+
+test('public plan pages explain monthly capacity in Fast generations', () => {
+  const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const pricingPage = readFileSync(new URL('../plans.html', import.meta.url), 'utf8');
+  for (const [tier, credits] of [['starter', 5000], ['plus', 15000], ['pro', 30000]]) {
+    assert.equal(PLAN_DEFINITIONS[tier].includedCredits, credits);
+    const fastGenerations = new Intl.NumberFormat('en-GB').format(credits / 2);
+    const label = 'Up to ' + fastGenerations + ' Fast generations/month';
+    assert.ok(home.includes(label), 'Homepage must explain ' + tier + ' capacity');
+    assert.ok(pricingPage.includes(label), 'Pricing page must explain ' + tier + ' capacity');
+  }
+  assert.ok(pricingPage.includes('Up to 15 Fast generations/day'));
+  assert.match(pricingPage, /Core, Deep and Max spend the included allowance faster/);
 });
