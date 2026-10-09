@@ -1,0 +1,133 @@
+name: Stellar Production Autopilot
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: stellar-production-autopilot
+  cancel-in-progress: true
+
+jobs:
+  production-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check public production surfaces
+        id: smoke
+        shell: bash
+        run: |
+          set +e
+          failures=()
+
+          check_page() {
+            local url="$1"
+            local marker="$2"
+            local label="$3"
+            local body
+            body="$(mktemp)"
+            status="$(curl -L -sS -o "$body" -w '%{http_code}' --retry 2 --connect-timeout 10 --max-time 25 "$url")"
+            if [[ "$status" != "200" ]]; then
+              failures+=("$label returned HTTP $status")
+            elif [[ -n "$marker" ]] && ! grep -Fq "$marker" "$body"; then
+              failures+=("$label is missing expected marker: $marker")
+            fi
+            rm -f "$body"
+          }
+
+          check_page "https://trystellarai.com/" "STELLAR AI" "Homepage"
+          check_page "https://trystellarai.com/app" "data-stellar-clean-app=\"true\"" "Chat app"
+          check_page "https://trystellarai.com/plans" "Stellar AI Plans" "Plans"
+          check_page "https://trystellarai.com/plugins" "" "Plugins"
+          check_page "https://trystellarai.com/support" "" "Support"
+
+          if [[ ${#failures[@]} -eq 0 ]]; then
+            echo "healthy=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "## Stellar production health"
+              echo ""
+              echo "All monitored public surfaces returned HTTP 200 and the homepage/app markers were present."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "healthy=false" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Stellar production health"
+            echo ""
+            echo "Production check found ${#failures[@]} issue(s):"
+            for failure in "${failures[@]}"; do
+              echo "- $failure"
+            done
+          } | tee /tmp/stellar-health-report.md >> "$GITHUB_STEP_SUMMARY"
+
+          exit 1
+
+      - name: Open or close the production health issue
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          HEALTHY: ${{ steps.smoke.outputs.healthy }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const title = '[Autopilot] Stellar production health';
+            const healthy = process.env.HEALTHY === 'true';
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100
+            });
+            const existing = issues.find(issue => issue.title === title && !issue.pull_request);
+
+            if (healthy) {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: existing.number,
+                  body: '✅ Production checks are healthy again. Closing this automatic health issue.'
+                });
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: existing.number,
+                  state: 'closed'
+                });
+              }
+              return;
+            }
+
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const body = [
+              'Stellar AI automatic production monitoring found a problem.',
+              '',
+              'Check the failed **Stellar Production Autopilot** run for the exact surface and HTTP/marker failure:',
+              runUrl,
+              '',
+              'This issue is maintained automatically and will close after production recovers.'
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body
+              });
+            }
