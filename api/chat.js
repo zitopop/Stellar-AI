@@ -17,10 +17,10 @@ const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 
 // Current Claude models back the direct-provider path. Each public tier has a
-// current-family fallback so a single model-access failure does not strand a request.
+// quality-conscious fallback so a single model-access failure does not strand a request.
 const MODEL_TIERS = {
   spark: { primary: 'claude-haiku-4-5-20251001', fallback: 'claude-sonnet-5-5' },
-  star: { primary: 'claude-sonnet-5-5', fallback: 'claude-haiku-4-5-20251001' },
+  star: { primary: 'claude-sonnet-5-5', fallback: 'claude-sonnet-4-6' },
   comet: { primary: 'claude-opus-5-5', fallback: 'claude-sonnet-5-5' },
   nova: { primary: 'claude-fable-5-1', fallback: 'claude-opus-5-5' },
 };
