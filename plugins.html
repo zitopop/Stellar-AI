@@ -291,8 +291,16 @@ function updatePluginOverview(plugins,signedOut=false){
     shortcuts.append(link);
   });
 }
+function pluginSortRank(plugin){
+  if(plugin?.connected)return 0;
+  if(plugin?.oauthAvailable||plugin?.browserOAuthAvailable)return 1;
+  if(plugin?.enabled||plugin?.installable&&!plugin?.connection)return 2;
+  if(plugin?.status==='coming_soon')return 5;
+  if(plugin?.oauthStatus?.tokenFallback)return 4;
+  return 3;
+}
 function renderDirectory(plugins,{signedOut=false}={}){
-  directoryPlugins=Array.isArray(plugins)?plugins:[];
+  directoryPlugins=Array.isArray(plugins)?[...plugins].sort((a,b)=>pluginSortRank(a)-pluginSortRank(b)):[];
   updatePluginOverview(directoryPlugins,signedOut);
   directoryGrid.textContent='';
   const connectedFilter=directoryFilters.find(button=>button.dataset.directoryFilter==='connected');
