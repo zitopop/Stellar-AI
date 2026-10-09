@@ -17,6 +17,9 @@ test('anonymous preview helpers constrain input and detect supported stacks', ()
   assert.equal(detectTarget('ESX xPlayer job').framework, 'ESX');
   assert.equal(detectTarget('ox_lib callback').framework, 'ox_lib');
   assert.equal(detectTarget('QBCore inventory job').framework, 'QBCore');
+  assert.equal(detectTarget('Write a JavaScript form validator').filename, 'stellar-preview.js');
+  assert.equal(detectTarget('Write a TypeScript helper').language, 'typescript');
+  assert.equal(detectTarget('Python CSV parser').filename, 'stellar-preview.py');
   assert.equal(stripCodeFences('```lua\nprint("ok")\n```'), 'print("ok")');
 });
 

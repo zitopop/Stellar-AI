@@ -12,8 +12,8 @@ test('preview submit has meaningful visible label and fixed height',()=>{
  assert.match(css,/\.preview-form\{display:flex;gap:10px;align-items:flex-end\}/);
  assert.match(css,/\.preview-form button\{min-width:150px;min-height:48px;height:48px;align-self:flex-end/);
  assert.match(css,/\.preview-form button\{width:100%;min-height:48px;height:48px;align-self:stretch\}/);
- assert.match(home,/stellar-landing-clean-v1\.css\?v=20261008-layout-v4/);
- assert.match(home,/homepage\.js\?v=20261008-preview-v4/);
+ assert.match(home,/stellar-landing-clean-v1\.css\?v=20261009-home-v5/);
+ assert.match(home,/homepage\.js\?v=20261009-preview-v5/);
 });
 test('hero and vertical spacing are reduced but feature and plans intact',()=>{
  assert.match(css,/h1\{font-size:clamp\(42px,4\.65vw,64px\)/);
