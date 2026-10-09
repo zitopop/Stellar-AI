@@ -16,8 +16,8 @@ test('plugins directory exposes clearer search and connection state', () => {
   assert.match(plugins, /id="clear-search"/);
   assert.match(plugins, /id="tool-count"/);
   assert.match(plugins, /id="connection-count"/);
-  assert.match(plugins, /Your connections/);
-  assert.match(plugins, /Browse tools/);
+  assert.match(plugins, /Your apps/);
+  assert.match(plugins, /Ready without setup/);
   assert.match(plugins, /Permissions/);
 });
 
