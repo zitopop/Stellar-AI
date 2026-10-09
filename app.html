@@ -4560,7 +4560,21 @@ html,body,.app{
 @media(max-width:360px){.settings-profile-panel .settings-v90-item{grid-template-columns:minmax(0,1fr)!important;gap:7px!important}.settings-profile-panel .settings-v90-end,.settings-profile-panel .settings-v90-plan-end{justify-content:flex-start!important;max-width:100%!important}}
 @media(prefers-reduced-motion:reduce){.settings-profile-panel .settings-v90-edit>summary>b{transition:none!important}}
 </style>
-</head>
+<style id="stellar-model-clarity-v91">
+.panel.model-picker-panel.model-picker-compact{width:min(510px,100%)!important}
+.panel.model-picker-panel.model-picker-compact #panelIntro{display:block!important;margin:4px 0 0!important;color:#a0a6b3!important;font-size:12px!important;line-height:1.55!important}
+.panel.model-picker-panel.model-picker-compact .model-grid-compact{gap:8px!important}
+.panel.model-picker-panel.model-picker-compact .model-card-compact{min-height:90px!important;padding:12px 14px!important;border:1px solid rgba(255,255,255,.075)!important;border-radius:13px!important;background:#17191e!important}
+.panel.model-picker-panel.model-picker-compact .model-card-compact.selected{border-color:rgba(175,150,255,.44)!important;background:#211e30!important}
+.panel.model-picker-panel.model-picker-compact .model-card-compact.locked{opacity:.75!important}
+.panel.model-picker-panel.model-picker-compact .model-tier-label{display:block!important;margin-bottom:5px!important;color:#bca9f6!important;font:760 9px/1.3 ui-monospace,monospace!important;letter-spacing:.09em!important}
+.panel.model-picker-panel.model-picker-compact .model-card-copy strong{color:#fafaff!important;font-size:14px!important}
+.panel.model-picker-panel.model-picker-compact .model-card-copy small{color:#abb1bf!important;font-size:11.5px!important;line-height:1.5!important}
+.panel.model-picker-panel.model-picker-compact .model-usage-note{display:block!important;margin-top:7px!important;color:#9ba2b0!important;font-size:10.5px!important}
+.panel.model-picker-panel.model-picker-compact .model-picker-transparency{margin:13px 2px 0!important;color:#979ea9!important;font-size:11px!important;line-height:1.6!important}
+.panel.model-picker-panel.model-picker-compact .model-picker-transparency a{color:#d1c5ff!important}
+@media(max-width:540px){.panel.model-picker-panel.model-picker-compact .model-card-compact{min-height:92px!important}}
+</style></head>
 <body data-stellar-clean-app="true">
 <div class="drawer-backdrop" id="backdrop" aria-hidden="true"></div>
 <div class="app">
@@ -4938,7 +4952,22 @@ function modelMenuMeta(){return{spark:'Quick everyday answers, rewrites and simp
 function renderComposerModelMenu(){if(!modelMenu)return;const meta=modelMenuMeta(),order=['spark','star','comet','nova'];modelMenu.innerHTML=order.map(key=>{const allowed=allowedModels.includes(key),selected=selectedModel===key;return '<button class="composer-model-option'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" role="menuitemradio" aria-checked="'+(selected?'true':'false')+'" data-model-menu="'+key+'"><span class="composer-model-option-copy"><strong>'+MODELS[key]+'</strong><small>'+meta[key]+'</small></span><b aria-hidden="true">'+(selected?'✓':allowed?'':'🔒')+'</b></button>'}).join('')}
 function closeComposerModelMenu(){if(!modelMenu||!modelBtn)return;modelMenu.hidden=true;modelBtn.setAttribute('aria-expanded','false')}
 function toggleComposerModelMenu(){if(!modelMenu||!modelBtn)return;const opening=modelMenu.hidden;closeComposerModelMenu();if(opening){renderComposerModelMenu();modelMenu.hidden=false;modelBtn.setAttribute('aria-expanded','true');requestAnimationFrame(()=>modelMenu.querySelector('.composer-model-option.selected,.composer-model-option')?.focus())}}
-function renderModelsPanel(){document.getElementById('panel')?.classList.add('model-picker-panel','model-picker-compact');panelTitle.textContent='Model';panelIntro.textContent='';const order=['spark','star','comet','nova'];const meta={spark:{desc:'Quick everyday answers, rewrites and simple code help.'},star:{desc:'Balanced for most chats, coding, writing and planning.'},comet:{desc:'Deeper reasoning for debugging and harder multi-step work.'},nova:{desc:'Maximum capability for the most complex projects.'}};panelBody.innerHTML='<div class="model-grid model-grid-compact">'+order.map(key=>{const allowed=allowedModels.includes(key),selected=selectedModel===key,m=meta[key];return '<button class="model-card model-card-compact'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" data-action="select-model" data-model="'+key+'" aria-pressed="'+(selected?'true':'false')+'" aria-disabled="'+(allowed?'false':'true')+'"><span class="model-card-copy"><strong>'+MODELS[key]+'</strong><small>'+m.desc+'</small></span><span class="model-card-state" aria-hidden="true">'+(selected?'✓':allowed?'':'🔒')+'</span></button>'}).join('')+'</div>'}
+function renderModelsPanel(){
+  document.getElementById('panel')?.classList.add('model-picker-panel','model-picker-compact');
+  panelTitle.textContent='Choose intelligence';
+  panelIntro.textContent='Pick the right model for your task. More advanced models use more of your monthly allowance.';
+  const order=['spark','star','comet','nova'];
+  const meta={
+    spark:{tag:'QUICK',desc:'Fast answers, everyday questions and small edits.',usage:'1× Fast usage',tier:'Free'},
+    star:{tag:'BALANCED',desc:'Writing, planning, coding and everyday research.',usage:'2.5× Fast usage',tier:'Starter'},
+    comet:{tag:'DEEP',desc:'Complex debugging and multi-step problem solving.',usage:'5× Fast usage',tier:'Plus'},
+    nova:{tag:'MAX',desc:'Demanding architecture, detailed analysis and large projects.',usage:'10× Fast usage',tier:'Pro'}
+  };
+  panelBody.innerHTML='<div class="model-grid model-grid-compact">'+order.map(key=>{
+    const allowed=allowedModels.includes(key),selected=selectedModel===key,m=meta[key];
+    return '<button class="model-card model-card-compact'+(selected?' selected':'')+(allowed?'':' locked')+'" type="button" data-action="select-model" data-model="'+key+'" aria-pressed="'+(selected?'true':'false')+'" aria-disabled="'+(allowed?'false':'true')+'"><span class="model-card-copy"><span class="model-tier-label">'+m.tag+'</span><strong>'+MODELS[key]+'</strong><small>'+m.desc+'</small><span class="model-usage-note">'+m.usage+' · '+(allowed?'Included in your plan':m.tier+' plan or higher')+'</span></span><span class="model-card-state" aria-hidden="true">'+(selected?'✓':allowed?'↗':'🔒')+'</span></button>'
+  }).join('')+'</div><p class="model-picker-transparency">Stellar routes tiers to configured AI providers. Availability and results may vary. <a href="/models">Compare models ↗</a></p>';
+}
 function settingsOwnerTools(){
   if(!isOwner())return'';
   return '<section class="settings-dev-card"><div class="settings-dev-card-title"><div><strong>Private tools</strong><small>Visible only to the verified owner account.</small></div></div><div class="settings-owner-tools"><button class="row" id="growth-report-nav" type="button" data-action="open-growth-report"><span class="settings-row-copy"><strong>Growth &amp; Revenue</strong><small>Traffic sources, checkout conversion and activation</small></span><span class="settings-row-value">Open</span></button><a class="row" id="ai-os-nav" href="/ai-os"><span class="settings-row-copy"><strong>AI OS</strong><small>Private Brain, executive assistant and coordinated agent team</small></span><span class="settings-row-value">Open</span></a><button class="row" id="jarvis-briefings-nav" type="button" data-action="open-jarvis-briefings"><span class="settings-row-copy"><strong>Jarvis Briefings</strong><small>Phone updates and urgent private status</small></span><span class="settings-row-value">Open</span></button><a class="row" id="jarvis-nav" href="/jarvis"><span class="settings-row-copy"><strong>Jarvis Voice &amp; Vision</strong><small>Private command centre</small></span><span class="settings-row-value">Open</span></a><button class="row" id="owner-call-now" type="button" data-action="call-owner"><span class="settings-row-copy"><strong>Ring my phone</strong><small>Start a private Jarvis call</small></span><span class="settings-row-value">Call</span></button><a class="row" id="deploy-center-nav" href="/deploy"><span class="settings-row-copy"><strong>Deploy Center</strong><small>Private deployment controls</small></span><span class="settings-row-value">Open</span></a></div></section>'
