@@ -15,7 +15,7 @@ test('auth exposes a safe session signing readiness check', () => {
 });
 
 test('missing signing configuration returns 503 instead of logging customers out', () => {
-  assert.match(authLib, /export function requireSession\(req, res\) \{[\s\S]*?if \(!sessionSigningConfigured\(\)\) \{/);
+  assert.match(authLib, /export function requireSession\(req, res\) \{[\s\S]*?if \(presentedSession && !sessionSigningConfigured\(\)\) \{/);
   assert.match(authApi, /if \(action === 'refreshSession'\) \{[\s\S]*?if \(!sessionSigningConfigured\(\)\) \{/);
   assert.match(chatApi, /req\.headers\.authorization[\s\S]*?!sessionSigningConfigured\(\)/);
   assert.match(authLib, /status\(503\)\.json\(\{ error: 'Secure sign-in is temporarily unavailable\. Try again shortly\.', code: 'AUTH_SESSION_UNAVAILABLE' \}\)/);
