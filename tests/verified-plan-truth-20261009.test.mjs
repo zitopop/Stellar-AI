@@ -44,3 +44,11 @@ test('landing keeps one clear heading and a usable free path', () => {
   assert.match(landing, /data-conversion="start-free"/);
   assert.match(landing, /href="\/plans"/);
 });
+
+
+test('plans head does not leak escaped newlines into visible page text', () => {
+  const head = plans.split('</head>')[0];
+  assert.doesNotMatch(head, /\\n<link/i);
+  assert.match(head, /stellar-clean-premium-v35\.css/);
+  assert.match(head, /stellar-brand-system-v1\.css/);
+});
