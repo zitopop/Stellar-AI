@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0b0b">
-<meta name="stellar-plugins-release" content="2026-10-09-integrations-command-v39">
+<meta name="stellar-plugins-release" content="2026-10-09-no-token-google-v40">
 <title>Apps & Tools — Stellar AI</title>
 <meta name="description" content="Use built-in Stellar tools or connect apps such as Gmail when you need them. Clear permissions, simple controls and no hidden actions.">
 <link rel="canonical" href="https://trystellarai.com/plugins">
@@ -74,6 +74,16 @@ body{background:var(--bg);color:#f4f5f8}
 .tool-card .ico,.builtin .ico{background:#21232d;color:#d5ccff}
 .directory-filter[aria-pressed="true"]{border-color:rgba(177,153,255,.4)}
 @media(max-width:600px){.hero{padding-top:40px}.plugin-command-stats>div{padding:15px 12px}.plugin-command-stats strong{font-size:22px}.plugin-command-stats span{font-size:11px}.plugin-command-head span:last-child{margin-left:0;width:100%}.plugin-command-actions .btn{flex:1 1 auto}.plugin-command-actions{padding:13px}.hero p{font-size:15px}}
+</style><script src="https://accounts.google.com/gsi/client" async defer></script>
+<style id="stellar-google-no-token-v40">
+.browser-oauth-note{flex:1 0 100%;margin:0!important;padding:0!important;font-size:11px!important;line-height:1.5!important;color:#a8b0bd!important}
+.plugin-command .plugin-command-stats{min-width:0}
+.tool-card .card-actions{align-items:center}
+.tool-card .card-actions .btn.primary{border-color:rgba(190,167,255,.38);background:#e8dfff;color:#16131f}
+.tool-card .card-actions .btn.primary:hover{background:#fff}
+.token-box{border-color:rgba(255,255,255,.07);background:#12141a}
+.token-box label{color:#bbc0d0}
+@media(max-width:600px){.tool-card .card-actions{display:flex;flex-wrap:wrap}.tool-card .card-actions .btn{min-height:44px}}
 </style></head>
 <body>
 <header class="top"><nav class="wrap nav"><a class="brand" href="/">Stellar AI</a><div class="nav-actions"><a href="/plans">Plans</a><a href="/support">Help</a><a class="primary" href="/app">Back to chat</a></div></nav></header>
@@ -100,7 +110,7 @@ body{background:var(--bg);color:#f4f5f8}
 </section>
 
 <section class="section" id="how-connect">
-  <div class="section-head"><div><h2>How connecting works</h2><p>Supported apps use secure provider sign-in. Some integrations require extra setup.</p></div><span class="right">3 simple steps</span></div>
+  <div class="section-head"><div><h2>How connecting works</h2><p>Where Google sign-in is available, connect without creating an API token. Advanced developer integrations may still need owner setup.</p></div><span class="right">3 simple steps</span></div>
   <div class="grid guide-steps">
     <article class="tool-card"><div class="tool-top"><div class="ico">1</div></div><h3>Choose an app</h3><p>Find the app you want Stellar to work with and tap <strong>Connect</strong>.</p></article>
     <article class="tool-card"><div class="tool-top"><div class="ico">2</div></div><h3>Approve access</h3><p>Review the permissions requested by the provider. Advanced connections may need a developer token.</p></article>
@@ -164,7 +174,7 @@ function applyDirectorySearch(){
     const matchesQuery=!q||String(card.dataset.search||'').includes(q);
     const matchesFilter=directoryFilter==='all'
       ||(directoryFilter==='connected'&&plugin?.connected)
-      ||(directoryFilter==='supported'&&plugin?.status!=='coming_soon'&&Boolean(plugin?.connected||plugin?.enabled||plugin?.oauthAvailable||plugin?.installable&&!plugin?.connection||plugin?.oauthStatus?.tokenFallback))
+      ||(directoryFilter==='supported'&&plugin?.status!=='coming_soon'&&Boolean(plugin?.connected||plugin?.enabled||plugin?.oauthAvailable||plugin?.installable&&!plugin?.connection||plugin?.browserOAuthAvailable||plugin?.oauthStatus?.tokenFallback))
       ||(directoryFilter==='planned'&&plugin?.status==='coming_soon');
     const visible=matchesQuery&&matchesFilter;
     card.classList.toggle('browse-hidden',!visible);
@@ -187,7 +197,7 @@ clearDirectorySearch?.addEventListener('click',()=>{directorySearch.value='';dir
 function updatePluginOverview(plugins,signedOut=false){
   const all=Array.isArray(plugins)?plugins:[];
   const connected=all.filter(app=>app.connected===true);
-  const available=all.filter(app=>app.status!=='coming_soon'&&!app.connected&&(app.oauthAvailable||app.oauthStatus?.tokenFallback||app.installable&&!app.connection));
+  const available=all.filter(app=>app.status!=='coming_soon'&&!app.connected&&(app.oauthAvailable||app.browserOAuthAvailable||app.oauthStatus?.tokenFallback||app.installable&&!app.connection));
   const planned=all.filter(app=>app.status==='coming_soon');
   const connectedLabel=document.getElementById('plugin-overview-connected');
   const availableLabel=document.getElementById('plugin-overview-ready');
@@ -228,7 +238,7 @@ function renderDirectory(plugins,{signedOut=false}={}){
     const status=document.createElement('span');const coming=plugin.status==='coming_soon';
     const paused=plugin.connected&&!plugin.enabled;
     status.className='status '+(paused?'paused':plugin.connected||plugin.enabled?'ready':coming?'soon':'connect');
-    status.textContent=coming?'Coming soon':paused?'Paused':plugin.connected?'Connected':signedOut?'Sign in to check':plugin.enabled?'Ready':plugin.oauthAvailable?'Available':plugin.oauthStatus?.tokenFallback?'Advanced setup':'Unavailable';
+    status.textContent=coming?'Coming soon':paused?'Paused':plugin.connected?'Connected':signedOut?'Sign in to check':plugin.enabled?'Ready':plugin.oauthAvailable?'Available':plugin.browserOAuthAvailable?'Google sign-in':plugin.oauthStatus?.tokenFallback?'Developer setup':'Unavailable';
     top.append(icon,status);
     const title=document.createElement('h3');title.textContent=plugin.name;const desc=document.createElement('p');desc.textContent=plugin.description;
     const meta=document.createElement('div');meta.className='plugin-meta';const cat=document.createElement('span');cat.textContent=plugin.category||'Plugin';meta.append(cat);if(plugin.verified){const v=document.createElement('span');v.textContent='Verified';meta.append(v)}
@@ -245,8 +255,13 @@ function renderDirectory(plugins,{signedOut=false}={}){
       const manage=document.createElement('a');manage.className='btn';manage.href='#connections';manage.textContent='Manage';actions.append(manage);
     }else if(plugin.oauthAvailable){
       actions.append(pluginButton(plugin.connectLabel||'Connect','oauth',plugin.id,true));
+    }else if(plugin.browserOAuthAvailable){
+      actions.append(pluginButton('Connect with Google','browser-oauth',plugin.id,true));
+      const note=document.createElement('p');note.className='browser-oauth-note';
+      note.textContent='Secure Google sign-in. No developer token needed. This connection is temporary and may need reconnecting.';
+      actions.append(note);
     }else if(plugin.oauthStatus?.tokenFallback){
-      actions.append(pluginButton('Advanced setup','show-token',plugin.id,true));
+      actions.append(pluginButton('Developer setup','show-token',plugin.id,true));
     }else if(plugin.installable&&!coming&&!plugin.connection){
       actions.append(pluginButton('Turn on','install',plugin.id,true));
     }else{
@@ -254,7 +269,7 @@ function renderDirectory(plugins,{signedOut=false}={}){
     }
     card.append(top,title,desc,meta,skills,actions);
     if(!signedOut && plugin.oauthStatus?.tokenFallback && !coming && !plugin.connected){
-      if(plugin.oauthAvailable)actions.append(pluginButton('Use developer token','show-token',plugin.id));
+      if(plugin.oauthAvailable)actions.append(pluginButton('Use developer token (advanced)','show-token',plugin.id));
       const box=document.createElement('div');box.className='token-box';box.hidden=true;box.dataset.tokenBox=plugin.id;
       const label=document.createElement('label');label.textContent='Developer access token';label.htmlFor='plugin-token-'+plugin.id;
       const input=document.createElement('input');input.id='plugin-token-'+plugin.id;input.type='password';input.autocomplete='off';input.spellcheck=false;input.placeholder='Paste token here';input.dataset.tokenInput=plugin.id;
@@ -369,6 +384,8 @@ function renderConnectedApps(data){
       actions.append(pluginButton('Disconnect','disconnect',plugin.id));
     }else if(plugin.oauthAvailable){
       actions.append(pluginButton('Connect','oauth',plugin.id,true));
+    }else if(plugin.browserOAuthAvailable){
+      actions.append(pluginButton('Connect with Google','browser-oauth',plugin.id,true));
     }else if(plugin.oauthStatus?.tokenFallback){
       actions.append(pluginButton('Advanced setup','show-token',plugin.id));
     }else if(plugin.installable&&!plugin.connection){
@@ -425,12 +442,57 @@ async function loadConnectedApps(){
     if(directoryEmpty){directoryEmpty.hidden=false;directoryEmpty.textContent='Could not load your apps. You can retry without signing out.'}if(retryDirectory)retryDirectory.hidden=false
   }
 }
+function googleBrowserPermission(clientId){
+  if(!/^[0-9]+-[a-z0-9_-]+\.apps\.googleusercontent\.com$/i.test(String(clientId||''))){
+    throw new Error('Google sign-in is not configured for this app.');
+  }
+  if(!window.google?.accounts?.oauth2?.initTokenClient){
+    throw new Error('Google sign-in is still loading or blocked in your browser. Enable pop-ups and try Connect with Google again.');
+  }
+  return new Promise((resolve,reject)=>{
+    let finished=false;
+    const done=(error,token)=>{
+      if(finished)return;
+      finished=true;
+      if(error)reject(error);else resolve(token);
+    };
+    try{
+      const client=google.accounts.oauth2.initTokenClient({
+        client_id:clientId,
+        scope:'https://www.googleapis.com/auth/gmail.readonly',
+        callback:response=>{
+          if(response?.error||!response?.access_token){
+            done(new Error('Google did not grant read-only Gmail access. Please try again.'));
+          }else done(null,String(response.access_token));
+        },
+        error_callback:error=>{
+          const reason=String(error?.type||'');
+          done(new Error(reason==='popup_closed'?'Google sign-in was closed. Try again when ready.':'Google sign-in could not open. Enable pop-ups and try again.'));
+        },
+      });
+      client.requestAccessToken({prompt:'consent select_account'});
+    }catch{
+      done(new Error('Google sign-in could not start. Check your browser settings and try again.'));
+    }
+  });
+}
 async function pluginAction(button){
   const id=button.dataset.pluginId,action=button.dataset.pluginAction;if(!id||!action)return;
   if(action==='show-token'){const box=document.querySelector('[data-token-box="'+CSS.escape(id)+'"]');if(box){box.hidden=!box.hidden;if(!box.hidden){box.closest('.tool-card')?.scrollIntoView({behavior:'smooth',block:'nearest'});box.querySelector('input')?.focus()}}return}
   if(action==='disconnect'&&!window.confirm('Disconnect this app from Stellar AI? You can reconnect it later.'))return;
   button.disabled=true;
   try{
+    if(action==='browser-oauth'){
+      const plugin=directoryPlugins.find(item=>item.id===id);
+      if(!plugin?.browserOAuthAvailable||!plugin?.browserOAuthClientId){
+        throw new Error('Google sign-in is not ready for this app.');
+      }
+      // requestAccessToken runs directly within this user-click handler.
+      const accessToken=await googleBrowserPermission(plugin.browserOAuthClientId);
+      await pluginApi('connectBrowserOAuth',{id,accessToken});
+      await loadConnectedApps();
+      return;
+    }
     if(action==='oauth'){
       const data=await pluginApi('startOAuth',{id});if(!data.url)throw new Error('This connection is not available yet.');const url=new URL(data.url);if(url.protocol!=='https:')throw new Error('Invalid connection link.');location.assign(url.href);return;
     }
