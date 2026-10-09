@@ -165,6 +165,26 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 .plans-page footer a:focus-visible{outline:2px solid #c4bbff;outline-offset:3px}
 </style>
 <script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
+<style id="stellar-clear-plan-perks-v1">
+.perks-overview{padding:0 0 42px;border-top:1px solid rgba(255,255,255,.08)}
+.perks-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;padding:32px 0 17px}
+.perks-heading h2{margin:9px 0 5px;font-size:clamp(26px,3.3vw,39px);letter-spacing:-.04em;line-height:1.12}
+.perks-heading p,.perks-footnote{margin:0;color:#a7adb8;line-height:1.6}
+.perks-heading .btn{flex-shrink:0}
+.perk-table-scroll{overflow-x:auto;max-width:100%;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#121316;-webkit-overflow-scrolling:touch}
+.perk-table-scroll:focus-visible{outline:2px solid #b3a7ff;outline-offset:3px}
+.perk-table{border-collapse:collapse;width:100%;min-width:760px;text-align:left;font-size:12px}
+.perk-table th,.perk-table td{padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top}
+.perk-table tr:last-child th,.perk-table tr:last-child td{border-bottom:0}
+.perk-table th{font-weight:750;color:#f4f5f8}
+.perk-table td{color:#d2d5de}
+.perk-table thead th{font-size:11px;white-space:nowrap;background:#1a1b20;color:#f9fafc}
+.perk-table thead th.highlight{color:#bcb4ff}
+.perk-table tbody th{min-width:174px;color:#e8eaf0}
+.perk-table tbody tr:hover{background:rgba(255,255,255,.025)}
+.perks-footnote{font-size:11px;margin-top:12px;max-width:900px}
+@media(max-width:700px){.perks-heading{align-items:start;flex-direction:column}.perks-heading .btn{width:100%}.perk-table{min-width:710px}.perk-table th,.perk-table td{padding:12px 10px}.perks-overview{padding-bottom:28px}}
+</style>
 </head>
 <body class="plans-page">
 <header class="top"><nav class="wrap nav"><a class="brand" href="/">Stellar AI</a><div class="links"><a href="/app">App</a><a href="/plugins">Plugins</a><a href="/business">Business</a><a href="/legal">Legal</a><a class="mobile-help" href="/support">Help</a><a class="primary" href="/app?welcome=1">Open app</a></div></nav></header>
@@ -190,7 +210,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
   <div class="value"><strong>Daily usage allowance</strong><span>Good for trying chat, coding help and quick everyday tasks.</span></div>
   <div class="model-line"><span class="model-pill">Stellar Fast</span></div>
   <div class="actions"><a class="btn" href="/app?welcome=1">Start free</a></div>
-  <ul class="features"><li><i>✓</i><span>General AI chat, writing and coding</span></li><li><i>✓</i><span>Up to 15 Stellar Fast generations per day</span></li><li><i>✓</i><span>Daily automatic reset</span></li><li><i>✓</i><span>Up to 1,800 output tokens</span></li></ul>
+  <ul class="features"><li><i aria-hidden="true">✓</i><span>Everything in Plus, with Stellar Max</span></li><li><i aria-hidden="true">✓</i><span>Up to 1,600 requests/hour, subject to monthly allowance</span></li><li><i aria-hidden="true">✓</i><span>Jarvis Voice + Vision where supported</span></li><li><i aria-hidden="true">✓</i><span>Jarvis Pro briefings and proactive alerts where available</span></li><li><i aria-hidden="true">✓</i><span>Up to 10,000 output tokens</span></li></ul>
 </article>
 <article class="plan paid" data-plan="starter" data-billing-plan="starter">
   <div class="plan-topline"><span class="plan-fit">EVERYDAY</span></div>
@@ -233,6 +253,24 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
   <strong>Provider-flexible routing</strong>
   <div><div class="plan-proof-providers"><b>Stellar Fast</b><b>Stellar Core</b><b>Stellar Deep</b><b>Stellar Max</b></div><span>Customers buy Stellar capability tiers, not access to a named third-party model. Backend providers and versions can change for quality, reliability, safety and availability.</span></div>
 </div>
+<section class="perks-overview" aria-labelledby="compare-perks-title">
+ <div class="perks-heading"><div><span class="kicker">Plan benefits</span><h2 id="compare-perks-title">Compare the perks at a glance</h2><p>Choose based on the model, capacity and tools you actually need.</p></div><a class="btn" href="/app?welcome=1">Start with Free →</a></div>
+ <div class="perk-table-scroll" tabindex="0" role="region" aria-label="Scrollable plan benefits comparison">
+  <table class="perk-table">
+   <thead><tr><th scope="col">Included benefit</th><th scope="col">Free</th><th scope="col">Starter</th><th scope="col" class="highlight">Plus</th><th scope="col">Pro</th></tr></thead>
+   <tbody>
+    <tr><th scope="row">Stellar models</th><td>Fast</td><td>Fast + Core</td><td>Fast + Core + Deep</td><td>Fast + Core + Deep + Max</td></tr>
+    <tr><th scope="row">Usage allowance</th><td>Up to 15 Fast generations/day</td><td>Standard monthly</td><td>Higher monthly</td><td>Highest monthly</td></tr>
+    <tr><th scope="row">Paid-plan hourly ceiling</th><td>—</td><td>120 requests</td><td>400 requests</td><td>1,600 requests</td></tr>
+    <tr><th scope="row">Maximum output tokens</th><td>1,800</td><td>4,000</td><td>6,500</td><td>10,000</td></tr>
+    <tr><th scope="row">Jarvis Voice + Vision</th><td>—</td><td>—</td><td>Where supported</td><td>Where supported</td></tr>
+    <tr><th scope="row">StellarX computer control beta</th><td>—</td><td>—</td><td>Eligible setups</td><td>Eligible setups</td></tr>
+    <tr><th scope="row">Jarvis Pro briefings + alerts</th><td>—</td><td>—</td><td>—</td><td>Where available</td></tr>
+   </tbody>
+  </table>
+ </div>
+ <p class="perks-footnote">Hourly ceilings are not unlimited requests: paid plans also have monthly usage allowances. Jarvis and StellarX require feature availability, supported devices and your approved setup. Server Pass and business services are sold separately.</p>
+</section>
 <section class="business-path"><div class="business-path-head"><h2>Optional team and business services</h2><p>These are separate purchases, not included in Free, Starter, Plus or Pro. Server Pass is an add-on for one verified Discord community.</p></div><div class="business-path-grid"><article class="business-path-card featured"><strong>Server Pass</strong><div class="business-price">£50/month</div><p>Give one activated FiveM or Roblox community shared Discord <code>/debug</code> access. Requires account-linked guild activation; usage and abuse safeguards still apply.</p><a class="btn primary" href="/app?upgrade=server-pass&amp;source=plans-server-pass">Buy Server Pass · £50/mo</a></article><article class="business-path-card"><strong>Website Mini Audit / Quick Fix</strong><div class="business-price">£99 one-time</div><p>Find the public-page, contact and trust issues worth fixing first.</p><a class="btn" href="/website-audit">See website audit</a></article><article class="business-path-card"><strong>AI Receptionist</strong><div class="business-price">£150 setup + £49/month</div><p>Handle routine questions and capture enquiries using approved business information.</p><a class="btn" href="/ai-receptionist">See receptionist</a></article></div></section>
 <section class="section"><h2>Know what each plan includes.</h2><p>Free has a daily generation allowance. Paid plans have hourly request ceilings and monthly usage allowances. Your app shows remaining usage and reset information; heavier models and longer tasks may use more allowance.</p><div class="cards"><article class="card"><strong>Simple meter</strong><span>See the percentage of your current allowance remaining.</span></article><article class="card"><strong>Automatic reset</strong><span>Free refreshes daily. Paid plan usage refreshes each billing cycle.</span></article><article class="card"><strong>Model-aware usage</strong><span>Heavier models and longer tasks can use the allowance faster.</span></article></div></section>
 <section class="section"><h2>Questions about plans and billing</h2><div class="faq"><details><summary>Can I use Free without a card?</summary><p>Yes. Free starts without a card and includes a daily usage allowance.</p></details><details><summary>Can I cancel a paid plan?</summary><p>Paid users can manage renewal through billing settings. Access normally continues until the paid period ends.</p></details><details><summary>What can I use Stellar for?</summary><p>Stellar supports everyday AI chat, writing, planning, research, supported files and coding help. Specialist code tools include FiveM Lua and Roblox Luau. Connected tools depend on your plan and setup.</p></details><details><summary>What changes when I move to Plus?</summary><p>Plus adds Stellar Deep, more usage capacity, Jarvis Voice + Vision and access to StellarX computer control beta where supported. Computer control requires your approval and setup.</p></details></div></section>
