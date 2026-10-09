@@ -489,428 +489,104 @@
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
 
-<style id="stellar-jarvis-smart-home-v6">
-:root{
-  --jarvis-bg:#090a0f;
-  --jarvis-surface:#111319;
-  --jarvis-surface-2:#151823;
-  --jarvis-line:rgba(255,255,255,.08);
-  --jarvis-line-strong:rgba(115,199,255,.26);
-  --jarvis-text:#f5f7fb;
-  --jarvis-muted:#aeb7c5;
-  --jarvis-blue:#73c7ff;
-}
-html,body{
-  background:var(--jarvis-bg)!important;
-  color:var(--jarvis-text)!important;
-}
-.shell{
-  min-height:100dvh!important;
-  height:100dvh!important;
-  overflow:hidden!important;
-  background:
-    radial-gradient(900px 520px at 50% -130px,rgba(90,167,255,.10),transparent 70%),
-    radial-gradient(620px 380px at 82% 24%,rgba(143,134,223,.055),transparent 72%),
-    #090a0f!important;
-}
-#cam{
-  opacity:.045!important;
-  filter:saturate(.45) contrast(1.02) brightness(.68)!important;
-}
-.veil{
-  background:linear-gradient(180deg,rgba(9,10,15,.18),rgba(9,10,15,.82))!important;
-}
-.top{
-  min-height:62px!important;
-  padding:0 18px!important;
-  border-bottom:1px solid var(--jarvis-line)!important;
-  background:rgba(9,11,16,.88)!important;
-  backdrop-filter:blur(16px)!important;
-  -webkit-backdrop-filter:blur(16px)!important;
-}
-.brand{
-  gap:10px!important;
-  color:#f7f8fb!important;
-  font-size:13px!important;
-  font-weight:780!important;
-  letter-spacing:-.018em!important;
-}
-.brand i{
-  width:30px!important;
-  height:30px!important;
-  border:1px solid rgba(115,199,255,.18)!important;
-  border-radius:9px!important;
-  background:rgba(90,167,255,.075)!important;
-  color:#dff5ff!important;
-  box-shadow:none!important;
-}
-.pill{
-  min-height:36px!important;
-  height:36px!important;
-  padding:0 11px!important;
-  border:1px solid var(--jarvis-line)!important;
-  border-radius:9px!important;
-  background:#111319!important;
-  color:#cfd5e1!important;
-  font-size:10px!important;
-  font-weight:720!important;
-}
-.pill:hover,.pill:focus-visible{
-  border-color:rgba(115,199,255,.22)!important;
-  color:#fff!important;
-  outline:none!important;
-}
-.pill.primary{
-  border-color:rgba(115,199,255,.28)!important;
-  background:rgba(90,167,255,.10)!important;
-  color:#dff5ff!important;
-}
-#effectsBtn,#resetBtn{display:none!important}
-
-.hud{
-  position:absolute!important;
-  top:94px!important;
-  left:50%!important;
-  width:min(1080px,calc(100% - 40px))!important;
-  transform:translateX(-50%)!important;
-  text-align:center!important;
-  pointer-events:none!important;
-}
-.hud-kicker{
-  color:#8f96a5!important;
-  font:800 9px/1 "DM Mono",ui-monospace,monospace!important;
-  letter-spacing:.15em!important;
-}
-.hud h1{
-  max-width:820px!important;
-  margin:12px auto 0!important;
-  color:#f7f8fb!important;
-  background:none!important;
-  -webkit-text-fill-color:currentColor!important;
-  font-size:clamp(36px,5.4vw,64px)!important;
-  line-height:.98!important;
-  letter-spacing:-.06em!important;
-  text-wrap:balance!important;
-}
-.hud p{
-  max-width:650px!important;
-  margin:14px auto 0!important;
-  color:#aeb7c5!important;
-  font-size:13px!important;
-  line-height:1.62!important;
-}
-.jarvis-status-row{
-  display:flex!important;
-  justify-content:center!important;
-  flex-wrap:wrap!important;
-  gap:7px!important;
-  margin-top:14px!important;
-}
-.status{
-  min-height:30px!important;
-  margin:0!important;
-  padding:0 10px!important;
-  border:1px solid rgba(111,220,191,.14)!important;
-  background:rgba(111,220,191,.045)!important;
-  color:#bde5d9!important;
-  font-size:8.5px!important;
-}
-.status b{
-  width:6px!important;
-  height:6px!important;
-  background:#6fdcbe!important;
-  box-shadow:none!important;
-}
-.jarvis-auto-badge{
-  border-color:rgba(115,199,255,.15)!important;
-  background:rgba(90,167,255,.045)!important;
-  color:#cdeeff!important;
-}
-
-.jarvis-command-center{
-  position:absolute!important;
-  top:282px!important;
-  left:50%!important;
-  z-index:20!important;
-  width:min(820px,calc(100% - 40px))!important;
-  transform:translateX(-50%)!important;
-  padding:10px!important;
-  border:1px solid rgba(255,255,255,.09)!important;
-  border-radius:20px!important;
-  background:rgba(17,19,25,.92)!important;
-  box-shadow:0 26px 90px rgba(0,0,0,.28)!important;
-}
-.jarvis-command-copy{
-  display:none!important;
-}
-.jarvis-command-form{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  gap:8px!important;
-  margin:0!important;
-}
-.jarvis-command-form input{
-  min-width:0!important;
-  height:54px!important;
-  padding:0 15px!important;
-  border:0!important;
-  border-radius:13px!important;
-  outline:none!important;
-  background:#0d0f15!important;
-  color:#f5f7fb!important;
-  font-size:13px!important;
-}
-.jarvis-command-form input::placeholder{color:#737c8a!important}
-.jarvis-command-form input:focus{
-  box-shadow:inset 0 0 0 1px rgba(115,199,255,.24),0 0 0 3px rgba(90,167,255,.05)!important;
-}
-.jarvis-command-form button{
-  min-height:54px!important;
-  padding:0 18px!important;
-  border:0!important;
-  border-radius:13px!important;
-  background:#f5f7fb!important;
-  color:#0d0f15!important;
-  font-size:11px!important;
-  font-weight:820!important;
-  cursor:pointer!important;
-}
-.jarvis-route{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-  min-height:34px!important;
-  padding:8px 8px 0!important;
-  color:#8993a2!important;
-  font-size:9px!important;
-}
-.jarvis-route strong{
-  color:#bfe7ff!important;
-  font-weight:760!important;
-}
-.jarvis-command-actions{
-  display:flex!important;
-  flex-wrap:wrap!important;
-  gap:6px!important;
-  margin:8px 0 0!important;
-  padding:0 2px 2px!important;
-}
-.jarvis-command-actions button,
-.jarvis-command-actions a{
-  min-height:32px!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  padding:0 10px!important;
-  border:1px solid rgba(255,255,255,.075)!important;
-  border-radius:999px!important;
-  background:#11141b!important;
-  color:#b8c0cc!important;
-  font-size:9px!important;
-  font-weight:700!important;
-  text-decoration:none!important;
-  cursor:pointer!important;
-}
-.jarvis-command-actions button:hover,
-.jarvis-command-actions a:hover,
-.jarvis-command-actions button:focus-visible,
-.jarvis-command-actions a:focus-visible{
-  color:#fff!important;
-  border-color:rgba(115,199,255,.22)!important;
-  background:rgba(90,167,255,.055)!important;
-  outline:none!important;
-}
-
-.deck{
-  position:absolute!important;
-  inset:430px max(20px,calc((100vw - 1080px)/2)) 34px!important;
-  display:grid!important;
-  grid-template-columns:repeat(5,minmax(0,1fr))!important;
-  grid-auto-rows:minmax(128px,1fr)!important;
-  gap:10px!important;
-  overflow:auto!important;
-  transform:none!important;
-}
-.shell.restricted-verified .deck{
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-}
-.orb,
-.orb-featured,
-.o1,.o2,.o3,.o4,.o5,.o6,.o7{
-  position:relative!important;
-  inset:auto!important;
-  grid-column:auto!important;
-  grid-row:auto!important;
-  width:auto!important;
-  min-width:0!important;
-  min-height:128px!important;
-  aspect-ratio:auto!important;
-  padding:17px!important;
-  border:1px solid var(--jarvis-line)!important;
-  border-radius:18px!important;
-  background:linear-gradient(180deg,rgba(17,19,25,.96),rgba(13,15,21,.98))!important;
-  box-shadow:none!important;
-  cursor:pointer!important;
-  transform:none!important;
-  transition:border-color .16s ease,background .16s ease,transform .16s ease!important;
-}
-.orb:hover,.orb:focus-visible{
-  border-color:var(--jarvis-line-strong)!important;
-  background:#121721!important;
-  transform:translateY(-2px)!important;
-  outline:none!important;
-}
-.orb::after{display:none!important}
-.orb>div{
-  max-width:none!important;
-  text-align:left!important;
-}
-.orb .ico{
-  width:34px!important;
-  height:34px!important;
-  margin:0 0 12px!important;
-  display:grid!important;
-  place-items:center!important;
-  border:1px solid rgba(115,199,255,.13)!important;
-  border-radius:10px!important;
-  background:rgba(90,167,255,.055)!important;
-  color:#dff5ff!important;
-  font-size:15px!important;
-}
-.orb strong{
-  display:block!important;
-  color:#f5f7fb!important;
-  font-size:13px!important;
-  font-weight:760!important;
-  letter-spacing:-.02em!important;
-}
-.orb small{
-  display:block!important;
-  min-height:0!important;
-  margin-top:6px!important;
-  color:#99a3b2!important;
-  font-size:9.5px!important;
-  line-height:1.5!important;
-}
-.orb-meta{
-  min-height:23px!important;
-  margin-top:10px!important;
-  padding:0 8px!important;
-  border:1px solid rgba(115,199,255,.10)!important;
-  background:rgba(90,167,255,.035)!important;
-  color:#a8dbf8!important;
-  font-size:7.5px!important;
-}
-.orb-meta-warn{
-  border-color:rgba(242,201,121,.12)!important;
-  background:rgba(242,201,121,.035)!important;
-  color:#c9b78f!important;
-}
-.orb-featured{
-  border-color:rgba(115,199,255,.18)!important;
-  background:linear-gradient(180deg,rgba(16,24,34,.98),rgba(12,16,22,.98))!important;
-}
+<style id="stellar-jarvis-smart-home-v7">
+:root{color-scheme:dark;--jarvis-bg:#0b0c11;--jarvis-panel:#171920;--jarvis-card:#14171e;--jarvis-line:rgba(255,255,255,.11);--jarvis-focus:#b8a6ef;--jarvis-text:#f6f6fa;--jarvis-muted:#b4bac6}
+*{box-sizing:border-box}
+html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;background:var(--jarvis-bg)!important;color:var(--jarvis-text)!important;-webkit-font-smoothing:antialiased}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.shell{display:flex!important;flex-direction:column!important;align-items:stretch!important;position:relative!important;min-height:100dvh!important;height:auto!important;overflow:visible!important;padding:0 0 max(42px,env(safe-area-inset-bottom))!important;isolation:isolate;background:radial-gradient(ellipse 60% 260px at 50% 45px,rgba(143,116,222,.10),transparent 85%),#0b0c11!important}
+#cam{position:fixed!important;inset:0!important;opacity:.07!important;z-index:-2!important;pointer-events:none!important;filter:brightness(.6) saturate(.65)!important}
+.veil{position:fixed!important;inset:0!important;z-index:-1!important;pointer-events:none!important;background:linear-gradient(180deg,rgba(11,12,17,.65),rgba(11,12,17,.97))!important;background-size:auto!important}
+.top{position:sticky!important;top:0!important;left:auto!important;right:auto!important;z-index:30!important;min-height:68px!important;width:100%!important;display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:12px!important;padding:10px max(20px,calc((100vw - 1190px)/2))!important;border-bottom:1px solid rgba(255,255,255,.075)!important;background:rgba(12,13,18,.95)!important;backdrop-filter:blur(16px)!important}
+.top .brand{position:relative!important;display:inline-flex!important;align-items:center!important;min-width:0!important;max-width:none!important;margin-right:auto!important;transform:none!important;color:#f6f6fa!important;text-decoration:none!important;font-size:15px!important;font-weight:730!important;letter-spacing:-.02em!important}
+.top .brand i{width:32px!important;height:32px!important;display:grid!important;place-items:center!important;border:1px solid rgba(184,166,239,.3)!important;border-radius:10px!important;background:rgba(184,166,239,.1)!important;color:#d6caff!important}
+.top .brand span{white-space:nowrap!important}
+.top .pill{flex:0 0 auto!important;min-width:120px!important;min-height:44px!important;height:44px!important;padding:0 15px!important;border:1px solid rgba(184,166,239,.3)!important;border-radius:11px!important;background:#26243a!important;color:#f5f1ff!important;font-size:13px!important;font-weight:670!important;opacity:1!important}
+.top .pill.primary{background:#ded6f4!important;color:#171423!important;border-color:#ded6f4!important}
+.top .pill:hover:enabled{background:#ffffff!important;color:#14121d!important}
+.top .pill:disabled{opacity:.65!important;cursor:default!important}
+#jarvisBtn,#effectsBtn,#resetBtn{display:none!important}
+:where(button,a,input,[role="button"]):focus-visible{outline:2px solid #c1aeff!important;outline-offset:3px!important}
+.hud{position:relative!important;inset:auto!important;top:auto!important;left:auto!important;right:auto!important;z-index:3!important;width:min(1000px,calc(100% - 36px))!important;max-width:none!important;margin:44px auto 0!important;padding:0 12px!important;transform:none!important;text-align:center!important;pointer-events:auto!important}
+.hud-kicker{margin:0 0 15px!important;color:#bcaeec!important;font-size:10px!important;letter-spacing:.16em!important;font-weight:750!important}
+.hud h1{max-width:880px!important;margin:0 auto!important;color:#fbfbff!important;background:none!important;-webkit-text-fill-color:currentColor!important;font-size:clamp(33px,4.1vw,54px)!important;line-height:1.13!important;letter-spacing:-.047em!important;font-weight:700!important;text-wrap:balance!important}
+.hud p{display:block!important;max-width:630px!important;margin:15px auto 0!important;color:#b9bdc9!important;font-size:14px!important;line-height:1.6!important}
+.jarvis-status-row{display:flex!important;justify-content:center!important;align-items:center!important;gap:8px!important;margin:17px auto 0!important;flex-wrap:wrap!important}
+.jarvis-status-row .status{display:inline-flex!important;align-items:center!important;gap:7px!important;min-height:30px!important;margin:0!important;padding:0 10px!important;border:1px solid rgba(120,214,180,.16)!important;border-radius:999px!important;background:rgba(120,214,180,.06)!important;color:#b6e8d7!important;font-size:11px!important;line-height:1.3!important}
+.jarvis-status-row .status b{width:7px!important;height:7px!important;border-radius:50%!important;background:#8adebc!important;box-shadow:none!important}
+.jarvis-auto-badge,.jarvis-pro-badge{display:none!important}
+.jarvis-command-center{position:relative!important;inset:auto!important;top:auto!important;left:auto!important;right:auto!important;z-index:4!important;width:min(900px,calc(100% - 36px))!important;margin:28px auto 0!important;padding:14px!important;transform:none!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:20px!important;background:rgba(23,25,32,.96)!important;box-shadow:0 18px 50px rgba(0,0,0,.22)!important}
+.jarvis-command-copy{display:none!important}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;padding:0!important;margin:-1px!important}
+.jarvis-command-form{display:grid!important;grid-template-columns:minmax(0,1fr) 118px!important;gap:10px!important;align-items:center!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+.jarvis-command-form input{display:block!important;width:100%!important;min-width:0!important;height:54px!important;min-height:54px!important;margin:0!important;padding:0 17px!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:12px!important;outline:0!important;background:#101218!important;color:#f6f6fa!important;font-size:15px!important;line-height:1.4!important;letter-spacing:normal!important;opacity:1!important}
+.jarvis-command-form input::placeholder{color:#959cac!important;opacity:1!important}
+.jarvis-command-form input:focus{border-color:rgba(184,166,239,.72)!important;box-shadow:0 0 0 3px rgba(184,166,239,.13)!important}
+.jarvis-command-form button{width:100%!important;min-width:0!important;min-height:54px!important;height:54px!important;padding:0 16px!important;margin:0!important;border:1px solid #f4f1f9!important;border-radius:12px!important;background:#f4f1f9!important;color:#14151c!important;font-size:14px!important;font-weight:770!important;line-height:1.3!important;white-space:nowrap!important;opacity:1!important;cursor:pointer!important}
+.jarvis-command-form button:hover{background:#fff!important}
+.jarvis-route{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:10px!important;min-height:26px!important;margin:5px 0 0!important;padding:0 4px!important;background:transparent!important;color:#b1bac7!important;font-size:11px!important;line-height:1.4!important}
+.jarvis-route span{display:none!important}
+.jarvis-route strong{font-weight:600!important;color:#bbc6e1!important}
+.jarvis-command-actions{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;flex-wrap:wrap!important;margin:8px 0 0!important;padding:0!important;background:transparent!important}
+.jarvis-command-actions button,.jarvis-command-actions a{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:78px!important;min-height:40px!important;height:40px!important;padding:0 15px!important;margin:0!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:10px!important;background:#242630!important;color:#e4e6ef!important;font-size:12px!important;line-height:1.3!important;font-weight:650!important;letter-spacing:normal!important;text-indent:0!important;text-decoration:none!important;opacity:1!important;white-space:nowrap!important;cursor:pointer!important}
+.jarvis-command-actions button:hover,.jarvis-command-actions a:hover{background:#31313e!important;color:#fff!important;border-color:rgba(184,166,239,.5)!important}
+.deck,.shell.restricted-verified .deck,.shell:not(.restricted-verified) .deck{position:relative!important;inset:auto!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;z-index:3!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-template-rows:auto!important;grid-auto-rows:auto!important;align-items:stretch!important;width:min(1190px,calc(100% - 36px))!important;max-width:none!important;height:auto!important;min-height:0!important;overflow:visible!important;margin:26px auto 0!important;padding:0!important;gap:13px!important;transform:none!important}
+.shell .deck > .orb,.shell .deck > .orb-featured,.shell .deck > .o1,.shell .deck > .o2,.shell .deck > .o3,.shell .deck > .o4,.shell .deck > .o5,.shell .deck > .o6,.shell .deck > .o7{position:relative!important;inset:auto!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;grid-column:auto!important;grid-row:auto!important;display:flex!important;align-items:stretch!important;justify-content:flex-start!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:173px!important;aspect-ratio:auto!important;padding:19px!important;border:1px solid var(--jarvis-line)!important;border-radius:17px!important;background:linear-gradient(180deg,#181a22,#13151b)!important;color:#f6f6fa!important;box-shadow:none!important;transform:none!important;cursor:pointer!important;user-select:none!important;touch-action:manipulation!important;transition:border-color .15s,background .15s!important}
+.shell .deck > .orb[data-restricted="true"]{display:none!important}
+.shell.restricted-verified .deck > .orb[data-restricted="true"]{display:flex!important}
+.shell .deck > .orb:hover,.shell .deck > .orb:focus-visible{border-color:rgba(184,166,239,.5)!important;background:#20212b!important;outline:2px solid transparent!important}
+.shell .deck > .orb::after{content:none!important;display:none!important}
+.shell .deck > .orb > div{width:100%!important;max-width:none!important;text-align:left!important;min-width:0!important}
+.shell .deck > .orb .ico{display:grid!important;place-items:center!important;width:39px!important;height:39px!important;margin:0 0 15px!important;border:1px solid rgba(184,166,239,.25)!important;border-radius:10px!important;background:rgba(184,166,239,.08)!important;color:#e4dbff!important;font-size:19px!important}
+.shell .deck > .orb strong{display:block!important;margin:0!important;color:#f7f7fa!important;font-size:16px!important;font-weight:700!important;line-height:1.4!important}
+.shell .deck > .orb small{display:block!important;min-height:0!important;margin:8px 0 0!important;color:#aeb6c4!important;font-size:12px!important;line-height:1.55!important}
+.shell .deck > .orb .orb-meta{display:inline-flex!important;align-items:center!important;min-height:27px!important;margin:13px 0 0!important;padding:2px 10px!important;border:1px solid rgba(184,166,239,.24)!important;border-radius:999px!important;background:rgba(184,166,239,.05)!important;color:#d6ccf1!important;font-size:10px!important;font-weight:650!important;line-height:1.4!important;white-space:normal!important}
+.shell .deck > .orb .orb-meta-warn{border-color:rgba(239,200,130,.22)!important;color:#e6cca3!important;background:rgba(239,200,130,.06)!important}
+.shell .deck > .orb-featured{border-color:rgba(184,166,239,.32)!important;background:linear-gradient(180deg,#1c1b28,#16151e)!important}
 .legend{display:none!important}
-.toast{
-  bottom:22px!important;
-  border:1px solid rgba(255,255,255,.09)!important;
-  background:#111319!important;
-  color:#f2f4f7!important;
+.toast{position:fixed!important;z-index:200!important;bottom:max(18px,env(safe-area-inset-bottom))!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:12px!important;background:#262732!important;color:white!important;font-size:13px!important}
+@media(max-width:1100px){
+ .deck,.shell.restricted-verified .deck,.shell:not(.restricted-verified) .deck{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .top{padding-left:20px!important;padding-right:20px!important}
 }
-
-@media(max-width:980px){
-  .hud{width:calc(100% - 28px)!important}
-  .jarvis-command-center{width:min(760px,calc(100% - 28px))!important}
-  .deck,.shell.restricted-verified .deck{
-    inset:442px 14px 28px!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
+@media(max-width:760px){
+ .hud{margin-top:35px!important}
+ .hud h1{font-size:clamp(31px,6.5vw,44px)!important}
+ .hud p{font-size:13px!important}
+ .deck,.shell.restricted-verified .deck,.shell:not(.restricted-verified) .deck{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
-@media(max-width:640px){
-  html,body{overflow:auto!important}
-  .shell{
-    height:auto!important;
-    min-height:100dvh!important;
-    overflow:visible!important;
-  }
-  .top{
-    position:sticky!important;
-    top:0!important;
-    min-height:58px!important;
-    padding:0 10px!important;
-    flex-wrap:nowrap!important;
-  }
-  .brand{width:auto!important;min-width:0!important}
-  .brand span{white-space:nowrap!important}
-  #jarvisBtn{display:none!important}
-  .pill{min-height:38px!important;height:38px!important}
-  .hud{
-    position:relative!important;
-    top:auto!important;
-    left:auto!important;
-    width:auto!important;
-    margin:34px 16px 0!important;
-    transform:none!important;
-  }
-  .hud h1{font-size:clamp(40px,12vw,54px)!important}
-  .hud p{display:block!important;font-size:12px!important}
-  .jarvis-status-row{margin-top:12px!important}
-  .jarvis-command-center{
-    position:relative!important;
-    top:auto!important;
-    left:auto!important;
-    width:auto!important;
-    margin:24px 10px 0!important;
-    transform:none!important;
-    padding:8px!important;
-    border-radius:17px!important;
-  }
-  .jarvis-command-form{
-    grid-template-columns:1fr!important;
-  }
-  .jarvis-command-form input{height:52px!important}
-  .jarvis-command-form button{min-height:48px!important;width:100%!important}
-  .jarvis-route{
-    align-items:flex-start!important;
-    flex-direction:column!important;
-    gap:3px!important;
-  }
-  .jarvis-command-actions{
-    display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-  }
-  .jarvis-command-actions button,.jarvis-command-actions a{
-    width:100%!important;
-    border-radius:10px!important;
-  }
-  .deck,.shell.restricted-verified .deck{
-    position:relative!important;
-    inset:auto!important;
-    grid-template-columns:1fr!important;
-    margin:12px 10px!important;
-    padding:0 0 26px!important;
-    overflow:visible!important;
-  }
-  .orb,
-  .orb-featured,
-  .o1,.o2,.o3,.o4,.o5,.o6,.o7{
-    min-height:118px!important;
-    padding:16px!important;
-    border-radius:16px!important;
-    touch-action:manipulation!important;
-  }
+@media(max-width:560px){
+ .shell{padding-bottom:max(30px,env(safe-area-inset-bottom))!important}
+ .top{min-height:62px!important;padding:8px 12px!important;gap:8px!important;flex-wrap:nowrap!important}
+ .top .brand{font-size:14px!important;gap:7px!important}
+ .top .brand i{width:30px!important;height:30px!important}
+ .top .pill{min-width:0!important;min-height:44px!important;height:44px!important;padding:0 12px!important;font-size:12px!important}
+ .hud{width:calc(100% - 28px)!important;margin:32px auto 0!important;padding:0 4px!important}
+ .hud-kicker{margin-bottom:13px!important;font-size:9px!important}
+ .hud h1{font-size:clamp(31px,9vw,40px)!important;line-height:1.18!important}
+ .hud p{font-size:13px!important;line-height:1.55!important}
+ .jarvis-command-center{width:calc(100% - 22px)!important;margin-top:24px!important;padding:11px!important;border-radius:16px!important}
+ .jarvis-command-form{grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+ .jarvis-command-form input{min-height:52px!important;height:52px!important;padding:0 13px!important;font-size:16px!important}
+ .jarvis-command-form button{min-height:46px!important;height:46px!important}
+ .jarvis-route{justify-content:flex-start!important;margin:9px 0!important;font-size:11px!important}
+ .jarvis-command-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+ .jarvis-command-actions button,.jarvis-command-actions a{min-width:0!important;width:100%!important;min-height:44px!important;height:44px!important;padding:0 5px!important;font-size:12px!important}
+ .deck,.shell.restricted-verified .deck,.shell:not(.restricted-verified) .deck{width:calc(100% - 22px)!important;grid-template-columns:1fr!important;gap:10px!important;margin:16px auto 0!important}
+ .shell .deck > .orb{min-height:142px!important;padding:16px!important}
+ .shell .deck > .orb .ico{margin-bottom:10px!important}
 }
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
 <script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
-</head><body><div class="jarvis-lock" id="jarvis-lock"><div class="jarvis-lock-card"><h1>Jarvis is a paid Stellar feature.</h1><p id="jarvis-lock-copy">Sign in with a Plus or Pro account. Plus unlocks Voice + Vision; Pro adds briefings and proactive alerts.</p><div class="jarvis-lock-actions"><a href="/app?signin=1">Sign in</a><a class="primary" href="/plans">See plans</a></div></div></div><div class="shell" id="shell" aria-hidden="true"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">JARVIS · STELLAR AI</div><h1>One command. Jarvis works out the next step.</h1><p>Ask naturally. Jarvis keeps the interface simple, then helps you move into chat, code, voice, vision, projects or secure computer work when you need it.</p><div class="jarvis-status-row"><div class="status"><b></b><span id="statusText">Jarvis ready · camera off</span></div><span class="status jarvis-auto-badge">Auto-routing · on</span><span class="status jarvis-pro-badge">Pro · briefings + alerts</span></div></section><section class="jarvis-command-center" aria-label="Ask Jarvis">
+</head><body><div class="jarvis-lock" id="jarvis-lock"><div class="jarvis-lock-card"><h1>Jarvis is a paid Stellar feature.</h1><p id="jarvis-lock-copy">Sign in with a Plus or Pro account. Plus unlocks Voice + Vision; Pro adds briefings and proactive alerts.</p><div class="jarvis-lock-actions"><a href="/app?signin=1">Sign in</a><a class="primary" href="/plans">See plans</a></div></div></div><div class="shell" id="shell" aria-hidden="true"><video id="cam" playsinline muted></video><div class="veil"></div><header class="top"><a class="brand" href="/app"><i>✦</i><span>Stellar Jarvis</span></a><button class="pill primary" id="cameraBtn">Enable camera</button><button class="pill" id="jarvisBtn" aria-pressed="false">JARVIS mode</button><button class="pill" id="effectsBtn" aria-pressed="false">Effects</button><button class="pill" id="resetBtn">Reset</button></header><section class="hud"><div class="hud-kicker">JARVIS · STELLAR AI</div><h1>What can Jarvis help you do?</h1><p>Ask a question or choose a tool. Jarvis helps with coding, research, projects and more.</p><div class="jarvis-status-row"><div class="status"><b></b><span id="statusText">Jarvis ready · camera off</span></div><span class="status jarvis-auto-badge">Auto-routing · on</span><span class="status jarvis-pro-badge">Pro · briefings + alerts</span></div></section><section class="jarvis-command-center" aria-label="Ask Jarvis">
   <form class="jarvis-command-form" id="jarvis-command-form">
     <label class="sr-only" for="jarvis-command-input">Ask Jarvis</label>
-    <input id="jarvis-command-input" autocomplete="off" maxlength="1200" placeholder="Ask Jarvis anything — build, fix, research, plan, explain…" />
-    <button type="submit">Send</button>
+    <input id="jarvis-command-input" autocomplete="off" maxlength="1200" placeholder="Ask Jarvis anything…" />
+    <button type="submit">Ask Jarvis →</button>
   </form>
-  <div class="jarvis-route"><span>Jarvis can suggest the best route before you send.</span><strong id="jarvis-route-text">Suggested route · General AI</strong></div>
+  <div class="jarvis-route"><span>Jarvis can suggest a tool for this request.</span><strong id="jarvis-route-text">Suggested route · General AI</strong></div>
   <div class="jarvis-command-actions" aria-label="Quick Jarvis actions">
     <button type="button" data-jarvis-prompt="Build a clean, production-ready feature from my description and explain the files I need.">Build</button>
     <button type="button" data-jarvis-prompt="Debug this FiveM or Roblox error and give me the smallest safe fix.">Fix code</button>
