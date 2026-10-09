@@ -186,6 +186,22 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 .perks-footnote{font-size:11px;margin-top:12px;max-width:900px}
 @media(max-width:700px){.perks-heading{align-items:start;flex-direction:column}.perks-heading .btn{width:100%}.perk-table{min-width:710px}.perk-table th,.perk-table td{padding:12px 10px}.perks-overview{padding-bottom:28px}}
 </style>
+
+<style id="stellar-plan-fit-guide-v1">
+.plan-match{margin:0 0 48px;padding:24px;border:1px solid rgba(255,255,255,.11);border-radius:18px;background:#121316}
+.plan-match h2{margin:7px 0;font-size:clamp(24px,3vw,34px);letter-spacing:-.04em}
+.plan-match p{margin:0;color:#b1b8c3;font-size:13px;line-height:1.6}
+.plan-match-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:17px 0 14px}
+.plan-match-options button{min-height:54px;padding:10px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:#1d1e22;color:#f0f1f3;font:700 12px/1.4 system-ui,sans-serif;cursor:pointer}
+.plan-match-options button[aria-pressed=true]{background:#f1f1f4;color:#111;border-color:#f1f1f4}
+.plan-match-options button:focus-visible,.plan-match-result a:focus-visible{outline:2px solid #b7a9ff;outline-offset:3px}
+.plan-match-result{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:#1a1b20}
+.plan-match-result h3{margin:4px 0 7px;font-size:19px}
+.plan-match-result small{display:block;margin-top:7px;color:#b1b6c1;line-height:1.55}
+.plan-match-result .btn{min-width:150px;min-height:45px;flex-shrink:0}
+@media(max-width:800px){.plan-match-options{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-match-result{align-items:stretch;flex-direction:column}.plan-match-result .btn{width:100%}}
+@media(max-width:700px){.plan-match{padding:16px}.plan-match-result{padding:14px}}
+</style>
 </head>
 <body class="plans-page">
 <header class="top"><nav class="wrap nav"><a class="brand" href="/">Stellar AI</a><div class="links"><a href="/app">App</a><a href="/plugins">Plugins</a><a href="/business">Business</a><a href="/legal">Legal</a><a class="mobile-help" href="/support">Help</a><a class="primary" href="/app?welcome=1">Open app</a></div></nav></header>
@@ -250,6 +266,23 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
   <ul class="features"><li><i>✓</i><span>All four Stellar models</span></li><li><i>✓</i><span>Jarvis Voice + Vision</span></li><li><i>✓</i><span>Jarvis Pro briefings + proactive alerts</span></li><li><i>✓</i><span>Up to 10,000 output tokens</span></li></ul>
 </article>
 </section>
+
+<section class="plan-match" aria-labelledby="plan-match-title">
+ <span class="kicker">Find your fit</span><h2 id="plan-match-title">Which plan is worth it for you?</h2>
+ <p>Select how you plan to use Stellar. We suggest a tier based on current features, not an upsell.</p>
+ <div class="plan-match-options" role="group" aria-label="Main way you want to use Stellar">
+  <button type="button" data-match-plan="free" aria-pressed="false">Try it free</button>
+  <button type="button" data-match-plan="starter" aria-pressed="false">Everyday writing &amp; chat</button>
+  <button type="button" data-match-plan="plus" aria-pressed="true">Projects, code &amp; Jarvis</button>
+  <button type="button" data-match-plan="pro" aria-pressed="false">Heavy, complex work</button>
+ </div>
+ <div class="plan-match-result" aria-live="polite" aria-atomic="true">
+  <div><span class="kicker">Suggested plan</span><h3 id="match-plan-title">Plus · £20/month</h3>
+  <p id="match-plan-detail">Deeper models, longer work and Jarvis Voice + Vision where supported.</p>
+  <small id="match-plan-limit">Up to 7,500 Fast-equivalent generations/month; heavier models use more allowance. 400 requests/hour ceiling.</small></div>
+  <a id="match-plan-action" class="btn primary" href="/app?upgrade=plus">Choose Plus</a>
+ </div>
+</section>
 <div class="plan-proof">
   <strong>Provider-flexible routing</strong>
   <div><div class="plan-proof-providers"><b>Stellar Fast</b><b>Stellar Core</b><b>Stellar Deep</b><b>Stellar Max</b></div><span>Customers buy Stellar capability tiers, not access to a named third-party model. Backend providers and versions can change for quality, reliability, safety and availability.</span></div>
@@ -297,6 +330,38 @@ function apply(cycle){
 }
 buttons.forEach(button=>button.addEventListener('click',()=>apply(button.dataset.billingCycle)));
 apply('monthly');
+})();
+</script>
+
+<script id="stellar-plan-fit-guide-js-v1">
+(() => {
+ 'use strict';
+ const catalog={
+  free:{name:'Free',month:'£0',description:'Start with Stellar Fast for chat, writing and coding. No payment card needed.',limit:'Up to 15 Fast generations each UK day, with an automatic daily reset.',action:'Start free'},
+  starter:{name:'Starter',month:'£8',year:'£67',description:'Stellar Core, more monthly capacity and longer replies for everyday writing and coding.',limit:'Up to 2,500 Fast-equivalent generations/month. Core uses more allowance. 120 requests/hour ceiling.',action:'Choose Starter'},
+  plus:{name:'Plus',month:'£20',year:'£168',description:'Stellar Deep, longer work, Jarvis Voice + Vision and StellarX beta where your approved setup is supported.',limit:'Up to 7,500 Fast-equivalent generations/month. Core and Deep use more allowance. 400 requests/hour ceiling.',action:'Choose Plus'},
+  pro:{name:'Pro',month:'£75',year:'£630',description:'For people who need Stellar Max, the largest output limit and supported Jarvis Pro briefings and proactive alerts.',limit:'Up to 15,000 Fast-equivalent generations/month. Stronger models use more allowance. 1,600 requests/hour ceiling.',action:'Choose Pro'}
+ };
+ const buttons=[...document.querySelectorAll('[data-match-plan]')];
+ const title=document.getElementById('match-plan-title');
+ const description=document.getElementById('match-plan-detail');
+ const limit=document.getElementById('match-plan-limit');
+ const action=document.getElementById('match-plan-action');
+ if(!buttons.length||!title||!description||!limit||!action)return;
+ let selected='plus';
+ function render(){
+  const item=catalog[selected];
+  const annual=!!document.querySelector('[data-billing-cycle="annual"][aria-pressed="true"]');
+  buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.matchPlan===selected)));
+  title.textContent=item.name+' · '+(selected==='free'?'£0 forever':annual?item.year+'/year':item.month+'/month');
+  description.textContent=item.description;
+  limit.textContent=item.limit;
+  action.textContent=item.action;
+  action.href=selected==='free'?'/app?welcome=1':'/app?upgrade='+selected+(annual?'-annual':'');
+ }
+ buttons.forEach(b=>b.addEventListener('click',()=>{if(catalog[b.dataset.matchPlan]){selected=b.dataset.matchPlan;render();}}));
+ document.querySelectorAll('[data-billing-cycle]').forEach(b=>b.addEventListener('click',render));
+ render();
 })();
 </script>
 </body></html>
