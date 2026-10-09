@@ -21,8 +21,9 @@ test('generated Lua and Luau blocks have one-click export controls',()=>{
   assert.match(app,/data-code-action="copy-code"/);
   assert.match(app,/Copy ModuleScript/);
   assert.match(app,/data-code-action="download-lua"/);
-  assert.match(app,/link\.download=base\+'\.lua'/);
-  assert.match(app,/new Blob\(\[withStellarLuaWatermark\(text\)\],\{type:'text\/plain;charset=utf-8'\}\)/);
+  assert.match(app,/link\.download=base\+'\.'\+ext/);
+  assert.match(app,/contents=ext==='lua'\?withStellarLuaWatermark\(text\):text/);
+  assert.match(app,/CODE_EXPORT_EXTENSIONS=\{/);
   assert.match(app,/Generated with Stellar AI.*https:\/\/trystellarai\.com/);
   assert.match(app,/function codeBlockKind/);
   assert.match(app,/\['luau','roblox','roblox-luau','rbx-luau'\]/);
