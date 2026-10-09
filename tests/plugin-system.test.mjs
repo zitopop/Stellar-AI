@@ -106,8 +106,8 @@ test('disabling built-in plugins actually stops their task bridges', () => {
 
 test('plugin directory stays calm while preserving real account connection controls', () => {
   assert.match(page, /Your connected apps/);
-  assert.match(page, /Works straight away/);
-  assert.match(page, /You approve access/);
+  assert.match(page, /Start without connecting anything/);
+  assert.match(page, /Approve access/);
   assert.match(page, /Your password stays with the app/);
   assert.match(page, /disconnect(?: an app)? (?:whenever you want|at any time)/i);
   assert.match(page, /id="plugin-account-grid"/);
@@ -128,10 +128,28 @@ test('plugins directory keeps touch-safe controls and visible tool icons', () =>
   assert.match(page, /\.btn\{min-height:44px/);
   assert.match(page, /\.ico\{width:46px;height:46px/);
   assert.match(page, /\.tool-card/);
-  assert.match(page, /BUILT IN/);
-  assert.match(page, /CONNECTED APPS/);
+  assert.match(page, /No token required/);
+  assert.match(page, /Connect an app/);
+  assert.ok(page.indexOf('id="browse-tools"') < page.indexOf('id="directory"'), 'built-in tools are shown first');
   assert.doesNotMatch(page, />COMING LATER</);
   assert.match(page, /Permissions/);
+});
+
+test('Google Gmail connection avoids developer tokens without bypassing verification', () => {
+  assert.match(page, /Connect with Google/);
+  assert.match(page, /browserOAuthAvailable/);
+  assert.match(page, /google\.accounts\.oauth2\.initTokenClient/);
+  assert.match(page, /gmail\.readonly/);
+  assert.match(manager, /action==='connectBrowserOAuth'/);
+  assert.match(manager, /verifyGmailBrowserAccessToken\(accessToken,clientId\)/);
+  assert.match(manager, /browserGmailReady\(\)/);
+  assert.match(providers, /verifyGmailBrowserAccessToken/);
+  assert.match(providers, /info\.aud\|\|info\.audience/);
+  assert.match(providers, /gmail\.readonly/);
+  assert.match(credentials, /ttlSeconds/);
+  assert.match(credentials, /encrypt\(value\),'EX',lifetime/);
+  assert.match(page, /Advanced developer setup/);
+  assert.doesNotMatch(page, /localStorage\.setItem\([^\n]*plugin-token/);
 });
 
 test('developer OAuth setup stays server-owner-only while Gmail remains signed-in approval scoped', () => {
