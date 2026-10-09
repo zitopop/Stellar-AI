@@ -8,6 +8,7 @@ import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } f
 import { consumeHourlyRequest, consumeUsage, refundUsageCharge } from '../lib/usage.js';
 import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
 import { handleDiscordDebugRequest } from '../lib/discord-debug.js';
+import { connectedAppChatContext } from '../lib/plugin-chat-context.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -1145,10 +1146,14 @@ export default async function handler(req, res) {
   res.once('close', abortOnDisconnect);
 
   try {
+    // Only the most recent explicit app request can fetch read-only connected data.
+    // Provider credentials never leave the server.
+    const appContext = await connectedAppChatContext(session?.email, cleanMessages);
     const upstream = await createUpstreamStream({
       route,
       maxTokens: safeMaxTokens,
       system: buildSystemPrompt(searchContext, platform, workflowMode, framework, route.role, memoryContext, plan, requestKind)
+        + (appContext ? '\n\n' + appContext : '')
         + (jarvisRequest ? `\n\n${plan === 'owner' ? JARVIS_OWNER_CHAT_GUIDANCE : JARVIS_PUBLIC_CHAT_GUIDANCE}` : '')
         + `\n\nACTIVE WORKSPACE ROLE\n${route.role}: ${route.instruction}` ,
       messages: addImageToLastUserMessage(cleanMessages, imageAttachment.image),
