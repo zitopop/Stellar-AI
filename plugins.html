@@ -109,7 +109,8 @@ function renderDirectory(plugins){
     const meta=document.createElement('div');meta.className='plugin-meta';const cat=document.createElement('span');cat.textContent=plugin.category||'Plugin';meta.append(cat);if(plugin.verified){const v=document.createElement('span');v.textContent='Verified';meta.append(v)}
     const skills=document.createElement('div');skills.className='skills';(plugin.skills||[]).slice(0,3).forEach(x=>{const s=document.createElement('span');s.textContent=x;skills.append(s)});
     const actions=document.createElement('div');actions.className='card-actions';
-    if(plugin.connected){if(plugin.route){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open';actions.append(a)}if(plugin.enabled){const use=useAppLink(plugin.id);if(use)actions.append(use)}const manage=document.createElement('a');manage.className='btn';manage.href='#connections';manage.textContent='Manage';actions.append(manage)}
+    if(plugin.enabled&&plugin.route&&!plugin.connection){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open tool';actions.append(a)}
+    else if(plugin.connected){if(plugin.route){const a=document.createElement('a');a.className='btn primary';a.href=plugin.route;a.textContent='Open';actions.append(a)}if(plugin.enabled){const use=useAppLink(plugin.id);if(use)actions.append(use)}const manage=document.createElement('a');manage.className='btn';manage.href='#connections';manage.textContent='Manage';actions.append(manage)}
     else if(plugin.oauthAvailable)actions.append(pluginButton(plugin.connectLabel||'Connect','oauth',plugin.id,true));
     else if(plugin.installable&&!coming)actions.append(pluginButton(plugin.connection?(plugin.connectLabel||'Connect'):'Turn on','install',plugin.id,true));
     else {const b=document.createElement('button');b.className='btn';b.disabled=true;b.textContent=coming?'Coming soon':'Not available';actions.append(b)}
@@ -260,6 +261,7 @@ async function pluginAction(button){
   finally{button.disabled=false}
 }
 accountGrid.addEventListener('click',event=>{const button=event.target.closest('[data-plugin-action]');if(button)pluginAction(button)});
+directoryGrid.addEventListener('click',event=>{const button=event.target.closest('[data-plugin-action]');if(button)pluginAction(button)});
 loadConnectedApps();
 </script>
 </body>
