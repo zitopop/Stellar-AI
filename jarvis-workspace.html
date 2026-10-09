@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0c0d10">
-<meta name="jarvis-release" content="2026-10-09-jarvis-premium-v6">
+<meta name="jarvis-release" content="2026-10-09-jarvis-minimal-v7">
 <meta name="robots" content="noindex,nofollow">
 <title>Jarvis Text Chat — Stellar AI</title>
 <meta name="description" content="Chat with Jarvis. Clear answers, coding help, planning and optional voice in Stellar AI.">
@@ -77,6 +77,49 @@
 @media(max-width:350px){#handsfree-toggle{order:3;flex:1 1 100%}.chat{padding-bottom:275px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
+
+<style id="jarvis-ui-v7">
+:root{--bg:#0b0c10;--panel:#202127;--text:#f6f6f7;--muted:#a5a5b1}
+body,.shell{background:var(--bg)}
+.topbar{height:60px;background:rgba(11,12,16,.95);border-bottom:1px solid rgba(255,255,255,.065)}
+.top-inner{width:min(1120px,100%);padding-inline:max(16px,env(safe-area-inset-left))}
+.brand{font-size:16px;letter-spacing:-.03em}
+.top-actions button{background:transparent;border-color:transparent;height:42px;min-width:42px}
+.top-actions button:hover:enabled{background:#25262c;border-color:var(--line)}
+#voice-settings{width:42px;padding:0;font-size:20px}
+.voice-panel{position:absolute;top:calc(100% + 8px);right:max(16px,calc((100vw - 1120px)/2 + 16px));z-index:30;width:min(265px,calc(100vw - 30px));border:1px solid var(--line);border-radius:15px;background:#202127;padding:13px;box-shadow:0 15px 50px #0008}
+.voice-panel-title{margin:3px 4px 10px;font-weight:700;font-size:13px}
+.voice-panel button{display:block;text-align:left;width:100%;min-height:44px;margin-top:7px;border:1px solid var(--line);border-radius:10px;background:#2a2b33;color:var(--text);padding:0 12px;font-size:13px}
+.voice-panel button[aria-pressed=true]{background:#342f43;border-color:#66567d}
+.chat{width:min(800px,100%);min-height:calc(100dvh - 60px);padding:24px 24px 175px}
+.hero{padding:clamp(90px,19vh,200px) 0 18px}
+.hero h1{font-size:clamp(32px,5vw,44px);letter-spacing:-.045em;margin:0 0 11px}
+.hero p:last-child{font-size:14px}
+.messages{gap:22px}
+.msg{gap:0}.msg .avatar{display:none}.message-content{max-width:100%}
+.msg.user .speaker{display:none}
+.bubble{line-height:1.7}
+.msg.user .bubble{background:#262730;border-radius:18px;padding:11px 15px}
+.composer-wrap{background:linear-gradient(180deg,transparent,#0b0c10 34%);padding:16px max(15px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(15px,env(safe-area-inset-left))}
+.composer{width:min(800px,100%);background:var(--panel);border-radius:17px;padding:9px 11px}
+.composer textarea{min-height:47px;padding:8px 7px;font-size:16px}
+.status{min-height:0}.status:empty{display:none}
+.composer-row{flex-wrap:nowrap}
+.composer-row #mic{width:44px;min-width:44px;padding:0;font-size:18px;background:transparent;border-color:transparent}
+.composer-row #mic.listening{background:#3a314a}
+.composer-row #stop-voice{margin-right:auto}
+.composer-row button.primary{margin-left:auto;min-width:44px;width:44px;padding:0;font-size:23px;border-radius:12px}
+@media(max-width:600px){
+.topbar{height:58px}.top-inner{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+.chat{min-height:calc(100dvh - 58px);padding:18px 15px 175px}
+.hero{padding:clamp(85px,17vh,170px) 0 15px}.hero h1{font-size:clamp(30px,8vw,38px)}.hero p:last-child{font-size:13.5px}
+.composer-wrap{padding:10px max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
+.composer{padding:8px 9px}.composer textarea{min-height:46px}
+.composer-row button{min-height:44px}
+.msg.user .message-content{max-width:90%}
+}
+@media(max-width:350px){.chat{padding-bottom:190px}}
+</style>
 <script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
 
 </head>
@@ -85,17 +128,22 @@
 <header class="topbar">
 <div class="top-inner">
 <a class="back-link" href="/app" aria-label="Back to Stellar AI" title="Back to Stellar AI">←</a>
-<div class="brand"><span class="brand-mark" aria-hidden="true">✦</span><span>Jarvis</span></div>
+<div class="brand">Jarvis</div>
 <div class="top-actions">
-<button id="new-chat" type="button" aria-label="Start new chat" title="Start new chat"><span aria-hidden="true">＋</span><span class="new-chat-label">New chat</span></button>
-<button id="voice-toggle" type="button" aria-label="Toggle voice replies" title="Toggle voice replies" aria-pressed="true"><span aria-hidden="true">🔊</span></button>
+<button id="new-chat" type="button" aria-label="Start new chat" title="New chat"><span aria-hidden="true">＋</span><span class="new-chat-label">New chat</span></button>
+<button id="voice-settings" type="button" aria-label="Voice settings" aria-controls="voice-panel" aria-expanded="false" title="Voice settings">⚙</button>
+</div>
+<div id="voice-panel" class="voice-panel" hidden>
+<p class="voice-panel-title">Voice settings</p>
+<button id="voice-toggle" type="button" aria-label="Toggle voice replies" aria-pressed="true">Voice replies on</button>
+<button id="handsfree-toggle" type="button" aria-label="Toggle hands-free conversation" aria-pressed="false">Hands-free off</button>
 </div>
 </div>
 </header>
 <main>
 <div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span> <a id="access-link" href="/app?signin=1">Open sign in →</a></div>
 <section id="chat" class="chat" aria-label="Jarvis conversation">
-<div id="hero" class="hero"><p class="hero-eyebrow">Jarvis · AI assistant</p><h1>What can I help you with?</h1><p>Ask a question, solve a problem, or work through your next idea.</p></div>
+<div id="hero" class="hero"><h1>How can I help?</h1><p>Ask Jarvis anything.</p></div>
 <div id="messages" class="messages" role="log" aria-label="Jarvis messages" aria-live="polite"></div>
 </section>
 </main>
@@ -103,12 +151,11 @@
 <form id="composer" class="composer">
 <label for="prompt" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message Jarvis</label>
 <textarea id="prompt" rows="1" maxlength="12000" placeholder="Ask Jarvis anything…"></textarea>
-<div id="status" class="status" role="status" aria-live="polite">Ready.</div>
+<div id="status" class="status" role="status" aria-live="polite"></div>
 <div class="composer-row">
-<button id="mic" type="button" aria-label="Talk to Jarvis" aria-pressed="false">🎙 Talk</button>
-<button id="handsfree-toggle" type="button" aria-label="Toggle hands-free conversation" aria-pressed="false">Hands-free off</button>
-<button id="stop-voice" type="button" aria-label="Stop Jarvis speaking" hidden>■ Stop voice</button>
-<button id="send" class="primary" type="submit">Send ↑</button>
+<button id="mic" type="button" aria-label="Talk to Jarvis" title="Talk to Jarvis" aria-pressed="false">🎙</button>
+<button id="stop-voice" type="button" aria-label="Stop Jarvis speaking" hidden>■ Stop</button>
+<button id="send" class="primary" type="submit" aria-label="Send message" title="Send message">↑</button>
 </div>
 </form>
 </div>
@@ -128,7 +175,7 @@
     try{return String(JSON.parse(safeStorageGet('stellar-store','{}')||'{}').session||'')}catch{return ''}
   }
   function headers(){const h={'Content-Type':'application/json'};const token=sessionToken();if(token)h.Authorization='Bearer '+token;return h}
-  function setStatus(text,kind=''){const el=$('status');el.textContent=text;el.className='status '+kind}
+  function setStatus(text,kind=''){const el=$('status');el.textContent=/^Ready[.]?$/.test(text)?'':text;el.className='status '+kind}
   function setBusy(value){busy=value;const blocked=!jarvisEntitled||!accessChecked;$('send').disabled=value||blocked;$('mic').disabled=value||blocked||!micAvailable;$('handsfree-toggle').disabled=blocked||!micAvailable;$('voice-toggle').disabled=blocked;$('prompt').disabled=blocked;$('new-chat').disabled=value}
   function addMessage(role,text){
     $('hero').hidden=true;
@@ -250,7 +297,7 @@
     utterance.onerror=()=>{speaking=false;$('stop-voice').hidden=true;if(!busy)setStatus('Voice playback stopped.','bad')};
     speechSynthesis.speak(utterance);
   }
-  function updateVoiceToggle(){const b=$('voice-toggle');b.setAttribute('aria-pressed',String(voiceOn));const label=voiceOn?'Turn voice replies off':'Turn voice replies on';b.setAttribute('aria-label',label);b.title=label;b.innerHTML=voiceOn?'<span aria-hidden="true">🔊</span>':'<span aria-hidden="true">🔇</span>'}
+  function updateVoiceToggle(){const b=$('voice-toggle');b.setAttribute('aria-pressed',String(voiceOn));const label=voiceOn?'Turn voice replies off':'Turn voice replies on';b.setAttribute('aria-label',label);b.title=label;b.textContent=voiceOn?'🔊 Voice replies on':'🔇 Voice replies off'
   function updateHandsFreeToggle(){const b=$('handsfree-toggle');b.setAttribute('aria-pressed',String(handsFree));b.textContent=handsFree?'Hands-free on':'Hands-free off'}
   function parseEvent(raw){
     try{const e=JSON.parse(raw);return e?.delta?.text||e?.text||e?.content_block?.text||e?.message?.content?.[0]?.text||(typeof e?.choices?.[0]?.delta?.content==='string'?e.choices[0].delta.content:'')||''}catch{return ''}
@@ -277,11 +324,11 @@
     if(!Recognition){micAvailable=false;$('mic').disabled=true;$('handsfree-toggle').disabled=true;$('mic').textContent='Mic unavailable';$('handsfree-toggle').textContent='Hands-free unavailable';return}
     micAvailable=true;recognition=new Recognition();recognition.lang='en-GB';recognition.interimResults=true;recognition.continuous=false;
     let finalText='';
-    recognition.onstart=()=>{finalText='';$('mic').classList.add('listening');$('mic').setAttribute('aria-pressed','true');$('mic').textContent='Listening…';setStatus('Listening…','good')};
+    recognition.onstart=()=>{finalText='';$('mic').classList.add('listening');$('mic').setAttribute('aria-pressed','true');$('mic').textContent='●';setStatus('Listening…','good')};
     recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}$('prompt').value=(finalText||interim).trim()};
     let recognitionFailed=false;
     recognition.onerror=e=>{recognitionFailed=true;if(e.error==='not-allowed'){handsFree=false;safeStorageSet('stellarJarvisHandsFree','0');updateHandsFreeToggle();setStatus('Microphone permission was denied. Enable microphone access in your browser to talk to Jarvis.','bad')}else if(e.error==='no-speech')setStatus('I did not hear anything. Try again when you are ready.','bad');else setStatus('Voice input stopped. Try again or type your message.','bad')};
-    recognition.onend=()=>{$('mic').classList.remove('listening');$('mic').setAttribute('aria-pressed','false');$('mic').textContent='🎙 Talk';const spoken=finalText.trim();finalText='';if(spoken)sendMessage(spoken);else if(!busy&&!recognitionFailed)setStatus('Ready.');recognitionFailed=false};
+    recognition.onend=()=>{$('mic').classList.remove('listening');$('mic').setAttribute('aria-pressed','false');$('mic').textContent='🎙';const spoken=finalText.trim();finalText='';if(spoken)sendMessage(spoken);else if(!busy&&!recognitionFailed)setStatus('Ready.');recognitionFailed=false};
     $('mic').addEventListener('click',()=>{if(speaking)stopSpeech();startListening()});
   }
   function startListening(){if(!micAvailable||!recognition||busy||speaking||!jarvisEntitled)return;try{recognition.start()}catch{try{recognition.stop()}catch{}}}
@@ -305,7 +352,12 @@
   }
   function resizePrompt(){const el=$('prompt');el.style.height='auto';el.style.height=Math.min(el.scrollHeight,168)+'px'}
   function newChat(){if(busy)return;stopSpeech();messages.splice(0);$('messages').replaceChildren();$('hero').hidden=false;$('prompt').value='';resizePrompt();setStatus('Ready.');if(jarvisEntitled)$('prompt').focus()}
-  $('new-chat').addEventListener('click',newChat);
+  const voiceMenuButton=$('voice-settings'),voicePanel=$('voice-panel');
+function closeVoicePanel(){voicePanel.hidden=true;voiceMenuButton.setAttribute('aria-expanded','false')}
+voiceMenuButton.addEventListener('click',()=>{voicePanel.hidden=!voicePanel.hidden;voiceMenuButton.setAttribute('aria-expanded',String(!voicePanel.hidden))});
+document.addEventListener('pointerdown',event=>{if(!voicePanel.hidden&&!voicePanel.contains(event.target)&&!voiceMenuButton.contains(event.target))closeVoicePanel()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!voicePanel.hidden){closeVoicePanel();voiceMenuButton.focus()}});
+$('new-chat').addEventListener('click',()=>{closeVoicePanel();newChat()});
   $('prompt').addEventListener('input',resizePrompt);
   $('composer').addEventListener('submit',e=>{e.preventDefault();sendMessage($('prompt').value)});
   $('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&e.keyCode!==229){e.preventDefault();sendMessage($('prompt').value)}});
