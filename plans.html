@@ -198,7 +198,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 .plan-match-result{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:#1a1b20}
 .plan-match-result h3{margin:4px 0 7px;font-size:19px}
 .plan-match-result small{display:block;margin-top:7px;color:#b1b6c1;line-height:1.55}
-.plan-match-result .btn{min-width:150px;min-height:45px;flex-shrink:0}
+.plan-match-result .btn{min-width:150px;min-height:45px;flex-shrink:0}.plan-match-actions{display:grid;gap:8px;min-width:172px}.plan-match-actions .btn.preview{background:transparent;border-color:rgba(255,255,255,.2)}.plan-match-note{color:#aab1bd;font-size:11px;line-height:1.5}
 @media(max-width:800px){.plan-match-options{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-match-result{align-items:stretch;flex-direction:column}.plan-match-result .btn{width:100%}}
 @media(max-width:700px){.plan-match{padding:16px}.plan-match-result{padding:14px}}
 </style>
@@ -280,7 +280,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
   <div><span class="kicker">Suggested plan</span><h3 id="match-plan-title">Plus · £20/month</h3>
   <p id="match-plan-detail">Deeper models, longer work and Jarvis Voice + Vision where supported.</p>
   <small id="match-plan-limit">Up to 7,500 Fast-equivalent generations/month; heavier models use more allowance. 400 requests/hour ceiling.</small></div>
-  <a id="match-plan-action" class="btn primary" href="/app?upgrade=plus">Choose Plus</a>
+  <div class="plan-match-actions"><a id="match-plan-action" class="btn primary" href="/app?upgrade=plus">Choose Plus</a><a id="match-plan-preview" class="btn preview" href="/app?welcome=1">Try a sample task</a><span class="plan-match-note">Preview tasks work with Free too; paid plans unlock more model options and capacity.</span></div>
  </div>
 </section>
 <div class="plan-proof">
@@ -341,17 +341,18 @@ apply('monthly');
 (() => {
  'use strict';
  const catalog={
-  free:{name:'Free',month:'£0',description:'Try Stellar with questions, writing and small coding tasks. No payment card needed.',limit:'Up to 15 Fast generations each UK day, with an automatic daily reset.',action:'Start free'},
-  starter:{name:'Starter',month:'£8',year:'£67',description:'Get Stellar Core and more room for everyday writing, planning, learning and coding.',limit:'Up to 2,500 Fast-equivalent generations/month. Core uses more allowance. 120 requests/hour ceiling.',action:'Choose Starter'},
-  plus:{name:'Plus',month:'£20',year:'£168',description:'Work through bigger projects with Stellar Deep and supported Jarvis and StellarX tools.',limit:'Up to 7,500 Fast-equivalent generations/month. Core and Deep use more allowance. 400 requests/hour ceiling.',action:'Choose Plus'},
-  pro:{name:'Pro',month:'£75',year:'£630',description:'Use Stellar Max and the highest capacity for intensive work, with supported Jarvis Pro tools.',limit:'Up to 15,000 Fast-equivalent generations/month. Stronger models use more allowance. 1,600 requests/hour ceiling.',action:'Choose Pro'}
+  free:{name:'Free',month:'£0',description:'Try Stellar with questions, writing and small coding tasks. No payment card needed.',limit:'Up to 15 Fast generations each UK day, with an automatic daily reset.',action:'Start free',prompt:'Help me write a polite email. First ask who I am writing to, why and what tone I want.'},
+  starter:{name:'Starter',month:'£8',year:'£67',description:'Get Stellar Core and more room for everyday writing, planning, learning and coding.',limit:'Up to 2,500 Fast-equivalent generations/month. Core uses more allowance. 120 requests/hour ceiling.',action:'Choose Starter',prompt:'Help me turn my rough notes into a polished one-page project plan. Ask for the goal, deadline and budget before drafting.'},
+  plus:{name:'Plus',month:'£20',year:'£168',description:'Work through bigger projects with Stellar Deep and supported Jarvis and StellarX tools.',limit:'Up to 7,500 Fast-equivalent generations/month. Core and Deep use more allowance. 400 requests/hour ceiling.',action:'Choose Plus',prompt:'Help me debug a multi-file web app. Ask for the framework, file structure and exact error, then plan small fixes and a testing checklist.'},
+  pro:{name:'Pro',month:'£75',year:'£630',description:'Use Stellar Max and the highest capacity for intensive work, with supported Jarvis Pro tools.',limit:'Up to 15,000 Fast-equivalent generations/month. Stronger models use more allowance. 1,600 requests/hour ceiling.',action:'Choose Pro',prompt:'Help me audit my software project for security, performance and reliability. Ask about the stack and key files, then rank risks and create a safe implementation plan.'}
  };
  const buttons=[...document.querySelectorAll('[data-match-plan]')];
  const title=document.getElementById('match-plan-title');
  const description=document.getElementById('match-plan-detail');
  const limit=document.getElementById('match-plan-limit');
  const action=document.getElementById('match-plan-action');
- if(!buttons.length||!title||!description||!limit||!action)return;
+ const preview=document.getElementById('match-plan-preview');
+ if(!buttons.length||!title||!description||!limit||!action||!preview)return;
  let selected='plus';
  function render(){
   const item=catalog[selected];
@@ -362,6 +363,7 @@ apply('monthly');
   limit.textContent=item.limit;
   action.textContent=item.action;
   action.href=selected==='free'?'/app?welcome=1':'/app?upgrade='+selected+(annual?'-annual':'');
+  preview.href='/app?prompt='+encodeURIComponent(item.prompt)+'&utm_source=pricing&utm_campaign=plan-sample-'+selected;
  }
  buttons.forEach(b=>b.addEventListener('click',()=>{if(catalog[b.dataset.matchPlan]){selected=b.dataset.matchPlan;render();}}));
  document.querySelectorAll('[data-billing-cycle]').forEach(b=>b.addEventListener('click',render));
