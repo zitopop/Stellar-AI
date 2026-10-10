@@ -35,8 +35,96 @@ textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--line
 <link rel="stylesheet" href="/lib/assets/stellarx-chat-workspace.css?v=20260926">
 <link rel="stylesheet" href="/lib/assets/stellar-serious-ui-v1.css">
 <link rel="stylesheet" href="/stellar-brand-system-v1.css?v=20261005-2">\n<script defer src="/lib/assets/stellar-web-analytics.js?v=20261008-traffic-v1"></script>
+<style id="stellarx-simple-layout-v1">
+/* One clear PC task. Advanced controls remain available, not shown by default. */
+body.stellarx-simple{background:#0b0c11!important}
+body.stellarx-simple .codex-shell{display:block!important;min-height:0!important}
+body.stellarx-simple .codex-sidebar{display:none!important}
+body.stellarx-simple .top{background:rgba(11,12,17,.96)!important;border-color:rgba(255,255,255,.08)!important}
+body.stellarx-simple .topin{width:min(800px,calc(100% - 28px))!important;max-width:800px!important;min-height:62px!important;margin:auto!important;padding:0!important;gap:14px!important}
+body.stellarx-simple .top .brand{color:#f2efff!important;font-size:16px!important;font-weight:800!important}
+body.stellarx-simple .top .brand .small{display:none!important}
+body.stellarx-simple .pill{font-size:11px!important;margin-left:auto!important;border:0!important;color:#989aa9!important}
+body.stellarx-simple .topin #codexNewTask{display:inline-flex!important;width:auto!important;margin:0!important;align-items:center;justify-content:center;min-height:38px!important;padding:0 13px!important;border:1px solid #393748!important;border-radius:10px!important;background:#282437!important;font-size:12px!important;color:#f5efff!important;-webkit-text-fill-color:#f5efff!important;opacity:1!important;text-shadow:none!important}
+body.stellarx-simple .codex-main{width:min(790px,calc(100% - 28px))!important;padding:44px 0 80px!important;margin:auto!important;display:flex!important;flex-direction:column!important;gap:0!important}
+body.stellarx-simple .work-hero{display:block!important;min-height:0!important;padding:0!important;margin:0 0 24px!important}
+body.stellarx-simple .work-hero h1{max-width:none!important;font-size:clamp(32px,4.8vw,47px)!important;font-weight:740!important;line-height:1.12!important;margin:8px 0!important}
+body.stellarx-simple .work-hero .eyebrow{display:block!important;font:730 11px/1.3 system-ui,sans-serif!important;text-transform:none!important;letter-spacing:.03em!important;color:#b7a5fa!important}
+body.stellarx-simple .work-hero .lead{font-size:14px!important;max-width:590px!important;line-height:1.65!important;color:#a4a8b6!important}
+body.stellarx-simple .chip-row,body.stellarx-simple .agent-disclaimer{display:none!important}
+body.stellarx-simple .statusbox{display:flex!important;align-items:center;gap:12px;min-width:0!important;width:100%!important;margin-top:21px!important;padding:12px 14px!important;border:1px solid #2c2f3b!important;border-radius:14px!important;background:#151820!important;box-shadow:none!important}
+body.stellarx-simple .status-label{display:none!important}
+body.stellarx-simple .statusrow{display:flex;gap:9px;align-items:center;flex:0 0 auto}
+body.stellarx-simple #statusText{font-size:13px!important;color:#f1eefb!important}
+body.stellarx-simple #statusMeta{min-width:0;flex:1;font-size:11px;color:#8f94a5}
+body.stellarx-simple .pc-usage{display:none!important}
+body.stellarx-simple #taskComposer{order:1!important;background:#12141d!important;border:1px solid #2b2d3a!important;border-radius:20px!important;padding:22px!important;box-shadow:0 20px 80px rgba(0,0,0,.16)!important;margin:0!important}
+body.stellarx-simple .task-head{margin:0 0 15px!important}
+body.stellarx-simple .task-head h2{font-size:18px!important;font-weight:750!important}
+body.stellarx-simple .task-kicker{display:none!important}
+body.stellarx-simple .task-state{background:#1f2030!important;color:#bfb5e9!important;border-color:#363247!important}
+body.stellarx-simple #taskComposer>p{display:none!important}
+body.stellarx-simple #taskComposer>p::after{content:none!important;display:none!important}
+body.stellarx-simple #prompt{width:100%;display:block!important;min-height:150px!important;max-height:330px!important;padding:17px!important;border-radius:14px!important;background:#1a1c28!important;border:1px solid #363847!important;box-shadow:none!important;font-size:15px!important;color:#fff!important;resize:vertical!important}
+body.stellarx-simple #prompt:focus{border-color:#a391e6!important;outline:2px solid rgba(163,145,230,.13)!important}
+body.stellarx-simple #prompt::placeholder{color:#888e9f!important}
+body.stellarx-simple .codex-keyhint{display:none!important}
+body.stellarx-simple .task-progress{display:none!important}
+body.stellarx-simple.has-task .task-progress{display:flex!important;flex-wrap:wrap;gap:8px;margin:17px 0 8px!important}
+body.stellarx-simple .task-progress span{border:1px solid #333546;border-radius:999px;background:#1a1c27;color:#9195a7;padding:6px 10px;min-height:28px;font-size:10px}
+body.stellarx-simple .task-progress span.active{background:#2a2441;border-color:#8173b2;color:#eee8ff}
+body.stellarx-simple .planning-note{display:none!important}
+body.stellarx-simple .task-actions{display:flex!important;align-items:center;justify-content:flex-end!important;margin-top:15px!important}
+body.stellarx-simple #refreshBtn{display:none!important}
+body.stellarx-simple #planBtn{min-width:142px;min-height:44px!important;padding:0 20px!important;border:0!important;border-radius:11px!important;background:#dcd3ff!important;color:#171421!important;font-size:13px!important;font-weight:850!important}
+body.stellarx-simple #planSummary{font-size:13px!important;color:#ced2e1!important;line-height:1.55!important;white-space:pre-wrap}
+body.stellarx-simple .step{gap:11px!important;padding:13px!important;background:#1a1c28!important;border:1px solid #343646!important;border-radius:13px!important}
+body.stellarx-simple .step input{width:18px;height:18px;accent-color:#9c8be6}
+body.stellarx-simple .step .type{font:770 12px/1.4 system-ui,sans-serif!important;color:#eee8ff!important}
+body.stellarx-simple .step .reason{font-size:12px;line-height:1.5;color:#adb0c0}
+body.stellarx-simple .step details{margin-top:7px}
+body.stellarx-simple .step details summary{font-size:11px;color:#aa9dde;cursor:pointer}
+body.stellarx-simple .step .args{max-height:230px;overflow:auto;white-space:pre-wrap}
+body.stellarx-simple #runActions{justify-content:flex-end!important}
+body.stellarx-simple #runActions[hidden],body.stellarx-simple .plan[hidden]{display:none!important}
+body.stellarx-simple #runBtn{min-height:44px!important;border:0!important;border-radius:11px!important;background:#dcd3ff!important;color:#171421!important}
+body.stellarx-simple .stellarx-examples{margin-top:11px}
+body.stellarx-simple .stellarx-examples summary{color:#979caf;font-size:12px;cursor:pointer;min-height:38px;padding:8px 0}
+body.stellarx-simple .task-mode-row{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin:2px 0 8px!important}
+body.stellarx-simple .task-mode{min-height:40px!important;border-radius:11px!important;background:#1d1e2a!important;padding:9px 12px!important;min-width:110px}
+body.stellarx-simple .stellar-use-led{display:none!important}
+body.stellarx-simple .stellarx-advanced{order:3;display:block;width:100%;margin:12px 0;border:1px solid #292c37;border-radius:14px;background:#12151d}
+body.stellarx-simple .stellarx-advanced>summary{cursor:pointer;list-style:none;min-height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#b8bcce;font-size:12px;font-weight:720}
+body.stellarx-simple .stellarx-advanced>summary::-webkit-details-marker{display:none}
+body.stellarx-simple .stellarx-advanced>summary::after{content:'⌄';color:#8f93a6}
+body.stellarx-simple .stellarx-advanced[open]>summary::after{transform:rotate(180deg)}
+body.stellarx-simple .stellarx-advanced>.grid,body.stellarx-simple .stellarx-advanced>#safeguards,body.stellarx-simple .stellarx-advanced>#termsPanel,body.stellarx-simple .stellarx-advanced>#activity{display:block!important;margin:12px!important;padding:17px!important;border-radius:13px!important;background:#171922!important;border:1px solid #303240!important;box-shadow:none!important}
+body.stellarx-simple .stellarx-advanced>.grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px}
+body.stellarx-simple .stellarx-advanced #activity h2{display:block!important}
+body.stellarx-simple .stellarx-advanced #activity .log{max-height:240px}
+body.stellarx-simple .stellarx-advanced #safeguards::before,body.stellarx-simple .stellarx-advanced #safeguards>p::after{content:none!important;display:none!important}
+body.stellarx-simple .stellarx-advanced .perm strong::after{content:none!important}
+body.stellarx-simple .stellarx-advanced .install{white-space:pre-wrap;word-break:break-word}
+body.stellarx-simple #stellarxSimpleNotice{margin-top:12px;border:1px solid rgba(231,160,160,.28);border-radius:10px;padding:12px;background:#221d25;color:#f4c9d6;font-size:12px}
+body.stellarx-simple #stellarxSimpleNotice[hidden]{display:none!important}
+body.stellarx-simple .stellarx-simple-footer{order:2;text-align:center;color:#8e92a4;font-size:11px;line-height:1.5;padding:17px 0 7px}
+@media(max-width:670px){
+body.stellarx-simple .topin{gap:9px!important}
+body.stellarx-simple .top .brand{font-size:14px!important}
+body.stellarx-simple .pill{display:none!important}
+body.stellarx-simple .codex-main{width:calc(100% - 24px)!important;padding:25px 0 60px!important}
+body.stellarx-simple .work-hero h1{font-size:33px!important}
+body.stellarx-simple #taskComposer{padding:15px!important}
+body.stellarx-simple #prompt{min-height:145px!important}
+body.stellarx-simple .stellarx-advanced>.grid{grid-template-columns:1fr!important}
+body.stellarx-simple .statusbox{flex-wrap:wrap!important}
+body.stellarx-simple #statusMeta{flex:1 1 100%}
+body.stellarx-simple .task-actions{justify-content:stretch!important}
+body.stellarx-simple #planBtn{width:100%}
+}
+</style>
 </head>
-<body class="codex-chat-ui">
+<body class="codex-chat-ui stellarx-simple">
 <div class="stellar-use-bar" id="stellarUseBar" hidden><span>StellarX Work Agent</span><small id="stellarUseMeta">StellarX is using your PC to help complete this task.</small><button id="stellarUseStop" type="button">Emergency Stop</button></div><div class="stellar-use-led" id="stellarUseLed" hidden><i aria-hidden="true"></i><em class="stellarx-side-label" id="stellarUseSideLabel" aria-hidden="true">StellarX is using your PC</em></div><div class="stellarx-online-side" id="stellarxOnlineSide" hidden aria-live="polite">StellarX Computer Online</div>
 <header class="top"><div class="wrap topin"><a class="back" href="https://trystellarai.com/app">← Stellar AI</a><div class="brand">StellarX <span class="small">Work Agent Beta</span></div><div class="pill" id="accountPill">Checking account…</div></div></header>
 <div class="codex-shell">
@@ -51,7 +139,7 @@ textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--line
 <div class="codex-side-note"><strong>Controlled by you.</strong><br>StellarX inspects first, asks before higher-impact actions, and keeps Emergency Stop available.</div>
 </aside>
 <main class="wrap codex-main">
-<section class="hero work-hero"><div><div class="eyebrow">StellarX Work Agent</div><h1>Give <span class="agent-name">StellarX</span> a job.</h1><p class="lead">Describe the outcome you want. StellarX inspects the real project first, prepares a grounded plan, asks before higher-impact actions, and verifies the result.</p><div class="chip-row" aria-label="Work Agent safeguards"><span class="chip">Inspect first</span><span class="chip">Approval for actions</span><span class="chip">Scoped workspace</span><span class="chip">Emergency Stop</span></div><div class="agent-disclaimer">StellarX is a controlled work agent for your own projects and paired devices. You remain in control of permissions and approved actions.</div></div>
+<section class="hero work-hero"><div><div class="eyebrow">Your PC assistant</div><h1>Give <span class="agent-name">StellarX</span> a job.</h1><p class="lead">Tell StellarX what to do on your PC. It checks your files first and asks before making changes.</p><div class="chip-row" aria-label="Work Agent safeguards"><span class="chip">Inspect first</span><span class="chip">Approval for actions</span><span class="chip">Scoped workspace</span><span class="chip">Emergency Stop</span></div><div class="agent-disclaimer">StellarX is a controlled work agent for your own projects and paired devices. You remain in control of permissions and approved actions.</div></div>
 <div class="statusbox"><div class="status-label">Computer connection</div><div class="statusrow"><span class="dot" id="statusDot"></span><strong id="statusText">Not paired</strong></div><div class="small" id="statusMeta">Connect your Windows PC to get started.</div><div class="pc-usage"><div class="pc-usage-head"><span>Computer usage</span><strong id="pcUsageLabel">Loading…</strong></div><div class="pc-usage-track" aria-hidden="true"><span class="pc-usage-fill" id="pcUsageFill"></span></div></div></div></section>
 
 <section class="grid">
@@ -97,22 +185,63 @@ node agent.mjs pair YOUR_CODE
 <div class="note">Do not share passwords, API keys, payment details, recovery codes or private customer information in Discord or with untrusted plugins. Use the official support route for account, billing, privacy, legal or security issues.</div></section>
 </main>
 </div>
+<script id="stellarx-simple-structure-v1">
+(()=>{
+  const main=document.querySelector('.codex-main');
+  const composer=document.getElementById('taskComposer');
+  if(!main||!composer)return;
+  const header=document.querySelector('.topin');
+  const newTask=document.getElementById('codexNewTask');
+  const account=document.getElementById('accountPill');
+  if(header&&newTask)header.insertBefore(newTask,account||null);
+  const taskInput=document.getElementById('prompt');
+  const samples=composer.querySelector('.task-mode-row');
+  const progress=document.getElementById('taskProgress');
+  if(samples&&taskInput){
+    const examples=document.createElement('details');
+    examples.className='stellarx-examples';
+    const title=document.createElement('summary');title.textContent='Need an example?';
+    examples.append(title,samples);
+    composer.insertBefore(taskInput,examples.nextSibling||progress);
+    composer.insertBefore(examples,progress);
+    taskInput.placeholder='e.g. Fix the broken button on my website and test it';
+  }
+  document.getElementById('planBtn').textContent='Start task →';
+  document.getElementById('runBtn').textContent='Continue safely →';
+  const extra=document.createElement('details');extra.className='stellarx-advanced';extra.id='stellarxAdvanced';
+  const heading=document.createElement('summary');heading.textContent='Connection, permissions and activity';
+  extra.append(heading);
+  for(const el of [main.querySelector(':scope > .grid'),document.getElementById('safeguards'),document.getElementById('activity'),document.getElementById('termsPanel')]){
+    if(el)extra.appendChild(el);
+  }
+  main.appendChild(extra);
+  const footer=document.createElement('p');
+  footer.className='stellarx-simple-footer';
+  footer.textContent='Your computer stays under your control. Edits and sensitive actions still need approval.';
+  composer.after(footer);
+  const notice=document.createElement('div');notice.id='stellarxSimpleNotice';notice.setAttribute('role','status');notice.setAttribute('aria-live','polite');notice.hidden=true;
+  const summary=document.getElementById('planSummary');
+  summary.before(notice);
+})();
+</script>
 <script>
 (()=>{
   const $=id=>document.getElementById(id);
   let token='',currentPlan=null,currentPrompt='',statusTimer=null;
   function setStage(stage,label=''){
     document.querySelectorAll('#taskProgress [data-stage]').forEach(el=>el.classList.toggle('active',el.dataset.stage===stage));
-    if($('taskState'))$('taskState').textContent=label||({ask:'Ready',inspect:'Inspecting',approve:'Review plan',verify:'Verifying'}[stage]||'Ready');
+    document.body.classList.toggle('has-task',stage!=='ask');
+    if($('taskState'))$('taskState').textContent=label||({ask:'Ready',inspect:'Checking files',approve:'Review changes',verify:'Done'}[stage]||'Ready');
   }
   try{token=String(JSON.parse(localStorage.getItem('stellar-store')||'{}')?.session||'')}catch{}
   const main=$('taskComposer')?.closest('.codex-main');
-  $('codexNewTask')?.addEventListener('click',()=>{const prompt=$('prompt');prompt.value='';prompt.focus();$('plan').innerHTML='';$('planSummary').textContent='';$('runActions').hidden=true;currentPlan=null;currentPrompt='';setStage('ask','Ready');});
+  $('stellarUseStop')?.addEventListener('click',()=>{$('stopBtn')?.click()});
+  $('codexNewTask')?.addEventListener('click',()=>{const prompt=$('prompt');prompt.value='';prompt.focus();$('plan').innerHTML='';$('plan').hidden=false;$('planSummary').textContent='';$('runActions').hidden=true;const notice=$('stellarxSimpleNotice');if(notice)notice.hidden=true;currentPlan=null;currentPrompt='';setStage('ask','Ready');});
   document.querySelectorAll('.codex-nav-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.codex-nav-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');if(btn.dataset.advanced==='1')main?.classList.add('show-advanced');$(btn.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'});}));
   const inboundTask=String(new URLSearchParams(location.search).get('task')||'').trim().slice(0,8000);
   if(inboundTask){$('prompt').value=inboundTask;history.replaceState(null,'',location.pathname);}
   const auth=()=>({'content-type':'application/json',Authorization:'Bearer '+token});
-  function log(message,cls=''){const line=document.createElement('div');if(cls)line.className=cls;line.textContent='['+new Date().toLocaleTimeString()+'] '+message;$('log').appendChild(line);$('log').scrollTop=$('log').scrollHeight}
+  function log(message,cls=''){const line=document.createElement('div');if(cls)line.className=cls;line.textContent='['+new Date().toLocaleTimeString()+'] '+message;$('log').appendChild(line);$('log').scrollTop=$('log').scrollHeight;if(cls==='bad'||cls==='warn'){const notice=$('stellarxSimpleNotice');if(notice){notice.hidden=false;notice.textContent=message;}}}
   function updateUseBar(d){const bar=$('stellarUseBar'),led=$('stellarUseLed'),side=$('stellarUseSideLabel');if(!bar)return;const active=d?.activeTask&&!d?.emergencyStopped;bar.hidden=!active;if(led)led.hidden=!active;if(!active)return;const type=String(d.activeTask.type||'task');const keyboard=['type_text','keyboard_shortcut'].includes(type),mouse=['mouse_move','mouse_click'].includes(type);const activity=keyboard?'using the keyboard':mouse?'using the mouse':'using your PC';$('stellarUseMeta').textContent='StellarX is '+activity+' · '+(d.hostname||'Windows PC');if(side)side.textContent='StellarX is '+activity;}
   async function api(action,body={},method='POST'){
     const response=await fetch('/api/desktop-agent'+(method==='GET'?('?action='+encodeURIComponent(action)):''),
@@ -130,9 +259,10 @@ node agent.mjs pair YOUR_CODE
   async function status(){
     try{
       const d=await api('status',{},'GET');
+      const extra=$('stellarxAdvanced');if(extra&&!extra.dataset.checked){extra.open=!d.online;extra.dataset.checked='1';}
       $('statusDot').classList.toggle('online',!!d.online);
-      $('statusText').textContent=!d.paired?'Not paired':d.online?'Computer online':'Computer paired · offline';
-      $('statusMeta').textContent=!d.paired?'Create a pairing code to connect your Windows PC.':(d.hostname||'Windows PC')+' · last seen '+(d.lastSeen?new Date(d.lastSeen).toLocaleString():'never');
+      $('statusText').textContent=d.emergencyStopped?'PC paused':!d.paired?'Connect your PC':d.online?'PC connected':'PC offline';
+      $('statusMeta').textContent=!d.paired?'Open connection settings below to pair your Windows PC.':d.online?(d.hostname||'Windows PC')+' · ready to work':(d.hostname||'Windows PC')+' · start the desktop companion';
       $('disconnectBtn').hidden=!d.paired;$('pairBtn').hidden=!!d.paired;if(d.paired)$('pairCode').hidden=true;
       $('permRead').checked=d.policy?.read!==false;$('permWrite').checked=d.policy?.write!==false;$('permShell').checked=d.policy?.shell===true;$('permUrl').checked=d.policy?.openUrl!==false;$('permInput').checked=d.policy?.input===true;
       $('stopBtn').hidden=!!d.emergencyStopped;$('resumeBtn').hidden=!d.emergencyStopped;
@@ -170,7 +300,7 @@ node agent.mjs pair YOUR_CODE
     }catch(e){log(e.message,'bad')}
   };
   function renderPlan(plan){
-    currentPlan=plan;$('plan').innerHTML='';
+    currentPlan=plan;$('plan').innerHTML='';$('plan').hidden=false;
     const phase=plan?.phase==='implement'?'Implementation plan':'Inspection plan';
     setStage(plan?.phase==='implement'?'approve':'inspect',plan?.phase==='implement'?'Review actions':'Inspection ready');
     $('planSummary').textContent=phase+' · '+(plan?.summary||'Review these actions:');
@@ -181,18 +311,25 @@ node agent.mjs pair YOUR_CODE
       body.querySelector('.type').textContent=(i+1)+'. '+action.type+(action.requiresApproval?' · APPROVAL REQUIRED':' · safe inspection');
       body.querySelector('.reason').textContent=action.reason||'';
       body.querySelector('.args').textContent=JSON.stringify(action.args,null,2);
-      row.append(check,body);$('plan').appendChild(row);
+      const args=body.querySelector('.args');if(args){const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Technical details';args.replaceWith(details);details.append(summary,args);}row.append(check,body);$('plan').appendChild(row);
     });
     $('runActions').hidden=!(plan?.actions||[]).length;
+    $('runBtn').textContent=plan?.phase==='inspect'?'Continue checking →':'Run approved changes →';
   }
   $('prompt').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('planBtn').click();}});
   $('planBtn').onclick=async()=>{
     const prompt=$('prompt').value.trim();if(!prompt)return;
-    currentPrompt=prompt;$('planBtn').disabled=true;$('plan').innerHTML='';$('planSummary').textContent='Preparing a grounded inspection plan…';$('runActions').hidden=true;setStage('inspect','Preparing plan');
+    currentPrompt=prompt;$('planBtn').disabled=true;$('plan').innerHTML='';const notice=$('stellarxSimpleNotice');if(notice)notice.hidden=true;$('planSummary').textContent='Preparing your task…';$('runActions').hidden=true;setStage('inspect','Preparing task');
     try{
       const r=await fetch('/api/desktop-agent?action=plan',{method:'POST',headers:auth(),body:JSON.stringify({prompt})});
       const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not build plan.');
-      renderPlan(d.plan);log('Repository inspection plan created. Run the safe inspection steps to let Stellar ground the implementation in your actual code.','ok');
+      renderPlan(d.plan);
+      const safeRead=new Set(['read_file','list_directory','search_files','git_status','git_diff']);
+      const actions=Array.isArray(d.plan?.actions)?d.plan.actions:[];
+      if(d.plan?.phase==='inspect'&&actions.length&&actions.every(a=>a.requiresApproval!==true&&safeRead.has(a.type))){
+        $('planSummary').textContent='Checking your project…';$('plan').hidden=true;$('runActions').hidden=true;
+        await $('runBtn').onclick();
+      }else log('Review the suggested steps and approve only actions you want to run.','ok');
     }catch(e){$('planSummary').textContent='';setStage('ask','Needs attention');log(e.message,'bad')}finally{$('planBtn').disabled=false}
   };
   async function waitTask(taskId,label){
