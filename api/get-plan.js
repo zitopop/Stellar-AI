@@ -4,7 +4,7 @@ import { isOwnerEmail, isStaffEmail, requireSession } from '../lib/auth.js';
 import { incrementConversionMetric, recordCheckoutCancellation } from '../lib/conversion-metrics.js';
 import { achievementDefinitions, ensureReferralProfile, kvGet, kvPipeline, unlockedAchievements } from '../lib/profile.js';
 import { readApiKeySummary, regenerateApiKey } from '../lib/api-keys.js';
-import { MODEL_CREDIT_COSTS, OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, isPaidPlan, normalisePlan } from '../lib/pricing.js';
+import { OVERAGE_REQUEST_COST_PENCE, getPlanDefinition, isPaidPlan, modelCreditCostsForPlan, normalisePlan } from '../lib/pricing.js';
 import { getUsageSnapshot } from '../lib/usage.js';
 import { listBusinessFulfillmentJobs } from '../lib/business-fulfillment.js';
 
@@ -177,7 +177,7 @@ function planCapabilities(plan) {
     name: definition.name,
     includedCredits: definition.includedCredits,
     creditPeriod: definition.creditPeriod,
-    modelCreditCosts: { ...MODEL_CREDIT_COSTS },
+    modelCreditCosts: { ...modelCreditCostsForPlan(plan) },
     requestsPerHour: definition.requestsPerHour,
     maxTokens: definition.maxTokens,
     models: [...definition.models],
