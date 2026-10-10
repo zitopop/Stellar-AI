@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { MODEL_CREDIT_COSTS, PLAN_DEFINITIONS } from '../lib/pricing.js';
+import { PLAN_DEFINITIONS, creditCostForModel } from '../lib/pricing.js';
 
 const plans = readFileSync(new URL('../plans.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const homepage = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 const count = (plan, model) =>
-  (PLAN_DEFINITIONS[plan].includedCredits / MODEL_CREDIT_COSTS[model])
+  (PLAN_DEFINITIONS[plan].includedCredits / creditCostForModel(model, plan))
     .toLocaleString('en-GB');
 
 test('pricing explains the real tier allowances rather than invented benefits', () => {
@@ -47,7 +47,7 @@ test('the in-app upgrade path respects budgets and offers a choice', () => {
   assert.match(app, /free:\{id:'starter',name:'Starter',price:'£8\/month'/);
   assert.match(app, /Compare all plans and limits/);
   assert.match(app, /30 requests\/hour ceiling/);
-  assert.match(app, /1,500 Max messages\/month/);
+  assert.match(app, /1,875 Max messages\/month/);
   assert.doesNotMatch(app, /Instant access • Cancel anytime/);
 });
 
