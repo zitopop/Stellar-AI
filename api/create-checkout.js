@@ -149,6 +149,14 @@ function acquisitionSource(value) {
   return ATTRIBUTION_SOURCES.has(source) ? source : 'direct';
 }
 
+// Stripe is authoritative for an existing subscription. A stale KV record may
+// still contain a cancelled subscription ID after webhook delivery or migration.
+// Keep unresolved and payment-recoverable states blocked to avoid double billing.
+export function subscriptionPreventsNewCheckout(status) {
+  const value = String(status || '').trim().toLowerCase();
+  return value !== 'canceled' && value !== 'incomplete_expired';
+}
+
 function checkoutIdempotencyKey(email, plan, now = Date.now()) {
   const bucket = Math.floor(Number(now || Date.now()) / (10 * 60 * 1000));
   const digest = crypto.createHash('sha256')
@@ -690,16 +698,27 @@ export default async function handler(req, res) {
       return res.status(410).json({ error: 'Usage top-ups are no longer sold. Choose a plan with the usage capacity you need.' });
     }
 
-    // Never create a second recurring subscription for an account that already has one.
-    // Existing paid customers change tier inside the Stripe Billing Portal, where
-    // only the live Stellar Starter/Plus/Pro prices are offered.
+    // Query Stripe before blocking a repeat purchase: a stale local subscription
+    // record must not leave returning customers permanently stuck at checkout.
+    // Existing active, trialing or otherwise unsettled subscriptions are still
+    // directed to Billing so we never create a second recurring charge.
     const existingSubscriptionId = String(accountUser?.stripeSubscriptionId || '').trim();
-    if (isPaidPlan(accountUser?.plan) && /^sub_[A-Za-z0-9]+$/.test(existingSubscriptionId)) {
-      return res.status(409).json({
-        error: 'This account already has an active Stellar subscription. Continue in Manage billing to change plan.',
-        code: 'ACTIVE_SUBSCRIPTION_EXISTS',
-        manageBilling: true,
-      });
+    if (/^sub_[A-Za-z0-9]+$/.test(existingSubscriptionId)) {
+      let existingSubscription = null;
+      try {
+        existingSubscription = await stripe.subscriptions.retrieve(existingSubscriptionId);
+      } catch (error) {
+        // A genuinely deleted/missing Stripe subscription cannot be managed.
+        // Fail closed for all other errors, especially network and auth errors.
+        if (error?.code !== 'resource_missing') throw error;
+      }
+      if (existingSubscription && subscriptionPreventsNewCheckout(existingSubscription.status)) {
+        return res.status(409).json({
+          error: 'This account already has an existing Stellar subscription. Continue in Manage billing to update or resolve it.',
+          code: 'ACTIVE_SUBSCRIPTION_EXISTS',
+          manageBilling: true,
+        });
+      }
     }
 
     // Price IDs are server-owned. Historic Plus aliases remain supported, but a
