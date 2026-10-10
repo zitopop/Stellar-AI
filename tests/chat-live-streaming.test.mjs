@@ -27,3 +27,9 @@ test('composer grows with typed content and send button becomes stop control', (
   assert.match(app, /const label=active\?'Stop generating':'Send message'/);
   assert.match(app, /setAttribute\('aria-label',label\)/);
 });
+
+
+test('empty model streams do not masquerade as a successful answer', () => {
+  assert.match(app, /if\(!answer\.trim\(\)\)throw new Error\('Stellar returned an empty answer\. Please try again\.'\)/);
+  assert.doesNotMatch(app, /answer=answer\.trim\(\)\|\|'Done\.'/);
+});
