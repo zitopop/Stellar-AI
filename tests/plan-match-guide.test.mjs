@@ -6,7 +6,7 @@ import { PLAN_DEFINITIONS, MODEL_CREDIT_COSTS } from '../lib/pricing.js';
 const page = readFileSync(new URL('../plans.html', import.meta.url), 'utf8');
 
 test('plan finder offers all current tiers with accessible controls', () => {
-  assert.match(page, /Which plan is worth it for you\?/);
+  assert.match(page, /Not sure which plan to choose\?/);
   assert.match(page, /aria-live="polite"/);
   for (const plan of ['free', 'starter', 'plus', 'pro']) {
     assert.ok(page.includes('data-match-plan="' + plan + '"'));
@@ -21,7 +21,7 @@ test('suggested plans match real monthly and annual pricing and usage', () => {
     const generations = PLAN_DEFINITIONS[plan].includedCredits / MODEL_CREDIT_COSTS.spark;
     assert.ok(page.includes('Up to ' + generations.toLocaleString('en-GB') + ' Fast-equivalent generations/month'));
   }
-  assert.match(page, /StellarX beta where your approved setup is supported/);
+  assert.match(page, /StellarX computer control beta with approved setup/);
   assert.match(page, /Stronger models use more allowance/);
 });
 
