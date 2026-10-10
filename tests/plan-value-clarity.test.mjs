@@ -27,7 +27,7 @@ test('pricing explains the real tier allowances rather than invented benefits', 
     }
   }
   assert.match(plans, /Hourl[y] request ceiling<\/th><td>30 requests/);
-  assert.match(plans, /shared Fast-equivalent allowance|same included allowance/);
+  assert.match(plans, /They are not separate pools of messages/);
   assert.doesNotMatch(plans, /Instant access • Cancel anytime/);
 });
 
