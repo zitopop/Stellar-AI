@@ -5,74 +5,88 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const start = app.indexOf('async function refreshSession(){');
-const end = app.indexOf('async function loadPlanTruth(){', start);
-assert.ok(start >= 0 && end > start, 'App session refresh function must be present');
-const refreshSource = app.slice(start, end);
+const end = app.indexOf('async function ownerRequest(', start);
+assert.ok(start >= 0 && end > start, 'Session and plan refresh functions must exist');
+const script = new vm.Script(app.slice(start, end));
 
-function makeHarness(responses) {
-  let session = 'current-signed-token';
-  let clearCount = 0;
-  let callCount = 0;
-  let headerCount = 0;
-  const sandbox = {
-    signedInUser: { email: 'test@example.invalid' },
+function response(status, body = {}) {
+  return { status, ok: status >= 200 && status < 300, json: async () => body };
+}
+function harness({ plan = [], auth = [] } = {}) {
+  const requests = [];
+  const warnings = [];
+  const state = {
+    currentToken: 'saved-login-token',
+    signedInUser: { email: 'tester@example.invalid' },
     serverOwner: true,
     serverStaff: true,
-    token: () => session,
-    store: () => ({ user: sandbox.signedInUser }),
-    setSession: (value, user) => { session = value; sandbox.signedInUser = user; },
-    clearSession: () => { clearCount++; session = ''; sandbox.signedInUser = null; },
-    updateHeader: () => { headerCount++; },
-    fetch: async () => {
-      const response = responses[Math.min(callCount, responses.length - 1)];
-      callCount++;
-      if (response instanceof Error) throw response;
-      return { status: response.status, ok: response.status === 200, json: async () => response.body || {} };
+    allowedModels: ['spark', 'nova'],
+    planState: { plan: 'owner' },
+    COSTS: { spark: 2 },
+    referralUrl: '',
+    token: () => state.currentToken,
+    store: () => ({ user: state.signedInUser }),
+    clearSession: () => { state.currentToken = ''; },
+    setSession: (value, user) => { state.currentToken = value; state.signedInUser = user; },
+    authHeaders: () => ({ Authorization: 'Bearer ' + state.currentToken }),
+    safeModel: value => value,
+    setStatus: (message, tone) => warnings.push({ message, tone }),
+    updateHeader: () => {},
+    setTimeout: fn => { fn(); return 1; },
+    fetch: async (url) => {
+      requests.push(url);
+      if (url === '/api/auth') {
+        assert.ok(auth.length > 0, 'Unexpected session refresh');
+        return auth.shift();
+      }
+      assert.equal(url, '/api/get-plan');
+      assert.ok(plan.length > 0, 'Unexpected plan request');
+      return plan.shift();
     },
-    setTimeout: (fn) => { fn(); return 1; },
-    Promise,
   };
-  const context = vm.createContext(sandbox);
-  vm.runInContext(refreshSource, context);
-  return {
-    sandbox,
-    refresh: () => vm.runInContext('refreshSession()', context),
-    state: () => ({ session, clearCount, callCount, headerCount }),
-  };
+  vm.createContext(state);
+  script.runInContext(state);
+  return { state, requests, warnings };
 }
 
-test('a double 401 from background verification preserves user session and revokes private UI', async () => {
-  const h = makeHarness([{ status: 401 }, { status: 401 }]);
-  assert.equal(await h.refresh(), false);
-  assert.equal(h.state().callCount, 2);
-  assert.equal(h.state().clearCount, 0);
-  assert.equal(h.state().session, 'current-signed-token');
-  assert.equal(h.sandbox.signedInUser.email, 'test@example.invalid');
-  assert.equal(h.sandbox.serverOwner, false);
-  assert.equal(h.sandbox.serverStaff, false);
-  assert.equal(h.state().headerCount, 1);
+test('background plan verification 401 does not erase account session after a chat', async () => {
+  const h = harness({ plan: [response(401)] });
+  await h.state.loadPlanTruth({ passive: true });
+  assert.deepEqual(h.requests, ['/api/get-plan']);
+  assert.equal(h.state.currentToken, 'saved-login-token');
+  assert.equal(h.state.signedInUser.email, 'tester@example.invalid');
+  assert.equal(h.state.serverOwner, false);
+  assert.equal(h.state.serverStaff, false);
+  assert.deepEqual([...h.state.allowedModels], ['spark']);
+  assert.match(h.warnings.at(-1).message, /Could not verify your plan/);
 });
 
-test('a valid refresh continues replacing the session and preserving account identity', async () => {
-  const h = makeHarness([{ status: 200, body: {
-    session: 'rotated-signed-token',
-    user: { email: 'test@example.invalid', name: 'Tester' },
-  } }]);
-  assert.equal(await h.refresh(), true);
-  assert.equal(h.state().callCount, 1);
-  assert.equal(h.state().clearCount, 0);
-  assert.equal(h.state().session, 'rotated-signed-token');
-  assert.equal(h.sandbox.signedInUser.name, 'Tester');
+test('an actual expired token still clears the session during explicit verification', async () => {
+  const h = harness({ plan: [response(401)], auth: [response(401), response(401)] });
+  await h.state.loadPlanTruth();
+  assert.deepEqual(h.requests, ['/api/get-plan', '/api/auth', '/api/auth']);
+  assert.equal(h.state.currentToken, '');
+  assert.equal(h.state.signedInUser, null);
+  assert.equal(h.state.planState.plan, 'free');
 });
 
-test('background verification network failures do not sign out a stored account', async () => {
-  const h = makeHarness([new Error('temporary network outage')]);
-  assert.equal(await h.refresh(), false);
-  assert.equal(h.state().clearCount, 0);
-  assert.equal(h.state().session, 'current-signed-token');
+test('successful passive refresh keeps verified paid entitlements', async () => {
+  const h = harness({ plan: [response(200, { plan: 'plus', availableModels: ['spark', 'star', 'comet'], capabilities: { name: 'Plus' } })] });
+  await h.state.loadPlanTruth({ passive: true });
+  assert.equal(h.state.currentToken, 'saved-login-token');
+  assert.equal(h.state.planState.plan, 'plus');
+  assert.deepEqual([...h.state.allowedModels], ['spark', 'star', 'comet']);
 });
 
-test('manual sign out still explicitly clears the session', () => {
+test('transient plan service outages keep saved accounts and show recoverable status', async () => {
+  const h = harness({ plan: [response(503, { error: 'Service temporarily unavailable' })] });
+  await h.state.loadPlanTruth({ passive: true });
+  assert.equal(h.state.currentToken, 'saved-login-token');
+  assert.ok(h.state.signedInUser);
+  assert.match(h.warnings.at(-1).message, /Service temporarily unavailable/);
+});
+
+test('automatic chat refresh is passive and manual sign-out still clears session', () => {
+  assert.match(app, /if\(token\(\)\)loadPlanTruth\(\{passive:true\}\)/);
   assert.match(app, /else if\(a==='signout'\)\{[^}]*clearSession\(\)/);
-  assert.match(app, /Could not verify your session\. Try again shortly\./);
 });
