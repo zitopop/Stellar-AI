@@ -214,13 +214,14 @@ body{background:#0b0c11;color:#f4f5fa}
 }
 @media(prefers-reduced-motion:reduce){.jarvis-starters button{transition:none!important}}
 </style><link rel="stylesheet" href="/lib/assets/stellar-premium-experience-20261010.css?v=1">
+<link rel="stylesheet" href="/lib/assets/stellar-unified-brand-v1.css?v=20261010-1">
 </head>
 <body class="jarvis-experience" data-jarvis-state="checking">
 <div class="shell">
 <header class="topbar">
 <div class="top-inner">
 <a class="back-link" href="/app" aria-label="Back to Stellar AI" title="Back to Stellar AI">←</a>
-<div class="brand"><span class="jarvis-mark" aria-hidden="true">✦</span> Jarvis <span class="jarvis-brand-subtitle">VOICE &amp; CHAT</span></div>
+<div class="brand"><span class="jarvis-mark" aria-hidden="true">✦</span> Jarvis <span class="jarvis-brand-subtitle">BY STELLAR AI</span></div>
 <span id="jarvis-live-indicator" class="jarvis-live-indicator" aria-hidden="true">Checking access</span>
 <div class="top-actions"><label class="jarvis-model-label" for="jarvis-model">Model <select id="jarvis-model" aria-label="Jarvis model" disabled><option value="star">Core</option><option value="comet" disabled>Deep</option><option value="nova" disabled>Max</option></select></label>
 <a class="apps-link" href="/plugins" title="Manage connected apps">Apps</a>
@@ -231,13 +232,25 @@ body{background:#0b0c11;color:#f4f5fa}
 <p class="voice-panel-title">Voice settings</p>
 <button id="voice-toggle" type="button" aria-label="Toggle voice replies" aria-pressed="true">Voice replies on</button>
 <button id="handsfree-toggle" type="button" aria-label="Toggle hands-free conversation" aria-pressed="false">Hands-free off</button>
+<label class="jarvis-voice-language" for="jarvis-speech-language">Speech recognition language
+<select id="jarvis-speech-language" aria-label="Speech recognition language">
+<option value="en-GB">English (UK)</option><option value="en-US">English (US)</option>
+<option value="es-ES">Español</option><option value="fr-FR">Français</option>
+<option value="de-DE">Deutsch</option><option value="pt-PT">Português</option>
+<option value="it-IT">Italiano</option><option value="ar-SA">العربية</option>
+</select></label><p class="jarvis-voice-language-note">Languages depend on your browser and device. Voice replies may use your device's default voice.</p>
 </div>
 </div>
 </header>
 <main>
 <div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span><div class="access-actions"><a id="access-link" href="/app?signin=1">Open sign in →</a><button id="retry-access" type="button" hidden>Retry connection</button></div></div>
 <section id="chat" class="chat" aria-label="Jarvis conversation">
-<div id="hero" class="hero"><div class="jarvis-orb" aria-hidden="true">✦</div><p class="jarvis-eyebrow">STELLAR INTELLIGENCE</p><h1>What are we working on?</h1><p>Talk or type. Plan a project, debug code or work through a decision—one clear step at a time.</p><div class="jarvis-starters" aria-label="Starter tasks"><button type="button" data-jarvis-starter="Help me plan a project. Ask for my goal, deadline and constraints, then give me clear next steps.">Plan a project ↗</button><button type="button" data-jarvis-starter="Help me debug a problem. Ask for the exact error, relevant code and expected behaviour.">Debug a problem ↗</button><button type="button" data-jarvis-starter="Help me understand a difficult topic. Ask what I want explained and how detailed the answer should be.">Explain something ↗</button></div></div>
+<div id="hero" class="hero"><div class="jarvis-orb" aria-hidden="true">✦</div><p class="jarvis-eyebrow">STELLAR INTELLIGENCE</p><h1>What are we working on?</h1><p>Jarvis is your Stellar AI assistant for clear answers, planning and problem-solving. Talk or type on supported devices. You stay in control.</p><div class="jarvis-starters" aria-label="Starter tasks"><button type="button" data-jarvis-starter="Help me plan a project. Ask for my goal, deadline and constraints, then give me clear next steps.">Plan a project ↗</button><button type="button" data-jarvis-starter="Help me debug a problem. Ask for the exact error, relevant code and expected behaviour.">Debug a problem ↗</button><button type="button" data-jarvis-starter="Help me understand a difficult topic. Ask what I want explained and how detailed the answer should be.">Explain something ↗</button></div>
+<details class="jarvis-capabilities">
+  <summary>Explore Jarvis tools, permissions and availability</summary>
+  <p>Voice depends on browser support and microphone permission. Vision and connected apps depend on your plan and approved setup. Jarvis will not automatically take control of your device or send messages on your behalf in this chat.</p>
+  <div class="jarvis-capability-links"><a href="/jarvis/vision">Explore Vision</a><a href="/plugins">Connected apps</a><a href="/plans">Compare plans</a></div>
+</details></div>
 <div id="messages" class="messages" role="log" aria-label="Jarvis messages" aria-live="polite"></div>
 </section>
 </main>
@@ -455,7 +468,7 @@ body{background:#0b0c11;color:#f4f5fa}
   function setupMic(){
     const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(!Recognition){micAvailable=false;$('mic').disabled=true;$('handsfree-toggle').disabled=true;$('mic').textContent='Mic unavailable';$('handsfree-toggle').textContent='Hands-free unavailable';return}
-    micAvailable=true;recognition=new Recognition();recognition.lang='en-GB';recognition.interimResults=true;recognition.continuous=false;
+    micAvailable=true;recognition=new Recognition();recognition.lang=safeStorageGet('stellarJarvisSpeechLang','en-GB');recognition.interimResults=true;recognition.continuous=false;
     let finalText='';
     recognition.onstart=()=>{finalText='';$('mic').classList.add('listening');$('mic').setAttribute('aria-pressed','true');$('mic').textContent='●';setStatus('Listening…','good')};
     recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}$('prompt').value=(finalText||interim).trim();resizePrompt()};
@@ -503,6 +516,10 @@ document.querySelectorAll('[data-jarvis-starter]').forEach(button=>button.addEve
   $('prompt').value=String(button.dataset.jarvisStarter||'');resizePrompt();$('prompt').focus();
 }));
 $('retry-access').addEventListener('click',()=>syncJarvisAccess());
+  const speechLanguageSelect=$('jarvis-speech-language');
+  const selectedSpeechLanguage=safeStorageGet('stellarJarvisSpeechLang','en-GB');
+  if([...speechLanguageSelect.options].some(option=>option.value===selectedSpeechLanguage))speechLanguageSelect.value=selectedSpeechLanguage;
+  speechLanguageSelect.addEventListener('change',()=>{safeStorageSet('stellarJarvisSpeechLang',speechLanguageSelect.value);if(recognition)recognition.lang=speechLanguageSelect.value;setStatus('Speech language updated. Recognition support depends on your browser.','good')});
   $('prompt').addEventListener('input',resizePrompt);
   $('composer').addEventListener('submit',e=>{e.preventDefault();sendMessage($('prompt').value)});
   $('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&e.keyCode!==229){e.preventDefault();sendMessage($('prompt').value)}});
