@@ -213,13 +213,15 @@ body{background:#0b0c11;color:#f4f5fa}
   .top-actions .apps-link{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){.jarvis-starters button{transition:none!important}}
-</style></head>
-<body>
+</style><link rel="stylesheet" href="/lib/assets/stellar-premium-experience-20261010.css?v=1">
+</head>
+<body class="jarvis-experience" data-jarvis-state="checking">
 <div class="shell">
 <header class="topbar">
 <div class="top-inner">
 <a class="back-link" href="/app" aria-label="Back to Stellar AI" title="Back to Stellar AI">←</a>
 <div class="brand"><span class="jarvis-mark" aria-hidden="true">✦</span> Jarvis <span class="jarvis-brand-subtitle">VOICE &amp; CHAT</span></div>
+<span id="jarvis-live-indicator" class="jarvis-live-indicator" aria-hidden="true">Checking access</span>
 <div class="top-actions"><label class="jarvis-model-label" for="jarvis-model">Model <select id="jarvis-model" aria-label="Jarvis model" disabled><option value="star">Core</option><option value="comet" disabled>Deep</option><option value="nova" disabled>Max</option></select></label>
 <a class="apps-link" href="/plugins" title="Manage connected apps">Apps</a>
 <button id="new-chat" type="button" aria-label="Start new chat" title="New chat"><span aria-hidden="true">＋</span><span class="new-chat-label">New chat</span></button>
@@ -235,7 +237,7 @@ body{background:#0b0c11;color:#f4f5fa}
 <main>
 <div id="signin" class="signin"><span id="access-copy">Sign in to Stellar AI to use Jarvis.</span><div class="access-actions"><a id="access-link" href="/app?signin=1">Open sign in →</a><button id="retry-access" type="button" hidden>Retry connection</button></div></div>
 <section id="chat" class="chat" aria-label="Jarvis conversation">
-<div id="hero" class="hero"><div class="jarvis-orb" aria-hidden="true">✦</div><p class="jarvis-eyebrow">STELLAR INTELLIGENCE</p><h1>What are we working on?</h1><p>Plan a project, solve a problem or get help with code. Choose a more advanced model for deeper work.</p><div class="jarvis-starters" aria-label="Starter tasks"><button type="button" data-jarvis-starter="Help me plan a project. Ask for my goal, deadline and constraints, then give me clear next steps.">Plan a project ↗</button><button type="button" data-jarvis-starter="Help me debug a problem. Ask for the exact error, relevant code and expected behaviour.">Debug a problem ↗</button><button type="button" data-jarvis-starter="Help me understand a difficult topic. Ask what I want explained and how detailed the answer should be.">Explain something ↗</button></div></div>
+<div id="hero" class="hero"><div class="jarvis-orb" aria-hidden="true">✦</div><p class="jarvis-eyebrow">STELLAR INTELLIGENCE</p><h1>What are we working on?</h1><p>Talk or type. Plan a project, debug code or work through a decision—one clear step at a time.</p><div class="jarvis-starters" aria-label="Starter tasks"><button type="button" data-jarvis-starter="Help me plan a project. Ask for my goal, deadline and constraints, then give me clear next steps.">Plan a project ↗</button><button type="button" data-jarvis-starter="Help me debug a problem. Ask for the exact error, relevant code and expected behaviour.">Debug a problem ↗</button><button type="button" data-jarvis-starter="Help me understand a difficult topic. Ask what I want explained and how detailed the answer should be.">Explain something ↗</button></div></div>
 <div id="messages" class="messages" role="log" aria-label="Jarvis messages" aria-live="polite"></div>
 </section>
 </main>
@@ -282,7 +284,16 @@ body{background:#0b0c11;color:#f4f5fa}
     $('jarvis-model-note').textContent='Stellar '+({star:'Core',comet:'Deep',nova:'Max'}[jarvisModel])+' selected · '+(jarvisModel==='star'?'Balanced everyday responses.':'For harder work. Uses more of your allowance.');
   }
   function headers(){const h={'Content-Type':'application/json'};const token=sessionToken();if(token)h.Authorization='Bearer '+token;return h}
-  function setStatus(text,kind=''){const el=$('status');el.textContent=/^Ready[.]?$/.test(text)?'':text;el.className='status '+kind}
+  function setStatus(text,kind=''){
+    const el=$('status');
+    const message=String(text||'');
+    el.textContent=/^Ready[.]?$/.test(message)?'':message;
+    el.className='status '+kind;
+    const state=/Listening/i.test(message)?'listening':/Speaking/i.test(message)?'speaking':/Thinking|Checking|Stopping|Connecting/i.test(message)?'thinking':kind==='bad'?'error':'ready';
+    document.body.dataset.jarvisState=state;
+    const liveIndicator=$('jarvis-live-indicator');
+    if(liveIndicator)liveIndicator.textContent=({listening:'Listening',speaking:'Speaking',thinking:'Working',error:'Needs attention',ready:'Ready'})[state];
+  }
   function setBusy(value){busy=value;const blocked=!jarvisEntitled||!accessChecked;$('jarvis-model').disabled=value||blocked;$('send').disabled=value||blocked;$('mic').disabled=value||blocked||!micAvailable;$('handsfree-toggle').disabled=blocked||!micAvailable;$('voice-toggle').disabled=blocked;$('prompt').disabled=blocked;$('new-chat').disabled=value;$('stop-response').hidden=!value}
   function addMessage(role,text){
     $('hero').hidden=true;
@@ -456,10 +467,10 @@ body{background:#0b0c11;color:#f4f5fa}
   function startListening(){if(!micAvailable||!recognition||busy||speaking||!jarvisEntitled)return;try{recognition.start()}catch{try{recognition.stop()}catch{}}}
   function showAccess(message,href,label){$('access-copy').textContent=message;$('access-link').href=href;$('access-link').textContent=label;$('signin').classList.add('show')}
   async function syncJarvisAccess(){
-    accessChecked=false;jarvisEntitled=false;setBusy(false);
+    accessChecked=false;jarvisEntitled=false;setBusy(false);setStatus('Checking Jarvis access…','good');
     let accountModels=['star'];
     const mode={textContent:'',classList:{add(){},remove(){}}};
-    if(!sessionToken()){mode.textContent='Sign in required';$('retry-access').hidden=true;showAccess('Sign in to use Jarvis Voice.','/app?signin=1','Open sign in →');accessChecked=true;setBusy(false);return false}
+    if(!sessionToken()){mode.textContent='Sign in required';$('retry-access').hidden=true;showAccess('Sign in to use Jarvis Voice.','/app?signin=1','Open sign in →');accessChecked=true;setBusy(false);setStatus('Sign in required.','bad');return false}
     try{
       const r=await fetch('/api/get-plan',{headers:{Authorization:'Bearer '+sessionToken()},cache:'no-store'});const d=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(d.error||'Could not verify Jarvis access.');
@@ -468,10 +479,10 @@ body{background:#0b0c11;color:#f4f5fa}
       const owner=d?.owner===true||d?.accountPlan?.owner===true;
       if(owner){jarvisSource='jarvis-owner';jarvisEntitled=true;mode.textContent='Jarvis enabled'}
       else if(caps.voice===true||caps.enabled===true){jarvisSource='jarvis-public';jarvisEntitled=true;mode.textContent='Jarvis voice';mode.classList.remove('owner')}
-      else{mode.textContent='Plus or Pro';showAccess('Jarvis Voice is included with Plus and Pro.','/plans','See plans →')}
-    }catch(error){mode.textContent='Access unavailable';showAccess(error.message||'Jarvis access could not be verified.','/app','Back to Stellar →');$('retry-access').hidden=false}
+      else{mode.textContent='Plus or Pro';showAccess('Jarvis Voice is included with Plus and Pro.','/plans','See plans →');setStatus('Plus or Pro required.','bad')}
+    }catch(error){mode.textContent='Access unavailable';showAccess(error.message||'Jarvis access could not be verified.','/app','Back to Stellar →');$('retry-access').hidden=false;setStatus('Jarvis access unavailable.','bad')}
     accessChecked=true;updateJarvisModels(accountModels);setBusy(false);
-    if(jarvisEntitled){$('retry-access').hidden=true;$('signin').classList.remove('show')}
+    if(jarvisEntitled){$('retry-access').hidden=true;$('signin').classList.remove('show');setStatus('Ready.')}
     return jarvisEntitled;
   }
   function resizePrompt(){const el=$('prompt');el.style.height='auto';el.style.height=Math.min(el.scrollHeight,168)+'px'}
