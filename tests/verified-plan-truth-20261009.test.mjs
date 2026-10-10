@@ -40,7 +40,7 @@ test('every paid plan offers monthly and annual checkout choices without JavaScr
 
 test('landing keeps one clear heading, free CTA and full pricing route', () => {
   assert.equal((landing.match(/<h1\b/g) || []).length, 1);
-  assert.match(landing, /Turn ideas into work you can use/);
+  assert.match(landing, /Your ideas\. Real work\. One powerful AI\./);
   assert.match(landing, /data-conversion="start-free"/);
   assert.match(landing, /href="\/plans"/);
 });
