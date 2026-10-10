@@ -7,7 +7,11 @@ import sys
 import xml.etree.ElementTree as ET
 
 BASE = "https://trystellarai.com"
-CRITICAL = ["/", "/app", "/blog", "/plans", "/free-tools"]
+CRITICAL = [
+    "/", "/app", "/blog", "/plans", "/free-tools",
+    "/ai-game-script-generator", "/roblox-script-generator",
+    "/blog/fivem-bank-heist-script", "/blog/qbcore-drug-system",
+]
 SITEMAPS = ["/sitemap.xml", "/sitemap-seo.xml", "/sitemap-growth.xml"]
 HEADERS = {"User-Agent": "StellarAI-SEO-Health/1.0 (+https://trystellarai.com/)"}
 errors = []
