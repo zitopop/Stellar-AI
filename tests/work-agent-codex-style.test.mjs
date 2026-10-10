@@ -27,3 +27,11 @@ test('StellarX Computer is discoverable from chat and accepts a reviewed task ha
   assert.match(page, /new URLSearchParams\(location\.search\)\.get\('task'\)/);
   assert.match(entry, /Open StellarX Work Agent/);
 });
+
+test('StellarX task handoff is visibly available beside the chat modes', () => {
+  const composer = app.match(/<section class="composer-wrap">[\s\S]*?<\/section>/)?.[0] || '';
+  assert.match(composer, /id="stellarx-composer-btn"/);
+  assert.match(composer, /Use my PC/);
+  assert.match(app, /\$\('stellarx-composer-btn'\)\?\.addEventListener\('click',openComputerActionCard\)/);
+  assert.match(app, /\.composer-mode-row\{/);
+});
