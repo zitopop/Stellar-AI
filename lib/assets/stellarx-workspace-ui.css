@@ -1,0 +1,111 @@
+/* StellarX premium conversational workspace — Stellar-branded, ChatGPT-style flow */
+body.sx-workspace{background:#0c0d12!important}
+body.sx-workspace .top{position:sticky;top:0;z-index:15;height:60px!important;background:#0d0e13!important}
+body.sx-workspace .top .topin{max-width:none!important;width:100%!important;padding:0 20px!important;gap:12px!important}
+body.sx-workspace .top .brand,body.sx-workspace .top .back{display:none!important}
+body.sx-workspace #sxTopTitle{font-size:14px;font-weight:720;color:#f0f0f5;letter-spacing:-.02em}
+body.sx-workspace #sxSidebarToggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;background:transparent;border:0;color:#d8d8e4;border-radius:11px;font-size:19px;cursor:pointer}
+body.sx-workspace #sxSidebarToggle:hover{background:#23232b}
+body.sx-workspace .topin #codexNewTask{display:none!important}
+body.sx-workspace .codex-shell{display:grid!important;grid-template-columns:248px minmax(0,1fr)!important;height:calc(100dvh - 60px)!important;min-height:0!important;overflow:hidden}
+body.sx-workspace .codex-shell>.codex-sidebar{display:none!important}
+body.sx-workspace #sxWorkspaceSidebar{grid-column:1;grid-row:1;min-height:0;min-width:0;display:flex;flex-direction:column;gap:8px;overflow:hidden;background:#14151a;border-right:1px solid #24252d;padding:22px 12px 16px;z-index:8}
+body.sx-workspace .sx-side-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 10px 14px}
+body.sx-workspace .sx-side-head strong{font-size:17px;font-weight:770;color:#f0edfa}
+body.sx-workspace #sxCloseSidebar{display:none;border:0;background:none;color:#e5e3ec;font-size:20px;width:36px;height:36px}
+body.sx-workspace .sx-side-new{min-height:43px;display:flex;align-items:center;gap:8px;border:1px solid #393741;background:#25242c;color:#f6f4fb;text-align:left;border-radius:11px;padding:0 14px;font-size:13px;font-weight:750;cursor:pointer}
+body.sx-workspace .sx-side-new:hover{background:#302e39}
+body.sx-workspace .sx-side-nav{display:grid;gap:5px;margin:10px 0 8px}
+body.sx-workspace .sx-side-nav button{display:block;text-align:left;min-height:42px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:#abb0bf;font-size:13px;cursor:pointer}
+body.sx-workspace .sx-side-nav button:hover,body.sx-workspace .sx-side-nav button.selected{background:#23242e;color:#f0eff6}
+body.sx-workspace .sx-side-heading{padding:8px 10px;color:#787e8e;font-weight:750;font-size:11px}
+body.sx-workspace .sx-saved-chats{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
+body.sx-workspace .sx-chat-link{display:flex;align-items:center;min-height:38px;border-radius:10px;margin-bottom:3px;background:transparent}
+body.sx-workspace .sx-chat-link:hover,body.sx-workspace .sx-chat-link.selected{background:#262630}
+body.sx-workspace .sx-open-chat{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 10px;text-align:left;border:0;background:transparent;color:#c9c9d4;font-size:12px;min-height:40px;cursor:pointer}
+body.sx-workspace .sx-chat-link.selected .sx-open-chat{color:#fff}
+body.sx-workspace .sx-delete-chat{width:32px;height:34px;margin-right:3px;flex:0 0 auto;border:0;border-radius:8px;background:transparent;color:#8d90a0;cursor:pointer;font-size:18px}
+body.sx-workspace .sx-delete-chat:hover{background:#422832;color:#ffb1b9}
+body.sx-workspace .sx-no-chats,body.sx-workspace .sx-side-foot{font-size:11px;line-height:1.5;color:#828797;padding:8px 10px}
+body.sx-workspace .sx-side-foot{margin-top:auto;border-top:1px solid #292a31;padding-top:13px}
+body.sx-workspace #sxSidebarBackdrop[hidden]{display:none!important}
+body.sx-workspace .codex-shell>.codex-main{grid-column:2;grid-row:1;width:min(850px,calc(100% - 44px))!important;max-width:850px!important;margin:0 auto!important;min-width:0}
+body.sx-workspace.sx-chat-mode .codex-shell>.codex-main{height:100%!important;min-height:0!important;max-height:100%!important;overflow:hidden;padding:12px 0 15px!important;display:flex!important;flex-direction:column!important;gap:0!important}
+body.sx-workspace.sx-chat-mode .work-hero{flex:0 0 auto;margin:0 0 24px!important;padding:0!important}
+body.sx-workspace.sx-chat-mode:not(.sx-has-messages) .work-hero{margin:auto 0 28px!important;text-align:center}
+body.sx-workspace.sx-chat-mode .work-hero h1{font-size:clamp(29px,4vw,40px)!important;line-height:1.15!important;margin:7px 0 10px!important;color:#f3f3f5}
+body.sx-workspace.sx-chat-mode .work-hero .eyebrow{color:#aa96ee!important}
+body.sx-workspace.sx-chat-mode .work-hero .lead{display:none!important}
+body.sx-workspace.sx-chat-mode:not(.sx-has-messages) #sxMessages{display:none!important}
+body.sx-workspace.sx-chat-mode.sx-has-messages #sxMessages{display:flex!important;flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;padding:20px 4px 26px!important;margin:0!important;scrollbar-width:thin;gap:24px!important}
+body.sx-workspace.sx-chat-mode #sxModeTabs{flex:0 0 auto!important;margin:0 0 12px!important;padding:3px!important;border-radius:11px!important;width:max-content!important;align-self:start}
+body.sx-workspace #sxModeTabs .sx-mode{min-height:38px!important;min-width:102px!important;padding:0 12px!important}
+body.sx-workspace.sx-chat-mode:not(.sx-has-messages) #sxModeTabs{align-self:center}
+body.sx-workspace.sx-chat-mode #sxStop{align-self:flex-end;flex:none;min-height:36px;margin:0 0 6px;border-radius:999px}
+body.sx-workspace.sx-chat-mode #taskComposer{flex:0 0 auto!important;width:100%!important;margin:0!important;border:1px solid #343643!important;border-radius:24px!important;padding:11px 14px 11px!important;background:#20212b!important;box-shadow:0 6px 32px rgba(0,0,0,.24)!important}
+body.sx-workspace.sx-chat-mode #taskComposer:focus-within{border-color:#5a556f!important}
+body.sx-workspace.sx-chat-mode #prompt{min-height:54px!important;height:54px;max-height:210px!important;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;resize:none!important;font-size:15px!important;line-height:1.5!important;padding:12px 8px 4px!important}
+body.sx-workspace.sx-chat-mode #prompt:focus{border:0!important;outline:0!important;box-shadow:none!important}
+body.sx-workspace.sx-chat-mode #taskComposer .task-actions{display:flex!important;justify-content:flex-end!important;padding:0!important;margin:1px 0 0!important}
+body.sx-workspace.sx-chat-mode #planBtn{width:43px!important;min-width:43px!important;height:43px!important;min-height:43px!important;padding:0!important;border-radius:50%!important;background:#d9d1f6!important;color:#191822!important;-webkit-text-fill-color:#191822!important;font-size:22px!important;font-family:system-ui,sans-serif!important;line-height:1!important}
+body.sx-workspace.sx-chat-mode #planBtn:hover{background:#eee9ff!important}
+body.sx-workspace.sx-chat-mode #planBtn:disabled{opacity:.42!important}
+body.sx-workspace.sx-chat-mode .sx-chat-disclaimer{order:2!important;margin:10px 0 0!important;color:#727887!important;font-size:10px!important;text-align:center}
+body.sx-workspace.sx-chat-mode .stellarx-simple-footer{display:none!important}
+body.sx-workspace.sx-chat-mode .stellarx-advanced{display:none!important}
+body.sx-workspace.sx-chat-mode .sx-msg{max-width:92%!important}
+body.sx-workspace.sx-chat-mode .sx-msg.assistant{align-self:stretch!important;max-width:100%!important}
+body.sx-workspace.sx-chat-mode .sx-msg.user .sx-bubble{background:#292b36!important;border:0!important;border-radius:21px!important;padding:11px 16px!important;color:#f6f5fc!important}
+body.sx-workspace.sx-chat-mode .sx-msg.assistant .sx-bubble{background:transparent!important;color:#eff0f7!important;padding:5px 0!important;font-size:14px!important;line-height:1.75!important;white-space:normal!important}
+body.sx-workspace.sx-chat-mode .sx-who{font-size:12px!important;color:#a4a3bc!important;font-weight:730!important}
+body.sx-workspace .sx-chat-actions{display:flex;align-items:center;gap:5px}
+body.sx-workspace .sx-chat-actions button{background:transparent;color:#9194a4;border:0;border-radius:8px;padding:3px 9px;min-height:28px;font-size:11px;cursor:pointer}
+body.sx-workspace .sx-chat-actions button:hover{color:#f1edff;background:#282935}
+body.sx-workspace .sx-bubble p{margin:0 0 10px}
+body.sx-workspace .sx-bubble h3,body.sx-workspace .sx-bubble h4{font-size:16px;margin:16px 0 8px;color:#f4f2ff}
+body.sx-workspace .sx-bubble ul{margin:0 0 12px;padding-left:22px;line-height:1.8}
+body.sx-workspace .sx-bubble a{color:#c6baff;text-decoration:underline;text-underline-offset:3px}
+body.sx-workspace .sx-code-block{background:#12141c;border:1px solid #383a46;border-radius:13px;margin:10px 0;overflow:hidden}
+body.sx-workspace .sx-code-head{background:#252731;border-bottom:1px solid #393b46;color:#c4c3d0;font-size:11px;padding:8px 12px}
+body.sx-workspace .sx-code-block pre{margin:0;padding:14px 16px;max-height:360px;overflow:auto;font:12px/1.6 Consolas,ui-monospace,monospace}
+body.sx-workspace:not(.sx-chat-mode) .codex-shell>.codex-main{height:100%!important;overflow-y:auto!important;padding:35px 0 75px!important}
+body.sx-workspace:not(.sx-chat-mode) #sxWorkspaceSidebar{position:relative}
+body.sx-workspace #sxSidebarBackdrop{display:none!important}
+@media(max-width:850px){
+ body.sx-workspace .top .topin{padding:0 12px!important}
+ body.sx-workspace #sxSidebarToggle{display:flex!important}
+ body.sx-workspace .topin #codexNewTask{display:inline-flex!important;min-height:39px!important;padding:0 10px!important;font-size:11px!important}
+ body.sx-workspace .codex-shell{display:block!important;height:calc(100dvh - 60px)!important}
+ body.sx-workspace #sxWorkspaceSidebar{position:fixed!important;left:0;top:0;bottom:0;width:min(282px,83vw);z-index:101;transition:transform .2s ease;transform:translateX(-102%);box-shadow:20px 0 65px #0008}
+ body.sx-workspace.sx-menu-open #sxWorkspaceSidebar{transform:translateX(0)}
+ body.sx-workspace #sxCloseSidebar{display:block!important}
+ body.sx-workspace.sx-menu-open #sxSidebarBackdrop{display:block!important;position:fixed;inset:0;background:#0009;border:0;z-index:100}
+ body.sx-workspace .codex-shell>.codex-main{width:min(760px,calc(100% - 24px))!important;max-width:760px!important}
+ body.sx-workspace.sx-chat-mode .codex-shell>.codex-main{padding:12px 0 12px!important}
+ body.sx-workspace.sx-chat-mode .work-hero h1{font-size:clamp(28px,6vw,36px)!important}
+ body.sx-workspace.sx-chat-mode #sxMessages{padding:13px 0 24px!important}
+ body.sx-workspace.sx-chat-mode #taskComposer{border-radius:20px!important;padding:8px 10px!important}
+ body.sx-workspace.sx-chat-mode .sx-msg{max-width:96%!important}
+ body.sx-workspace.sx-chat-mode .sx-msg.assistant{max-width:100%!important}
+}
+@media(max-width:400px){
+ body.sx-workspace #sxTopTitle{font-size:13px}
+ body.sx-workspace .topin #codexNewTask{font-size:10px!important}
+ body.sx-workspace.sx-chat-mode #sxModeTabs{width:100%!important}
+ body.sx-workspace.sx-chat-mode #sxModeTabs .sx-mode{min-width:0;flex:1}
+}
+@media(prefers-reduced-motion:reduce){
+ body.sx-workspace #sxWorkspaceSidebar{transition:none}
+}
+
+/* Override legacy button text-fill styles with the correct dark workspace palette. */
+body.sx-workspace #sxWorkspaceSidebar .sx-side-new{background:#2b2935!important;color:#f6f2ff!important;-webkit-text-fill-color:#f6f2ff!important;border:1px solid #403c4f!important}
+body.sx-workspace #sxWorkspaceSidebar .sx-side-nav button{background:transparent!important;color:#babcc9!important;-webkit-text-fill-color:#babcc9!important;border:0!important}
+body.sx-workspace #sxWorkspaceSidebar .sx-side-nav button.selected,body.sx-workspace #sxWorkspaceSidebar .sx-side-nav button:hover{background:#292a35!important;color:#f8f5ff!important;-webkit-text-fill-color:#f8f5ff!important}
+body.sx-workspace #sxWorkspaceSidebar .sx-open-chat{background:transparent!important;color:#d1d0db!important;-webkit-text-fill-color:#d1d0db!important;border:0!important}
+body.sx-workspace #sxWorkspaceSidebar .sx-delete-chat{background:transparent!important;color:#8d90a0!important;-webkit-text-fill-color:#8d90a0!important}
+body.sx-workspace #sxWorkspaceSidebar .sx-delete-chat:hover{background:#422832!important;color:#ffb1b9!important;-webkit-text-fill-color:#ffb1b9!important}
+
+body.sx-workspace #sxSidebarToggle{background:#252632!important;border:1px solid #3b3c49!important;color:#f3f2ff!important;-webkit-text-fill-color:#f3f2ff!important;border-radius:11px!important}
+body.sx-workspace.sx-chat-mode #planBtn{flex:0 0 43px!important;width:43px!important;min-width:43px!important;max-width:43px!important;align-self:flex-end!important;aspect-ratio:1}
+body.sx-workspace.sx-chat-mode #taskComposer .task-actions{display:flex!important;justify-content:flex-end!important;flex-wrap:nowrap!important}
