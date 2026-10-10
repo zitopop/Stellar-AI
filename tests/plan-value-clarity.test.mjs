@@ -56,3 +56,16 @@ test('homepage reflects actual free hourly rate and links to full model details'
   assert.match(homepage, /Compare exact model allowances and plan limits/);
   assert.match(homepage, /shared Fast-equivalent allowance/);
 });
+
+test('plan finder offers real editable example prompts before checkout', () => {
+  assert.match(plans, /id="match-plan-preview"/);
+  assert.match(plans, /Preview tasks work with Free too/);
+  assert.match(plans, /preview.href='\/app\?prompt='/);
+  for (const plan of ['free', 'starter', 'plus', 'pro']) {
+    assert.ok(plans.includes('plan-sample-'), 'sample campaign must be traceable');
+    assert.ok(plans.includes(plan + ':{name:'), 'each plan is in the sample catalog');
+  }
+  const script = plans.match(/<script id="stellar-plan-fit-guide-js-v1">([\s\S]*?)<\/script>/)?.[1];
+  assert.ok(script);
+  assert.doesNotThrow(() => new Function(script));
+});
