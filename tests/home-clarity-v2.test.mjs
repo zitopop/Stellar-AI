@@ -8,7 +8,7 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const appCss = readFileSync(new URL('../lib/assets/stellar-home-clarity-v1.css', import.meta.url), 'utf8');
 
 test('public home has one clear headline, no repetitive sections and working destinations', () => {
-  assert.match(home, /<h1 id="hero-title">Build and debug FiveM &amp; Roblox scripts\.<\/h1>/);
+  assert.match(home, /<h1 id="hero-title">Your ideas\. Real work\. One powerful AI\.<\/h1>/);
   assert.equal((home.match(/<h1\b/g) || []).length, 1);
   assert.doesNotMatch(home, /id="how-it-works"|id="bottom-title"/);
   const ids = [...home.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
@@ -25,7 +25,7 @@ test('price switch, preview and transparent terms remain discoverable', () => {
   assert.match(home, /data-cycle="monthly"/);
   for (const key of ['starter','plus','pro']) assert.match(home, new RegExp('data-plan="' + key + '"'));
   assert.match(home, /Yearly plans are billed upfront/);
-  assert.match(home, /Generated code should be tested in a development environment before production use/);
+  assert.match(home, /Preview and test generated code before using it/);
 });
 
 test('separate cacheable styles and app essentials are retained', () => {
