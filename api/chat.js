@@ -2,7 +2,7 @@
 // Streams Anthropic Messages API responses with server-owned quality guidance,
 // current-model routing, safe fallbacks, and signed-session plan enforcement.
 import { isIP } from 'node:net';
-import { isOwnerEmail, readSession } from '../lib/auth.js';
+import { isOwnerEmail, readSession, sessionSigningConfigured } from '../lib/auth.js';
 import { OVERAGE_REQUEST_COST_PENCE, PLAN_DEFINITIONS, creditCostForModel, getPlanDefinition, normalisePlan } from '../lib/pricing.js';
 import { recordAcceptedRequest, recordCountryActivity, recordScriptGenerated } from '../lib/profile.js';
 import { consumeHourlyRequest, consumeUsage, refundUsageCharge } from '../lib/usage.js';
@@ -1006,6 +1006,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'That message or image is too large. Send a smaller file or split it into parts.' });
   }
 
+  // Never downgrade a signed-in request to guest when the session verifier is offline.
+  if (String(req.headers.authorization || '').startsWith('Bearer ') && !sessionSigningConfigured()) {
+    return res.status(503).json({ error: 'Secure sign-in is temporarily unavailable. Try again shortly.', code: 'AUTH_SESSION_UNAVAILABLE' });
+  }
   const session = readSession(req);
   const account = await getAccountFromServer(session?.email);
   const plan = account.plan;
