@@ -29,7 +29,7 @@ test('live preview examples fill the real form without submitting or consuming c
   assert.match(home, /id="anonymous-preview-form"/);
   assert.match(home, /id="anonymous-preview-prompt"/);
   assert.equal((home.match(/data-preview-prompt="/g)||[]).length, 3);
-  assert.match(runtime, /\$\$\('\[data-preview-prompt\]'\)/);
+  assert.ok(runtime.includes("document.querySelectorAll('[data-preview-prompt]')"));
   assert.match(runtime, /input\.value = example/);
   assert.match(runtime, /input\.focus\(\{ preventScroll: true \}\)/);
   const begin = runtime.indexOf("$$('[data-preview-prompt]')");
