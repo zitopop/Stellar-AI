@@ -729,9 +729,25 @@ const PLATFORM_GUIDANCE = {
   general: `PLATFORM QUALITY GATE: PLATFORM NOT YET CONFIRMED\nDo not invent framework APIs or file destinations. Ask one concise platform clarification when it is genuinely necessary; otherwise provide a platform-neutral plan and clearly label assumptions.`,
 };
 
+// Route each turn by its current request, not every topic mentioned in its history.
+// A short reference such as "fix it" deliberately inherits the previous user request.
+function classificationText(messages) {
+  const userTurns = Array.isArray(messages)
+    ? messages.filter((message) => message?.role === 'user' && typeof message.content === 'string' && message.content.trim()).slice(-2)
+    : [];
+  const current = userTurns.at(-1)?.content.trim() || '';
+  const previous = userTurns.length > 1 ? userTurns[0].content.trim() : '';
+  if (!current || !previous || current.length > 95) return current.toLowerCase();
+  const referringBack = /\b(?:it|that|this|these|those|them|same|again|earlier|previous|above)\b/i.test(current)
+    || /^(?:yes|yep|okay|ok|sure|continue|go on|more|another one)[.!?\s]*$/i.test(current);
+  // A new explicit subject wins even when it contains words like "this".
+  const newSubject = /\b(?:fivem|qbcore|esx|roblox|luau|shopify|website|web app|mobile app|football|weather|recipe|travel|python|javascript|typescript|react|lua|sql|api|github|vercel)\b/i.test(current);
+  return ((referringBack && !newSubject ? previous.slice(-3000) + '\n' : '') + current).toLowerCase();
+}
+
 function detectFramework(messages, platform = detectPlatform(messages)) {
   if (platform !== 'fivem' && platform !== 'mixed') return 'unknown';
-  const text = messages.map((message) => typeof message.content === 'string' ? message.content : '').join(' ').toLowerCase();
+  const text = classificationText(messages);
   const qbcore = /\bqbcore\b|\bqb[- ]?core\b|getcoreobject/.test(text);
   const esx = /\besx\b|sharedobject|esx:getsharedobject/.test(text);
   const oxLib = /ox_lib|oxlib/.test(text);
@@ -744,7 +760,7 @@ function detectFramework(messages, platform = detectPlatform(messages)) {
 }
 
 function detectPlatform(messages) {
-  const text = messages.map((message) => typeof message.content === 'string' ? message.content : '').join(' ').toLowerCase();
+  const text = classificationText(messages);
   const roblox = /\broblox\b|\bluau\b|datastore|remoteevent|remotefunction|replicatedstorage|roblox studio/.test(text);
   const fivem = /\bfivem\b|\bqbcore\b|\besx\b|fxmanifest|ox_lib|gta v/.test(text);
   if (roblox && fivem) return 'mixed';
@@ -754,7 +770,7 @@ function detectPlatform(messages) {
 }
 
 function detectWorkflowMode(messages, platform = detectPlatform(messages)) {
-  const text = messages.map((message) => typeof message.content === 'string' ? message.content : '').join(' ').toLowerCase();
+  const text = classificationText(messages);
   if (platform === 'general' && /\b(side[- ]?hustle|make money|earn money|get money|money builder|revenue|clients?|leads?|sell services?|website audit|ai receptionist|shopify cleanup|seo pack|service pack|business idea|outreach)\b/.test(text)) return 'money_builder';
   if (/\baudit\b|review (this|the) code|find (bugs|vulnerabilities)|security review|debug this/.test(text)) return 'audit';
   if (platform === 'roblox' && /build pack|complete (?:\w+ )?game|full (?:\w+ )?game|entire game|larger system|make a game|build (?:a )?\w* ?system/.test(text)) return 'roblox_build_pack';
@@ -765,9 +781,7 @@ function detectWorkflowMode(messages, platform = detectPlatform(messages)) {
 function detectRequestKind(messages, platform = detectPlatform(messages), workflowMode = detectWorkflowMode(messages, platform)) {
   if (platform !== 'general') return 'technical';
   if (workflowMode === 'audit' || workflowMode === 'roblox_build_pack' || workflowMode === 'fivem_resource') return 'technical';
-  const text = Array.isArray(messages)
-    ? messages.map((message) => typeof message?.content === 'string' ? message.content : '').join(' ').toLowerCase()
-    : '';
+  const text = classificationText(messages);
   const technical = /\`\`\`|\b(?:code|coding|programming|programmer|developer|debug|bug|error|exception|stack trace|api|endpoint|database|sql|html|css|javascript|typescript|node(?:\.js)?|react|next(?:\.js)?|python|java|c\+\+|c#|php|ruby|golang|rust|git|github|vercel|supabase|function|class|variable|json|yaml|xml|regex|terminal|command line|cli|npm|package\.json|server|backend|frontend|deploy|deployment|website|web app|mobile app|app code|source code)\b|\.(?:js|mjs|cjs|ts|tsx|jsx|py|lua|html|css|json|sql|yml|yaml)\b/.test(text);
   return technical ? 'technical' : 'general';
 }
