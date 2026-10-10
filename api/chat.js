@@ -232,7 +232,8 @@ const ROLE_RESPONSE_SCHEMAS = {
 };
 
 const STRUCTURED_FALLBACK_NOTICE = 'STRUCTURED OUTPUT FALLBACK: If JSON Schema transport is unavailable on a fallback provider, preserve every required field in clearly labelled prose or JSON-like sections, but do not claim that schema validation or execution occurred.';
-// Anthropic uses HTTP 529 when its API is overloaded; try the configured fallback.\nconst ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504, 529]);
+// Anthropic uses HTTP 529 when its API is overloaded; try the configured fallback.
+const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504, 529]);
 const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 const MAX_REQUEST_PAYLOAD_CHARS = 5_000_000;
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
