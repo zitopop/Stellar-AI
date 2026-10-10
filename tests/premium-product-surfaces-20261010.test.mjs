@@ -24,7 +24,7 @@ test('all customer surfaces keep the shared premium design', () => {
 });
 
 test('public purchase and previews are still present', () => {
-  assert.match(landing, /<h1 id="hero-title">Turn ideas into work you can use\.<\/h1>/);
+  assert.match(landing, /<h1 id="hero-title">Your ideas\. Real work\. One powerful AI\.<\/h1>/);
   for (const id of ['anonymous-preview-form','anonymous-preview-result','example-showcase','work-tasks','plans','faq']) {
     assert.ok(landing.includes('id="' + id + '"'), id);
   }
