@@ -9,6 +9,7 @@ import { consumeHourlyRequest, consumeUsage, refundUsageCharge } from '../lib/us
 import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
 import { handleDiscordDebugRequest } from '../lib/discord-debug.js';
 import { connectedAppChatContext } from '../lib/plugin-chat-context.js';
+import { classificationText } from '../lib/chat-intent.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -234,6 +235,8 @@ const ROLE_RESPONSE_SCHEMAS = {
 const STRUCTURED_FALLBACK_NOTICE = 'STRUCTURED OUTPUT FALLBACK: If JSON Schema transport is unavailable on a fallback provider, preserve every required field in clearly labelled prose or JSON-like sections, but do not claim that schema validation or execution occurred.';
 // Anthropic uses HTTP 529 when its API is overloaded; try the configured fallback.
 const ANTHROPIC_RETRYABLE_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504, 529]);
+// Gateway overload (529) is also recoverable through the permitted direct-provider fallback.
+const FORGE_FAILOVER_STATUSES = new Set([400, 404, 408, 409, 425, 429, 500, 502, 503, 504, 529]);
 const SUPPORTED_IMAGE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 const MAX_REQUEST_PAYLOAD_CHARS = 5_000_000;
 const MAX_IMAGE_DATA_LENGTH = 4_000_000;
@@ -575,6 +578,12 @@ function getModelCandidates(tier) {
   return [...new Set([modelTier.primary, modelTier.fallback].filter(Boolean))];
 }
 
+function getPremiumModelRestriction(tier) {
+  if (tier === 'nova') return { error: 'Stellar Max is included with Pro.', recommendedPlan: 'pro' };
+  if (tier === 'comet') return { error: 'Stellar Deep is included with Plus and Pro.', recommendedPlan: 'plus' };
+  return { error: 'Stellar Core is included with Starter, Plus and Pro.', recommendedPlan: 'starter' };
+}
+
 function resolveRoute(requestedModel, requestedRole, plan) {
   const requested = normaliseRoutingInput(requestedModel);
   const normalizedPlan = String(plan || '').trim().toLowerCase() === 'owner'
@@ -729,21 +738,8 @@ const PLATFORM_GUIDANCE = {
   general: `PLATFORM QUALITY GATE: PLATFORM NOT YET CONFIRMED\nDo not invent framework APIs or file destinations. Ask one concise platform clarification when it is genuinely necessary; otherwise provide a platform-neutral plan and clearly label assumptions.`,
 };
 
-// Route each turn by its current request, not every topic mentioned in its history.
-// A short reference such as "fix it" deliberately inherits the previous user request.
-function classificationText(messages) {
-  const userTurns = Array.isArray(messages)
-    ? messages.filter((message) => message?.role === 'user' && typeof message.content === 'string' && message.content.trim()).slice(-2)
-    : [];
-  const current = userTurns.at(-1)?.content.trim() || '';
-  const previous = userTurns.length > 1 ? userTurns[0].content.trim() : '';
-  if (!current || !previous || current.length > 95) return current.toLowerCase();
-  const referringBack = /\b(?:it|that|this|these|those|them|same|again|earlier|previous|above)\b/i.test(current)
-    || /^(?:yes|yep|okay|ok|sure|continue|go on|more|another one)[.!?\s]*$/i.test(current);
-  // A new explicit subject wins even when it contains words like "this".
-  const newSubject = /\b(?:fivem|qbcore|esx|roblox|luau|shopify|website|web app|mobile app|football|weather|recipe|travel|python|javascript|typescript|react|lua|sql|api|github|vercel)\b/i.test(current);
-  return ((referringBack && !newSubject ? previous.slice(-3000) + '\n' : '') + current).toLowerCase();
-}
+// Classify the latest concrete request; conversational references are resolved
+// across recent user turns in the shared intent helper.
 
 function detectFramework(messages, platform = detectPlatform(messages)) {
   if (platform !== 'fivem' && platform !== 'mixed') return 'unknown';
@@ -966,7 +962,7 @@ async function createUpstreamStream({ route, maxTokens, system, messages, signal
   if (route.provider !== 'forge') return createAnthropicStream({ tier: route.tier, maxTokens, system, messages, signal });
 
   const forgeResponse = await createForgeResponse({ model: route.model, maxTokens, system, messages, signal, responseFormat });
-  if (forgeResponse.ok || ![400, 404, 408, 409, 425, 429, 500, 502, 503, 504].includes(forgeResponse.status) || !ANTHROPIC_KEY) return forgeResponse;
+  if (forgeResponse.ok || !FORGE_FAILOVER_STATUSES.has(forgeResponse.status) || !ANTHROPIC_KEY) return forgeResponse;
   return createAnthropicStream({ tier: route.fallbackTier || 'star', maxTokens, system, messages, signal });
 }
 
@@ -1058,14 +1054,13 @@ export default async function handler(req, res) {
     const requestedTier = MODEL_TIER_BY_ID[mappedModel]
       || (['spark','star','comet','nova'].includes(requestedModelKey) ? requestedModelKey : 'star');
     if (!limits.models.includes(requestedTier)) {
+      const restriction = getPremiumModelRestriction(requestedTier);
       return res.status(402).json({
-        error: requestedTier === 'nova'
-          ? 'Stellar Max is included with Stellar Pro.'
-          : 'Stellar Deep is included with Stellar Plus and Pro.',
+        error: restriction.error,
         code: 'PAYWALL_REQUIRED',
         reason: 'premium_model',
         requestedTier,
-        recommendedPlan: requestedTier === 'nova' ? 'pro' : 'plus',
+        recommendedPlan: restriction.recommendedPlan,
       });
     }
   }
@@ -1271,4 +1266,4 @@ export default async function handler(req, res) {
 }
 
 
-export { CODE_INTELLIGENCE_GUIDANCE, IP_SAFETY_GUIDANCE, GENERAL_CHAT_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyRateLimitHeaders, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectRequestKind, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, canonicalProviderModel, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
+export { FORGE_FAILOVER_STATUSES, getPremiumModelRestriction, CODE_INTELLIGENCE_GUIDANCE, IP_SAFETY_GUIDANCE, GENERAL_CHAT_GUIDANCE, getAccountFromServer, FORGE_MODELS, FRAMEWORK_GUIDANCE, PLAN_QUALITY_GUIDANCE, PLATFORM_GUIDANCE, ROLE_OUTPUT_CONTRACTS, ROLE_RESPONSE_SCHEMAS, ROUTING_ROLES, STRUCTURED_FALLBACK_NOTICE, UNCERTAINTY_RECOVERY_GUIDANCE, WORKFLOW_GUIDANCE, addImageToLastUserMessage, applyRateLimitHeaders, applyUsageHeaders, buildSystemPrompt, consumeServerUsage, createUpstreamStream, detectFramework, detectPlatform, detectRequestKind, detectWorkflowMode, exceedsRequestPayloadLimit, forgeEventStream, getCombinedRequestPayloadLength, getForgeGenerationOptions, getModelCandidates, hasLatestUserMessage, hasMatchingImageSignature, hasUserMessage, normaliseClientIp, normaliseImageAttachment, normaliseMessages, normaliseRoutingInput, canonicalProviderModel, normaliseSearchContext, resolveModelTier, resolveRoute, usageIdentity, toForgeMessages };
