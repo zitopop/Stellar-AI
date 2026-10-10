@@ -33,3 +33,9 @@ test('empty model streams do not masquerade as a successful answer', () => {
   assert.match(app, /if\(!answer\.trim\(\)\)throw new Error\('Stellar returned an empty answer\. Please try again\.'\)/);
   assert.doesNotMatch(app, /answer=answer\.trim\(\)\|\|'Done\.'/);
 });
+
+test('a connection failure does not erase response text already streamed to the user', () => {
+  assert.ok(app.includes("renderAssistantBubble(reply,answer.trim()?answer.trim()+'\\n\\n⚠️ Response interrupted. Select Try again to regenerate.'"));
+  assert.ok(app.includes("setStatus(answer.trim()?'Answer interrupted · try again':'Send failed · try again','error')"));
+  assert.match(app, /markAssistantRetry\(failedWrap\)/);
+});

@@ -17,7 +17,7 @@ test('latest chat layout provides 44px send and model-picker controls', () => {
 
 function isolatedSessionRefresh(responseForCall) {
   const start = app.indexOf('async function refreshSession(){');
-  const end = app.indexOf('async function loadPlanTruth(){', start);
+  const end = app.indexOf('async function loadPlanTruth(', start);
   assert.ok(start >= 0 && end > start);
   let currentToken = 'session-old';
   let requests = 0;
