@@ -1,0 +1,209 @@
+/* Stellar AI public page design system · 10 October 2026
+   Opt-in only: no account, checkout, plugin, or API behaviour changed. */
+body.stellar-polished-page{
+  color-scheme:dark;
+  --stellar-page-bg:#0a0c13;
+  --stellar-page-card:#131822;
+  --stellar-page-edge:rgba(255,255,255,.105);
+  --stellar-page-violet:#baabff;
+  --stellar-page-muted:#b0bacb;
+  background:
+    radial-gradient(ellipse 860px 480px at 50% -120px,rgba(120,96,220,.135),transparent 76%),
+    linear-gradient(180deg,#0d0f17 0%,#090b12 68%,#080b11 100%)!important;
+  color:#f6f6fb;
+  -webkit-font-smoothing:antialiased;
+}
+body.stellar-polished-page *{box-sizing:border-box}
+body.stellar-polished-page :is(button,input,textarea,select){font-family:inherit}
+body.stellar-polished-page :is(a,button,input,textarea,select,summary):focus-visible{
+  outline:2px solid #d4c7ff!important;
+  outline-offset:3px!important;
+}
+body.stellar-polished-page :is(.wrap,.shell){max-width:min(100%,1200px)}
+body.stellar-polished-page :is(.top,.topbar,header.site-header){
+  background:rgba(10,12,18,.9)!important;
+  border-bottom-color:rgba(255,255,255,.065)!important;
+  backdrop-filter:blur(18px) saturate(125%);
+  -webkit-backdrop-filter:blur(18px) saturate(125%);
+}
+body.stellar-polished-page .brand{font-weight:750;letter-spacing:-.045em}
+body.stellar-polished-page :is(.hero h1,main h1){
+  color:#f7f6ff!important;
+  font-weight:720!important;
+  letter-spacing:-.055em!important;
+  line-height:1.08!important;
+  text-wrap:balance;
+}
+body.stellar-polished-page :is(.hero p,.hero .lead,.hero-lead){
+  color:#b4becd!important;
+  line-height:1.7!important;
+}
+body.stellar-polished-page :is(.kicker,.eyebrow){
+  color:#bbaaff!important;
+}
+body.stellar-polished-page :is(.btn.primary,.btn.pri,.cta,.open-app,.nav-cta){
+  border-color:rgba(228,219,255,.65)!important;
+  background:linear-gradient(120deg,#f0ebff,#dcd2ff)!important;
+  color:#181324!important;
+  box-shadow:0 8px 25px rgba(99,71,185,.12);
+}
+body.stellar-polished-page :is(.btn,.links a,.back,.nav-actions a){
+  min-height:44px;
+}
+body.stellar-polished-page :is(.btn,.cta,.back,.open-app,.nav-cta){
+  border-radius:12px!important;
+}
+body.stellar-polished-page :is(.btn,.cta,.back,.open-app,.nav-cta):hover{
+  filter:brightness(1.06);
+}
+body.stellar-polished-page :is(.section,.content .section){border-color:rgba(255,255,255,.07)}
+body.stellar-polished-page :is(.section-head h2,main h2){
+  color:#f6f5ff;
+  letter-spacing:-.045em;
+}
+body.stellar-polished-page :is(.section-head p,.desc,.lead){
+  color:#b4bdcd;
+}
+body.stellar-polished-page :is(.plan,.card,.guide,.tool-card,.builtin,.route-card,.info-card,.panel,.notice,.sheet,.value,.explain article,.plugin-command,.plugin-guide,.intelligence-guidance){
+  border-color:var(--stellar-page-edge)!important;
+}
+body.stellar-polished-page :is(.card,.guide,.tool-card,.builtin,.route-card,.info-card,.panel,.notice,.value,.explain article){
+  border-radius:16px;
+  background-color:var(--stellar-page-card);
+}
+body.stellar-polished-page :is(.plan,.tool-card,.builtin,.guide,.route-card,.card){
+  transition:border-color .17s ease,background-color .17s ease,transform .17s ease;
+}
+body.stellar-polished-page :is(.plan,.tool-card,.builtin,.guide,.route-card,.card):hover{
+  border-color:rgba(189,172,255,.4)!important;
+}
+body.stellar-polished-page :is(input,textarea,select){
+  accent-color:#a998ff;
+}
+body.stellar-polished-page :is(input[type="text"],input[type="email"],input[type="search"],textarea){
+  max-width:100%;
+}
+/* Pricing: align cards and make the paid upgrade clearly readable. */
+body.stellar-polished-page.plans-page .hero{padding-block:clamp(52px,7vw,86px) 27px}
+body.stellar-polished-page.plans-page .hero h1{
+  font-size:clamp(40px,5.7vw,67px)!important;
+  line-height:1.09!important;
+}
+body.stellar-polished-page.plans-page .plans{gap:14px;align-items:stretch}
+body.stellar-polished-page.plans-page .plan{
+  border-radius:19px!important;
+  background:linear-gradient(160deg,#171b25,#11151e)!important;
+  padding:clamp(18px,1.8vw,24px);
+}
+body.stellar-polished-page.plans-page .plan.plus{
+  border-color:rgba(194,171,255,.7)!important;
+  background:linear-gradient(150deg,#28223f,#191c2a 57%,#11151d)!important;
+  box-shadow:0 16px 50px rgba(66,43,125,.15);
+}
+body.stellar-polished-page.plans-page .price strong{letter-spacing:-.05em}
+body.stellar-polished-page.plans-page .value{
+  background:rgba(255,255,255,.025)!important;
+}
+body.stellar-polished-page.plans-page :is(.trust span,.plan-match-options button){
+  border-color:rgba(255,255,255,.14);
+}
+body.stellar-polished-page.plans-page .plan-match-result{
+  background:#171b27;
+  border-color:rgba(255,255,255,.1);
+}
+/* Plugins: useful integrations, not flashy mock controls. */
+body.stellar-polished-page.plugins-page .hero{padding-block:clamp(50px,7vw,88px) 29px}
+body.stellar-polished-page.plugins-page .hero h1{
+  font-size:clamp(39px,5.8vw,67px)!important;
+  letter-spacing:-.057em!important;
+}
+body.stellar-polished-page.plugins-page .hero p{max-width:660px}
+body.stellar-polished-page.plugins-page .plugin-command{
+  background:linear-gradient(150deg,#171c28,#11151d)!important;
+  border:1px solid rgba(166,143,244,.27)!important;
+  border-radius:19px;
+}
+body.stellar-polished-page.plugins-page .plugin-command-stats>div{
+  border-color:rgba(255,255,255,.08)!important;
+}
+body.stellar-polished-page.plugins-page :is(.builtin,.tool-card,.explain article){
+  background:linear-gradient(145deg,#171b24,#11151c)!important;
+}
+body.stellar-polished-page.plugins-page :is(.directory-filter[aria-pressed="true"],.tab[aria-selected="true"]){
+  color:#f5eeff!important;
+  border-color:rgba(177,156,255,.5)!important;
+  background:rgba(136,106,222,.17)!important;
+}
+/* Models: straightforward capability comparison. */
+body.stellar-polished-page.public-models .hero{padding-block:clamp(52px,7vw,90px) 38px}
+body.stellar-polished-page.public-models .hero h1{font-size:clamp(39px,5.7vw,66px)!important}
+body.stellar-polished-page.public-models .card.balanced{
+  border-color:rgba(191,171,255,.48)!important;
+  background:linear-gradient(150deg,#262139,#151821)!important;
+}
+/* Support: calm form and search, with human-readable routes. */
+body.stellar-polished-page.support-page .hero{padding-block:clamp(46px,6vw,77px) 22px}
+body.stellar-polished-page.support-page .hero h1{font-size:clamp(40px,5.8vw,68px)!important}
+body.stellar-polished-page.support-page .search{
+  background:#141923;border-color:rgba(255,255,255,.15);
+  box-shadow:0 18px 45px rgba(0,0,0,.14);
+}
+body.stellar-polished-page.support-page .route-card,
+body.stellar-polished-page.support-page .info-card{
+  background:#141822!important;
+}
+/* Install: replace the unrelated gold tint while preserving platform instructions. */
+body.stellar-polished-page.install-page .hero{max-width:830px}
+body.stellar-polished-page.install-page .hero h1{max-width:18ch;font-size:clamp(38px,6vw,68px)!important}
+body.stellar-polished-page.install-page .icon{
+  background:radial-gradient(circle at 28% 20%,#6b538d,#31243f 60%,#151821)!important;
+  box-shadow:0 24px 65px rgba(118,89,208,.17)!important;
+}
+body.stellar-polished-page.install-page .card{background:#151924!important}
+/* Business: preserve its distinct service offering but unify visual treatment. */
+body.stellar-polished-page.business-hub .hero{padding-block:clamp(65px,8vw,105px) 50px}
+body.stellar-polished-page.business-hub .hero h1{max-width:980px;font-size:clamp(41px,6vw,71px)!important}
+body.stellar-polished-page.business-hub .business-prompt{
+  background:#1a1e29;border-color:rgba(183,169,255,.23);
+}
+body.stellar-polished-page.business-hub :is(.card,.flow article){background:#151a24!important}
+/* Guide library: hierarchy and scan-friendly resource links. */
+body.stellar-polished-page.public-blog .hero{padding-block:clamp(52px,7vw,88px) 25px}
+body.stellar-polished-page.public-blog .hero h1{font-size:clamp(38px,5.6vw,65px)!important}
+body.stellar-polished-page.public-blog .guide{background:#151a24!important}
+body.stellar-polished-page.public-blog .guide:nth-child(-n+9){
+  background:linear-gradient(145deg,#201d31,#141822)!important;
+  border-color:rgba(168,149,229,.24)!important;
+}
+body.stellar-polished-page.public-blog .search{background:#141923;border-color:rgba(255,255,255,.14)}
+/* Legal pages are text-first, not sales screens. */
+body.stellar-polished-page.legal-premium .hero{padding-block:clamp(44px,6vw,70px) 20px}
+body.stellar-polished-page.legal-premium .hero h1{font-size:clamp(38px,5vw,62px)!important}
+body.stellar-polished-page.legal-premium .sheet{
+  background:#121722!important;
+  box-shadow:0 22px 64px rgba(0,0,0,.17)!important;
+}
+body.stellar-polished-page .stellar-skip{
+  position:fixed;top:-110px;left:14px;z-index:9999;
+  border-radius:9px;padding:10px 14px;background:#f0eaff;color:#111;
+  font-size:13px;text-decoration:none;font-weight:700;
+}
+body.stellar-polished-page .stellar-skip:focus{top:10px}
+@media(max-width:900px){
+  body.stellar-polished-page.plans-page .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.stellar-polished-page :is(.hero h1,main h1){overflow-wrap:break-word}
+}
+@media(max-width:640px){
+  body.stellar-polished-page :is(.wrap,.shell){width:calc(100% - 28px)}
+  body.stellar-polished-page .hero h1{line-height:1.1!important}
+  body.stellar-polished-page.plans-page .plans{grid-template-columns:1fr}
+  body.stellar-polished-page.plans-page .plan{padding:21px}
+  body.stellar-polished-page.plugins-page .hero h1{font-size:clamp(37px,10vw,48px)!important}
+  body.stellar-polished-page.support-page .hero h1{font-size:clamp(37px,10vw,48px)!important}
+  body.stellar-polished-page.business-hub .hero h1{font-size:clamp(37px,10vw,53px)!important}
+  body.stellar-polished-page .stellar-skip{left:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  body.stellar-polished-page :is(.plan,.tool-card,.builtin,.guide,.route-card,.card){transition:none!important}
+  body.stellar-polished-page :is(.plan,.tool-card,.builtin,.guide,.route-card,.card):hover{transform:none!important}
+}
