@@ -10,7 +10,9 @@ test('StellarX opens as a real chat, not an inspection planner',()=>{
  assert.match(page,/stellarx-conversation\.js/);
  assert.match(page,/stellarx-conversation\.css/);
  assert.match(js,/setMode\(prompt\.value\.trim\(\)\?'computer':'chat'\)/);
- assert.match(js,/mode==='chat'\|\|greeting\(text\)/);
+ assert.match(js,/const intent=desktopRequest\(text\)/);
+ assert.match(js,/intent==='connect'/);
+ assert.match(js,/intent==='task'/);
  assert.match(js,/fetch\('\/api\/chat'/);
  assert.match(js,/data-sx-mode="computer"/);
  assert.match(js,/role','log'/);

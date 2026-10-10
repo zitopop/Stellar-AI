@@ -26,7 +26,8 @@ test('Chat history remains local, account-scoped, and deletable',()=>{
 });
 test('Computer mode maintains its reviewed planner boundaries',()=>{
  assert.match(chat,/await originalComputerTask\?\.\(\)/);
- assert.match(chat,/mode==='chat'\|\|greeting\(text\)/);
+ assert.match(chat,/const intent=desktopRequest\(text\)/);
+ assert.match(chat,/intent==='task'/);
  assert.match(chat,/setMode\(prompt\.value\.trim\(\)\?'computer':'chat'\)/);
  assert.match(chat,/window\.stellarxFormatMessage/);
 });
