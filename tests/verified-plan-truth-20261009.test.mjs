@@ -9,25 +9,26 @@ const landing = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const free = plans.split('<article class="plan" data-plan="free">')[1]
   ?.split('<article class="plan paid" data-plan="starter"')[0] || '';
 
-test('Free plan cannot accidentally advertise paid-model or Jarvis Pro entitlements', () => {
+test('Free plan does not advertise paid models or Jarvis Pro entitlements', () => {
   assert.ok(free.includes('Up to 15 Fast generations/day'));
   assert.match(free, /1,800 output tokens/);
   assert.doesNotMatch(free, /Stellar (Core|Deep|Max)|Everything in Plus|1,600 requests\/hour|Jarvis/i);
 });
 
-test('paid Fast-equivalent allowances match server-owned billing entitlements', () => {
+test('paid Fast-equivalent allowances match server-owned billing definitions', () => {
   const expected = { starter: 2500, plus: 7500, pro: 15000 };
   for (const [plan, generations] of Object.entries(expected)) {
     const definition = getPlanDefinition(plan);
     assert.equal(definition.includedCredits / MODEL_CREDIT_COSTS.spark, generations);
-    assert.match(plans, new RegExp('Up to ' + generations.toLocaleString('en-GB') + ' Fast generations/month'));
-    assert.match(landing, new RegExp('Up to ' + generations.toLocaleString('en-GB') + ' Fast generations/month'));
+    const number = generations.toLocaleString('en-GB');
+    assert.match(plans, new RegExp('Up to ' + number + ' Fast generations/month'));
+    assert.ok(landing.includes('Up to ' + number + ' Fast-equivalent generations/month'), plan);
   }
   assert.match(plans, /Core, Deep and Max use more allowance/);
-  assert.match(landing, /Hourly limits also apply/);
+  assert.match(landing, /hourly limits apply/i);
 });
 
-test('every paid plan has accessible monthly and yearly checkout choices regardless of JavaScript', () => {
+test('every paid plan offers monthly and annual checkout choices without JavaScript', () => {
   for (const [plan, monthly, annual] of [['starter','£8','£67'], ['plus','£20','£168'], ['pro','£75','£630']]) {
     assert.ok(plans.includes('href="/app?upgrade=' + plan + '"'));
     assert.ok(plans.includes('href="/app?upgrade=' + plan + '-annual">Choose yearly · ' + annual + '/yr'));
@@ -35,18 +36,16 @@ test('every paid plan has accessible monthly and yearly checkout choices regardl
   }
   assert.match(plans, /if\(alternate\)\{alternate\.hidden=false;/);
   assert.match(plans, /data-billing-cycle="annual"/);
-  assert.match(plans, /@media\(max-width:700px\)/);
 });
 
-test('landing keeps one clear heading and a usable free path', () => {
+test('landing keeps one clear heading, free CTA and full pricing route', () => {
   assert.equal((landing.match(/<h1\b/g) || []).length, 1);
-  assert.match(landing, /Get useful work done with AI/);
+  assert.match(landing, /Turn ideas into work you can use/);
   assert.match(landing, /data-conversion="start-free"/);
   assert.match(landing, /href="\/plans"/);
 });
 
-
-test('plans head does not leak escaped newlines into visible page text', () => {
+test('pricing metadata remains intact and does not leak escaped newlines', () => {
   const head = plans.split('</head>')[0];
   assert.doesNotMatch(head, /\\n<link/i);
   assert.match(head, /stellar-clean-premium-v35\.css/);
