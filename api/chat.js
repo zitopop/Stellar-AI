@@ -1066,7 +1066,7 @@ export default async function handler(req, res) {
   }
   const route = resolveRoute(model, role, plan);
   const billableTier = route.billingTier || route.tier || route.fallbackTier || resolveModelTier(model, plan);
-  const messageCreditCost = creditCostForModel(billableTier);
+  const messageCreditCost = creditCostForModel(billableTier, plan);
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);
   let hourlyRate;
   try {
