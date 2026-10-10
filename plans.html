@@ -204,10 +204,24 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 </style>
 <link rel="stylesheet" href="/lib/assets/stellar-premium-pages-20261010.css?v=1">
 <style>.plans-page .checkout-path-note{max-width:680px;margin:16px auto 0;color:#bbc4d6;font-size:12px;line-height:1.65;text-align:center}</style>
+<style id="stellar-paid-workflows-v1">
+/* Plan value demos are examples, not guarantees or new plan entitlements. */
+.plans-page .workflow-value{margin:16px 0 44px}
+.plans-page .workflow-value>p{max-width:850px;color:#b2bac7;font-size:14px;line-height:1.6}
+.plans-page .workflow-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:20px}
+.plans-page .workflow-card{display:flex;flex-direction:column;padding:22px;border:1px solid rgba(255,255,255,.12);border-radius:15px;background:#121316}
+.plans-page .workflow-tier{color:#c9baff;font-size:12px;font-weight:800;letter-spacing:.05em}
+.plans-page .workflow-card h3{font-size:18px;line-height:1.3;margin:11px 0 7px}
+.plans-page .workflow-card p{font-size:13px;color:#b1b9c6;line-height:1.65;flex:1}
+.plans-page .workflow-card a{color:#dbcfff;display:inline-flex;align-items:center;min-height:44px;margin-top:8px;font-weight:750;font-size:13px}
+.plans-page .workflow-card a:focus-visible{outline:2px solid #bca8ff;outline-offset:3px}
+.plans-page .workflow-value small{display:block;margin-top:13px;color:#a8b0bf;line-height:1.6;font-size:12px}
+@media(max-width:800px){.plans-page .workflow-grid{grid-template-columns:1fr}.plans-page .workflow-card{padding:18px}}
+</style>
 </head>
 <body class="plans-page stellar-polished-page"><a class="stellar-skip" href="#main">Skip to main content</a>
 <header class="top"><nav class="wrap nav"><a class="brand" href="/">Stellar AI</a><div class="links"><a href="/app">App</a><a href="/plugins">Plugins</a><a href="/business">Business</a><a href="/legal">Legal</a><a class="mobile-help" href="/support">Help</a><a class="primary" href="/app?welcome=1">Open app</a></div></nav></header>
-<main id="main" class="wrap"><section class="hero"><div class="kicker">Stellar plans</div><h1>The right AI plan for the work you do.</h1><p class="lead">Start free. Upgrade for more AI capacity, stronger models and longer answers—not vague promises. Compare what each plan actually unlocks before you pay.</p><div class="trust"><span>No card for Free</span><span>Card payments via Stripe</span><span>Cancel renewal anytime</span><span>Yearly plans save 30%</span></div><p class="checkout-path-note">Ready to subscribe? Choose a plan, sign in to your Stellar account, then review the amount in secure Stripe Checkout before confirming payment.</p></section>
+<main id="main" class="wrap"><section class="hero"><div class="kicker">Stellar plans</div><h1>The right AI plan for the work you do.</h1><p class="lead">Try the work first. Pay for stronger models, longer replies and higher monthly usage only when those benefits help you finish your tasks. Compare the actual limits before subscribing.</p><div class="trust"><span>No card for Free</span><span>Card payments via Stripe</span><span>Cancel renewal anytime</span><span>Yearly plans save 30%</span></div><p class="checkout-path-note">Ready to subscribe? Choose a plan, sign in to your Stellar account, then review the amount in secure Stripe Checkout before confirming payment.</p></section>
 <div class="billing-cycle-toggle" role="group" aria-label="Billing cycle">
   <button type="button" data-billing-cycle="monthly" aria-pressed="true">Monthly</button>
   <button type="button" data-billing-cycle="annual" aria-pressed="false">Yearly <span class="billing-save">Save 30%</span></button>
@@ -234,7 +248,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 <article class="plan paid" data-plan="starter" data-billing-plan="starter">
   <div class="plan-topline"><span class="plan-fit">EVERYDAY</span></div>
   <h2>Starter</h2>
-  <p class="desc">For weekly work: polish emails, organise research notes, plan projects and debug code with Stellar Core.</p>
+  <p class="desc">For weekly work: turn messy notes into usable writing, plan next steps and work through longer code fixes with Stellar Core.</p>
   <div class="price"><strong>£8</strong><span> / month</span></div>
   <p class="year">£67/year · save £29</p>
   <div class="value"><strong>Up to 2,500 Fast generations/month*</strong><span>120 requests/hour ceiling. Stellar Core uses more of the same allowance.</span></div>
@@ -246,7 +260,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 <article class="plan paid plus" data-plan="plus" data-billing-plan="plus">
   <div class="plan-topline"><span class="popular-pill">RECOMMENDED</span><span class="plan-fit">FOR ACTIVE BUILDERS</span></div>
   <h2>Plus</h2>
-  <p class="desc">For daily builders: handle multi-step projects, harder code problems and detailed writing with Stellar Deep.</p>
+  <p class="desc">For active builders: investigate harder bugs, refine longer code and work through multi-step projects with Stellar Deep.</p>
   <div class="price"><strong>£20</strong><span> / month</span></div>
   <p class="year">£168/year · save £72</p>
   <div class="value"><strong>Up to 7,500 Fast generations/month*</strong><span>400 requests/hour ceiling. Core and Deep use more of the same allowance.</span></div>
@@ -258,7 +272,7 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 <article class="plan paid" data-plan="pro" data-billing-plan="pro">
   <div class="plan-topline"><span class="plan-fit">MAXIMUM</span></div>
   <h2>Pro</h2>
-  <p class="desc">For intensive work: tackle complex code reviews, longer documents and demanding projects with Stellar Max.</p>
+  <p class="desc">For intensive work that truly needs Max: structure large reviews, complex code changes and demanding projects. Otherwise, start with Plus.</p>
   <div class="price"><strong>£75</strong><span> / month</span></div>
   <p class="year">£630/year · save £270</p>
   <div class="value"><strong>Up to 15,000 Fast generations/month*</strong><span>1,600 requests/hour ceiling. Core, Deep and Max use more of the same allowance.</span></div>
@@ -269,6 +283,17 @@ body{background:#0b0b0c!important;color:#f4f4f5!important}
 </article>
 </section>
 
+
+<section class="workflow-value" aria-labelledby="workflow-value-title">
+  <span class="kicker">Try before buying</span><h2 id="workflow-value-title">See what each paid plan is for.</h2>
+  <p>Not every task needs a paid subscription. Try a realistic example, then decide whether the model access, reply length and usage allowance of a paid plan would help you.</p>
+  <div class="workflow-grid">
+    <article class="workflow-card"><span class="workflow-tier">Starter</span><h3>Finish your weekly work</h3><p>Turn scattered notes into a client-ready email and a clear action plan. Starter adds Core and longer replies.</p><a href="/app?prompt=Help%20me%20turn%20messy%20meeting%20notes%20into%20a%20client%20email%20and%20a%20five-step%20action%20plan.%20Ask%20me%20for%20my%20notes%2C%20the%20audience%20and%20the%20deadline%20before%20drafting.&amp;utm_source=pricing&amp;utm_campaign=try-starter-workflow" data-conversion="plan-workflow-starter">Try a writing task →</a></article>
+<article class="workflow-card"><span class="workflow-tier">Plus</span><h3>Work through harder code issues</h3><p>Walk through a FiveM resource bug, request a reviewable fix and build a testing checklist. Plus unlocks Deep.</p><a href="/app?prompt=Help%20me%20debug%20a%20QBCore%20FiveM%20Lua%20resource%20across%20its%20client%2C%20server%20and%20fxmanifest%20files.%20Ask%20for%20my%20error%2C%20exact%20code%2C%20dependencies%20and%20expected%20behaviour.%20Then%20suggest%20a%20small%20reviewable%20fix%20and%20a%20test%20checklist.&amp;utm_source=pricing&amp;utm_campaign=try-plus-workflow" data-conversion="plan-workflow-plus">Try a debugging task →</a></article>
+<article class="workflow-card"><span class="workflow-tier">Pro</span><h3>Review demanding projects</h3><p>Structure a multi-file security and performance review with priorities and verification steps. Pro unlocks Max.</p><a href="/app?prompt=Help%20me%20plan%20a%20security%20and%20performance%20review%20of%20a%20multi-file%20application.%20Ask%20for%20the%20architecture%20and%20files%2C%20rank%20risks%20by%20severity%2C%20and%20propose%20focused%20changes%20and%20a%20verification%20plan.&amp;utm_source=pricing&amp;utm_campaign=try-pro-workflow" data-conversion="plan-workflow-pro">Try an audit task →</a></article>
+  </div>
+  <small>Sample prompts open in the app and can be tried with Free. They are not guaranteed outcomes or exclusive paid features. See the comparison and model costs below before paying.</small>
+</section>
 <section class="plan-match" aria-labelledby="plan-match-title">
  <span class="kicker">Find your fit</span><h2 id="plan-match-title">Not sure which plan to choose?</h2>
  <p>Pick what you want to do. We’ll show the plan that best fits that use.</p>
