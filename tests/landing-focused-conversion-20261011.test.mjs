@@ -8,15 +8,19 @@ const css = read('lib/assets/stellar-landing-quiet-midnight-v1.css');
 const promptScript = read('lib/assets/stellar-hero-prompt-v1.js');
 
 test('marketing homepage offers three accessible example prompts with editable handoff', () => {
-  const examples = [...home.matchAll(/<a data-hero-prompt="([^"]+)" href="([^"]+)">([^<]+)<\/a>/g)];
+  const examples = [...home.matchAll(/<a class="hero-prompt-chip" href="([^"]+)" data-hero-prompt="([^"]+)" data-hero-mode="([^"]+)">([^<]+)<\\/a>/g)];
   assert.equal(examples.length, 3);
-  for (const [, prompt, href] of examples) {
+  assert.deepEqual(examples.map(example => example[4]), ['Write something','Plan a project','Fix my code']);
+  for (const [, href, prompt, mode] of examples) {
     assert.ok(prompt.length > 30);
-    assert.match(href, /^\/app\?prompt=/);
-    assert.match(href, /utm_campaign=hero-example/);
+    const parsed = new URL(href.replaceAll('&amp;', '&'), 'https://trystellarai.com');
+    assert.equal(parsed.pathname, '/app');
+    assert.equal(parsed.searchParams.get('prompt'), prompt);
+    assert.equal(parsed.searchParams.get('mode'), mode);
+    assert.equal(parsed.searchParams.get('utm_source'), 'homepage');
   }
   assert.match(home, /role="group" aria-label="Quick prompts"/);
-  assert.match(home, /Your prompt opens as an editable draft/);
+  assert.match(home, /Opens as an editable draft/);
   assert.match(promptScript, /data-hero-prompt/);
   assert.match(promptScript, /event\.preventDefault\(\)/);
   assert.match(promptScript, /input\.value = example/);
