@@ -32,7 +32,7 @@ test('landing page focuses on main chat, model value, pricing, and proof', () =>
   assert.doesNotMatch(home, /class="section plan-workflows"/);
   assert.doesNotMatch(home, /class="section landing-assurance"/);
   assert.doesNotMatch(home, /id="stellar-models"|id="ventures"|id="jarvis"/);
-  assert.match(home, /stellar-homepage-minimal-20261011\\.css/);
+  assert.match(home, /stellar-homepage-minimal-20261011\.css/);
   assert.match(home, /class="developer-preview-collapse"/);
   assert.match(home, /id="plans"/);
   assert.match(home, /id="anonymous-preview-form"/);
