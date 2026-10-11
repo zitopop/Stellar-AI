@@ -14,8 +14,9 @@ test('StellarX connection setup is visible in PC mode with one copied command',(
     assert.match(page,new RegExp('id="'+id+'"'));
   }
   assert.match(page,/oneCommandSetup\(code\)/);
-  assert.match(page,/Create connection code/);
-  assert.match(page,/Copy Windows setup command/);
+  assert.match(page,/Connect my PC/);
+  assert.match(page,/Copy setup command/);
+  assert.match(page,/try\\{await copyText\\(command\\);copied=true;\\}catch\\{\\}/);
   assert.match(page,/-PairCode '\$\{clean\}' -Start/);
   assert.match(page,/body\.sx-chat-mode #stellarxQuickConnect\{display:none!important\}/);
   assert.match(page,/\$\('copySetupBtn'\)\.disabled=false/);
