@@ -10,6 +10,7 @@ import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
 import { handleDiscordDebugRequest } from '../lib/discord-debug.js';
 import { connectedAppChatContext } from '../lib/plugin-chat-context.js';
 import { classificationText } from '../lib/chat-intent.js';
+import { selectSmartTier } from '../lib/smart-routing.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -41,7 +42,7 @@ const FORGE_MODELS = new Set([
 ]);
 
 const PUBLIC_MODEL_INPUTS = new Set([
-  'spark', 'star', 'comet', 'nova',
+  'spark', 'star', 'comet', 'nova', 'auto',
 ]);
 const OWNER_ONLY_ROLES = new Set(['planner', 'researcher', 'reviewer', 'security', 'tester']);
 
@@ -1064,7 +1065,12 @@ export default async function handler(req, res) {
       });
     }
   }
-  const route = resolveRoute(model, role, plan);
+  // Auto is a public routing choice, not a provider ID or plan entitlement.
+  // Resolve it after authentication/plan lookup and before charging any credits.
+  const effectiveModel = requestedModelKey === 'auto'
+    ? selectSmartTier({ messages: cleanMessages, plan, requestKind, workflowMode })
+    : model;
+  const route = resolveRoute(effectiveModel, role, plan);
   const billableTier = route.billingTier || route.tier || route.fallbackTier || resolveModelTier(model, plan);
   const messageCreditCost = creditCostForModel(billableTier, plan);
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);
