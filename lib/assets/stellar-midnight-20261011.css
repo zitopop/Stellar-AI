@@ -395,3 +395,104 @@ body[data-stellar-clean-app="true"] .panel.model-picker-panel.model-picker-compa
 .public-home .stellar-j-visual .stellar-visual-tag {
   color:#C4C8D0!important;
 }
+
+
+/* Midnight V2 — neutralize the final legacy purple gradients without touching
+   external image assets, document attachments, data models or payment logic. */
+.public-home,
+.public-home *:not(svg):not(path):not(image),
+.public-home *::before,
+.public-home *::after,
+body[data-stellar-clean-app="true"],
+body[data-stellar-clean-app="true"] *:not(svg):not(path):not(image),
+body[data-stellar-clean-app="true"] *::before,
+body[data-stellar-clean-app="true"] *::after {
+  background-image:none!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+/* Flat, solid surfaces everywhere: no halo, vignette, radial illumination
+   or translucent body effect behind the central greeting. */
+.public-home :is(.hero,.stellar-section,.section,.pricing-section,.preview-panel,.site-footer,.lower-cta),
+body[data-stellar-clean-app="true"] :is(.main,.chat,.chat-inner,.welcome,.composer-wrap,.composer-layout,.top) {
+  background-color:#090A0F!important;
+  background-image:none!important;
+  filter:none!important;
+}
+.public-home .hero::before,
+.public-home .hero::after,
+.public-home .site-header::before,
+.public-home .site-header::after,
+body[data-stellar-clean-app="true"] .welcome::before,
+body[data-stellar-clean-app="true"] .welcome::after {
+  content:none!important;
+  background:none!important;
+  display:none!important;
+}
+.public-home :is(.site-header,.site-nav,.demo-bar,.demo-note,.demo-tabs,.panel,.buyer-compare,.showcase-steps span) {
+  background-image:none!important;
+}
+/* Neutral typography: old promotional rules used violet for these labels. */
+.public-home :is(.eyebrow,.demo-output strong,.demo-note a,.showcase-steps span,.stellar-section .eyebrow,.stellar-j-visual .stellar-visual-tag,.stellar-model-card>span,.stellar-model-card small,.stellar-visual-flow b,.buyer-trust-grid a,.workflow-tier,.plan-label,.feature-number,.assurance-inner a,.buyer-compare-foot a,.hero-meta span::before) {
+  color:#C7CCD5!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+.public-home a:not(.button):not(.brand) {
+  color:#D5DAE3!important;
+}
+.public-home a:not(.button):not(.brand):hover {
+  color:#FFFFFF!important;
+}
+.public-home .site-nav a,
+.public-home .login-link {
+  color:#E0E2E8!important;
+}
+.public-home .plan.recommended .plan-label,
+.public-home .stellar-model-card[data-featured]>span,
+.public-home .demo-tabs button[aria-selected="true"] {
+  color:#F7F8FA!important;
+}
+.public-home :is(.stellar-pill-row span,.hero .eyebrow::before,.demo-dot,.showcase-steps span,.preview-suggestions button,.pricing-grid .plan,.buyer-trust-grid article,.stellar-model-card,.stellar-j-visual,.work-shortcut,.buyer-compare,.lower-cta) {
+  border-color:rgba(255,255,255,.13)!important;
+}
+/* Solid greys for primary actions, active navigation and model selection. */
+.public-home :is(.button-quiet,.preview-suggestions button,.billing-toggle button,.menu-toggle) {
+  background-color:#20232C!important;
+  color:#E5E7EC!important;
+}
+.public-home :is(.billing-toggle button[aria-pressed="true"],.billing-toggle button.active,.preview-suggestions button:hover) {
+  background-color:#30343E!important;
+  color:#FFFFFF!important;
+}
+body[data-stellar-clean-app="true"] :is(.side,.panel,.panel-head,.panel-body,.settings-section,.settings-row,.settings-dev-card,.model-picker-panel,.model-card-compact,#composer-model-menu,.chat-menu-button,.chat-actions,.chat-action) {
+  background-image:none!important;
+}
+body[data-stellar-clean-app="true"] :is(.model-tier-label,.model-usage-note,.model-picker-transparency a,.composer-note,.composer-status,.composer-credit-cost,.side-bottom-link,.chat-title,.side-tool-copy strong,.chip,.top-brand,.settings-label,.settings-row-value) {
+  color:#CFD3DB!important;
+}
+body[data-stellar-clean-app="true"] :is(.chip,.composer-model-menu [role="menuitem"],.chat-menu-button,.chat-action,.panel button,.settings-dev-card) {
+  border-color:rgba(255,255,255,.11)!important;
+}
+body[data-stellar-clean-app="true"] :is(.chat-item.active,.model-card-compact.selected,.composer-model-menu [aria-checked="true"],.composer-model-menu [aria-selected="true"]) {
+  background-color:#272B34!important;
+  background-image:none!important;
+  border-color:rgba(255,255,255,.27)!important;
+}
+body[data-stellar-clean-app="true"] :is(.welcome h1,.model-card-copy strong,.panel h2) {
+  color:#F7F8FA!important;
+  -webkit-text-fill-color:#F7F8FA!important;
+}
+body[data-stellar-clean-app="true"] #sendBtn,
+body[data-stellar-clean-app="true"] .composer-model-dot {
+  background-image:none!important;
+  filter:none!important;
+}
+.public-home :is(button,a,input,textarea,select):focus-visible,
+body[data-stellar-clean-app="true"] :is(button,a,input,textarea,select):focus-visible {
+  outline:2px solid #CED2D9!important;
+  outline-offset:2px!important;
+}
+@media(prefers-reduced-motion:reduce) {
+  .public-home *,
+  body[data-stellar-clean-app="true"] * {animation:none!important;transition:none!important}
+}
