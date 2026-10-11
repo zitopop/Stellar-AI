@@ -1,0 +1,47 @@
+/* Stellar focus workspace: keep core tools available without repeating the same navigation. */
+.side-brand-row{order:0!important}
+.side-product-label{display:none!important}
+/* Prompt modes remain functional through chat and incoming deep links. */
+.side-primary{display:none!important}
+.composer-mode-row{display:none!important}
+/* New chat is the primary action, above the recent conversation list. */
+#newChatBtn{
+  order:1!important;
+  flex:0 0 auto!important;
+  width:calc(100% - 8px)!important;
+  min-height:44px!important;
+  margin:8px 4px 7px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  text-align:left!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+#newChatBtn:hover,#newChatBtn:focus-visible{
+  background:rgba(255,255,255,.055)!important;
+  outline-offset:2px!important;
+}
+.side-history{order:2!important;max-height:none!important;flex:1 1 auto!important}
+.side-account{order:3!important;margin-top:auto!important;flex:0 0 auto!important}
+.side-account>.side-bottom-link[aria-label="Open account"]{display:none!important}
+#side-install-link{display:none!important}
+/* Keep Jarvis accessible to eligible subscribers, not a locked upsell in every sidebar. */
+#jarvis-text-sidebar[data-locked="true"]{display:none!important}
+/* Keep touch-friendly actions in the simplified workspace. */
+.side-history .chat-menu-button{min-width:36px!important;min-height:36px!important}
+.message-action[data-message-action="improve-draft"]{color:#bdb0ef}
+.message-action[data-message-action="improve-draft"]:hover,
+.message-action[data-message-action="improve-draft"]:focus-visible{color:#fff;background:rgba(167,139,250,.12)}
+@media(min-width:901px){
+  body.sidebar-collapsed #newChatBtn{
+    width:44px!important;min-width:44px!important;min-height:44px!important;
+    margin:4px 0!important;padding:0!important;
+  }
+  body.sidebar-collapsed .side-account>.side-bottom-link[aria-label="Open account"]{display:none!important}
+}
+@media(max-width:900px){
+  #newChatBtn{min-height:48px!important}
+  .side-history .chat-menu-button{min-width:44px!important;min-height:44px!important}
+}
