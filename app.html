@@ -5126,7 +5126,7 @@ async function requestAccountDeletion(){
   const ok=window.confirm('Request deletion of your entire Stellar AI account and associated data? This will not automatically cancel any subscription renewal. You can read the details at /account-deletion.');
   if(!ok)return;
   try{
-    const res=await fetch('/api/account-deletion-request',{method:'POST',headers:authHeaders(),body:JSON.stringify({confirm:'DELETE'}),cache:'no-store'});
+    const res=await fetch('/api/auth',{method:'POST',headers:authHeaders(),body:JSON.stringify({action:'requestAccountDeletion',confirm:'DELETE'}),cache:'no-store'});
     const data=await res.json().catch(()=>({}));
     if(!res.ok)throw new Error(data.error||'Account deletion request failed.');
     const message=data.status==='completed'?'Account deletion has been marked completed.':'Account deletion request received. We will confirm when it is completed. Cancel any active subscription separately in Billing.';
