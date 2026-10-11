@@ -138,6 +138,7 @@ body.stellarx-simple #planBtn{width:100%}
 <link rel="stylesheet" href="/lib/assets/stellarx-conversation.css?v=20261010-chat-1">
 <link rel="stylesheet" href="/lib/assets/stellarx-workspace-ui.css?v=20261010-workspace-v1">
 <link rel="stylesheet" href="/lib/assets/stellarx-refined.css?v=20261010-refined-v1">
+<link rel="stylesheet" href="/lib/assets/stellarx-midnight-20261011.css?v=1">
 </head>
 <body class="codex-chat-ui stellarx-simple">
 <div class="stellar-use-bar" id="stellarUseBar" hidden><span>StellarX Work Agent</span><small id="stellarUseMeta">StellarX is using your PC to help complete this task.</small><button id="stellarUseStop" type="button">Emergency Stop</button></div><div class="stellar-use-led" id="stellarUseLed" hidden><i aria-hidden="true"></i><em class="stellarx-side-label" id="stellarUseSideLabel" aria-hidden="true">StellarX is using your PC</em></div><div class="stellarx-online-side" id="stellarxOnlineSide" hidden aria-live="polite">StellarX Computer Online</div>
@@ -159,19 +160,19 @@ body.stellarx-simple #planBtn{width:100%}
 
 <section class="grid" id="stellarxQuickConnect" aria-label="Connect your Windows PC">
 <div class="card">
-<h2>1. Connect this PC</h2>
-<p id="connectionGuide">Click below to make your private, one-time connection code.</p>
+<h2>Connect your Windows PC</h2>
+<p id="connectionGuide">Select Connect my PC. StellarX prepares the setup command for you.</p>
 <div id="pairCode" class="code" hidden aria-label="One-time connection code"></div>
 <div class="actions" style="margin-top:14px">
-<button class="btn primary" id="pairBtn" type="button">Create connection code</button>
+<button class="btn primary" id="pairBtn" type="button">Connect my PC</button>
 <button class="btn danger" id="disconnectBtn" type="button" hidden>Disconnect PC</button>
 </div>
 <div class="small" style="margin-top:12px">Code expires after 10 minutes. Only use it on a computer you own or control.</div>
 </div>
 <div class="card">
-<h2>2. Install and start</h2>
-<p>Open <strong>Windows PowerShell</strong> from the Start menu. Copy the setup command and paste it there once. The installer will pair StellarX and start it for you.</p>
-<div class="actions"><button class="btn primary" id="copySetupBtn" type="button" disabled>Copy Windows setup command</button></div>
+<h2>Finish setup in PowerShell</h2>
+<p>Click <strong>Connect my PC</strong>. The setup command will be copied when your browser allows it. Open <strong>PowerShell</strong> from the Windows Start menu, paste and press Enter. Keep that window open while StellarX works.</p>
+<div class="actions"><button class="btn primary" id="copySetupBtn" type="button" disabled>Copy setup command</button></div>
 <textarea id="quickInstallCommand" class="install" readonly spellcheck="false" hidden aria-label="Your Windows setup command"></textarea>
 <div id="setupStatus" class="small" role="status" aria-live="polite" style="margin-top:10px">Create a connection code first to unlock setup.</div>
 <div id="restartHint" class="note" hidden>Already paired? Double-click <strong>StellarX PC Agent</strong> on your Windows Desktop to reconnect. Keep the window open while working.</div>
@@ -309,7 +310,7 @@ node agent.mjs pair YOUR_CODE
       $('disconnectBtn').hidden=!d.paired;$('pairBtn').hidden=!!d.paired;if(d.paired)$('pairCode').hidden=true;
       $('stellarxQuickConnect').hidden=!!d.online;
       $('restartHint').hidden=!d.paired||!!d.online;
-      $('connectionGuide').textContent=d.paired?'Your PC is paired. Use the StellarX desktop shortcut to bring it online.':'Click below to create a private one-time connection code.';
+      $('connectionGuide').textContent=d.paired?'This computer is paired. Double-click the StellarX PC Agent shortcut to reconnect.':'Click Connect my PC to prepare your private, one-time setup command.';
       if(d.paired){$('copySetupBtn').disabled=true;$('quickInstallCommand').hidden=true;$('setupStatus').textContent='Already paired. Start the StellarX PC Agent shortcut on your Desktop.';}
       $('permRead').checked=d.policy?.read!==false;$('permWrite').checked=d.policy?.write!==false;$('permShell').checked=d.policy?.shell===true;$('permUrl').checked=d.policy?.openUrl!==false;$('permInput').checked=d.policy?.input===true;
       $('stopBtn').hidden=!!d.emergencyStopped;$('resumeBtn').hidden=!d.emergencyStopped;
@@ -324,7 +325,10 @@ node agent.mjs pair YOUR_CODE
       $('pairCode').hidden=false;$('pairCode').textContent=d.code;
       $('quickInstallCommand').value=command;$('quickInstallCommand').hidden=false;
       $('copySetupBtn').disabled=false;
-      $('setupStatus').textContent='Ready. Click Copy, open Windows PowerShell, paste, and press Enter. Keep PowerShell open while working.';
+      let copied=false;
+       try{await copyText(command);copied=true;}catch{}
+       $('copySetupBtn').textContent=copied?'Copy setup command again':'Copy setup command';
+       $('setupStatus').textContent=copied?'Setup copied! Open PowerShell from Start, paste (Ctrl+V) and press Enter. Keep PowerShell open while working.':'Setup ready. Click Copy setup command, then open PowerShell, paste (Ctrl+V) and press Enter.';
       log('Pairing code created. It expires in 10 minutes.','ok');
     }catch(e){log(e.message,'bad')}
   };
@@ -332,13 +336,13 @@ node agent.mjs pair YOUR_CODE
     try{
       if($('copySetupBtn').disabled)return;
       await copyText($('quickInstallCommand').value);
-      $('setupStatus').textContent='Copied! Open Windows PowerShell (Start menu), paste the command and press Enter.';
+      $('setupStatus').textContent='Copied! Open Windows PowerShell from Start, paste (Ctrl+V) and press Enter. Keep the window open while working.';
       log('Windows setup command copied. Paste it into PowerShell on your own PC.','ok');
     }catch(e){$('setupStatus').textContent=e.message;log(e.message,'warn')}
   };
   $('disconnectBtn').onclick=async()=>{
     if(!confirm('Disconnect the paired PC? The local device token will stop working.'))return;
-    try{await api('disconnect');$('pairCode').hidden=true;$('copySetupBtn').disabled=true;$('quickInstallCommand').hidden=true;$('quickInstallCommand').value='';$('setupStatus').textContent='Create a new connection code to connect again.';log('PC disconnected.','warn');await status()}catch(e){log(e.message,'bad')}
+    try{await api('disconnect');$('pairCode').hidden=true;$('copySetupBtn').disabled=true;$('quickInstallCommand').hidden=true;$('quickInstallCommand').value='';$('setupStatus').textContent='Click Connect my PC to pair another computer.';log('PC disconnected.','warn');await status()}catch(e){log(e.message,'bad')}
   };
   $('refreshBtn').onclick=()=>status().catch(()=>{});
   document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>{ $('prompt').value=button.dataset.task||''; $('prompt').focus();document.querySelectorAll('.task-mode').forEach(x=>x.classList.toggle('selected',x===button));setStage('ask','Task drafted'); }));
