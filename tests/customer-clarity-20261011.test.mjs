@@ -32,7 +32,7 @@ test('customer prices, tier names and advertised Fast-equivalent allowances stay
   ]) {
     assert.equal(PLAN_DEFINITIONS[tier].includedCredits / creditCostForModel('spark', tier),
       Number(fastEquivalent.replaceAll(',', '')));
-    assert.ok(home.includes(monthlyPrice + '/mo'));
+    assert.ok(home.includes(monthlyPrice + '<small>/mo</small>'));
     assert.ok(home.includes(fastEquivalent + ' Fast-equivalent generations/month'));
     assert.ok(plans.includes(fastEquivalent + ' Fast generations/month'));
   }
