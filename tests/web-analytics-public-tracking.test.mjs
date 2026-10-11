@@ -13,14 +13,14 @@ test('official Vercel loader is valid and uses first-party route',()=>{
  assert.doesNotMatch(loader,/google-analytics\.com|googletagmanager\.com|facebook\.com\/tr/);
 });
 
-test('tracker is attached exactly once to 226 public HTML pages',()=>{
+test('tracker is attached exactly once to 227 public HTML pages',()=>{
  const excluded=new Set(['offline.html','private-workspace.html','deploy-center.html','404.html']);
  let count=0;
  function check(file){const html=fs.readFileSync(file,'utf8');assert.equal(html.split(tag).length-1,1,path.relative(root,file));assert.ok(html.indexOf(tag)<html.indexOf('</head>'));count++;}
  for(const e of fs.readdirSync(root,{withFileTypes:true}))if(e.isFile()&&e.name.endsWith('.html')&&!excluded.has(e.name))check(path.join(root,e.name));
  function walk(dir){if(!fs.existsSync(dir))return;for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else if(e.isFile()&&e.name.endsWith('.html'))check(p);}}
  for(const name of ['blog','services','free-tools','roblox-script-generator'])walk(path.join(root,name));
- assert.equal(count,226);
+ assert.equal(count,227);
  for(const x of excluded)assert.doesNotMatch(fs.readFileSync(path.join(root,x),'utf8'),/stellar-web-analytics\.js/);
 });
 

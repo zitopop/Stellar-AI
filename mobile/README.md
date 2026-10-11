@@ -47,3 +47,7 @@ The Android build includes an optional user-controlled AccessibilityService brid
 Password fields are redacted and Android permission, installer, credential and system-UI surfaces are blocked. Screen details stay local unless the user explicitly chooses **Ask Stellar about this screen**. Enabling the service always requires the user to open Android Accessibility settings and switch Stellar AI on manually.
 
 Do not describe this as autonomous background phone control. Keep the disclosure, affirmative consent and one-action-at-a-time approval model for Play review and user safety.
+
+## Store-readiness checklist
+
+See [Store launch readiness](STORE-READINESS.md) before submitting any build. The live website and installable PWA do not establish native iOS/Android store approval. The companion needs on-device authentication, deletion-request access, native interactions and permissions testing. The optional Android AccessibilityService should be omitted from the first Play Store build unless its actual implementation, disclosure and permissions are verified with current Play policies.
