@@ -1,0 +1,121 @@
+/* Stellar landing v4: essentials-only layout.
+   All advanced tools remain accessible from app and dedicated product pages.
+   Intentionally flat, neutral, mobile-first; no purple, glow or background animation. */
+.public-home{background:#090d15!important}
+.public-home .hero{
+  padding-top:clamp(52px,7vw,94px)!important;
+  padding-bottom:clamp(26px,4vw,48px)!important;
+  gap:clamp(26px,4vw,42px)!important;
+}
+.public-home .hero h1{
+  max-width:16ch!important;
+  margin-top:18px!important;
+  font-size:clamp(41px,5.5vw,68px)!important;
+  line-height:1.08!important;
+  letter-spacing:-.055em!important;
+}
+.public-home .hero .lead{max-width:540px!important;margin-top:20px!important}
+.public-home .hero .cta-row{margin-top:24px!important}
+.public-home .hero-meta{margin-top:15px!important}
+.public-home .stellar-showcase{max-width:760px!important}
+.public-home #work-tasks .section-head{max-width:560px}
+.public-home #work-tasks .work-shortcuts{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.public-home #work-tasks .work-shortcut{
+  min-height:120px!important;padding:20px!important;
+}
+.public-home #plans .section-head{max-width:630px}
+.public-home #plans .pricing-head{gap:14px}
+.public-home #plans .pricing-grid{margin-top:20px}
+.public-home .optional-preview{
+  display:block;
+  margin-top:clamp(12px,3vw,30px);
+  margin-bottom:clamp(14px,3vw,32px);
+  border:1px solid #323c49;
+  border-radius:13px;
+  background:#111821!important;
+  overflow:hidden;
+}
+.public-home .optional-preview>summary{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;cursor:pointer;list-style:none;
+  padding:17px 20px;color:#e9eef5;font-weight:680;
+  font-size:14px;line-height:1.5;
+  min-height:56px;
+}
+.public-home .optional-preview>summary::-webkit-details-marker{display:none}
+.public-home .optional-preview>summary span{
+  font-size:12px;color:#acb8c6;font-weight:580;white-space:nowrap;
+}
+.public-home .optional-preview[open]>summary{
+  border-bottom:1px solid #323d4b;
+}
+.public-home .optional-preview .preview-inside{
+  padding:22px!important;background:#111821!important;
+}
+.public-home .optional-preview .preview-inside .container{
+  width:100%;max-width:100%;padding:0!important;
+}
+.public-home .optional-preview .section-head h2{
+  font-size:clamp(24px,2.5vw,33px)!important;
+}
+.public-home .optional-preview .preview-suggestions{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 18px;
+}
+.public-home .optional-preview .preview-suggestions>span{
+  font-size:12px;font-weight:700;color:#aeb9c6;margin-right:2px;
+}
+.public-home .optional-preview .preview-suggestions button{
+  min-height:44px;padding:10px 13px;border:1px solid #364452;
+  border-radius:999px;background:#1b2632;color:#e5ebf4;font-weight:680;
+  cursor:pointer;font-size:12px;
+}
+.public-home .optional-preview .preview-suggestions button:hover{
+  background:#273340;border-color:#667482;
+}
+.public-home #faq{padding-top:clamp(28px,4vw,46px)!important}
+.public-home .faq-list{gap:9px}
+.public-home .site-footer .footer-links{
+  gap:12px 18px;
+  align-items:center;
+}
+.public-home .footer-more{
+  position:relative;display:inline-block;color:#aeb9c6;
+  font-size:13px;
+}
+.public-home .footer-more>summary{
+  list-style:none;cursor:pointer;min-height:44px;
+  display:inline-flex;align-items:center;color:#aeb9c6;
+}
+.public-home .footer-more>summary::-webkit-details-marker{display:none}
+.public-home .footer-more>summary::after{content:"⌄";margin-left:6px}
+.public-home .footer-more[open]>summary::after{content:"⌃"}
+.public-home .footer-more>div{
+  display:flex;flex-wrap:wrap;gap:10px 14px;
+  padding:9px 0 12px;
+}
+.public-home .footer-more a{color:#b5c0cd!important;min-height:32px;display:inline-flex;align-items:center}
+.public-home .optional-preview>summary:focus-visible,
+.public-home .footer-more>summary:focus-visible{
+  outline:2px solid #e5ebf2!important;outline-offset:3px
+}
+@media(max-width:760px){
+  .public-home #work-tasks .work-shortcuts{grid-template-columns:1fr!important}
+  .public-home #work-tasks .work-shortcut{min-height:0!important;padding:18px!important}
+  .public-home #plans .pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .public-home .hero{padding-top:40px!important}
+  .public-home .hero h1{font-size:clamp(38px,10vw,49px)!important}
+  .public-home .optional-preview{width:calc(100% - 28px)!important}
+  .public-home .optional-preview>summary{
+    padding:15px 14px;align-items:flex-start;flex-direction:column;gap:4px;
+  }
+  .public-home .optional-preview .preview-inside{padding:14px!important}
+  .public-home #plans .pricing-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .public-home .work-shortcut{transition:none!important}
+}
