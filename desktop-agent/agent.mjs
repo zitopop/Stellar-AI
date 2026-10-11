@@ -131,9 +131,13 @@ function cap(value,max=120000){
   const text=String(value??'');
   return text.length>max?text.slice(0,max)+'\n[output truncated]':text;
 }
-function runProcess(command,{cwd,timeoutMs=120000}={}){
+function runProcess(command,{cwd,timeoutMs=120000,shell='cmd'}={}){
+  if(process.platform!=='win32')return Promise.reject(new Error('Windows terminal commands require the Windows companion.'));
+  if(!['cmd','powershell'].includes(shell))return Promise.reject(new Error('Unsupported terminal. Choose CMD or PowerShell.'));
   return new Promise((resolve,reject)=>{
-    const child=spawn(command,{cwd,shell:true,windowsHide:true,env:process.env});
+    const program=shell==='powershell'?'powershell.exe':'cmd.exe';
+    const args=shell==='powershell'?['-NoProfile','-NonInteractive','-Command',command]:['/d','/s','/c',command];
+    const child=spawn(program,args,{cwd,shell:false,windowsHide:true,env:process.env});
     let stdout='',stderr='',settled=false;
     const timer=setTimeout(()=>{if(!settled){settled=true;child.kill();reject(new Error('Command timed out.'))}},timeoutMs);
     child.stdout?.on('data',d=>stdout=cap(stdout+d));
@@ -237,8 +241,10 @@ async function execute(config,task){
       if(command.length>4000) throw new Error('Command is too long.');
       if(isBlockedCommand(command)) throw new Error('Command blocked by local Stellar safeguards.');
       const cwd=safePath(config,args.cwd||'.').target;
-      const result=await runProcess(command,{cwd});
-      return `EXIT ${result.code}\nSTDOUT\n${result.stdout}\nSTDERR\n${result.stderr}`;
+      const shell=String(args.shell||'cmd').trim().toLowerCase();
+      if(!['cmd','powershell'].includes(shell))throw new Error('Choose CMD or PowerShell.');
+      const result=await runProcess(command,{cwd,shell});
+      return `${shell.toUpperCase()} EXIT ${result.code}\nSTDOUT\n${result.stdout}\nSTDERR\n${result.stderr}`;
     }
     case 'type_text': {
       if(task.approved!==true) throw new Error('type_text was not approved.');
