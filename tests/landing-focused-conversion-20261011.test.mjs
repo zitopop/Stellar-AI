@@ -8,7 +8,7 @@ const css = read('lib/assets/stellar-landing-quiet-midnight-v1.css');
 const promptScript = read('lib/assets/stellar-hero-prompt-v1.js');
 
 test('marketing homepage offers three accessible example prompts with editable handoff', () => {
-  const examples = [...home.matchAll(/<a class="hero-prompt-chip" href="([^"]+)" data-hero-prompt="([^"]+)" data-hero-mode="([^"]+)">([^<]+)<\\/a>/g)];
+  const examples = [...home.matchAll(new RegExp('<a class="hero-prompt-chip" href="([^"]+)" data-hero-prompt="([^"]+)" data-hero-mode="([^"]+)">([^<]+)</a>', 'g'))];
   assert.equal(examples.length, 3);
   assert.deepEqual(examples.map(example => example[4]), ['Write something','Plan a project','Fix my code']);
   for (const [, href, prompt, mode] of examples) {
