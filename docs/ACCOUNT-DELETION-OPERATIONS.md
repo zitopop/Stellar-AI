@@ -6,7 +6,7 @@
 
 - Signed-in users: Settings → Delete account → confirmation → `POST /api/auth` with `action=requestAccountDeletion`.
 - The server verifies a signed session and records an idempotent request at `stellar:account-deletion:request:<account-email>` in configured Upstash KV.
-- The server indexes the request in `stellar:account-deletion:queue`. If Resend is configured, it attempts to notify the current support address.
+- The server indexes the request in `stellar:account-deletion:queue`. A failed queue write returns a retryable error while preserving the durable request; the next request retries indexing without duplicating a queued address. If Resend is configured, it attempts to notify the current support address. Email alerts are **not** guaranteed, so the operator must check the queue regularly.
 - Only a signed-in private operator can list requests through `POST /api/auth`, `action=listDeletionRequests`, with a valid Bearer session.
 - Users who no longer have app access can request account deletion externally at `/account-deletion`, with identity verification when necessary.
 
