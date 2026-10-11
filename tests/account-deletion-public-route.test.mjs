@@ -16,7 +16,7 @@ test('public account deletion route and privacy disclosures stay wired', () => {
 
 test('app offers an authenticated first-party deletion request, not just an email link', () => {
   const app = read('app.html');
-  assert.match(app, /data-action=\\?"request-account-deletion/);
+  assert.ok(app.includes(String.raw`data-action=\"request-account-deletion\"`));
   assert.match(app, /fetch\('\/api\/account-deletion-request'/);
   assert.match(app, /headers:authHeaders\(\)/);
   assert.match(app, /confirm:'DELETE'/);
