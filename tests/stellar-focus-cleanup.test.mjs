@@ -28,9 +28,12 @@ test('improve button drafts an editable request without automatically sending it
 test('landing page focuses on main chat, model value, pricing, and proof', () => {
   assert.match(home, /One simple place to think, create and get things done/);
   assert.match(home, /stellar-focused-homepage-20261011/);
-  assert.match(home, /\.script-fix-promo,/);
-  assert.match(home, /\.plan-workflows,/);
-  assert.match(home, /\.landing-assurance\{/);
+  assert.doesNotMatch(home, /class="script-fix-promo"/);
+  assert.doesNotMatch(home, /class="section plan-workflows"/);
+  assert.doesNotMatch(home, /class="section landing-assurance"/);
+  assert.doesNotMatch(home, /id="stellar-models"|id="ventures"|id="jarvis"/);
+  assert.match(home, /stellar-homepage-minimal-20261011\.css/);
+  assert.match(home, /class="developer-preview-collapse"/);
   assert.match(home, /id="plans"/);
   assert.match(home, /id="anonymous-preview-form"/);
 });

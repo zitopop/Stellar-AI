@@ -14,12 +14,12 @@ test('public landing uses final midnight stylesheet without purple or illuminate
 });
 
 test('landing has one product path, honest free tier and transparent subscription terms', () => {
-  assert.match(home, /Think bigger\. Create faster\./);
+  assert.match(home, /One simple place to think, create and get things done/);
   assert.equal((home.match(/<h1\b/g) || []).length, 1);
   assert.match(home, /No card required/);
   assert.match(home, /15 Stellar Fast generations\/day/);
-  assert.match(home, /Clear usage limits/);
-  assert.match(home, /href="#plans">Compare plans/);
+  assert.match(home, /shared Fast-equivalent allowance, not unlimited messages/);
+  assert.match(home, /href="#plans">Pricing/);
   for (const tier of ['free', 'starter', 'plus', 'pro']) assert.match(home, new RegExp('data-plan="' + tier + '"'));
   assert.match(home, /Yearly plans are billed upfront/);
   assert.match(home, /Illustrative examples · not a live chat/);
