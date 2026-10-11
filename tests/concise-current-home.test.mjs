@@ -9,11 +9,11 @@ const focused=read('lib/assets/stellar-landing-focused-v2.css');
 
 test('hero is concise and relevant to everyday AI work',()=>{
  const headline=html.match(/<h1 id="hero-title">([^<]+)<\/h1>/)?.[1]||'';
- assert.match(headline,/Your ideas\. Real work\. One powerful AI\./);
+ assert.match(headline,/Think bigger\. Get it done with Stellar\./);
  assert.ok(headline.split(/\s+/).length<=10,'Hero headline should stay short');
  const lead=html.match(/<p class="lead">([^<]+)<\/p>/)?.[1]||'';
  assert.ok(lead.split(/\s+/).length<=35,'Hero explanation should stay concise');
- assert.match(lead,/writing, planning, understanding files and solving code problems/i);
+ assert.match(lead,/ask questions, write, plan and solve problems/i);
 });
 
 test('mobile menu links to working landing sections',()=>{

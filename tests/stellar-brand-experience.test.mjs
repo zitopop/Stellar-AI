@@ -18,7 +18,7 @@ test('all primary Stellar surfaces use the same branded stylesheet', () => {
 });
 
 test('landing describes Jarvis access honestly and preserves model tiers', () => {
-  assert.match(home, /<h1 id="hero-title">Your ideas\. Real work\. One powerful AI\.<\/h1>/);
+  assert.match(home, /<h1 id="hero-title">Think bigger\. Get it done with Stellar\.<\/h1>/);
   for (const model of ['Stellar Fast','Stellar Core','Stellar Deep','Stellar Max']) {
     assert.match(home, new RegExp(model));
   }
