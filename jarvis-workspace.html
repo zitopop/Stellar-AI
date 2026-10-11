@@ -238,7 +238,7 @@ body{background:#0b0c11;color:#f4f5fa}
 <option value="es-ES">Español</option><option value="fr-FR">Français</option>
 <option value="de-DE">Deutsch</option><option value="pt-PT">Português</option>
 <option value="it-IT">Italiano</option><option value="ar-SA">العربية</option>
-</select></label><p class="jarvis-voice-language-note">Languages depend on your browser and device. Voice replies may use your device's default voice.</p>
+</select></label><p class="jarvis-voice-language-note">Hands-free is off on every new visit until you turn it on. Languages depend on your browser and device; voice replies may use your device's default voice.</p>
 </div>
 </div>
 </header>
@@ -261,8 +261,8 @@ body{background:#0b0c11;color:#f4f5fa}
 <div id="status" class="status" role="status" aria-live="polite"></div><p class="jarvis-model-note" id="jarvis-model-note">Core selected. Deep and Max use more of your allowance.</p>
 <div class="composer-row">
 <button id="mic" type="button" aria-label="Talk to Jarvis" title="Talk to Jarvis" aria-pressed="false">🎙</button>
-<button id="stop-response" type="button" aria-label="Stop generating the response" title="Stop response" hidden>■ Stop</button>
-<button id="stop-voice" type="button" aria-label="Stop Jarvis speaking" hidden>■ Stop</button>
+<button id="stop-response" type="button" aria-label="Stop generating the response" title="Stop response" hidden>■ Stop answer</button>
+<button id="stop-voice" type="button" aria-label="Stop Jarvis speaking" hidden>■ Stop voice</button>
 <button id="send" class="primary" type="submit" aria-label="Send message" title="Send message">↑</button>
 </div>
 </form>
@@ -278,7 +278,8 @@ body{background:#0b0c11;color:#f4f5fa}
   let pendingController = null, speechRunId = 0;
   let jarvisSource = 'jarvis-public', jarvisModel = 'star', availableJarvisModels = ['star'];
   let voiceOn = safeStorageGet('stellarJarvisVoiceReplies','1') !== '0';
-  let handsFree = safeStorageGet('stellarJarvisHandsFree','0') === '1';
+  // Hands-free requires a fresh, deliberate opt-in on each page visit.
+  let handsFree = false;
 
   function sessionToken(){
     for(const storage of [sessionStorage,localStorage])for(const key of ['stellar-store-session-fallback','stellar-store']){
