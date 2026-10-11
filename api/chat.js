@@ -1050,7 +1050,7 @@ export default async function handler(req, res) {
 
   const limits = getPlanDefinition(plan);
   const requestedModelKey = normaliseRoutingInput(model);
-  if (plan !== 'owner' && requestedModelKey && PUBLIC_MODEL_INPUTS.has(requestedModelKey)) {
+  if (plan !== 'owner' && requestedModelKey && requestedModelKey !== 'auto' && PUBLIC_MODEL_INPUTS.has(requestedModelKey)) {
     const mappedModel = MODEL_MAP[requestedModelKey] || requestedModelKey;
     const requestedTier = MODEL_TIER_BY_ID[mappedModel]
       || (['spark','star','comet','nova'].includes(requestedModelKey) ? requestedModelKey : 'star');
