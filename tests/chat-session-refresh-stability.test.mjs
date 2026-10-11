@@ -23,6 +23,8 @@ function harness({ plan = [], auth = [] } = {}) {
     allowedModels: ['spark', 'nova'],
     planState: { plan: 'owner' },
     COSTS: { spark: 2 },
+    planTruthStatus: 'pending',
+    fallbackModelCosts: () => ({ spark: 2, star: 5, comet: 10, nova: 20 }),
     referralUrl: '',
     token: () => state.currentToken,
     store: () => ({ user: state.signedInUser }),
