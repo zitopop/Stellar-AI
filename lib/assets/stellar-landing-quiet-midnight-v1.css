@@ -177,3 +177,34 @@
   .public-home .header-actions .button-small{font-size:12px!important}
 }
 @media(prefers-reduced-motion:reduce){.public-home *, .public-home *::before,.public-home *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* 2026-10-11: One clear AI entry point; collapse secondary plans, preserve all checkout paths. */
+.public-home .hero-examples{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:11px}
+.public-home .hero-examples>span{color:#aeb6c2;font-size:11px;font-weight:650;margin-right:4px}
+.public-home .hero-examples>a{display:inline-flex;align-items:center;justify-content:center;min-height:40px;border:1px solid #3b414a;border-radius:999px;background:#1a1d23;color:#e9ecf1!important;text-decoration:none;font-size:12px;font-weight:650;padding:9px 13px;transition:background .16s,border-color .16s}
+.public-home .hero-examples>a:hover,.public-home .hero-examples>a:focus-visible{background:#252a32;border-color:#939ca9}
+.public-home .hero-trust{margin:8px auto 0!important;text-align:center;color:#b3bbc7;font-size:11px;font-weight:550}
+.public-home .hero-trust a{color:#e9ebf0;text-underline-offset:3px}
+.public-home #plans .pricing-grid-primary,.public-home #plans .pricing-grid-secondary{width:100%;max-width:880px;margin:0 auto;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+.public-home #plans .pricing-grid-primary .plan{min-height:320px}
+.public-home #plans .pricing-grid-primary .plan.recommended{background:#1b1f26!important;border:1px solid #858f9e!important}
+.public-home #plans .additional-plans{max-width:880px;margin:17px auto 0;border:1px solid #353b45;border-radius:12px;background:#111419}
+.public-home #plans .additional-plans>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;min-height:52px;padding:13px 19px;font-size:13px;font-weight:750;color:#f0f2f5}
+.public-home #plans .additional-plans>summary::-webkit-details-marker{display:none}
+.public-home #plans .additional-plans>summary::before{content:"+";font-size:20px;line-height:1;margin-right:5px;color:#ccd2dc}
+.public-home #plans .additional-plans[open]>summary::before{content:"−"}
+.public-home #plans .additional-plans>summary span{color:#aeb6c2;font-size:11px;font-weight:550;margin-left:auto}
+.public-home #plans .additional-plans .pricing-grid-secondary{padding:0 14px 14px}
+.public-home #plans .additional-plans .plan{background:#171a20!important}
+.public-home #plans .plan-full-link{max-width:880px;margin:10px auto 0;text-align:center}
+.public-home #plans .disclaimer{max-width:880px!important;margin:20px auto 0!important}
+@media(max-width:620px){
+ .public-home .hero-examples{gap:7px}
+ .public-home .hero-examples>span{width:100%;text-align:left;margin-bottom:2px}
+ .public-home .hero-examples>a{min-height:44px}
+ .public-home #plans .pricing-grid-primary,.public-home #plans .pricing-grid-secondary{grid-template-columns:1fr!important}
+ .public-home #plans .additional-plans>summary{padding:14px 15px;align-items:flex-start}
+ .public-home #plans .additional-plans>summary span{width:100%;margin-left:28px}
+ .public-home #plans .pricing-grid-primary .plan{min-height:0}
+}
+@media(prefers-reduced-motion:reduce){.public-home .hero-examples>a{transition:none}}
