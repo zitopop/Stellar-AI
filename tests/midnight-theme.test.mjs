@@ -27,7 +27,8 @@ test('automatic greeting is capitalised and changes at local time boundaries',()
    assert.equal(greet(at(hour)),result);
  }
  assert.match(app,/id="stellar-welcome-title"/);
- assert.match(app,/welcomeName\(\)\.toLocaleUpperCase\(\)/);
+ assert.match(app,/\+\(name\?' '\+name:''\)/);
+ assert.match(app,/function welcomeDisplayName\(\)/);
  assert.match(app,/setInterval\(refreshWelcomeGreeting,60\*1000\)/);
  assert.match(app,/visibilitychange/);
 });
