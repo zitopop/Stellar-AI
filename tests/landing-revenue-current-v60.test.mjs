@@ -8,7 +8,7 @@ const preview=read('lib/assets/homepage.js');
 const demos=read('lib/assets/stellar-landing-demo-tabs-v1.js');
 
 test('landing is focused, transparent and avoids invented endorsements',()=>{
- assert.match(home,/Your ideas\. Real work\. One powerful AI\./);
+ assert.match(home,/Think bigger\. Get it done with Stellar\./);
  assert.match(home,/writing|Write clearly/i);
  assert.match(home,/Code help/);
  assert.match(home,/No card required/);
