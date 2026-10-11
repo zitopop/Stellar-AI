@@ -12,7 +12,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="/lib/assets/pwa/icon-180.png?v=20261006-home">
 <title>Stellar AI — Free AI Chat, Writing &amp; Code Debugger</title>
-<meta name="description" content="Try Stellar AI free for writing, planning and code debugging. Fix errors in Roblox Luau, FiveM Lua and more, or start a new AI chat. No card required.">
+<meta name="description" content="Stellar AI is a simple workspace for conversations, writing, planning, understanding files and debugging code. Try Stellar Fast free, no card required.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://trystellarai.com/app">
 <meta name="stellar-release" content="2026-10-09-general-workspace-v86">
@@ -4640,7 +4640,7 @@ html,body,.app{
   </aside>
   <main class="main">
     <header class="top">
-      <div class="left"><button class="btn ghost mobile-menu" id="menuBtn" type="button" aria-label="Open sidebar" title="Open sidebar">☰</button><a class="top-brand" href="/app">Stellar AI</a><button class="chip" id="usagePill" type="button" data-open="usage" aria-label="Usage: 100% remaining"><span class="usage-label">Usage</span><strong id="usageCount">100% left</strong></button></div>
+      <div class="left"><button class="btn ghost mobile-menu" id="menuBtn" type="button" aria-label="Open sidebar" title="Open sidebar">☰</button><a class="top-brand" href="/app">Stellar AI</a><button class="chip" id="usagePill" type="button" data-open="usage" aria-label="Open usage details"><span class="usage-label">Usage</span><strong id="usageCount">Sign in to view</strong></button></div>
       <div class="actions"><button class="btn ghost hidden" type="button" data-open="plans">Plans</button></div>
     </header>
     <section class="chat" id="chat"><div class="chat-inner" id="chatInner"></div></section>
@@ -4652,7 +4652,7 @@ html,body,.app{
 <script id="stellar-google-signin-ui-v1">
 (()=>{'use strict';
 const $=id=>document.getElementById(id);const side=$('side'),backdrop=$('backdrop'),panelBackdrop=$('panelBackdrop'),panelTitle=$('panelTitle'),panelIntro=$('panelIntro'),panelBody=$('panelBody'),chat=$('chat'),chatInner=$('chatInner'),chatList=$('chatList'),chatEmpty=$('chatEmpty'),prompt=$('prompt'),promptLabel=document.querySelector('label[for="prompt"]'),composerNote=$('composer-note'),composerModeButtons=[...document.querySelectorAll('[data-composer-mode]')],sideModeButtons=[...document.querySelectorAll('[data-side-mode]')],statusEl=$('status'),sendBtn=$('sendBtn'),usagePill=$('usagePill'),usageCount=$('usageCount'),accountButton=$('accountButton'),sidePlanButton=$('side-plan-button'),modelBtn=$('modelBtn'),modelLabel=$('modelLabel'),modelShort=$('modelShort'),modelMenu=$('composer-model-menu'),imageInput=$('image-upload-input'),imageButton=$('image-upload-btn'),imageStatus=$('image-upload-status'),attachmentClear=$('attachment-clear-btn'),webSearchButton=$('web-search-btn'),voiceButton=$('voice-input-btn');
-const GOOGLE_CLIENT_ID='308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';const STORE='stellar-store';const MODELS={spark:'Stellar Fast',star:'Stellar Core',comet:'Stellar Deep',nova:'Stellar Max'};const MODEL_SHORT={spark:'Fast',star:'Core',comet:'Deep',nova:'Max'};const COSTS={spark:2,star:5,comet:10,nova:20};const UPGRADE_PLANS=new Set(['starter','plus','pro','starter-annual','plus-annual','pro-annual','server-pass']);const UPLOAD_IMAGE_MAX_BYTES=3_000_000;const UPLOAD_IMAGE_MEDIA_TYPES=new Set(['image/png','image/jpeg','image/gif','image/webp']);const UPLOAD_TEXT_MAX_BYTES=120_000;const UPLOAD_TEXT_EXTENSIONS=new Set(['txt','md','json','js','ts','jsx','tsx','lua','luau','py','html','css','csv','xml','yml','yaml']);
+const GOOGLE_CLIENT_ID='308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';const STORE='stellar-store';const MODELS={spark:'Stellar Fast',star:'Stellar Core',comet:'Stellar Deep',nova:'Stellar Max'};const MODEL_SHORT={spark:'Fast',star:'Core',comet:'Deep',nova:'Max'};const COSTS={spark:2,star:5,comet:10,nova:20};const PAID_COSTS={spark:2,star:4,comet:8,nova:16};const UPGRADE_PLANS=new Set(['starter','plus','pro','starter-annual','plus-annual','pro-annual','server-pass']);const UPLOAD_IMAGE_MAX_BYTES=3_000_000;const UPLOAD_IMAGE_MEDIA_TYPES=new Set(['image/png','image/jpeg','image/gif','image/webp']);const UPLOAD_TEXT_MAX_BYTES=120_000;const UPLOAD_TEXT_EXTENSIONS=new Set(['txt','md','json','js','ts','jsx','tsx','lua','luau','py','html','css','csv','xml','yml','yaml']);
 const NATIVE_SHELL=(()=>{try{return window.Capacitor?.isNativePlatform?.()===true||new URLSearchParams(location.search).get('source')==='native'}catch{return false}})();
 const CHAT_MODE='general';const DEBUG_MODE_INSTRUCTION='Developer debugging mode: treat this input as broken code or an error log. Diagnose the likely root cause, give the smallest safe fix, and return corrected code in an appropriate fenced code block when code changes are needed. Preserve framework APIs unless they are the cause. Do not claim the code is fully bug-free without runtime testing.';const previewAuthGateRequested=new URLSearchParams(location.search).get('auth')==='preview';
 function safeStorageGet(key,fallback=''){try{const value=localStorage.getItem(key);return value==null?fallback:value}catch{return fallback}}function safeStorageSet(key,value){try{localStorage.setItem(key,value);return true}catch{return false}}function safeStorageRemove(key){try{localStorage.removeItem(key);return true}catch{return false}}
@@ -4726,7 +4726,8 @@ function chatNearBottom(threshold=120){const viewport=$('chat');if(!viewport)ret
 function addMessage(role,text,scroll=true,messageIndex=null){const wrap=document.createElement('article');wrap.className='msg '+role;wrap.innerHTML='<div class="meta">'+(role==='user'?'You':'Stellar')+'</div><div class="bubble"></div>';const bubble=wrap.querySelector('.bubble');if(role==='assistant')renderAssistantBubble(bubble,text);else bubble.textContent=String(text||'');chatInner.append(wrap);if(role==='assistant'&&String(text||'')!=='Thinking…')addAssistantActions(wrap,bubble);if(role==='user'&&Number.isInteger(messageIndex))addUserActions(wrap,messageIndex);if(scroll)wrap.scrollIntoView({block:'end'});return bubble}
 function updateCreditPreview(){
  const node=$('composer-credit-cost');if(!node)return;
- const raw=Number(planState?.costs?.[selectedModel] ?? COSTS[selectedModel] ?? 2);
+ const fallbackCosts=['starter','plus','pro'].includes(String(planState?.plan||'').toLowerCase())?PAID_COSTS:COSTS;
+ const raw=Number(planState?.costs?.[selectedModel] ?? fallbackCosts[selectedModel] ?? 2);
  const cost=Number.isFinite(raw)&&raw>0?Math.floor(raw):2;
  node.textContent=serverOwner?'Private usage · no plan credits spent':MODEL_SHORT[selectedModel]+' · '+cost+' credits per response'+(signedInUser?' · '+fmt(Math.max(0,Number(planState.remaining)||0))+' left':' · sign in to see balance');
 }
@@ -4867,7 +4868,8 @@ function renderUsagePanel(){
   const ownerNote=serverOwner?'<div class="card"><strong>Unlimited private usage</strong><small>No customer usage cap applies to this private account.</small></div>':'';
   const remaining=Math.max(0,Number(planState.remaining)||0),limit=Math.max(0,Number(planState.limit)||0);
   const models=serverOwner?'':allowedModels.filter(key=>Object.hasOwn(MODELS,key)).map(key=>{
-    const raw=Number(planState.costs?.[key] ?? COSTS[key] ?? 2),cost=Math.max(1,Math.floor(raw));
+    const fallbackCosts=['starter','plus','pro'].includes(String(planState?.plan||'').toLowerCase())?PAID_COSTS:COSTS;
+    const raw=Number(planState.costs?.[key] ?? fallbackCosts[key] ?? 2),cost=Math.max(1,Math.floor(raw));
     return '<li><strong>'+escapeHtml(MODEL_SHORT[key])+'</strong><span>'+cost+' credits/response · about '+fmt(Math.floor(remaining/cost))+' left</span></li>';
   }).join('');
   const breakdown=serverOwner?'':'<div class="card usage-breakdown"><strong>'+fmt(remaining)+' of '+fmt(limit)+' credits remaining</strong><small>Each completed response decreases this balance. Failed or interrupted generations are refunded. Only models included in your plan are shown.</small><ul>'+models+'</ul></div>';
