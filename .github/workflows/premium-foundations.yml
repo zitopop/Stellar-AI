@@ -1,0 +1,44 @@
+name: Premium foundation checks
+
+on:
+  push:
+    branches:
+      - upgrade/premium-foundations-20261011
+  pull_request:
+    paths:
+      - 'app.html'
+      - 'index.html'
+      - 'api/chat.js'
+      - 'lib/auth.js'
+      - 'lib/pricing.js'
+      - 'lib/smart-routing.js'
+      - 'lib/assets/stellar-premium-*.css'
+      - 'tests/premium-*.test.mjs'
+      - 'tests/session-key-rotation.test.mjs'
+      - 'tests/smart-routing.test.mjs'
+      - '.github/workflows/premium-foundations.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  premium-foundations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Install dependencies without install scripts
+        run: npm ci --ignore-scripts
+      - name: Verify source syntax
+        run: npm run check:syntax
+      - name: Verify premium, Smart and session behavior
+        run: node --test tests/premium-plan-foundations.test.mjs tests/smart-routing.test.mjs tests/session-key-rotation.test.mjs tests/premium-workspace.test.mjs
