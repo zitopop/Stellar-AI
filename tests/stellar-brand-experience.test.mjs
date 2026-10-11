@@ -22,10 +22,9 @@ test('landing describes Jarvis access honestly and preserves model tiers', () =>
   for (const model of ['Stellar Fast','Stellar Core','Stellar Deep','Stellar Max']) {
     assert.match(home, new RegExp(model));
   }
-  assert.match(home, /Connected services need your authorisation/);
-  assert.match(home, /Illustration, not a recording of an autonomous action/);
-  assert.match(home, /href="\/jarvis"/);
-  assert.match(home, /href="\/plugins"/);
+  assert.match(home, /Jarvis and StellarX require supported features and approved setup/);
+  assert.doesNotMatch(home, /id="jarvis"|id="stellar-models"/);
+  assert.match(home, /href="\/plans"/);
 });
 
 test('Jarvis can select a browser speech recognition language without bypassing plan checks', () => {
