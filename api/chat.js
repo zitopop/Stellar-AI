@@ -1004,6 +1004,11 @@ export default async function handler(req, res) {
   }
 
   const session = readSession(req);
+  // Do not silently process an expired authenticated chat as an anonymous Free request.
+  // Explicit 401 lets the client refresh its session once without double charging.
+  if (/^Bearer\s+\S+/i.test(String(req.headers.authorization || '')) && !session) {
+    return res.status(401).json({ error: 'Your session needs to be refreshed. Please sign in again if this continues.', code: 'SESSION_REAUTH_REQUIRED' });
+  }
   const account = await getAccountFromServer(session?.email);
   const plan = account.plan;
   const clientSource = String(client?.source || '').trim().toLowerCase().slice(0, 64);
