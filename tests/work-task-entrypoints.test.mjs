@@ -9,25 +9,26 @@ const app = fs.readFileSync(path.join(root, 'app.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'lib/assets/stellar-landing-clean-v1.css'), 'utf8');
 
 test('homepage keeps everyday work available without burying developer positioning', () => {
-  assert.match(index, /Your ideas\. Real work\. One powerful AI\./);
+  assert.match(index, /A smarter way to get things done\./);
   assert.match(index, /id="work-tasks"/);
-  assert.match(index, /Choose a real example and adjust it in Stellar/i);
-  assert.match(index, /You decide what to keep, change or use/i);
-  assert.match(index, /For developers/);
+  assert.match(index, /Pick a task to see how Stellar can help you get started/i);
+  assert.match(index, /Opens as an editable draft/i);
+  assert.match(index, /For developers/i);
   assert.match(index, /class="work-shortcuts"/);
 });
 
-test('four work examples open editable prompts in the same app', () => {
+test('three work examples open editable prompts in the app, with code help in the hero', () => {
   const section = index.split('id="work-tasks"')[1].split('id="plans"')[0];
   const links = [...section.matchAll(/class="work-shortcut" href="([^"]+)"/g)].map(([, raw]) => raw.replaceAll('&amp;', '&'));
-  assert.equal(links.length, 4);
+  assert.equal(links.length, 3);
   for (const href of links) {
     const url = new URL(href, 'https://trystellarai.com');
     assert.equal(url.pathname, '/app');
     assert.ok(url.searchParams.get('prompt')?.length > 25, 'task has usable prompt');
     assert.equal(url.searchParams.get('utm_source'), 'homepage');
   }
-  assert.equal(new URL(links[3], 'https://trystellarai.com').searchParams.get('mode'), 'debug');
+  assert.match(index, /data-hero-mode="debug"/);
+  assert.match(index, /Fix my code/);
   assert.match(app, /q\.get\('prompt'\)/);
 });
 
