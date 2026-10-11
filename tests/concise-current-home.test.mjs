@@ -9,17 +9,17 @@ const focused=read('lib/assets/stellar-landing-focused-v2.css');
 
 test('hero is concise and relevant to everyday AI work',()=>{
  const headline=html.match(/<h1 id="hero-title">([^<]+)<\/h1>/)?.[1]||'';
- assert.match(headline,/Your ideas\. Real work\. One powerful AI\./);
+ assert.match(headline,/One simple place to think, create and get things done\./);
  assert.ok(headline.split(/\s+/).length<=10,'Hero headline should stay short');
  const lead=html.match(/<p class="lead">([^<]+)<\/p>/)?.[1]||'';
  assert.ok(lead.split(/\s+/).length<=35,'Hero explanation should stay concise');
- assert.match(lead,/writing, planning, understanding files and solving code problems/i);
+ assert.match(lead,/Write better, plan projects, understand files and fix code/i);
 });
 
 test('mobile menu links to working landing sections',()=>{
  const nav=html.split('<nav class="site-nav"')[1]?.split('</nav>')[0]||'';
  const anchors=[...nav.matchAll(/href="#([^"]+)"/g)].map(m=>m[1]);
- assert.deepEqual(anchors,['work-tasks','jarvis','plans','faq']);
+ assert.deepEqual(anchors,['work-tasks','plans']);
  for(const id of anchors)assert.ok(html.includes('id="'+id+'"'),id);
  assert.match(html,/class="menu-toggle"/);
 });

@@ -8,7 +8,7 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const appCss = readFileSync(new URL('../lib/assets/stellar-home-clarity-v1.css', import.meta.url), 'utf8');
 
 test('public home has one clear headline, no repetitive sections and working destinations', () => {
-  assert.match(home, /<h1 id="hero-title">Your ideas\. Real work\. One powerful AI\.<\/h1>/);
+  assert.match(home, /<h1 id="hero-title">One simple place to think, create and get things done\.<\/h1>/);
   assert.equal((home.match(/<h1\b/g) || []).length, 1);
   assert.doesNotMatch(home, /id="how-it-works"|id="bottom-title"/);
   const ids = [...home.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
