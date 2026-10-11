@@ -26,17 +26,13 @@ test('marketing homepage offers three accessible example prompts with editable h
   assert.match(promptScript, /input\.value = example/);
 });
 
-test('Free and Plus appear first while Starter and Pro remain reachable', () => {
-  const main = home.match(/<div class="pricing-grid pricing-grid-primary">([\s\S]*?)<\/div>\s*<details class="additional-plans">/);
-  assert.ok(main);
-  assert.match(main[1], /data-plan="free"/);
-  assert.match(main[1], /data-plan="plus"/);
-  assert.doesNotMatch(main[1], /data-plan="starter"|data-plan="pro"/);
-  const compare = home.match(/<details class="additional-plans">([\s\S]*?)<\/details>/);
-  assert.ok(compare);
-  assert.match(compare[1], /<summary>Compare Starter and Pro plans/);
-  for (const p of ['starter', 'pro']) assert.ok(compare[1].includes('data-plan="' + p + '"'));
-  for (const p of ['free', 'starter', 'plus', 'pro']) assert.equal((home.match(new RegExp('data-plan="' + p + '"','g')) || []).length, 1);
+test('all four paid and free plans are visible without an expansion menu', () => {
+  const main = home.match(/<div class="pricing-grid pricing-grid-primary" aria-label="Stellar AI subscriptions">([\s\S]*?)<\/div>\s*<p class="plan-full-link">/);
+  assert.ok(main, 'all plans belong to one visible comparison grid');
+  const displayed = [...main[1].matchAll(/data-plan="(free|starter|plus|pro)"/g)].map(match => match[1]);
+  assert.deepEqual(displayed, ['free', 'starter', 'plus', 'pro']);
+  assert.doesNotMatch(home, /<details class="additional-plans">/);
+  assert.match(home, /href="#plans" aria-label="Compare Free, Starter, Plus and Pro plans"/);
   assert.match(home, /href="\/plans"/);
   assert.match(home, /data-cycle="annual"/);
   assert.match(home, /Yearly plans are billed upfront/);
