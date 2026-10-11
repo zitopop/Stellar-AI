@@ -4,6 +4,7 @@ import { createSession, readSession, sessionSigningConfigured } from '../lib/aut
 import { applyReferralReward, ensureReferralProfile, kvGet, kvPipeline, kvSet } from '../lib/profile.js';
 import { initialFunnelState, recordFunnelSignup } from '../lib/funnel-metrics.js';
 import { escapeEmailHtml, resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
+import { handleAccountDeletionRequest } from '../lib/account-deletion-handler.js';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '308347075858-9eu0dootm325qgq7hba7qsnnchmcke1r.apps.googleusercontent.com';
 const WELCOME_CREDITS = 100;
@@ -299,6 +300,9 @@ export default async function handler(req, res) {
   if (String(req.query?.mode || '') === 'send-welcome') return handleWelcomeResend(req, res, url, token);
 
   if (req.body?.action === 'updateProfile') return handleProfileUpdate(req, res, url, token);
+  if (['requestAccountDeletion', 'getDeletionRequestStatus', 'listDeletionRequests'].includes(req.body?.action)) {
+    return handleAccountDeletionRequest(req, res, url, token);
+  }
 
   const { action, email, password, credential, code, referralCode } = req.body || {};
   const actionName = String(action || '').trim();
