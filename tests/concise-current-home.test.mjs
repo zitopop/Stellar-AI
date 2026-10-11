@@ -9,11 +9,11 @@ const focused=read('lib/assets/stellar-landing-focused-v2.css');
 
 test('hero is concise and relevant to everyday AI work',()=>{
  const headline=html.match(/<h1 id="hero-title">([^<]+)<\/h1>/)?.[1]||'';
- assert.match(headline,/One simple place to think, create and get things done\./);
+ assert.match(headline,/A smarter way to get things done\./);
  assert.ok(headline.split(/\s+/).length<=10,'Hero headline should stay short');
  const lead=html.match(/<p class="lead">([^<]+)<\/p>/)?.[1]||'';
  assert.ok(lead.split(/\s+/).length<=35,'Hero explanation should stay concise');
- assert.match(lead,/Write better, plan projects, understand files and fix code/i);
+ assert.match(lead,/Ask questions, write, plan, understand files and solve problems/i);
 });
 
 test('mobile menu links to working landing sections',()=>{
@@ -27,8 +27,8 @@ test('mobile menu links to working landing sections',()=>{
 test('work examples remain useful without repeated features sections',()=>{
  assert.doesNotMatch(html,/id="features"/);
  const work=html.split('id="work-tasks"')[1]?.split('id="plans"')[0]||'';
- assert.equal((work.match(/class="work-shortcut"/g)||[]).length,4);
- for(const label of ['Write an email','Plan a project','Explain files and notes','Debug code'])assert.ok(work.includes(label),label);
+ assert.equal((work.match(/class="work-shortcut"/g)||[]).length,3);
+ for(const label of ['Write and create','Think and plan','Understand information'])assert.ok(work.includes(label),label);
  assert.match(html,/id="anonymous-preview-form"/);
 });
 
