@@ -49,7 +49,7 @@ AI-generated content can be inaccurate. Review important answers and test genera
 - Current native shell loads the live account workspace and includes a native Share action and offline fallback; do not claim robust offline chat.
 - Native companion mode is intended to hide web Stripe digital-subscription purchase buttons. Validate the actual build on devices and confirm that the final payment/entitlement model satisfies the app store policy.
 - Provide a reviewer account that demonstrates working chat, account settings and permitted paid features without exposing owner-only tools.
-- In-app settings now link to a deletion **request** page; this is not a complete automatic account-erasure flow and requires review against Apple/Google requirements.
+- In-app Settings includes a first-party authenticated deletion-request action. The public website provides an external request route. Processing and deletion confirmation remain manual and require full data erasure across applicable systems before store submission.
 - Do not enable Android Assist Mode in the first public build unless the AccessibilityService and its disclosures have passed dedicated technical and policy review.
 - The website PWA install is separate from store distribution.
 
