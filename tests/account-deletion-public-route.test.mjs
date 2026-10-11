@@ -17,14 +17,17 @@ test('public account deletion route and privacy disclosures stay wired', () => {
 test('app offers an authenticated first-party deletion request, not just an email link', () => {
   const app = read('app.html');
   assert.ok(app.includes(String.raw`data-action=\"request-account-deletion\"`));
-  assert.match(app, /fetch\('\/api\/account-deletion-request'/);
+  assert.match(app, /fetch\('\/api\/auth'/);
+  assert.match(app, /action:'requestAccountDeletion'/);
   assert.match(app, /headers:authHeaders\(\)/);
   assert.match(app, /confirm:'DELETE'/);
 });
 
 test('deletion requests require a valid session and do not claim immediate erasure', () => {
-  const api = read('api/account-deletion-request.js');
-  assert.match(api, /requireSession\(req, res\)/);
+  const api = read('lib/account-deletion-handler.js');
+  const auth = read('api/auth.js');
+  assert.match(auth, /handleAccountDeletionRequest\(req, res, url, token\)/);
+  assert.match(api, /readSession\(req\)/);
   assert.match(api, /req\.body\?\.confirm !== 'DELETE'/);
   assert.match(api, /status: 'pending'/);
   assert.match(api, /'SET', key, JSON\.stringify\(record\), 'NX'/);
