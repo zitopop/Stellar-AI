@@ -95,6 +95,9 @@ body.stellarx-simple .task-mode{min-height:40px!important;border-radius:11px!imp
 body.stellarx-simple .stellar-use-led{display:none!important}
 body.stellarx-simple #stellarxQuickConnect{order:0!important;grid-template-columns:1fr 1fr!important;gap:12px!important;margin:0 0 20px!important}
 body.stellarx-simple #stellarxQuickConnect[hidden],#quickInstallCommand[hidden],#restartHint[hidden]{display:none!important}
+body.sx-chat-mode #stellarxQuickConnect{display:none!important}
+body.sx-workspace.sx-refined[data-sx-theme="light"] #stellarxQuickConnect .card{background:#f7f5f2!important;color:#26272c!important;border-color:#d2cbd0!important}
+body.sx-workspace.sx-refined[data-sx-theme="light"] #stellarxQuickConnect .card p,body.sx-workspace.sx-refined[data-sx-theme="light"] #setupStatus{color:#545866!important}
 body.stellarx-simple #stellarxQuickConnect .card{padding:17px!important;border-radius:14px!important;background:#151720!important;box-shadow:none!important}
 body.stellarx-simple #stellarxQuickConnect h2{font-size:16px!important}
 body.stellarx-simple #stellarxQuickConnect p{font-size:12px!important;line-height:1.6}
@@ -299,7 +302,7 @@ node agent.mjs pair YOUR_CODE
   async function status(){
     try{
       const d=await api('status',{},'GET');
-      const extra=$('stellarxAdvanced');if(extra&&!extra.dataset.checked){extra.open=!d.online;extra.dataset.checked='1';}
+      const extra=$('stellarxAdvanced');if(extra&&!extra.dataset.checked){extra.open=false;extra.dataset.checked='1';}
       $('statusDot').classList.toggle('online',!!d.online);
       $('statusText').textContent=d.emergencyStopped?'PC paused':!d.paired?'Connect your PC':d.online?'PC connected':'PC offline';
       $('statusMeta').textContent=!d.paired?'Open connection settings below to pair your Windows PC.':d.online?(d.hostname||'Windows PC')+' · ready to work':(d.hostname||'Windows PC')+' · start the desktop companion';
