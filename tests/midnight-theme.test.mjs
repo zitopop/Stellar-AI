@@ -39,9 +39,9 @@ test('automatic greeting is capitalised and changes at local time boundaries',()
 
 
 test('No purple or glow leaks into the final Midnight override',()=>{
- assert.match(css,/\\.public-home \\*::before/);
- assert.match(css,/box-shadow:none!important/);
- assert.match(css,/background-image:none!important/);
- assert.match(css,/outline:2px solid #CED2D9!important/);
- assert.match(css,/\.public-home a:not\\(\\.button\\):not\\(\\.brand\\)/);
+ assert.ok(css.includes('.public-home *::before'));
+ assert.ok(css.includes('box-shadow:none!important'));
+ assert.ok(css.includes('background-image:none!important'));
+ assert.ok(css.includes('outline:2px solid #CED2D9!important'));
+ assert.ok(css.includes('.public-home a:not(.button):not(.brand)'));
 });
