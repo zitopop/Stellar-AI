@@ -93,6 +93,14 @@ body.stellarx-simple .stellarx-examples summary{color:#979caf;font-size:12px;cur
 body.stellarx-simple .task-mode-row{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin:2px 0 8px!important}
 body.stellarx-simple .task-mode{min-height:40px!important;border-radius:11px!important;background:#1d1e2a!important;padding:9px 12px!important;min-width:110px}
 body.stellarx-simple .stellar-use-led{display:none!important}
+body.stellarx-simple #stellarxQuickConnect{order:0!important;grid-template-columns:1fr 1fr!important;gap:12px!important;margin:0 0 20px!important}
+body.stellarx-simple #stellarxQuickConnect[hidden],#quickInstallCommand[hidden],#restartHint[hidden]{display:none!important}
+body.stellarx-simple #stellarxQuickConnect .card{padding:17px!important;border-radius:14px!important;background:#151720!important;box-shadow:none!important}
+body.stellarx-simple #stellarxQuickConnect h2{font-size:16px!important}
+body.stellarx-simple #stellarxQuickConnect p{font-size:12px!important;line-height:1.6}
+body.stellarx-simple #stellarxQuickConnect #quickInstallCommand{width:100%;min-height:82px;max-height:150px;margin-top:10px;resize:vertical;font:11px/1.45 Consolas,monospace;color:#e4e0ff}
+body.stellarx-simple #stellarxQuickConnect .btn{min-height:44px}
+body.stellarx-simple #stellarxQuickConnect details summary{cursor:pointer;padding:10px 0}
 body.stellarx-simple .stellarx-advanced{order:3;display:block;width:100%;margin:12px 0;border:1px solid #292c37;border-radius:14px;background:#12151d}
 body.stellarx-simple .stellarx-advanced>summary{cursor:pointer;list-style:none;min-height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#b8bcce;font-size:12px;font-weight:720}
 body.stellarx-simple .stellarx-advanced>summary::-webkit-details-marker{display:none}
@@ -117,6 +125,7 @@ body.stellarx-simple .work-hero h1{font-size:33px!important}
 body.stellarx-simple #taskComposer{padding:15px!important}
 body.stellarx-simple #prompt{min-height:145px!important}
 body.stellarx-simple .stellarx-advanced>.grid{grid-template-columns:1fr!important}
+body.stellarx-simple #stellarxQuickConnect{grid-template-columns:1fr!important}
 body.stellarx-simple .statusbox{flex-wrap:wrap!important}
 body.stellarx-simple #statusMeta{flex:1 1 100%}
 body.stellarx-simple .task-actions{justify-content:stretch!important}
@@ -145,18 +154,35 @@ body.stellarx-simple #planBtn{width:100%}
 <section class="hero work-hero"><div><div class="eyebrow">Your PC assistant</div><h1>Give <span class="agent-name">StellarX</span> a job.</h1><p class="lead">Tell StellarX what to do on your PC. It checks your files first and asks before making changes.</p><div class="chip-row" aria-label="Work Agent safeguards"><span class="chip">Inspect first</span><span class="chip">Approval for actions</span><span class="chip">Scoped workspace</span><span class="chip">Emergency Stop</span></div><div class="agent-disclaimer">StellarX is a controlled work agent for your own projects and paired devices. You remain in control of permissions and approved actions.</div></div>
 <div class="statusbox"><div class="status-label">Computer connection</div><div class="statusrow"><span class="dot" id="statusDot"></span><strong id="statusText">Not paired</strong></div><div class="small" id="statusMeta">Connect your Windows PC to get started.</div><div class="pc-usage"><div class="pc-usage-head"><span>Computer usage</span><strong id="pcUsageLabel">Loading…</strong></div><div class="pc-usage-track" aria-hidden="true"><span class="pc-usage-fill" id="pcUsageFill"></span></div></div></div></section>
 
-<section class="grid">
-<div class="card"><h2>Connect your computer</h2><p>Create a one-time pairing code, approve it on your Windows companion, then StellarX will show when that computer is connected.</p>
-<div id="pairCode" class="code" hidden></div><div class="actions" style="margin-top:14px"><button class="btn primary" id="pairBtn">Pair this PC</button><button class="btn danger" id="disconnectBtn" hidden>Disconnect PC</button></div><div class="note">Each signed-in account can pair only its own authorised computer and can disconnect it at any time.</div></div>
-<div class="card"><h2>Install the Windows companion</h2><p>The companion runs locally; the website never receives your Windows password.</p>
-<div class="install">PowerShell:
+<section class="grid" id="stellarxQuickConnect" aria-label="Connect your Windows PC">
+<div class="card">
+<h2>1. Connect this PC</h2>
+<p id="connectionGuide">Click below to make your private, one-time connection code.</p>
+<div id="pairCode" class="code" hidden aria-label="One-time connection code"></div>
+<div class="actions" style="margin-top:14px">
+<button class="btn primary" id="pairBtn" type="button">Create connection code</button>
+<button class="btn danger" id="disconnectBtn" type="button" hidden>Disconnect PC</button>
+</div>
+<div class="small" style="margin-top:12px">Code expires after 10 minutes. Only use it on a computer you own or control.</div>
+</div>
+<div class="card">
+<h2>2. Install and start</h2>
+<p>Open <strong>Windows PowerShell</strong> from the Start menu. Copy the setup command and paste it there once. The installer will pair StellarX and start it for you.</p>
+<div class="actions"><button class="btn primary" id="copySetupBtn" type="button" disabled>Copy Windows setup command</button></div>
+<textarea id="quickInstallCommand" class="install" readonly spellcheck="false" hidden aria-label="Your Windows setup command"></textarea>
+<div id="setupStatus" class="small" role="status" aria-live="polite" style="margin-top:10px">Create a connection code first to unlock setup.</div>
+<div id="restartHint" class="note" hidden>Already paired? Double-click <strong>StellarX PC Agent</strong> on your Windows Desktop to reconnect. Keep the window open while working.</div>
+<details style="margin-top:12px"><summary class="small">Manual setup and troubleshooting</summary>
+<div class="install">Manual PowerShell install:
 irm https://raw.githubusercontent.com/zitopop/Stellar-AI/main/desktop-agent/install-windows.ps1 | iex
 
 Then:
 cd "$env:LOCALAPPDATA\StellarAI\DesktopAgent"
 node agent.mjs pair YOUR_CODE
 .\start-stellar-agent.cmd</div>
-<div class="note">Terminal commands are OFF by default. Enable them only when you want reviewed shell tasks: <code>$env:STELLAR_DESKTOP_ALLOW_SHELL="1"</code> before starting the agent.</div></div>
+<div class="small">Free Node.js 20+ is required. The installer can offer to install it using Windows Package Manager. PC terminal access remains OFF until separately enabled.</div>
+</details>
+</div>
 </section>
 
 <section class="card dangerbox" id="safeguards" style="margin-top:18px"><h2>Safeguards</h2><p>Two layers protect the PC: cloud permissions here, plus local Windows safeguards in the companion.</p>
@@ -214,7 +240,7 @@ node agent.mjs pair YOUR_CODE
   const extra=document.createElement('details');extra.className='stellarx-advanced';extra.id='stellarxAdvanced';
   const heading=document.createElement('summary');heading.textContent='Connection, permissions and activity';
   extra.append(heading);
-  for(const el of [main.querySelector(':scope > .grid'),document.getElementById('safeguards'),document.getElementById('activity'),document.getElementById('termsPanel')]){
+  for(const el of [document.getElementById('safeguards'),document.getElementById('activity'),document.getElementById('termsPanel')]){
     if(el)extra.appendChild(el);
   }
   main.appendChild(extra);
@@ -231,6 +257,17 @@ node agent.mjs pair YOUR_CODE
 (()=>{
   const $=id=>document.getElementById(id);
   let token='',currentPlan=null,currentPrompt='',statusTimer=null;
+  const setupUrl='https://raw.githubusercontent.com/zitopop/Stellar-AI/main/desktop-agent/install-windows.ps1';
+  function oneCommandSetup(code){
+    const clean=String(code||'').toUpperCase();
+    if(!/^[A-F0-9]{16}$/.test(clean))throw new Error('Connection code is invalid. Generate a new one.');
+    return `& ([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing '${setupUrl}').Content)) -PairCode '${clean}' -Start`;
+  }
+  async function copyText(value){
+    if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(value);return}
+    const field=$('quickInstallCommand');field.hidden=false;field.focus();field.select();
+    if(!document.execCommand('copy'))throw new Error('Copy did not work. Select the displayed command and copy it manually.');
+  }
   function setStage(stage,label=''){
     document.querySelectorAll('#taskProgress [data-stage]').forEach(el=>el.classList.toggle('active',el.dataset.stage===stage));
     document.body.classList.toggle('has-task',stage!=='ask');
@@ -267,6 +304,10 @@ node agent.mjs pair YOUR_CODE
       $('statusText').textContent=d.emergencyStopped?'PC paused':!d.paired?'Connect your PC':d.online?'PC connected':'PC offline';
       $('statusMeta').textContent=!d.paired?'Open connection settings below to pair your Windows PC.':d.online?(d.hostname||'Windows PC')+' · ready to work':(d.hostname||'Windows PC')+' · start the desktop companion';
       $('disconnectBtn').hidden=!d.paired;$('pairBtn').hidden=!!d.paired;if(d.paired)$('pairCode').hidden=true;
+      $('stellarxQuickConnect').hidden=!!d.online;
+      $('restartHint').hidden=!d.paired||!!d.online;
+      $('connectionGuide').textContent=d.paired?'Your PC is paired. Use the StellarX desktop shortcut to bring it online.':'Click below to create a private one-time connection code.';
+      if(d.paired){$('copySetupBtn').disabled=true;$('quickInstallCommand').hidden=true;$('setupStatus').textContent='Already paired. Start the StellarX PC Agent shortcut on your Desktop.';}
       $('permRead').checked=d.policy?.read!==false;$('permWrite').checked=d.policy?.write!==false;$('permShell').checked=d.policy?.shell===true;$('permUrl').checked=d.policy?.openUrl!==false;$('permInput').checked=d.policy?.input===true;
       $('stopBtn').hidden=!!d.emergencyStopped;$('resumeBtn').hidden=!d.emergencyStopped;
       $('safetyState').textContent=d.emergencyStopped?'EMERGENCY STOP ACTIVE — no PC tasks can run.':'Safeguards active · shell '+(d.policy?.shell?'allowed':'blocked')+' · mouse/keyboard '+(d.policy?.input?'allowed with approval':'blocked')+'.';const usage=d.usage||{};$('pcUsageLabel').textContent=usage.unlimited?'Unlimited':String(Math.max(0,Number(usage.percent||0)))+'% used · '+String(Math.max(0,Number(usage.remaining||0)))+' left';$('pcUsageFill').style.width=usage.unlimited?'100%':String(Math.max(0,Math.min(100,Number(usage.percent||0))))+'%';updateUseBar(d);
@@ -274,11 +315,27 @@ node agent.mjs pair YOUR_CODE
     }catch(error){log(error.message,'bad');throw error}
   }
   $('pairBtn').onclick=async()=>{
-    try{const d=await api('createPair');$('pairCode').hidden=false;$('pairCode').textContent=d.code;log('Pairing code created. It expires in 10 minutes.','ok')}catch(e){log(e.message,'bad')}
+    try{
+      const d=await api('createPair');
+      const command=oneCommandSetup(d.code);
+      $('pairCode').hidden=false;$('pairCode').textContent=d.code;
+      $('quickInstallCommand').value=command;$('quickInstallCommand').hidden=false;
+      $('copySetupBtn').disabled=false;
+      $('setupStatus').textContent='Ready. Click Copy, open Windows PowerShell, paste, and press Enter. Keep PowerShell open while working.';
+      log('Pairing code created. It expires in 10 minutes.','ok');
+    }catch(e){log(e.message,'bad')}
+  };
+  $('copySetupBtn').onclick=async()=>{
+    try{
+      if($('copySetupBtn').disabled)return;
+      await copyText($('quickInstallCommand').value);
+      $('setupStatus').textContent='Copied! Open Windows PowerShell (Start menu), paste the command and press Enter.';
+      log('Windows setup command copied. Paste it into PowerShell on your own PC.','ok');
+    }catch(e){$('setupStatus').textContent=e.message;log(e.message,'warn')}
   };
   $('disconnectBtn').onclick=async()=>{
     if(!confirm('Disconnect the paired PC? The local device token will stop working.'))return;
-    try{await api('disconnect');$('pairCode').hidden=true;log('PC disconnected.','warn');await status()}catch(e){log(e.message,'bad')}
+    try{await api('disconnect');$('pairCode').hidden=true;$('copySetupBtn').disabled=true;$('quickInstallCommand').hidden=true;$('quickInstallCommand').value='';$('setupStatus').textContent='Create a new connection code to connect again.';log('PC disconnected.','warn');await status()}catch(e){log(e.message,'bad')}
   };
   $('refreshBtn').onclick=()=>status().catch(()=>{});
   document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>{ $('prompt').value=button.dataset.task||''; $('prompt').focus();document.querySelectorAll('.task-mode').forEach(x=>x.classList.toggle('selected',x===button));setStage('ask','Task drafted'); }));
