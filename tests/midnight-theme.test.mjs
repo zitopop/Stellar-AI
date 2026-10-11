@@ -13,7 +13,8 @@ test('Midnight stylesheet is loaded after other app styles and on the public hom
  assert.ok(home.includes(link));
  assert.ok(app.indexOf(link)>app.indexOf('/lib/assets/stellar-focus-v1.css'));
  assert.match(css,/--bg:#090A0F/);
- assert.match(css,/--accent:#8B5CF6/);
+ assert.match(css,/--accent:#E5E7EB/);
+ assert.doesNotMatch(css,/#8B5CF6|#A78BFA|rgba\\(139,92,246|rgba\\(167,139,250/);
  assert.match(css,/body\[data-stellar-clean-app="true"\] \.welcome h1/);
  assert.match(css,/\.public-home \.site-header/);
 });
