@@ -25,6 +25,8 @@ function harness({ planResponses = [], authResponses = [], onFetch } = {}) {
     allowedModels: ['spark'],
     planState: { plan: 'previous' },
     COSTS: { spark: 2 },
+    planTruthStatus: 'pending',
+    fallbackModelCosts: () => ({ spark: 2, star: 5, comet: 10, nova: 20 }),
     referralUrl: '',
     token: () => state.currentToken,
     clearSession: () => { state.currentToken = ''; },
