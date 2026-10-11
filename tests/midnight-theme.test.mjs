@@ -8,7 +8,7 @@ const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const css=readFileSync(new URL('../lib/assets/stellar-midnight-20261011.css',import.meta.url),'utf8');
 
 test('Midnight stylesheet is loaded after other app styles and on the public homepage',()=>{
- const link='/lib/assets/stellar-midnight-20261011.css?v=2';
+ const link='/lib/assets/stellar-midnight-20261011.css?v=20261011-flat-v3';
  assert.ok(app.includes(link));
  assert.ok(home.includes(link));
  assert.ok(app.indexOf(link)>app.indexOf('/lib/assets/stellar-focus-v1.css'));
@@ -35,4 +35,13 @@ test('automatic greeting is capitalised and changes at local time boundaries',()
  assert.match(app,/function welcomeDisplayName\(\)/);
  assert.match(app,/setInterval\(refreshWelcomeGreeting,60\*1000\)/);
  assert.match(app,/visibilitychange/);
+});
+
+
+test('No purple or glow leaks into the final Midnight override',()=>{
+ assert.match(css,/\\.public-home \\*::before/);
+ assert.match(css,/box-shadow:none!important/);
+ assert.match(css,/background-image:none!important/);
+ assert.match(css,/outline:2px solid #CED2D9!important/);
+ assert.match(css,/\.public-home a:not\\(\\.button\\):not\\(\\.brand\\)/);
 });
