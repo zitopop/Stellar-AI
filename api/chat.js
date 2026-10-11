@@ -10,6 +10,7 @@ import { recordRepeatedServiceFailure } from '../lib/owner-escalation.js';
 import { handleDiscordDebugRequest } from '../lib/discord-debug.js';
 import { connectedAppChatContext } from '../lib/plugin-chat-context.js';
 import { classificationText } from '../lib/chat-intent.js';
+import { selectSmartTier } from '../lib/smart-routing.js';
 
 const DOMAIN = 'https://trystellarai.com';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
@@ -41,7 +42,7 @@ const FORGE_MODELS = new Set([
 ]);
 
 const PUBLIC_MODEL_INPUTS = new Set([
-  'spark', 'star', 'comet', 'nova',
+  'spark', 'star', 'comet', 'nova', 'auto',
 ]);
 const OWNER_ONLY_ROLES = new Set(['planner', 'researcher', 'reviewer', 'security', 'tester']);
 
@@ -1003,6 +1004,11 @@ export default async function handler(req, res) {
   }
 
   const session = readSession(req);
+  // Do not silently process an expired authenticated chat as an anonymous Free request.
+  // Explicit 401 lets the client refresh its session once without double charging.
+  if (/^Bearer\s+\S+/i.test(String(req.headers.authorization || '')) && !session) {
+    return res.status(401).json({ error: 'Your session needs to be refreshed. Please sign in again if this continues.', code: 'SESSION_REAUTH_REQUIRED' });
+  }
   const account = await getAccountFromServer(session?.email);
   const plan = account.plan;
   const clientSource = String(client?.source || '').trim().toLowerCase().slice(0, 64);
@@ -1049,7 +1055,7 @@ export default async function handler(req, res) {
 
   const limits = getPlanDefinition(plan);
   const requestedModelKey = normaliseRoutingInput(model);
-  if (plan !== 'owner' && requestedModelKey && PUBLIC_MODEL_INPUTS.has(requestedModelKey)) {
+  if (plan !== 'owner' && requestedModelKey && requestedModelKey !== 'auto' && PUBLIC_MODEL_INPUTS.has(requestedModelKey)) {
     const mappedModel = MODEL_MAP[requestedModelKey] || requestedModelKey;
     const requestedTier = MODEL_TIER_BY_ID[mappedModel]
       || (['spark','star','comet','nova'].includes(requestedModelKey) ? requestedModelKey : 'star');
@@ -1064,7 +1070,12 @@ export default async function handler(req, res) {
       });
     }
   }
-  const route = resolveRoute(model, role, plan);
+  // Auto is a public routing choice, not a provider ID or plan entitlement.
+  // Resolve it after authentication/plan lookup and before charging any credits.
+  const effectiveModel = requestedModelKey === 'auto'
+    ? selectSmartTier({ messages: cleanMessages, plan, requestKind, workflowMode })
+    : model;
+  const route = resolveRoute(effectiveModel, role, plan);
   const billableTier = route.billingTier || route.tier || route.fallbackTier || resolveModelTier(model, plan);
   const messageCreditCost = creditCostForModel(billableTier, plan);
   const ip = normaliseClientIp(req.headers['x-forwarded-for']);

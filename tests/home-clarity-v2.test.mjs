@@ -8,7 +8,8 @@ const app = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
 const appCss = readFileSync(new URL('../lib/assets/stellar-home-clarity-v1.css', import.meta.url), 'utf8');
 
 test('public home has one clear headline, no repetitive sections and working destinations', () => {
-  assert.match(home, /<h1 id="hero-title">One simple place to think, create and get things done\.<\/h1>/);
+  assert.match(home, /<h1 id="hero-title">Your ideas deserve a smarter AI\.<\/h1>/);
+  assert.match(home, /class="stellar-smart-badge"/);
   assert.equal((home.match(/<h1\b/g) || []).length, 1);
   assert.doesNotMatch(home, /id="how-it-works"|id="bottom-title"/);
   const ids = [...home.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
@@ -30,6 +31,7 @@ test('price switch, preview and transparent terms remain discoverable', () => {
 
 test('separate cacheable styles and app essentials are retained', () => {
   assert.match(home, /stellar-landing-clean-v1\.css/);
+  assert.match(home, /stellar-premium-ui-v2\.css/);
   assert.match(css, /@media\(max-width:560px\)/);
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(app, /stellar-home-clarity-v1\.css/);

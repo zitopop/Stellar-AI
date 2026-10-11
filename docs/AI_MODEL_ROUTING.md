@@ -1,6 +1,6 @@
 # AI model routing
 
-Last verified: 2 October 2026.
+Routing specification updated: 11 October 2026. Live validation is pending.
 
 Stellar AI exposes **Stellar capability tiers** to customers and keeps third-party provider/model IDs private. Customers choose a Stellar tier; server-side routing can change providers for quality, reliability, latency, cost, safety, or availability without changing the customer-facing contract.
 
@@ -8,6 +8,7 @@ Stellar AI exposes **Stellar capability tiers** to customers and keeps third-par
 
 | Public name | Internal tier ID | Typical use |
 |---|---|---|
+| Stellar Smart | `auto` (selector, not an entitlement) | Automatically chooses an available tier for each request; charged at the chosen tier's credit cost |
 | Stellar Fast | `spark` | Quick questions, rewrites, lightweight tasks |
 | Stellar Core | `star` | Default chat, writing, coding and everyday problem solving |
 | Stellar Deep | `comet` | Larger code, research and multi-step projects |
@@ -59,7 +60,10 @@ Official source: https://docs.x.ai/developers/models
 
 ## Routing principles
 
-- Public requests may specify only `spark`, `star`, `comet`, or `nova`.
+- Public requests may specify only `auto`, `spark`, `star`, `comet`, or `nova`. `auto` is a routing selector, not a fifth provider model or a paid entitlement.
+- Smart selects a tier on the server from the current account's entitled model set before usage is charged. It cannot unlock a higher tier or suppress that tier's regular cost.
+- A deterministic heuristic selects Fast for simple questions; more demanding requests may select Core, Deep or Max only when included in the plan.
+- Users can select a tier manually instead of using Smart. The app should clearly label automatic usage as variable.
 - Provider IDs are never a paid-plan entitlement.
 - Specialist modes can choose an internal provider model best suited to the task.
 - General chat honours the Stellar tier selected by the customer.
@@ -85,3 +89,9 @@ Main chat can use:
 Other features may separately use `OPENAI_API_KEY` for voice, realtime, search/TTS, or other explicitly coded OpenAI endpoints.
 
 Direct Google or xAI keys are not required by the current main-chat architecture because Gemini/Grok routes go through the configured internal gateway. If direct integrations are added later, keep their keys server-only and update this document, the Privacy Policy, and deployment docs.
+
+## Session continuity and release safety (11 October 2026)
+
+When rotating `AUTH_SESSION_SECRET`, temporarily set `AUTH_SESSION_SECRET_PREVIOUS` to the previous signing secret on all functions. New sessions use the current key; the previous key is verify-only. Do not store either key in source control or public config. Retire the previous key after the rotation window. If current session signing is not configured, the public session-health endpoint reports service unavailable; do not treat that as an ordinary user sign-out.
+
+The premium UI pass is CSS-first: avoid whole-document observers, keep mobile 44px controls and test sessions, chat streaming, plan gates and checkout on a preview deployment before merging.
