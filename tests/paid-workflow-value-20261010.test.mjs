@@ -5,16 +5,18 @@ import { readFileSync } from 'node:fs';
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const plans = readFileSync(new URL('../plans.html', import.meta.url), 'utf8');
 
-test('paid value examples appear on the homepage and plans without false exclusivity', () => {
-  for (const page of [home, plans]) {
-    assert.match(page, /Try the kind of work you would pay for|See what each paid plan is for/);
-    for (const tier of ['starter', 'plus', 'pro']) {
-      assert.match(page, new RegExp('utm_campaign=try-' + tier + '-workflow'));
-      assert.match(page, new RegExp('data-conversion="plan-workflow-' + tier + '"'));
-    }
-    assert.match(page, /can be tried (on|with) Free/);
-    assert.match(page, /not guarantee|not guaranteed/);
+test('landing focuses on everyday tasks while detailed paid examples stay on the plans page', () => {
+  assert.match(home, /id="work-tasks"/);
+  assert.match(home, /id="plans"/);
+  assert.match(home, /class="work-shortcuts"/);
+  assert.doesNotMatch(home, /class="section plan-workflows"/);
+  assert.match(plans, /Try the kind of work you would pay for|See what each paid plan is for/);
+  for (const tier of ['starter', 'plus', 'pro']) {
+    assert.match(plans, new RegExp('utm_campaign=try-' + tier + '-workflow'));
+    assert.match(plans, new RegExp('data-conversion="plan-workflow-' + tier + '"'));
   }
+  assert.match(plans, /can be tried (on|with) Free/);
+  assert.match(plans, /not guarantee|not guaranteed/);
 });
 
 test('pricing amounts, real model allowances and existing checkout paths are preserved', () => {
