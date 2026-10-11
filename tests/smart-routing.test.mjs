@@ -20,8 +20,8 @@ test('Smart uses inexpensive Fast for simple everyday requests', () => {
 });
 test('Smart routes complex tasks progressively when available', () => {
   const prompt = 'Debug this API route, analyse the traceback and implement a complete authentication migration with tests and edge cases.';
-  assert.equal(smart(prompt, 'plus'), 'comet');
-  assert.equal(smart(prompt, 'pro'), 'nova');
+  assert.equal(smart(prompt, 'plus', { requestKind: 'technical' }), 'comet');
+  assert.equal(smart(prompt, 'pro', { requestKind: 'technical' }), 'nova');
 });
 test('Smart ignores assistant messages and does not trust client-supplied provider IDs', () => {
   assert.equal(selectSmartTier({ messages: [{role:'assistant',content:'debug refactor migration'}], plan:'pro'}), 'spark');
