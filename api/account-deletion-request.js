@@ -1,7 +1,8 @@
 // Requests account deletion without requiring the customer to contact support.
 // This records a verified signed-in request; fulfillment remains a separate, audited process.
 import { requireSession, isOwnerEmail } from '../lib/auth.js';
-import { kvGet, kvPipeline, kvSet } from '../lib/profile.js';
+import { kvGet, kvPipeline } from '../lib/profile.js';
+import { resendSender, SUPPORT_EMAIL } from '../lib/email-config.js';
 
 const REQUEST_PREFIX = 'stellar:account-deletion:request:';
 const QUEUE_KEY = 'stellar:account-deletion:queue';
@@ -16,6 +17,24 @@ function noStore(res) {
 
 function invalidStorage() {
   return !(KV_URL && KV_TOKEN);
+}
+
+async function notifySupport(email) {
+  const apiKey = String(process.env.RESEND_API_KEY || '').trim();
+  const from = resendSender();
+  if (!apiKey || !from) return false;
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from, to: [SUPPORT_EMAIL],
+      subject: 'Stellar AI — account deletion request pending',
+      text: 'A signed-in Stellar account submitted an account deletion request.\nAccount: ' +
+        email + '\nReview the account deletion queue and follow the verified deletion runbook before marking complete.'
+    })
+  });
+  if (!response.ok) throw new Error('Support mail delivery failed');
+  return true;
 }
 
 function responseStatus(record) {
@@ -76,6 +95,9 @@ export default async function handler(req, res) {
       await kvPipeline(KV_URL, KV_TOKEN, [['LPUSH', QUEUE_KEY, session.email]]);
     } catch (queueError) {
       console.error('Account deletion request queue index failed:', queueError?.message || queueError);
+    }
+    try { await notifySupport(session.email); } catch (emailError) {
+      console.error('Deletion support notification failed:', emailError?.message || emailError);
     }
     return res.status(202).json({
       ...responseStatus(record),
