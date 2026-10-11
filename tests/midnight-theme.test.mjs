@@ -23,7 +23,7 @@ test('automatic greeting is capitalised and changes at local time boundaries',()
  assert.ok(source,'greeting helper present');
  const greet=runInNewContext(source+';welcomeGreeting',{Date});
  const at=hour=>({getHours:()=>hour});
- for(const [hour,result] of [[0,'GOOD NIGHT'],[4,'GOOD NIGHT'],[5,'GOOD MORNING'],[11,'GOOD MORNING'],[12,'GOOD AFTERNOON'],[16,'GOOD AFTERNOON'],[17,'GOOD EVENING'],[21,'GOOD EVENING'],[22,'GOOD NIGHT']]){
+ for(const [hour,result] of [[0,'Good Night'],[4,'Good Night'],[5,'Good Morning'],[11,'Good Morning'],[12,'Good Afternoon'],[16,'Good Afternoon'],[17,'Good Evening'],[21,'Good Evening'],[22,'Good Night']]){
    assert.equal(greet(at(hour)),result);
  }
  assert.match(app,/id="stellar-welcome-title"/);
