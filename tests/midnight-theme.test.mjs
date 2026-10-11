@@ -8,14 +8,18 @@ const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const css=readFileSync(new URL('../lib/assets/stellar-midnight-20261011.css',import.meta.url),'utf8');
 
 test('Midnight stylesheet is loaded after other app styles and on the public homepage',()=>{
- const link='/lib/assets/stellar-midnight-20261011.css?v=1';
+ const link='/lib/assets/stellar-midnight-20261011.css?v=2';
  assert.ok(app.includes(link));
  assert.ok(home.includes(link));
  assert.ok(app.indexOf(link)>app.indexOf('/lib/assets/stellar-focus-v1.css'));
  assert.match(css,/--bg:#090A0F/);
- assert.match(css,/--accent:#8B5CF6/);
+ assert.match(css,/--accent:#B8BDC7/);
  assert.match(css,/body\[data-stellar-clean-app="true"\] \.welcome h1/);
  assert.match(css,/\.public-home \.site-header/);
+ assert.match(css,/\.welcome::before/);
+ assert.match(css,/content:none!important/);
+ assert.match(css,/-webkit-text-fill-color:#F8F8FA!important/);
+ assert.doesNotMatch(css,/#[a-f0-9]*8b5cf6|#a78bfa|#9f7aea|139,92,246|radial-gradient/i);
 });
 
 test('automatic greeting is capitalised and changes at local time boundaries',()=>{
