@@ -133,3 +133,27 @@ test('scheduled work cannot run after an account loses owner access', async () =
   assert.deepEqual(await service.tick(), { processed: 0 });
   assert.equal(runs.length, 0); assert.equal(store.pending.size, 0);
 });
+
+test('revenue work order researches pricing and produces a reviewed brief without external actions', async () => {
+  const researched = [];
+  const { service, runs, notices } = setup({
+    research: async query => {
+      researched.push(query);
+      return [{ title: 'Market reference', url: 'https://example.org/research' }];
+    },
+  });
+  const mission = await service.create(owner, {
+    kind: 'revenue',
+    requestId: 'revenue-work-order-1234',
+    objective: 'Research buyers, compare fair pricing and draft a measurable Stellar AI conversion plan.',
+    notify: { email: false, call: false },
+  });
+  assert.equal(mission.kind, 'revenue');
+  assert.deepEqual(mission.steps.map(step => step.role), ['revenue', 'reviewer']);
+  const result = await service.run(mission.id, owner);
+  assert.equal(result.status, 'completed');
+  assert.match(researched[0], /buyer demand pricing conversion/);
+  assert.deepEqual(runs.map(step => step.role), ['revenue', 'reviewer']);
+  assert.equal(runs[1].previousResults.length, 1);
+  assert.equal(notices.length, 0);
+});
