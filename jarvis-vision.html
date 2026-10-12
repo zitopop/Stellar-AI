@@ -599,9 +599,12 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
 <main class="deck" id="deck" aria-label="Jarvis tools"><article class="orb o1" data-name="AI Chat" tabindex="0" role="button" aria-label="Open Jarvis chat"><div><div class="ico">✦</div><strong>Chat</strong><small>Ask, explain, write, plan and troubleshoot in the main Stellar workspace.</small><span class="orb-meta">Open chat</span></div></article><article class="orb o2" data-name="Voice" tabindex="0" role="button" aria-label="Open Jarvis voice"><div><div class="ico">◉</div><strong>Voice</strong><small>Talk naturally when typing is slower than speaking.</small><span class="orb-meta">Start voice</span></div></article><article class="orb o3 orb-featured" data-name="Computer" data-jarvis-computer="true" tabindex="0" role="button" aria-label="Open secure computer control"><div><div class="ico">⌘</div><strong>Computer</strong><small>Open StellarX for approved file, terminal, browser and computer tasks.</small><span class="orb-meta">Open StellarX</span></div></article><article class="orb o4" data-name="Email" data-restricted="true" aria-hidden="true" tabindex="0" role="button" aria-label="Email integration status"><div><div class="ico">✉</div><strong>Email</strong><small>Use authorised inbox context for supported workflows.</small><span class="orb-meta orb-meta-warn">Authorised connector</span></div></article><article class="orb o5" data-name="Projects" tabindex="0" role="button" aria-label="Ask Jarvis for project help"><div><div class="ico">▣</div><strong>Projects</strong><small>Continue a build, organise the next steps and keep project work focused.</small><span class="orb-meta">Continue project</span></div></article><article class="orb o6" data-name="Agents" data-restricted="true" aria-hidden="true" tabindex="0" role="button" aria-label="AI agents"><div><div class="ico">♙</div><strong>AI Agents</strong><small>Specialist private roles for research, review, testing and security.</small><span class="orb-meta">Private tools</span></div></article><article class="orb o7" data-name="Vision" tabindex="0" role="button" aria-label="Start Jarvis vision"><div><div class="ico">◌</div><strong>Vision</strong><small>Use the camera for local hand tracking and visual interaction.</small><span class="orb-meta">Start vision</span></div></article></main><div class="cursor" id="cursor"></div><div class="legend"><span>🤏 Pinch + move · drag</span><span>✌ Peace · reset</span><span>🤏🤏 Two hands · zoom</span><span>J · narration</span><span>F · effects</span><span>Mouse + touch supported</span></div><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
 <script type="module">
 const q=s=>document.querySelector(s), deck=q('#deck'), cursor=q('#cursor'), statusText=q('#statusText'), toast=q('#toast'), cam=q('#cam');
+let ownerVerified=false;
 let jarvisAccess={enabled:false,voice:false,vision:false,briefings:false,proactiveAlerts:false,ownerControls:false};async function syncJarvisAccess(){
   const shell=q('#shell');
   if(!shell)return;
+  ownerVerified=false;
+  q('[data-jarvis-business]')?.remove();
   shell.classList.remove('restricted-verified','jarvis-pro');
   document.querySelectorAll('[data-restricted="true"]').forEach(el=>el.setAttribute('aria-hidden','true'));
   let token='';
@@ -620,8 +623,18 @@ let jarvisAccess={enabled:false,voice:false,vision:false,briefings:false,proacti
     lock?.setAttribute('hidden','');shell.setAttribute('aria-hidden','false');
     if(jarvisAccess.briefings) shell.classList.add('jarvis-pro');
     if(data?.owner===true&&jarvisAccess.ownerControls===true){
+      ownerVerified=true;
       shell.classList.add('restricted-verified');
       document.querySelectorAll('[data-restricted="true"]').forEach(el=>el.setAttribute('aria-hidden','false'));
+      const actions=q('.jarvis-command-actions');
+      if(actions){
+        const business=document.createElement('button');
+        business.type='button';
+        business.dataset.jarvisBusiness='true';
+        business.textContent='Business missions';
+        business.addEventListener('click',()=>openJarvisPrompt('Find realistic ways to grow Stellar AI revenue. Research customer demand, improve our offer and conversion, draft outreach for my approval and give me the next actions with evidence.'));
+        actions.append(business);
+      }
     }
   }catch{}
 }let handLandmarker=null,stream=null,running=false,lastVideo=-1,drag=null,offset={x:0,y:0},pinched=false,lastPeace=0,jarvis=false,effects=false,deckScale=1,lastTwoHandDistance=0;const initial=[...document.querySelectorAll('.orb')].map(el=>({el,left:el.style.left,top:el.style.top,transform:el.style.transform}));
@@ -636,7 +649,7 @@ function activateOrb(el){
   if(name==='AI Chat'){location.href='/app?jarvis=chat';return}
   if(name==='Voice'){location.href='/app?jarvis=voice';return}
   if(name==='Projects'){location.href='/app?jarvis=chat&prompt='+encodeURIComponent('Help me continue my current project. Review what I am trying to achieve, identify the next best step, and keep the plan focused.');return}
-  if(name==='Agents'){note('Private specialist agents are available only when your verified access enables them');return}
+  if(name==='Agents'){if(!ownerVerified){note('Private specialist agents require verified owner access');return}location.href='/ai-os';return}
   if(name==='Vision'){
     if(running){note('Vision is online · hand tracking is local');say('Vision is online.');return}
     enableCamera();
@@ -661,6 +674,7 @@ document.querySelectorAll('.orb').forEach(el=>{
 const jarvisCommandForm=q('#jarvis-command-form'),jarvisCommandInput=q('#jarvis-command-input'),jarvisRouteText=q('#jarvis-route-text');
 function detectJarvisRoute(value){
   const t=String(value||'').toLowerCase();
+  if(/\b(revenue|money|earn|income|sales|selling|leads?|clients?|customers?|outreach|marketing|business|shopify|conversion|pricing|subscriptions?)\b/.test(t)) return 'Business missions';
   if(/error|bug|debug|broken|fix|crash|stack|trace|qbcore|esx|ox_lib|luau|lua/.test(t)) return 'Code + Debug';
   if(/research|latest|current|news|find|compare|source|web|look up/.test(t)) return 'Web research';
   if(/camera|see|look at|vision|image|photo|screen/.test(t)) return 'Vision';
@@ -675,6 +689,10 @@ function updateJarvisRoute(){
 function openJarvisPrompt(value){
   const prompt=String(value||jarvisCommandInput?.value||'').trim();
   if(!prompt){jarvisCommandInput?.focus();note('Tell Jarvis what you want to do');return}
+  if(ownerVerified && detectJarvisRoute(prompt)==='Business missions'){
+    location.href='/ai-os?objective='+encodeURIComponent(prompt);
+    return;
+  }
   location.href='/app?jarvis=chat&prompt='+encodeURIComponent(prompt);
 }
 jarvisCommandInput?.addEventListener('input',updateJarvisRoute);
