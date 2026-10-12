@@ -224,7 +224,8 @@ body{background:#0b0c11;color:#f4f5fa}
 .jarvis-starters button:hover{background:#24262c!important;border-color:rgba(255,255,255,.28)!important}
 .composer-row #stop-response{background:#262830!important;border-color:rgba(255,255,255,.2)!important;color:#f5f5f6!important}
 .composer-row #stop-response:hover{background:#34363f!important}
-.top-actions .apps-link:focus-visible{outline-color:#f5f5f6!important}
+ .top-actions .apps-link:focus-visible{outline-color:#f5f5f6!important}
+.composer-row .jarvis-business-btn{white-space:nowrap;background:#252830;border-color:rgba(255,255,255,.22);color:#f6f7fa;font-weight:700}
 @media(prefers-reduced-motion:reduce){.jarvis-orb{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -286,7 +287,7 @@ body{background:#0b0c11;color:#f4f5fa}
   const messages = [];
   function safeStorageGet(key,fallback=''){try{const value=localStorage.getItem(key);return value==null?fallback:value}catch{return fallback}}
   function safeStorageSet(key,value){try{localStorage.setItem(key,value);return true}catch{return false}}
-  let busy = false, recognition = null, speaking = false, accessChecked = false, jarvisEntitled = false, micAvailable = false;
+  let busy = false, recognition = null, speaking = false, accessChecked = false, jarvisEntitled = false, micAvailable = false, ownerVerified = false;
   let pendingController = null, speechRunId = 0;
   let jarvisSource = 'jarvis-public', jarvisModel = 'star', availableJarvisModels = ['star'];
   let voiceOn = safeStorageGet('stellarJarvisVoiceReplies','1') !== '0';
@@ -309,6 +310,24 @@ body{background:#0b0c11;color:#f4f5fa}
     $('jarvis-model-note').textContent='Stellar '+({star:'Core',comet:'Deep',nova:'Max'}[jarvisModel])+' selected · '+(jarvisModel==='star'?'Balanced everyday responses.':'For harder work. Uses more of your allowance.');
   }
   function headers(){const h={'Content-Type':'application/json'};const token=sessionToken();if(token)h.Authorization='Bearer '+token;return h}
+  function openBusinessMission(){
+    if(!ownerVerified)return;
+    const typed=$('prompt').value.trim();
+    const objective=(typed.length>=10?typed:'Find practical ways for Stellar AI to earn revenue. Research real buyer needs, design a compelling offer, draft an outreach plan for approval and identify the highest-value next actions.').slice(0,4000);
+    location.href='/ai-os?objective='+encodeURIComponent(objective);
+  }
+  function showBusinessMissionControl(){
+    const row=$('send')?.parentElement;
+    if(!row || $('jarvis-business-mission'))return;
+    const button=document.createElement('button');
+    button.id='jarvis-business-mission';
+    button.type='button';
+    button.className='jarvis-business-btn';
+    button.textContent='Business missions ↗';
+    button.setAttribute('aria-label','Open private Jarvis business missions');
+    button.addEventListener('click',openBusinessMission);
+    row.insertBefore(button,$('send'));
+  }
   function setStatus(text,kind=''){
     const el=$('status');
     const message=String(text||'');
@@ -492,7 +511,7 @@ body{background:#0b0c11;color:#f4f5fa}
   function startListening(){if(!micAvailable||!recognition||busy||speaking||!jarvisEntitled)return;try{recognition.start()}catch{try{recognition.stop()}catch{}}}
   function showAccess(message,href,label){$('access-copy').textContent=message;$('access-link').href=href;$('access-link').textContent=label;$('signin').classList.add('show')}
   async function syncJarvisAccess(){
-    accessChecked=false;jarvisEntitled=false;setBusy(false);setStatus('Checking Jarvis access…','good');
+    accessChecked=false;jarvisEntitled=false;ownerVerified=false;$('jarvis-business-mission')?.remove();setBusy(false);setStatus('Checking Jarvis access…','good');
     let accountModels=['star'];
     const mode={textContent:'',classList:{add(){},remove(){}}};
     if(!sessionToken()){mode.textContent='Sign in required';$('retry-access').hidden=true;showAccess('Sign in to use Jarvis Voice.','/app?signin=1','Open sign in →');accessChecked=true;setBusy(false);setStatus('Sign in required.','bad');return false}
@@ -502,7 +521,7 @@ body{background:#0b0c11;color:#f4f5fa}
       accountModels=Array.isArray(d?.availableModels)?d.availableModels:['star'];
       const caps=d?.capabilities?.jarvis||d?.accountPlan?.capabilities?.jarvis||{};
       const owner=d?.owner===true||d?.accountPlan?.owner===true;
-      if(owner){jarvisSource='jarvis-owner';jarvisEntitled=true;mode.textContent='Jarvis enabled'}
+      if(owner){jarvisSource='jarvis-owner';jarvisEntitled=true;ownerVerified=true;showBusinessMissionControl();mode.textContent='Jarvis enabled'}
       else if(caps.voice===true||caps.enabled===true){jarvisSource='jarvis-public';jarvisEntitled=true;mode.textContent='Jarvis voice';mode.classList.remove('owner')}
       else{mode.textContent='Plus or Pro';showAccess('Jarvis Voice is included with Plus and Pro.','/plans','See plans →');setStatus('Plus or Pro required.','bad')}
     }catch(error){mode.textContent='Access unavailable';showAccess(error.message||'Jarvis access could not be verified.','/app','Back to Stellar →');$('retry-access').hidden=false;setStatus('Jarvis access unavailable.','bad')}
