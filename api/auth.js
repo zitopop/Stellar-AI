@@ -321,6 +321,10 @@ export default async function handler(req, res) {
     }
 
     if (action === 'refreshSession') {
+      // Distinguish deployment configuration failures from an expired session.
+      if (!sessionSigningConfigured()) {
+        return res.status(503).json({ error: 'Secure sign-in is temporarily unavailable. Try again shortly.', code: 'AUTH_SESSION_UNAVAILABLE' });
+      }
       const session = readSession(req);
       if (!session) return res.status(401).json({ error: 'Please sign in again to continue.' });
       const user = (await kvGet(url, token, `stellar:user:${session.email}`)) || {};
