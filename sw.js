@@ -1,5 +1,5 @@
 // Stellar AI service worker — clean landing cache, Google sign-in UI patch, offline support and push notifications.
-const SW_VERSION = 'stellar-sw-2026-10-07-settings-restore-v3';
+const SW_VERSION = 'stellar-sw-2026-10-11-fresh-assets-v4';
 const SHELL_CACHE = `stellar-shell-${SW_VERSION}`;
 const STATIC_CACHE = `stellar-static-${SW_VERSION}`;
 const OFFLINE_URL = '/offline.html';
@@ -241,6 +241,13 @@ self.addEventListener('fetch', (event) => {
         return response;
       } catch { return null; }
     };
+    // Scripts and styles carry live UI/checkout behavior. Prefer the network
+    // so an installed PWA does not keep showing an older release after deploy.
+    // Keep the last successful copy for offline use. Images/fonts remain
+    // stale-while-revalidate to avoid unnecessary bandwidth.
+    if (request.destination === 'script' || request.destination === 'style') {
+      return (await fetchFresh()) || cached || Response.error();
+    }
     if (cached) { event.waitUntil(fetchFresh()); return cached; }
     return (await fetchFresh()) || Response.error();
   })());
