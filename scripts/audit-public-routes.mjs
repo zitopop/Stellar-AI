@@ -30,6 +30,8 @@ const expectedCleanRoutes = new Map([
   ['/jarvis/vision', 'jarvis-vision.html'],
   ['/models', 'models.html'],
   ['/desktop', 'desktop-agent.html'],
+  ['/jarvis', 'jarvis-workspace.html'],
+  ['/jarvis/vision', 'jarvis-vision.html'],
   ['/roblox-studio', 'roblox-studio.html'],
   ['/business', 'business.html'],
   ['/script-fix', 'services/script-fix.html'],
